@@ -4,9 +4,6 @@
     "type": "git",
     "directory": "git+https://github.com/linked-planet/ui-kit-ts.git"
   },
-  "publishConfig": {
-    "@linked-planet:registry": "https://registry.npmjs.org"
-  },
   "engines": {
     "node": "19.x",
     "npm": "8.19.3"
