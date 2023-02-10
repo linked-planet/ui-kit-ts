@@ -7,7 +7,7 @@
   "publishConfig": {
     "@linked-planet:registry": "https://npm.pkg.github.com"
   },
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -20,7 +20,7 @@
     "build:cjs": "tsc --module CommonJS --outDir dist/cjs"
   },
   "author": "Philipp Karlsson",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "@atlaskit/badge": "^15.0.23",
     "@atlaskit/breadcrumbs": "^11.7.11",
