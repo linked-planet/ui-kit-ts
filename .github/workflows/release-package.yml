@@ -11,14 +11,10 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v3
-
       - uses: actions/setup-node@v3
         with:
           node-version: '19.x'
           registry-url: 'https://registry.npmjs.org'
-
-      - name: Authenticate to npm
-        run: echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_PUBLISH_TOKEN}}" > ~/.npmrc
-
-      - name: Publish to npm
-        run: npm publish --access public
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
