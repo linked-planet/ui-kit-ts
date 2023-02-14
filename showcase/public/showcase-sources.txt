@@ -727,8 +727,6 @@ function FormShowcase(props: ShowcaseProps) {
         favoriteColorCreatable: string
     }
 
-    const colors: string[] = ["BLUE", "RED"]
-
     const initFormData = {
         name: "Carl",
         readonlyField: "Read-only Field",
@@ -885,7 +883,6 @@ function FormShowcase(props: ShowcaseProps) {
 export default FormShowcase;
 import React from "react";
 import ShowcaseWrapperItem, {ShowcaseProps} from "../../ShowcaseWrapperItem";
-import Flag from "@atlaskit/flag";
 import ArrowDownIcon from "@atlaskit/icon/glyph/arrow-down";
 import BulletListIcon from "@atlaskit/icon/glyph/bullet-list";
 import CheckCircleIcon from "@atlaskit/icon/glyph/check-circle";
@@ -1203,7 +1200,7 @@ function PaginationShowcase(props: ShowcaseProps) {
             defaultSelectedIndex={0}
             max={10}
             selectedIndex={selectedPage}
-            onChange={(event, page, analyticsEvent) => setSelectedPage(page-1)}
+            onChange={(event, page) => setSelectedPage(page-1)}
         />
     )
     // endregion: pagination
@@ -1396,13 +1393,6 @@ function TableTreeShowcase(props: ShowcaseProps) {
     interface BookData {
         title: string
         description: string
-    }
-
-    interface BookTreeItem {
-        id: string
-        content: BookData
-        children: TableTreeItem[]
-        hasChildren: boolean
     }
 
     interface TableTreeItem {

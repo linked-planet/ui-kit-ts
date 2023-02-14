@@ -1,8 +1,8 @@
 import React from 'react';
-import { PageLayout, Content, Main } from "@atlaskit/page-layout"
+import {Content, Main, PageLayout} from "@atlaskit/page-layout"
 import ShowcaseTopNavigation from "./components/ShowcaseTopNavigation";
 import ShowcaseLeftSidebar from "./components/ShowcaseLeftSidebar";
-import {HashRouter, Routes, Route, Navigate} from "react-router-dom";
+import {HashRouter, Navigate, Route, Routes} from "react-router-dom";
 import IntroPage from "./page/IntroPage";
 import NotFoundPage from "./page/NotFoundPage";
 import UtilsPage from "./page/UtilsPage";
@@ -13,46 +13,46 @@ function App() {
     require("./custom.css")
 
     return (
-        <div className="App">
-            <PageLayout>
-                <ShowcaseTopNavigation />
-                <Content>
-                    <ShowcaseLeftSidebar />
+        <HashRouter>
+            <div className="App">
+                <PageLayout>
+                    <ShowcaseTopNavigation/>
+                    <Content>
+                        <ShowcaseLeftSidebar/>
 
-                    <Main>
-                        <div style={{
-                            margin: "50px 50px",
-                            display: "flex",
-                            flexDirection: "column"
-                        }}>
-                            <HashRouter>
+                        <Main>
+                            <div style={{
+                                margin: "50px 50px",
+                                display: "flex",
+                                flexDirection: "column"
+                            }}>
                                 <Routes>
                                     <Route
                                         path="/"
                                         element={<Navigate to="/intro"/>}
-                                        />
+                                    />
                                     <Route
                                         path="/intro"
-                                        element={<IntroPage />}
-                                        />
+                                        element={<IntroPage/>}
+                                    />
                                     <Route
                                         path="/wrappers"
-                                        element={<WrappersPage />}
-                                        />
+                                        element={<WrappersPage/>}
+                                    />
                                     <Route
                                         path="/utils"
-                                        element={<UtilsPage />}
-                                        />
+                                        element={<UtilsPage/>}
+                                    />
                                     <Route
-                                        element={<NotFoundPage />}
-                                        />
+                                        element={<NotFoundPage/>}
+                                    />
                                 </Routes>
-                            </HashRouter>
-                        </div>
-                    </Main>
-                </Content>
-            </PageLayout>
-        </div>
+                            </div>
+                        </Main>
+                    </Content>
+                </PageLayout>
+            </div>
+        </HashRouter>
     );
 }
 

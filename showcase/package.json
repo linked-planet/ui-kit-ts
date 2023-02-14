@@ -12,14 +12,17 @@
     "@types/node": "^18.13.0",
     "@types/react": "^16.8.0",
     "@types/react-dom": "^16.8.0",
+    "gh-pages": "^5.0.0",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "react-scripts": "^5.0.1",
     "typescript": "^4.9.5"
   },
+  "homepage": "https://linked-planet.github.io/ui-kit-ts",
   "scripts": {
     "start": "npm run generate && react-scripts start",
     "build": "npm run generate && install-local-dependencies && react-scripts build",
+    "deploy": "gh-pages -d build",
     "reload": "npm install && install-local-dependencies",
     "generate": "node copySources.js",
     "eject": "react-scripts eject",

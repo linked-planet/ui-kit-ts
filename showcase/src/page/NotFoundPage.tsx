@@ -1,8 +1,10 @@
 import React from "react";
 import EmptyState from "@atlaskit/empty-state";
 import Button from "@atlaskit/button";
+import {useNavigate} from "react-router";
 
 function NotFoundPage() {
+    const navigation = useNavigate()
 
     return (
         <EmptyState
@@ -10,7 +12,7 @@ function NotFoundPage() {
             description={<span>The page you were looking for doesn't exist...</span>}
             primaryAction={
             <Button
-                onClick={() => window.location.href="/"}
+                onClick={() => navigation("/")}
                 appearance="primary"
             >Back to start</Button>
                 }
