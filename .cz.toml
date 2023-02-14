@@ -1,5 +1,6 @@
 [tool.commitizen]
 version = "0.1.6"
 version_files = [
-    "package.json:version"
+    "library/package.json:version",
+    "showcase/package.json:version"
 ]
