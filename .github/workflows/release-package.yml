@@ -39,26 +39,28 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Print Version
         run: echo "Bumped to version ${{ steps.cz.outputs.version }}"
+      - name: Build library
+        run: npm ci build
 
-  publish-gpr:
-    needs: tag-and-bump
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: 'library'
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '19.x'
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Publish to npmjs
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
+#  publish-gpr:
+#    needs: tag-and-bump
+#    runs-on: ubuntu-latest
+#    defaults:
+#      run:
+#        working-directory: 'library'
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-node@v3
+#        with:
+#          node-version: '19.x'
+#          registry-url: 'https://registry.npmjs.org'
+#
+#      - name: Publish to npmjs
+#        run: npm publish --access public
+#        env:
+#          NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
   deploy-showcase:
-    needs: publish-gpr
+    needs: tag-and-bump
     runs-on: ubuntu-latest
     defaults:
       run:
