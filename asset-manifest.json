@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/ui-kit-ts/static/css/main.c0df187d.css",
-    "main.js": "/ui-kit-ts/static/js/main.7c183a95.js",
+    "main.js": "/ui-kit-ts/static/js/main.f9226789.js",
     "react-syntax-highlighter/refractor-import.js": "/ui-kit-ts/static/js/react-syntax-highlighter/refractor-import.d8f57eac.chunk.js",
     "index.html": "/ui-kit-ts/index.html",
     "main.c0df187d.css.map": "/ui-kit-ts/static/css/main.c0df187d.css.map",
-    "main.7c183a95.js.map": "/ui-kit-ts/static/js/main.7c183a95.js.map",
+    "main.f9226789.js.map": "/ui-kit-ts/static/js/main.f9226789.js.map",
     "refractor-import.d8f57eac.chunk.js.map": "/ui-kit-ts/static/js/react-syntax-highlighter/refractor-import.d8f57eac.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c0df187d.css",
-    "static/js/main.7c183a95.js"
+    "static/js/main.f9226789.js"
   ]
 }
