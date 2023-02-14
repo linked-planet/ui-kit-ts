@@ -1,6 +1,6 @@
 {
   "name": "@linked-planet/ui-kit-ts/showcase",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "engines": {
     "node": "19.x",
     "npm": "9.4.0"
