@@ -1,6 +1,10 @@
 {
   "name": "@linked-planet/ui-kit-ts/showcase",
   "version": "0.1.10",
+  "engines": {
+    "node": "19.x",
+    "npm": "9.4.0"
+  },
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.5",
