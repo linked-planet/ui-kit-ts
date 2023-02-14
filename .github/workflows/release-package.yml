@@ -17,12 +17,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish to npmjs
-        run: npm publish --access public
+        run: npm --prefix library publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
 
       - name: Build showcase
-        run: npm --prefix showcase build ci
+        run: npm --prefix showcase ci build
 
       - name: Deploy Showcase to Github Pages
         uses: JamesIves/github-pages-deploy-action@v4.2.5
