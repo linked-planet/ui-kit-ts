@@ -6,7 +6,7 @@ on:
       - "main"
 
 jobs:
-  install-and-test:
+  build-library:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -16,31 +16,30 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - run: npm ci
-
-  tag-and-bump:
-    if: "!startsWith(github.event.head_commit.message, 'bump:')"
-    needs: install-and-test
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: 'library'
-    name: "Bump version and create changelog with commitizen"
-    steps:
-      - name: Check out
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          token: "${{ secrets.GITHUB_TOKEN }}"
-      - id: cz
-        name: Bump package
-        uses: commitizen-tools/commitizen-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Print Version
-        run: echo "Bumped to version ${{ steps.cz.outputs.version }}"
-      - name: Build library
-        run: npm ci build
+      - run: npm ci build
+#
+#  build-library:
+#    needs: install-and-test
+#    runs-on: ubuntu-latest
+#    defaults:
+#      run:
+#        working-directory: 'library'
+#    name: "Bump version and create changelog with commitizen"
+#    steps:
+#      - name: Check out
+#        uses: actions/checkout@v3
+#        with:
+#          fetch-depth: 0
+#          token: "${{ secrets.GITHUB_TOKEN }}"
+#      - id: cz
+#        name: Bump package
+#        uses: commitizen-tools/commitizen-action@master
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Print Version
+#        run: echo "Bumped to version ${{ steps.cz.outputs.version }}"
+#      - name: Build library
+#        run: npm ci build
 
 #  publish-gpr:
 #    needs: tag-and-bump
@@ -60,7 +59,7 @@ jobs:
 #        env:
 #          NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
   deploy-showcase:
-    needs: tag-and-bump
+    needs: build-library
     runs-on: ubuntu-latest
     defaults:
       run:
