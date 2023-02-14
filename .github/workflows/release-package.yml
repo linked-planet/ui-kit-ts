@@ -17,7 +17,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish to npmjs
-        run: npm --prefix library publish --access public
+        run: npm publish library --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
 
