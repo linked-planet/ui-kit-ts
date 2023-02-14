@@ -1,13 +1,50 @@
-name: Release
+name: ui-kit-ts
 
 on:
-  workflow_run:
-    workflows: [ "Build bump tag" ]
-    types:
-      - completed
+  push:
+    branches:
+      - "main"
+
 jobs:
-  publish-gpr:
+  install-and-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'library'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 19
+      - run: npm ci
+
+  tag-and-bump:
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+    needs: install-and-test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'library'
+    name: "Bump version and create changelog with commitizen"
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: "${{ secrets.GITHUB_TOKEN }}"
+      - id: cz
+        name: Bump package
+        uses: commitizen-tools/commitizen-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Print Version
+        run: echo "Bumped to version ${{ steps.cz.outputs.version }}"
+  publish-gpr:
+    needs: tag-and-bump
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'library'
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v3
@@ -17,16 +54,27 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish to npmjs
-        run: npm publish library --access public
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
+  deploy-showcase:
+    needs: publish-gpr
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'showcase'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '19.x'
 
       - name: Build showcase
-        run: npm --prefix showcase ci build
+        run: npm ci build
 
       - name: Deploy Showcase to Github Pages
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: docs
-          folder: showcase/build
+          folder: build
           single-commit: true
