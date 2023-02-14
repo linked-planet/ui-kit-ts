@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - run: npm ci
+      - run: npm install
       - run: npm run build
 #
 #  build-library:
@@ -72,7 +72,7 @@ jobs:
           node-version: '19.x'
 
       - name: Install showcase
-        run: npm ci
+        run: npm install
 
       - name: Build showcase
         run: npm run build
