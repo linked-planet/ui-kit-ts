@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - "main"
+  release:
+    type: [ created ]
 
 jobs:
   build:
@@ -36,44 +38,30 @@ jobs:
           branch: docs
           folder: showcase/build
           single-commit: true
-#
-#  build-library:
-#    needs: install-and-test
-#    runs-on: ubuntu-latest
-#    defaults:
-#      run:
-#        working-directory: 'library'
-#    name: "Bump version and create changelog with commitizen"
-#    steps:
-#      - name: Check out
-#        uses: actions/checkout@v3
-#        with:
-#          fetch-depth: 0
-#          token: "${{ secrets.GITHUB_TOKEN }}"
-#      - id: cz
-#        name: Bump package
-#        uses: commitizen-tools/commitizen-action@master
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#      - name: Print Version
-#        run: echo "Bumped to version ${{ steps.cz.outputs.version }}"
-#      - name: Build library
-#        run: npm ci build
 
-#  publish-gpr:
-#    needs: tag-and-bump
-#    runs-on: ubuntu-latest
-#    defaults:
-#      run:
-#        working-directory: 'library'
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: actions/setup-node@v3
-#        with:
-#          node-version: '19.x'
-#          registry-url: 'https://registry.npmjs.org'
-#
-#      - name: Publish to npmjs
-#        run: npm publish --access public
-#        env:
-#          NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
+  publish:
+    needs: build
+    if: ${{ github.event_name == 'release' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'library'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '19.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Get release version
+        id: release
+        run: |
+          FULL_VERSION=${{ github.event.release.tag_name }}
+          SHORT_VERSION=${FULL_VERSION:1}
+          echo shortVersion=${SHORT_VERSION} >> $GITHUB_OUTPUT
+
+      - name: Publish to npmjs
+        working-directory: ./library
+        run: npm publish --access public --tag ${{ steps.release.outputs.shortVersion }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
