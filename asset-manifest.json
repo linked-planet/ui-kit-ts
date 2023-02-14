@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/static/css/main.c0df187d.css",
+    "main.js": "/static/js/main.e523ac4d.js",
+    "react-syntax-highlighter/refractor-import.js": "/static/js/react-syntax-highlighter/refractor-import.d8f57eac.chunk.js",
+    "index.html": "/index.html",
+    "main.c0df187d.css.map": "/static/css/main.c0df187d.css.map",
+    "main.e523ac4d.js.map": "/static/js/main.e523ac4d.js.map",
+    "refractor-import.d8f57eac.chunk.js.map": "/static/js/react-syntax-highlighter/refractor-import.d8f57eac.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c0df187d.css",
+    "static/js/main.e523ac4d.js"
+  ]
+}
