@@ -12,7 +12,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '19.x'
+          node-version: 'v19.1.0'
+          npm-version: '9.4.2'
       - name: npm install library
         working-directory: ./library
         run: npm install

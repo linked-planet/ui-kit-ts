@@ -2,8 +2,8 @@
   "name": "@linked-planet/ui-kit-ts/showcase",
   "version": "0.1.11",
   "engines": {
-    "node": "19.x",
-    "npm": "9.4.0"
+    "node": "v19.1.0",
+    "npm": "9.4.2"
   },
   "private": true,
   "dependencies": {
@@ -22,8 +22,8 @@
     "build": "npm run generate && install-local-dependencies && react-scripts build",
     "reload": "npm install && install-local-dependencies",
     "generate": "node copySources.js",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "eslint": "eslint src/index.tsx"
   },
   "eslintConfig": {
     "extends": [
@@ -43,6 +43,9 @@
     ]
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
+    "eslint": "^8.34.0",
     "install-local-dependencies": "^0.2.5"
   }
 }

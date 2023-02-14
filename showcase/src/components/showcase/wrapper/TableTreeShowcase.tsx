@@ -69,7 +69,6 @@ function TableTreeShowcase(props: ShowcaseProps) {
             items={bookDataTree}
         />
     )
-    // @ts-ignore
     const example2 = (
         <TableTree>
             <Headers>
