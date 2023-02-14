@@ -6,18 +6,36 @@ on:
       - "main"
 
 jobs:
-  build-library:
+  build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: 'library'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - run: npm install
-      - run: npm run build
+      - name: npm install library
+        working-directory: ./library
+        run: npm install
+
+      - name: npm build library
+        working-directory: ./library
+        run: npm run build
+
+      - name: npm install showcase
+        working-directory: ./showcase
+        run: npm install
+
+      - name: npm build showcase
+        working-directory: ./showcase
+        run: npm run build
+
+      - name: deploy Showcase to Github Pages
+        working-directory: ./showcase
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+          branch: docs
+          folder: build
+          single-commit: true
 #
 #  build-library:
 #    needs: install-and-test
@@ -59,27 +77,3 @@ jobs:
 #        run: npm publish --access public
 #        env:
 #          NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
-  deploy-showcase:
-    needs: build-library
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: 'showcase'
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '19.x'
-
-      - name: Install showcase
-        run: npm install
-
-      - name: Build showcase
-        run: npm run build
-
-      - name: Deploy Showcase to Github Pages
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
-        with:
-          branch: docs
-          folder: build
-          single-commit: true
