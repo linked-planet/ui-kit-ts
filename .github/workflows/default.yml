@@ -1,4 +1,4 @@
-name: ui-kit-ts
+name: ui-kit-ts - default
 
 on:
   push:
@@ -17,7 +17,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '19.1.0'
-          npm-version: '9.4.2'
       - name: npm install library
         working-directory: ./library
         run: npm install
@@ -36,7 +35,7 @@ jobs:
 
       - name: deploy Showcase to Github Pages
         if: ${{ github.event_name == 'release' }}
-        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           branch: docs
           folder: showcase/build
