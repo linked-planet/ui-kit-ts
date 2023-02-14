@@ -16,7 +16,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - run: npm ci build
+      - run: npm ci
+      - run: npm run build
 #
 #  build-library:
 #    needs: install-and-test
@@ -70,8 +71,11 @@ jobs:
         with:
           node-version: '19.x'
 
+      - name: Install showcase
+        run: npm ci
+
       - name: Build showcase
-        run: npm ci build
+        run: npm run build
 
       - name: Deploy Showcase to Github Pages
         uses: JamesIves/github-pages-deploy-action@v4.2.5
