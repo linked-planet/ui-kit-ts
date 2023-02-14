@@ -30,11 +30,10 @@ jobs:
         run: npm run build
 
       - name: deploy Showcase to Github Pages
-        working-directory: ./showcase
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: docs
-          folder: build
+          folder: showcase/build
           single-commit: true
 #
 #  build-library:
