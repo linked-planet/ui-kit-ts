@@ -1,6 +1,5 @@
 import React from "react";
 import ShowcaseWrapperItem, {ShowcaseProps} from "../../ShowcaseWrapperItem";
-import Flag from "@atlaskit/flag";
 import ArrowDownIcon from "@atlaskit/icon/glyph/arrow-down";
 import BulletListIcon from "@atlaskit/icon/glyph/bullet-list";
 import CheckCircleIcon from "@atlaskit/icon/glyph/check-circle";

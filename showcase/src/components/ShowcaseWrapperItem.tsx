@@ -1,4 +1,4 @@
-import {ReactNode, useState} from "react";
+import {ReactNode} from "react";
 import Tabs, {Tab, TabList, TabPanel} from "@atlaskit/tabs"
 import {CodeBlock} from "@atlaskit/code";
 
@@ -24,7 +24,7 @@ function extractSourceCodeExample(overallSourceCode: string, sourceCodeExampleId
     const exampleCodeEndMarker = "// endregion: " + sourceCodeExampleId;
     if (overallSourceCode.indexOf(exampleCodeStartMarker) && overallSourceCode.indexOf(exampleCodeEndMarker)) {
         const result = overallSourceCode.substring(
-            overallSourceCode.indexOf(exampleCodeStartMarker)+exampleCodeStartMarker.length,
+            overallSourceCode.indexOf(exampleCodeStartMarker) + exampleCodeStartMarker.length,
             overallSourceCode.indexOf(exampleCodeEndMarker)
         )
         return result
@@ -33,8 +33,6 @@ function extractSourceCodeExample(overallSourceCode: string, sourceCodeExampleId
 }
 
 function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
-
-    const [selectedTab, setSelectedTab] = useState(0)
 
     let code = ""
     console.info("OverallSourceCode, SourceCodeExampleId", props.overallSourceCode, props.sourceCodeExampleId)
@@ -51,13 +49,13 @@ function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
             <h3>{props.name}</h3>
             <div style={{fontWeight: "lighter", fontSize: "0.8rem"}}>
                 <span>Packages: </span>
-                {props.packages.map((pack, index, array) => {
+                {props.packages.map((pack) => {
                     return (<a href={pack.url} target="_blank">{pack.name}</a>)
                 })}
             </div>
 
             <div style={{marginLeft: "-8px"}}>
-                <Tabs id={props.name+"-tabs"}>
+                <Tabs id={props.name + "-tabs"}>
                     <TabList>
                         <Tab>Example</Tab>
                         <Tab>Example Source</Tab>
@@ -73,10 +71,10 @@ function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
                     </TabPanel>
                     <TabPanel>
                         <div style={{width: "100%"}}>
-                            { code == "" &&
+                            {code == "" &&
                                 <span>No sources found...</span>
                             }
-                            { code != "" &&
+                            {code != "" &&
                                 <div style={{width: "100%"}}>
                                     <CodeBlock
                                         text={code}

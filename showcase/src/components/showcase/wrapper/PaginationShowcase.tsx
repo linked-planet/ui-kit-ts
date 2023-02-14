@@ -12,7 +12,7 @@ function PaginationShowcase(props: ShowcaseProps) {
             defaultSelectedIndex={0}
             max={10}
             selectedIndex={selectedPage}
-            onChange={(event, page, analyticsEvent) => setSelectedPage(page-1)}
+            onChange={(event, page) => setSelectedPage(page-1)}
         />
     )
     // endregion: pagination

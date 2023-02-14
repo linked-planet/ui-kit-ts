@@ -10,13 +10,6 @@ function TableTreeShowcase(props: ShowcaseProps) {
         description: string
     }
 
-    interface BookTreeItem {
-        id: string
-        content: BookData
-        children: TableTreeItem[]
-        hasChildren: boolean
-    }
-
     interface TableTreeItem {
         id: string
         title: string

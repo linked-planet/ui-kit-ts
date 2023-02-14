@@ -8,7 +8,6 @@ import {
     Section,
     SideNavigation
 } from "@atlaskit/side-navigation";
-import SearchIcon from "@atlaskit/icon/glyph/search";
 
 function ShowcaseLeftSidebar() {
 

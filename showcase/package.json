@@ -23,7 +23,7 @@
     "reload": "npm install && install-local-dependencies",
     "generate": "node copySources.js",
     "eject": "react-scripts eject",
-    "eslint": "eslint src/index.tsx"
+    "eslint": "eslint src"
   },
   "eslintConfig": {
     "extends": [

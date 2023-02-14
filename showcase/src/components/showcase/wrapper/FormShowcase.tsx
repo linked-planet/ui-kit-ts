@@ -19,8 +19,6 @@ function FormShowcase(props: ShowcaseProps) {
         favoriteColorCreatable: string
     }
 
-    const colors: string[] = ["BLUE", "RED"]
-
     const initFormData = {
         name: "Carl",
         readonlyField: "Read-only Field",
