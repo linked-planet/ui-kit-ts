@@ -68,7 +68,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./library
-        run: npm run build
+        run: npm install
 
       - name: Build release
         working-directory: ./library
