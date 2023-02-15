@@ -27,7 +27,8 @@ function ShowcaseTopNavigation() {
                     [
                         <PrimaryButton onClick={() => navigation("/intro")}><span>Intro</span></PrimaryButton>,
                         <PrimaryButton onClick={() => navigation("/wrappers")}><span>Wrappers</span></PrimaryButton>,
-                        <PrimaryButton onClick={() => navigation("/utils")}><span>Utils</span></PrimaryButton>,
+                        <PrimaryButton onClick={() => navigation("/redux")}><span>Redux</span></PrimaryButton>,
+                        <PrimaryButton onClick={() => navigation("/query")}><span>React-Query</span></PrimaryButton>,
                     ]
                 }
                 renderProductHome={() => <CustomProductHome siteTitle="UI-Kit-TS" iconUrl="./images/logo.png" logoAlt=""

@@ -66,6 +66,14 @@ jobs:
         working-directory: ./library
         run: npm version ${{ steps.release.outputs.shortVersion }}
 
+      - name: Install dependencies
+        working-directory: ./library
+        run: npm run build
+
+      - name: Build release
+        working-directory: ./library
+        run: npm run build
+
       - name: Publish to npmjs
         working-directory: ./library
         run: npm publish --access public
