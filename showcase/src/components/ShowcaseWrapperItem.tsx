@@ -45,7 +45,7 @@ function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
     console.info("ShowCaseWrapperItem Code", code)
 
     return (
-        <div style={{padding: "20px 20px"}}>
+        <div id={props.sourceCodeExampleId} menu-name={props.name} className="menu" style={{padding: "20px 20px"}}>
             <h3>{props.name}</h3>
             <div style={{fontWeight: "lighter", fontSize: "0.8rem"}}>
                 <span>Packages: </span>

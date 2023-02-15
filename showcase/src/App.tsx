@@ -60,6 +60,7 @@ function App() {
                                                 element={<ReactQueryPage/>}
                                             />
                                             <Route
+                                                path="*"
                                                 element={<NotFoundPage/>}
                                             />
                                         </Routes>

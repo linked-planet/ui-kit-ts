@@ -30,9 +30,11 @@ import TextAreaShowcase from "../components/showcase/wrapper/TextAreaShowcase";
 import TextFieldShowcase from "../components/showcase/wrapper/TextFieldShowcase";
 import ToggleShowcase from "../components/showcase/wrapper/ToggleShowcase";
 import TooltipShowcase from "../components/showcase/wrapper/TooltipShowcase";
+import {useDispatch} from "react-redux"
 
 function WrappersPage() {
 
+    const dispatch = useDispatch()
     const [overallSourceCode, setOverallSourceCode] = useState("")
     // retrieve source code
 
@@ -43,6 +45,9 @@ function WrappersPage() {
                 console.info("Loaded SourceCode:", sourceCode);
                 setOverallSourceCode(sourceCode);
             });
+        dispatch({
+            type: "SET_MENU"
+        })
     }, [])
 
     return (

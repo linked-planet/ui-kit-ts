@@ -1,10 +1,18 @@
-import React from "react";
+import React, {useEffect} from "react";
 import EmptyState from "@atlaskit/empty-state";
 import Button from "@atlaskit/button";
 import {useNavigate} from "react-router";
+import {useDispatch} from "react-redux";
 
 function NotFoundPage() {
     const navigation = useNavigate()
+
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch({
+            type: "SET_MENU"
+        })
+    }, [])
 
     return (
         <EmptyState

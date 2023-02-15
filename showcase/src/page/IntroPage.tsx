@@ -1,6 +1,15 @@
 import {CodeBlock} from "@atlaskit/code";
+import {useDispatch} from "react-redux";
+import {useEffect} from "react";
 
 function IntroPage() {
+
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch({
+            type: "SET_MENU"
+        })
+    }, [])
 
     return (
         <div>

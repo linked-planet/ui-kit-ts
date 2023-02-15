@@ -10,3 +10,11 @@
 div[data-style="ShowcaseStyles-showcaseCopyrightFooter"] span:after {
   content: "Copyright " attr(data-year) " by linked-planet GmbH";
 }
+
+.focus {
+  border: 3px solid #4c9aff55 !important;
+}
+
+.pd {
+  padding: 20px 20px;
+}

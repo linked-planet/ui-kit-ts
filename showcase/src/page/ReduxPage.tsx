@@ -1,11 +1,13 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {CodeBlock} from "@atlaskit/code";
+import {useDispatch} from "react-redux";
 
 function ReduxPage() {
 
-    const reduxInstall =`npm install -s react-redux @types/react-redux @reduxjs/toolkit`
+    const reduxInstall = `npm install -s react-redux @types/react-redux @reduxjs/toolkit`
 
-    const reduxAppStore = `import notificationReducer from "./reducers/notificationReducer";
+    const reduxAppStore = `// state/appStore.ts
+import notificationReducer from "./reducers/notificationReducer";
 import {configureStore} from "@reduxjs/toolkit";
 import stackReducer from "./reducers/stackReducer";
 
@@ -18,12 +20,13 @@ export const appStore = configureStore({
 
 export type State = ReturnType<typeof appStore.getState>`
 
-    const reduxRegister =`// index.tsx
+    const reduxRegister = `// index.tsx
 <Provider store={appStore}>
     <App/>
 </Provider>`
 
-    const reduxReducer = `import {Notification} from "../../model/AppModel";
+    const reduxReducer = `// state/reducers/notificationReducer.ts
+import {Notification} from "../../model/AppModel";    
 
 const initialState: Notification[] = []
 
@@ -70,7 +73,7 @@ const notificationReducer = (state: Notification[] = initialState, action: Actio
 
 export default notificationReducer`
 
-    const reduxUsage = `// get updating notifications from stack (reloads on change)
+    const reduxUsage = `// get updating notifications from state (reloads component on state change)
 const notifications = useSelector((appState: State) => appState.notifications)
 
 // update state
@@ -82,47 +85,63 @@ dispatch({
     type: 'ADD_NOTIFICATION',
     notification: notification
 })`
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch({
+            type: "SET_MENU"
+        })
+    }, [])
 
     return (
         <div>
             <h1>Redux</h1>
-            <p>Redux is used for global stack handling. For example for handling notifications</p>
+            <p>Redux is used for global state handling. For example for handling notifications.</p>
 
-            <h5>Install Redux</h5>
-            <p>Not needed if you use this library. It is already included</p>
-            <br/>
-            <CodeBlock
-                language="bash"
-                text={reduxInstall}
-            />
+            <div id="dependencies" menu-name="Dependencies" className="menu pd">
+                <h5>Dependencies</h5>
+                <p>This library uses the following dependencies:</p>
+                <br/>
+                <CodeBlock
+                    language="bash"
+                    text={reduxInstall}
+                />
+            </div>
 
-            <h5>Init appStore</h5>
-            <br/>
-            <CodeBlock
-                language="typescript"
-                text={reduxAppStore}
-            />
+            <div id="init-appstore" menu-name="Init AppStore" className="menu pd">
+                <h5>Init appStore</h5>
+                <br/>
+                <CodeBlock
+                    language="typescript"
+                    text={reduxAppStore}
+                />
+            </div>
 
-            <h5>Integrate appStore</h5>
-            <br/>
-            <CodeBlock
-                language="tsx"
-                text={reduxRegister}
-            />
+            <div id="integrate-appstore" menu-name="Integrate AppStore" className="menu pd">
+                <h5>Integrate appStore</h5>
+                <br/>
+                <CodeBlock
+                    language="tsx"
+                    text={reduxRegister}
+                />
+            </div>
 
-            <h5>Create reducer</h5>
-            <br/>
-            <CodeBlock
-                language="typescript"
-                text={reduxReducer}
-            />
+            <div id="create-reducer" menu-name="Create Reducer" className="menu pd">
+                <h5>Create reducer</h5>
+                <br/>
+                <CodeBlock
+                    language="typescript"
+                    text={reduxReducer}
+                />
+            </div>
 
-            <h5>Use and change redux states</h5>
-            <br/>
-            <CodeBlock
-                language="typescript"
-                text={reduxUsage}
-            />
+            <div id="use-redux" menu-name="Use Redux States" className="menu pd">
+                <h5>Use and change redux states</h5>
+                <br/>
+                <CodeBlock
+                    language="typescript"
+                    text={reduxUsage}
+                />
+            </div>
         </div>
     )
 }

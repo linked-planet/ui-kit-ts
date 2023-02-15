@@ -1,11 +1,13 @@
 import notificationReducer from "./reducers/notificationReducer";
 import {configureStore} from "@reduxjs/toolkit";
 import stackReducer from "./reducers/stackReducer";
+import menuReducer from "./reducers/menuReducer";
 
 export const appStore = configureStore({
     reducer: {
         notifications: notificationReducer,
-        stack: stackReducer
+        stack: stackReducer,
+        menu: menuReducer
     }
 })
 
