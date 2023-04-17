@@ -1,0 +1,113 @@
+@import "../../variables.css";
+
+table {
+	display: table;
+	border-collapse: collapse;
+	overflow: auto;
+	table-layout: fixed;
+	/*min-width: 5000px;*/
+}
+
+thead {
+	border-bottom-width: 0px !important; /* atlas-kit overrides this */
+	position: sticky;
+	top: 0;
+	z-index: 3;
+	background-color: var(--background-color);
+}
+
+tbody {
+	table-layout: fixed;
+	min-width: 5000px;
+}
+
+th {
+	position: relative;
+	padding-bottom: 0 !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+	background-color: var(--background-color);
+	border-left-color: var(
+		--border-color
+	) !important; /* atlas-kit overrides this */
+}
+
+/* create the borders under the header */
+.timeSlotHeader {
+	border-bottom: 2px solid var(--border-color);
+	padding-right: 1rem;
+	border-color: var(--border-color);
+	border-left-style: solid;
+	font-weight: 500;
+}
+
+tbody tr:nth-child(2n) {
+	background-color: var(--background-color-alt);
+}
+
+tbody tr {
+	background-color: var(--background-color);
+}
+
+tbody td {
+	border-bottom: 1px solid var(--border-color);
+	padding: 0;
+	border-left-width: 0;
+	border-right-width: 0;
+}
+
+/* borders of the left sticky column */
+.groupHeader {
+	display: flex;
+	position: absolute;
+	align-items: center;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border-right: 2px solid var(--border-color);
+	background-color: var(--background-color);
+}
+
+.headerTop {
+	color: var(--text-color);
+	background-color: var(--background-color);
+}
+
+.headerTop > * {
+	border-bottom: 2px solid var(--border-color);
+}
+
+.nowHeaderTimeslot {
+	border-bottom: 2px solid var(--secondary-color);
+	font-weight: 700;
+}
+
+.nowHeaderDate {
+	color: var(--text-color-alt);
+}
+
+.nowBar {
+	position: absolute;
+	background-color: var(--secondary-color);
+	opacity: 0.6;
+	position: absolute;
+	top: 100%;
+	bottom: 0;
+	width: 2px;
+}
+
+.timeSlotBar {
+	position: absolute;
+	background-color: var(--border-color);
+	top: 0;
+	bottom: 0;
+	left: 100%;
+	right: 0;
+	width: 1px;
+	height: 10px;
+}
+
+.selected {
+	background-color: var(--background-color-selected) !important;
+}

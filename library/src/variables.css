@@ -1,0 +1,16 @@
+:root {
+	--text-color: var(--ds-text, #172b4d);
+	--text-color-alt: var(--ds-text-alt, #6b778c);
+	--text-selected-color: var(--ds-text-selected, #0052cc);
+	--text-color-inverse: var(--ds-text-inverse, #fff);
+
+	--border-color: #ccc;
+
+	--background-color: #fff;
+	--background-color-alt: #f0f0f0;
+	--background-color-selected: #e0e1f1;
+
+	--primary-color: var(--ds-primary, #0052cc);
+	--primary-foreground-color: var(--ds-primary-foreground, #fff);
+	--secondary-color: var(--ds-secondary, #ff5630);
+}
