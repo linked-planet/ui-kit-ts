@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useState } from "react"
 import Modal, { ModalBody, ModalFooter, ModalHeader, ModalTitle, ModalTransition } from "@atlaskit/modal-dialog"
 import Button from "@atlaskit/button/standard-button"
 import { SelectedTimeSlot, TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
@@ -38,7 +38,6 @@ export default function CreateNewTimeTableItemDialog ( {
 							endDate
 						}
 						onConfirm( selectedTimeSlot.group, newBookingItem )
-						//selfRef.current?.close()
 					} }
 				>
 					<ModalHeader>

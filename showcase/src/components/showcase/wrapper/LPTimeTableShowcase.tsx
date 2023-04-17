@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react"
+import React, { useCallback } from "react"
 import { useState } from "react"
 import dayjs from "dayjs"
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowcaseWrapperItem"
@@ -8,14 +8,12 @@ import type { TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "@linked-pl
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
-interface ExampleGroup extends TimeTableGroup {
-}
+type ExampleGroup = TimeTableGroup
 
-interface ExampleItem extends TimeSlotBooking {
-}
+type ExampleItem = TimeSlotBooking
 
 const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
-	/*{
+	{
 		group: {
 			title: "Group 1",
 			subtitle: "Group 1 description"
@@ -77,10 +75,10 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				// this entry is totally after the available slots of the day
 				startDate: dayjs().startOf( "day" ).add( 17, "hours" ),
 				endDate: dayjs().startOf( "day" ).add( 20, "hours" ),
-				title: "Item 3-1"
+				title: "Item 3-3"
 			},
 		],
-	},*/
+	},
 	{
 		group: {
 			title: "Group 4",
@@ -116,7 +114,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 
 export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
-	const [ isMultiLine, setIsMultiLine ] = useState( false )
+	const [ tableType, setTableType ] = useState<"single" | "multi" | "combi">( "single" )
 	const [ timeSteps, setTimeSteps ] = useState( 30 )
 	const [ firstColumnWidth, setFirstColumnWidth ] = useState( 150 )
 	const [ columnWidth, setColumnWidth ] = useState( 70 )
@@ -162,14 +160,15 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					style={ { marginRight: "1rem" } }
 					htmlFor="multiLine"
 				>
-					<input
-						type="checkbox"
-						name="multiLine"
-						role="switch"
-						checked={ isMultiLine }
-						onChange={ () => setIsMultiLine( !isMultiLine ) }
-					/>
-					Multi Line
+					<select
+						name="tabletype"
+						onChange={ e => setTableType( e.target.value as "single" | "multi" | "combi" ) }
+					>
+						<option value="single">single</option>
+						<option value="multi">multi</option>
+						<option value="combi">combi</option>
+					</select>
+					Table Type
 				</label>
 				<label
 					htmlFor="timesteps"
@@ -239,7 +238,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 				</label>
 			</div>
 			<div
-				style={ { height: "300px", overflow: "auto" } }
+				style={ { height: "500px", overflow: "auto" } }
 			>
 				<LPTimeTable
 					firstColumnWidth={ firstColumnWidth }
@@ -252,7 +251,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					selectedTimeSlot={ selectedTimeSlot }
 					//renderGroup={ ( group ) => <Group group={ group } /> }
 					//renderItem={ ( item ) => <Item item={ item } /> }
-					multiLine={ isMultiLine }
+					tableType={ tableType }
 					onItemClick={ ( group, item ) => console.log( group, item ) }
 					onTimeSlotClick={ onTimeSlotClickCB }
 					onGroupClick={ onGroupClickCB }

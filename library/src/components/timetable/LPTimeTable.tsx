@@ -5,7 +5,7 @@ import dayjs, { Dayjs } from "dayjs";
 //import styles from "./LPTimeTable.module.css";
 import "./LPTimeTable.module.css";
 import styles from "./LPTimeTable.module.css";
-import TimeLineTable from "./TimeLineTable";
+import TimeLineTable, { getStartAndEndSlot } from "./TimeLineTable";
 
 export interface TimeSlotBooking {
 	title: string
@@ -62,7 +62,7 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 
 	onGroupClick?: ( group: G ) => void
 
-	multiLine: boolean
+	tableType: "single" | "multi" | "combi"
 
 	/* overwrite current time, mostly useful for debugging */
 	nowOverwrite?: Dayjs
@@ -80,7 +80,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	endDate,
 	timeSteps,
 	entries,
-	multiLine,
+	tableType,
 	selectedGroup,
 	selectedTimeSlot,
 	selectedItem,
@@ -147,27 +147,27 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	const adjustNowBar = useCallback( () => {
 
 		if ( nowOverwrite ) {
+			// when the debugging overwrite is active, we still want to move the bar to test it
 			nowRef.current = nowRef.current.add( nowbarUpdateIntervall, 'milliseconds' )
 		} else {
 			nowRef.current = dayjs()
 		}
 
-		// find the first time slot after the current time
-		const afterTimeSlotIndex = slotsArray.findIndex( ( slot ) => {
-			return slot.isAfter( nowRef.current )
-		} )
-		if ( afterTimeSlotIndex <= -1 ) {
-			return
+		const startAndEndSlot = getStartAndEndSlot( nowRef.current, nowRef.current, slotsArray, timeSteps, null )
+		if ( !startAndEndSlot ) {
+			return // we are outside of the range of time
 		}
-		const currentTimeSlotIndex = afterTimeSlotIndex - 1
-		const currentTimeSlotTDIndex = afterTimeSlotIndex // because of the first empty TD for the groups
+
+		const { startSlot } = startAndEndSlot
+
+
 		// the first row in the body is used for the time slot bars
 		const tbodyFirstRow = tableBodyRef.current?.children[ 0 ] as HTMLTableRowElement | undefined
 		// now get the current time slot index element (not -1 because the first empty element for the groups)
 
-		const slotBar = tbodyFirstRow?.children[ currentTimeSlotTDIndex ] as HTMLDivElement | undefined
+		const slotBar = tbodyFirstRow?.children[ startSlot ] as HTMLDivElement | undefined
 		if ( !slotBar ) {
-			console.log( "unable to find time slot column for the now bar: ", currentTimeSlotIndex )
+			console.log( "unable to find time slot column for the now bar: ", startSlot )
 			return
 		}
 
@@ -182,7 +182,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			slotBar.appendChild( nowBarRef.current )
 		}
 
-		const currentTimeSlot = slotsArray[ currentTimeSlotIndex ]
+		const currentTimeSlot = slotsArray[ startSlot ]
 		const diffNow = nowRef.current.diff( currentTimeSlot, "minutes" )
 		const diffPerc = diffNow / timeSteps
 		nowBarRef.current.style.left = `${ diffPerc * 100 }%`
@@ -196,14 +196,14 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		}
 		const headerTimeSlotCells = headerTimeslotRow.children
 		for ( const headerTimeSlotCell of headerTimeSlotCells ) {
-			headerTimeSlotCell.children[ 0 ].classList.remove( styles.nowHeaderTimeslot )
+			headerTimeSlotCell.children[ 0 ].classList.remove( styles.nowHeaderTimeSlot )
 		}
-		const nowTimeSlotCell = headerTimeSlotCells[ currentTimeSlotTDIndex ]
+		const nowTimeSlotCell = headerTimeSlotCells[ startSlot ]
 		if ( !nowTimeSlotCell ) {
 			console.log( "unable to find header for timeslot for the current time" )
 			return
 		}
-		nowTimeSlotCell.children[ 0 ].classList.add( styles.nowHeaderTimeslot )
+		nowTimeSlotCell.children[ 0 ].classList.add( styles.nowHeaderTimeSlot )
 
 		// adjust the date header
 		const headerDateRow = tableHeaderRef.current?.children[ 1 ]
@@ -398,7 +398,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 					onTimeSlotClick={ onTimeSlotClick }
 					onGroupClick={ onGroupClick }
 					timeSteps={ timeSteps }
-					multiLine={ multiLine }
+					tableType={ tableType }
 				/>
 
 			</tbody>

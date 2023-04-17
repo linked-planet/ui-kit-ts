@@ -7,6 +7,13 @@ import { Item } from "./Item"
 
 import styles from "./LPTimeTable.module.css"
 
+interface RowEntry2<I> {
+	startSlot: number
+	item: I
+	length: number
+	groupRow: number
+}
+
 
 interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	/* Entries define the groups, and the items in the groups */
@@ -29,7 +36,7 @@ interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	/* how long is 1 time slot */
 	timeSteps: number
 
-	multiLine: boolean
+	tableType: "single" | "multi" | "combi"
 }
 
 export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSlotBooking> (
@@ -45,118 +52,138 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 		onTimeSlotClick,
 		onGroupClick,
 		timeSteps,
-		multiLine,
+		tableType,
 	}: TimeTableProps<G, I>
 ) {
-	//const [ selectionMode, setSelectionMode ] = useState<boolean>( false )
-	//const [ selectedItem, setSelectedItem ] = useState<I | null>( null )
-	//const [ startSlot, setStartSlot ] = useState<Dayjs | null>( null )
-	//const [ endSlot, setEndSlot ] = useState<Dayjs | null>( null )
 
-	/*const keydownEventListener = useCallback( ( event: KeyboardEvent ) => {
-		if ( event.ctrlKey && event.key === "m" ) {
-			const newMode = !selectionMode
-			setSelectionMode( newMode )
-			setStartSlot( null )
-			setEndSlot( null )
-		}
-		if ( event.key === "Enter" ) {
-			console.info( "show popup", startSlot, endSlot )
-			if ( selectedGroup != null && startSlot != null && endSlot != null ) {
-				console.info( "Call onTimeslotClick", selectedGroup, startSlot, endSlot )
-				onTimeslotClick( selectedGroup, startSlot, endSlot )
-			}
-			setStartSlot( null )
-			setEndSlot( null )
-		}
-		if ( event.key === "Esc" ) {
-			setStartSlot( null )
-			setEndSlot( null )
-		}
-	}, [ selectionMode, selectedGroup, startSlot, endSlot, onTimeslotClick ] )*/
+	const table = tableType === "multi" ?
+		<MultiLineTableRows
+			entries={ entries }
+			slotsArray={ slotsArray }
+			timeSteps={ timeSteps }
+			onGroupClick={ onGroupClick }
+			onItemClick={ onItemClick }
+			onTimeSlotClick={ onTimeSlotClick }
+			renderGroup={ renderGroup }
+			renderItem={ renderItem }
+			selectedGroup={ selectedGroup }
+			selectedTimeSlot={ selectedTimeSlot }
+			selectedItem={ selectedItem }
+		/> : tableType === "single" ?
+			<SingleLineTableRows
+				entries={ entries }
+				slotsArray={ slotsArray }
+				timeSteps={ timeSteps }
+				onGroupClick={ onGroupClick }
+				onItemClick={ onItemClick }
+				onTimeSlotClick={ onTimeSlotClick }
+				renderGroup={ renderGroup }
+				renderItem={ renderItem }
+				selectedGroup={ selectedGroup }
+				selectedTimeSlot={ selectedTimeSlot }
+				selectedItem={ selectedItem }
+			/> :
+			<TableRows
+				entries={ entries }
+				slotsArray={ slotsArray }
+				timeSteps={ timeSteps }
+				onGroupClick={ onGroupClick }
+				onItemClick={ onItemClick }
+				onTimeSlotClick={ onTimeSlotClick }
+				renderGroup={ renderGroup }
+				renderItem={ renderItem }
+				selectedGroup={ selectedGroup }
+				selectedTimeSlot={ selectedTimeSlot }
+				selectedItem={ selectedItem }
+			/>;
 
 
-	/*useEffect( () => {
-		window.addEventListener( "keydown", keydownEventListener )
-		return () => window.removeEventListener( "keydown", keydownEventListener )
-	}, [ keydownEventListener ] )*/
-
-	//console.info( "SelectionMode", selectionMode )
 
 	return (
 		<>
-			{ multiLine ?
-				<MultiLineTableRows
-					entries={ entries }
-					slotsArray={ slotsArray }
-					timeSteps={ timeSteps }
-					onGroupClick={ onGroupClick }
-					onItemClick={ onItemClick }
-					onTimeSlotClick={ onTimeSlotClick }
-					renderGroup={ renderGroup }
-					renderItem={ renderItem }
-					//selectionMode={ selectionMode }
-					selectedGroup={ selectedGroup }
-					selectedTimeSlot={ selectedTimeSlot }
-					selectedItem={ selectedItem }
-				//setSelectedItem={ setSelectedItem }
-				//setStartSlot={ setStartSlot }
-				//setEndSlot={ setEndSlot }
-				/> :
-				<SingleLineTableRows
-					entries={ entries }
-					slotsArray={ slotsArray }
-					timeSteps={ timeSteps }
-					onGroupClick={ onGroupClick }
-					onItemClick={ onItemClick }
-					onTimeSlotClick={ onTimeSlotClick }
-					renderGroup={ renderGroup }
-					renderItem={ renderItem }
-					//selectionMode={ selectionMode }
-					selectedGroup={ selectedGroup }
-					selectedTimeSlot={ selectedTimeSlot }
-					selectedItem={ selectedItem }
-				//setSelectedItem={ setSelectedItem }
-				//setStartSlot={ setStartSlot }
-				//setEndSlot={ setEndSlot }
-				/>
-			}
+			{ table }
 		</>
 	)
 }
 
-
-function getStartAndEndSlot (
+export function getStartAndEndSlot (
 	startDate: Dayjs,
 	endDate: Dayjs,
 	slotsArray: Dayjs[],
 	timeSteps: number,
-): {
-	startSlot: number,
-	endSlot: number,
-} | null {
-	let startSlot = slotsArray[ 0 ].isAfter( startDate ) ?
-		1 : slotsArray.findIndex( ( slot ) => slot.isAfter( startDate ) )
-	if ( startDate.diff( slotsArray[ startSlot - 1 ], "minute" ) <= timeSteps ) {
-		// if the difference is larger than a time slot, that means
-		// the booking starts before the first time slot of the day
-		// and we start it with the first time slot of the day
-		startSlot--
-	}
-	let endSlot = slotsArray[ slotsArray.length - 1 ].isBefore( endDate ) ?
-		slotsArray.length : slotsArray.findIndex( ( slot ) => slot.isAfter( endDate ) )
-	endSlot--
+	groupRowCountMap: Map<number, number> | null
+) {
 
-	// that means that the booking is out of the time slot range of a day
-	if ( endSlot < startSlot ) {
+	const startsBeforeFirst = startDate.isBefore( slotsArray[ 0 ] )
+	const endsBeforeFirst = endDate.isBefore( slotsArray[ 0 ] ) || endDate.isSame( slotsArray[ 0 ] )
+	if ( startsBeforeFirst && endsBeforeFirst ) {
 		return null
 	}
-	return { startSlot, endSlot }
+
+	const startsAfterLast = startDate.isAfter( slotsArray[ slotsArray.length - 1 ] )
+	if ( startsAfterLast ) {
+		return null
+	}
+
+	let startSlot = -1
+	let endSlot = -1
+	let groupRow = 0
+	for ( let slot = 0; slot < slotsArray.length; slot++ ) {
+		if ( slotsArray[ slot ].isSame( startDate ) || slotsArray[ slot ].isBefore( startDate ) ) {
+			startSlot = slot
+			continue
+		}
+		break
+	}
+
+	if ( startSlot === -1 ) {
+		startSlot = 0
+	} else {
+		// in case the booking starts after the last time slot
+		const diff = startDate.diff( slotsArray[ startSlot ], "minutes" )
+		if ( diff > timeSteps ) {
+			startSlot++
+		}
+	}
+
+
+	for ( let slot = startSlot; slot < slotsArray.length; slot++ ) {
+		endSlot = slot
+		if ( slot >= startSlot ) {
+			if ( groupRowCountMap ) {
+				let slotItemCount = groupRowCountMap.get( slot )
+				if ( slotItemCount != undefined ) {
+					slotItemCount++
+					if ( slotItemCount > groupRow ) groupRow = slotItemCount
+					groupRowCountMap.set( slot, slotItemCount )
+				} else {
+					groupRowCountMap.set( slot, 0 )
+				}
+			}
+		}
+		if ( slotsArray[ slot ].isAfter( endDate ) ) {
+			break
+		}
+	}
+
+	if ( startSlot === endSlot ) {
+		return null
+	}
+
+	if (
+		endSlot === -1
+	) {
+		// must be out of the day range of time slots
+		return null
+	}
+
+
+	return { startSlot, endSlot, groupRow }
 }
 
 
 function getItemLeftAndWidth (
-	rowEntry: RowEntry<TimeSlotBooking>,
+	rowEntry: RowEntry<TimeSlotBooking> | RowEntry2<TimeSlotBooking>,
 	item: TimeSlotBooking,
 	slotsArray: Dayjs[],
 	timeSteps: number,
@@ -208,6 +235,189 @@ function getItemLeftAndWidth (
 
 
 
+
+function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
+	{
+		entries,
+		slotsArray,
+		timeSteps,
+		onGroupClick,
+		onItemClick,
+		onTimeSlotClick,
+		renderGroup,
+		renderItem,
+		selectedGroup,
+		selectedTimeSlot,
+		selectedItem,
+	}: {
+		entries: TimeTableEntry<G, I>[],
+		slotsArray: Dayjs[]
+		timeSteps: number
+		onGroupClick: ( ( group: G ) => void ) | undefined
+		onItemClick: ( ( group: G, item: I ) => void ) | undefined
+		onTimeSlotClick: ( ( s: SelectedTimeSlot<G> ) => void ) | undefined
+		renderGroup?: ( group: G, isSelected: boolean ) => JSX.Element
+		renderItem?: ( item: I, isSelected: boolean ) => JSX.Element
+		selectedGroup: G | undefined
+		selectedTimeSlot: SelectedTimeSlot<G> | undefined
+		selectedItem: I | undefined
+	}
+) {
+	const tableRows = useMemo( () => {
+		const groupRowCountMap = new Map<number, number>();
+		return entries.map( ( groupEntry ) => {
+			groupRowCountMap.clear()
+
+			let groupRowMax = 0
+			const rowItems: RowEntry2<I>[] = []
+			groupEntry.items.forEach( ( item ) => {
+
+				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps, groupRowCountMap )
+				if ( startAndEndSlot == null ) {
+					console.log( "Item is out of day range of the time slots: ", item )
+					return null
+				}
+				const { startSlot, endSlot, groupRow } = startAndEndSlot
+				const length = endSlot - startSlot + 1
+
+				if ( groupRowMax < groupRow ) {
+					groupRowMax = groupRow
+				}
+
+				rowItems.push( {
+					item,
+					startSlot,
+					length,
+					groupRow,
+				} )
+			} )
+
+			const group = groupEntry.group
+
+			const trs = []
+			for ( let r = 0; r <= groupRowMax; r++ ) {
+				const tds = []
+
+				if ( r === 0 ) {
+					tds.push(
+						<td
+							key={ -1 }
+							onClick={ () => {
+								if ( onGroupClick ) onGroupClick( group )
+							}
+							}
+							style={ {
+								backgroundColor: "inherit",
+								position: "sticky",
+								left: 0,
+								zIndex: 2,
+							} }
+							rowSpan={ groupRowMax + 1 }
+							className={ selectedGroup === group ? styles.selected : "" }
+						>
+							<div
+								className={ styles.groupHeader }
+							>
+								{ renderGroup ? renderGroup( group, group === selectedGroup ) : <Group group={ group } /> }
+							</div>
+						</td>
+					);
+				}
+
+				for ( let i = 0; i < slotsArray.length; i++ ) {
+					let rowEntryItem: RowEntry2<I> | undefined = undefined
+					for ( const rowEntry of rowItems ) {
+						if ( rowEntry.groupRow === r && rowEntry.startSlot === i ) {
+							rowEntryItem = rowEntry
+						}
+					}
+
+					if ( rowEntryItem ) {
+						const item = rowEntryItem.item
+
+						const { left, width } = getItemLeftAndWidth( rowEntryItem, rowEntryItem.item, slotsArray, timeSteps )
+
+						tds.push(
+							<td
+								key={ i }
+								colSpan={ rowEntryItem.length }
+								onClick={ () => {
+									if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: slotsArray[ i ] } )
+								}
+								}
+								className={
+									( selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( slotsArray[ i ] ) ) ? styles.selected : ""
+								}
+								style={ {
+									borderBottomWidth: r === groupRowMax ? "3px" : "1px",
+								} }
+							>
+								<div
+									key={ i }
+									onClick={
+										() => {
+											if ( onItemClick ) onItemClick( group, item )
+										}
+									}
+									style={ {
+										position: "relative",
+										left: `${ left * 100 }%`,
+										width: `${ width * 100 }%`,
+									} }
+								>
+									{ renderItem ? renderItem( item, item === selectedItem ) : <Item item={ item } /> }
+								</div>
+							</td>
+						)
+						i += rowEntryItem.length - 1
+					} else {
+						tds.push(
+							<td
+								key={ i }
+								onClick={ () => {
+									if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: slotsArray[ i ] } )
+								} }
+								/*style={ {
+									borderBottomWidth: isLastGroupItem ? "3px" : "1px",
+								} }*/
+								className={
+									( selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( slotsArray[ i ] ) ) ? styles.selected : ""
+								}
+								style={ {
+									borderBottomWidth: r === groupRowMax ? "3px" : "1px",
+								} }
+							/>
+						)
+					}
+				}
+				trs.push(
+					<tr
+						key={ r }
+					>
+						{ tds }
+					</tr>
+				)
+			}
+
+
+			return (
+				<>
+					{ trs }
+				</>
+			)
+		} )
+	}, [ entries, onGroupClick, onItemClick, onTimeSlotClick, renderGroup, renderItem, selectedGroup, selectedItem, selectedTimeSlot?.group, selectedTimeSlot?.timeSlotStart, slotsArray, timeSteps ] )
+
+	return (
+		<>
+			{ tableRows }
+		</>
+	)
+
+}
+
+
+
 function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 	{
 		entries,
@@ -247,7 +457,7 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 			const rowItems: RowEntry<I>[] = []
 			groupEntry.items.forEach( ( item ) => {
 
-				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps )
+				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps, null )
 				if ( startAndEndSlot == null ) {
 					console.log( "Item is out of day range of the time slots: ", item )
 					return
@@ -293,6 +503,7 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 						position: "sticky",
 						left: 0,
 						zIndex: 2,
+						borderBottomWidth: "3px",
 					} }
 				>
 					<div
@@ -415,7 +626,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 		return entries.map( ( groupEntry ) => {
 			const rowItems: RowEntry<I>[] = groupEntry.items.map( ( item ) => {
 
-				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps )
+				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps, null )
 				if ( startAndEndSlot == null ) {
 					console.log( "Item is out of day range of the time slots: ", item )
 					return null
@@ -453,6 +664,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								position: "sticky",
 								left: 0,
 								zIndex: 2,
+								borderBottomWidth: "3px"
 							} }
 							rowSpan={ rowItems.length }
 							className={ selectedGroup === group ? styles.selected : "" }
@@ -485,6 +697,9 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								className={
 									( selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( slotsArray[ i ] ) ) ? styles.selected : ""
 								}
+								style={ {
+									borderBottomWidth: isLastGroupItem ? "3px" : "1px",
+								} }
 							>
 								<div
 									key={ i }

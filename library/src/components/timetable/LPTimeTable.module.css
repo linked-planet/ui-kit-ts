@@ -78,7 +78,7 @@ tbody td {
 	border-bottom: 2px solid var(--border-color);
 }
 
-.nowHeaderTimeslot {
+.nowHeaderTimeSlot {
 	border-bottom: 2px solid var(--secondary-color);
 	font-weight: 700;
 }
