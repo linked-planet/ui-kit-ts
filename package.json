@@ -7,10 +7,6 @@
 	"publishConfig": {
 		"@linked-planet:registry": "https://registry.npmjs.org"
 	},
-	"engines": {
-		"node": "v19.1.0",
-		"npm": "9.4.2"
-	},
 	"version": "0.1.11",
 	"description": "",
 	"main": "dist/ui-kit.umd.js",
@@ -27,15 +23,31 @@
 	},
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build": "rm -rf dist/ && npm run build:esm && npm run build:cjs",
-		"build:esm": "tsc",
-		"build:cjs": "tsc --module CommonJS --outDir dist/cjs",
-		"eslint": "eslint src/index.ts",
-		"dev": "vite build --watch",
-		"vitebuild": "vite build"
+		"build:lib": "vite build -c vite.config.lib.ts",
+		"build:sc": "vite build -c vite.config.sc.ts",
+		"dev:lib": "vite build -c vite.config.lib.ts --watch",
+		"dev:sc": "vite -c vite.config.showcase.ts --open",
+		"eslint:lib": "eslint library/src/index.ts",
+		"eslint:sc": "eslint showcase/src/index.tsx"
 	},
-	"author": "Philipp Karlsson",
+	"author": "Philip Karlsson",
 	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
+	},
+	"homepage": "https://github.com/linked-planet/ui-kit-ts#readme",
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
 	"dependencies": {
 		"@atlaskit/atlassian-navigation": "^2.3.5",
 		"@atlaskit/avatar": "^21.1.8",
@@ -75,7 +87,6 @@
 		"axios": "^1.3.3",
 		"dayjs": "^1.11.7",
 		"mime-types": "^2.1.35",
-		"moment": "^2.29.4",
 		"react-awesome-slider": "^4.1.0",
 		"react-joyride": "^2.5.3",
 		"react-query": "^3.39.3",
@@ -86,6 +97,7 @@
 	},
 	"devDependencies": {
 		"@emotion/babel-plugin": "^11.10.6",
+		"@total-typescript/ts-reset": "^0.4.2",
 		"@types/node": "^18.13.0",
 		"@types/react": "^16.8.0",
 		"@types/react-dom": "^16.8.0",
@@ -94,6 +106,8 @@
 		"@typescript-eslint/parser": "^5.52.0",
 		"@vitejs/plugin-react": "^3.1.0",
 		"eslint": "^8.34.0",
+		"eslint-config-prettier": "^8.8.0",
+		"eslint-plugin-react": "^7.32.2",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"prettier": "^2.8.7",
 		"react": "^16.8.0",
@@ -102,7 +116,8 @@
 		"typescript": "^4.9.5",
 		"typescript-plugin-css-modules": "^5.0.0",
 		"vite": "^4.2.1",
-		"vite-plugin-dts": "^2.2.0"
+		"vite-plugin-dts": "^2.2.0",
+		"vite-tsconfig-paths": "^4.0.8"
 	},
 	"peerDependencies": {
 		"react": "^16.8.0",

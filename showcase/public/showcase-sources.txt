@@ -45,56 +45,57 @@ function AvatarShowcase(props: ShowcaseProps) {
 
 export default AvatarShowcase;
 import React from "react";
-import ShowcaseWrapperItem, {ShowcaseProps} from "../../ShowcaseWrapperItem";
+import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowcaseWrapperItem";
 import AwesomeSlider from "react-awesome-slider"
 
-function AwesomeSliderShowcase(props: ShowcaseProps) {
+import "react-awesome-slider/dist/styles.css"
 
-    // region: awesome-slider
-    require("react-awesome-slider/dist/styles.css")
-    const example = (
-        <div style={{minWidth: 600, display: "flex", height: 200, position: "relative", zIndex: 0}}>
-            <AwesomeSlider bullets={false}>
-                <div>
-                    <img
-                        style={{objectFit: "scale-down"}}
-                        src="images/logo.png"
-                        width={100}
-                        height={100}
-                    />
-                </div>
-                <div>
-                    <img
-                        style={{objectFit: "scale-down"}}
-                        src="images/github-logo.png"
-                        width={100}
-                        height={100}
-                    />
-                </div>
-            </AwesomeSlider>
-        </div>
-    )
-    // endregion: awesome-slider
+function AwesomeSliderShowcase ( props: ShowcaseProps ) {
 
-    return (
-        <ShowcaseWrapperItem
-            name="Awesome Slider"
-            sourceCodeExampleId="awesome-slider"
-            overallSourceCode={props.overallSourceCode}
-            packages={[
-                {
-                    name: "react-awesome-slider",
-                    url: "https://github.com/rcaferati/react-awesome-slider"
-                }
-            ]}
+	// region: awesome-slider
+	const example = (
+		<div style={ { minWidth: 600, display: "flex", height: 200, position: "relative", zIndex: 0 } }>
+			<AwesomeSlider bullets={ false }>
+				<div>
+					<img
+						style={ { objectFit: "scale-down" } }
+						src="images/logo.png"
+						width={ 100 }
+						height={ 100 }
+					/>
+				</div>
+				<div>
+					<img
+						style={ { objectFit: "scale-down" } }
+						src="images/github-logo.png"
+						width={ 100 }
+						height={ 100 }
+					/>
+				</div>
+			</AwesomeSlider>
+		</div>
+	)
+	// endregion: awesome-slider
 
-            examples={
-                [
-                    (example)
-                ]
-            }
-        />
-    )
+	return (
+		<ShowcaseWrapperItem
+			name="Awesome Slider"
+			sourceCodeExampleId="awesome-slider"
+			overallSourceCode={ props.overallSourceCode }
+			packages={ [
+				{
+					name: "react-awesome-slider",
+					url: "https://github.com/rcaferati/react-awesome-slider"
+				}
+			] }
+
+			examples={
+				[
+					( example )
+				]
+			}
+		/>
+	)
 
 }
 
@@ -1006,6 +1007,167 @@ function JoyrideShowcase(props: ShowcaseProps) {
 }
 
 export default JoyrideShowcase;
+import { LPTimeTable } from "@linked-planet/ui-kit-ts"
+import moment from "moment"
+import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowcaseWrapperItem"
+
+import type { TimeSlot, TimeTableEntry } from "@linked-planet/ui-kit-ts"
+
+import { useState } from "react";
+
+type ExampleGroup = {
+	id: string
+	title: string
+	description: string
+}
+
+interface ExampleItem extends TimeSlot {
+	name: string
+}
+
+const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
+	{
+		group: {
+			id: "1",
+			title: "Group 1",
+			description: "Group 1 description"
+		},
+		items: [
+			{
+				startDate: moment().add( 1, "days" ),
+				endDate: moment().add( 2, "days" ),
+				name: "Item 1-1"
+			},
+			{
+				startDate: moment().add( 3, "days" ),
+				endDate: moment().add( 4, "days" ),
+				name: "Item 1-2"
+			},
+		],
+	},
+
+	{
+		group: {
+			id: "2",
+			title: "Group 2",
+			description: "Group 2 description"
+		},
+		items: [
+			{
+				startDate: moment().add( 2, "days" ),
+				endDate: moment().add( 4, "days" ),
+				name: "Item 2-1"
+			},
+			{
+				startDate: moment(),
+				endDate: moment().add( 7, "days" ),
+				name: "Item 2-2"
+			},
+		],
+	}
+
+];
+
+
+
+function ExampleGroupRender ( { group }: { group: ExampleGroup } ): JSX.Element {
+	return (
+		<>
+			<div style={ {
+				fontSize: "1.3em",
+				fontWeight: "bold",
+			} }>
+				{ group.title }
+			</div>
+			<div style={ {
+				whiteSpace: "nowrap",
+			} }>
+				{ group.description }
+			</div>
+		</>
+	)
+}
+
+function ExampleItem ( { item }: { item: ExampleItem } ): JSX.Element {
+	return (
+		<div style={ {
+			display: "flex",
+			flex: 1,
+			width: "100%",
+			justifyContent: "center",
+			borderRadius: "5px",
+			backgroundColor: "lightgrey",
+			padding: "2px"
+		} }>
+			<p>
+				{ item.name }
+			</p>
+		</div>
+	)
+}
+
+
+export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
+
+	const [ isMultiLine, setIsMultiLine ] = useState( false );
+
+	const startDate = moment( "2023-03-23T08:00:00.000+0100" )
+	const endDate = moment( "2023-03-28T16:00:00.000+0100" )
+	const timeSteps = 30
+
+	const example = (
+		<div style={ {
+			display: "flex",
+			flexDirection: "column",
+			flex: 1,
+			overflow: "auto",
+			marginRight: "-35px",
+			paddingRight: "35px"
+		} }>
+			<label htmlFor="multiLine">
+				<input
+					type="checkbox"
+					name="multiLine"
+					role="switch"
+					checked={ isMultiLine }
+					onChange={ () => setIsMultiLine( !isMultiLine ) }
+				/>
+				Multi Line
+			</label>
+			<LPTimeTable
+				startDate={ startDate }
+				endDate={ endDate }
+				timeSteps={ timeSteps }
+				entries={ exampleEntries }
+				renderGroup={ ( group ) => <ExampleGroupRender group={ group } /> }
+				renderItem={ ( item ) => <ExampleItem item={ item } /> }
+				multiLine={ isMultiLine }
+				onItemClick={ ( group, item ) => console.log( group, item ) }
+				onTimeslotClick={ ( group, timeslotStart, timeslotEnd ) => console.log( group, timeslotStart, timeslotEnd ) }
+				onGroupClick={ ( group ) => console.log( group ) }
+			/>
+		</div>
+	)
+
+	return (
+		<ShowcaseWrapperItem
+			name="Time Table"
+			sourceCodeExampleId="time-table"
+			overallSourceCode={ props.overallSourceCode }
+			packages={ [
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://github.com/linked-planet/ui-kit-ts",
+				}
+			] }
+			examples={
+				[
+					( example ),
+				]
+			}
+		/>
+	)
+}
 import React from "react";
 import ShowcaseWrapperItem, {ShowcaseProps} from "../../ShowcaseWrapperItem";
 import Lozenge from "@atlaskit/lozenge";

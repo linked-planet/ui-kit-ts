@@ -7,11 +7,12 @@
   },
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.10.5",
+    "@emotion/react": "^11.10.6",
     "@linked-planet/ui-kit-ts": "file:../library",
     "@types/node": "^18.13.0",
     "@types/react": "^16.8.0",
     "@types/react-dom": "^16.8.0",
+    "dayjs": "^1.11.7",
     "gh-pages": "^5.0.0",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
@@ -19,6 +20,7 @@
     "typescript": "^4.9.5"
   },
   "homepage": "https://linked-planet.github.io/ui-kit-ts",
+  "type": "module",
   "scripts": {
     "start": "npm run generate && react-scripts start",
     "build": "npm run generate && install-local-dependencies && react-scripts build",
@@ -26,7 +28,9 @@
     "reload": "npm install && install-local-dependencies",
     "generate": "node copySources.js",
     "eject": "react-scripts eject",
-    "eslint": "eslint src"
+    "eslint": "eslint src",
+    "dev": "vite --force",
+    "devDependencies": "watch-local-dependencies"
   },
   "eslintConfig": {
     "extends": [
@@ -48,7 +52,9 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
+    "@vitejs/plugin-react": "^3.1.0",
     "eslint": "^8.34.0",
-    "install-local-dependencies": "^0.2.5"
+    "install-local-dependencies": "^0.2.5",
+    "vite": "^4.2.1"
   }
 }
