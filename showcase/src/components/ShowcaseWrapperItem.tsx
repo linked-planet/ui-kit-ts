@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
+import React, { ReactNode } from "react"
 import Tabs, { Tab, TabList, TabPanel } from "@atlaskit/tabs"
-import { CodeBlock } from "@atlaskit/code";
+import { CodeBlock } from "@atlaskit/code"
 
 export interface Package {
 	name: string,
@@ -49,8 +49,8 @@ function ShowcaseWrapperItem ( props: ShowcaseWrapperItemProps ) {
 			<h3>{ props.name }</h3>
 			<div style={ { fontWeight: "lighter", fontSize: "0.8rem" } }>
 				<span>Packages: </span>
-				{ props.packages.map( ( pack ) => {
-					return ( <a href={ pack.url } target="_blank">{ pack.name }</a> )
+				{ props.packages.map( ( pack, i ) => {
+					return ( <a href={ pack.url } key={ i } target="_blank" rel="noreferrer">{ pack.name }</a> )
 				} ) }
 			</div>
 
@@ -62,13 +62,15 @@ function ShowcaseWrapperItem ( props: ShowcaseWrapperItemProps ) {
 					</TabList>
 					<TabPanel>
 						<div style={ { display: "flex" } }>
-							{ props.examples.map( ( example ) => {
+							{ props.examples.map( ( example, i ) => {
 								return (
 									<div
+										key={ i }
 										className="example"
-										children={ example }
 										style={ { width: "100%" } }
-									/>
+									>
+										{ example }
+									</div>
 								);
 							} ) }
 						</div>
