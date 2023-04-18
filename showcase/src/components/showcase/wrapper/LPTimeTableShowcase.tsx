@@ -19,7 +19,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 		},
 		items: [],
 	},
-	/*{
+	{
 		group: {
 			title: "Group 1",
 			subtitle: "Group 1 description"
@@ -84,7 +84,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 3-3"
 			},
 		],
-	},*/
+	},
 	{
 		group: {
 			title: "Group 4",
@@ -120,10 +120,14 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 
 export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
-	const [ tableType, setTableType ] = useState<"single" | "multi" | "combi">( "single" )
+	const [ tableType, setTableType ] = useState<"single" | "multi" | "combi">( "combi" )
+	const [ rounding, setRounding ] = useState<"round" | "ceil" | "floor">( "round" )
 	const [ timeSteps, setTimeSteps ] = useState( 30 )
 	const [ firstColumnWidth, setFirstColumnWidth ] = useState( 150 )
 	const [ columnWidth, setColumnWidth ] = useState( 70 )
+
+	const [ startDate, setStartDate ] = useState( dayjs().startOf( "day" ).add( -1, "day" ).add( 8, "hours" ) )
+	const [ endDate, setEndDate ] = useState( dayjs().startOf( "day" ).add( 5, "days" ).add( 16, "hours" ) )
 
 	const [ selectedGroup, setSelectedGroup ] = useState<ExampleGroup | undefined>()
 	const [ selectedTimeSlot, setSelectedTimeSlot ] = useState<SelectedTimeSlot<ExampleGroup> | undefined>()
@@ -150,9 +154,6 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 		} )
 	}, [] )
 
-	const startDate = dayjs().startOf( "day" ).add( -1, "day" ).add( 8, "hours" )
-	const endDate = dayjs().startOf( "day" ).add( 5, "days" ).add( 16, "hours" )
-
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
 
 	return (
@@ -160,35 +161,53 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 			<div
 				style={ {
 					display: "flex",
+					gap: "2rem",
 				} }
 			>
-				<label
-					style={ { marginRight: "1rem" } }
-					htmlFor="multiLine"
-				>
-					<select
-						name="tabletype"
-						onChange={ e => setTableType( e.target.value as "single" | "multi" | "combi" ) }
-					>
-						<option value="single">single</option>
-						<option value="multi">multi</option>
-						<option value="combi">combi</option>
-					</select>
-					Table Type
-				</label>
-				<label
-					htmlFor="timesteps"
+				<div
 					style={ {
-						marginRight: "1rem"
+						display: "grid",
+						gridTemplateColumns: "auto auto",
+						gap: "0.5rem",
 					} }
 				>
+					<label
+						style={ { marginRight: "1rem" } }
+						htmlFor="startdate"
+					>
+						Start:
+					</label>
+					<input
+						type="datetime-local"
+						value={ startDate.format( "YYYY-MM-DDTHH:mm" ) }
+						onChange={ ( e ) => setStartDate( dayjs( e.target.value ) ) }
+					/>
+					<label
+						style={ { marginRight: "1rem" } }
+						htmlFor="enddate"
+					>
+						End:
+					</label>
+					<input
+						type="datetime-local"
+						value={ endDate.format( "YYYY-MM-DDTHH:mm" ) }
+						onChange={ ( e ) => setEndDate( dayjs( e.target.value ) ) }
+					/>
+					<label
+						htmlFor="timesteps"
+						style={ {
+							marginRight: "1rem"
+						} }
+					>
+						Time Steps [min]:
+					</label>
 					<input
 						type="number"
 						name="timesteps"
 						value={ timeSteps }
 						step={ 10 }
 						min={ 10 }
-						max={ 120 }
+						max={ 1200 }
 						onChange={ ( e ) => setTimeSteps( parseInt( e.target.value ) ) }
 						style={ {
 							width: "4rem",
@@ -196,14 +215,37 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 							marginRight: "0.25rem",
 						} }
 					/>
-					Time Steps [min]
-				</label>
-				<label
-					htmlFor="firstcolwidth"
+				</div>
+				<div
 					style={ {
-						marginRight: "1rem"
+						display: "grid",
+						gridTemplateColumns: "auto auto",
+						gap: "0.5rem",
 					} }
 				>
+					<label
+						style={ { marginRight: "1rem" } }
+						htmlFor="multiLine"
+					>
+						Table Type:
+					</label>
+					<select
+						name="tabletype"
+						onChange={ e => setTableType( e.target.value as "single" | "multi" | "combi" ) }
+						value={ tableType }
+					>
+						<option value="single">single</option>
+						<option value="multi">multi</option>
+						<option value="combi">combi</option>
+					</select>
+					<label
+						htmlFor="firstcolwidth"
+						style={ {
+							marginRight: "1rem"
+						} }
+					>
+						Group Header Width [px]:
+					</label>
 					<input
 						type="number"
 						name="firstcolwidth"
@@ -218,14 +260,14 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 							marginRight: "0.25rem",
 						} }
 					/>
-					Group Header Width [px]
-				</label>
-				<label
-					htmlFor="colwidth"
-					style={ {
-						marginRight: "1rem"
-					} }
-				>
+					<label
+						htmlFor="colwidth"
+						style={ {
+							marginRight: "1rem"
+						} }
+					>
+						Column Width [px]:
+					</label>
 					<input
 						type="number"
 						name="colwidth"
@@ -240,8 +282,23 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 							marginRight: "0.25rem",
 						} }
 					/>
-					Column Width [px]
-				</label>
+					<label
+						style={ { marginRight: "1rem" } }
+						htmlFor="multiLine"
+					>
+						Unfitting Time Slot Handling:
+					</label>
+					<select
+						name="rounding"
+						onChange={ e => setRounding( e.target.value as "ceil" | "floor" | "round" ) }
+						value={ rounding }
+					>
+						<option value="round">round</option>
+						<option value="ceil">ceil</option>
+						<option value="floor">floor</option>
+					</select>
+
+				</div>
 			</div>
 			<div
 				style={ { height: "500px", overflow: "auto" } }
@@ -261,6 +318,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					onItemClick={ ( group, item ) => console.log( group, item ) }
 					onTimeSlotClick={ onTimeSlotClickCB }
 					onGroupClick={ onGroupClickCB }
+					rounding={ rounding }
 					nowOverwrite={ nowOverwrite }
 				/>
 			</div>

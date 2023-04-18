@@ -219,8 +219,11 @@ function getItemLeftAndWidth (
 	}
 	itemEndSlotIdx++
 	const endSlotIdxDiff = rowEntry.startSlot + rowEntry.length - itemEndSlotIdx
-	let itemEndSlotDiff = slotsArray[ itemEndSlotIdx ].diff( item.endDate, "minute" ) / timeSteps
-	if ( itemEndSlotDiff > 1 ) {
+	const diffToEnd = timeSteps - ( item.endDate.diff( slotsArray[ itemEndSlotIdx - 1 ], "minutes" ) )
+	//const diffToEnd = slotsArray[ itemEndSlotIdx ].diff( item.endDate, "minutes" )
+	let itemEndSlotDiff = diffToEnd / timeSteps
+	//if ( itemEndSlotDiff > 1 ) {
+	if ( itemEndSlotDiff < 0 ) {
 		// that means the booking is longer than all the time slots on this day
 		// so we just set it to 0 that it finished at the end of the last slot of the day
 		itemEndSlotDiff = 0
