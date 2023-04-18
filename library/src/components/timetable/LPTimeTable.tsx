@@ -362,7 +362,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			</thead>
 			<tbody ref={ tableBodyRef }>
 				{/* render the time slot bars, it has to be as body tds because of the z-index in the theader */ }
-				<tr>
+				<tr className={ styles.nowRow }>
 					<td>
 					</td>
 					{ slotsArray.map( ( slot, i ) => {

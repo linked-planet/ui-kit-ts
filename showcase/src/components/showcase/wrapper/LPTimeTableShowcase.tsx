@@ -15,6 +15,12 @@ type ExampleItem = TimeSlotBooking
 const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 	{
 		group: {
+			title: "Empty Group",
+		},
+		items: [],
+	},
+	/*{
+		group: {
 			title: "Group 1",
 			subtitle: "Group 1 description"
 		},
@@ -78,7 +84,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 3-3"
 			},
 		],
-	},
+	},*/
 	{
 		group: {
 			title: "Group 4",

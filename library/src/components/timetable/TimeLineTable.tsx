@@ -9,7 +9,7 @@ import styles from "./LPTimeTable.module.css"
 
 interface RowEntry2<I> {
 	startSlot: number
-	item: I
+	item: I | null
 	length: number
 	groupRow: number
 }
@@ -161,7 +161,7 @@ export function getStartAndEndSlot (
 				}
 			}
 		}
-		if ( slotsArray[ slot ].isAfter( endDate ) ) {
+		if ( slotsArray[ slot ].isAfter( endDate ) || slotsArray[ slot ].isSame( endDate ) ) {
 			break
 		}
 	}
@@ -278,7 +278,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 					return null
 				}
 				const { startSlot, endSlot, groupRow } = startAndEndSlot
-				const length = endSlot - startSlot + 1
+				const length = endSlot - startSlot
 
 				if ( groupRowMax < groupRow ) {
 					groupRowMax = groupRow
@@ -311,6 +311,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 								position: "sticky",
 								left: 0,
 								zIndex: 2,
+								borderBottomWidth: "3px",
 							} }
 							rowSpan={ groupRowMax + 1 }
 							className={ selectedGroup === group ? styles.selected : "" }
@@ -327,15 +328,15 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				for ( let i = 0; i < slotsArray.length; i++ ) {
 					let rowEntryItem: RowEntry2<I> | undefined = undefined
 					for ( const rowEntry of rowItems ) {
-						if ( rowEntry.groupRow === r && rowEntry.startSlot === i ) {
+						if ( rowEntry.groupRow === r && rowEntry.startSlot === i && rowEntry.item ) {
 							rowEntryItem = rowEntry
 						}
 					}
 
 					if ( rowEntryItem ) {
-						const item = rowEntryItem.item
+						const item = rowEntryItem.item as I
 
-						const { left, width } = getItemLeftAndWidth( rowEntryItem, rowEntryItem.item, slotsArray, timeSteps )
+						const { left, width } = getItemLeftAndWidth( rowEntryItem, item, slotsArray, timeSteps )
 
 						tds.push(
 							<td
@@ -475,12 +476,12 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 				if ( rowEntry ) {
 					rowEntry.items.push( item )
 					if ( startSlot < rowEntry.startSlot ) rowEntry.startSlot = startSlot;
-					if ( endSlot > rowEntry.startSlot + rowEntry.length ) rowEntry.length = endSlot - rowEntry.startSlot + 1;
+					if ( endSlot > rowEntry.startSlot + rowEntry.length ) rowEntry.length = endSlot - rowEntry.startSlot;
 				} else {
 					rowItems.push( {
 						items: [ item ],
 						startSlot,
-						length: endSlot - startSlot + 1,
+						length: endSlot - startSlot,
 					} )
 				}
 			} )
@@ -624,30 +625,40 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 ) {
 	const tableRows = useMemo( () => {
 		return entries.map( ( groupEntry ) => {
-			const rowItems: RowEntry<I>[] = groupEntry.items.map( ( item ) => {
+			const rowItems: RowEntry2<I>[] = groupEntry.items.map( ( item ) => {
 
 				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps, null )
 				if ( startAndEndSlot == null ) {
 					console.log( "Item is out of day range of the time slots: ", item )
 					return null
 				}
-				const { startSlot, endSlot } = startAndEndSlot
-				const length = endSlot - startSlot + 1
+				const { startSlot, endSlot, groupRow } = startAndEndSlot
+				const length = endSlot - startSlot
 
 				return {
-					items: [ item ],
+					item,
 					startSlot,
 					length,
+					groupRow
 				}
-			} ).filter( it => it != null ) as RowEntry<I>[]
+			} ).filter( it => it != null ) as RowEntry2<I>[]
 			// if we enable this, the items in the groups will be sorted acoording to their start slot
 			// right now they are simply in the order they come in
 			//rowItems.sort( ( a, b ) => a.startSlot - b.startSlot )
 
+			if ( rowItems.length === 0 ) {
+				rowItems.push( {
+					item: null,
+					length: 0,
+					startSlot: 0,
+					groupRow: 0
+				} )
+			}
+
 			const group = groupEntry.group
 
 			const trs: JSX.Element[] = rowItems.map( ( rowEntry, j ) => {
-				const item = rowEntry.items[ 0 ]
+				const item = rowEntry.item
 				const tds: JSX.Element[] = []
 
 				if ( j == 0 ) {
@@ -682,7 +693,9 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 				const isLastGroupItem = j === rowItems.length - 1
 
 				for ( let i = 0; i < slotsArray.length; i++ ) {
-					if ( i === rowEntry.startSlot ) {
+					if ( i === rowEntry.startSlot && rowEntry.item ) {
+
+						const item = rowEntry.item
 
 						const { left, width } = getItemLeftAndWidth( rowEntry, item, slotsArray, timeSteps )
 
