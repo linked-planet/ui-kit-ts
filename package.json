@@ -25,6 +25,11 @@
 		"eslint:sc": "eslint showcase/src/index.tsx"
 	},
 	"author": "Philip Karlsson",
+	"contributors": [
+		{
+			"name": "Markus Toepfer"
+		}
+	],
 	"license": "Apache-2.0",
 	"bugs": {
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"

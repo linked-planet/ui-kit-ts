@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 
-import dayjs, { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs"
 
 //import styles from "./LPTimeTable.module.css";
-import "./LPTimeTable.module.css";
-import styles from "./LPTimeTable.module.css";
-import TimeLineTable, { getStartAndEndSlot } from "./TimeLineTable";
+import "./LPTimeTable.module.css"
+import styles from "./LPTimeTable.module.css"
+import TimeLineTable from "./TimeLineTable"
+import { getStartAndEndSlot } from "./timeTableUtils"
 
 export interface TimeSlotBooking {
 	title: string
@@ -22,12 +23,6 @@ export interface TimeTableGroup {
 export interface TimeTableEntry<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	group: G,
 	items: I[]
-}
-
-export interface RowEntry<I> {
-	startSlot: number
-	items: I[]
-	length: number
 }
 
 export interface SelectedTimeSlot<G extends TimeTableGroup> {
@@ -50,15 +45,15 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	selectedGroup?: G
 	selectedTimeSlot?: SelectedTimeSlot<G>
 
-	selectedItem?: I
+	selectedTimeSlotItem?: I
 
 	/* overwrite render function for the group (left column) */
 	renderGroup?: ( group: G ) => JSX.Element
 
 	/* overwrite render function for the time slot items */
-	renderItem?: ( item: I ) => JSX.Element
+	renderTimeSlotItem?: ( group: G, item: I, isSelected: boolean ) => JSX.Element
 
-	onItemClick?: ( group: G, item: I ) => void
+	onTimeSlotItemClick?: ( group: G, item: I ) => void
 
 	onTimeSlotClick?: ( _: SelectedTimeSlot<G> ) => void
 
@@ -87,10 +82,10 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	tableType,
 	selectedGroup,
 	selectedTimeSlot,
-	selectedItem,
+	selectedTimeSlotItem,
 	renderGroup,
-	renderItem,
-	onItemClick,
+	renderTimeSlotItem,
+	onTimeSlotItemClick,
 	onTimeSlotClick,
 	onGroupClick,
 	firstColumnWidth,
@@ -194,9 +189,6 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			headerTimeSlotCell.children[ 0 ].classList.remove( styles.nowHeaderTimeSlot )
 		}
 
-
-
-
 		const startAndEndSlot = getStartAndEndSlot( nowRef.current, nowRef.current, timeSlotSettings.slotsArray, timeSteps, null )
 		if ( !startAndEndSlot ) {
 			// we need to remove the now bar, if it is there
@@ -273,7 +265,8 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 
 
 	// scroll now bar into view if it exists
-	useLayoutEffect( () => {
+	// TODO fix this, it doesn't work
+	/*useLayoutEffect( () => {
 		if ( nowBarRef.current && tableHeaderRef.current ) {
 			const headerCellOffset = nowBarRef.current.parentElement?.offsetLeft || 0
 			// scroll the table header to the same position as the current time slot
@@ -287,8 +280,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 				behavior: "smooth",
 			} )
 		}
-	}, [] )
-
+	}, [] )*/
 
 	if ( !timeSlotSettings?.daysArray || !timeSlotSettings?.slotsArray ) {
 		return (
@@ -440,10 +432,10 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 					slotsArray={ timeSlotSettings.slotsArray }
 					selectedGroup={ selectedGroup }
 					selectedTimeSlot={ selectedTimeSlot }
-					selectedItem={ selectedItem }
+					selectedTimeSlotItem={ selectedTimeSlotItem }
 					renderGroup={ renderGroup }
-					renderItem={ renderItem }
-					onItemClick={ onItemClick }
+					renderTimeSlotItem={ renderTimeSlotItem }
+					onTimeSlotItemClick={ onTimeSlotItemClick }
 					onTimeSlotClick={ onTimeSlotClick }
 					onGroupClick={ onGroupClick }
 					timeSteps={ timeSteps }

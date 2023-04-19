@@ -14,3 +14,7 @@
 	position: relative;
 	z-index: 1;
 }
+
+.selected {
+	border: 2px solid var(--secondary-color);
+}

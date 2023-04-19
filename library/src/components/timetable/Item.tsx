@@ -3,10 +3,10 @@ import { TimeSlotBooking } from "./LPTimeTable"
 
 import styles from "./Item.module.css"
 
-export function Item ( { item }: { item: TimeSlotBooking } ): JSX.Element {
+export function Item ( { group, item, isSelected }: { group: TimeSlotGroup, item: TimeSlotBooking, isSelected: boolean } ): JSX.Element {
 	return (
 		<div
-			className={ styles.timeSlotItem }
+			className={ `${ styles.timeSlotItem } ${ isSelected ? styles.selected : "" }` }
 			title={ item.title }
 			style={ {
 				overflow: "hidden",

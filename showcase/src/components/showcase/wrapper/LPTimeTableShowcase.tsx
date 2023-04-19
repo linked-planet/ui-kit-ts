@@ -131,6 +131,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	const [ selectedGroup, setSelectedGroup ] = useState<ExampleGroup | undefined>()
 	const [ selectedTimeSlot, setSelectedTimeSlot ] = useState<SelectedTimeSlot<ExampleGroup> | undefined>()
+	const [ selectedTimeSlotItem, setSelectedTimeSlotItem ] = useState<ExampleItem | undefined>()
 
 	const [ entries, setEntries ] = useState( exampleEntries )
 
@@ -147,10 +148,19 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	const onTimeSlotClickCB = useCallback( ( selectedTS: SelectedTimeSlot<ExampleGroup> ) => {
 		setSelectedTimeSlot( prev => {
-			if ( prev?.group === selectedTS.group && prev.timeSlotStart.isSame( selectedTS.timeSlotStart ) ) {
+			if ( prev?.group === selectedTS.group && prev.timeSlotStart.isSame( selectedTS.timeSlotStart ) && prev.groupRow === selectedTS.groupRow ) {
 				return undefined
 			}
 			return selectedTS
+		} )
+	}, [] )
+
+	const onTimeSlotItemClickCB = useCallback( ( group: ExampleGroup, item: ExampleItem ) => {
+		setSelectedTimeSlotItem( prev => {
+			if ( prev === item ) {
+				return undefined
+			}
+			return item
 		} )
 	}, [] )
 
@@ -312,10 +322,11 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					entries={ entries }
 					selectedGroup={ selectedGroup }
 					selectedTimeSlot={ selectedTimeSlot }
+					selectedTimeSlotItem={ selectedTimeSlotItem }
 					//renderGroup={ ( group ) => <Group group={ group } /> }
 					//renderItem={ ( item ) => <Item item={ item } /> }
 					tableType={ tableType }
-					onItemClick={ ( group, item ) => console.log( group, item ) }
+					onTimeSlotItemClick={ onTimeSlotItemClickCB }
 					onTimeSlotClick={ onTimeSlotClickCB }
 					onGroupClick={ onGroupClickCB }
 					rounding={ rounding }
