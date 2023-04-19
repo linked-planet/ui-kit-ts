@@ -21,7 +21,9 @@
 			"@linked-planet/ui-kit-ts": ["library/src"],
 			"@linked-planet/ui-kit-ts/*": ["library/src/*"],
 			"@linked-planet/ui-kit-ts/dist/style.css": ["dist/styles.css"]
-		}
+		},
+		"types": ["vite/client"]
 	},
-	"include": ["showcase/src", "library/src"]
+	"include": ["showcase/src", "library/src"],
+	"references": [{ "path": "./tsconfig.node.json" }]
 }

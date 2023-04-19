@@ -1,9 +1,9 @@
 import React, { CSSProperties } from "react"
-import { TimeSlot } from "./LPTimeTable"
+import { TimeSlotBooking } from "./LPTimeTable"
 
 import styles from "./Item.module.css"
 
-export function Item ( { item }: { item: TimeSlot } ): JSX.Element {
+export function Item ( { item }: { item: TimeSlotBooking } ): JSX.Element {
 	return (
 		<div
 			className={ styles.timeSlotItem }

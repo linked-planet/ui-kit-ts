@@ -144,15 +144,6 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		return { daysArray, slotsArray }
 	}, [ daysDiff, startDate, timeSteps, timeSlotsPerDay ] )
 
-	let daysArray: dayjs.Dayjs[] | null = null
-	let slotsArray: dayjs.Dayjs[] | null = null
-	if ( timeSlotSettings ) {
-		daysArray = timeSlotSettings.daysArray
-		slotsArray = timeSlotSettings.slotsArray
-	}
-
-
-
 	// draw the time slot bars
 	useLayoutEffect( () => {
 		if ( tableBodyRef.current ) {
@@ -178,7 +169,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	// adjust the now bar moves the now bar to the current time slot, if it exists
 	// and also adjusts the orange border of the time slot header
 	const adjustNowBar = useCallback( () => {
-		if ( !daysArray || !slotsArray ) {
+		if ( !timeSlotSettings?.daysArray || !timeSlotSettings?.slotsArray.length ) {
 			return
 		}
 
@@ -204,7 +195,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 
 
 
-		const startAndEndSlot = getStartAndEndSlot( nowRef.current, nowRef.current, slotsArray, timeSteps, null )
+		const startAndEndSlot = getStartAndEndSlot( nowRef.current, nowRef.current, timeSlotSettings.slotsArray, timeSteps, null )
 		if ( !startAndEndSlot ) {
 			// we need to remove the now bar, if it is there
 			nowBarRef.current?.remove()
@@ -234,7 +225,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			slotBar.appendChild( nowBarRef.current )
 		}
 
-		const currentTimeSlot = slotsArray[ startSlot ]
+		const currentTimeSlot = timeSlotSettings.slotsArray[ startSlot ]
 		const diffNow = nowRef.current.diff( currentTimeSlot, "minutes" )
 		const diffPerc = diffNow / timeSteps
 		nowBarRef.current.style.left = `${ diffPerc * 100 }%`
@@ -265,7 +256,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			}
 		}
 
-	}, [ nowOverwrite, slotsArray, timeSteps ] )
+	}, [ nowOverwrite, timeSlotSettings?.daysArray, timeSlotSettings?.slotsArray, timeSteps ] )
 
 
 	// initial run, and start interval to move the now bar
@@ -297,7 +288,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	}, [] )
 
 
-	if ( !daysArray || !slotsArray ) {
+	if ( !timeSlotSettings?.daysArray || !timeSlotSettings?.slotsArray ) {
 		return (
 			<div>
 				Invalid time slot size: { timeSteps }
@@ -322,7 +313,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 						<div>&nbsp;</div>
 					</th>
 					{/* a contentless row of th to make the table determine the correct width */ }
-					{ slotsArray.map( ( _, i ) => {
+					{ timeSlotSettings.slotsArray.map( ( _, i ) => {
 						return (
 							<th
 								key={ i }
@@ -355,7 +346,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 						<div>&nbsp;</div>
 					</th>
 
-					{ daysArray.map( ( date ) => {
+					{ timeSlotSettings.daysArray.map( ( date ) => {
 
 						return (
 							<th
@@ -392,11 +383,11 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 								justifyContent: "center",
 							} }
 						>
-							{ `${ slotsArray[ 0 ].format( "HH:mm" ) } - ${ slotsArray[ 0 ].add( timeSlotsPerDay * timeSteps, "minutes" ).format( "HH:mm" ) } [${ slotsArray.length }]` }
+							{ `${ timeSlotSettings.slotsArray[ 0 ].format( "HH:mm" ) } - ${ timeSlotSettings.slotsArray[ 0 ].add( timeSlotsPerDay * timeSteps, "minutes" ).format( "HH:mm" ) } [${ timeSlotSettings.slotsArray.length }]` }
 						</div>
 					</th>
-					{ slotsArray.map( ( slot, i ) => {
-						const isNewDay = i > 0 && !slotsArray!![ i - 1 ].isSame( slot, "day" )
+					{ timeSlotSettings.slotsArray.map( ( slot, i ) => {
+						const isNewDay = i > 0 && !timeSlotSettings.slotsArray[ i - 1 ].isSame( slot, "day" )
 						return (
 							<th
 								key={ i }
@@ -421,8 +412,8 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 				<tr className={ styles.nowRow }>
 					<td>
 					</td>
-					{ slotsArray.map( ( slot, i ) => {
-						const isNextNewDay = i == slotsArray!!.length - 1 || !slotsArray!![ i + 1 ].isSame( slot, "day" )
+					{ timeSlotSettings.slotsArray.map( ( slot, i ) => {
+						const isNextNewDay = i == timeSlotSettings.slotsArray.length - 1 || !timeSlotSettings.slotsArray[ i + 1 ].isSame( slot, "day" )
 						return (
 							<td
 								key={ i }
@@ -444,7 +435,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 
 				<TimeLineTable<G, I>
 					entries={ entries }
-					slotsArray={ slotsArray }
+					slotsArray={ timeSlotSettings.slotsArray }
 					selectedGroup={ selectedGroup }
 					selectedTimeSlot={ selectedTimeSlot }
 					selectedItem={ selectedItem }

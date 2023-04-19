@@ -1,6 +1,6 @@
 import { defineConfig } from "vite"
 import { resolve } from "path"
-import react from "@vitejs/plugin-react"
+import react from "@vitejs/plugin-react-swc"
 import dts from "vite-plugin-dts"
 
 export default defineConfig({
@@ -26,13 +26,16 @@ export default defineConfig({
 		},
 	},
 	plugins: [
-		dts(),
-		react({
+		dts({
+			entryRoot: resolve(__dirname, "library/src"),
+			insertTypesEntry: true,
+		}),
+		react(/*{
 			// this is for emotion (need to test if it's still needed)
 			jsxImportSource: "@emotion/react",
 			babel: {
 				plugins: ["@emotion/babel-plugin"],
 			},
-		}),
+		}*/),
 	],
 })
