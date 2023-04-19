@@ -329,6 +329,9 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				}
 
 				for ( let i = 0; i < slotsArray.length; i++ ) {
+					const timeSlot = slotsArray[ i ]
+					const timeSlotIsSelected = selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( timeSlot ) && selectedTimeSlot.groupRow === r
+
 					let rowEntryItem: RowEntry2<I> | undefined = undefined
 					for ( const rowEntry of rowItems ) {
 						if ( rowEntry.groupRow === r && rowEntry.startSlot === i && rowEntry.item ) {
@@ -336,8 +339,8 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 						}
 					}
 
-					if ( rowEntryItem ) {
-						const item = rowEntryItem.item as I
+					if ( rowEntryItem && rowEntryItem.item ) {
+						const item = rowEntryItem.item
 
 						const { left, width } = getItemLeftAndWidth( rowEntryItem, item, slotsArray, timeSteps )
 
@@ -346,12 +349,10 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 								key={ i }
 								colSpan={ rowEntryItem.length }
 								onClick={ () => {
-									if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: slotsArray[ i ] } )
+									if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow: r } )
 								}
 								}
-								className={
-									( selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( slotsArray[ i ] ) ) ? styles.selected : ""
-								}
+								className={ timeSlotIsSelected ? styles.selected : "" }
 								style={ {
 									borderBottomWidth: r === groupRowMax ? "3px" : "1px",
 								} }
@@ -379,14 +380,12 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 							<td
 								key={ i }
 								onClick={ () => {
-									if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: slotsArray[ i ] } )
+									if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow: r } )
 								} }
 								/*style={ {
 									borderBottomWidth: isLastGroupItem ? "3px" : "1px",
 								} }*/
-								className={
-									( selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( slotsArray[ i ] ) ) ? styles.selected : ""
-								}
+								className={ timeSlotIsSelected ? styles.selected : "" }
 								style={ {
 									borderBottomWidth: r === groupRowMax ? "3px" : "1px",
 								} }
@@ -410,7 +409,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				</>
 			)
 		} )
-	}, [ entries, onGroupClick, onItemClick, onTimeSlotClick, renderGroup, renderItem, selectedGroup, selectedItem, selectedTimeSlot?.group, selectedTimeSlot?.timeSlotStart, slotsArray, timeSteps ] )
+	}, [ entries, onGroupClick, onItemClick, onTimeSlotClick, renderGroup, renderItem, selectedGroup, selectedItem, selectedTimeSlot?.group, selectedTimeSlot?.groupRow, selectedTimeSlot?.timeSlotStart, slotsArray, timeSteps ] )
 
 	return (
 		<>
@@ -522,18 +521,18 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 			let colItemIdx = 0;
 			for ( let i = 0; i < slotsArray.length; i++ ) {
 
-				const isSelected = selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( slotsArray[ i ] )
+				const timeSlot = slotsArray[ i ]
+				const timeSlotIsSelected = selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( timeSlot ) && selectedTimeSlot.groupRow === 0;
 
 				const rowEntry = rowItems[ colItemIdx ]
 				if ( rowEntry && rowEntry.startSlot === i ) {
-					const currSlotIdx = i
 					tds.push(
 						<td
 							key={ i }
 							colSpan={ rowEntry.length }
-							className={ isSelected ? styles.selected : "" }
+							className={ timeSlotIsSelected ? styles.selected : "" }
 							onClick={ () => {
-								if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: slotsArray[ currSlotIdx ] } )
+								if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow: 0 } )
 							} }
 						>
 							{ rowEntry.items.map( ( item, j ) => {
@@ -566,9 +565,9 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 						<td
 							key={ i }
 							onClick={ () => {
-								if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: slotsArray[ i ] } )
+								if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow: 0 } )
 							} }
-							className={ isSelected ? styles.selected : "" }
+							className={ timeSlotIsSelected ? styles.selected : "" }
 						/>
 					)
 				}
@@ -661,7 +660,6 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 			const group = groupEntry.group
 
 			const trs: JSX.Element[] = rowItems.map( ( rowEntry, j ) => {
-				const item = rowEntry.item
 				const tds: JSX.Element[] = []
 
 				if ( j == 0 ) {
@@ -696,6 +694,9 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 				const isLastGroupItem = j === rowItems.length - 1
 
 				for ( let i = 0; i < slotsArray.length; i++ ) {
+					const timeSlot = slotsArray[ i ]
+					const timeSlotIsSelected = selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( timeSlot ) && selectedTimeSlot.groupRow === j
+
 					if ( i === rowEntry.startSlot && rowEntry.item ) {
 
 						const item = rowEntry.item
@@ -707,12 +708,10 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								key={ i }
 								colSpan={ rowEntry.length }
 								onClick={ () => {
-									if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: slotsArray[ i ] } )
+									if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow: j } )
 								}
 								}
-								className={
-									( selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( slotsArray[ i ] ) ) ? styles.selected : ""
-								}
+								className={ timeSlotIsSelected ? styles.selected : "" }
 								style={ {
 									borderBottomWidth: isLastGroupItem ? "3px" : "1px",
 								} }
@@ -740,13 +739,12 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 							<td
 								key={ i }
 								onClick={ () => {
-									if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: slotsArray[ i ] } )
+									if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow: j } )
 								} }
 								style={ {
 									borderBottomWidth: isLastGroupItem ? "3px" : "1px",
 								} }
-								className={
-									( selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( slotsArray[ i ] ) ) ? styles.selected : ""
+								className={ timeSlotIsSelected ? styles.selected : ""
 								}
 							/>
 						)
@@ -764,7 +762,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 
 			return trs
 		} )
-	}, [ entries, onGroupClick, onItemClick, onTimeSlotClick, renderGroup, renderItem, selectedGroup, selectedItem, selectedTimeSlot?.group, selectedTimeSlot?.timeSlotStart, slotsArray, timeSteps ] )
+	}, [ entries, onGroupClick, onItemClick, onTimeSlotClick, renderGroup, renderItem, selectedGroup, selectedItem, selectedTimeSlot?.group, selectedTimeSlot?.groupRow, selectedTimeSlot?.timeSlotStart, slotsArray, timeSteps ] )
 
 	return (
 		<>

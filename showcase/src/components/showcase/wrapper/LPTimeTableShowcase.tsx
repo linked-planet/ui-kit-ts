@@ -322,7 +322,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					nowOverwrite={ nowOverwrite }
 				/>
 			</div>
-			{ selectedTimeSlot &&
+			{/* selectedTimeSlot &&
 				<CreateNewTimeTableItemDialog
 					selectedTimeSlot={ selectedTimeSlot }
 					timeSteps={ timeSteps }
@@ -339,7 +339,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 						setSelectedTimeSlot( undefined )
 					} }
 				/>
-			}
+				*/}
 		</>
 	);
 

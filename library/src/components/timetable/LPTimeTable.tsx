@@ -33,6 +33,8 @@ export interface RowEntry<I> {
 export interface SelectedTimeSlot<G extends TimeTableGroup> {
 	group: G
 	timeSlotStart: Dayjs
+
+	groupRow: number
 }
 
 export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
