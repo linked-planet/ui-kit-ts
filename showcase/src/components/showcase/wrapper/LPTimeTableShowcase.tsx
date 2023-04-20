@@ -19,7 +19,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 		},
 		items: [],
 	},
-	{
+	/*{
 		group: {
 			title: "Group 1",
 			subtitle: "Group 1 description"
@@ -41,7 +41,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 1-3"
 			},
 		],
-	},
+	},*/
 	{
 		group: {
 			title: "Group 2",
@@ -60,7 +60,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 			},
 		],
 	},
-	{
+	/*{
 		group: {
 			title: "Group 3",
 			subtitle: "Group 3 description"
@@ -114,7 +114,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 4-4"
 			},
 		],
-	}
+	}*/
 ];
 
 
@@ -130,7 +130,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	const [ endDate, setEndDate ] = useState( dayjs().startOf( "day" ).add( 5, "days" ).add( 16, "hours" ) )
 
 	const [ selectedGroup, setSelectedGroup ] = useState<ExampleGroup | undefined>()
-	const [ selectedTimeSlot, setSelectedTimeSlot ] = useState<SelectedTimeSlot<ExampleGroup> | undefined>()
+	const [ selectedTimeSlots, setSelectedTimeSlots ] = useState<SelectedTimeSlot<ExampleGroup>[] | undefined>()
 	const [ selectedTimeSlotItem, setSelectedTimeSlotItem ] = useState<ExampleItem | undefined>()
 
 	const [ entries, setEntries ] = useState( exampleEntries )
@@ -147,11 +147,12 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	}, [] )
 
 	const onTimeSlotClickCB = useCallback( ( selectedTS: SelectedTimeSlot<ExampleGroup> ) => {
-		setSelectedTimeSlot( prev => {
-			if ( prev?.group === selectedTS.group && prev.timeSlotStart.isSame( selectedTS.timeSlotStart ) && prev.groupRow === selectedTS.groupRow ) {
-				return undefined
+		setSelectedTimeSlots( prev => {
+			const filtered = prev?.filter( it => it.group !== selectedTS.group || !it.timeSlotStart.isSame( selectedTS.timeSlotStart ) || it.groupRow !== selectedTS.groupRow )
+			if ( filtered?.length === prev?.length ) {
+				return [ ...( prev ?? [] ), selectedTS ]
 			}
-			return selectedTS
+			return filtered
 		} )
 	}, [] )
 
@@ -321,7 +322,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					timeSteps={ timeSteps }
 					entries={ entries }
 					selectedGroup={ selectedGroup }
-					selectedTimeSlot={ selectedTimeSlot }
+					selectedTimeSlots={ selectedTimeSlots }
 					selectedTimeSlotItem={ selectedTimeSlotItem }
 					//renderGroup={ ( group ) => <Group group={ group } /> }
 					//renderItem={ ( item ) => <Item item={ item } /> }

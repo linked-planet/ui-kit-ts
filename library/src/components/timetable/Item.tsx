@@ -1,9 +1,9 @@
-import React, { CSSProperties } from "react"
-import { TimeSlotBooking } from "./LPTimeTable"
+import React from "react"
+import { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
 
 import styles from "./Item.module.css"
 
-export function Item ( { group, item, isSelected }: { group: TimeSlotGroup, item: TimeSlotBooking, isSelected: boolean } ): JSX.Element {
+export function Item ( { group, item, isSelected }: { group: TimeTableGroup, item: TimeSlotBooking, isSelected: boolean } ): JSX.Element {
 	return (
 		<div
 			className={ `${ styles.timeSlotItem } ${ isSelected ? styles.selected : "" }` }
@@ -11,7 +11,7 @@ export function Item ( { group, item, isSelected }: { group: TimeSlotGroup, item
 			style={ {
 				overflow: "hidden",
 				textOverflow: "ellipsis",
-				/*whiteSpace: "nowrap",*/
+				//whiteSpace: "nowrap",
 				margin: "0.5rem 0",
 			} }
 		>

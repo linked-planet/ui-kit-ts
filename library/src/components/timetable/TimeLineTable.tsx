@@ -36,7 +36,7 @@ interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	slotsArray: Dayjs[]
 
 	selectedGroup: G | undefined
-	selectedTimeSlot: SelectedTimeSlot<G> | undefined
+	selectedTimeSlots: SelectedTimeSlot<G>[] | undefined
 
 	selectedTimeSlotItem: I | undefined
 
@@ -59,7 +59,7 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 		entries,
 		slotsArray,
 		selectedGroup,
-		selectedTimeSlot,
+		selectedTimeSlots,
 		selectedTimeSlotItem,
 		renderGroup,
 		renderTimeSlotItem,
@@ -82,7 +82,7 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 			renderGroup={ renderGroup }
 			renderTimeSlotItem={ renderTimeSlotItem }
 			selectedGroup={ selectedGroup }
-			selectedTimeSlot={ selectedTimeSlot }
+			selectedTimeSlots={ selectedTimeSlots }
 			selectedTimeSlotItem={ selectedTimeSlotItem }
 		/> : tableType === "single" ?
 			<SingleLineTableRows
@@ -95,7 +95,7 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 				renderGroup={ renderGroup }
 				renderTimeSlotItem={ renderTimeSlotItem }
 				selectedGroup={ selectedGroup }
-				selectedTimeSlot={ selectedTimeSlot }
+				selectedTimeSlots={ selectedTimeSlots }
 				selectedTimeSlotItem={ selectedTimeSlotItem }
 			/> :
 			<TableRows
@@ -108,7 +108,7 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 				renderGroup={ renderGroup }
 				renderTimeSlotItem={ renderTimeSlotItem }
 				selectedGroup={ selectedGroup }
-				selectedTimeSlot={ selectedTimeSlot }
+				selectedTimeSlots={ selectedTimeSlots }
 				selectedTimeSlotItem={ selectedTimeSlotItem }
 			/>
 
@@ -184,7 +184,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	groupRow,
 	groupRowMax,
 	rowEntryItem,
-	selectedTimeSlot,
+	selectedTimeSlots,
 	selectedTimeSlotItem,
 	onTimeSlotClick,
 	onTimeSlotItemClick,
@@ -198,7 +198,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	groupRow: number,
 	groupRowMax: number,
 	rowEntryItem: RowEntry<I> | RowEntrySingleLine<I> | null,
-	selectedTimeSlot: SelectedTimeSlot<G> | undefined,
+	selectedTimeSlots: SelectedTimeSlot<G>[] | undefined,
 	selectedTimeSlotItem: I | undefined,
 	onTimeSlotClick: ( ( s: SelectedTimeSlot<G> ) => void ) | undefined,
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined,
@@ -208,7 +208,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 ) {
 
 	const timeSlot = slotsArray[ timeSlotNumber ]
-	const timeSlotIsSelected = selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( timeSlot ) && selectedTimeSlot.groupRow === groupRow
+	const timeSlotIsSelected = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow )
 
 	if ( rowEntryItem && rowEntryItem.startSlot === timeSlotNumber ) {
 		if ( isRowEntry( rowEntryItem ) ) {
@@ -223,11 +223,12 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				for ( let c = 0; c < colSpan; c++ ) {
 					const iClosure = timeSlotNumber + c
 					const timeSlot = slotsArray[ iClosure ]
-					const timeSlotIsSelected = selectedTimeSlot?.group === group && selectedTimeSlot.timeSlotStart.isSame( timeSlot ) && selectedTimeSlot.groupRow === groupRow
+
+					const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow )
 					overlaySelectionDiv.push(
 						<div
 							key={ c }
-							className={ timeSlotIsSelected ? styles.selected : "" }
+							className={ timeSlotIsSelectedOverlayDiv ? styles.selected : "" }
 							style={ {
 								position: "absolute",
 								top: 0,
@@ -380,7 +381,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 		renderGroup,
 		renderTimeSlotItem,
 		selectedGroup,
-		selectedTimeSlot,
+		selectedTimeSlots,
 		selectedTimeSlotItem,
 	}: {
 		entries: TimeTableEntry<G, I>[],
@@ -392,7 +393,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 		renderGroup?: ( group: G, isSelected: boolean ) => JSX.Element
 		renderTimeSlotItem?: ( group: G, item: I, isSelected: boolean ) => JSX.Element
 		selectedGroup: G | undefined
-		selectedTimeSlot: SelectedTimeSlot<G> | undefined
+		selectedTimeSlots: SelectedTimeSlot<G>[] | undefined
 		selectedTimeSlotItem: I | undefined
 	}
 ) {
@@ -464,7 +465,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 							rowEntryItem={ rowEntryItem }
 							slotsArray={ slotsArray }
 							timeSteps={ timeSteps }
-							selectedTimeSlot={ selectedTimeSlot }
+							selectedTimeSlots={ selectedTimeSlots }
 							selectedTimeSlotItem={ selectedTimeSlotItem }
 							onTimeSlotItemClick={ onTimeSlotItemClick }
 							onTimeSlotClick={ onTimeSlotClick }
@@ -491,7 +492,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				</>
 			)
 		} )
-	}, [ entries, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlot, slotsArray, timeSteps ] )
+	}, [ entries, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, slotsArray, timeSteps ] )
 
 	return (
 		<>
@@ -514,7 +515,7 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 		renderGroup,
 		renderTimeSlotItem,
 		selectedGroup,
-		selectedTimeSlot,
+		selectedTimeSlots,
 		selectedTimeSlotItem,
 	}: {
 		entries: TimeTableEntry<G, I>[],
@@ -526,7 +527,7 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 		renderGroup?: ( group: G, isSelected: boolean ) => JSX.Element
 		renderTimeSlotItem?: ( group: G, item: I, isSelected: boolean ) => JSX.Element
 		selectedGroup: G | undefined
-		selectedTimeSlot: SelectedTimeSlot<G> | undefined
+		selectedTimeSlots: SelectedTimeSlot<G>[] | undefined
 		selectedTimeSlotItem: I | undefined
 	}
 ) {
@@ -604,7 +605,7 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 						onTimeSlotItemClick={ onTimeSlotItemClick }
 						renderTimeSlotItem={ renderTimeSlotItem }
 						selectedTimeSlotItem={ selectedTimeSlotItem }
-						selectedTimeSlot={ selectedTimeSlot }
+						selectedTimeSlots={ selectedTimeSlots }
 						bottomBorderWidth={ "1px" }
 					/>
 				)
@@ -624,7 +625,7 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 				</tr>
 			)
 		} )
-	}, [ entries, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlot, slotsArray, timeSteps ] )
+	}, [ entries, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, slotsArray, timeSteps ] )
 
 	return (
 		<>
@@ -644,12 +645,9 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 		onTimeSlotClick,
 		renderGroup,
 		renderTimeSlotItem,
-		//selectionMode,
 		selectedGroup,
-		selectedTimeSlot,
+		selectedTimeSlots,
 		selectedTimeSlotItem,
-		//setStartSlot,
-		//setEndSlot
 	}: {
 		entries: TimeTableEntry<G, I>[],
 		slotsArray: Dayjs[]
@@ -659,12 +657,9 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 		onTimeSlotClick: ( ( s: SelectedTimeSlot<G> ) => void ) | undefined
 		renderGroup?: ( group: G, isSelected: boolean ) => JSX.Element
 		renderTimeSlotItem?: ( group: G, item: I, isSelected: boolean ) => JSX.Element
-		//selectionMode: boolean
 		selectedGroup: G | undefined
-		selectedTimeSlot: SelectedTimeSlot<G> | undefined
+		selectedTimeSlots: SelectedTimeSlot<G>[] | undefined
 		selectedTimeSlotItem: I | undefined
-		//setStartSlot: ( slot: Dayjs ) => void
-		//setEndSlot: ( slot: Dayjs ) => void
 	}
 ) {
 	const tableRows = useMemo( () => {
@@ -705,7 +700,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 						groupRow={ 0 }
 						groupRowMax={ 0 }
 						rowEntryItem={ null }
-						selectedTimeSlot={ selectedTimeSlot }
+						selectedTimeSlots={ selectedTimeSlots }
 						selectedTimeSlotItem={ selectedTimeSlotItem }
 						onTimeSlotClick={ onTimeSlotClick }
 						onTimeSlotItemClick={ onTimeSlotItemClick }
@@ -768,7 +763,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								groupRow={ j }
 								groupRowMax={ rowItems.length - 1 }
 								rowEntryItem={ rowEntry }
-								selectedTimeSlot={ selectedTimeSlot }
+								selectedTimeSlots={ selectedTimeSlots }
 								selectedTimeSlotItem={ selectedTimeSlotItem }
 								onTimeSlotClick={ onTimeSlotClick }
 								onTimeSlotItemClick={ onTimeSlotItemClick }
@@ -789,7 +784,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 			}
 
 		} )
-	}, [ entries, onGroupClick, onTimeSlotItemClick, onTimeSlotClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlot, slotsArray, timeSteps ] )
+	}, [ entries, onGroupClick, onTimeSlotItemClick, onTimeSlotClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, slotsArray, timeSteps ] )
 
 	return (
 		<>

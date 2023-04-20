@@ -43,7 +43,7 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	entries: TimeTableEntry<G, I>[]
 
 	selectedGroup?: G
-	selectedTimeSlot?: SelectedTimeSlot<G>
+	selectedTimeSlots?: SelectedTimeSlot<G>[]
 
 	selectedTimeSlotItem?: I
 
@@ -81,7 +81,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	entries,
 	tableType,
 	selectedGroup,
-	selectedTimeSlot,
+	selectedTimeSlots,
 	selectedTimeSlotItem,
 	renderGroup,
 	renderTimeSlotItem,
@@ -431,7 +431,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 					entries={ entries }
 					slotsArray={ timeSlotSettings.slotsArray }
 					selectedGroup={ selectedGroup }
-					selectedTimeSlot={ selectedTimeSlot }
+					selectedTimeSlots={ selectedTimeSlots }
 					selectedTimeSlotItem={ selectedTimeSlotItem }
 					renderGroup={ renderGroup }
 					renderTimeSlotItem={ renderTimeSlotItem }
