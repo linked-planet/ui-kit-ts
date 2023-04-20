@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowcaseWrapperItem";
 import { PanelStateless } from "@atlaskit/panel"
-//import { IntlProvider } from "@atlaskit/panel/node_modules/react-intl-next"
 import { IntlProvider } from "react-intl-next";
 
 function PanelShowcase ( props: ShowcaseProps ) {

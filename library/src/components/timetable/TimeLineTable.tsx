@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import React, { MouseEvent, useMemo, useState } from "react"
 import type { Dayjs } from "dayjs"
 import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "./LPTimeTable"
 
@@ -40,13 +40,13 @@ interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 
 	selectedTimeSlotItem: I | undefined
 
-	renderGroup: ( ( group: G ) => JSX.Element ) | undefined
+	renderGroup: ( ( _: G ) => JSX.Element ) | undefined
 	renderTimeSlotItem: ( ( group: G, item: I, isSelected: boolean ) => JSX.Element ) | undefined
 
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined
-	onTimeSlotClick: ( ( s: SelectedTimeSlot<G> ) => void ) | undefined
+	onTimeSlotClick: ( ( _: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void ) | undefined
 
-	onGroupClick: ( ( group: G ) => void ) | undefined
+	onGroupClick: ( ( _: G ) => void ) | undefined
 
 	/* how long is 1 time slot */
 	timeSteps: number
@@ -71,6 +71,8 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 	}: TimeTableProps<G, I>
 ) {
 
+	const [ multiselect, setMultiselect ] = useState( false )
+
 	const table = tableType === "multi" ?
 		<MultiLineTableRows
 			entries={ entries }
@@ -84,6 +86,8 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 			selectedGroup={ selectedGroup }
 			selectedTimeSlots={ selectedTimeSlots }
 			selectedTimeSlotItem={ selectedTimeSlotItem }
+			multiselect={ multiselect }
+			setMultiselect={ setMultiselect }
 		/> : tableType === "single" ?
 			<SingleLineTableRows
 				entries={ entries }
@@ -97,6 +101,8 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 				selectedGroup={ selectedGroup }
 				selectedTimeSlots={ selectedTimeSlots }
 				selectedTimeSlotItem={ selectedTimeSlotItem }
+				multiselect={ multiselect }
+				setMultiselect={ setMultiselect }
 			/> :
 			<TableRows
 				entries={ entries }
@@ -110,6 +116,8 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 				selectedGroup={ selectedGroup }
 				selectedTimeSlots={ selectedTimeSlots }
 				selectedTimeSlotItem={ selectedTimeSlotItem }
+				multiselect={ multiselect }
+				setMultiselect={ setMultiselect }
 			/>
 
 	return (
@@ -176,6 +184,10 @@ function getItemLeftAndWidth (
 }
 
 
+const clickDiffToMouseDown = 50
+let multiselectDebounceHelper: number | undefined = undefined
+
+
 function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	slotsArray,
 	timeSteps,
@@ -189,7 +201,9 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	onTimeSlotClick,
 	onTimeSlotItemClick,
 	renderTimeSlotItem,
-	bottomBorderWidth
+	bottomBorderWidth,
+	multiselect,
+	setMultiselect,
 }: {
 	slotsArray: Dayjs[],
 	timeSteps: number,
@@ -200,15 +214,62 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	rowEntryItem: RowEntry<I> | RowEntrySingleLine<I> | null,
 	selectedTimeSlots: SelectedTimeSlot<G>[] | undefined,
 	selectedTimeSlotItem: I | undefined,
-	onTimeSlotClick: ( ( s: SelectedTimeSlot<G> ) => void ) | undefined,
+	onTimeSlotClick: ( ( s: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void ) | undefined,
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined,
 	renderTimeSlotItem: ( ( group: G, item: I, isSelected: boolean ) => JSX.Element ) | undefined,
 	bottomBorderWidth: string,
+	multiselect: boolean,
+	setMultiselect: ( ( multiselect: boolean ) => void ),
 }
 ) {
 
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const timeSlotIsSelected = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow )
+
+
+	const getMouseHandlers = ( timeSlot: Dayjs ) => ( {
+		/*onClick: () => {
+			if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, false )
+		},*/
+		onMouseOver: ( e: MouseEvent ) => {
+
+			if ( e.buttons !== 1 ) {
+				// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
+				clearTimeout( multiselectDebounceHelper )
+				if ( multiselect ) setMultiselect( false )
+				return
+			}
+
+			if ( multiselect && onTimeSlotClick ) {
+				if ( !selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow ) ) {
+					onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, true )
+				}
+			}
+		},
+		onMouseDown: () => {
+			multiselectDebounceHelper = setTimeout( () => {
+				setMultiselect( true )
+				clearTimeout( multiselectDebounceHelper )
+				multiselectDebounceHelper = undefined
+				if ( onTimeSlotClick ) {
+					if ( !selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow ) ) {
+						onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, true )
+					}
+				}
+
+			}, clickDiffToMouseDown )
+		},
+		onMouseUp: () => {
+			if ( multiselectDebounceHelper ) {
+				// click detection, if timeout is still running, this is a click
+				clearTimeout( multiselectDebounceHelper )
+				multiselectDebounceHelper = undefined
+				if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, false )
+			}
+			if ( setMultiselect ) setMultiselect( false )
+		},
+	} )
+
 
 	if ( rowEntryItem && rowEntryItem.startSlot === timeSlotNumber ) {
 		if ( isRowEntry( rowEntryItem ) ) {
@@ -236,9 +297,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 								width: `${ ( 1 / colSpan ) * 100 }%`,
 								height: "100%",
 							} }
-							onClick={ () => {
-								if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow } )
-							} }
+							{ ...getMouseHandlers( timeSlot ) }
 						/>
 					)
 				}
@@ -248,10 +307,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				<td
 					key={ timeSlotNumber }
 					colSpan={ colSpan }
-					onClick={ colSpan === 1 ? () => {
-						if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow } )
-					} : undefined
-					}
 					className={ timeSlotIsSelected && colSpan === 1 ? styles.selected : "" }
 					style={ {
 						borderBottomWidth: groupRow === groupRowMax ? "3px" : "1px",
@@ -262,8 +317,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 						key={ timeSlotNumber }
 						onClick={ () => {
 							if ( onTimeSlotItemClick ) onTimeSlotItemClick( group, item )
-						}
-						}
+						} }
 						style={ {
 							position: "relative",
 							left: `${ left * 100 }%`,
@@ -282,9 +336,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 					key={ timeSlotNumber }
 					colSpan={ rowEntryItem.length }
 					className={ timeSlotIsSelected ? styles.selected : "" }
-					onClick={ () => {
-						if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow: 0 } )
-					} }
+					{ ...getMouseHandlers( timeSlot ) }
 				>
 					{ rowEntryItem.items.map( ( item, j ) => {
 						const { left, width } = getItemLeftAndWidth( rowEntryItem, item, slotsArray, timeSteps )
@@ -292,16 +344,13 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 						return (
 							<div
 								key={ j }
-								onClick={
-									() => {
-										if ( onTimeSlotItemClick ) onTimeSlotItemClick( group, item )
-									}
-								}
 								style={ {
 									position: "relative",
 									left: `${ left * 100 }%`,
 									width: `${ width * 100 }%`,
+									userSelect: "none",
 								} }
+								className={ styles.unselectable }
 							>
 								{ renderTimeSlotItem ? renderTimeSlotItem( group, item, item === selectedTimeSlotItem ) : <Item group={ group } item={ item } isSelected={ item === selectedTimeSlotItem } /> }
 							</div>
@@ -315,9 +364,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	return (
 		<td
 			key={ timeSlotNumber }
-			onClick={ () => {
-				if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow } )
-			} }
+			{ ...getMouseHandlers( timeSlot ) }
 			className={ timeSlotIsSelected ? styles.selected : "" }
 			style={ {
 				borderBottomWidth: groupRow === groupRowMax ? bottomBorderWidth : "1px",
@@ -357,10 +404,10 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
 				borderBottomWidth: "3px",
 			} }
 			rowSpan={ groupRowMax + 1 }
-			className={ selectedGroup === group ? styles.selected : "" }
+			className={ `${ selectedGroup === group ? styles.selected : "" }` }
 		>
 			<div
-				className={ styles.groupHeader }
+				className={ `${ styles.groupHeader }` }
 			>
 				{ renderGroup ? renderGroup( group, group === selectedGroup ) : <Group group={ group } /> }
 			</div>
@@ -368,6 +415,22 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
 	)
 }
 
+
+type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
+	entries: TimeTableEntry<G, I>[],
+	slotsArray: Dayjs[]
+	timeSteps: number
+	onGroupClick: ( ( group: G ) => void ) | undefined
+	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined
+	onTimeSlotClick: ( ( s: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void ) | undefined
+	renderGroup?: ( group: G, isSelected: boolean ) => JSX.Element
+	renderTimeSlotItem?: ( group: G, item: I, isSelected: boolean ) => JSX.Element
+	selectedGroup: G | undefined
+	selectedTimeSlots: SelectedTimeSlot<G>[] | undefined
+	selectedTimeSlotItem: I | undefined,
+	multiselect: boolean,
+	setMultiselect: ( multiselect: boolean ) => void,
+}
 
 
 function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
@@ -383,19 +446,9 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 		selectedGroup,
 		selectedTimeSlots,
 		selectedTimeSlotItem,
-	}: {
-		entries: TimeTableEntry<G, I>[],
-		slotsArray: Dayjs[]
-		timeSteps: number
-		onGroupClick: ( ( group: G ) => void ) | undefined
-		onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined
-		onTimeSlotClick: ( ( s: SelectedTimeSlot<G> ) => void ) | undefined
-		renderGroup?: ( group: G, isSelected: boolean ) => JSX.Element
-		renderTimeSlotItem?: ( group: G, item: I, isSelected: boolean ) => JSX.Element
-		selectedGroup: G | undefined
-		selectedTimeSlots: SelectedTimeSlot<G>[] | undefined
-		selectedTimeSlotItem: I | undefined
-	}
+		multiselect,
+		setMultiselect,
+	}: TableRowsProps<G, I>
 ) {
 
 	const tableRows = useMemo( () => {
@@ -471,6 +524,8 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 							onTimeSlotClick={ onTimeSlotClick }
 							renderTimeSlotItem={ renderTimeSlotItem }
 							bottomBorderWidth={ groupRowMax === r ? "3px" : "1px" }
+							multiselect={ multiselect }
+							setMultiselect={ setMultiselect }
 						/>
 					)
 
@@ -492,7 +547,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				</>
 			)
 		} )
-	}, [ entries, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, slotsArray, timeSteps ] )
+	}, [ entries, multiselect, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, setMultiselect, slotsArray, timeSteps ] )
 
 	return (
 		<>
@@ -517,19 +572,9 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 		selectedGroup,
 		selectedTimeSlots,
 		selectedTimeSlotItem,
-	}: {
-		entries: TimeTableEntry<G, I>[],
-		slotsArray: Dayjs[]
-		timeSteps: number
-		onGroupClick: ( ( group: G ) => void ) | undefined
-		onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined
-		onTimeSlotClick: ( ( s: SelectedTimeSlot<G> ) => void ) | undefined
-		renderGroup?: ( group: G, isSelected: boolean ) => JSX.Element
-		renderTimeSlotItem?: ( group: G, item: I, isSelected: boolean ) => JSX.Element
-		selectedGroup: G | undefined
-		selectedTimeSlots: SelectedTimeSlot<G>[] | undefined
-		selectedTimeSlotItem: I | undefined
-	}
+		multiselect,
+		setMultiselect,
+	}: TableRowsProps<G, I>
 ) {
 
 	const tableRows = useMemo( () => {
@@ -607,6 +652,8 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 						selectedTimeSlotItem={ selectedTimeSlotItem }
 						selectedTimeSlots={ selectedTimeSlots }
 						bottomBorderWidth={ "1px" }
+						multiselect={ multiselect }
+						setMultiselect={ setMultiselect }
 					/>
 				)
 
@@ -625,7 +672,7 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 				</tr>
 			)
 		} )
-	}, [ entries, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, slotsArray, timeSteps ] )
+	}, [ entries, multiselect, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, setMultiselect, slotsArray, timeSteps ] )
 
 	return (
 		<>
@@ -648,19 +695,9 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 		selectedGroup,
 		selectedTimeSlots,
 		selectedTimeSlotItem,
-	}: {
-		entries: TimeTableEntry<G, I>[],
-		slotsArray: Dayjs[]
-		timeSteps: number
-		onGroupClick: ( ( group: G ) => void ) | undefined
-		onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined
-		onTimeSlotClick: ( ( s: SelectedTimeSlot<G> ) => void ) | undefined
-		renderGroup?: ( group: G, isSelected: boolean ) => JSX.Element
-		renderTimeSlotItem?: ( group: G, item: I, isSelected: boolean ) => JSX.Element
-		selectedGroup: G | undefined
-		selectedTimeSlots: SelectedTimeSlot<G>[] | undefined
-		selectedTimeSlotItem: I | undefined
-	}
+		multiselect,
+		setMultiselect,
+	}: TableRowsProps<G, I>
 ) {
 	const tableRows = useMemo( () => {
 		return entries.map( ( groupEntry, g ) => {
@@ -706,6 +743,8 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 						onTimeSlotItemClick={ onTimeSlotItemClick }
 						renderTimeSlotItem={ renderTimeSlotItem }
 						bottomBorderWidth={ "3px" }
+						multiselect={ multiselect }
+						setMultiselect={ setMultiselect }
 					/>
 				} )
 
@@ -769,6 +808,8 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								onTimeSlotItemClick={ onTimeSlotItemClick }
 								renderTimeSlotItem={ renderTimeSlotItem }
 								bottomBorderWidth={ isLastGroupItem ? "3px" : "1px" }
+								multiselect={ multiselect }
+								setMultiselect={ setMultiselect }
 							/>
 						)
 					}
@@ -784,7 +825,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 			}
 
 		} )
-	}, [ entries, onGroupClick, onTimeSlotItemClick, onTimeSlotClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, slotsArray, timeSteps ] )
+	}, [ entries, slotsArray, timeSteps, selectedGroup, onGroupClick, renderGroup, selectedTimeSlots, selectedTimeSlotItem, onTimeSlotClick, onTimeSlotItemClick, renderTimeSlotItem, multiselect, setMultiselect ] )
 
 	return (
 		<>

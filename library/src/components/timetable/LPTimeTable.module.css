@@ -39,6 +39,7 @@ th {
 	border-color: var(--border-color);
 	border-left-style: solid;
 	font-weight: 500;
+	user-select: none !important;
 }
 
 tbody tr:nth-child(2n) {
@@ -73,6 +74,7 @@ tbody td {
 	bottom: 0;
 	border-right: 2px solid var(--border-color);
 	background-color: var(--background-color);
+	user-select: none !important;
 }
 
 .headerTop {
@@ -117,4 +119,8 @@ tbody td {
 
 .selected {
 	background-color: var(--background-color-selected) !important;
+}
+
+.unselectable {
+	user-select: none !important;
 }

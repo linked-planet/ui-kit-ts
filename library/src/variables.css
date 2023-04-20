@@ -8,7 +8,7 @@
 
 	--background-color: #fff;
 	--background-color-alt: #f0f0f0;
-	--background-color-selected: #e0e1f1;
+	--background-color-selected: #c9cbebaa;
 
 	--primary-color: var(--ds-primary, #0052cc);
 	--primary-foreground-color: var(--ds-primary-foreground, #fff);

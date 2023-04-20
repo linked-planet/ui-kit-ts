@@ -19,7 +19,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 		},
 		items: [],
 	},
-	/*{
+	{
 		group: {
 			title: "Group 1",
 			subtitle: "Group 1 description"
@@ -41,7 +41,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 1-3"
 			},
 		],
-	},*/
+	},
 	{
 		group: {
 			title: "Group 2",
@@ -60,7 +60,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 			},
 		],
 	},
-	/*{
+	{
 		group: {
 			title: "Group 3",
 			subtitle: "Group 3 description"
@@ -114,7 +114,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 4-4"
 			},
 		],
-	}*/
+	}
 ];
 
 
@@ -146,13 +146,16 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	}, [] )
 
-	const onTimeSlotClickCB = useCallback( ( selectedTS: SelectedTimeSlot<ExampleGroup> ) => {
+	const onTimeSlotClickCB = useCallback( ( selectedTS: SelectedTimeSlot<ExampleGroup>, isFromMultiselect: boolean ) => {
 		setSelectedTimeSlots( prev => {
-			const filtered = prev?.filter( it => it.group !== selectedTS.group || !it.timeSlotStart.isSame( selectedTS.timeSlotStart ) || it.groupRow !== selectedTS.groupRow )
-			if ( filtered?.length === prev?.length ) {
-				return [ ...( prev ?? [] ), selectedTS ]
+			if ( !isFromMultiselect ) {
+				const filtered = prev?.filter( it => it.group !== selectedTS.group || !it.timeSlotStart.isSame( selectedTS.timeSlotStart ) || it.groupRow !== selectedTS.groupRow )
+				if ( filtered?.length === prev?.length ) {
+					return [ ...( prev ?? [] ), selectedTS ]
+				}
+				return filtered
 			}
-			return filtered
+			return [ ...( prev ?? [] ), selectedTS ]
 		} )
 	}, [] )
 

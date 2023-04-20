@@ -55,7 +55,7 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 
 	onTimeSlotItemClick?: ( group: G, item: I ) => void
 
-	onTimeSlotClick?: ( _: SelectedTimeSlot<G> ) => void
+	onTimeSlotClick?: ( _: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void
 
 	onGroupClick?: ( group: G ) => void
 
@@ -145,7 +145,6 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	useLayoutEffect( () => {
 		if ( tableBodyRef.current ) {
 			const tbodyFirstRow = tableBodyRef.current?.children[ 0 ] as HTMLTableRowElement | undefined
-			//const slotBars = tbodyFirstRow?.getElementsByClassName( uniqueId.current )
 			const slotBars = tbodyFirstRow?.children
 			if ( !slotBars ) {
 				console.log( "unable to find time slot columns for the time slot bars" )
@@ -157,6 +156,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 					// the set bar height to the height of the table body
 					const slotBarDiv = slotBarTD.children[ 0 ] as HTMLDivElement
 					slotBarDiv.style.height = tableBodyRef.current?.offsetHeight + "px"
+					slotBar.classList.add( styles.unselectable )
 				}
 			}
 		}
@@ -232,7 +232,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			console.log( "unable to find header for timeslot for the current time" )
 			return
 		}
-		nowTimeSlotCell.children[ 0 ].classList.add( styles.nowHeaderTimeSlot )
+		nowTimeSlotCell.children[ 0 ].classList.add( styles.nowHeaderTimeSlot, styles.unselectable )
 
 		// adjust the date header
 		const headerDateRow = tableHeaderRef.current?.children[ 1 ]
@@ -291,7 +291,9 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	}
 
 	return (
-		<table>
+		<table style={ {
+			userSelect: "none",
+		} }>
 			<thead ref={ tableHeaderRef }>
 				<tr>
 					<th
@@ -303,6 +305,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 							borderLeftStyle: "none",
 							width: firstColumnWidth,
 						} }
+						className={ styles.unselectable }
 					>
 						<div>&nbsp;</div>
 					</th>
@@ -319,6 +322,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 									borderStyle: "none",
 									width: columnWidth,
 								} }
+								className={ styles.unselectable }
 							>
 								<div>&nbsp;</div>
 							</th>
@@ -336,6 +340,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 							borderLeftStyle: "none",
 							width: firstColumnWidth,
 						} }
+						className={ styles.unselectable }
 					>
 						<div>&nbsp;</div>
 					</th>
@@ -352,6 +357,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 										display: "flex",
 										justifyContent: "center",
 									} }
+									className={ styles.unselectable }
 								>
 									{ date.format( headerDateFormat ) }
 								</div>
@@ -376,6 +382,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 								display: "flex",
 								justifyContent: "center",
 							} }
+							className={ styles.unselectable }
 						>
 							{ `${ timeSlotSettings.slotsArray[ 0 ].format( "HH:mm" ) } - ${ timeSlotSettings.slotsArray[ 0 ].add( timeSlotsPerDay * timeSteps, "minutes" ).format( "HH:mm" ) } [${ timeSlotSettings.slotsArray.length }]` }
 						</div>
@@ -387,7 +394,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 								key={ i }
 							>
 								<div
-									className={ styles.timeSlotHeader }
+									className={ `${ styles.timeSlotHeader } ${ styles.unselectable }` }
 									style={ {
 										paddingLeft: isNewDay ? "0.2rem" : "0.1rem",
 										borderLeftWidth: isNewDay ? "3px" : "0",

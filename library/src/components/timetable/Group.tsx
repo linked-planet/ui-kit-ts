@@ -1,6 +1,7 @@
 import React from "react"
 import type { TimeTableGroup } from "./LPTimeTable"
 
+
 export function Group<G extends TimeTableGroup> ( { group }: { group: G } ): JSX.Element {
 	return (
 		<div style={ {
