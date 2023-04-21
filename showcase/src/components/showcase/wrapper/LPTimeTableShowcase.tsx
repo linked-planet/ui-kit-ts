@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useEffect, useRef } from "react"
 import { useState } from "react"
 import dayjs from "dayjs"
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowcaseWrapperItem"
@@ -134,6 +134,13 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	const [ selectedTimeSlotItem, setSelectedTimeSlotItem ] = useState<ExampleItem | undefined>()
 
 	const [ entries, setEntries ] = useState( exampleEntries )
+	const [ showCreateNewItemModal, setShowCreateNewItemModal ] = useState( false )
+
+
+	useEffect( () => {
+		console.log( "table type changed, clearing selected time slots." );
+		setSelectedTimeSlots( undefined )
+	}, [ tableType ] )
 
 	// click handlers
 	const onGroupClickCB = useCallback( ( group: ExampleGroup ) => {
@@ -178,6 +185,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					gap: "2rem",
 				} }
 			>
+				{/* time table setup values */ }
 				<div
 					style={ {
 						display: "grid",
@@ -230,6 +238,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 						} }
 					/>
 				</div>
+				{/* time table layout */ }
 				<div
 					style={ {
 						display: "grid",
@@ -311,7 +320,15 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 						<option value="ceil">ceil</option>
 						<option value="floor">floor</option>
 					</select>
-
+				</div>
+				{/* buttons */ }
+				<div>
+					<button
+						disabled={ !selectedTimeSlots || selectedTimeSlots?.length === 0 }
+						onClick={ () => setShowCreateNewItemModal( true ) }
+					>
+						Create New Entry
+					</button>
 				</div>
 			</div>
 			<div
@@ -337,24 +354,26 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					nowOverwrite={ nowOverwrite }
 				/>
 			</div>
-			{/* selectedTimeSlot &&
+			{ showCreateNewItemModal && selectedTimeSlots && selectedTimeSlots.length > 0 && (
 				<CreateNewTimeTableItemDialog
-					selectedTimeSlot={ selectedTimeSlot }
+					selectedTimeSlots={ selectedTimeSlots }
 					timeSteps={ timeSteps }
-					onCancel={ () => setSelectedTimeSlot( undefined ) }
+					onCancel={ () => setShowCreateNewItemModal( false ) }
 					onConfirm={ ( group, newItem ) => {
+						setShowCreateNewItemModal( false )
+						setSelectedTimeSlots( undefined )
 						const grIdx = entries.findIndex( it => it.group === group )
 						if ( grIdx === -1 ) {
-							console.error( "unable to find group", group )
+							alert( "unable to find group: " + group.title )
 							return
 						}
 						const groupEntry = entries[ grIdx ]
-						groupEntry.items.push( newItem )
-						setEntries( entries )
-						setSelectedTimeSlot( undefined )
+						groupEntry.items = [ ...groupEntry.items, newItem ]
+						setEntries( [ ...entries ] )
+						console.log( "entry created:", newItem )
 					} }
 				/>
-				*/}
+			) }
 		</>
 	);
 

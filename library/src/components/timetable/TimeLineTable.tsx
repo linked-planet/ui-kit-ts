@@ -232,7 +232,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, false )
 		},*/
 		onMouseOver: ( e: MouseEvent ) => {
-
 			if ( e.buttons !== 1 ) {
 				// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
 				clearTimeout( multiselectDebounceHelper )
@@ -457,13 +456,11 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 			groupRowCountMap.clear()
 
 			let groupRowMax = 0
-			const rowItems: RowEntry<I>[] = []
-			groupEntry.items.forEach( ( item ) => {
-
+			const rowItems: RowEntry<I>[] = groupEntry.items.reduce( ( rowItems, item ) => {
 				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps, groupRowCountMap )
 				if ( startAndEndSlot == null ) {
 					console.log( "Item is out of day range of the time slots: ", item )
-					return null
+					return rowItems
 				}
 				const { startSlot, endSlot, groupRow } = startAndEndSlot
 				const length = endSlot - startSlot
@@ -478,11 +475,13 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 					length,
 					groupRow,
 				} )
-			} )
+				return rowItems
+			}, [] as RowEntry<I>[] )
 
 			const group = groupEntry.group
 
 			const trs = []
+
 			for ( let r = 0; r <= groupRowMax; r++ ) {
 				const tds = []
 
@@ -771,34 +770,15 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 
 
 				return rowItems.map( ( rowEntry, j ) => {
-					const tds: JSX.Element[] = []
-
-					if ( j == 0 ) {
-						//#region  add group fixed column
-						tds.push(
-							<GroupHeaderTableCell<G>
-								key={ -1 }
-								group={ group }
-								groupRowMax={ rowItems.length - 1 }
-								onGroupClick={ onGroupClick }
-								renderGroup={ renderGroup }
-								selectedGroup={ selectedGroup }
-							/>
-						);
-					}
-					//#endregion
-
 					const isLastGroupItem = j === rowItems.length - 1
-
-					for ( let i = 0; i < slotsArray.length; i++ ) {
-
-						tds.push(
+					const tds: JSX.Element[] = slotsArray.map( ( _, timeSlotNumber ) => {
+						return (
 							<TableCell<G, I>
-								key={ i }
+								key={ timeSlotNumber }
 								slotsArray={ slotsArray }
 								timeSteps={ timeSteps }
 								group={ group }
-								timeSlotNumber={ i }
+								timeSlotNumber={ timeSlotNumber }
 								groupRow={ j }
 								groupRowMax={ rowItems.length - 1 }
 								rowEntryItem={ rowEntry }
@@ -812,7 +792,23 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								setMultiselect={ setMultiselect }
 							/>
 						)
+					} )
+
+
+					if ( j == 0 ) {
+						//#region  add group fixed column
+						tds.unshift(
+							<GroupHeaderTableCell<G>
+								key={ -1 }
+								group={ group }
+								groupRowMax={ rowItems.length - 1 }
+								onGroupClick={ onGroupClick }
+								renderGroup={ renderGroup }
+								selectedGroup={ selectedGroup }
+							/>
+						);
 					}
+					//#endregion
 
 					return (
 						<tr

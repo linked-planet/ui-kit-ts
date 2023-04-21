@@ -1,8 +1,8 @@
 :root {
 	--text-color: var(--ds-text, #172b4d);
+	--text-color-inverse: var(--ds-text-inverse, #fff);
 	--text-color-alt: var(--ds-text-alt, #6b778c);
 	--text-selected-color: var(--ds-text-selected, #0052cc);
-	--text-color-inverse: var(--ds-text-inverse, #fff);
 
 	--border-color: #ccc;
 
@@ -11,6 +11,10 @@
 	--background-color-selected: #c9cbebaa;
 
 	--primary-color: var(--ds-primary, #0052cc);
-	--primary-foreground-color: var(--ds-primary-foreground, #fff);
 	--secondary-color: var(--ds-secondary, #ff5630);
+
+	--warning-color: var(--ds-warning, #ffab00);
+	--warning-inverse-color: var(--ds-warning-inverse, #172b4d);
+	--danger-color: var(--ds-error, #de350b);
+	--neutral-color: var(--ds-neutral, #42526e);
 }

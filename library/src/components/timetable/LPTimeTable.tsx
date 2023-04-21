@@ -122,7 +122,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		}
 	}
 
-	// get the days array for the header and the time slots
+	//#region get the days array for the header and the time slots
 	const timeSlotSettings = useMemo( () => {
 		if ( !isFinite( timeSlotsPerDay ) ) {
 			return null
@@ -140,8 +140,9 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 
 		return { daysArray, slotsArray }
 	}, [ daysDiff, startDate, timeSteps, timeSlotsPerDay ] )
+	//#endregion
 
-	// draw the time slot bars
+	//#region draw the time slot bars
 	useLayoutEffect( () => {
 		if ( tableBodyRef.current ) {
 			const tbodyFirstRow = tableBodyRef.current?.children[ 0 ] as HTMLTableRowElement | undefined
@@ -160,7 +161,9 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 				}
 			}
 		}
+		adjustNowBar()
 	} )
+	//#endregion
 
 	//#region now bar
 	// adjust the now bar moves the now bar to the current time slot, if it exists
@@ -289,6 +292,9 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			</div>
 		)
 	}
+
+	console.log( "ENTRIES", entries )
+	console.log( "SELECTED TIME SLOTS", selectedTimeSlots )
 
 	return (
 		<table style={ {
