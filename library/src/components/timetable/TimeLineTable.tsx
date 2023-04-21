@@ -14,6 +14,7 @@ interface RowEntrySingleLine<I> {
 	length: number
 }
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 function isRowEntrySingleLine ( rowEntry: RowEntrySingleLine<TimeSlotBooking> | RowEntry<TimeSlotBooking> ): rowEntry is RowEntrySingleLine<TimeSlotBooking> {
 	return ( rowEntry as RowEntrySingleLine<TimeSlotBooking> ).items !== undefined
 }

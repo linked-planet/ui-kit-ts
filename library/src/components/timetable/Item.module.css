@@ -1,4 +1,4 @@
-@import "../../variables.css";
+@import url("../../variables.css");
 
 .timeSlotItem {
 	box-sizing: border-box;
@@ -10,7 +10,6 @@
 	line-height: 2rem;
 	background-color: var(--neutral-color);
 	color: var(--text-color-inverse);
-	margin: 0 20px 0 0px;
 	position: relative;
 	z-index: 1;
 	user-select: text;

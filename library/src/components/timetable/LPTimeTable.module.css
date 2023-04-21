@@ -1,15 +1,14 @@
-@import "../../variables.css";
+@import url("../../variables.css");
 
 table {
 	display: table;
 	border-collapse: collapse;
 	overflow: auto;
 	table-layout: fixed;
-	/*min-width: 5000px;*/
 }
 
 thead {
-	border-bottom-width: 0px !important; /* atlas-kit overrides this */
+	border-bottom-width: 0 !important; /* atlas-kit overrides this */
 	position: sticky;
 	top: 0;
 	z-index: 3;
@@ -42,13 +41,14 @@ th {
 	user-select: none !important;
 }
 
-tbody tr:nth-child(2n) {
-	background-color: var(--background-color-alt);
-}
-
 tbody tr {
 	background-color: var(--background-color);
-	height: 3rem; /*height works as min-height in tables*/
+	/* height works as min-height in tables */
+	height: 3rem;
+}
+
+tbody tr:nth-child(2n) {
+	background-color: var(--background-color-alt);
 }
 
 tbody td {
@@ -68,10 +68,7 @@ tbody td {
 	display: flex;
 	position: absolute;
 	align-items: center;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	inset: 0;
 	border-right: 2px solid var(--border-color);
 	background-color: var(--background-color);
 	user-select: none !important;
@@ -99,7 +96,6 @@ tbody td {
 	position: absolute;
 	background-color: var(--secondary-color);
 	opacity: 0.6;
-	position: absolute;
 	top: 100%;
 	bottom: 0;
 	width: 2px;
@@ -108,10 +104,7 @@ tbody td {
 .timeSlotBar {
 	position: absolute;
 	background-color: var(--border-color);
-	top: 0;
-	bottom: 0;
-	left: 100%;
-	right: 0;
+	inset: 0 0 0 100%;
 	width: 1px;
 	height: 10px;
 	z-index: 1;

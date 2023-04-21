@@ -20,7 +20,9 @@ export const queryClient = new QueryClient()`
 </QueryClientProvider>`
 
 	const reactQueryQuery = `// TestQuery.ts
-export function getTestQuery() {
+import { useQuery } from "react-query"
+
+export function useTestQuery() {
     return useQuery<TestResponse>(QUERY.GET_USER, requestTestData)
 }
 
@@ -29,7 +31,7 @@ function requestTestData(): Promise<TestResponse> {
 }`
 
 	const reactQueryUsage = `// use query data inside component
-const testQuery = getTestQuery()
+const testQuery = useQuery<TestResponse>(QUERY.GET_USER, requestTestData)
 ...
 return (
 ...
@@ -42,7 +44,7 @@ return (
 		dispatch( {
 			type: "SET_MENU"
 		} )
-	}, [] )
+	}, [ dispatch ] )
 
 	return (
 		<div>

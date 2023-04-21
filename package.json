@@ -21,8 +21,9 @@
 		"build:sc": "vite build -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
 		"dev:sc": "vite -c vite.config.showcase.ts --open",
-		"eslint:lib": "eslint library/src/index.ts",
-		"eslint:sc": "eslint showcase/src/index.tsx"
+		"eslint": "eslint **/*.ts*",
+		"stylelint": "stylelint **/*.css",
+		"clean": "rm -rf dist && rm -rf dist-showcase "
 	},
 	"author": "Philip Karlsson",
 	"contributors": [
@@ -109,6 +110,9 @@
 		"prettier": "^2.8.7",
 		"react": "^16.14.0",
 		"react-dom": "^16.14.0",
+		"stylelint": "^15.5.0",
+		"stylelint-config-standard": "^33.0.0",
+		"stylelint-order": "^6.0.3",
 		"typescript": "^4.9.5",
 		"typescript-plugin-css-modules": "^5.0.1",
 		"vite": "^4.2.2",

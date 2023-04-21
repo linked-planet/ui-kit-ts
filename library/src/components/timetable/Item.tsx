@@ -3,7 +3,7 @@ import { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
 
 import styles from "./Item.module.css"
 
-export function Item ( { group, item, isSelected }: { group: TimeTableGroup, item: TimeSlotBooking, isSelected: boolean } ): JSX.Element {
+export function Item ( { item, isSelected }: { group: TimeTableGroup, item: TimeSlotBooking, isSelected: boolean } ): JSX.Element {
 	return (
 		<div
 			className={ `${ styles.timeSlotItem } ${ isSelected ? styles.selected : "" }` }

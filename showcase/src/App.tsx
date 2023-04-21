@@ -1,26 +1,23 @@
-import React from 'react';
+import React from "react"
 import { Content, Main, PageLayout } from "@atlaskit/page-layout"
-import ShowcaseTopNavigation from "./components/ShowcaseTopNavigation";
-import ShowcaseLeftSidebar from "./components/ShowcaseLeftSidebar";
-import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
-import IntroPage from "./page/IntroPage";
-import NotFoundPage from "./page/NotFoundPage";
-import ReduxPage from "./page/ReduxPage";
-import WrappersPage from "./page/WrappersPage";
+import ShowcaseTopNavigation from "./components/ShowcaseTopNavigation"
+import ShowcaseLeftSidebar from "./components/ShowcaseLeftSidebar"
+import { HashRouter, Navigate, Route, Routes } from "react-router-dom"
+import IntroPage from "./page/IntroPage"
+import NotFoundPage from "./page/NotFoundPage"
+import ReduxPage from "./page/ReduxPage"
+import WrappersPage from "./page/WrappersPage"
 import "@atlaskit/css-reset";
-import { appStore } from "./state/appStore";
+import { appStore } from "./state/appStore"
 import { Provider } from "react-redux";
-import { QueryClient, QueryClientProvider } from "react-query";
-import axios from "axios";
-import ReactQueryPage from "./page/ReactQueryPage";
+import { QueryClientProvider } from "react-query"
+import ReactQueryPage from "./page/ReactQueryPage"
 
-import "./custom.css";
+import "./custom.css"
+import { queryClient } from "./setup"
 
 
-export const axiosClient = axios.create( {
 
-} )
-export const queryClient = new QueryClient()
 function App () {
 	//require("./custom.css")
 

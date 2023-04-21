@@ -49,7 +49,7 @@ function WrappersPage () {
 		dispatch( {
 			type: "SET_MENU"
 		} )
-	}, [] )
+	}, [ dispatch ] )
 
 	return (
 		<div>

@@ -1,17 +1,19 @@
-
 export enum NotificationType {
-    WARNING, INFO, ERROR, SUCCESS
+	WARNING,
+	INFO,
+	ERROR,
+	SUCCESS,
 }
 
 export interface FlagAction {
-    content: string
-    onClick: () => void
+	content: string
+	onClick: () => void
 }
 
 export interface Notification {
-    id: string
-    type: NotificationType
-    title: String
-    description: String
-    actions: Array<FlagAction>
+	id: string
+	type: NotificationType
+	title: string
+	description: string
+	actions: Array<FlagAction>
 }
