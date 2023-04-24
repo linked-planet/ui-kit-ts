@@ -118,6 +118,42 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 ];
 
 
+
+const createTestEntries = ( startDate: Dayjs, endDate: Dayjs ) => {
+	if ( startDate.isSame( startDateInitial ) && endDate.isSame( endDateInitial ) ) {
+		return exampleEntries
+	}
+
+	const groupWithItems = exampleEntries.map( ( group, g ) => {
+		const newGroup: TimeTableEntry<ExampleGroup, ExampleItem> = {
+			group: group.group,
+			items: [],
+		}
+
+		const itemCount = Math.round( Math.random() * 10 )
+		for ( let i = 0; i < itemCount; i++ ) {
+			const addDays = Math.round( Math.random() * 3 )
+			const addStartMinutes = Math.round( Math.random() * 3 * 60 )
+			const addEndMinutes = Math.round( Math.random() * 6 * 60 )
+			const itemStartDate = startDate.add( addDays, "days" ).add( addStartMinutes, "minutes" )
+			const itemEndDate = itemStartDate.add( addEndMinutes, "minutes" )
+			newGroup.items.push( {
+				startDate: itemStartDate,
+				endDate: itemEndDate,
+				title: `Random Item ${ g }-${ i }`,
+			} )
+		}
+		return newGroup
+	} )
+
+	return groupWithItems
+}
+
+
+const startDateInitial = dayjs().startOf( "day" ).add( -1, "day" ).add( 8, "hours" )
+const endDateInitial = dayjs().startOf( "day" ).add( 5, "days" ).add( 16, "hours" )
+
+
 export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	const [ tableType, setTableType ] = useState<"single" | "multi" | "combi">( "combi" )
@@ -127,8 +163,8 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	const [ columnWidth, setColumnWidth ] = useState( 70 )
 
 	const [ timeFrame, setTimeFrame ] = useState( {
-		startDate: dayjs().startOf( "day" ).add( -1, "day" ).add( 8, "hours" ),
-		endDate: dayjs().startOf( "day" ).add( 5, "days" ).add( 16, "hours" )
+		startDate: startDateInitial,
+		endDate: endDateInitial
 	} )
 
 	const [ selectedGroup, setSelectedGroup ] = useState<ExampleGroup | undefined>()
@@ -176,6 +212,17 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 			return item
 		} )
 	}, [] )
+
+
+	const requestNewTimeFrameCB = ( startDate: Dayjs, endDate: Dayjs ) => {
+		setTimeFrame( {
+			startDate,
+			endDate,
+		} )
+		const newEntries = createTestEntries( startDate, endDate )
+		setEntries( newEntries )
+	}
+
 
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
 
@@ -362,10 +409,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					onGroupClick={ onGroupClickCB }
 					rounding={ rounding }
 					nowOverwrite={ nowOverwrite }
-					requestNewTimeFrame={ ( startDate: Dayjs, endDate: Dayjs ) => setTimeFrame( {
-						startDate,
-						endDate,
-					} ) }
+					requestNewTimeFrame={ requestNewTimeFrameCB }
 				/>
 			</div>
 			{ showCreateNewItemModal && selectedTimeSlots && selectedTimeSlots.length > 0 && (
