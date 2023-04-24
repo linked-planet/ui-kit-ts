@@ -22,9 +22,7 @@ tbody {
 
 th {
 	position: relative;
-	padding-bottom: 0 !important;
-	padding-left: 0 !important;
-	padding-right: 0 !important;
+	padding: 0 !important;
 	background-color: var(--background-color);
 	border-left-color: var(
 		--border-color
@@ -116,4 +114,21 @@ tbody td {
 
 .unselectable {
 	user-select: none !important;
+}
+
+.switchTimeFrameBtn {
+	background-color: inherit;
+	border: none;
+	border-radius: 100%;
+	cursor: pointer;
+	color: var(--text-color);
+}
+
+.switchTimeFrameBtn:hover {
+	color: var(--text-color-alt);
+	scale: 1.25;
+}
+
+.switchTimeFrameBtn:focus {
+	outline: none;
 }

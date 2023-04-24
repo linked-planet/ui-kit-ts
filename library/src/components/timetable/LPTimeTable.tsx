@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react"
+import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
+import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
 
 import dayjs, { Dayjs } from "dayjs"
 
@@ -64,10 +66,14 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	/* overwrite current time, mostly useful for debugging */
 	nowOverwrite?: Dayjs
 
-	firstColumnWidth: string | number;
-	columnWidth: string | number;
+	firstColumnWidth: string | number
+	columnWidth: string | number
 
-	rounding?: "floor" | "ceil" | "round";
+	rounding?: "floor" | "ceil" | "round"
+
+	requestNewTimeFrame ( nextStartDate: Dayjs, nextEndDate: Dayjs ): void
+
+	height?: string
 }
 
 const headerDateFormat = "ddd, DD.MM.YYYY"
@@ -91,6 +97,8 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	firstColumnWidth,
 	columnWidth,
 	rounding,
+	requestNewTimeFrame,
+	height,
 	nowOverwrite,
 }: LPTimeTableProps<G, I> ) => {
 	const nowBarRef = useRef<HTMLDivElement | undefined>()
@@ -267,6 +275,25 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	//#endregion
 
 
+	//#region time frame pagination
+	const onNextTimeFrameClick = () => {
+		if ( !requestNewTimeFrame ) return;
+		const dayDiff = endDate.diff( startDate, "days" )
+		const nextStartDate = startDate.add( dayDiff, "days" )
+		const nextEndDate = endDate.add( dayDiff, "days" )
+		requestNewTimeFrame( nextStartDate, nextEndDate )
+	}
+
+	const onPreviousTimeFrameClick = () => {
+		if ( !requestNewTimeFrame ) return;
+		const dayDiff = endDate.diff( startDate, "days" )
+		const prevStartDate = startDate.add( -dayDiff, "days" )
+		const prevEndDate = endDate.add( -dayDiff, "days" )
+		requestNewTimeFrame( prevStartDate, prevEndDate )
+	}
+
+
+
 	// scroll now bar into view if it exists
 	// TODO fix this, it doesn't work
 	/*useLayoutEffect( () => {
@@ -285,178 +312,220 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		}
 	}, [] )*/
 
-	if ( !timeSlotSettings?.daysArray || !timeSlotSettings?.slotsArray ) {
+	if (
+		!timeSlotSettings?.daysArray ||
+		timeSlotSettings.daysArray.length === 0 ||
+		!timeSlotSettings.slotsArray ||
+		timeSlotSettings.slotsArray.length === 0 ) {
 		return (
 			<div>
-				Invalid time slot size: { timeSteps }
+				Invalid time slot size
 			</div>
 		)
 	}
 
-	console.log( "ENTRIES", entries )
-	console.log( "SELECTED TIME SLOTS", selectedTimeSlots )
-
 	return (
-		<table style={ {
-			userSelect: "none",
-		} }>
-			<thead ref={ tableHeaderRef }>
-				<tr>
-					<th
-						style={ {
-							zIndex: 4,
-							position: "sticky",
-							left: 0,
-							top: 0,
-							borderLeftStyle: "none",
-							width: firstColumnWidth,
-						} }
-						className={ styles.unselectable }
+		<div
+			style={ {
+				overflow: "auto",
+				height,
+			} }
+		>
+			<div>
+				<div
+					style={ {
+						display: "flex",
+						gap: "1rem",
+					} }
+				>
+					<button
+						className={ styles.switchTimeFrameBtn }
+						onClick={ onPreviousTimeFrameClick }
 					>
-						<div>&nbsp;</div>
-					</th>
-					{/* a contentless row of th to make the table determine the correct width */ }
-					{ timeSlotSettings.slotsArray.map( ( _, i ) => {
-						return (
-							<th
-								key={ i }
-								style={ {
-									zIndex: 4,
-									position: "sticky",
-									left: 0,
-									top: 0,
-									borderStyle: "none",
-									width: columnWidth,
-								} }
-								className={ styles.unselectable }
-							>
-								<div>&nbsp;</div>
-							</th>
-						)
-					} )
-					}
-				</tr>
-				<tr>
-					<th
-						style={ {
-							zIndex: 4,
-							position: "sticky",
-							left: 0,
-							top: 0,
-							borderLeftStyle: "none",
-							width: firstColumnWidth,
-						} }
-						className={ styles.unselectable }
+						<ChevronLeftLargeIcon
+							label="previous time frame"
+						/>
+					</button>
+					<button
+						className={ styles.switchTimeFrameBtn }
+						onClick={ onNextTimeFrameClick }
 					>
-						<div>&nbsp;</div>
-					</th>
-
-					{ timeSlotSettings.daysArray.map( ( date ) => {
-
-						return (
-							<th
-								key={ date.toISOString() }
-								colSpan={ timeSlotsPerDay }
-							>
-								<div
-									style={ {
-										display: "flex",
-										justifyContent: "center",
-									} }
-									className={ styles.unselectable }
-								>
-									{ date.format( headerDateFormat ) }
-								</div>
-							</th>
-						)
-					} )
-					}
-				</tr>
-				<tr>
-					<th
-						className={ `${ styles.headerTop }` }
-						style={ {
-							zIndex: 4,
-							position: "sticky",
-							left: 0,
-							top: 0,
-							borderLeftStyle: "none",
-						} }
-					>
-						<div
+						<ChevronRightLargeIcon
+							label="next time frame"
+						/>
+					</button>
+				</div>
+			</div>
+			<table
+				style={ {
+					userSelect: "none",
+				} }
+			>
+				<thead ref={ tableHeaderRef }>
+					<tr>
+						<th
 							style={ {
-								display: "flex",
-								justifyContent: "center",
+								zIndex: 4,
+								position: "sticky",
+								left: 0,
+								top: 0,
+								borderLeftStyle: "none",
+								width: firstColumnWidth,
 							} }
 							className={ styles.unselectable }
 						>
-							{ `${ timeSlotSettings.slotsArray[ 0 ].format( "HH:mm" ) } - ${ timeSlotSettings.slotsArray[ 0 ].add( timeSlotsPerDay * timeSteps, "minutes" ).format( "HH:mm" ) } [${ timeSlotSettings.slotsArray.length }]` }
-						</div>
-					</th>
-					{ timeSlotSettings.slotsArray.map( ( slot, i ) => {
-						const isNewDay = i > 0 && !timeSlotSettings.slotsArray[ i - 1 ].isSame( slot, "day" )
-						return (
-							<th
-								key={ i }
-							>
-								<div
-									className={ `${ styles.timeSlotHeader } ${ styles.unselectable }` }
+						</th>
+						{/* a contentless row of th to make the table determine the correct width */ }
+						{ timeSlotSettings.slotsArray.map( ( _, i ) => {
+							return (
+								<th
+									key={ i }
 									style={ {
-										paddingLeft: isNewDay ? "0.2rem" : "0.1rem",
-										borderLeftWidth: isNewDay ? "3px" : "0",
+										zIndex: 4,
+										position: "sticky",
+										left: 0,
+										top: 0,
+										borderStyle: "none",
+										width: columnWidth,
 									} }
+									className={ styles.unselectable }
 								>
-									{ slot.format( headerTimeSlotFormat ) }
-								</div>
-							</th>
-						)
-					} )
-					}
-				</tr>
-			</thead>
-			<tbody ref={ tableBodyRef }>
-				{/* render the time slot bars, it has to be as body tds because of the z-index in the theader */ }
-				<tr className={ styles.nowRow }>
-					<td>
-					</td>
-					{ timeSlotSettings.slotsArray.map( ( slot, i ) => {
-						const isNextNewDay = i == timeSlotSettings.slotsArray.length - 1 || !timeSlotSettings.slotsArray[ i + 1 ].isSame( slot, "day" )
-						return (
-							<td
-								key={ i }
+								</th>
+							)
+						} )
+						}
+					</tr>
+					<tr>
+						<th
+							style={ {
+								zIndex: 4,
+								position: "sticky",
+								left: 0,
+								top: 0,
+								borderLeftStyle: "none",
+								width: firstColumnWidth,
+							} }
+							className={ styles.unselectable }
+						>
+							<div
 								style={ {
-									position: "relative",
+									display: "flex",
+									justifyContent: "right",
+									paddingRight: "0.3rem",
+									borderRight: "2px solid var(--border-color)"
 								} }
 							>
-								<div
-									className={ styles.timeSlotBar }
+								{ `${ startDate.format( "DD.MM." ) } - ${ endDate.format( "DD.MM.YY" ) }` }
+							</div>
+						</th>
+
+						{ timeSlotSettings.daysArray.map( ( date ) => {
+
+							return (
+								<th
+									key={ date.toISOString() }
+									colSpan={ timeSlotsPerDay }
+								>
+									<div
+										style={ {
+											display: "flex",
+											justifyContent: "center",
+										} }
+										className={ styles.unselectable }
+									>
+										{ date.format( headerDateFormat ) }
+									</div>
+								</th>
+							)
+						} )
+						}
+					</tr>
+					<tr>
+						<th
+							className={ `${ styles.headerTop }` }
+							style={ {
+								zIndex: 4,
+								position: "sticky",
+								left: 0,
+								top: 0,
+								borderLeftStyle: "none",
+							} }
+						>
+							<div
+								style={ {
+									display: "flex",
+									justifyContent: "right",
+									paddingRight: "0.3rem",
+									borderRight: "2px solid var(--border-color)"
+								} }
+								className={ styles.unselectable }
+							>
+								{ `${ timeSlotSettings.slotsArray[ 0 ].format( "HH:mm" ) } - ${ timeSlotSettings.slotsArray[ 0 ].add( timeSlotsPerDay * timeSteps, "minutes" ).format( "HH:mm" ) } [${ timeSlotSettings.slotsArray.length }]` }
+							</div>
+						</th>
+						{ timeSlotSettings.slotsArray.map( ( slot, i ) => {
+							const isNewDay = i > 0 && !timeSlotSettings.slotsArray[ i - 1 ].isSame( slot, "day" )
+							return (
+								<th
+									key={ i }
+								>
+									<div
+										className={ `${ styles.timeSlotHeader } ${ styles.unselectable }` }
+										style={ {
+											paddingLeft: isNewDay ? "0.2rem" : "0.1rem",
+											borderLeftWidth: isNewDay ? "3px" : "0",
+										} }
+									>
+										{ slot.format( headerTimeSlotFormat ) }
+									</div>
+								</th>
+							)
+						} )
+						}
+					</tr>
+				</thead>
+				<tbody ref={ tableBodyRef }>
+					{/* render the time slot bars, it has to be as body tds because of the z-index in the theader */ }
+					<tr className={ styles.nowRow }>
+						<td>
+						</td>
+						{ timeSlotSettings.slotsArray.map( ( slot, i ) => {
+							const isNextNewDay = i == timeSlotSettings.slotsArray.length - 1 || !timeSlotSettings.slotsArray[ i + 1 ].isSame( slot, "day" )
+							return (
+								<td
+									key={ i }
 									style={ {
-										width: isNextNewDay ? "3px" : "1px",
+										position: "relative",
 									} }
 								>
-								</div>
-							</td>
-						)
-					} ) }
-				</tr>
-
-				<TimeLineTable<G, I>
-					entries={ entries }
-					slotsArray={ timeSlotSettings.slotsArray }
-					selectedGroup={ selectedGroup }
-					selectedTimeSlots={ selectedTimeSlots }
-					selectedTimeSlotItem={ selectedTimeSlotItem }
-					renderGroup={ renderGroup }
-					renderTimeSlotItem={ renderTimeSlotItem }
-					onTimeSlotItemClick={ onTimeSlotItemClick }
-					onTimeSlotClick={ onTimeSlotClick }
-					onGroupClick={ onGroupClick }
-					timeSteps={ timeSteps }
-					tableType={ tableType }
-				/>
-
-			</tbody>
-		</table >
+									<div
+										className={ styles.timeSlotBar }
+										style={ {
+											width: isNextNewDay ? "3px" : "1px",
+										} }
+									>
+									</div>
+								</td>
+							)
+						} ) }
+					</tr>
+					<TimeLineTable<G, I>
+						entries={ entries }
+						slotsArray={ timeSlotSettings.slotsArray }
+						selectedGroup={ selectedGroup }
+						selectedTimeSlots={ selectedTimeSlots }
+						selectedTimeSlotItem={ selectedTimeSlotItem }
+						renderGroup={ renderGroup }
+						renderTimeSlotItem={ renderTimeSlotItem }
+						onTimeSlotItemClick={ onTimeSlotItemClick }
+						onTimeSlotClick={ onTimeSlotClick }
+						onGroupClick={ onGroupClick }
+						timeSteps={ timeSteps }
+						tableType={ tableType }
+					/>
+				</tbody>
+			</table >
+		</div>
 	)
 }
 
