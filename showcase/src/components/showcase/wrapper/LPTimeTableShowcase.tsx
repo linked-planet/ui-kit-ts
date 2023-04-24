@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react"
 import { useState } from "react"
-import dayjs from "dayjs"
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowcaseWrapperItem"
+import dayjs, { Dayjs } from "dayjs"
+import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { LPTimeTable, SelectedTimeSlot } from "@linked-planet/ui-kit-ts"
 import type { TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "@linked-planet/ui-kit-ts"
@@ -126,8 +126,10 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	const [ firstColumnWidth, setFirstColumnWidth ] = useState( 150 )
 	const [ columnWidth, setColumnWidth ] = useState( 70 )
 
-	const [ startDate, setStartDate ] = useState( dayjs().startOf( "day" ).add( -1, "day" ).add( 8, "hours" ) )
-	const [ endDate, setEndDate ] = useState( dayjs().startOf( "day" ).add( 5, "days" ).add( 16, "hours" ) )
+	const [ timeFrame, setTimeFrame ] = useState( {
+		startDate: dayjs().startOf( "day" ).add( -1, "day" ).add( 8, "hours" ),
+		endDate: dayjs().startOf( "day" ).add( 5, "days" ).add( 16, "hours" )
+	} )
 
 	const [ selectedGroup, setSelectedGroup ] = useState<ExampleGroup | undefined>()
 	const [ selectedTimeSlots, setSelectedTimeSlots ] = useState<SelectedTimeSlot<ExampleGroup>[] | undefined>()
@@ -177,7 +179,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
 
-	return (
+	const example = (
 		<>
 			<div
 				style={ {
@@ -201,8 +203,13 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					</label>
 					<input
 						type="datetime-local"
-						value={ startDate.format( "YYYY-MM-DDTHH:mm" ) }
-						onChange={ ( e ) => setStartDate( dayjs( e.target.value ) ) }
+						value={ timeFrame.startDate.format( "YYYY-MM-DDTHH:mm" ) }
+						onChange={ ( e ) => {
+							setTimeFrame( {
+								startDate: dayjs( e.target.value ),
+								endDate: timeFrame.endDate,
+							} )
+						} }
 					/>
 					<label
 						style={ { marginRight: "1rem" } }
@@ -212,8 +219,13 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					</label>
 					<input
 						type="datetime-local"
-						value={ endDate.format( "YYYY-MM-DDTHH:mm" ) }
-						onChange={ ( e ) => setEndDate( dayjs( e.target.value ) ) }
+						value={ timeFrame.endDate.format( "YYYY-MM-DDTHH:mm" ) }
+						onChange={ ( e ) => {
+							setTimeFrame( {
+								startDate: timeFrame.startDate,
+								endDate: dayjs( e.target.value ),
+							} )
+						} }
 					/>
 					<label
 						htmlFor="timesteps"
@@ -331,14 +343,12 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					</button>
 				</div>
 			</div>
-			<div
-				style={ { height: "500px", overflow: "auto" } }
-			>
+			<div style={ { marginTop: "2rem" } }>
 				<LPTimeTable
 					firstColumnWidth={ firstColumnWidth }
 					columnWidth={ columnWidth }
-					startDate={ startDate }
-					endDate={ endDate }
+					startDate={ timeFrame.startDate }
+					endDate={ timeFrame.endDate }
 					timeSteps={ timeSteps }
 					entries={ entries }
 					selectedGroup={ selectedGroup }
@@ -352,6 +362,10 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					onGroupClick={ onGroupClickCB }
 					rounding={ rounding }
 					nowOverwrite={ nowOverwrite }
+					requestNewTimeFrame={ ( startDate: Dayjs, endDate: Dayjs ) => setTimeFrame( {
+						startDate,
+						endDate,
+					} ) }
 				/>
 			</div>
 			{ showCreateNewItemModal && selectedTimeSlots && selectedTimeSlots.length > 0 && (
@@ -377,7 +391,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 		</>
 	);
 
-	/*return (
+	return (
 		<ShowcaseWrapperItem
 			name="Time Table"
 			sourceCodeExampleId="time-table"
@@ -394,5 +408,5 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 				]
 			}
 		/>
-	)*/
+	)
 }

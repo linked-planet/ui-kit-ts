@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowcaseWrapperItem";
+import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
 import { PanelStateless } from "@atlaskit/panel"
 import { IntlProvider } from "react-intl-next";
 

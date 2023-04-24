@@ -1,5 +1,5 @@
 import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowcaseWrapperItem";
+import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
 import AwesomeSlider from "react-awesome-slider"
 
 import "react-awesome-slider/dist/styles.css"

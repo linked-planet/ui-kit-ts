@@ -1,5 +1,5 @@
 import React from "react"
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowcaseWrapperItem"
+import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import SearchIcon from "@atlaskit/icon/glyph/search"
 import { Tooltip } from "react-tooltip"
 

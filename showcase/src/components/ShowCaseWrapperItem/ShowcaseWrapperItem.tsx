@@ -2,6 +2,8 @@ import React, { ReactNode } from "react"
 import Tabs, { Tab, TabList, TabPanel } from "@atlaskit/tabs"
 import { CodeBlock } from "@atlaskit/code"
 
+import styles from "./ShowCaseWrapperItem.module.css"
+
 export interface Package {
 	name: string,
 	url: string
@@ -32,7 +34,7 @@ function extractSourceCodeExample ( overallSourceCode: string, sourceCodeExample
 	return "";
 }
 
-function ShowcaseWrapperItem ( props: ShowcaseWrapperItemProps ) {
+export default function ShowcaseWrapperItem ( props: ShowcaseWrapperItemProps ) {
 
 	let code = ""
 	//console.info("OverallSourceCode, SourceCodeExampleId", props.overallSourceCode, props.sourceCodeExampleId)
@@ -61,13 +63,12 @@ function ShowcaseWrapperItem ( props: ShowcaseWrapperItemProps ) {
 						<Tab>Example Source</Tab>
 					</TabList>
 					<TabPanel>
-						<div style={ { display: "flex" } }>
+						<div style={ { overflow: "hidden" } }>
 							{ props.examples.map( ( example, i ) => {
 								return (
 									<div
 										key={ i }
-										className="example"
-										style={ { width: "100%" } }
+										className={ styles.example }
 									>
 										{ example }
 									</div>
@@ -76,12 +77,12 @@ function ShowcaseWrapperItem ( props: ShowcaseWrapperItemProps ) {
 						</div>
 					</TabPanel>
 					<TabPanel>
-						<div style={ { width: "100%" } }>
+						<div style={ { overflow: "hidden" } }>
 							{ code == "" &&
 								<span>No sources found...</span>
 							}
 							{ code != "" &&
-								<div style={ { width: "100%" } }>
+								<div>
 									<CodeBlock
 										text={ code }
 										language="typescript"
@@ -96,5 +97,3 @@ function ShowcaseWrapperItem ( props: ShowcaseWrapperItemProps ) {
 	)
 
 }
-
-export default ShowcaseWrapperItem;

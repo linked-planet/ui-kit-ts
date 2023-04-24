@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowcaseWrapperItem";
+import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
 import { HeadingItem, MenuGroup } from "@atlaskit/menu";
 import { SimpleTag } from "@atlaskit/tag";
 import Badge from "@atlaskit/badge";

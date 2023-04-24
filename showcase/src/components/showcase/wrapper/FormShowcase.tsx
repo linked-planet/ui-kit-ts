@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowcaseWrapperItem";
+import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
 import Form, { CheckboxField, Field, Fieldset, FormFooter, FormHeader, FormSection, HelperMessage } from "@atlaskit/form";
 import TextField from "@atlaskit/textfield";
 import Button, { ButtonGroup, LoadingButton } from "@atlaskit/button";
