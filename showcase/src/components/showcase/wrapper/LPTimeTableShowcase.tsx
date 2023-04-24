@@ -119,34 +119,56 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 
 
 
-const createTestEntries = ( startDate: Dayjs, endDate: Dayjs ) => {
+function createTestItems ( startDate: Dayjs, endDate: Dayjs, groupNumber: number ) {
+	const itemCount = Math.round( Math.random() * 10 )
+	const ret = []
+	for ( let i = 0; i < itemCount; i++ ) {
+		const addDays = Math.round( Math.random() * endDate.diff( startDate, "days" ) )
+		const addStartMinutes = Math.round( Math.random() * 3 * 60 )
+		const addEndMinutes = Math.round( Math.random() * 6 * 60 )
+		const itemStartDate = startDate.add( addDays, "days" ).add( addStartMinutes, "minutes" )
+		const itemEndDate = itemStartDate.add( addEndMinutes, "minutes" )
+		ret.push( {
+			startDate: itemStartDate,
+			endDate: itemEndDate,
+			title: `Random Item ${ groupNumber }-${ i }`,
+		} )
+	}
+	return ret
+}
+
+
+
+function createTestEntries ( startDate: Dayjs, endDate: Dayjs, currentEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] ) {
 	if ( startDate.isSame( startDateInitial ) && endDate.isSame( endDateInitial ) ) {
 		return exampleEntries
 	}
 
-	const groupWithItems = exampleEntries.map( ( group, g ) => {
+	const groupWithItems = currentEntries.map( ( group, g ) => {
 		const newGroup: TimeTableEntry<ExampleGroup, ExampleItem> = {
 			group: group.group,
-			items: [],
-		}
-
-		const itemCount = Math.round( Math.random() * 10 )
-		for ( let i = 0; i < itemCount; i++ ) {
-			const addDays = Math.round( Math.random() * 3 )
-			const addStartMinutes = Math.round( Math.random() * 3 * 60 )
-			const addEndMinutes = Math.round( Math.random() * 6 * 60 )
-			const itemStartDate = startDate.add( addDays, "days" ).add( addStartMinutes, "minutes" )
-			const itemEndDate = itemStartDate.add( addEndMinutes, "minutes" )
-			newGroup.items.push( {
-				startDate: itemStartDate,
-				endDate: itemEndDate,
-				title: `Random Item ${ g }-${ i }`,
-			} )
+			items: createTestItems( startDate, endDate, g ),
 		}
 		return newGroup
 	} )
 
 	return groupWithItems
+}
+
+
+function createMoreTestGroups ( startDate: Dayjs, endDate: Dayjs, count: number, startCount: number ) {
+	const newGroups: TimeTableEntry<ExampleGroup, ExampleItem>[] = []
+	for ( let i = 0; i < count; i++ ) {
+		const groupNumber = startCount + i
+		newGroups.push( {
+			group: {
+				title: `Group ${ groupNumber }`,
+				subtitle: "random",
+			},
+			items: createTestItems( startDate, endDate, groupNumber ),
+		} )
+	}
+	return newGroups
 }
 
 
@@ -219,8 +241,18 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 			startDate,
 			endDate,
 		} )
-		const newEntries = createTestEntries( startDate, endDate )
+		const newEntries = createTestEntries( startDate, endDate, entries )
 		setEntries( newEntries )
+	}
+
+	const requestEntryRangeCB = ( start: number, end: number ) => {
+		if ( end < exampleEntries.length ) {
+			setEntries( exampleEntries.slice( start, end ) )
+		} else {
+			const missing = end - exampleEntries.length
+			const missingGroups = createMoreTestGroups( timeFrame.startDate, timeFrame.endDate, missing, exampleEntries.length )
+			setEntries( [ ...exampleEntries, ...missingGroups ] )
+		}
 	}
 
 
@@ -390,7 +422,12 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					</button>
 				</div>
 			</div>
-			<div style={ { marginTop: "2rem" } }>
+			<div
+				style={ {
+					marginTop: "2rem",
+					//height: "400px",
+				} }
+			>
 				<LPTimeTable
 					firstColumnWidth={ firstColumnWidth }
 					columnWidth={ columnWidth }
@@ -409,7 +446,9 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					onGroupClick={ onGroupClickCB }
 					rounding={ rounding }
 					nowOverwrite={ nowOverwrite }
-					requestNewTimeFrame={ requestNewTimeFrameCB }
+					requestTimeFrameCB={ requestNewTimeFrameCB }
+					requestEntryRangeCB={ requestEntryRangeCB }
+					maxEntryCount={ 100 }
 				/>
 			</div>
 			{ showCreateNewItemModal && selectedTimeSlots && selectedTimeSlots.length > 0 && (

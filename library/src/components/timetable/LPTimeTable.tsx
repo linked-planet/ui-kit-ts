@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react"
-import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
-import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
+import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
+import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
+import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 
 import dayjs, { Dayjs } from "dayjs"
 
@@ -71,7 +72,10 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 
 	rounding?: "floor" | "ceil" | "round"
 
-	requestNewTimeFrame ( nextStartDate: Dayjs, nextEndDate: Dayjs ): void
+	requestTimeFrameCB: ( nextStartDate: Dayjs, nextEndDate: Dayjs ) => void
+	requestEntryRangeCB: ( start: number, end: number ) => void
+
+	maxEntryCount: number
 
 	height?: string
 }
@@ -97,8 +101,10 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	firstColumnWidth,
 	columnWidth,
 	rounding,
-	requestNewTimeFrame,
+	requestTimeFrameCB,
+	requestEntryRangeCB,
 	height,
+	maxEntryCount,
 	nowOverwrite,
 }: LPTimeTableProps<G, I> ) => {
 	const nowBarRef = useRef<HTMLDivElement | undefined>()
@@ -275,22 +281,32 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	//#endregion
 
 
-	//#region time frame pagination
+	//#region time frame and groups pagination
 	const onNextTimeFrameClick = () => {
-		if ( !requestNewTimeFrame ) return;
+		if ( !requestTimeFrameCB ) return;
 		const dayDiff = endDate.diff( startDate, "days" )
 		const nextStartDate = startDate.add( dayDiff, "days" )
 		const nextEndDate = endDate.add( dayDiff, "days" )
-		requestNewTimeFrame( nextStartDate, nextEndDate )
+		requestTimeFrameCB( nextStartDate, nextEndDate )
 	}
 
 	const onPreviousTimeFrameClick = () => {
-		if ( !requestNewTimeFrame ) return;
+		if ( !requestTimeFrameCB ) return;
 		const dayDiff = endDate.diff( startDate, "days" )
 		const prevStartDate = startDate.add( -dayDiff, "days" )
 		const prevEndDate = endDate.add( -dayDiff, "days" )
-		requestNewTimeFrame( prevStartDate, prevEndDate )
+		requestTimeFrameCB( prevStartDate, prevEndDate )
 	}
+
+	const onLoadMoreGroupsClick = () => {
+		if ( !requestEntryRangeCB ) return;
+		let newEnd = entries.length + 10;
+		if ( newEnd > maxEntryCount ) {
+			newEnd = maxEntryCount
+		}
+		requestEntryRangeCB( 0, newEnd )
+	}
+	//#endregion
 
 
 
@@ -325,207 +341,222 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	}
 
 	return (
-		<div
-			style={ {
-				overflow: "auto",
-				height,
-			} }
-		>
-			<div>
-				<div
-					style={ {
-						display: "flex",
-						gap: "1rem",
-					} }
-				>
-					<button
-						className={ styles.switchTimeFrameBtn }
-						onClick={ onPreviousTimeFrameClick }
-					>
-						<ChevronLeftLargeIcon
-							label="previous time frame"
-						/>
-					</button>
-					<button
-						className={ styles.switchTimeFrameBtn }
-						onClick={ onNextTimeFrameClick }
-					>
-						<ChevronRightLargeIcon
-							label="next time frame"
-						/>
-					</button>
-				</div>
-			</div>
-			<table
+		<
+			>
+			<div
 				style={ {
-					userSelect: "none",
+					display: "flex",
+					gap: "1rem",
 				} }
 			>
-				<thead ref={ tableHeaderRef }>
-					<tr>
-						<th
-							style={ {
-								zIndex: 4,
-								position: "sticky",
-								left: 0,
-								top: 0,
-								borderLeftStyle: "none",
-								width: firstColumnWidth,
-							} }
-							className={ styles.unselectable }
-						>
-						</th>
-						{/* a contentless row of th to make the table determine the correct width */ }
-						{ timeSlotSettings.slotsArray.map( ( _, i ) => {
-							return (
-								<th
-									key={ i }
-									style={ {
-										zIndex: 4,
-										position: "sticky",
-										left: 0,
-										top: 0,
-										borderStyle: "none",
-										width: columnWidth,
-									} }
-									className={ styles.unselectable }
-								>
-								</th>
-							)
-						} )
-						}
-					</tr>
-					<tr>
-						<th
-							style={ {
-								zIndex: 4,
-								position: "sticky",
-								left: 0,
-								top: 0,
-								borderLeftStyle: "none",
-								width: firstColumnWidth,
-							} }
-							className={ styles.unselectable }
-						>
-							<div
+				<button
+					className={ styles.switchTimeFrameBtn }
+					onClick={ onPreviousTimeFrameClick }
+					title="Previous Time Frame"
+				>
+					<ChevronLeftIcon label="prevtimeframe" />
+				</button>
+				<button
+					className={ styles.switchTimeFrameBtn }
+					onClick={ onNextTimeFrameClick }
+					title="Next Time Frame"
+				>
+					<ChevronRightIcon label="nexttimeframe" />
+				</button>
+			</div>
+			<div
+				style={ {
+					overflowX: "auto",
+					overflowY: "hidden",
+					height,
+				} }
+			>
+				<table
+					style={ {
+						userSelect: "none",
+					} }
+				>
+					<thead ref={ tableHeaderRef }>
+						<tr>
+							<th
 								style={ {
-									display: "flex",
-									justifyContent: "right",
-									paddingRight: "0.3rem",
-									borderRight: "2px solid var(--border-color)"
-								} }
-							>
-								{ `${ startDate.format( "DD.MM." ) } - ${ endDate.format( "DD.MM.YY" ) }` }
-							</div>
-						</th>
-
-						{ timeSlotSettings.daysArray.map( ( date ) => {
-
-							return (
-								<th
-									key={ date.toISOString() }
-									colSpan={ timeSlotsPerDay }
-								>
-									<div
-										style={ {
-											display: "flex",
-											justifyContent: "center",
-										} }
-										className={ styles.unselectable }
-									>
-										{ date.format( headerDateFormat ) }
-									</div>
-								</th>
-							)
-						} )
-						}
-					</tr>
-					<tr>
-						<th
-							className={ `${ styles.headerTop }` }
-							style={ {
-								zIndex: 4,
-								position: "sticky",
-								left: 0,
-								top: 0,
-								borderLeftStyle: "none",
-							} }
-						>
-							<div
-								style={ {
-									display: "flex",
-									justifyContent: "right",
-									paddingRight: "0.3rem",
-									borderRight: "2px solid var(--border-color)"
+									zIndex: 4,
+									position: "sticky",
+									left: 0,
+									top: 0,
+									borderLeftStyle: "none",
+									width: firstColumnWidth,
 								} }
 								className={ styles.unselectable }
 							>
-								{ `${ timeSlotSettings.slotsArray[ 0 ].format( "HH:mm" ) } - ${ timeSlotSettings.slotsArray[ 0 ].add( timeSlotsPerDay * timeSteps, "minutes" ).format( "HH:mm" ) } [${ timeSlotSettings.slotsArray.length }]` }
-							</div>
-						</th>
-						{ timeSlotSettings.slotsArray.map( ( slot, i ) => {
-							const isNewDay = i > 0 && !timeSlotSettings.slotsArray[ i - 1 ].isSame( slot, "day" )
-							return (
-								<th
-									key={ i }
-								>
-									<div
-										className={ `${ styles.timeSlotHeader } ${ styles.unselectable }` }
+							</th>
+							{/* a contentless row of th to make the table determine the correct width */ }
+							{ timeSlotSettings.slotsArray.map( ( _, i ) => {
+								return (
+									<th
+										key={ i }
 										style={ {
-											paddingLeft: isNewDay ? "0.2rem" : "0.1rem",
-											borderLeftWidth: isNewDay ? "3px" : "0",
+											zIndex: 4,
+											position: "sticky",
+											left: 0,
+											top: 0,
+											borderStyle: "none",
+											width: columnWidth,
 										} }
+										className={ styles.unselectable }
 									>
-										{ slot.format( headerTimeSlotFormat ) }
-									</div>
-								</th>
-							)
-						} )
-						}
-					</tr>
-				</thead>
-				<tbody ref={ tableBodyRef }>
-					{/* render the time slot bars, it has to be as body tds because of the z-index in the theader */ }
-					<tr className={ styles.nowRow }>
-						<td>
-						</td>
-						{ timeSlotSettings.slotsArray.map( ( slot, i ) => {
-							const isNextNewDay = i == timeSlotSettings.slotsArray.length - 1 || !timeSlotSettings.slotsArray[ i + 1 ].isSame( slot, "day" )
-							return (
-								<td
-									key={ i }
+									</th>
+								)
+							} )
+							}
+						</tr>
+						<tr>
+							<th
+								style={ {
+									zIndex: 4,
+									position: "sticky",
+									left: 0,
+									top: 0,
+									borderLeftStyle: "none",
+									width: firstColumnWidth,
+								} }
+								className={ styles.unselectable }
+							>
+								<div
 									style={ {
-										position: "relative",
+										display: "flex",
+										justifyContent: "right",
+										paddingRight: "0.3rem",
+										borderRight: "2px solid var(--border-color)"
 									} }
 								>
-									<div
-										className={ styles.timeSlotBar }
+									{ `${ startDate.format( "DD.MM." ) } - ${ endDate.format( "DD.MM.YY" ) }` }
+								</div>
+							</th>
+
+							{ timeSlotSettings.daysArray.map( ( date ) => {
+
+								return (
+									<th
+										key={ date.toISOString() }
+										colSpan={ timeSlotsPerDay }
+									>
+										<div
+											style={ {
+												display: "flex",
+												justifyContent: "center",
+											} }
+											className={ styles.unselectable }
+										>
+											{ date.format( headerDateFormat ) }
+										</div>
+									</th>
+								)
+							} )
+							}
+						</tr>
+						<tr>
+							<th
+								className={ `${ styles.headerTop }` }
+								style={ {
+									zIndex: 4,
+									position: "sticky",
+									left: 0,
+									top: 0,
+									borderLeftStyle: "none",
+								} }
+							>
+								<div
+									style={ {
+										display: "flex",
+										justifyContent: "right",
+										paddingRight: "0.3rem",
+										borderRight: "2px solid var(--border-color)"
+									} }
+									className={ styles.unselectable }
+								>
+									{ `${ timeSlotSettings.slotsArray[ 0 ].format( "HH:mm" ) } - ${ timeSlotSettings.slotsArray[ 0 ].add( timeSlotsPerDay * timeSteps, "minutes" ).format( "HH:mm" ) } [${ timeSlotSettings.slotsArray.length }]` }
+								</div>
+							</th>
+							{ timeSlotSettings.slotsArray.map( ( slot, i ) => {
+								const isNewDay = i > 0 && !timeSlotSettings.slotsArray[ i - 1 ].isSame( slot, "day" )
+								return (
+									<th
+										key={ i }
+									>
+										<div
+											className={ `${ styles.timeSlotHeader } ${ styles.unselectable }` }
+											style={ {
+												paddingLeft: isNewDay ? "0.2rem" : "0.1rem",
+												borderLeftWidth: isNewDay ? "3px" : "0",
+											} }
+										>
+											{ slot.format( headerTimeSlotFormat ) }
+										</div>
+									</th>
+								)
+							} )
+							}
+						</tr>
+					</thead>
+					<tbody ref={ tableBodyRef }>
+						{/* render the time slot bars, it has to be as body tds because of the z-index in the theader */ }
+						<tr className={ styles.nowRow }>
+							<td>
+							</td>
+							{ timeSlotSettings.slotsArray.map( ( slot, i ) => {
+								const isNextNewDay = i == timeSlotSettings.slotsArray.length - 1 || !timeSlotSettings.slotsArray[ i + 1 ].isSame( slot, "day" )
+								return (
+									<td
+										key={ i }
 										style={ {
-											width: isNextNewDay ? "3px" : "1px",
+											position: "relative",
 										} }
 									>
-									</div>
-								</td>
-							)
-						} ) }
-					</tr>
-					<TimeLineTable<G, I>
-						entries={ entries }
-						slotsArray={ timeSlotSettings.slotsArray }
-						selectedGroup={ selectedGroup }
-						selectedTimeSlots={ selectedTimeSlots }
-						selectedTimeSlotItem={ selectedTimeSlotItem }
-						renderGroup={ renderGroup }
-						renderTimeSlotItem={ renderTimeSlotItem }
-						onTimeSlotItemClick={ onTimeSlotItemClick }
-						onTimeSlotClick={ onTimeSlotClick }
-						onGroupClick={ onGroupClick }
-						timeSteps={ timeSteps }
-						tableType={ tableType }
-					/>
-				</tbody>
-			</table >
-		</div>
+										<div
+											className={ styles.timeSlotBar }
+											style={ {
+												width: isNextNewDay ? "3px" : "1px",
+											} }
+										>
+										</div>
+									</td>
+								)
+							} ) }
+						</tr>
+						<TimeLineTable<G, I>
+							entries={ entries }
+							slotsArray={ timeSlotSettings.slotsArray }
+							selectedGroup={ selectedGroup }
+							selectedTimeSlots={ selectedTimeSlots }
+							selectedTimeSlotItem={ selectedTimeSlotItem }
+							renderGroup={ renderGroup }
+							renderTimeSlotItem={ renderTimeSlotItem }
+							onTimeSlotItemClick={ onTimeSlotItemClick }
+							onTimeSlotClick={ onTimeSlotClick }
+							onGroupClick={ onGroupClick }
+							timeSteps={ timeSteps }
+							tableType={ tableType }
+						/>
+					</tbody>
+				</table >
+			</div>
+			<button
+				style={ {
+					position: "sticky",
+					top: 0,
+					left: 0,
+					scale: 2,
+					marginLeft: "1rem",
+				} }
+				className={ styles.switchTimeFrameBtn }
+				title="Load more entries."
+				disabled={ entries.length >= maxEntryCount }
+				onClick={ onLoadMoreGroupsClick }
+			>
+				<ChevronDownIcon label="entryloader" />
+			</button>
+		</>
 	)
 }
 

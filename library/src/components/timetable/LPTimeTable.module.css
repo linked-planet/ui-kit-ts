@@ -122,11 +122,13 @@ tbody td {
 	border-radius: 100%;
 	cursor: pointer;
 	color: var(--text-color);
+	scale: 2;
+	margin: 0.75rem;
 }
 
 .switchTimeFrameBtn:hover {
 	color: var(--text-color-alt);
-	scale: 1.25;
+	scale: 2.25;
 }
 
 .switchTimeFrameBtn:focus {
