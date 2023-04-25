@@ -7,6 +7,7 @@ import { Item } from "./Item"
 
 import styles from "./LPTimeTable.module.css"
 import { getStartAndEndSlot } from "./timeTableUtils"
+import ItemWrapper from "./ItemWrapper"
 
 interface RowEntrySingleLine<I> {
 	startSlot: number
@@ -313,7 +314,16 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 					} }
 				>
 					{ overlaySelectionDiv }
-					<div
+					<ItemWrapper
+						group={ group }
+						item={ item }
+						width={ width }
+						left={ left }
+						selectedTimeSlotItem={ selectedTimeSlotItem }
+						onTimeSlotItemClick={ onTimeSlotItemClick }
+						renderTimeSlotItem={ renderTimeSlotItem }
+					/>
+					{/*<div
 						key={ timeSlotNumber }
 						onClick={ () => {
 							if ( onTimeSlotItemClick ) onTimeSlotItemClick( group, item )
@@ -323,9 +333,10 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 							left: `${ left * 100 }%`,
 							width: `${ width * 100 }%`,
 						} }
+						className={ utilStyles.fadeOut }
 					>
 						{ renderTimeSlotItem ? renderTimeSlotItem( group, item, item === selectedTimeSlotItem ) : <Item group={ group } item={ item } isSelected={ item === selectedTimeSlotItem } /> }
-					</div>
+					</div>*/}
 				</td>
 			)
 

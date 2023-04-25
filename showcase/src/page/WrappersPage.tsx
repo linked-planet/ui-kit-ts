@@ -32,6 +32,7 @@ import ToggleShowcase from "../components/showcase/wrapper/ToggleShowcase";
 import TooltipShowcase from "../components/showcase/wrapper/TooltipShowcase";
 import LPTimeTableShowCase from "../components/showcase/wrapper/LPTimeTableShowcase";
 import { useDispatch } from "react-redux"
+import LoadingSpinnerShowcase from "../components/showcase/wrapper/LoadingSpinnerShowcase";
 
 function WrappersPage () {
 
@@ -78,6 +79,8 @@ function WrappersPage () {
 			<DropDownMenuShowcase overallSourceCode={ overallSourceCode } />
 
 			<EmptyStateShowcase overallSourceCode={ overallSourceCode } />
+
+			<LoadingSpinnerShowcase overallSourceCode={ overallSourceCode } />
 
 			<FlagShowcase overallSourceCode={ overallSourceCode } />
 			<FormShowcase overallSourceCode={ overallSourceCode } />
