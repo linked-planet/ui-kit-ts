@@ -437,11 +437,13 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 							</th>
 
 							{ timeSlotSettings.daysArray.map( ( date ) => {
-
 								return (
 									<th
 										key={ date.toISOString() }
 										colSpan={ timeSlotsPerDay }
+										style={ {
+											backgroundColor: "var(--ds-surface)",
+										} }
 									>
 										<div
 											style={ {

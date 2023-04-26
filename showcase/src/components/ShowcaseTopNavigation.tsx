@@ -2,6 +2,8 @@ import React from "react";
 import { TopNavigation } from "@atlaskit/page-layout";
 import { AtlassianNavigation, CustomProductHome, PrimaryButton, Profile } from "@atlaskit/atlassian-navigation";
 import { useNavigate } from "react-router";
+import { CustomThemeButton } from "@atlaskit/button";
+import ThemeSwitch from "@linked-planet/ui-kit-ts/components/themeswitch";
 export const ProfileIcon = () => {
 	return (
 		<img
@@ -39,6 +41,7 @@ function ShowcaseTopNavigation () {
 						</PrimaryButton>,
 					]
 				}
+				renderAppSwitcher={ () => <ThemeSwitch /> }
 				renderProductHome={ () => <CustomProductHome siteTitle="UI-Kit-TS" iconUrl="./images/logo.png" logoAlt=""
 					onClick={ () => navigation( "/utils" ) }
 					logoUrl="images/logo.png" iconAlt="" /> }
