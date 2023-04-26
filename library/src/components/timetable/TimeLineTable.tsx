@@ -203,7 +203,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	onTimeSlotClick,
 	onTimeSlotItemClick,
 	renderTimeSlotItem,
-	bottomBorderWidth,
+	bottomBorderType,
 	multiselect,
 	setMultiselect,
 }: {
@@ -219,7 +219,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	onTimeSlotClick: ( ( s: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void ) | undefined,
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined,
 	renderTimeSlotItem: ( ( group: G, item: I, isSelected: boolean ) => JSX.Element ) | undefined,
-	bottomBorderWidth: string,
+	bottomBorderType: "bold" | "normal",
 	multiselect: boolean,
 	setMultiselect: ( ( multiselect: boolean ) => void ),
 }
@@ -310,7 +310,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 					colSpan={ colSpan }
 					className={ timeSlotIsSelected && colSpan === 1 ? styles.selected : "" }
 					style={ {
-						borderBottomWidth: groupRow === groupRowMax ? "3px" : "1px",
+						borderBottomWidth: groupRow === groupRowMax ? "2px" : "1px",
 					} }
 				>
 					{ overlaySelectionDiv }
@@ -378,7 +378,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			{ ...getMouseHandlers( timeSlot ) }
 			className={ timeSlotIsSelected ? styles.selected : "" }
 			style={ {
-				borderBottomWidth: groupRow === groupRowMax ? bottomBorderWidth : "1px",
+				borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? "var(--ds-border-bold)" : "var(--ds-border)",
+				borderBottomWidth: groupRow === groupRowMax && bottomBorderType === "bold" ? "1px" : "1px",
 			} }
 		/>
 	)
@@ -402,7 +403,6 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
 ) {
 	return (
 		<td
-			key={ -1 }
 			onClick={ () => {
 				if ( onGroupClick ) onGroupClick( group )
 			} }
@@ -523,7 +523,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 							onTimeSlotItemClick={ onTimeSlotItemClick }
 							onTimeSlotClick={ onTimeSlotClick }
 							renderTimeSlotItem={ renderTimeSlotItem }
-							bottomBorderWidth={ groupRowMax === r ? "3px" : "1px" }
+							bottomBorderType={ groupRowMax === r ? "bold" : "normal" }
 							multiselect={ multiselect }
 							setMultiselect={ setMultiselect }
 						/>
@@ -651,7 +651,7 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 						renderTimeSlotItem={ renderTimeSlotItem }
 						selectedTimeSlotItem={ selectedTimeSlotItem }
 						selectedTimeSlots={ selectedTimeSlots }
-						bottomBorderWidth={ "1px" }
+						bottomBorderType={ "bold" }
 						multiselect={ multiselect }
 						setMultiselect={ setMultiselect }
 					/>
@@ -742,7 +742,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 						onTimeSlotClick={ onTimeSlotClick }
 						onTimeSlotItemClick={ onTimeSlotItemClick }
 						renderTimeSlotItem={ renderTimeSlotItem }
-						bottomBorderWidth={ "3px" }
+						bottomBorderType={ "bold" }
 						multiselect={ multiselect }
 						setMultiselect={ setMultiselect }
 					/>
@@ -788,7 +788,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								onTimeSlotClick={ onTimeSlotClick }
 								onTimeSlotItemClick={ onTimeSlotItemClick }
 								renderTimeSlotItem={ renderTimeSlotItem }
-								bottomBorderWidth={ isLastGroupItem ? "3px" : "1px" }
+								bottomBorderType={ isLastGroupItem ? "bold" : "normal" }
 								multiselect={ multiselect }
 								setMultiselect={ setMultiselect }
 							/>

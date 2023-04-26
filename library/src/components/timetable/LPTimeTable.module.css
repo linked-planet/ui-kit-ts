@@ -14,45 +14,42 @@
 	position: sticky;
 	top: 0;
 	z-index: 3;
-	background-color: var(--background-color);
 }
 
 .lpTimeTable tbody {
 	table-layout: fixed;
-	min-width: 5000px;
 }
 
 .lpTimeTable th {
 	position: relative;
-	padding: 0 !important;
-	background-color: var(--background-color);
+	padding: 0;
 	border-left-color: var(
-		--border-color
+		--ds-border-bold
 	) !important; /* atlas-kit overrides this */
 }
 
 /* create the borders under the header */
 .timeSlotHeader {
-	border-bottom: 2px solid var(--border-color);
+	border-style: solid;
+	border-bottom-width: 2px;
 	padding-right: 1rem;
-	border-color: var(--border-color);
+	border-color: var(--ds-border);
 	border-left-style: solid;
 	font-weight: 500;
-	user-select: none !important;
 }
 
 .lpTimeTable tbody tr {
-	background-color: var(--background-color);
+	background-color: var(--ds-surface);
 	/* height works as min-height in tables */
 	height: 3rem;
 }
 
 .lpTimeTable tbody tr:nth-child(2n) {
-	background-color: var(--background-color-alt);
+	background-color: var(--ds-surface-sunken);
 }
 
 .lpTimeTable tbody td {
-	border-bottom: 1px solid var(--border-color);
+	border-bottom: 1px solid var(--ds-border);
 	padding: 0;
 	border-left-width: 0;
 	border-right-width: 0;
@@ -68,33 +65,37 @@
 	position: sticky;
 	left: 0;
 	z-index: 2;
-	border-right: 3px solid var(--border-color);
-	border-bottom: 3px solid var(--border-color);
-	background-color: var(--background-color);
+	border-width: 0;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-style: solid;
+	border-color: var(--ds-border-bold);
+	background-color: var(--ds-surface);
 	user-select: none !important;
 }
 
 .lpTimeTable .headerTimeSlot {
-	border-bottom: 3px solid var(--border-color);
-	color: var(--text-color);
-	background-color: var(--background-color);
-	padding-right: 1rem;
+	border-color: var(--ds-border-bold);
+	border-bottom: 1px solid var(--ds-border-bold);
+	color: var(--ds-text);
 	border-left-style: solid;
 	font-weight: 500;
+	background-color: var(--ds-surface);
 }
 
 .lpTimeTable .nowHeaderTimeSlot {
-	border-bottom-color: var(--secondary-color);
+	border-bottom-color: var(--ds-chart-orange-bold);
+	border-bottom-width: 2px;
 	font-weight: 700;
 }
 
 .lpTimeTable .nowHeaderDate {
-	color: var(--text-color-alt);
+	color: var(--ds-text-subtle);
 }
 
 .lpTimeTable .nowBar {
 	position: absolute;
-	background-color: var(--secondary-color);
+	background-color: var(--ds-chart-orange-bold);
 	opacity: 0.6;
 	top: 100%;
 	bottom: 0;
@@ -104,7 +105,7 @@
 
 .timeSlotBar {
 	position: absolute;
-	background-color: var(--border-color);
+	background-color: var(--ds-border);
 	inset: 0 0 0 100%;
 	width: 1px;
 	height: 10px;
@@ -112,7 +113,7 @@
 }
 
 .selected {
-	background-color: var(--background-color-selected) !important;
+	background-color: var(--ds-background-selected);
 }
 
 .unselectable {
@@ -120,18 +121,22 @@
 }
 
 .switchTimeFrameBtn {
-	background-color: inherit;
 	border: none;
-	border-radius: 100%;
 	cursor: pointer;
-	color: var(--text-color);
-	scale: 2;
+	color: var(--ds-text);
+	background-color: var(--ds-background-neutral);
+	scale: 1.5;
 	margin: 0.75rem;
 }
 
 .switchTimeFrameBtn:hover {
-	color: var(--text-color-alt);
-	scale: 2.25;
+	background-color: var(--ds-background-neutral-hovered);
+	scale: 1.4;
+}
+
+.switchTimeFrameBtn:active {
+	background-color: var(--ds-background-neutral-pressed);
+	scale: 1.4;
 }
 
 .switchTimeFrameBtn:focus {
