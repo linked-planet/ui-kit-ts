@@ -1,30 +1,38 @@
 import Button from "@atlaskit/button"
-import React, { useCallback, useEffect } from "react"
+import React, { useEffect, useState } from "react"
+import { valueof } from "react-joyride"
 
 const Themes = {
 	Dark: "dark",
 	Light: "light",
-}
+} as const
 
-type EThemes = keyof typeof Themes
+type ETheme = valueof<typeof Themes>
+const themeArray = Object.values( Themes )
+
+
+function applyTheme ( theme: ETheme ) {
+	const html = document.querySelector( "html" )
+	if ( html ) {
+		html.setAttribute( "data-theme", `${ theme }:${ theme }` )
+		html.setAttribute( "data-color-mode", theme )
+	}
+	localStorage.setItem( "theme", theme )
+}
 
 
 export default function ThemeSwitch () {
-
-	/*const [ theme, setTheme ] = React.useState( Themes.Dark )
-
-
-	const applyTheme = useCallback(() => {
-		const html = document.querySelector( "html" )
-		if ( html ) {
-			html.setAttribute( "data-theme", theme )
-		}
-	},[theme])
+	const localTheme = localStorage.getItem( "theme" )
+	const prefersDark = window.matchMedia( "(prefers-color-scheme: dark)" ).matches
+	const initialTheme = ( localTheme || ( prefersDark ? Themes.Dark : Themes.Light ) ) as ETheme
 
 
-	useEffect(() => {
-		setTheme( localStorage.getItem( "theme" ) as EThemes || Themes.Dark )
-	},[])*/
+	const [ theme, setTheme ] = useState( initialTheme )
+
+	useEffect( () => {
+		applyTheme( theme )
+		localStorage.setItem( "theme", theme )
+	}, [ theme ] )
 
 	return (
 		<Button
@@ -36,11 +44,9 @@ export default function ThemeSwitch () {
 			appearance="subtle"
 			about="Switch theme"
 			onClick={ () => {
-				const html = document.querySelector( "html" )
-				if ( html ) {
-					html.getAttribute( "data-theme" ) === "dark:dark" ? html.setAttribute( "data-theme", "light:light" ) : html.setAttribute( "data-theme", "dark:dark" )
-					html.getAttribute( "data-color-mode" ) === "dark" ? html.setAttribute( "data-color-mode", "light" ) : html.setAttribute( "data-color-mode", "dark" )
-				}
+				const currIdx = themeArray.indexOf( theme )
+				const nextIdx = currIdx + 1 >= themeArray.length ? 0 : currIdx + 1
+				setTheme( themeArray[ nextIdx ] )
 			} }
 		>
 			Switch Theme
