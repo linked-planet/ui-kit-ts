@@ -112,6 +112,10 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	const tableBodyRef = useRef<HTMLTableSectionElement>( null )
 	const nowRef = useRef<Dayjs>( nowOverwrite ?? dayjs() )
 
+	useEffect( () => {
+		console.log( "First Col Width Changed", firstColumnWidth )
+	}, [ firstColumnWidth ] )
+
 	// to avoid overflow onto the next day
 	if ( startDate.add( timeSteps, "minutes" ).day() !== startDate.day() ) {
 		timeSteps = startDate.startOf( "day" ).add( 1, "day" ).diff( startDate, "minutes" ) - 1 // -1 to end at the same day
@@ -203,7 +207,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		}
 		const headerTimeSlotCells = headerTimeslotRow.children
 		for ( const headerTimeSlotCell of headerTimeSlotCells ) {
-			headerTimeSlotCell.children[ 0 ].classList.remove( styles.nowHeaderTimeSlot )
+			headerTimeSlotCell.classList.remove( styles.nowHeaderTimeSlot )
 		}
 
 		const startAndEndSlot = getStartAndEndSlot( nowRef.current, nowRef.current, timeSlotSettings.slotsArray, timeSteps, null )
@@ -249,7 +253,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			console.log( "unable to find header for timeslot for the current time" )
 			return
 		}
-		nowTimeSlotCell.children[ 0 ].classList.add( styles.nowHeaderTimeSlot, styles.unselectable )
+		nowTimeSlotCell.classList.add( styles.nowHeaderTimeSlot, styles.unselectable )
 
 		// adjust the date header
 		const headerDateRow = tableHeaderRef.current?.children[ 1 ]
@@ -375,6 +379,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 					style={ {
 						userSelect: "none",
 					} }
+					className={ styles.lpTimeTable }
 				>
 					<thead ref={ tableHeaderRef }>
 						<tr>
@@ -427,7 +432,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 										display: "flex",
 										justifyContent: "right",
 										paddingRight: "0.3rem",
-										borderRight: "2px solid var(--border-color)"
+										borderRight: "3px solid var(--border-color)"
 									} }
 								>
 									{ `${ startDate.format( "DD.MM." ) } - ${ endDate.format( "DD.MM.YY" ) }` }
@@ -457,23 +462,25 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 						</tr>
 						<tr>
 							<th
-								className={ `${ styles.headerTop }` }
+								className={ `${ styles.unselectable }` }
 								style={ {
 									zIndex: 4,
 									position: "sticky",
 									left: 0,
 									top: 0,
 									borderLeftStyle: "none",
+									display: "flex",
+									justifyContent: "right",
+									borderRight: "3px solid var(--border-color)",
+									borderBottom: "3px solid var(--border-color)",
+									color: "var(--text-color)",
+									backgroundColor: "var(--background-color)",
 								} }
 							>
 								<div
 									style={ {
-										display: "flex",
-										justifyContent: "right",
 										paddingRight: "0.3rem",
-										borderRight: "2px solid var(--border-color)"
 									} }
-									className={ styles.unselectable }
 								>
 									{ `${ timeSlotSettings.slotsArray[ 0 ].format( "HH:mm" ) } - ${ timeSlotSettings.slotsArray[ 0 ].add( timeSlotsPerDay * timeSteps, "minutes" ).format( "HH:mm" ) } [${ timeSlotSettings.slotsArray.length }]` }
 								</div>
@@ -483,16 +490,13 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 								return (
 									<th
 										key={ i }
+										style={ {
+											paddingLeft: isNewDay ? "0.2rem" : "0.1rem",
+											borderLeftWidth: isNewDay ? "3px" : "0",
+										} }
+										className={ `${ styles.unselectable } ${ styles.headerTimeSlot }` }
 									>
-										<div
-											className={ `${ styles.timeSlotHeader } ${ styles.unselectable }` }
-											style={ {
-												paddingLeft: isNewDay ? "0.2rem" : "0.1rem",
-												borderLeftWidth: isNewDay ? "3px" : "0",
-											} }
-										>
-											{ slot.format( headerTimeSlotFormat ) }
-										</div>
+										{ slot.format( headerTimeSlotFormat ) }
 									</th>
 								)
 							} )

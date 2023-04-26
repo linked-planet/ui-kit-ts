@@ -405,23 +405,12 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
 			key={ -1 }
 			onClick={ () => {
 				if ( onGroupClick ) onGroupClick( group )
-			}
-			}
-			style={ {
-				backgroundColor: "inherit",
-				position: "sticky",
-				left: 0,
-				zIndex: 2,
-				borderBottomWidth: "3px",
 			} }
 			rowSpan={ groupRowMax + 1 }
-			className={ `${ selectedGroup === group ? styles.selected : "" }` }
+			className={ `${ selectedGroup === group ? styles.selected : "" } ${ styles.groupHeader }` }
 		>
-			<div
-				className={ `${ styles.groupHeader }` }
-			>
-				{ renderGroup ? renderGroup( group, group === selectedGroup ) : <Group group={ group } /> }
-			</div>
+
+			{ renderGroup ? renderGroup( group, group === selectedGroup ) : <Group group={ group } /> }
 		</td>
 	)
 }

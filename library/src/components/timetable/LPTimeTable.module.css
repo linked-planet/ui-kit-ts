@@ -1,13 +1,15 @@
 @import url("../../variables.css");
 
-table {
+.lpTimeTable {
 	display: table;
-	border-collapse: collapse;
+	border-collapse: separate;
+	border-spacing: 0;
 	overflow: auto;
 	table-layout: fixed;
+	width: 100%;
 }
 
-thead {
+.lpTimeTable thead {
 	border-bottom-width: 0 !important; /* atlas-kit overrides this */
 	position: sticky;
 	top: 0;
@@ -15,12 +17,12 @@ thead {
 	background-color: var(--background-color);
 }
 
-tbody {
+.lpTimeTable tbody {
 	table-layout: fixed;
 	min-width: 5000px;
 }
 
-th {
+.lpTimeTable th {
 	position: relative;
 	padding: 0 !important;
 	background-color: var(--background-color);
@@ -39,17 +41,17 @@ th {
 	user-select: none !important;
 }
 
-tbody tr {
+.lpTimeTable tbody tr {
 	background-color: var(--background-color);
 	/* height works as min-height in tables */
 	height: 3rem;
 }
 
-tbody tr:nth-child(2n) {
+.lpTimeTable tbody tr:nth-child(2n) {
 	background-color: var(--background-color-alt);
 }
 
-tbody td {
+.lpTimeTable tbody td {
 	border-bottom: 1px solid var(--border-color);
 	padding: 0;
 	border-left-width: 0;
@@ -57,46 +59,47 @@ tbody td {
 	position: relative;
 }
 
-.nowRow {
+.lpTimeTable .nowRow {
 	height: 0;
 }
 
 /* borders of the left sticky column */
-.groupHeader {
-	display: flex;
-	position: absolute;
-	align-items: center;
-	inset: 0;
-	border-right: 2px solid var(--border-color);
+.lpTimeTable .groupHeader {
+	position: sticky;
+	left: 0;
+	z-index: 2;
+	border-right: 3px solid var(--border-color);
+	border-bottom: 3px solid var(--border-color);
 	background-color: var(--background-color);
 	user-select: none !important;
 }
 
-.headerTop {
+.lpTimeTable .headerTimeSlot {
+	border-bottom: 3px solid var(--border-color);
 	color: var(--text-color);
 	background-color: var(--background-color);
+	padding-right: 1rem;
+	border-left-style: solid;
+	font-weight: 500;
 }
 
-.headerTop > * {
-	border-bottom: 2px solid var(--border-color);
-}
-
-.nowHeaderTimeSlot {
-	border-bottom: 2px solid var(--secondary-color);
+.lpTimeTable .nowHeaderTimeSlot {
+	border-bottom-color: var(--secondary-color);
 	font-weight: 700;
 }
 
-.nowHeaderDate {
+.lpTimeTable .nowHeaderDate {
 	color: var(--text-color-alt);
 }
 
-.nowBar {
+.lpTimeTable .nowBar {
 	position: absolute;
 	background-color: var(--secondary-color);
 	opacity: 0.6;
 	top: 100%;
 	bottom: 0;
 	width: 2px;
+	z-index: 1;
 }
 
 .timeSlotBar {
