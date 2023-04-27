@@ -21,6 +21,27 @@ function applyTheme ( theme: ETheme ) {
 }
 
 
+/**
+ * initTheming is a helper function in case there is not @atlassian/token and theming setup
+ */
+export function initTheming () {
+	const localTheme = localStorage.getItem( "theme" )
+	const prefersDark = window.matchMedia( "(prefers-color-scheme: dark)" ).matches
+	//const initialTheme = ( localTheme || ( prefersDark ? Themes.Dark : Themes.Light ) ) as ETheme
+	const initialTheme = Themes.Light
+
+	const html = document.querySelector( "html" )
+	if ( html ) {
+		if ( !html.getAttribute( "data-theme" ) ) {
+			html.setAttribute( "data-theme", `${ initialTheme }:${ initialTheme }` )
+		}
+		if ( !html.getAttribute( "data-color-mode" ) ) {
+			html.setAttribute( "data-color-mode", initialTheme )
+		}
+	}
+}
+
+
 export default function ThemeSwitch () {
 	const localTheme = localStorage.getItem( "theme" )
 	const prefersDark = window.matchMedia( "(prefers-color-scheme: dark)" ).matches
