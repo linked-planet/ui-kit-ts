@@ -1,59 +1,22 @@
-import Button from "@atlaskit/button"
 import React, { useEffect, useState } from "react"
-import { valueof } from "react-joyride"
-
-const Themes = {
-	Dark: "dark",
-	Light: "light",
-} as const
-
-type ETheme = valueof<typeof Themes>
-const themeArray = Object.values( Themes )
-
-
-function applyTheme ( theme: ETheme ) {
-	const html = document.querySelector( "html" )
-	if ( html ) {
-		html.setAttribute( "data-theme", `${ theme }:${ theme }` )
-		html.setAttribute( "data-color-mode", theme )
-	}
-	localStorage.setItem( "theme", theme )
-}
-
-
-/**
- * initTheming is a helper function in case there is not @atlassian/token and theming setup
- */
-export function initTheming () {
-	const localTheme = localStorage.getItem( "theme" )
-	const prefersDark = window.matchMedia( "(prefers-color-scheme: dark)" ).matches
-	//const initialTheme = ( localTheme || ( prefersDark ? Themes.Dark : Themes.Light ) ) as ETheme
-	const initialTheme = Themes.Light
-
-	const html = document.querySelector( "html" )
-	if ( html ) {
-		if ( !html.getAttribute( "data-theme" ) ) {
-			html.setAttribute( "data-theme", `${ initialTheme }:${ initialTheme }` )
-		}
-		if ( !html.getAttribute( "data-color-mode" ) ) {
-			html.setAttribute( "data-color-mode", initialTheme )
-		}
-	}
-}
-
+import Button from "@atlaskit/button"
+import { Theme, themesAvailable, isTheme, applyTheme, getTheme, initTheming, switchTheme } from "../../theming"
 
 export default function ThemeSwitch () {
-	const localTheme = localStorage.getItem( "theme" )
-	const prefersDark = window.matchMedia( "(prefers-color-scheme: dark)" ).matches
-	const initialTheme = ( localTheme || ( prefersDark ? Themes.Dark : Themes.Light ) ) as ETheme
-
-
-	const [ theme, setTheme ] = useState( initialTheme )
+	const [ theme, setTheme ] = useState<Theme>( "light" )
 
 	useEffect( () => {
-		applyTheme( theme )
-		localStorage.setItem( "theme", theme )
-	}, [ theme ] )
+		let currTheme = getTheme()
+		if ( !currTheme ) {
+			initTheming()
+		}
+		currTheme = getTheme()
+		if ( !currTheme ) {
+			console.log( "ThemeSwitch - failed to get current theme" )
+			return
+		}
+		setTheme( currTheme )
+	}, [] )
 
 	return (
 		<Button
@@ -64,11 +27,8 @@ export default function ThemeSwitch () {
 			} }
 			appearance="subtle"
 			about="Switch theme"
-			onClick={ () => {
-				const currIdx = themeArray.indexOf( theme )
-				const nextIdx = currIdx + 1 >= themeArray.length ? 0 : currIdx + 1
-				setTheme( themeArray[ nextIdx ] )
-			} }
+			isDisabled={ !isTheme( theme ) }
+			onClick={ switchTheme }
 		>
 			Switch Theme
 		</Button>

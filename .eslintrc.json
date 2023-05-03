@@ -4,10 +4,17 @@
 		"ecmaVersion": 2018,
 		"sourceType": "module"
 	},
-	"plugins": ["@typescript-eslint", "react", "react-hooks", "react-refresh"],
+	"plugins": [
+		"@typescript-eslint",
+		"react",
+		"react-hooks",
+		"react-refresh",
+		"@atlaskit/eslint-plugin-design-system"
+	],
 	"extends": [
 		"eslint:recommended",
 		"plugin:@typescript-eslint/recommended",
+		"plugin:@atlaskit/design-system/recommended",
 		"plugin:react/recommended",
 		"plugin:react-hooks/recommended",
 		"prettier"
