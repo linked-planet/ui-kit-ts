@@ -15,11 +15,14 @@ import ReactQueryPage from "./page/ReactQueryPage"
 
 import "./custom.css"
 import { queryClient } from "./setup"
+import { initTheming } from "@linked-planet/ui-kit-ts/theming"
 
 
 
 function App () {
 	//require("./custom.css")
+
+	initTheming() // without it the table would be invisible because the css variables are not set
 
 	return (
 		<HashRouter>
