@@ -330,7 +330,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			let overlaySelectionDiv: JSX.Element[] | undefined = undefined;
 			if ( colSpan > 1 ) {
 				overlaySelectionDiv = []
-				for ( let c = 0; c < colSpan; c++ ) {
+				for ( let c = 0; c < colSpan; c = c + 2 ) {
 					const iClosure = timeSlotNumber + c
 					const timeSlot = slotsArray[ iClosure ]
 
@@ -355,7 +355,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			return (
 				<td
 					key={ timeSlotNumber }
-					colSpan={ colSpan }
+					colSpan={ colSpan * 2 }
 					className={ timeSlotIsSelected && colSpan === 1 ? styles.selected : "" }
 					style={ {
 						borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
@@ -393,7 +393,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			return (
 				<td
 					key={ timeSlotNumber }
-					colSpan={ rowEntryItem.length }
+					colSpan={ rowEntryItem.length * 2 }
 					className={ timeSlotIsSelected ? styles.selected : "" }
 					{ ...getMouseHandlers( timeSlot ) }
 					style={ {
@@ -433,6 +433,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
 				//borderBottomWidth: groupRow === groupRowMax && bottomBorderType === "bold" ? "1px" : "1px",
 			} }
+			colSpan={ 2 }
 		/>
 	)
 }

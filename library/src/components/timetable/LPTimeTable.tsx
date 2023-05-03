@@ -436,10 +436,16 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 						<col style={ { width: firstColumnWidth } } />
 						{ timeSlotSettings.slotsArray.map( ( _, i ) => {
 							return (
-								<col
-									key={ i }
-									style={ { width: columnWidth } }
-								/>
+								<>
+									<col
+										key={ i * 2 }
+										style={ { width: columnWidth } }
+										width={ columnWidth }
+									/>
+									<col
+										key={ i * 2 + 1 }
+									/>
+								</>
 							)
 						} ) }
 					</colgroup>
@@ -522,6 +528,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 											paddingLeft: isNewDay ? token( "space.050", "4px" ) : token( "space.025", "2px" ),
 											borderLeftWidth: isNewDay && i > 0 ? token( "border.width.050", "1px" ) : "0",
 										} }
+										colSpan={ 2 }
 										className={ `${ styles.unselectable } ${ styles.headerTimeSlot }` }
 									>
 										{ slot.format( headerTimeSlotFormat ) }
@@ -544,6 +551,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 										style={ {
 											position: "relative",
 										} }
+										colSpan={ 2 }
 									>
 										<div
 											className={ styles.timeSlotBar }
