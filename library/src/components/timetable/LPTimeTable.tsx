@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react"
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
@@ -10,6 +10,9 @@ import "./LPTimeTable.module.css"
 import styles from "./LPTimeTable.module.css"
 import TimeLineTable from "./TimeLineTable"
 import { getStartAndEndSlot } from "./timeTableUtils"
+import InlineMessage from "../inlinemessage"
+import type { MessageUrgency } from "../inlinemessage/InlineMessage"
+import { token } from "@atlaskit/tokens"
 
 export interface TimeSlotBooking {
 	title: string
@@ -84,10 +87,11 @@ const headerDateFormat = "ddd, DD.MM.YYYY"
 const headerTimeSlotFormat = "HH:mm"
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
 
+
 export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	startDate,
 	endDate,
-	timeSteps,
+	timeSteps: timeStepsProp,
 	entries,
 	tableType,
 	selectedGroup,
@@ -107,21 +111,48 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	maxEntryCount,
 	nowOverwrite,
 }: LPTimeTableProps<G, I> ) => {
+
 	const nowBarRef = useRef<HTMLDivElement | undefined>()
 	const tableHeaderRef = useRef<HTMLTableSectionElement>( null )
 	const tableBodyRef = useRef<HTMLTableSectionElement>( null )
 	const nowRef = useRef<Dayjs>( nowOverwrite ?? dayjs() )
+	const [ message, setMessage ] = useState<{ urgency: MessageUrgency, message: string }>()
 
-	// to avoid overflow onto the next day
-	if ( startDate.add( timeSteps, "minutes" ).day() !== startDate.day() ) {
-		timeSteps = startDate.startOf( "day" ).add( 1, "day" ).diff( startDate, "minutes" ) - 1 // -1 to end at the same day
-	}
 
-	const daysDiff = endDate.diff( startDate, 'days' )
-	const timeDiff = dayjs().startOf( 'day' ).add( endDate.hour(), 'hours' ).add( endDate.minute(), 'minutes' ).diff(
-		dayjs().startOf( 'day' ).add( startDate.hour(), 'hours' ).add( startDate.minute(), 'minutes' ), "minutes" )
-	let timeSlotsPerDay = timeDiff / timeSteps
-	if ( isFinite( timeSlotsPerDay ) ) {
+	//#region calculate time slots settings
+	const { timeSlotsPerDay, daysDiff, timeSteps } = useMemo( () => {
+		// to avoid overflow onto the next day if the time steps are too large
+		let timeSlotsPerDay = 0
+		let timeSteps = timeStepsProp
+		if ( startDate.add( timeSteps, "minutes" ).day() !== startDate.day() ) {
+			timeSteps = startDate.startOf( "day" ).add( 1, "day" ).diff( startDate, "minutes" ) - 1 // -1 to end at the same day if the time steps are from someplace during the day until
+			setMessage( {
+				urgency: "warning",
+				message: `Starting time and time slot size does not fit into one day. Time slot size reduced to ${ timeSteps } size.`
+			} )
+		}
+
+		const daysDiff = endDate.diff( startDate, 'days' )
+		const timeDiff = dayjs().startOf( 'day' ).add( endDate.hour(), 'hours' ).add( endDate.minute(), 'minutes' ).diff(
+			dayjs().startOf( 'day' ).add( startDate.hour(), 'hours' ).add( startDate.minute(), 'minutes' ), "minutes" )
+
+		if ( timeDiff <= 0 ) {
+			setMessage( {
+				urgency: "error",
+				message: `End date must be after the start date.`
+			} )
+			return { timeSlotsPerDay, daysDiff, timeSteps }
+		}
+
+		if ( timeSteps === 0 ) {
+			setMessage( {
+				urgency: "error",
+				message: `Time slot size must be greater than 0.`,
+			} )
+			return { timeSlotsPerDay, daysDiff, timeSteps }
+		}
+
+		timeSlotsPerDay = timeDiff / timeSteps
 		if ( rounding === "ceil" ) {
 			timeSlotsPerDay = Math.ceil( timeSlotsPerDay )
 		} else if ( rounding == "floor" ) {
@@ -134,7 +165,11 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		if ( startDate.add( timeSlotsPerDay * timeSteps, "minutes" ).day() != startDate.day() ) {
 			timeSlotsPerDay--
 		}
-	}
+
+		return { timeSlotsPerDay, daysDiff, timeSteps }
+	}, [ timeStepsProp, startDate, endDate, rounding ] )
+	//#endregion
+
 
 	//#region get the days array for the header and the time slots
 	const timeSlotSettings = useMemo( () => {
@@ -162,6 +197,10 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			const tbodyFirstRow = tableBodyRef.current?.children[ 0 ] as HTMLTableRowElement | undefined
 			const slotBars = tbodyFirstRow?.children
 			if ( !slotBars ) {
+				setMessage( {
+					urgency: "error",
+					message: "Unable to find time slot columns for the time slot bars."
+				} )
 				console.log( "unable to find time slot columns for the time slot bars" )
 				return
 			}
@@ -198,7 +237,11 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		// remove the orange border to the header cell
 		const headerTimeslotRow = tableHeaderRef.current?.children[ 2 ]
 		if ( !headerTimeslotRow ) {
-			console.log( "unable to find header timeslot row" )
+			setMessage( {
+				urgency: "error",
+				message: "Unable to find header time slot row."
+			} )
+			console.log( "unable to find header time slot row" )
 			return
 		}
 		const headerTimeSlotCells = headerTimeslotRow.children
@@ -341,33 +384,45 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	}
 
 	return (
-		<
-			>
+		<>
 			<div
 				style={ {
 					display: "flex",
 					gap: "1rem",
+					alignItems: "center",
 				} }
 			>
-				<button
-					className={ styles.switchTimeFrameBtn }
-					onClick={ onPreviousTimeFrameClick }
-					title="Previous Time Frame"
+				{ onPreviousTimeFrameClick &&
+					<button
+						className={ styles.switchTimeFrameBtn }
+						onClick={ onPreviousTimeFrameClick }
+						title="Previous Time Frame"
+					>
+						<ChevronLeftIcon label="prevtimeframe" />
+					</button>
+				}
+				{ onNextTimeFrameClick &&
+					<button
+						className={ styles.switchTimeFrameBtn }
+						onClick={ onNextTimeFrameClick }
+						title="Next Time Frame"
+					>
+						<ChevronRightIcon label="nexttimeframe" />
+					</button>
+				}
+				<div
+					style={ {
+						flexGrow: 1,
+						alignContent: "end"
+					} }
 				>
-					<ChevronLeftIcon label="prevtimeframe" />
-				</button>
-				<button
-					className={ styles.switchTimeFrameBtn }
-					onClick={ onNextTimeFrameClick }
-					title="Next Time Frame"
-				>
-					<ChevronRightIcon label="nexttimeframe" />
-				</button>
+					<InlineMessage urgency={ message?.urgency } message={ message?.message ?? "" } />
+				</div>
 			</div>
 			<div
 				style={ {
 					overflowX: "auto",
-					overflowY: "hidden",
+					//overflowY: "hidden",
 					height,
 				} }
 			>
@@ -410,6 +465,18 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 								)
 							} )
 							}
+							<th
+								style={ {
+									zIndex: 4,
+									position: "sticky",
+									left: 0,
+									top: 0,
+									borderLeftStyle: "none",
+									minWidth: 0,
+								} }
+								className={ styles.unselectable }
+							>
+							</th>
 						</tr>
 						<tr>
 							<th
@@ -420,8 +487,8 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 									top: 0,
 									borderLeftStyle: "none",
 									width: firstColumnWidth,
-									borderRight: "1px solid var(--ds-border-bold)",
-									backgroundColor: "var(--ds-surface)",
+									borderRight: `${ token( "border.width.050", "1px" ) } solid ${ token( "color.border.bold" ) }`,
+									backgroundColor: token( "elevation.surface" ),
 								} }
 								className={ styles.unselectable }
 							>
@@ -442,7 +509,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 										key={ date.toISOString() }
 										colSpan={ timeSlotsPerDay }
 										style={ {
-											backgroundColor: "var(--ds-surface)",
+											backgroundColor: token( "elevation.surface" ),
 										} }
 									>
 										<div
@@ -468,7 +535,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 									left: 0,
 									top: 0,
 									borderLeftStyle: "none",
-									borderRight: "1px solid var(--ds-border-bold)",
+									borderRight: `${ token( "border.width.050", "1px" ) } solid ${ token( "color.border.bold" ) }`,
 								} }
 							>
 								<div
@@ -487,8 +554,8 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 									<th
 										key={ i }
 										style={ {
-											paddingLeft: isNewDay ? "0.25rem" : "0.1rem",
-											borderLeftWidth: isNewDay && i > 0 ? "1px" : "0",
+											paddingLeft: isNewDay ? token( "space.050", "4px" ) : token( "space.025", "2px" ),
+											borderLeftWidth: isNewDay && i > 0 ? token( "border.width.050", "1px" ) : "0",
 										} }
 										className={ `${ styles.unselectable } ${ styles.headerTimeSlot }` }
 									>
@@ -516,7 +583,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 										<div
 											className={ styles.timeSlotBar }
 											style={ {
-												backgroundColor: isNextNewDay ? "var(--ds-border-bold)" : undefined,
+												backgroundColor: isNextNewDay ? token( "color.border.bold" ) : undefined,
 											} }
 										>
 										</div>
@@ -537,6 +604,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 							onGroupClick={ onGroupClick }
 							timeSteps={ timeSteps }
 							tableType={ tableType }
+							setMessage={ setMessage }
 						/>
 					</tbody>
 				</table >

@@ -8,6 +8,8 @@ import { Item } from "./Item"
 import styles from "./LPTimeTable.module.css"
 import { getStartAndEndSlot } from "./timeTableUtils"
 import ItemWrapper from "./ItemWrapper"
+import { token } from "@atlaskit/tokens"
+import { MessageUrgency } from "../inlinemessage/InlineMessage"
 
 interface RowEntrySingleLine<I> {
 	startSlot: number
@@ -54,6 +56,11 @@ interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	timeSteps: number
 
 	tableType: "single" | "multi" | "combi"
+
+	setMessage: ( msg: { urgency: MessageUrgency, message: string } ) => void
+
+	/* if true, only the slots of the same group and in successive order can be selected */
+	selectionOnlySuccessiveSlots?: boolean
 }
 
 export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSlotBooking> (
@@ -70,6 +77,8 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 		onGroupClick,
 		timeSteps,
 		tableType,
+		setMessage,
+		selectionOnlySuccessiveSlots = true,
 	}: TimeTableProps<G, I>
 ) {
 
@@ -90,6 +99,8 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 			selectedTimeSlotItem={ selectedTimeSlotItem }
 			multiselect={ multiselect }
 			setMultiselect={ setMultiselect }
+			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
+			setMessage={ setMessage }
 		/> : tableType === "single" ?
 			<SingleLineTableRows
 				entries={ entries }
@@ -105,6 +116,8 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 				selectedTimeSlotItem={ selectedTimeSlotItem }
 				multiselect={ multiselect }
 				setMultiselect={ setMultiselect }
+				selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
+				setMessage={ setMessage }
 			/> :
 			<TableRows
 				entries={ entries }
@@ -120,6 +133,8 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 				selectedTimeSlotItem={ selectedTimeSlotItem }
 				multiselect={ multiselect }
 				setMultiselect={ setMultiselect }
+				selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
+				setMessage={ setMessage }
 			/>
 
 	return (
@@ -206,6 +221,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	bottomBorderType,
 	multiselect,
 	setMultiselect,
+	setMessage,
+	selectionOnlySuccessiveSlots,
 }: {
 	slotsArray: Dayjs[],
 	timeSteps: number,
@@ -221,12 +238,48 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	renderTimeSlotItem: ( ( group: G, item: I, isSelected: boolean ) => JSX.Element ) | undefined,
 	bottomBorderType: "bold" | "normal",
 	multiselect: boolean,
-	setMultiselect: ( ( multiselect: boolean ) => void ),
-}
-) {
+	setMultiselect: ( multiselect: boolean ) => void,
+	setMessage: ( msg: { urgency: MessageUrgency, message: string } ) => void
+	selectionOnlySuccessiveSlots: boolean,
+} ) {
 
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const timeSlotIsSelected = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow )
+
+	const mouseClickHandler = ( fromMultiselect: boolean ) => {
+		if ( !onTimeSlotClick ) return
+		if ( selectedTimeSlots && selectedTimeSlots?.length > 0 ) {
+			const sameGroup = selectedTimeSlots[ 0 ].group === group
+			const nextStart = timeSlot.add( timeSteps, "minutes" )
+			const successiveOrFormerEntry = selectedTimeSlots.find( it => it.group === group && it.groupRow === groupRow && ( it.timeSlotStart.isSame( timeSlot ) ) || it.timeSlotStart.add( timeSteps, "minutes" ).isSame( timeSlot ) || it.timeSlotStart.isSame( nextStart ) )
+
+			if ( successiveOrFormerEntry?.timeSlotStart.isSame( timeSlot ) ) {
+				setMessage( {
+					urgency: "information",
+					message: "Slot was already selected."
+				} )
+				return
+			}
+
+			if ( selectionOnlySuccessiveSlots && ( !sameGroup || !successiveOrFormerEntry ) ) {
+				if ( !sameGroup ) {
+					setMessage( {
+						urgency: "information",
+						message: "Please select only time slots in the same group."
+					}
+					)
+				} else {
+					setMessage( {
+						urgency: "information",
+						message: "Please select only successive time slots."
+					} )
+				}
+				return
+			}
+		}
+
+		onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
+	}
 
 
 	const getMouseHandlers = ( timeSlot: Dayjs ) => ( {
@@ -252,12 +305,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				setMultiselect( true )
 				clearTimeout( multiselectDebounceHelper )
 				multiselectDebounceHelper = undefined
-				if ( onTimeSlotClick ) {
-					if ( !selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow ) ) {
-						onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, true )
-					}
-				}
-
+				mouseClickHandler( true )
 			}, clickDiffToMouseDown )
 		},
 		onMouseUp: () => {
@@ -265,7 +313,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				// click detection, if timeout is still running, this is a click
 				clearTimeout( multiselectDebounceHelper )
 				multiselectDebounceHelper = undefined
-				if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, false )
+				mouseClickHandler( false )
 			}
 			if ( setMultiselect ) setMultiselect( false )
 		},
@@ -310,7 +358,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 					colSpan={ colSpan }
 					className={ timeSlotIsSelected && colSpan === 1 ? styles.selected : "" }
 					style={ {
-						borderBottomWidth: groupRow === groupRowMax ? "2px" : "1px",
+						borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
 					} }
 				>
 					{ overlaySelectionDiv }
@@ -348,6 +396,9 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 					colSpan={ rowEntryItem.length }
 					className={ timeSlotIsSelected ? styles.selected : "" }
 					{ ...getMouseHandlers( timeSlot ) }
+					style={ {
+						borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
+					} }
 				>
 					{ rowEntryItem.items.map( ( item, j ) => {
 						const { left, width } = getItemLeftAndWidth( rowEntryItem, item, slotsArray, timeSteps )
@@ -378,8 +429,9 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			{ ...getMouseHandlers( timeSlot ) }
 			className={ timeSlotIsSelected ? styles.selected : "" }
 			style={ {
-				borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? "var(--ds-border-bold)" : "var(--ds-border)",
-				borderBottomWidth: groupRow === groupRowMax && bottomBorderType === "bold" ? "1px" : "1px",
+				//borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? "var(--ds-border-bold)" : "var(--ds-border)",
+				borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
+				//borderBottomWidth: groupRow === groupRowMax && bottomBorderType === "bold" ? "1px" : "1px",
 			} }
 		/>
 	)
@@ -430,7 +482,11 @@ type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	selectedTimeSlotItem: I | undefined,
 	multiselect: boolean,
 	setMultiselect: ( multiselect: boolean ) => void,
+	selectionOnlySuccessiveSlots: boolean,
+	setMessage: ( msg: { urgency: MessageUrgency, message: string } ) => void
 }
+
+let showedItemsOufOfDayRangeWarning = false
 
 
 function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
@@ -448,6 +504,8 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 		selectedTimeSlotItem,
 		multiselect,
 		setMultiselect,
+		selectionOnlySuccessiveSlots,
+		setMessage,
 	}: TableRowsProps<G, I>
 ) {
 
@@ -461,6 +519,13 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps, groupRowCountMap )
 				if ( startAndEndSlot == null ) {
 					console.log( "Item is out of day range of the time slots: ", item )
+					if ( !showedItemsOufOfDayRangeWarning ) {
+						setMessage( {
+							urgency: "warning",
+							message: "Bookings found out of day range of the available time slots."
+						} )
+						showedItemsOufOfDayRangeWarning = true
+					}
 					return rowItems
 				}
 				const { startSlot, endSlot, groupRow } = startAndEndSlot
@@ -526,6 +591,8 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 							bottomBorderType={ groupRowMax === r ? "bold" : "normal" }
 							multiselect={ multiselect }
 							setMultiselect={ setMultiselect }
+							selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
+							setMessage={ setMessage }
 						/>
 					)
 
@@ -547,7 +614,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				</>
 			)
 		} )
-	}, [ entries, multiselect, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, setMultiselect, slotsArray, timeSteps ] )
+	}, [ entries, multiselect, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, selectionOnlySuccessiveSlots, setMessage, setMultiselect, slotsArray, timeSteps ] )
 
 	return (
 		<>
@@ -574,6 +641,8 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 		selectedTimeSlotItem,
 		multiselect,
 		setMultiselect,
+		selectionOnlySuccessiveSlots,
+		setMessage,
 	}: TableRowsProps<G, I>
 ) {
 
@@ -654,6 +723,8 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 						bottomBorderType={ "bold" }
 						multiselect={ multiselect }
 						setMultiselect={ setMultiselect }
+						selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
+						setMessage={ setMessage }
 					/>
 				)
 
@@ -672,7 +743,7 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 				</tr>
 			)
 		} )
-	}, [ entries, multiselect, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, setMultiselect, slotsArray, timeSteps ] )
+	}, [ entries, multiselect, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, selectionOnlySuccessiveSlots, setMessage, setMultiselect, slotsArray, timeSteps ] )
 
 	return (
 		<>
@@ -697,6 +768,8 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 		selectedTimeSlotItem,
 		multiselect,
 		setMultiselect,
+		selectionOnlySuccessiveSlots,
+		setMessage,
 	}: TableRowsProps<G, I>
 ) {
 	const tableRows = useMemo( () => {
@@ -745,6 +818,8 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 						bottomBorderType={ "bold" }
 						multiselect={ multiselect }
 						setMultiselect={ setMultiselect }
+						selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
+						setMessage={ setMessage }
 					/>
 				} )
 
@@ -791,6 +866,8 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								bottomBorderType={ isLastGroupItem ? "bold" : "normal" }
 								multiselect={ multiselect }
 								setMultiselect={ setMultiselect }
+								selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
+								setMessage={ setMessage }
 							/>
 						)
 					} )
@@ -822,7 +899,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 			}
 
 		} )
-	}, [ entries, slotsArray, timeSteps, selectedGroup, onGroupClick, renderGroup, selectedTimeSlots, selectedTimeSlotItem, onTimeSlotClick, onTimeSlotItemClick, renderTimeSlotItem, multiselect, setMultiselect ] )
+	}, [ entries, slotsArray, timeSteps, selectedGroup, onGroupClick, renderGroup, selectedTimeSlots, selectedTimeSlotItem, onTimeSlotClick, onTimeSlotItemClick, renderTimeSlotItem, multiselect, setMultiselect, selectionOnlySuccessiveSlots, setMessage ] )
 
 	return (
 		<>

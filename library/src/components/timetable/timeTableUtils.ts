@@ -45,6 +45,12 @@ export function getStartAndEndSlot(
 
 	for (let slot = startSlot; slot < slotsArray.length; slot++) {
 		endSlot = slot
+		if (
+			slotsArray[slot].isAfter(endDate) ||
+			slotsArray[slot].isSame(endDate)
+		) {
+			break
+		}
 		if (slot >= startSlot) {
 			if (groupRowCountMap) {
 				let slotItemCount = groupRowCountMap.get(slot)
@@ -56,12 +62,6 @@ export function getStartAndEndSlot(
 					groupRowCountMap.set(slot, 0)
 				}
 			}
-		}
-		if (
-			slotsArray[slot].isAfter(endDate) ||
-			slotsArray[slot].isSame(endDate)
-		) {
-			break
 		}
 	}
 

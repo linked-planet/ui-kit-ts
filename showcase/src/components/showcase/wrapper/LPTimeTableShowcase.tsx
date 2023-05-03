@@ -180,7 +180,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	const [ tableType, setTableType ] = useState<"single" | "multi" | "combi">( "combi" )
 	const [ rounding, setRounding ] = useState<"round" | "ceil" | "floor">( "round" )
-	const [ timeSteps, setTimeSteps ] = useState( 30 )
+	const [ timeSteps, setTimeSteps ] = useState( 60 )
 	const [ firstColumnWidth, setFirstColumnWidth ] = useState( 150 )
 	const [ columnWidth, setColumnWidth ] = useState( 70 )
 
