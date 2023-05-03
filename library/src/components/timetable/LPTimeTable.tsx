@@ -133,10 +133,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		}
 
 		const daysDiff = endDate.diff( startDate, 'days' )
-		const timeDiff = dayjs().startOf( 'day' ).add( endDate.hour(), 'hours' ).add( endDate.minute(), 'minutes' ).diff(
-			dayjs().startOf( 'day' ).add( startDate.hour(), 'hours' ).add( startDate.minute(), 'minutes' ), "minutes" )
-
-		if ( timeDiff <= 0 ) {
+		if ( daysDiff < 0 ) {
 			setMessage( {
 				urgency: "error",
 				message: `End date must be after the start date.`
@@ -152,7 +149,23 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			return { timeSlotsPerDay, daysDiff, timeSteps }
 		}
 
-		timeSlotsPerDay = timeDiff / timeSteps
+		let timeDiff = dayjs().startOf( 'day' ).add( endDate.hour(), 'hours' ).add( endDate.minute(), 'minutes' ).diff(
+			dayjs().startOf( 'day' ).add( startDate.hour(), 'hours' ).add( startDate.minute(), 'minutes' ), "minutes" )
+
+		if ( timeDiff === 0 ) {
+			// we set it to 24 hours
+			timeDiff = 24 * 60
+		}
+
+		/*if ( timeDiff < 0 ) {
+			setMessage( {
+				urgency: "warning",
+				message: `End time is after the start time.`
+			} )
+			return { timeSlotsPerDay, daysDiff, timeSteps }
+		}*/
+
+		timeSlotsPerDay = Math.abs( timeDiff ) / timeSteps
 		if ( rounding === "ceil" ) {
 			timeSlotsPerDay = Math.ceil( timeSlotsPerDay )
 		} else if ( rounding == "floor" ) {
@@ -162,9 +175,9 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		}
 
 		// make sure we stay on the same day!
-		if ( startDate.add( timeSlotsPerDay * timeSteps, "minutes" ).day() != startDate.day() ) {
+		/*if ( startDate.add( timeSlotsPerDay * timeSteps, "minutes" ).day() != startDate.day() ) {
 			timeSlotsPerDay--
-		}
+		}*/
 
 		return { timeSlotsPerDay, daysDiff, timeSteps }
 	}, [ timeStepsProp, startDate, endDate, rounding ] )
@@ -295,7 +308,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		nowTimeSlotCell.classList.add( styles.nowHeaderTimeSlot, styles.unselectable )
 
 		// adjust the date header
-		const headerDateRow = tableHeaderRef.current?.children[ 1 ]
+		const headerDateRow = tableHeaderRef.current?.children[ 0 ]
 		if ( !headerDateRow ) {
 			console.log( "unable to find header date row" )
 			return
@@ -378,6 +391,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		timeSlotSettings.slotsArray.length === 0 ) {
 		return (
 			<div>
+				<InlineMessage urgency={ message?.urgency } message={ message?.message ?? "" } />
 				Invalid time slot size
 			</div>
 		)
@@ -478,7 +492,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 								return (
 									<th
 										key={ date.toISOString() }
-										colSpan={ timeSlotsPerDay }
+										colSpan={ timeSlotsPerDay * 2 }
 										style={ {
 											backgroundColor: token( "elevation.surface" ),
 										} }
