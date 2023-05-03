@@ -234,8 +234,8 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		}
 
 
-		// remove the orange border to the header cell
-		const headerTimeslotRow = tableHeaderRef.current?.children[ 2 ]
+		// remove the orange border from the header cell
+		const headerTimeslotRow = tableHeaderRef.current?.children[ 1 ]
 		if ( !headerTimeslotRow ) {
 			setMessage( {
 				urgency: "error",
@@ -432,52 +432,18 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 					} }
 					className={ styles.lpTimeTable }
 				>
+					<colgroup>
+						<col style={ { width: firstColumnWidth } } />
+						{ timeSlotSettings.slotsArray.map( ( _, i ) => {
+							return (
+								<col
+									key={ i }
+									style={ { width: columnWidth } }
+								/>
+							)
+						} ) }
+					</colgroup>
 					<thead ref={ tableHeaderRef }>
-						<tr>
-							<th
-								style={ {
-									zIndex: 4,
-									position: "sticky",
-									left: 0,
-									top: 0,
-									borderLeftStyle: "none",
-									width: firstColumnWidth,
-								} }
-								className={ styles.unselectable }
-							>
-							</th>
-							{/* a contentless row of th to make the table determine the correct width */ }
-							{ timeSlotSettings.slotsArray.map( ( _, i ) => {
-								return (
-									<th
-										key={ i }
-										style={ {
-											zIndex: 4,
-											position: "sticky",
-											left: 0,
-											top: 0,
-											borderStyle: "none",
-											width: columnWidth,
-										} }
-										className={ styles.unselectable }
-									>
-									</th>
-								)
-							} )
-							}
-							<th
-								style={ {
-									zIndex: 4,
-									position: "sticky",
-									left: 0,
-									top: 0,
-									borderLeftStyle: "none",
-									minWidth: 0,
-								} }
-								className={ styles.unselectable }
-							>
-							</th>
-						</tr>
 						<tr>
 							<th
 								style={ {
@@ -502,7 +468,6 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 									{ `${ startDate.format( "DD.MM." ) } - ${ endDate.format( "DD.MM.YY" ) }` }
 								</div>
 							</th>
-
 							{ timeSlotSettings.daysArray.map( ( date ) => {
 								return (
 									<th
