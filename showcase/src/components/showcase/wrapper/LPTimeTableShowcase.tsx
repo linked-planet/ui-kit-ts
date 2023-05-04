@@ -13,12 +13,12 @@ type ExampleGroup = TimeTableGroup
 type ExampleItem = TimeSlotBooking
 
 const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
-	{
+	/*{
 		group: {
 			title: "Empty Group",
 		},
 		items: [],
-	},
+	},*/
 	{
 		group: {
 			title: "Group 1",
@@ -42,7 +42,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 			},
 		],
 	},
-	{
+	/*{
 		group: {
 			title: "Group 2",
 			subtitle: "Group 2 description"
@@ -114,7 +114,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 4-4"
 			},
 		],
-	}
+	}*/
 ];
 
 
@@ -180,7 +180,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	const [ tableType, setTableType ] = useState<"single" | "multi" | "combi">( "combi" )
 	const [ rounding, setRounding ] = useState<"round" | "ceil" | "floor">( "round" )
-	const [ timeSteps, setTimeSteps ] = useState( 60 )
+	const [ timeSteps, setTimeSteps ] = useState( 120 )
 	const [ firstColumnWidth, setFirstColumnWidth ] = useState( 150 )
 	const [ columnWidth, setColumnWidth ] = useState( 70 )
 

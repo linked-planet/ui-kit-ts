@@ -20,7 +20,6 @@ export default function InlineMessage ( {
 	const [ msg, setMessage ] = useState( message )
 
 	useEffect( () => {
-		console.log( "EFFECT", !!message?.text )
 		setMessage( message )
 		setOpen( !!message?.text )
 		if ( message.timeOut && message.text ) {
@@ -69,8 +68,6 @@ export default function InlineMessage ( {
 			break
 	}
 
-	console.log( "OPEN", open ? 1 : 0 );
-
 	return (
 		<div
 			style={ {
@@ -100,7 +97,6 @@ export default function InlineMessage ( {
 					appearance={ closeBtnAppearance }
 					style={ {
 						borderRadius: "100%",
-						//display: open ? "inline-block" : "none",
 					} }
 					onClick={ () => setOpen( false ) }
 				>

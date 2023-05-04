@@ -57,7 +57,7 @@ interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 
 	tableType: "single" | "multi" | "combi"
 
-	setMessage: ( msg: { urgency: MessageUrgency, message: string } ) => void
+	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void
 
 	/* if true, only the slots of the same group and in successive order can be selected */
 	selectionOnlySuccessiveSlots?: boolean
@@ -239,25 +239,27 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	bottomBorderType: "bold" | "normal",
 	multiselect: boolean,
 	setMultiselect: ( multiselect: boolean ) => void,
-	setMessage: ( msg: { urgency: MessageUrgency, message: string } ) => void
+	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void
 	selectionOnlySuccessiveSlots: boolean,
 } ) {
 
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const timeSlotIsSelected = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow )
 
-	const mouseClickHandler = ( fromMultiselect: boolean ) => {
+	//#region  user interaction
+	const mouseClickHandler = ( fromMultiselect: boolean, timeSlot: Dayjs ) => {
 		if ( !onTimeSlotClick ) return
+		console.log( "TS", timeSlot )
 		if ( selectedTimeSlots && selectedTimeSlots?.length > 0 ) {
 			const sameGroup = selectedTimeSlots[ 0 ].group === group
 			const nextStart = timeSlot.add( timeSteps, "minutes" )
 			const successiveOrFormerEntry = selectedTimeSlots.find( it => it.group === group && it.groupRow === groupRow && ( it.timeSlotStart.isSame( timeSlot ) ) || it.timeSlotStart.add( timeSteps, "minutes" ).isSame( timeSlot ) || it.timeSlotStart.isSame( nextStart ) )
 
 			if ( successiveOrFormerEntry?.timeSlotStart.isSame( timeSlot ) ) {
-				setMessage( {
-					urgency: "information",
-					message: "Slot was already selected."
-				} )
+				if ( !multiselect ) {
+					onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
+					return
+				}
 				return
 			}
 
@@ -265,13 +267,14 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				if ( !sameGroup ) {
 					setMessage( {
 						urgency: "information",
-						message: "Please select only time slots in the same group."
-					}
-					)
+						text: "Please select only time slots in the same group.",
+						timeOut: 3,
+					} )
 				} else {
 					setMessage( {
 						urgency: "information",
-						message: "Please select only successive time slots."
+						text: "Please select only successive time slots.",
+						timeOut: 3,
 					} )
 				}
 				return
@@ -294,10 +297,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				return
 			}
 
-			if ( multiselect && onTimeSlotClick ) {
-				if ( !selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow ) ) {
-					onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, true )
-				}
+			if ( multiselect ) {
+				mouseClickHandler( true, timeSlot )
 			}
 		},
 		onMouseDown: () => {
@@ -305,7 +306,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				setMultiselect( true )
 				clearTimeout( multiselectDebounceHelper )
 				multiselectDebounceHelper = undefined
-				mouseClickHandler( true )
+				mouseClickHandler( true, timeSlot )
 			}, clickDiffToMouseDown )
 		},
 		onMouseUp: () => {
@@ -313,56 +314,69 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				// click detection, if timeout is still running, this is a click
 				clearTimeout( multiselectDebounceHelper )
 				multiselectDebounceHelper = undefined
-				mouseClickHandler( false )
+				mouseClickHandler( false, timeSlot )
 			}
 			if ( setMultiselect ) setMultiselect( false )
 		},
 	} )
+	//#endregion
 
 
 	if ( rowEntryItem && rowEntryItem.startSlot === timeSlotNumber ) {
+		const colSpan = rowEntryItem.length * 2
+		let overlaySelectionDiv: JSX.Element[] | undefined = undefined;
+		if ( colSpan > 2 ) {
+			overlaySelectionDiv = []
+			for ( let c = 0; c < colSpan; c = c + 2 ) {
+				const iClosure = timeSlotNumber + ( c / 2 )
+				const timeSlot = slotsArray[ iClosure ]
+
+				const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow )
+				overlaySelectionDiv.push(
+					<div
+						key={ c }
+						className={ timeSlotIsSelectedOverlayDiv ? styles.selected : "" }
+						style={ {
+							position: "absolute",
+							top: 0,
+							left: `${ ( c / colSpan ) * 100 }%`,
+							width: `${ ( 2 / colSpan ) * 100 }%`,
+							height: "100%",
+						} }
+						{ ...getMouseHandlers( timeSlot ) }
+					/>
+				)
+			}
+		}
+
+		const tdMouseHandler = !overlaySelectionDiv || overlaySelectionDiv.length === 0 ? getMouseHandlers( timeSlot ) : undefined
+
+		let items: JSX.Element[] | JSX.Element
+
 		if ( isRowEntry( rowEntryItem ) ) {
 			const item = rowEntryItem.item
 
 			const { left, width } = getItemLeftAndWidth( rowEntryItem, item, slotsArray, timeSteps )
 
-			const colSpan = rowEntryItem.length
-			let overlaySelectionDiv: JSX.Element[] | undefined = undefined;
-			if ( colSpan > 1 ) {
-				overlaySelectionDiv = []
-				for ( let c = 0; c < colSpan; c = c + 2 ) {
-					const iClosure = timeSlotNumber + c
-					const timeSlot = slotsArray[ iClosure ]
-
-					const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow )
-					overlaySelectionDiv.push(
-						<div
-							key={ c }
-							className={ timeSlotIsSelectedOverlayDiv ? styles.selected : "" }
-							style={ {
-								position: "absolute",
-								top: 0,
-								left: `${ ( c / colSpan ) * 100 }%`,
-								width: `${ ( 1 / colSpan ) * 100 }%`,
-								height: "100%",
-							} }
-							{ ...getMouseHandlers( timeSlot ) }
-						/>
-					)
-				}
-			}
-
-			return (
-				<td
+			items = (
+				<ItemWrapper
 					key={ timeSlotNumber }
-					colSpan={ colSpan * 2 }
-					className={ timeSlotIsSelected && colSpan === 1 ? styles.selected : "" }
-					style={ {
-						borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
-					} }
-				>
-					{ overlaySelectionDiv }
+					group={ group }
+					item={ item }
+					width={ width }
+					left={ left }
+					selectedTimeSlotItem={ selectedTimeSlotItem }
+					onTimeSlotItemClick={ onTimeSlotItemClick }
+					renderTimeSlotItem={ renderTimeSlotItem }
+				/>
+			)
+
+		} else {
+			items = rowEntryItem.items.map( ( item, i ) => {
+				const { left, width } = getItemLeftAndWidth( rowEntryItem, item, slotsArray, timeSteps )
+				return (
 					<ItemWrapper
+						key={ i }
 						group={ group }
 						item={ item }
 						width={ width }
@@ -371,58 +385,27 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 						onTimeSlotItemClick={ onTimeSlotItemClick }
 						renderTimeSlotItem={ renderTimeSlotItem }
 					/>
-					{/*<div
-						key={ timeSlotNumber }
-						onClick={ () => {
-							if ( onTimeSlotItemClick ) onTimeSlotItemClick( group, item )
-						} }
-						style={ {
-							position: "relative",
-							left: `${ left * 100 }%`,
-							width: `${ width * 100 }%`,
-						} }
-						className={ utilStyles.fadeOut }
-					>
-						{ renderTimeSlotItem ? renderTimeSlotItem( group, item, item === selectedTimeSlotItem ) : <Item group={ group } item={ item } isSelected={ item === selectedTimeSlotItem } /> }
-					</div>*/}
-				</td>
-			)
-
-		} else {
-
-			return (
-				<td
-					key={ timeSlotNumber }
-					colSpan={ rowEntryItem.length * 2 }
-					className={ timeSlotIsSelected ? styles.selected : "" }
-					{ ...getMouseHandlers( timeSlot ) }
-					style={ {
-						borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
-					} }
-				>
-					{ rowEntryItem.items.map( ( item, j ) => {
-						const { left, width } = getItemLeftAndWidth( rowEntryItem, item, slotsArray, timeSteps )
-
-						return (
-							<div
-								key={ j }
-								style={ {
-									position: "relative",
-									left: `${ left * 100 }%`,
-									width: `${ width * 100 }%`,
-									userSelect: "none",
-								} }
-								className={ styles.unselectable }
-							>
-								{ renderTimeSlotItem ? renderTimeSlotItem( group, item, item === selectedTimeSlotItem ) : <Item group={ group } item={ item } isSelected={ item === selectedTimeSlotItem } /> }
-							</div>
-						)
-					} ) }
-				</td>
-			)
+				)
+			} )
 		}
+
+
+		return (
+			<td
+				key={ timeSlotNumber }
+				colSpan={ colSpan }
+				className={ timeSlotIsSelected && colSpan === 1 ? styles.selected : "" }
+				style={ {
+					borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
+				} }
+			>
+				{ overlaySelectionDiv }
+				{ items }
+			</td>
+		)
 	}
 
+	// the normal empty TD
 	return (
 		<td
 			key={ timeSlotNumber }
@@ -484,7 +467,7 @@ type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	multiselect: boolean,
 	setMultiselect: ( multiselect: boolean ) => void,
 	selectionOnlySuccessiveSlots: boolean,
-	setMessage: ( msg: { urgency: MessageUrgency, message: string } ) => void
+	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void
 }
 
 let showedItemsOufOfDayRangeWarning = false
@@ -523,7 +506,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 					if ( !showedItemsOufOfDayRangeWarning ) {
 						setMessage( {
 							urgency: "warning",
-							message: "Bookings found out of day range of the available time slots."
+							text: "Bookings found out of day range of the available time slots."
 						} )
 						showedItemsOufOfDayRangeWarning = true
 					}
@@ -544,6 +527,8 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				} )
 				return rowItems
 			}, [] as RowEntry<I>[] )
+
+			console.log( "GROUP ITEMS", rowItems )
 
 			const group = groupEntry.group
 
@@ -792,7 +777,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 					groupRow
 				}
 			} ).filter( it => it != null ) as RowEntry<I>[]
-			// if we enable this, the items in the groups will be sorted acoording to their start slot
+			// if we enable this, the items in the groups will be sorted according to their start slot
 			// right now they are simply in the order they come in
 			//rowItems.sort( ( a, b ) => a.startSlot - b.startSlot )
 
@@ -846,10 +831,13 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 			} else {
 
 
+				// each row item is an own row
 				return rowItems.map( ( rowEntry, j ) => {
 					const isLastGroupItem = j === rowItems.length - 1
-					const tds: JSX.Element[] = slotsArray.map( ( _, timeSlotNumber ) => {
-						return (
+					const tds: JSX.Element[] = []
+					for ( let timeSlotNumber = 0; timeSlotNumber < slotsArray.length; timeSlotNumber++ ) {
+						const isEntry = rowEntry.startSlot === timeSlotNumber
+						tds.push(
 							<TableCell<G, I>
 								key={ timeSlotNumber }
 								slotsArray={ slotsArray }
@@ -858,7 +846,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								timeSlotNumber={ timeSlotNumber }
 								groupRow={ j }
 								groupRowMax={ rowItems.length - 1 }
-								rowEntryItem={ rowEntry }
+								rowEntryItem={ isEntry ? rowEntry : null }
 								selectedTimeSlots={ selectedTimeSlots }
 								selectedTimeSlotItem={ selectedTimeSlotItem }
 								onTimeSlotClick={ onTimeSlotClick }
@@ -871,7 +859,10 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								setMessage={ setMessage }
 							/>
 						)
-					} )
+						if ( isEntry ) {
+							timeSlotNumber += rowEntry.length - 1
+						}
+					}
 
 
 					if ( j == 0 ) {

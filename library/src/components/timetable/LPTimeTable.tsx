@@ -88,6 +88,11 @@ const headerTimeSlotFormat = "HH:mm"
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
 
 
+/**
+ * Each column in the table is actually 2 columns. 1 fixed size one, and 1 dynamic sized on. Like that I can simulate min-width on the columns, which else is not allowed.
+ */
+
+
 export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	startDate,
 	endDate,
@@ -116,8 +121,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	const tableHeaderRef = useRef<HTMLTableSectionElement>( null )
 	const tableBodyRef = useRef<HTMLTableSectionElement>( null )
 	const nowRef = useRef<Dayjs>( nowOverwrite ?? dayjs() )
-	const [ message, setMessage ] = useState<{ urgency: MessageUrgency, message: string }>()
-
+	const [ message, setMessage ] = useState<{ urgency: MessageUrgency, text: string, timeOut?: number }>()
 
 	//#region calculate time slots settings
 	const { timeSlotsPerDay, daysDiff, timeSteps } = useMemo( () => {
@@ -128,7 +132,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			timeSteps = startDate.startOf( "day" ).add( 1, "day" ).diff( startDate, "minutes" ) - 1 // -1 to end at the same day if the time steps are from someplace during the day until
 			setMessage( {
 				urgency: "warning",
-				message: `Starting time and time slot size does not fit into one day. Time slot size reduced to ${ timeSteps } size.`
+				text: `Start time do not accommodate one time slot before the next day, reducing time slot size to ${ timeSteps } size.`,
 			} )
 		}
 
@@ -136,7 +140,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		if ( daysDiff < 0 ) {
 			setMessage( {
 				urgency: "error",
-				message: `End date must be after the start date.`
+				text: `End date must be after the start date.`
 			} )
 			return { timeSlotsPerDay, daysDiff, timeSteps }
 		}
@@ -144,7 +148,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		if ( timeSteps === 0 ) {
 			setMessage( {
 				urgency: "error",
-				message: `Time slot size must be greater than 0.`,
+				text: `Time slot size must be greater than 0.`,
 			} )
 			return { timeSlotsPerDay, daysDiff, timeSteps }
 		}
@@ -157,14 +161,6 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			timeDiff = 24 * 60
 		}
 
-		/*if ( timeDiff < 0 ) {
-			setMessage( {
-				urgency: "warning",
-				message: `End time is after the start time.`
-			} )
-			return { timeSlotsPerDay, daysDiff, timeSteps }
-		}*/
-
 		timeSlotsPerDay = Math.abs( timeDiff ) / timeSteps
 		if ( rounding === "ceil" ) {
 			timeSlotsPerDay = Math.ceil( timeSlotsPerDay )
@@ -173,11 +169,6 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		} else {
 			timeSlotsPerDay = Math.round( timeSlotsPerDay )
 		}
-
-		// make sure we stay on the same day!
-		/*if ( startDate.add( timeSlotsPerDay * timeSteps, "minutes" ).day() != startDate.day() ) {
-			timeSlotsPerDay--
-		}*/
 
 		return { timeSlotsPerDay, daysDiff, timeSteps }
 	}, [ timeStepsProp, startDate, endDate, rounding ] )
@@ -212,7 +203,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			if ( !slotBars ) {
 				setMessage( {
 					urgency: "error",
-					message: "Unable to find time slot columns for the time slot bars."
+					text: "Unable to find time slot columns for the time slot bars."
 				} )
 				console.log( "unable to find time slot columns for the time slot bars" )
 				return
@@ -252,7 +243,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		if ( !headerTimeslotRow ) {
 			setMessage( {
 				urgency: "error",
-				message: "Unable to find header time slot row."
+				text: "Unable to find header time slot row."
 			} )
 			console.log( "unable to find header time slot row" )
 			return
@@ -302,7 +293,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		// add orange border
 		const nowTimeSlotCell = headerTimeSlotCells[ startSlot + 1 ]
 		if ( !nowTimeSlotCell ) {
-			console.log( "unable to find header for timeslot for the current time" )
+			console.log( "unable to find header for time slot of the current time" )
 			return
 		}
 		nowTimeSlotCell.classList.add( styles.nowHeaderTimeSlot, styles.unselectable )
@@ -391,7 +382,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		timeSlotSettings.slotsArray.length === 0 ) {
 		return (
 			<div>
-				<InlineMessage urgency={ message?.urgency } message={ message?.message ?? "" } />
+				<InlineMessage message={ message ?? { text: "test" } } />
 				Invalid time slot size
 			</div>
 		)
@@ -402,8 +393,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			<div
 				style={ {
 					display: "flex",
-					gap: "1rem",
-					alignItems: "center",
+					alignItems: "flex-start",
 				} }
 			>
 				{ onPreviousTimeFrameClick &&
@@ -411,6 +401,9 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 						className={ styles.switchTimeFrameBtn }
 						onClick={ onPreviousTimeFrameClick }
 						title="Previous Time Frame"
+						style={ {
+							margin: "0 0.5rem 0.5rem 0",
+						} }
 					>
 						<ChevronLeftIcon label="prevtimeframe" />
 					</button>
@@ -420,6 +413,9 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 						className={ styles.switchTimeFrameBtn }
 						onClick={ onNextTimeFrameClick }
 						title="Next Time Frame"
+						style={ {
+							margin: "0 0.5rem 0.5rem 0",
+						} }
 					>
 						<ChevronRightIcon label="nexttimeframe" />
 					</button>
@@ -427,10 +423,10 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 				<div
 					style={ {
 						flexGrow: 1,
-						alignContent: "end"
+						alignSelf: "flex-start"
 					} }
 				>
-					<InlineMessage urgency={ message?.urgency } message={ message?.message ?? "" } />
+					<InlineMessage message={ message ?? { text: "" } } />
 				</div>
 			</div>
 			<div
@@ -601,8 +597,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 					position: "sticky",
 					top: 0,
 					left: 0,
-					scale: 2,
-					marginLeft: "1rem",
+					marginTop: "0.5rem",
 				} }
 				className={ styles.switchTimeFrameBtn }
 				title="Load more entries."
