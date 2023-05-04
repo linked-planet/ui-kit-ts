@@ -28,16 +28,6 @@
 	) !important; /* atlas-kit overrides this */
 }
 
-.lpTimeTable tbody tr {
-	background-color: var(--ds-surface);
-	/* height works as min-height in tables */
-	height: 3rem;
-}
-
-.lpTimeTable tbody tr:nth-child(2n) {
-	background-color: var(--ds-surface-sunken);
-}
-
 .lpTimeTable tbody td {
 	border-bottom: var(--ds-width-050, 1px) solid var(--ds-border);
 	padding: 0;

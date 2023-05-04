@@ -32,20 +32,25 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 
 	return (
 		<div
-			ref={ ref }
-			onClick={ () => {
-				if ( onTimeSlotItemClick ) onTimeSlotItemClick( group, item )
-			} }
-			className={ utilStyles.fadeIn }
 			style={ {
 				position: "relative",
 				left: `${ left * 100 }%`,
 				width: `${ width * 100 }%`,
 				top: 0,
-				zIndex: 1,
 			} }
 		>
-			{ renderTimeSlotItem ? renderTimeSlotItem( group, item, item === selectedTimeSlotItem ) : <Item group={ group } item={ item } isSelected={ item === selectedTimeSlotItem } /> }
+			<div
+				ref={ ref }
+				className={ utilStyles.fadeIn }
+				style={ {
+					zIndex: 1,
+				} }
+				onClick={ () => {
+					if ( onTimeSlotItemClick ) onTimeSlotItemClick( group, item )
+				} }
+			>
+				{ renderTimeSlotItem ? renderTimeSlotItem( group, item, item === selectedTimeSlotItem ) : <Item group={ group } item={ item } isSelected={ item === selectedTimeSlotItem } /> }
+			</div>
 		</div>
 	)
 }

@@ -216,7 +216,7 @@ const endDateInitial = dayjs().startOf( "day" ).add( 5, "days" ).add( 16, "hours
 
 export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
-	const [ tableType, setTableType ] = useState<"single" | "multi" | "combi">( "combi" )
+	const [ tableType, setTableType ] = useState<"multi" | "combi">( "combi" )
 	const [ rounding, setRounding ] = useState<"round" | "ceil" | "floor">( "round" )
 	const [ timeSteps, setTimeSteps ] = useState( 120 )
 	const [ firstColumnWidth, setFirstColumnWidth ] = useState( 150 )
@@ -254,7 +254,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	const onTimeSlotClickCB = useCallback( ( selectedTS: SelectedTimeSlot<ExampleGroup>, isFromMultiselect: boolean ) => {
 		setSelectedTimeSlots( prev => {
 			if ( !isFromMultiselect ) {
-				const filtered = prev?.filter( it => it.group !== selectedTS.group || !it.timeSlotStart.isSame( selectedTS.timeSlotStart ) || it.groupRow !== selectedTS.groupRow )
+				const filtered = prev?.filter( it => it.group !== selectedTS.group || !it.timeSlotStart.isSame( selectedTS.timeSlotStart ) )
 				if ( filtered?.length === prev?.length ) {
 					return [ ...( prev ?? [] ), selectedTS ]
 				}
@@ -383,7 +383,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					</label>
 					<select
 						name="tabletype"
-						onChange={ e => setTableType( e.target.value as "single" | "multi" | "combi" ) }
+						onChange={ e => setTableType( e.target.value as "multi" | "combi" ) }
 						value={ tableType }
 					>
 						<option value="single">single</option>

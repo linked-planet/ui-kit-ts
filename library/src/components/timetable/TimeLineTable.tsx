@@ -40,7 +40,7 @@ interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	/* how long is 1 time slot */
 	timeSteps: number
 
-	tableType: "single" | "multi" | "combi"
+	tableType: "multi" | "combi"
 
 	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void
 
@@ -86,41 +86,24 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 			setMultiselect={ setMultiselect }
 			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 			setMessage={ setMessage }
-		/> : tableType === "single" ?
-			<SingleLineTableRows
-				entries={ entries }
-				slotsArray={ slotsArray }
-				timeSteps={ timeSteps }
-				onGroupClick={ onGroupClick }
-				onTimeSlotItemClick={ onTimeSlotItemClick }
-				onTimeSlotClick={ onTimeSlotClick }
-				renderGroup={ renderGroup }
-				renderTimeSlotItem={ renderTimeSlotItem }
-				selectedGroup={ selectedGroup }
-				selectedTimeSlots={ selectedTimeSlots }
-				selectedTimeSlotItem={ selectedTimeSlotItem }
-				multiselect={ multiselect }
-				setMultiselect={ setMultiselect }
-				selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
-				setMessage={ setMessage }
-			/> :
-			<TableRows
-				entries={ entries }
-				slotsArray={ slotsArray }
-				timeSteps={ timeSteps }
-				onGroupClick={ onGroupClick }
-				onTimeSlotItemClick={ onTimeSlotItemClick }
-				onTimeSlotClick={ onTimeSlotClick }
-				renderGroup={ renderGroup }
-				renderTimeSlotItem={ renderTimeSlotItem }
-				selectedGroup={ selectedGroup }
-				selectedTimeSlots={ selectedTimeSlots }
-				selectedTimeSlotItem={ selectedTimeSlotItem }
-				multiselect={ multiselect }
-				setMultiselect={ setMultiselect }
-				selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
-				setMessage={ setMessage }
-			/>
+		/> :
+		<CombiTableRows
+			entries={ entries }
+			slotsArray={ slotsArray }
+			timeSteps={ timeSteps }
+			onGroupClick={ onGroupClick }
+			onTimeSlotItemClick={ onTimeSlotItemClick }
+			onTimeSlotClick={ onTimeSlotClick }
+			renderGroup={ renderGroup }
+			renderTimeSlotItem={ renderTimeSlotItem }
+			selectedGroup={ selectedGroup }
+			selectedTimeSlots={ selectedTimeSlots }
+			selectedTimeSlotItem={ selectedTimeSlotItem }
+			multiselect={ multiselect }
+			setMultiselect={ setMultiselect }
+			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
+			setMessage={ setMessage }
+		/>
 
 	return (
 		<>
@@ -229,7 +212,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 } ) {
 
 	const timeSlot = slotsArray[ timeSlotNumber ]
-	const timeSlotIsSelected = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow )
+	const timeSlotIsSelected = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) )
 
 	//#region  user interaction
 	const mouseClickHandler = ( fromMultiselect: boolean, timeSlot: Dayjs ) => {
@@ -237,7 +220,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 		if ( selectedTimeSlots && selectedTimeSlots?.length > 0 ) {
 			const sameGroup = selectedTimeSlots[ 0 ].group === group
 			const nextStart = timeSlot.add( timeSteps, "minutes" )
-			const successiveOrFormerEntry = selectedTimeSlots.find( it => it.group === group && it.groupRow === groupRow && ( it.timeSlotStart.isSame( timeSlot ) ) || it.timeSlotStart.add( timeSteps, "minutes" ).isSame( timeSlot ) || it.timeSlotStart.isSame( nextStart ) )
+			const successiveOrFormerEntry = selectedTimeSlots.find( it => it.group === group && ( it.timeSlotStart.isSame( timeSlot ) ) || it.timeSlotStart.add( timeSteps, "minutes" ).isSame( timeSlot ) || it.timeSlotStart.isSame( nextStart ) )
 
 			if ( successiveOrFormerEntry?.timeSlotStart.isSame( timeSlot ) ) {
 				if ( !multiselect ) {
@@ -315,7 +298,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				const iClosure = timeSlotNumber + ( c / 2 )
 				const timeSlot = slotsArray[ iClosure ]
 
-				const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) && it.groupRow === groupRow )
+				const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) )
+				const width = 2 / colSpan * 100
 				overlaySelectionDiv.push(
 					<div
 						key={ c }
@@ -324,7 +308,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 							position: "absolute",
 							top: 0,
 							left: `${ ( c / colSpan ) * 100 }%`,
-							width: `${ ( 2 / colSpan ) * 100 }%`,
+							width: `${ width }%`,
 							height: "100%",
 						} }
 						{ ...getMouseHandlers( timeSlot ) }
@@ -365,13 +349,12 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			<td
 				key={ timeSlotNumber }
 				colSpan={ colSpan }
-				className={ timeSlotIsSelected && colSpan === 1 ? styles.selected : "" }
+				className={ timeSlotIsSelected && colSpan === 2 ? styles.selected : "" }
 				style={ {
 					borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
 				} }
 				{ ...tdMouseHandler }
 			>
-				{ overlaySelectionDiv }
 				<div
 					style={ {
 						display: "flex",
@@ -384,6 +367,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				>
 					{ items }
 				</div>
+				{ overlaySelectionDiv }
 			</td>
 		)
 	}
@@ -437,64 +421,78 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
 
 
 /**
- * Merges row items in the same group, or put them into the next row if they overlap. Most likely needs to be called multiple times until no merge is happening anymore.
- * @param rowItemsUnmerged 
- * @param aboveGroupRow merge only row items above this group row
- * @returns 
+ * Merges row items in the same group, or put them into the next row if they overlap. Does this until no merge is happening anymore.
+ * @returns the merged row items and the max group row 
  */
-function mergeCombiRowItems<I extends TimeSlotBooking> ( rowItemsUnmerged: RowEntry<I>[], aboveGroupRow: number ): { mergedRowItems: RowEntry<I>[], maxGroupRow: number } {
-	// merge the row items where time slots overlap if the entries within are not overlapping
-	// or move the overlapping entries into a new row
-	const rowItems: RowEntry<I>[] = []
-	let maxGroupRow = aboveGroupRow
-	for ( const rowItem of rowItemsUnmerged ) {
-		if ( rowItem.groupRow < aboveGroupRow ) {
-			rowItems.push( rowItem )
-			continue
-		}
+function mergeCombiRowItemsCascade<I extends TimeSlotBooking> ( rowItemsUnmerged: RowEntry<I>[] ): { mergedRowItems: RowEntry<I>[], maxGroupRow: number } {
+	const mergeCombiRowItems = <I extends TimeSlotBooking> ( rowItemsUnmerged: RowEntry<I>[], aboveGroupRow: number ): { mergedRowItems: RowEntry<I>[], maxGroupRow: number } => {
+		// merge the row items where time slots overlap if the entries within are not overlapping
+		// or move the overlapping entries into a new row
+		const rowItems: RowEntry<I>[] = []
+		let maxGroupRow = aboveGroupRow
+		for ( const rowItem of rowItemsUnmerged ) {
+			if ( rowItem.groupRow < aboveGroupRow ) {
+				rowItems.push( rowItem )
+				continue
+			}
 
-		// find overlapping row items
-		const overlappingRowItem = rowItems.find( ( mergedRowItem ) => {
-			if ( mergedRowItem.groupRow !== rowItem.groupRow ) return false
-			return rowItem.startSlot < mergedRowItem.startSlot + mergedRowItem.length
-				&& rowItem.startSlot + rowItem.length > mergedRowItem.startSlot
-		} )
-
-		if ( !overlappingRowItem ) {
-			rowItems.push( rowItem )
-			continue
-		}
-
-		// if overlapping row item is found, we check if there are actual overlapping items within
-		// if there are, we move the current item into a new row
-		const overlappingItem = overlappingRowItem.items.find( ( item ) => {
-			return rowItem.items.find( ( rowItemItem ) => {
-				return isOverlapping( item, rowItemItem )
+			// find overlapping row items
+			const overlappingRowItem = rowItems.find( ( mergedRowItem ) => {
+				if ( mergedRowItem.groupRow !== rowItem.groupRow ) return false
+				return rowItem.startSlot < mergedRowItem.startSlot + mergedRowItem.length
+					&& rowItem.startSlot + rowItem.length > mergedRowItem.startSlot
 			} )
-		} )
-		if ( overlappingItem ) {
-			rowItem.groupRow++
-			rowItems.push( rowItem )
-			if ( rowItem.groupRow > maxGroupRow ) maxGroupRow = rowItem.groupRow
-			continue
+
+			if ( !overlappingRowItem ) {
+				rowItems.push( rowItem )
+				continue
+			}
+
+			// if overlapping row item is found, we check if there are actual overlapping items within
+			// if there are, we move the current item into a new row
+			const overlappingItem = overlappingRowItem.items.find( ( item ) => {
+				return rowItem.items.find( ( rowItemItem ) => {
+					return isOverlapping( item, rowItemItem )
+				} )
+			} )
+			if ( overlappingItem ) {
+				rowItem.groupRow++
+				rowItems.push( rowItem )
+				if ( rowItem.groupRow > maxGroupRow ) maxGroupRow = rowItem.groupRow
+				continue
+			}
+
+			// if there are no overlapping items within the slot range, we merge the row items
+			if ( overlappingRowItem.startSlot > rowItem.startSlot ) {
+				overlappingRowItem.startSlot = rowItem.startSlot
+			}
+			if ( overlappingRowItem.startSlot + overlappingRowItem.length < rowItem.startSlot + rowItem.length ) {
+				overlappingRowItem.length = rowItem.startSlot + rowItem.length - overlappingRowItem.startSlot
+			}
+			overlappingRowItem.items.push( ...rowItem.items )
 		}
 
-		// if there are no overlapping items within the slot range, we merge the row items
-		if ( overlappingRowItem.startSlot > rowItem.startSlot ) {
-			overlappingRowItem.startSlot = rowItem.startSlot
-		}
-		if ( overlappingRowItem.startSlot + overlappingRowItem.length < rowItem.startSlot + rowItem.length ) {
-			overlappingRowItem.length = rowItem.startSlot + rowItem.length - overlappingRowItem.startSlot
-		}
-		overlappingRowItem.items.push( ...rowItem.items )
+		rowItems.sort( ( a, b ) => {
+			if ( a.groupRow != b.groupRow ) a.groupRow - b.groupRow
+			return a.startSlot - b.startSlot
+		} )
+
+		return { mergedRowItems: rowItems, maxGroupRow }
 	}
 
-	rowItems.sort( ( a, b ) => {
-		if ( a.groupRow != b.groupRow ) a.groupRow - b.groupRow
-		return a.startSlot - b.startSlot
-	} )
 
-	return { mergedRowItems: rowItems, maxGroupRow }
+	// cascaded merging until no new groups are found
+	let { mergedRowItems, maxGroupRow } = mergeCombiRowItems<I>( rowItemsUnmerged, 0 )
+	let maxGroupRowsNew = 0
+	while ( maxGroupRow !== maxGroupRowsNew ) {
+		rowItemsUnmerged = mergedRowItems
+		maxGroupRowsNew = maxGroupRow
+		const newOnes = mergeCombiRowItems<I>( rowItemsUnmerged, maxGroupRow )
+		mergedRowItems = newOnes.mergedRowItems
+		maxGroupRow = newOnes.maxGroupRow
+	}
+
+	return { mergedRowItems, maxGroupRow }
 }
 
 
@@ -519,7 +517,7 @@ type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 let showedItemsOufOfDayRangeWarning = false
 
 
-function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
+function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 	{
 		entries,
 		slotsArray,
@@ -540,9 +538,9 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 ) {
 
 	const tableRows = useMemo( () => {
-		return entries.map( ( groupEntry ) => {
+		return entries.map( ( groupEntry, g ) => {
 
-			let rowItemsUnmerged: RowEntry<I>[] = groupEntry.items.reduce( ( rowItems, item ) => {
+			const rowItemsUnmerged: RowEntry<I>[] = groupEntry.items.reduce( ( rowItems, item ) => {
 				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps )
 				if ( startAndEndSlot == null ) {
 					console.log( "Item is out of day range of the time slots: ", item )
@@ -568,18 +566,8 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				return rowItems
 			}, [] as RowEntry<I>[] )
 
-			// cascaded merging until no new groups are found
-			let { mergedRowItems, maxGroupRow } = mergeCombiRowItems<I>( rowItemsUnmerged, 0 )
-			let maxGroupRowsNew = 0
-			while ( maxGroupRow !== maxGroupRowsNew ) {
-				rowItemsUnmerged = mergedRowItems
-				maxGroupRowsNew = maxGroupRow
-				const newOnes = mergeCombiRowItems<I>( rowItemsUnmerged, maxGroupRow )
-				mergedRowItems = newOnes.mergedRowItems
-				maxGroupRow = newOnes.maxGroupRow
-			}
+			const { mergedRowItems: rowItems, maxGroupRow: maxGroupRow } = mergeCombiRowItemsCascade( rowItemsUnmerged )
 
-			const rowItems = mergedRowItems
 			const group = groupEntry.group
 			const trs = []
 			for ( let r = 0; r <= maxGroupRow; r++ ) {
@@ -636,7 +624,13 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				}
 
 				trs.push(
-					<tr key={ r }>
+					<tr
+						key={ r }
+						style={ {
+							backgroundColor: g % 2 === 0 ? token( "elevation.surface.sunken" ) : token( "elevation.surface" ),
+							height: "3rem", // height works as min height in tables
+						} }
+					>
 						{ tds }
 					</tr>
 				)
@@ -656,135 +650,6 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 		</>
 	)
 
-}
-
-
-
-function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
-	{
-		entries,
-		slotsArray,
-		timeSteps,
-		onGroupClick,
-		onTimeSlotItemClick,
-		onTimeSlotClick,
-		renderGroup,
-		renderTimeSlotItem,
-		selectedGroup,
-		selectedTimeSlots,
-		selectedTimeSlotItem,
-		multiselect,
-		setMultiselect,
-		selectionOnlySuccessiveSlots,
-		setMessage,
-	}: TableRowsProps<G, I>
-) {
-
-	const tableRows = useMemo( () => {
-		return entries.map( ( groupEntry, g ) => {
-			const rowItems: RowEntry<I>[] = []
-			groupEntry.items.forEach( ( item ) => {
-
-				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps )
-				if ( startAndEndSlot == null ) {
-					console.log( "Item is out of day range of the time slots: ", item )
-					return
-				}
-
-				const { startSlot, endSlot } = startAndEndSlot
-
-				// find if we already have a row item that overlaps with this item
-				const rowEntry = rowItems.find( ( rowEntry ) => {
-					if ( rowEntry.startSlot > endSlot ) return false;
-					if ( rowEntry.startSlot + rowEntry.length <= startSlot ) return false;
-					return true;
-				} )
-
-				if ( rowEntry ) {
-					rowEntry.items.push( item )
-					if ( startSlot < rowEntry.startSlot ) rowEntry.startSlot = startSlot;
-					if ( endSlot > rowEntry.startSlot + rowEntry.length ) rowEntry.length = endSlot - rowEntry.startSlot;
-				} else {
-					rowItems.push( {
-						items: [ item ],
-						startSlot,
-						length: endSlot - startSlot,
-						groupRow: 0,
-					} )
-				}
-			} )
-
-			rowItems.sort( ( a, b ) => a.startSlot - b.startSlot )
-
-			const group = groupEntry.group
-
-			const tds: JSX.Element[] = [];
-			//#region  add group fixed column
-			tds.push(
-				<GroupHeaderTableCell<G>
-					key={ -1 }
-					group={ group }
-					groupRowMax={ 0 }
-					selectedGroup={ selectedGroup }
-					onGroupClick={ onGroupClick }
-					renderGroup={ renderGroup }
-				/>
-			)
-			//#endregion
-
-			let colItemIdx = 0;
-			for ( let i = 0; i < slotsArray.length; i++ ) {
-
-				let rowEntryItem: RowEntry<I> | null = colItemIdx < rowItems.length ? rowItems[ colItemIdx ] : null
-				if ( rowEntryItem && rowEntryItem.startSlot !== i ) {
-					rowEntryItem = null;
-				}
-
-				tds.push(
-					<TableCell<G, I>
-						key={ i }
-						group={ group }
-						groupRow={ 0 }
-						groupRowMax={ 0 }
-						slotsArray={ slotsArray }
-						timeSteps={ timeSteps }
-						rowEntryItem={ rowEntryItem }
-						onTimeSlotClick={ onTimeSlotClick }
-						timeSlotNumber={ i }
-						onTimeSlotItemClick={ onTimeSlotItemClick }
-						renderTimeSlotItem={ renderTimeSlotItem }
-						selectedTimeSlotItem={ selectedTimeSlotItem }
-						selectedTimeSlots={ selectedTimeSlots }
-						bottomBorderType={ "bold" }
-						multiselect={ multiselect }
-						setMultiselect={ setMultiselect }
-						selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
-						setMessage={ setMessage }
-					/>
-				)
-
-				if ( rowEntryItem ) {
-					colItemIdx++;
-					i += rowEntryItem.length - 1
-				}
-			}
-
-			return (
-				<tr
-					key={ g }
-					className={ group === selectedGroup ? styles.selected : "" }
-				>
-					{ tds }
-				</tr>
-			)
-		} )
-	}, [ entries, multiselect, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, selectionOnlySuccessiveSlots, setMessage, setMultiselect, slotsArray, timeSteps ] )
-
-	return (
-		<>
-			{ tableRows }
-		</>
-	)
 }
 
 
@@ -864,6 +729,10 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 						onClick={ () => {
 							if ( onGroupClick ) onGroupClick( group )
 						} }
+						style={ {
+							backgroundColor: g % 2 === 0 ? token( "elevation.surface.sunken" ) : token( "elevation.surface" ),
+							height: "3rem", // height works as min height in tables
+						} }
 						className={ selectedGroup === group ? styles.selected : "" }
 					>
 						<GroupHeaderTableCell<G>
@@ -878,7 +747,6 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 					</tr>
 				)
 			} else {
-
 
 				// each row item is an own row
 				return rowItems.map( ( rowEntry, j ) => {
@@ -932,6 +800,10 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 					return (
 						<tr
 							key={ j }
+							style={ {
+								backgroundColor: g % 2 === 0 ? token( "elevation.surface.sunken" ) : token( "elevation.surface" ),
+								height: "3rem", // height works as min height in tables
+							} }
 						>
 							{ tds }
 						</tr>
