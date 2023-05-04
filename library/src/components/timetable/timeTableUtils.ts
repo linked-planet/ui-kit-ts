@@ -1,11 +1,24 @@
 import { Dayjs } from "dayjs"
+import { TimeSlotBooking } from "./LPTimeTable"
+
+export function isOverlapping(
+	item: TimeSlotBooking,
+	slotItem: TimeSlotBooking
+) {
+	if (
+		item.endDate.isBefore(slotItem.startDate) ||
+		item.startDate.isAfter(slotItem.endDate)
+	) {
+		return false
+	}
+	return true
+}
 
 export function getStartAndEndSlot(
 	startDate: Dayjs,
 	endDate: Dayjs,
 	slotsArray: Dayjs[],
-	timeSteps: number,
-	groupRowCountMap: Map<number, number> | null
+	timeSteps: number
 ) {
 	const startsBeforeFirst = startDate.isBefore(slotsArray[0])
 	const endsBeforeFirst =
@@ -21,7 +34,6 @@ export function getStartAndEndSlot(
 
 	let startSlot = -1
 	let endSlot = -1
-	let groupRow = 0
 	for (let slot = 0; slot < slotsArray.length; slot++) {
 		if (
 			slotsArray[slot].isSame(startDate) ||
@@ -51,18 +63,6 @@ export function getStartAndEndSlot(
 		) {
 			break
 		}
-		if (slot >= startSlot) {
-			if (groupRowCountMap) {
-				let slotItemCount = groupRowCountMap.get(slot)
-				if (slotItemCount != undefined) {
-					slotItemCount++
-					if (slotItemCount > groupRow) groupRow = slotItemCount
-					groupRowCountMap.set(slot, slotItemCount)
-				} else {
-					groupRowCountMap.set(slot, 0)
-				}
-			}
-		}
 	}
 
 	if (startSlot === endSlot) {
@@ -74,5 +74,49 @@ export function getStartAndEndSlot(
 		return null
 	}
 
-	return { startSlot, endSlot, groupRow }
+	return { startSlot, endSlot }
 }
+
+/*export function getCombiGroupRow(
+	item: TimeSlotBooking,
+	startSlot: number,
+	endSlot: number,
+	groupRowCountMap: Map<number, TimeSlotBooking[]>
+) {
+	console.log("ITEM", item)
+	let groupRow = 0
+
+	for (let slot = startSlot; slot < endSlot; slot++) {
+		let slotItems = groupRowCountMap.get(slot)
+		// to detect is the slot items overlap in the same slot
+		if (!slotItems) {
+			slotItems = [item]
+		} else {
+			// find overlapping items with the current one
+			const slotItemsOverlapping = slotItems.filter((it) =>
+				isOverlapping(item, it)
+			)
+
+			console.log("OVERLAPPING", slotItemsOverlapping)
+
+			// from the overlapping items check if they are overlapping each other
+			groupRow = slotItemsOverlapping.reduce(
+				(overlappingItemsCount, slotItem) => {
+					const overlappingItems = slotItemsOverlapping.filter((it) =>
+						isOverlapping(it, slotItem)
+					)
+					if (overlappingItems.length > overlappingItemsCount) {
+						overlappingItemsCount = overlappingItems.length
+					}
+					return overlappingItemsCount
+				},
+				0
+			)
+
+			slotItems.push(item)
+		}
+		groupRowCountMap.set(slot, slotItems)
+	}
+
+	return groupRow
+}*/

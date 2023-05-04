@@ -13,12 +13,12 @@ type ExampleGroup = TimeTableGroup
 type ExampleItem = TimeSlotBooking
 
 const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
-	/*{
+	{
 		group: {
 			title: "Empty Group",
 		},
 		items: [],
-	},*/
+	},
 	{
 		group: {
 			title: "Group 1",
@@ -26,23 +26,56 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 		},
 		items: [
 			{
+				// expected to be on group row 0
 				startDate: dayjs().startOf( "day" ).add( 9, "hours" ).add( 10, "minutes" ),
 				endDate: dayjs().startOf( "day" ).add( 12, "hours" ).add( 10, "minutes" ),
 				title: "Item 1-1"
 			},
 			{
+				// expected to be on group row 0
 				startDate: dayjs().startOf( "day" ).add( 13, "hours" ),
 				endDate: dayjs().startOf( "day" ).add( 15, "hours" ),
 				title: "Item 1-2"
 			},
 			{
+				// expected to be on group row 0
+				startDate: dayjs().startOf( "day" ).add( 15, "hours" ).add( 10, "minutes" ),
+				endDate: dayjs().startOf( "day" ).add( 16, "hours" ),
+				title: "Item 1-3"
+			},
+			{
+				// expected to be on group row 0
 				startDate: dayjs().startOf( "day" ).add( 1, "day" ).add( 8, "hours" ),
 				endDate: dayjs().startOf( "day" ).add( 1, "day" ).add( 9, "hours" ),
-				title: "Item 1-3"
+				title: "Item 1-4"
+			},
+			{
+				// expected to be on group row 1
+				startDate: dayjs().startOf( "day" ).add( 9, "hours" ),
+				endDate: dayjs().startOf( "day" ).add( 15, "hours" ),
+				title: "Item 1-5"
+			},
+			{
+				// expected to be on group row 2
+				startDate: dayjs().startOf( "day" ).add( 9, "hours" ).add( 10, "minutes" ),
+				endDate: dayjs().startOf( "day" ).add( 15, "hours" ).add( 10, "minutes" ),
+				title: "Item 1-6"
+			},
+			{
+				// expected to be on group row 0
+				startDate: dayjs().startOf( "day" ).add( 9, "hours" ).add( 10, "minutes" ),
+				endDate: dayjs().startOf( "day" ).add( 12, "hours" ).add( 10, "minutes" ),
+				title: "Item 1-1-2"
+			},
+			{
+				// expected to be on group row 0
+				startDate: dayjs().startOf( "day" ).add( 13, "hours" ),
+				endDate: dayjs().startOf( "day" ).add( 15, "hours" ),
+				title: "Item 1-2-2"
 			},
 		],
 	},
-	/*{
+	{
 		group: {
 			title: "Group 2",
 			subtitle: "Group 2 description"
@@ -54,9 +87,14 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 2-1"
 			},
 			{
+				startDate: dayjs().startOf( "day" ).add( 8, "hours" ).add( 21, "minutes" ),
+				endDate: dayjs().startOf( "day" ).add( 8, "hours" ).add( 40, "minutes" ),
+				title: "Item 2-2"
+			},
+			{
 				startDate: dayjs().startOf( "day" ).add( 8, "hours" ),
 				endDate: dayjs().startOf( "day" ).add( 10, "hours" ),
-				title: "Item 2-2"
+				title: "Item 2-3"
 			},
 		],
 	},
@@ -114,7 +152,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 4-4"
 			},
 		],
-	}*/
+	}
 ];
 
 

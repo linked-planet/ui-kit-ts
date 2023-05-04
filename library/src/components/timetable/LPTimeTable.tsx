@@ -253,7 +253,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			headerTimeSlotCell.classList.remove( styles.nowHeaderTimeSlot )
 		}
 
-		const startAndEndSlot = getStartAndEndSlot( nowRef.current, nowRef.current, timeSlotSettings.slotsArray, timeSteps, null )
+		const startAndEndSlot = getStartAndEndSlot( nowRef.current, nowRef.current, timeSlotSettings.slotsArray, timeSteps )
 		if ( !startAndEndSlot ) {
 			// we need to remove the now bar, if it is there
 			nowBarRef.current?.remove()

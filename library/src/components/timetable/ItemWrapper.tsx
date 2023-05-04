@@ -41,6 +41,7 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 				position: "relative",
 				left: `${ left * 100 }%`,
 				width: `${ width * 100 }%`,
+				top: 0,
 				zIndex: 1,
 			} }
 		>

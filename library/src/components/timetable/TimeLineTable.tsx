@@ -6,33 +6,18 @@ import { Group } from "./Group"
 import { Item } from "./Item"
 
 import styles from "./LPTimeTable.module.css"
-import { getStartAndEndSlot } from "./timeTableUtils"
+import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
 import ItemWrapper from "./ItemWrapper"
 import { token } from "@atlaskit/tokens"
 import { MessageUrgency } from "../inlinemessage/InlineMessage"
 
-interface RowEntrySingleLine<I> {
+interface RowEntry<I> {
 	startSlot: number
 	items: I[]
 	length: number
-}
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-function isRowEntrySingleLine ( rowEntry: RowEntrySingleLine<TimeSlotBooking> | RowEntry<TimeSlotBooking> ): rowEntry is RowEntrySingleLine<TimeSlotBooking> {
-	return ( rowEntry as RowEntrySingleLine<TimeSlotBooking> ).items !== undefined
-}
-
-interface RowEntry<I> {
-	startSlot: number
-	item: I
-	length: number
 	groupRow: number
 }
-
-function isRowEntry ( rowEntry: RowEntrySingleLine<TimeSlotBooking> | RowEntry<TimeSlotBooking> ): rowEntry is RowEntry<TimeSlotBooking> {
-	return ( rowEntry as RowEntry<TimeSlotBooking> ).item !== undefined
-}
-
 
 interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	/* Entries define the groups, and the items in the groups */
@@ -147,7 +132,7 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 
 
 function getItemLeftAndWidth (
-	rowEntry: RowEntrySingleLine<TimeSlotBooking> | RowEntry<TimeSlotBooking>,
+	rowEntry: RowEntry<TimeSlotBooking>,
 	item: TimeSlotBooking,
 	slotsArray: Dayjs[],
 	timeSteps: number,
@@ -230,7 +215,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	timeSlotNumber: number,
 	groupRow: number,
 	groupRowMax: number,
-	rowEntryItem: RowEntry<I> | RowEntrySingleLine<I> | null,
+	rowEntryItem: RowEntry<I> | null,
 	selectedTimeSlots: SelectedTimeSlot<G>[] | undefined,
 	selectedTimeSlotItem: I | undefined,
 	onTimeSlotClick: ( ( s: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void ) | undefined,
@@ -249,7 +234,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	//#region  user interaction
 	const mouseClickHandler = ( fromMultiselect: boolean, timeSlot: Dayjs ) => {
 		if ( !onTimeSlotClick ) return
-		console.log( "TS", timeSlot )
 		if ( selectedTimeSlots && selectedTimeSlots?.length > 0 ) {
 			const sameGroup = selectedTimeSlots[ 0 ].group === group
 			const nextStart = timeSlot.add( timeSteps, "minutes" )
@@ -351,16 +335,21 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 
 		const tdMouseHandler = !overlaySelectionDiv || overlaySelectionDiv.length === 0 ? getMouseHandlers( timeSlot ) : undefined
 
-		let items: JSX.Element[] | JSX.Element
+		// rowEntryItems are sorted by startSlot
+		let widthBefore = 0 // this is needed for the relative positioning inside the flex item container
+		const items = rowEntryItem.items.map( ( item, i ) => {
+			const leftAndWidth = getItemLeftAndWidth( rowEntryItem, item, slotsArray, timeSteps )
+			let left = leftAndWidth.left
+			const width = leftAndWidth.width
 
-		if ( isRowEntry( rowEntryItem ) ) {
-			const item = rowEntryItem.item
-
-			const { left, width } = getItemLeftAndWidth( rowEntryItem, item, slotsArray, timeSteps )
-
-			items = (
+			// need to calculate the offset from the width of the one before
+			if ( i > 0 ) {
+				left = left - widthBefore
+			}
+			widthBefore += width
+			return (
 				<ItemWrapper
-					key={ timeSlotNumber }
+					key={ i }
 					group={ group }
 					item={ item }
 					width={ width }
@@ -370,25 +359,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 					renderTimeSlotItem={ renderTimeSlotItem }
 				/>
 			)
-
-		} else {
-			items = rowEntryItem.items.map( ( item, i ) => {
-				const { left, width } = getItemLeftAndWidth( rowEntryItem, item, slotsArray, timeSteps )
-				return (
-					<ItemWrapper
-						key={ i }
-						group={ group }
-						item={ item }
-						width={ width }
-						left={ left }
-						selectedTimeSlotItem={ selectedTimeSlotItem }
-						onTimeSlotItemClick={ onTimeSlotItemClick }
-						renderTimeSlotItem={ renderTimeSlotItem }
-					/>
-				)
-			} )
-		}
-
+		} )
 
 		return (
 			<td
@@ -398,9 +369,21 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				style={ {
 					borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
 				} }
+				{ ...tdMouseHandler }
 			>
 				{ overlaySelectionDiv }
-				{ items }
+				<div
+					style={ {
+						display: "flex",
+						position: "relative",
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+					} }
+				>
+					{ items }
+				</div>
 			</td>
 		)
 	}
@@ -452,6 +435,69 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
 }
 
 
+
+/**
+ * Merges row items in the same group, or put them into the next row if they overlap. Most likely needs to be called multiple times until no merge is happening anymore.
+ * @param rowItemsUnmerged 
+ * @param aboveGroupRow merge only row items above this group row
+ * @returns 
+ */
+function mergeCombiRowItems<I extends TimeSlotBooking> ( rowItemsUnmerged: RowEntry<I>[], aboveGroupRow: number ): { mergedRowItems: RowEntry<I>[], maxGroupRow: number } {
+	// merge the row items where time slots overlap if the entries within are not overlapping
+	// or move the overlapping entries into a new row
+	const rowItems: RowEntry<I>[] = []
+	let maxGroupRow = aboveGroupRow
+	for ( const rowItem of rowItemsUnmerged ) {
+		if ( rowItem.groupRow < aboveGroupRow ) {
+			rowItems.push( rowItem )
+			continue
+		}
+
+		// find overlapping row items
+		const overlappingRowItem = rowItems.find( ( mergedRowItem ) => {
+			if ( mergedRowItem.groupRow !== rowItem.groupRow ) return false
+			return rowItem.startSlot < mergedRowItem.startSlot + mergedRowItem.length
+				&& rowItem.startSlot + rowItem.length > mergedRowItem.startSlot
+		} )
+
+		if ( !overlappingRowItem ) {
+			rowItems.push( rowItem )
+			continue
+		}
+
+		// if overlapping row item is found, we check if there are actual overlapping items within
+		// if there are, we move the current item into a new row
+		const overlappingItem = overlappingRowItem.items.find( ( item ) => {
+			return rowItem.items.find( ( rowItemItem ) => {
+				return isOverlapping( item, rowItemItem )
+			} )
+		} )
+		if ( overlappingItem ) {
+			rowItem.groupRow++
+			rowItems.push( rowItem )
+			if ( rowItem.groupRow > maxGroupRow ) maxGroupRow = rowItem.groupRow
+			continue
+		}
+
+		// if there are no overlapping items within the slot range, we merge the row items
+		if ( overlappingRowItem.startSlot > rowItem.startSlot ) {
+			overlappingRowItem.startSlot = rowItem.startSlot
+		}
+		if ( overlappingRowItem.startSlot + overlappingRowItem.length < rowItem.startSlot + rowItem.length ) {
+			overlappingRowItem.length = rowItem.startSlot + rowItem.length - overlappingRowItem.startSlot
+		}
+		overlappingRowItem.items.push( ...rowItem.items )
+	}
+
+	rowItems.sort( ( a, b ) => {
+		if ( a.groupRow != b.groupRow ) a.groupRow - b.groupRow
+		return a.startSlot - b.startSlot
+	} )
+
+	return { mergedRowItems: rowItems, maxGroupRow }
+}
+
+
 type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	entries: TimeTableEntry<G, I>[],
 	slotsArray: Dayjs[]
@@ -494,13 +540,12 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 ) {
 
 	const tableRows = useMemo( () => {
-		const groupRowCountMap = new Map<number, number>();
+		const groupRowCountMap = new Map<number, TimeSlotBooking[]>();
 		return entries.map( ( groupEntry ) => {
 			groupRowCountMap.clear()
 
-			let groupRowMax = 0
-			const rowItems: RowEntry<I>[] = groupEntry.items.reduce( ( rowItems, item ) => {
-				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps, groupRowCountMap )
+			let rowItemsUnmerged: RowEntry<I>[] = groupEntry.items.reduce( ( rowItems, item ) => {
+				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps )
 				if ( startAndEndSlot == null ) {
 					console.log( "Item is out of day range of the time slots: ", item )
 					if ( !showedItemsOufOfDayRangeWarning ) {
@@ -512,29 +557,35 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 					}
 					return rowItems
 				}
-				const { startSlot, endSlot, groupRow } = startAndEndSlot
+
+				const { startSlot, endSlot } = startAndEndSlot
 				const length = endSlot - startSlot
 
-				if ( groupRowMax < groupRow ) {
-					groupRowMax = groupRow
-				}
-
 				rowItems.push( {
-					item,
+					items: [ item ],
 					startSlot,
 					length,
-					groupRow,
+					groupRow: 0,
 				} )
 				return rowItems
 			}, [] as RowEntry<I>[] )
 
-			console.log( "GROUP ITEMS", rowItems )
+			let { mergedRowItems, maxGroupRow } = mergeCombiRowItems<I>( rowItemsUnmerged, 0 )
+			let maxGroupRowsNew = 0
+			while ( maxGroupRow !== maxGroupRowsNew ) {
+				rowItemsUnmerged = mergedRowItems
+				maxGroupRowsNew = maxGroupRow
+				const newOnes = mergeCombiRowItems<I>( rowItemsUnmerged, maxGroupRow )
+				mergedRowItems = newOnes.mergedRowItems
+				maxGroupRow = newOnes.maxGroupRow
+			}
 
+			const rowItems = mergedRowItems
 			const group = groupEntry.group
 
 			const trs = []
 
-			for ( let r = 0; r <= groupRowMax; r++ ) {
+			for ( let r = 0; r <= maxGroupRow; r++ ) {
 				const tds = []
 
 				if ( r === 0 ) {
@@ -542,7 +593,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 						<GroupHeaderTableCell<G>
 							key={ -1 }
 							group={ group }
-							groupRowMax={ groupRowMax }
+							groupRowMax={ maxGroupRow }
 							selectedGroup={ selectedGroup }
 							onGroupClick={ onGroupClick }
 							renderGroup={ renderGroup }
@@ -565,7 +616,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 							group={ group }
 							timeSlotNumber={ timeSlotNumber }
 							groupRow={ r }
-							groupRowMax={ groupRowMax }
+							groupRowMax={ maxGroupRow }
 							rowEntryItem={ rowEntryItem }
 							slotsArray={ slotsArray }
 							timeSteps={ timeSteps }
@@ -574,7 +625,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 							onTimeSlotItemClick={ onTimeSlotItemClick }
 							onTimeSlotClick={ onTimeSlotClick }
 							renderTimeSlotItem={ renderTimeSlotItem }
-							bottomBorderType={ groupRowMax === r ? "bold" : "normal" }
+							bottomBorderType={ maxGroupRow === r ? "bold" : "normal" }
 							multiselect={ multiselect }
 							setMultiselect={ setMultiselect }
 							selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
@@ -634,10 +685,10 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 
 	const tableRows = useMemo( () => {
 		return entries.map( ( groupEntry, g ) => {
-			const rowItems: RowEntrySingleLine<I>[] = []
+			const rowItems: RowEntry<I>[] = []
 			groupEntry.items.forEach( ( item ) => {
 
-				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps, null )
+				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps )
 				if ( startAndEndSlot == null ) {
 					console.log( "Item is out of day range of the time slots: ", item )
 					return
@@ -661,6 +712,7 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 						items: [ item ],
 						startSlot,
 						length: endSlot - startSlot,
+						groupRow: 0,
 					} )
 				}
 			} )
@@ -686,7 +738,7 @@ function SingleLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking
 			let colItemIdx = 0;
 			for ( let i = 0; i < slotsArray.length; i++ ) {
 
-				let rowEntryItem: RowEntrySingleLine<I> | null = colItemIdx < rowItems.length ? rowItems[ colItemIdx ] : null
+				let rowEntryItem: RowEntry<I> | null = colItemIdx < rowItems.length ? rowItems[ colItemIdx ] : null
 				if ( rowEntryItem && rowEntryItem.startSlot !== i ) {
 					rowEntryItem = null;
 				}
@@ -762,19 +814,19 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 		return entries.map( ( groupEntry, g ) => {
 			const rowItems: RowEntry<I>[] = groupEntry.items.map( ( item ) => {
 
-				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps, null )
+				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps )
 				if ( startAndEndSlot == null ) {
 					console.log( "Item is out of day range of the time slots: ", item )
 					return null
 				}
-				const { startSlot, endSlot, groupRow } = startAndEndSlot
+				const { startSlot, endSlot } = startAndEndSlot
 				const length = endSlot - startSlot
 
 				return {
-					item,
+					items: [ item ],
 					startSlot,
 					length,
-					groupRow
+					groupRow: 0,
 				}
 			} ).filter( it => it != null ) as RowEntry<I>[]
 			// if we enable this, the items in the groups will be sorted according to their start slot
