@@ -540,9 +540,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 ) {
 
 	const tableRows = useMemo( () => {
-		const groupRowCountMap = new Map<number, TimeSlotBooking[]>();
 		return entries.map( ( groupEntry ) => {
-			groupRowCountMap.clear()
 
 			let rowItemsUnmerged: RowEntry<I>[] = groupEntry.items.reduce( ( rowItems, item ) => {
 				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps )
@@ -570,6 +568,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				return rowItems
 			}, [] as RowEntry<I>[] )
 
+			// cascaded merging until no new groups are found
 			let { mergedRowItems, maxGroupRow } = mergeCombiRowItems<I>( rowItemsUnmerged, 0 )
 			let maxGroupRowsNew = 0
 			while ( maxGroupRow !== maxGroupRowsNew ) {
@@ -582,9 +581,7 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 
 			const rowItems = mergedRowItems
 			const group = groupEntry.group
-
 			const trs = []
-
 			for ( let r = 0; r <= maxGroupRow; r++ ) {
 				const tds = []
 
