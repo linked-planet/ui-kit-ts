@@ -6,34 +6,35 @@ export type MessageUrgency = "success" | "error" | "warning" | "information" | "
 
 export default function InlineMessage ( {
 	message,
-	urgency,
 	display = "block",
-	timeOut,
 }: {
-	message: string,
+	message: {
+		text: string,
+		urgency?: MessageUrgency,
+		timeOut?: number, // in seconds
+	},
 	display?: "inline-block" | "block",
-	urgency?: MessageUrgency,
-	timeOut?: number, // in seconds
 } ) {
 
 	const [ open, setOpen ] = useState( true )
 	const [ msg, setMessage ] = useState( message )
 
 	useEffect( () => {
+		console.log( "EFFECT", !!message?.text )
 		setMessage( message )
-		setOpen( !!message )
-		if ( timeOut ) {
+		setOpen( !!message?.text )
+		if ( message.timeOut && message.text ) {
 			setTimeout( () => {
 				setOpen( false )
-			}, timeOut * 1000 )
+			}, message.timeOut * 1000 )
 		}
-	}, [ message, timeOut ] )
+	}, [ message ] )
 
 	let bgColor = undefined
 	let textColor = undefined
 	let borderColor = undefined
 	let closeBtnAppearance: Appearance = "default"
-	switch ( urgency ) {
+	switch ( message.urgency ) {
 		case "success":
 			bgColor = token( "color.background.success" )
 			textColor = token( "color.text.success" )
@@ -68,18 +69,22 @@ export default function InlineMessage ( {
 			break
 	}
 
+	console.log( "OPEN", open ? 1 : 0 );
+
 	return (
 		<div
 			style={ {
 				display,
 				backgroundColor: bgColor,
-				border: `${ open ? token( "border.width.050", "2px" ) : 0 } solid ${ borderColor }`,
+				border: `${ token( "border.width.025", "1px" ) } solid ${ borderColor }`,
 				borderRadius: token( "border.radius.050", "4px" ),
 				color: textColor,
-				padding: open ? token( "spacing.025", "2px" ) : 0,
+				padding: token( "spacing.025", "2px" ),
 				transition: "all 0.25s ease-in-out",
-				height: open ? "auto" : 0,
 				boxSizing: "border-box",
+				overflow: "hidden",
+				scale: open ? "1 1" : "1 0",
+				transformOrigin: "top",
 			} }
 		>
 			<div
@@ -90,12 +95,12 @@ export default function InlineMessage ( {
 					alignItems: "center",
 				} }
 			>
-				{ msg && open ? msg : "" }
+				{ msg?.text ?? "" }
 				<Button
 					appearance={ closeBtnAppearance }
 					style={ {
 						borderRadius: "100%",
-						display: open ? "inline-block" : "none",
+						//display: open ? "inline-block" : "none",
 					} }
 					onClick={ () => setOpen( false ) }
 				>
