@@ -1,4 +1,4 @@
-import React, { MouseEvent, useMemo, useState } from "react"
+import React, { MouseEvent, useEffect, useMemo, useState } from "react"
 import type { Dayjs } from "dayjs"
 import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "./LPTimeTable"
 
@@ -69,6 +69,38 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 
 	const [ multiselect, setMultiselect ] = useState( false )
 
+
+	//#region check is all selected time slots are successive, if not, show error message
+	let onlySuccessiveSlotsAreSelected = true
+	if ( selectionOnlySuccessiveSlots && selectedTimeSlots && selectedTimeSlots.length > 1 ) {
+		// check if all selected time slots are successive
+		const sortedSelectedTimeSlots = selectedTimeSlots.sort( ( a, b ) => a.timeSlotStart.unix() - b.timeSlotStart.unix() )
+		for ( let i = 0; i < sortedSelectedTimeSlots.length - 1; i++ ) {
+			const current = sortedSelectedTimeSlots[ i ]
+			const next = sortedSelectedTimeSlots[ i + 1 ]
+			if ( !current.timeSlotStart.add( timeSteps, "minutes" ).isSame( next.timeSlotStart ) ) {
+				onlySuccessiveSlotsAreSelected = false
+				break
+			}
+		}
+	}
+
+	// show error message in case of non-successive time slots selected and selectedOnlySuccessiveSlots is active
+	useEffect( () => {
+		if ( !onlySuccessiveSlotsAreSelected ) {
+			setMessage( {
+				urgency: "error",
+				text: "Selection error, please select only successive time slots.",
+			} )
+		} else {
+			setMessage( {
+				urgency: undefined,
+				text: "",
+			} )
+		}
+	}, [ onlySuccessiveSlotsAreSelected, setMessage ] )
+	//#endregion
+
 	const table = tableType === "multi" ?
 		<MultiLineTableRows
 			entries={ entries }
@@ -86,6 +118,7 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 			setMultiselect={ setMultiselect }
 			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 			setMessage={ setMessage }
+			onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
 		/> :
 		<CombiTableRows
 			entries={ entries }
@@ -103,6 +136,7 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 			setMultiselect={ setMultiselect }
 			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 			setMessage={ setMessage }
+			onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
 		/>
 
 	return (
@@ -191,6 +225,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	setMultiselect,
 	setMessage,
 	selectionOnlySuccessiveSlots,
+	onlySuccessiveSlotsAreSelected,
 }: {
 	slotsArray: Dayjs[],
 	timeSteps: number,
@@ -209,53 +244,69 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	setMultiselect: ( multiselect: boolean ) => void,
 	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void
 	selectionOnlySuccessiveSlots: boolean,
+	onlySuccessiveSlotsAreSelected: boolean,
 } ) {
 
-	const timeSlot = slotsArray[ timeSlotNumber ]
-	const timeSlotIsSelected = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) )
-
 	//#region  user interaction
-	const mouseClickHandler = ( fromMultiselect: boolean, timeSlot: Dayjs ) => {
+	const mouseClickHandler = ( fromMultiselect: boolean, timeSlotNumber: number ) => {
 		if ( !onTimeSlotClick ) return
+
+		const timeSlot = slotsArray[ timeSlotNumber ]
+		const timeSlotIsSelected = !!selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) )
+
+		if ( timeSlotIsSelected ) {
+			if ( !fromMultiselect ) {
+				onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
+			}
+			return
+		}
+
+		if ( !selectionOnlySuccessiveSlots ) {
+			onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
+			return
+		}
+
+		if ( !onlySuccessiveSlotsAreSelected ) {
+			// the user needs to create a valid selection first by deselecting the unconnected selected fields
+			return
+		}
+
 		if ( selectedTimeSlots && selectedTimeSlots?.length > 0 ) {
+
 			const sameGroup = selectedTimeSlots[ 0 ].group === group
-			const nextStart = timeSlot.add( timeSteps, "minutes" )
-			const successiveOrFormerEntry = selectedTimeSlots.find( it => it.group === group && ( it.timeSlotStart.isSame( timeSlot ) ) || it.timeSlotStart.add( timeSteps, "minutes" ).isSame( timeSlot ) || it.timeSlotStart.isSame( nextStart ) )
 
-			if ( successiveOrFormerEntry?.timeSlotStart.isSame( timeSlot ) ) {
-				if ( !multiselect ) {
-					onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
-					return
-				}
+			const timeSlotBefore = timeSlotNumber > 0 ? slotsArray[ timeSlotNumber - 1 ] : null
+			const timeSlotAfter = timeSlotNumber < slotsArray.length - 1 ? slotsArray[ timeSlotNumber + 1 ] : null
+			const successiveOrFormerEntry = selectedTimeSlots.find( it => it.group === group && ( it.timeSlotStart.isSame( timeSlotBefore ) || it.timeSlotStart.isSame( timeSlotAfter ) ) )
+
+			if ( successiveOrFormerEntry ) {
+				onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
 				return
 			}
 
-			if ( selectionOnlySuccessiveSlots && ( !sameGroup || !successiveOrFormerEntry ) ) {
-				if ( !sameGroup ) {
-					setMessage( {
-						urgency: "information",
-						text: "Please select only time slots in the same group.",
-						timeOut: 3,
-					} )
-				} else {
-					setMessage( {
-						urgency: "information",
-						text: "Please select only successive time slots.",
-						timeOut: 3,
-					} )
-				}
+			if ( !sameGroup ) {
+				setMessage( {
+					urgency: "information",
+					text: "Please select only time slots in the same group.",
+					timeOut: 3,
+				} )
 				return
 			}
+
+			setMessage( {
+				urgency: "information",
+				text: "Please select only successive time slots.",
+				timeOut: 3,
+			} )
+			return
 		}
 
 		onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
 	}
 
 
-	const getMouseHandlers = ( timeSlot: Dayjs ) => ( {
-		/*onClick: () => {
-			if ( onTimeSlotClick ) onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, false )
-		},*/
+
+	const getMouseHandlers = ( timeSlotNumber: number ) => ( {
 		onMouseOver: ( e: MouseEvent ) => {
 			if ( e.buttons !== 1 ) {
 				// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
@@ -265,7 +316,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			}
 
 			if ( multiselect ) {
-				mouseClickHandler( true, timeSlot )
+				mouseClickHandler( true, timeSlotNumber )
 			}
 		},
 		onMouseDown: () => {
@@ -273,7 +324,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				setMultiselect( true )
 				clearTimeout( multiselectDebounceHelper )
 				multiselectDebounceHelper = undefined
-				mouseClickHandler( true, timeSlot )
+				mouseClickHandler( true, timeSlotNumber )
 			}, clickDiffToMouseDown )
 		},
 		onMouseUp: () => {
@@ -281,13 +332,17 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				// click detection, if timeout is still running, this is a click
 				clearTimeout( multiselectDebounceHelper )
 				multiselectDebounceHelper = undefined
-				mouseClickHandler( false, timeSlot )
+				mouseClickHandler( false, timeSlotNumber )
 			}
 			if ( setMultiselect ) setMultiselect( false )
 		},
 	} )
 	//#endregion
 
+
+
+	const timeSlot = slotsArray[ timeSlotNumber ]
+	const timeSlotIsSelected = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) )
 
 	if ( rowEntryItem && rowEntryItem.startSlot === timeSlotNumber ) {
 		const colSpan = rowEntryItem.length * 2
@@ -296,9 +351,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			overlaySelectionDiv = []
 			for ( let c = 0; c < colSpan; c = c + 2 ) {
 				const iClosure = timeSlotNumber + ( c / 2 )
-				const timeSlot = slotsArray[ iClosure ]
 
-				const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) )
+				const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( slotsArray[ iClosure ] ) )
 				const width = 2 / colSpan * 100
 				overlaySelectionDiv.push(
 					<div
@@ -311,13 +365,13 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 							width: `${ width }%`,
 							height: "100%",
 						} }
-						{ ...getMouseHandlers( timeSlot ) }
+						{ ...getMouseHandlers( iClosure ) }
 					/>
 				)
 			}
 		}
 
-		const tdMouseHandler = !overlaySelectionDiv || overlaySelectionDiv.length === 0 ? getMouseHandlers( timeSlot ) : undefined
+		const tdMouseHandler = !overlaySelectionDiv || overlaySelectionDiv.length === 0 ? getMouseHandlers( timeSlotNumber ) : undefined
 
 		// rowEntryItems are sorted by startSlot
 		let widthBefore = 0 // this is needed for the relative positioning inside the flex item container
@@ -372,11 +426,13 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 		)
 	}
 
+
+
 	// the normal empty TD
 	return (
 		<td
 			key={ timeSlotNumber }
-			{ ...getMouseHandlers( timeSlot ) }
+			{ ...getMouseHandlers( timeSlotNumber ) }
 			className={ timeSlotIsSelected ? styles.selected : "" }
 			style={ {
 				//borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? "var(--ds-border-bold)" : "var(--ds-border)",
@@ -511,7 +567,8 @@ type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	multiselect: boolean,
 	setMultiselect: ( multiselect: boolean ) => void,
 	selectionOnlySuccessiveSlots: boolean,
-	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void
+	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void,
+	onlySuccessiveSlotsAreSelected: boolean,
 }
 
 let showedItemsOufOfDayRangeWarning = false
@@ -534,6 +591,7 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 		setMultiselect,
 		selectionOnlySuccessiveSlots,
 		setMessage,
+		onlySuccessiveSlotsAreSelected,
 	}: TableRowsProps<G, I>
 ) {
 
@@ -615,6 +673,7 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 							setMultiselect={ setMultiselect }
 							selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 							setMessage={ setMessage }
+							onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
 						/>
 					)
 
@@ -642,7 +701,24 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				</>
 			)
 		} )
-	}, [ entries, multiselect, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, selectionOnlySuccessiveSlots, setMessage, setMultiselect, slotsArray, timeSteps ] )
+	}, [
+		entries,
+		multiselect,
+		onGroupClick,
+		onTimeSlotClick,
+		onTimeSlotItemClick,
+		onlySuccessiveSlotsAreSelected,
+		renderGroup,
+		renderTimeSlotItem,
+		selectedGroup,
+		selectedTimeSlotItem,
+		selectedTimeSlots,
+		selectionOnlySuccessiveSlots,
+		setMessage,
+		setMultiselect,
+		slotsArray,
+		timeSteps
+	] )
 
 	return (
 		<>
@@ -670,6 +746,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 		setMultiselect,
 		selectionOnlySuccessiveSlots,
 		setMessage,
+		onlySuccessiveSlotsAreSelected,
 	}: TableRowsProps<G, I>
 ) {
 	const tableRows = useMemo( () => {
@@ -720,6 +797,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 						setMultiselect={ setMultiselect }
 						selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 						setMessage={ setMessage }
+						onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
 					/>
 				} )
 
@@ -774,6 +852,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								setMultiselect={ setMultiselect }
 								selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 								setMessage={ setMessage }
+								onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
 							/>
 						)
 						if ( isEntry ) {

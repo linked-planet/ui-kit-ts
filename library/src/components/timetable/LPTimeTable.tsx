@@ -65,7 +65,7 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 
 	onGroupClick?: ( group: G ) => void
 
-	tableType: "single" | "multi" | "combi"
+	tableType: "multi" | "combi"
 
 	/* overwrite current time, mostly useful for debugging */
 	nowOverwrite?: Dayjs
@@ -81,6 +81,11 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	maxEntryCount: number
 
 	height?: string
+
+	/** One can only select successive time slots
+	 * @default true
+	 */
+	selectionOnlySuccessiveSlots?: boolean
 }
 
 const headerDateFormat = "ddd, DD.MM.YYYY"
@@ -114,6 +119,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	requestEntryRangeCB,
 	height,
 	maxEntryCount,
+	selectionOnlySuccessiveSlots = true,
 	nowOverwrite,
 }: LPTimeTableProps<G, I> ) => {
 
@@ -588,6 +594,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 							timeSteps={ timeSteps }
 							tableType={ tableType }
 							setMessage={ setMessage }
+							selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 						/>
 					</tbody>
 				</table >
