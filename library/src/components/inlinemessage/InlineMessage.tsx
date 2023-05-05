@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import Button, { Appearance } from "@atlaskit/button"
 import { token } from "@atlaskit/tokens"
 
@@ -18,13 +18,19 @@ export default function InlineMessage ( {
 
 	const [ open, setOpen ] = useState( true )
 	const [ msg, setMessage ] = useState( message )
+	const currentTimeOut = useRef<number>()
 
 	useEffect( () => {
 		setMessage( message )
 		setOpen( !!message?.text )
+		if ( currentTimeOut.current ) {
+			clearTimeout( currentTimeOut.current )
+			currentTimeOut.current = undefined
+		}
 		if ( message.timeOut && message.text ) {
-			setTimeout( () => {
+			currentTimeOut.current = setTimeout( () => {
 				setOpen( false )
+				currentTimeOut.current = undefined
 			}, message.timeOut * 1000 )
 		}
 	}, [ message ] )
@@ -70,38 +76,54 @@ export default function InlineMessage ( {
 
 	return (
 		<div
-			style={ {
-				display,
-				backgroundColor: bgColor,
-				border: `${ token( "border.width.025", "1px" ) } solid ${ borderColor }`,
-				borderRadius: token( "border.radius.050", "4px" ),
-				color: textColor,
-				padding: token( "spacing.025", "2px" ),
-				transition: "all 0.25s ease-in-out",
-				boxSizing: "border-box",
-				overflow: "hidden",
-				scale: open ? "1 1" : "1 0",
-				transformOrigin: "top",
+			onMouseEnter={ () => {
+				if ( !message.text ) return
+				setOpen( true )
+			} }
+			onMouseLeave={ () => {
+				if ( !message.text ) return
+				if ( message.timeOut ) {
+					currentTimeOut.current = setTimeout( () => {
+						setOpen( false )
+						currentTimeOut.current = undefined
+					}, message.timeOut * 1000 )
+				}
 			} }
 		>
 			<div
 				style={ {
-					display: "flex",
-					flexDirection: "row",
-					justifyContent: "space-between",
-					alignItems: "center",
+					display,
+					backgroundColor: bgColor,
+					border: `${ token( "border.width.025", "1px" ) } solid ${ borderColor }`,
+					borderRadius: token( "border.radius.050", "4px" ),
+					color: textColor,
+					padding: token( "spacing.025", "2px" ),
+					transition: "all 0.25s ease-in-out",
+					boxSizing: "border-box",
+					overflow: "hidden",
+					scale: open ? "1 1" : "1 0",
+					transformOrigin: "top",
 				} }
 			>
-				{ msg?.text ?? "" }
-				<Button
-					appearance={ closeBtnAppearance }
+				<div
 					style={ {
-						borderRadius: "100%",
+						display: "flex",
+						flexDirection: "row",
+						justifyContent: "space-between",
+						alignItems: "center",
 					} }
-					onClick={ () => setOpen( false ) }
 				>
-					X
-				</Button>
+					{ msg?.text ?? "" }
+					<Button
+						appearance={ closeBtnAppearance }
+						style={ {
+							borderRadius: "100%",
+						} }
+						onClick={ () => setOpen( false ) }
+					>
+						X
+					</Button>
+				</div>
 			</div>
 		</div>
 	)
