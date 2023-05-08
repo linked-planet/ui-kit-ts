@@ -92,8 +92,12 @@
 	z-index: 1;
 }
 
+.weekend {
+	background-color: var(--ds-background-neutral);
+}
+
 .selected {
-	background-color: var(--ds-background-selected);
+	background-color: var(--ds-background-selected-hovered);
 }
 
 .unselectable {

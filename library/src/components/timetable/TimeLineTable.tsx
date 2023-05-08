@@ -361,6 +361,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const timeSlotIsSelected = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) )
+	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 
 	if ( rowEntryItem && rowEntryItem.startSlot === timeSlotNumber ) {
 		const colSpan = rowEntryItem.length * 2
@@ -370,12 +371,14 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			for ( let c = 0; c < colSpan; c = c + 2 ) {
 				const iClosure = timeSlotNumber + ( c / 2 )
 
-				const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( slotsArray[ iClosure ] ) )
+				const timeSlotOfDiv = slotsArray[ iClosure ]
+				const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlotOfDiv ) )
+				const isWeekendDayDiv = timeSlotOfDiv.day() === 0 || timeSlotOfDiv.day() === 6
 				const width = 2 / colSpan * 100
 				overlaySelectionDiv.push(
 					<div
 						key={ c }
-						className={ timeSlotIsSelectedOverlayDiv ? styles.selected : "" }
+						className={ timeSlotIsSelectedOverlayDiv ? styles.selected : isWeekendDayDiv ? styles.weekend : "" }
 						style={ {
 							position: "absolute",
 							top: 0,
@@ -417,6 +420,9 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			)
 		} )
 
+
+
+
 		return (
 			<td
 				key={ timeSlotNumber }
@@ -444,14 +450,12 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 		)
 	}
 
-
-
 	// the normal empty TD
 	return (
 		<td
 			key={ timeSlotNumber }
 			{ ...getMouseHandlers( timeSlotNumber ) }
-			className={ timeSlotIsSelected ? styles.selected : "" }
+			className={ timeSlotIsSelected ? styles.selected : isWeekendDay ? styles.weekend : "" }
 			style={ {
 				//borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? "var(--ds-border-bold)" : "var(--ds-border)",
 				borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),

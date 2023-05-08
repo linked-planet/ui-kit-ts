@@ -83,6 +83,7 @@ export default function InlineMessage ( {
 			onMouseLeave={ () => {
 				if ( !message.text ) return
 				if ( message.timeOut ) {
+					clearTimeout( currentTimeOut.current )
 					currentTimeOut.current = setTimeout( () => {
 						setOpen( false )
 						currentTimeOut.current = undefined
