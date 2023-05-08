@@ -71,26 +71,31 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 
 
 	//#region check is all selected time slots are successive, if not, show error message
-	let onlySuccessiveSlotsAreSelected = true
+	let successiveError = ""
 	if ( selectionOnlySuccessiveSlots && selectedTimeSlots && selectedTimeSlots.length > 1 ) {
 		// check if all selected time slots are successive
 		const sortedSelectedTimeSlots = selectedTimeSlots.sort( ( a, b ) => a.timeSlotStart.unix() - b.timeSlotStart.unix() )
-		for ( let i = 0; i < sortedSelectedTimeSlots.length - 1; i++ ) {
-			const current = sortedSelectedTimeSlots[ i ]
-			const next = sortedSelectedTimeSlots[ i + 1 ]
-			if ( !current.timeSlotStart.add( timeSteps, "minutes" ).isSame( next.timeSlotStart ) ) {
-				onlySuccessiveSlotsAreSelected = false
-				break
+		const firstInSlots = slotsArray.findIndex( slot => slot.isSame( sortedSelectedTimeSlots[ 0 ].timeSlotStart ) )
+		if ( firstInSlots === -1 ) {
+			successiveError = "Unable to find earliest time slot of selection." // this should not happen in any case
+		} else {
+			for ( let i = 0; i < sortedSelectedTimeSlots.length; i++ ) {
+				const slotsIdx = slotsArray[ firstInSlots + i ]
+				const selectedSlot = sortedSelectedTimeSlots[ i ].timeSlotStart
+				if ( !slotsIdx.isSame( selectedSlot ) ) {
+					successiveError = "Selection error, please select only successive time slots."
+					break
+				}
 			}
 		}
 	}
 
 	// show error message in case of non-successive time slots selected and selectedOnlySuccessiveSlots is active
 	useEffect( () => {
-		if ( !onlySuccessiveSlotsAreSelected ) {
+		if ( successiveError ) {
 			setMessage( {
 				urgency: "error",
-				text: "Selection error, please select only successive time slots.",
+				text: successiveError,
 			} )
 		} else {
 			setMessage( {
@@ -98,7 +103,7 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 				text: "",
 			} )
 		}
-	}, [ onlySuccessiveSlotsAreSelected, setMessage ] )
+	}, [ successiveError, setMessage ] )
 	//#endregion
 
 	const table = tableType === "multi" ?
@@ -118,7 +123,7 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 			setMultiselect={ setMultiselect }
 			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 			setMessage={ setMessage }
-			onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
+			onlySuccessiveSlotsAreSelected={ !successiveError }
 		/> :
 		<CombiTableRows
 			entries={ entries }
@@ -136,7 +141,7 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 			setMultiselect={ setMultiselect }
 			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 			setMessage={ setMessage }
-			onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
+			onlySuccessiveSlotsAreSelected={ !successiveError }
 		/>
 
 	return (
@@ -252,22 +257,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 		if ( !onTimeSlotClick ) return
 
 		const timeSlot = slotsArray[ timeSlotNumber ]
-		const timeSlotIsSelected = !!selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) )
-
-		if ( timeSlotIsSelected ) {
-			if ( !fromMultiselect ) {
-				onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
-			}
-			return
-		}
-
 		if ( !selectionOnlySuccessiveSlots ) {
 			onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
-			return
-		}
-
-		if ( !onlySuccessiveSlotsAreSelected ) {
-			// the user needs to create a valid selection first by deselecting the unconnected selected fields
 			return
 		}
 
@@ -277,14 +268,39 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 
 			const timeSlotBefore = timeSlotNumber > 0 ? slotsArray[ timeSlotNumber - 1 ] : null
 			const timeSlotAfter = timeSlotNumber < slotsArray.length - 1 ? slotsArray[ timeSlotNumber + 1 ] : null
-			const successiveOrFormerEntry = selectedTimeSlots.find( it => it.group === group && ( it.timeSlotStart.isSame( timeSlotBefore ) || it.timeSlotStart.isSame( timeSlotAfter ) ) )
+			const successiveOrFormerEntries = selectedTimeSlots.reduce( ( acc: { before: SelectedTimeSlot<G> | undefined, clicked: SelectedTimeSlot<G> | undefined, after: SelectedTimeSlot<G> | undefined }, it: SelectedTimeSlot<G> ) => {
+				if ( it.group === group ) {
+					if ( it.timeSlotStart.isSame( timeSlotBefore ) ) {
+						acc.before = it
+					} else if ( it.timeSlotStart.isSame( timeSlotAfter ) ) {
+						acc.after = it
+					} else if ( it.timeSlotStart.isSame( timeSlot ) ) {
+						acc.clicked = it
+					}
+				}
+				return acc
+			}, { before: undefined, clicked: undefined, after: undefined } )
 
-			if ( successiveOrFormerEntry ) {
-				onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
+			if (
+				onlySuccessiveSlotsAreSelected &&
+				successiveOrFormerEntries.after &&
+				successiveOrFormerEntries.before
+			) {
+				// then the user clicked on the middle between selected time slots
+				setMessage( {
+					urgency: "information",
+					text: "Please deselect from the outer borders of the time slot range.",
+					timeOut: 3,
+				} )
+				return
+			} else if ( onlySuccessiveSlotsAreSelected && ( successiveOrFormerEntries.before || successiveOrFormerEntries.after ) ) {
+				if ( !fromMultiselect || !successiveOrFormerEntries.clicked ) {
+					onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
+				}
 				return
 			}
 
-			if ( !sameGroup ) {
+			if ( !sameGroup && !successiveOrFormerEntries.clicked ) {
 				setMessage( {
 					urgency: "information",
 					text: "Please select only time slots in the same group.",
@@ -293,12 +309,14 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				return
 			}
 
-			setMessage( {
-				urgency: "information",
-				text: "Please select only successive time slots.",
-				timeOut: 3,
-			} )
-			return
+			if ( !successiveOrFormerEntries.clicked ) {
+				setMessage( {
+					urgency: "information",
+					text: "Please select only successive time slots.",
+					timeOut: 3,
+				} )
+				return
+			}
 		}
 
 		onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
