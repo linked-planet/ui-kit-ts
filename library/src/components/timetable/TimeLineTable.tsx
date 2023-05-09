@@ -3,13 +3,14 @@ import type { Dayjs } from "dayjs"
 import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "./LPTimeTable"
 
 import { Group } from "./Group"
-import { Item } from "./Item"
 
 import styles from "./LPTimeTable.module.css"
 import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
 import ItemWrapper from "./ItemWrapper"
 import { token } from "@atlaskit/tokens"
 import { MessageUrgency } from "../inlinemessage/InlineMessage"
+
+import * as Messages from "./Messages"
 
 interface RowEntry<I> {
 	startSlot: number
@@ -42,7 +43,7 @@ interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 
 	tableType: "multi" | "combi"
 
-	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void
+	setMessage: ( msg: { urgency: MessageUrgency, text: JSX.Element, timeOut?: number } | undefined ) => void
 
 	/* if true, only the slots of the same group and in successive order can be selected */
 	selectionOnlySuccessiveSlots: boolean
@@ -74,19 +75,19 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 
 
 	//#region check is all selected time slots are successive, if not, show error message
-	let successiveError = ""
+	let successiveError: JSX.Element | undefined = undefined
 	if ( selectionOnlySuccessiveSlots && selectedTimeSlots && selectedTimeSlots.length > 1 ) {
 		// check if all selected time slots are successive
 		const sortedSelectedTimeSlots = selectedTimeSlots.sort( ( a, b ) => a.timeSlotStart.unix() - b.timeSlotStart.unix() )
 		const firstInSlots = slotsArray.findIndex( slot => slot.isSame( sortedSelectedTimeSlots[ 0 ].timeSlotStart ) )
 		if ( firstInSlots === -1 ) {
-			successiveError = "Unable to find earliest time slot of selection." // this should not happen in any case
+			successiveError = <Messages.UnableToFindEarliestTS /> // this should not happen in any case
 		} else {
 			for ( let i = 0; i < sortedSelectedTimeSlots.length; i++ ) {
 				const slotsIdx = slotsArray[ firstInSlots + i ]
 				const selectedSlot = sortedSelectedTimeSlots[ i ].timeSlotStart
 				if ( !slotsIdx.isSame( selectedSlot ) ) {
-					successiveError = "Selection error, please select only successive time slots."
+					successiveError = <Messages.OnlySuccessiveTimeSlots />
 					break
 				}
 			}
@@ -101,10 +102,7 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 				text: successiveError,
 			} )
 		} else {
-			setMessage( {
-				urgency: undefined,
-				text: "",
-			} )
+			setMessage( undefined )
 		}
 	}, [ successiveError, setMessage ] )
 	//#endregion
@@ -253,7 +251,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	bottomBorderType: "bold" | "normal",
 	multiselect: boolean,
 	setMultiselect: ( multiselect: boolean ) => void,
-	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void
+	setMessage: ( msg: { urgency: MessageUrgency, text: JSX.Element, timeOut?: number } | undefined ) => void
 	selectionOnlySuccessiveSlots: boolean,
 	onlySuccessiveSlotsAreSelected: boolean,
 	disableWeekendInteractions: boolean,
@@ -296,7 +294,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				// then the user clicked on the middle between selected time slots
 				setMessage( {
 					urgency: "information",
-					text: "Please deselect from the outer borders of the time slot range.",
+					text: <Messages.DeselectFromOuterBorder />,
 					timeOut: 3,
 				} )
 				return
@@ -310,7 +308,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			if ( !sameGroup && !successiveOrFormerEntries.clicked ) {
 				setMessage( {
 					urgency: "information",
-					text: "Please select only time slots in the same group.",
+					text: <Messages.OnlySameGroupTimeSlots />,
 					timeOut: 3,
 				} )
 				return
@@ -319,7 +317,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			if ( !successiveOrFormerEntries.clicked ) {
 				setMessage( {
 					urgency: "information",
-					text: "Please select only successive time slots.",
+					text: <Messages.OnlySuccessiveTimeSlots />,
 					timeOut: 3,
 				} )
 				return
@@ -352,7 +350,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				if ( disableWeekendInteractions && isWeekendDay ) {
 					setMessage( {
 						urgency: "information",
-						text: "Weekends are deactivated.",
+						text: <Messages.WeekendsDeactivated />,
 						timeOut: 3,
 					} )
 					return
@@ -621,7 +619,7 @@ type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	multiselect: boolean,
 	setMultiselect: ( multiselect: boolean ) => void,
 	selectionOnlySuccessiveSlots: boolean,
-	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void,
+	setMessage: ( msg: { urgency: MessageUrgency, text: JSX.Element, timeOut?: number } | undefined ) => void
 	onlySuccessiveSlotsAreSelected: boolean,
 	disableWeekendInteractions: boolean,
 }
@@ -661,7 +659,7 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 					if ( !showedItemsOufOfDayRangeWarning ) {
 						setMessage( {
 							urgency: "warning",
-							text: "Bookings found out of day range of the available time slots."
+							text: <Messages.BookingsOutsideOfDayRange />,
 						} )
 						showedItemsOufOfDayRangeWarning = true
 					}

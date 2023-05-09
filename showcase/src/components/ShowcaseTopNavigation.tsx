@@ -3,7 +3,8 @@ import { TopNavigation } from "@atlaskit/page-layout";
 import { AtlassianNavigation, CustomProductHome, PrimaryButton, Profile } from "@atlaskit/atlassian-navigation";
 import { useNavigate } from "react-router";
 import { CustomThemeButton } from "@atlaskit/button";
-import ThemeSwitch from "@linked-planet/ui-kit-ts/components/themeswitch";
+import ThemeSwitch from "@linked-planet/ui-kit-ts/components/themeswitch"
+import { LocaleDropDown } from "@linked-planet/ui-kit-ts"
 export const ProfileIcon = () => {
 	return (
 		<img
@@ -39,6 +40,12 @@ function ShowcaseTopNavigation () {
 						<PrimaryButton key={ 3 } onClick={ () => navigation( "/query" ) }>
 							<span>React-Query</span>
 						</PrimaryButton>,
+						<div key={ 4 } style={ { display: "flex", justifyContent: "center", alignItems: "center" } }>
+							<ThemeSwitch />
+						</div>,
+						<div key={ 5 } style={ { display: "flex", justifyContent: "center", alignItems: "center" } }>
+							<LocaleDropDown />
+						</div>,
 					]
 				}
 				renderAppSwitcher={ () => <ThemeSwitch /> }

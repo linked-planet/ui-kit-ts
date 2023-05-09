@@ -17,13 +17,15 @@
 	],
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build:lib": "vite build -c vite.config.lib.ts",
+		"build:lib": "vite build -c vite.config.lib.ts && copy libraray/src/translations dist/translations",
 		"build:sc": "vite build -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
 		"dev:sc": "vite -c vite.config.showcase.ts --open",
 		"eslint": "eslint **/*.ts*",
 		"stylelint": "stylelint **/*.css",
-		"clean": "rm -rf dist && rm -rf dist-showcase "
+		"clean": "rm -rf dist && rm -rf dist-showcase",
+		"messages:extract": "formatjs extract './library/src/**/*.{ts,tsx}' --ignore '**/*.d.ts' --out-file ./library/src/localization/translations/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
+		"messages:compile": "formatjs compile-folder ./library/src/localization/translations  ./library/src/localization/translations-compiled"
 	},
 	"author": "Philip Karlsson",
 	"contributors": [
@@ -36,6 +38,11 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://github.com/linked-planet/ui-kit-ts#readme",
+	"supportedLocales": [
+		"en",
+		"de"
+	],
+	"lang": "dist/translations",
 	"browserslist": {
 		"production": [
 			">0.2%",
@@ -62,6 +69,7 @@
 	},
 	"devDependencies": {
 		"@atlaskit/eslint-plugin-design-system": "^5.0.0",
+		"@formatjs/cli": "^6.1.1",
 		"@total-typescript/ts-reset": "^0.4.2",
 		"@types/react": "^16.8.0",
 		"@types/react-dom": "^16.8.0",
@@ -72,6 +80,7 @@
 		"@vitejs/plugin-react-swc": "^3.0.0",
 		"eslint": "^8.34.0",
 		"eslint-config-prettier": "^8.8.0",
+		"eslint-plugin-formatjs": "^4.10.1",
 		"eslint-plugin-react": "^7.32.2",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.3.4",

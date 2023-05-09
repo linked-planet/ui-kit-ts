@@ -1,1 +1,3 @@
-export * from "./components";
+export * from "./components"
+export * from "./theming"
+export * from "./localization"

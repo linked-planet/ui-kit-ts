@@ -13,6 +13,10 @@ import { getStartAndEndSlot } from "./timeTableUtils"
 import InlineMessage from "../inlinemessage"
 import type { MessageUrgency } from "../inlinemessage/InlineMessage"
 import { token } from "@atlaskit/tokens"
+import * as Messages from "./Messages"
+import { IntlProvider } from "react-intl-next"
+import { LocaleProvider, useLocale } from "../../localization"
+import { Locale } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 
 export interface TimeSlotBooking {
 	title: string
@@ -98,6 +102,11 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	 * @default true
 	 */
 	disableWeekendInteractions?: boolean
+
+	/**
+	 * Sets the language used for the messages.
+	 */
+	locale?: Locale
 }
 
 const headerDateFormat = "ddd, DD.MM.YYYY"
@@ -110,7 +119,30 @@ const nowbarUpdateIntervall = 1000 * 60 // 1 minute
  */
 
 
-export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking> ( {
+export default function LPTimeTable<G extends TimeTableGroup, I extends TimeSlotBooking> ( props: LPTimeTableProps<G, I> ) {
+	return (
+		<LocaleProvider locale={ props.locale }>
+			<LPTimeTableLocalized { ...props } />
+		</LocaleProvider>
+	)
+}
+
+
+const LPTimeTableLocalized = <G extends TimeTableGroup, I extends TimeSlotBooking> ( props: LPTimeTableProps<G, I> ) => {
+	const { locale, translation } = useLocale()
+	return (
+		<IntlProvider locale={ locale } messages={ translation }>
+			<LPTimeTableImpl { ...props } />
+		</IntlProvider>
+	)
+}
+
+
+/**
+ * The LPTimeTable depdens on the localization messages. It needs to be wrapped in an 
+ * @returns 
+ */
+const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	startDate,
 	endDate,
 	timeSteps: timeStepsProp,
@@ -140,7 +172,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	const tableHeaderRef = useRef<HTMLTableSectionElement>( null )
 	const tableBodyRef = useRef<HTMLTableSectionElement>( null )
 	const nowRef = useRef<Dayjs>( nowOverwrite ?? dayjs() )
-	const [ message, setMessage ] = useState<{ urgency: MessageUrgency, text: string, timeOut?: number }>()
+	const [ message, setMessage ] = useState<{ urgency: MessageUrgency, text: JSX.Element, timeOut?: number }>()
 
 	//#region calculate time slots settings
 	const { timeSlotsPerDay, daysDiff, timeSteps } = useMemo( () => {
@@ -151,7 +183,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			timeSteps = startDate.startOf( "day" ).add( 1, "day" ).diff( startDate, "minutes" ) - 1 // -1 to end at the same day if the time steps are from someplace during the day until
 			setMessage( {
 				urgency: "warning",
-				text: `Start time do not accommodate one time slot before the next day, reducing time slot size to ${ timeSteps } size.`,
+				text: <Messages.UnfittingTimeSlot timeSteps={ timeSteps } />,
 			} )
 		}
 
@@ -159,7 +191,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		if ( daysDiff < 0 ) {
 			setMessage( {
 				urgency: "error",
-				text: `End date must be after the start date.`
+				text: <Messages.EndDateAfterStartDate />,
 			} )
 			return { timeSlotsPerDay, daysDiff, timeSteps }
 		}
@@ -167,7 +199,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		if ( timeSteps === 0 ) {
 			setMessage( {
 				urgency: "error",
-				text: `Time slot size must be greater than 0.`,
+				text: <Messages.TimeSlotSizeGreaterZero />,
 			} )
 			return { timeSlotsPerDay, daysDiff, timeSteps }
 		}
@@ -222,7 +254,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 			if ( !slotBars ) {
 				setMessage( {
 					urgency: "error",
-					text: "Unable to find time slot columns for the time slot bars."
+					text: <Messages.TimeSlotColumnsNotFound />,
 				} )
 				console.log( "unable to find time slot columns for the time slot bars" )
 				return
@@ -262,9 +294,9 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		if ( !headerTimeslotRow ) {
 			setMessage( {
 				urgency: "error",
-				text: "Unable to find header time slot row."
+				text: <Messages.NoHeaderTimeSlotRow />
 			} )
-			console.log( "unable to find header time slot row" )
+			console.log( "no header time slot row found" )
 			return
 		}
 		const headerTimeSlotCells = headerTimeslotRow.children
@@ -312,7 +344,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		// add orange border
 		const nowTimeSlotCell = headerTimeSlotCells[ startSlot + 1 ]
 		if ( !nowTimeSlotCell ) {
-			console.log( "unable to find header for time slot of the current time" )
+			console.error( "unable to find header for time slot of the current time" )
 			return
 		}
 		nowTimeSlotCell.classList.add( styles.nowHeaderTimeSlot, styles.unselectable )
@@ -320,7 +352,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		// adjust the date header
 		const headerDateRow = tableHeaderRef.current?.children[ 0 ]
 		if ( !headerDateRow ) {
-			console.log( "unable to find header date row" )
+			console.error( "unable to find header date row" )
 			return
 		}
 		const headerDateCells = headerDateRow.children
@@ -401,7 +433,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 		timeSlotSettings.slotsArray.length === 0 ) {
 		return (
 			<div>
-				<InlineMessage message={ message ?? { text: "test" } } />
+				<InlineMessage message={ message ?? { text: "" } } />
 				Invalid time slot size
 			</div>
 		)

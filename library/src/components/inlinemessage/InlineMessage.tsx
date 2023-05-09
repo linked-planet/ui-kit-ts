@@ -9,7 +9,7 @@ export default function InlineMessage ( {
 	display = "block",
 }: {
 	message: {
-		text: string,
+		text: string | JSX.Element,
 		urgency?: MessageUrgency,
 		timeOut?: number, // in seconds
 	},

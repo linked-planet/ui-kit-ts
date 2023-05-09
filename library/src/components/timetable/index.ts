@@ -1,4 +1,4 @@
-import { LPTimeTable } from "./LPTimeTable"
+import LPTimeTable from "./LPTimeTable"
 import type {
 	TimeTableEntry,
 	TimeSlotBooking,

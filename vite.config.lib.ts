@@ -67,12 +67,13 @@ export default defineConfig({
 			entryRoot: resolve(__dirname, "library/src"),
 			insertTypesEntry: true,
 		}),
-		react(/*{
+		react(),
+		/*{
 			// this is for emotion (need to test if it's still needed)
 			jsxImportSource: "@emotion/react",
 			babel: {
 				plugins: ["@emotion/babel-plugin"],
 			},
-		}*/),
+		}*/
 	],
 })

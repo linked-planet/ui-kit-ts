@@ -16,6 +16,7 @@ import ReactQueryPage from "./page/ReactQueryPage"
 import "./custom.css"
 import { queryClient } from "./setup"
 import { initTheming } from "@linked-planet/ui-kit-ts/theming"
+import { LocaleProvider } from "@linked-planet/ui-kit-ts"
 
 
 
@@ -28,49 +29,51 @@ function App () {
 		<HashRouter>
 			<Provider store={ appStore }>
 				<QueryClientProvider client={ queryClient }>
-					<div className="App">
-						<PageLayout>
-							<ShowcaseTopNavigation />
-							<Content>
-								<ShowcaseLeftSidebar />
+					<LocaleProvider>
+						<div className="App">
+							<PageLayout>
+								<ShowcaseTopNavigation />
+								<Content>
+									<ShowcaseLeftSidebar />
 
-								<Main>
-									<div style={ {
-										margin: "50px 50px",
-										display: "flex",
-										flexDirection: "column"
-									} }>
-										<Routes>
-											<Route
-												path="/"
-												element={ <Navigate to="/intro" /> }
-											/>
-											<Route
-												path="/intro"
-												element={ <IntroPage /> }
-											/>
-											<Route
-												path="/wrappers"
-												element={ <WrappersPage /> }
-											/>
-											<Route
-												path="/redux"
-												element={ <ReduxPage /> }
-											/>
-											<Route
-												path="/query"
-												element={ <ReactQueryPage /> }
-											/>
-											<Route
-												path="*"
-												element={ <NotFoundPage /> }
-											/>
-										</Routes>
-									</div>
-								</Main>
-							</Content>
-						</PageLayout>
-					</div>
+									<Main>
+										<div style={ {
+											margin: "50px 50px",
+											display: "flex",
+											flexDirection: "column"
+										} }>
+											<Routes>
+												<Route
+													path="/"
+													element={ <Navigate to="/intro" /> }
+												/>
+												<Route
+													path="/intro"
+													element={ <IntroPage /> }
+												/>
+												<Route
+													path="/wrappers"
+													element={ <WrappersPage /> }
+												/>
+												<Route
+													path="/redux"
+													element={ <ReduxPage /> }
+												/>
+												<Route
+													path="/query"
+													element={ <ReactQueryPage /> }
+												/>
+												<Route
+													path="*"
+													element={ <NotFoundPage /> }
+												/>
+											</Routes>
+										</div>
+									</Main>
+								</Content>
+							</PageLayout>
+						</div>
+					</LocaleProvider>
 				</QueryClientProvider>
 			</Provider>
 		</HashRouter>

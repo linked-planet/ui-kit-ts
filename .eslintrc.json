@@ -9,7 +9,8 @@
 		"react",
 		"react-hooks",
 		"react-refresh",
-		"@atlaskit/eslint-plugin-design-system"
+		"@atlaskit/eslint-plugin-design-system",
+		"formatjs"
 	],
 	"extends": [
 		"eslint:recommended",

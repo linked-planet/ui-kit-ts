@@ -3,7 +3,7 @@ import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { LPTimeTable, SelectedTimeSlot } from "@linked-planet/ui-kit-ts"
+import { LPTimeTable, SelectedTimeSlot, useLocale } from "@linked-planet/ui-kit-ts"
 import type { TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "@linked-planet/ui-kit-ts"
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
@@ -293,6 +293,8 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 		}
 	}
 
+	const { locale } = useLocale()
+
 
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
 
@@ -487,6 +489,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					requestTimeFrameCB={ requestNewTimeFrameCB }
 					requestEntryRangeCB={ requestEntryRangeCB }
 					maxEntryCount={ 100 }
+					locale={ locale }
 				/>
 			</div>
 			{ showCreateNewItemModal && selectedTimeSlots && selectedTimeSlots.length > 0 && (
