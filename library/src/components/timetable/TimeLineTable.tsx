@@ -331,37 +331,52 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 
 
 
-	const getMouseHandlers = ( timeSlotNumber: number ) => ( {
-		onMouseOver: ( e: MouseEvent ) => {
-			if ( e.buttons !== 1 ) {
-				// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
-				clearTimeout( multiselectDebounceHelper )
-				if ( multiselect ) setMultiselect( false )
-				return
-			}
+	const getMouseHandlers = ( timeSlotNumber: number ) => {
+		const timeSlot = slotsArray[ timeSlotNumber ]
+		const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 
-			if ( multiselect ) {
-				mouseClickHandler( true, timeSlotNumber )
-			}
-		},
-		onMouseDown: () => {
-			multiselectDebounceHelper = setTimeout( () => {
-				setMultiselect( true )
-				clearTimeout( multiselectDebounceHelper )
-				multiselectDebounceHelper = undefined
-				mouseClickHandler( true, timeSlotNumber )
-			}, clickDiffToMouseDown )
-		},
-		onMouseUp: () => {
-			if ( multiselectDebounceHelper ) {
-				// click detection, if timeout is still running, this is a click
-				clearTimeout( multiselectDebounceHelper )
-				multiselectDebounceHelper = undefined
-				mouseClickHandler( false, timeSlotNumber )
-			}
-			if ( setMultiselect ) setMultiselect( false )
-		},
-	} )
+		return {
+			onMouseOver: ( e: MouseEvent ) => {
+				if ( e.buttons !== 1 ) {
+					// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
+					clearTimeout( multiselectDebounceHelper )
+					if ( multiselect ) setMultiselect( false )
+					return
+				}
+
+				if ( multiselect ) {
+					mouseClickHandler( true, timeSlotNumber )
+				}
+			},
+			onMouseDown: () => {
+				if ( disableWeekendInteractions && isWeekendDay ) {
+					setMessage( {
+						urgency: "information",
+						text: "Weekends are deactivated.",
+						timeOut: 3,
+					} )
+					return
+				}
+
+				multiselectDebounceHelper = setTimeout( () => {
+					setMultiselect( true )
+					clearTimeout( multiselectDebounceHelper )
+					multiselectDebounceHelper = undefined
+					mouseClickHandler( true, timeSlotNumber )
+				}, clickDiffToMouseDown )
+			},
+			onMouseUp: () => {
+				if ( disableWeekendInteractions && isWeekendDay ) return
+				if ( multiselectDebounceHelper ) {
+					// click detection, if timeout is still running, this is a click
+					clearTimeout( multiselectDebounceHelper )
+					multiselectDebounceHelper = undefined
+					mouseClickHandler( false, timeSlotNumber )
+				}
+				if ( setMultiselect ) setMultiselect( false )
+			},
+		}
+	}
 	//#endregion
 
 
@@ -381,12 +396,16 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				const timeSlotOfDiv = slotsArray[ iClosure ]
 				const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlotOfDiv ) )
 				const isWeekendDayDiv = timeSlotOfDiv.day() === 0 || timeSlotOfDiv.day() === 6
-				const mouseHandlers = !isWeekendDayDiv && !disableWeekendInteractions ? getMouseHandlers( iClosure ) : undefined
 				const width = 2 / colSpan * 100
+
+				let classes = timeSlotIsSelectedOverlayDiv ? styles.selected : ""
+				if ( isWeekendDayDiv ) classes += ` ${ styles.weekend }`
+				if ( !isWeekendDayDiv || !disableWeekendInteractions ) classes += ` ${ styles.hover }`
+
 				overlaySelectionDiv.push(
 					<div
 						key={ c }
-						className={ timeSlotIsSelectedOverlayDiv ? styles.selected : isWeekendDayDiv ? styles.weekend : "" }
+						className={ classes }
 						style={ {
 							position: "absolute",
 							top: 0,
@@ -394,7 +413,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 							width: `${ width }%`,
 							height: "100%",
 						} }
-						{ ...mouseHandlers }
+						{ ...getMouseHandlers( iClosure ) }
 					/>
 				)
 			}
@@ -428,14 +447,16 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			)
 		} )
 
-
+		let classes = timeSlotIsSelected && overlaySelectionDiv?.length === 0 ? styles.selected : ""
+		if ( isWeekendDay ) classes += ` ${ styles.weekend }`
+		if ( ( !isWeekendDay || !disableWeekendInteractions ) && overlaySelectionDiv?.length === 0 ) classes += ` ${ styles.hover }`
 
 
 		return (
 			<td
 				key={ timeSlotNumber }
 				colSpan={ colSpan }
-				className={ timeSlotIsSelected && colSpan === 2 ? styles.selected : "" }
+				className={ classes }
 				style={ {
 					borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
 				} }
@@ -459,12 +480,14 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	}
 
 	// the normal empty TD
-	const mouseHandlers = !isWeekendDay && !disableWeekendInteractions ? getMouseHandlers( timeSlotNumber ) : undefined
+	let classes = timeSlotIsSelected ? styles.selected : ""
+	if ( isWeekendDay ) classes += ` ${ styles.weekend }`
+	if ( !isWeekendDay || !disableWeekendInteractions ) classes += ` ${ styles.hover }`
 	return (
 		<td
 			key={ timeSlotNumber }
-			{ ...mouseHandlers }
-			className={ timeSlotIsSelected ? styles.selected : isWeekendDay ? styles.weekend : "" }
+			{ ...getMouseHandlers( timeSlotNumber ) }
+			className={ classes }
 			style={ {
 				//borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? "var(--ds-border-bold)" : "var(--ds-border)",
 				borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
@@ -600,6 +623,7 @@ type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	selectionOnlySuccessiveSlots: boolean,
 	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void,
 	onlySuccessiveSlotsAreSelected: boolean,
+	disableWeekendInteractions: boolean,
 }
 
 let showedItemsOufOfDayRangeWarning = false
@@ -623,6 +647,7 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 		selectionOnlySuccessiveSlots,
 		setMessage,
 		onlySuccessiveSlotsAreSelected,
+		disableWeekendInteractions,
 	}: TableRowsProps<G, I>
 ) {
 
@@ -705,6 +730,7 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 							selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 							setMessage={ setMessage }
 							onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
+							disableWeekendInteractions={ disableWeekendInteractions }
 						/>
 					)
 
@@ -732,24 +758,7 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				</>
 			)
 		} )
-	}, [
-		entries,
-		multiselect,
-		onGroupClick,
-		onTimeSlotClick,
-		onTimeSlotItemClick,
-		onlySuccessiveSlotsAreSelected,
-		renderGroup,
-		renderTimeSlotItem,
-		selectedGroup,
-		selectedTimeSlotItem,
-		selectedTimeSlots,
-		selectionOnlySuccessiveSlots,
-		setMessage,
-		setMultiselect,
-		slotsArray,
-		timeSteps
-	] )
+	}, [ disableWeekendInteractions, entries, multiselect, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, onlySuccessiveSlotsAreSelected, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, selectionOnlySuccessiveSlots, setMessage, setMultiselect, slotsArray, timeSteps ] )
 
 	return (
 		<>
@@ -925,7 +934,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 			}
 
 		} )
-	}, [ entries, slotsArray, timeSteps, selectedGroup, onGroupClick, renderGroup, selectedTimeSlots, selectedTimeSlotItem, onTimeSlotClick, onTimeSlotItemClick, renderTimeSlotItem, multiselect, setMultiselect, selectionOnlySuccessiveSlots, setMessage ] )
+	}, [ entries, slotsArray, timeSteps, selectedGroup, onGroupClick, renderGroup, selectedTimeSlots, selectedTimeSlotItem, onTimeSlotClick, onTimeSlotItemClick, renderTimeSlotItem, multiselect, setMultiselect, setMessage, selectionOnlySuccessiveSlots, onlySuccessiveSlotsAreSelected, disableWeekendInteractions ] )
 
 	return (
 		<>

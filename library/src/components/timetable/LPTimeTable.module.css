@@ -36,6 +36,10 @@
 	position: relative;
 }
 
+.hover:hover {
+	background-color: var(--ds-background-neutral-hovered);
+}
+
 .lpTimeTable .nowRow {
 	height: 0;
 }
