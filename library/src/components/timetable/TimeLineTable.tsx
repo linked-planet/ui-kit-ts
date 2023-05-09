@@ -45,7 +45,9 @@ interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void
 
 	/* if true, only the slots of the same group and in successive order can be selected */
-	selectionOnlySuccessiveSlots?: boolean
+	selectionOnlySuccessiveSlots: boolean
+
+	disableWeekendInteractions: boolean
 }
 
 export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSlotBooking> (
@@ -63,7 +65,8 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 		timeSteps,
 		tableType,
 		setMessage,
-		selectionOnlySuccessiveSlots = true,
+		selectionOnlySuccessiveSlots,
+		disableWeekendInteractions,
 	}: TimeTableProps<G, I>
 ) {
 
@@ -121,9 +124,10 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 			selectedTimeSlotItem={ selectedTimeSlotItem }
 			multiselect={ multiselect }
 			setMultiselect={ setMultiselect }
-			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 			setMessage={ setMessage }
+			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 			onlySuccessiveSlotsAreSelected={ !successiveError }
+			disableWeekendInteractions={ disableWeekendInteractions }
 		/> :
 		<CombiTableRows
 			entries={ entries }
@@ -139,9 +143,10 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 			selectedTimeSlotItem={ selectedTimeSlotItem }
 			multiselect={ multiselect }
 			setMultiselect={ setMultiselect }
-			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 			setMessage={ setMessage }
+			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 			onlySuccessiveSlotsAreSelected={ !successiveError }
+			disableWeekendInteractions={ disableWeekendInteractions }
 		/>
 
 	return (
@@ -231,6 +236,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	setMessage,
 	selectionOnlySuccessiveSlots,
 	onlySuccessiveSlotsAreSelected,
+	disableWeekendInteractions,
 }: {
 	slotsArray: Dayjs[],
 	timeSteps: number,
@@ -250,6 +256,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	setMessage: ( msg: { urgency: MessageUrgency, text: string, timeOut?: number } ) => void
 	selectionOnlySuccessiveSlots: boolean,
 	onlySuccessiveSlotsAreSelected: boolean,
+	disableWeekendInteractions: boolean,
 } ) {
 
 	//#region  user interaction
@@ -374,6 +381,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				const timeSlotOfDiv = slotsArray[ iClosure ]
 				const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlotOfDiv ) )
 				const isWeekendDayDiv = timeSlotOfDiv.day() === 0 || timeSlotOfDiv.day() === 6
+				const mouseHandlers = !isWeekendDayDiv && !disableWeekendInteractions ? getMouseHandlers( iClosure ) : undefined
 				const width = 2 / colSpan * 100
 				overlaySelectionDiv.push(
 					<div
@@ -386,7 +394,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 							width: `${ width }%`,
 							height: "100%",
 						} }
-						{ ...getMouseHandlers( iClosure ) }
+						{ ...mouseHandlers }
 					/>
 				)
 			}
@@ -451,10 +459,11 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	}
 
 	// the normal empty TD
+	const mouseHandlers = !isWeekendDay && !disableWeekendInteractions ? getMouseHandlers( timeSlotNumber ) : undefined
 	return (
 		<td
 			key={ timeSlotNumber }
-			{ ...getMouseHandlers( timeSlotNumber ) }
+			{ ...mouseHandlers }
 			className={ timeSlotIsSelected ? styles.selected : isWeekendDay ? styles.weekend : "" }
 			style={ {
 				//borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? "var(--ds-border-bold)" : "var(--ds-border)",
@@ -766,9 +775,10 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 		selectedTimeSlotItem,
 		multiselect,
 		setMultiselect,
-		selectionOnlySuccessiveSlots,
 		setMessage,
+		selectionOnlySuccessiveSlots,
 		onlySuccessiveSlotsAreSelected,
+		disableWeekendInteractions,
 	}: TableRowsProps<G, I>
 ) {
 	const tableRows = useMemo( () => {
@@ -817,9 +827,10 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 						bottomBorderType={ "bold" }
 						multiselect={ multiselect }
 						setMultiselect={ setMultiselect }
-						selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 						setMessage={ setMessage }
+						selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 						onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
+						disableWeekendInteractions={ disableWeekendInteractions }
 					/>
 				} )
 
@@ -872,9 +883,10 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								bottomBorderType={ isLastGroupItem ? "bold" : "normal" }
 								multiselect={ multiselect }
 								setMultiselect={ setMultiselect }
-								selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 								setMessage={ setMessage }
+								selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 								onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
+								disableWeekendInteractions={ disableWeekendInteractions }
 							/>
 						)
 						if ( isEntry ) {

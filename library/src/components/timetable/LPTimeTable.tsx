@@ -73,6 +73,12 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	firstColumnWidth: string | number
 	columnWidth: string | number
 
+	/** Defines how a last not fitting time slot is handled by the day time range.
+	 * Round means that the time range will be rounded up/down to fit a last time slot.
+	 * Floor means that the time range will be rounded down and the unfitting time slot is removed.
+	 * Ceil means that the time range will be rounded up to fit the last time slot.
+	 * @default "round"
+	 */
 	rounding?: "floor" | "ceil" | "round"
 
 	requestTimeFrameCB: ( nextStartDate: Dayjs, nextEndDate: Dayjs ) => void
@@ -86,6 +92,12 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	 * @default true
 	 */
 	selectionOnlySuccessiveSlots?: boolean
+
+	/** 
+	 * Disabled user interactions with time slots on the weekend
+	 * @default true
+	 */
+	disableWeekendInteractions?: boolean
 }
 
 const headerDateFormat = "ddd, DD.MM.YYYY"
@@ -119,6 +131,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 	requestEntryRangeCB,
 	height,
 	maxEntryCount,
+	disableWeekendInteractions = true,
 	selectionOnlySuccessiveSlots = true,
 	nowOverwrite,
 }: LPTimeTableProps<G, I> ) => {
@@ -595,6 +608,7 @@ export const LPTimeTable = <G extends TimeTableGroup, I extends TimeSlotBooking>
 							tableType={ tableType }
 							setMessage={ setMessage }
 							selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
+							disableWeekendInteractions={ disableWeekendInteractions }
 						/>
 					</tbody>
 				</table >
