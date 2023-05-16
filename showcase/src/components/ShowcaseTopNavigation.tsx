@@ -41,9 +41,6 @@ function ShowcaseTopNavigation () {
 							<span>React-Query</span>
 						</PrimaryButton>,
 						<div key={ 4 } style={ { display: "flex", justifyContent: "center", alignItems: "center" } }>
-							<ThemeSwitch />
-						</div>,
-						<div key={ 5 } style={ { display: "flex", justifyContent: "center", alignItems: "center" } }>
 							<LocaleDropDown />
 						</div>,
 					]

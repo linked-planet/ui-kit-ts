@@ -211,7 +211,7 @@ function getItemLeftAndWidth (
 }
 
 
-const clickDiffToMouseDown = 50
+const clickDiffToMouseDown = 100
 let multiselectDebounceHelper: number | undefined = undefined
 
 
@@ -229,8 +229,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	onTimeSlotItemClick,
 	renderTimeSlotItem,
 	bottomBorderType,
-	multiselect,
-	setMultiselect,
 	setMessage,
 	selectionOnlySuccessiveSlots,
 	onlySuccessiveSlotsAreSelected,
@@ -249,11 +247,9 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined,
 	renderTimeSlotItem: ( ( group: G, item: I, isSelected: boolean ) => JSX.Element ) | undefined,
 	bottomBorderType: "bold" | "normal",
-	multiselect: boolean,
-	setMultiselect: ( multiselect: boolean ) => void,
 	setMessage: ( msg: { urgency: MessageUrgency, text: JSX.Element, timeOut?: number } | undefined ) => void
-	selectionOnlySuccessiveSlots: boolean,
-	onlySuccessiveSlotsAreSelected: boolean,
+	selectionOnlySuccessiveSlots: boolean, // allows the selection of only successive slots
+	onlySuccessiveSlotsAreSelected: boolean, // true if only successive slots are selected
 	disableWeekendInteractions: boolean,
 } ) {
 
@@ -298,7 +294,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 					timeOut: 3,
 				} )
 				return
-			} else if ( onlySuccessiveSlotsAreSelected && ( successiveOrFormerEntries.before || successiveOrFormerEntries.after ) ) {
+			} else if ( onlySuccessiveSlotsAreSelected && ( successiveOrFormerEntries.before || successiveOrFormerEntries.after || successiveOrFormerEntries.clicked ) ) {
 				if ( !fromMultiselect || !successiveOrFormerEntries.clicked ) {
 					onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
 				}
@@ -335,16 +331,13 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 
 		return {
 			onMouseOver: ( e: MouseEvent ) => {
-				if ( e.buttons !== 1 ) {
+				if ( e.buttons !== 1 ) { // we only want to react to left mouse button
 					// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
 					clearTimeout( multiselectDebounceHelper )
-					if ( multiselect ) setMultiselect( false )
+					multiselectDebounceHelper = undefined
 					return
 				}
-
-				if ( multiselect ) {
-					mouseClickHandler( true, timeSlotNumber )
-				}
+				mouseClickHandler( true, timeSlotNumber )
 			},
 			onMouseDown: () => {
 				if ( disableWeekendInteractions && isWeekendDay ) {
@@ -357,7 +350,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				}
 
 				multiselectDebounceHelper = setTimeout( () => {
-					setMultiselect( true )
 					clearTimeout( multiselectDebounceHelper )
 					multiselectDebounceHelper = undefined
 					mouseClickHandler( true, timeSlotNumber )
@@ -371,7 +363,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 					multiselectDebounceHelper = undefined
 					mouseClickHandler( false, timeSlotNumber )
 				}
-				if ( setMultiselect ) setMultiselect( false )
 			},
 		}
 	}
@@ -410,6 +401,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 							left: `${ ( c / colSpan ) * 100 }%`,
 							width: `${ width }%`,
 							height: "100%",
+							borderBottom: `1px solid ${ token( "color.border" ) }`,
 						} }
 						{ ...getMouseHandlers( iClosure ) }
 					/>
@@ -640,8 +632,6 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 		selectedGroup,
 		selectedTimeSlots,
 		selectedTimeSlotItem,
-		multiselect,
-		setMultiselect,
 		selectionOnlySuccessiveSlots,
 		setMessage,
 		onlySuccessiveSlotsAreSelected,
@@ -723,8 +713,6 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 							onTimeSlotClick={ onTimeSlotClick }
 							renderTimeSlotItem={ renderTimeSlotItem }
 							bottomBorderType={ maxGroupRow === r ? "bold" : "normal" }
-							multiselect={ multiselect }
-							setMultiselect={ setMultiselect }
 							selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 							setMessage={ setMessage }
 							onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
@@ -756,7 +744,7 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 				</>
 			)
 		} )
-	}, [ disableWeekendInteractions, entries, multiselect, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, onlySuccessiveSlotsAreSelected, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, selectionOnlySuccessiveSlots, setMessage, setMultiselect, slotsArray, timeSteps ] )
+	}, [ disableWeekendInteractions, entries, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, onlySuccessiveSlotsAreSelected, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, selectionOnlySuccessiveSlots, setMessage, slotsArray, timeSteps ] )
 
 	return (
 		<>
@@ -780,8 +768,6 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 		selectedGroup,
 		selectedTimeSlots,
 		selectedTimeSlotItem,
-		multiselect,
-		setMultiselect,
 		setMessage,
 		selectionOnlySuccessiveSlots,
 		onlySuccessiveSlotsAreSelected,
@@ -832,8 +818,6 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 						onTimeSlotItemClick={ onTimeSlotItemClick }
 						renderTimeSlotItem={ renderTimeSlotItem }
 						bottomBorderType={ "bold" }
-						multiselect={ multiselect }
-						setMultiselect={ setMultiselect }
 						setMessage={ setMessage }
 						selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 						onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
@@ -888,8 +872,6 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 								onTimeSlotItemClick={ onTimeSlotItemClick }
 								renderTimeSlotItem={ renderTimeSlotItem }
 								bottomBorderType={ isLastGroupItem ? "bold" : "normal" }
-								multiselect={ multiselect }
-								setMultiselect={ setMultiselect }
 								setMessage={ setMessage }
 								selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 								onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
@@ -932,7 +914,7 @@ function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking>
 			}
 
 		} )
-	}, [ entries, slotsArray, timeSteps, selectedGroup, onGroupClick, renderGroup, selectedTimeSlots, selectedTimeSlotItem, onTimeSlotClick, onTimeSlotItemClick, renderTimeSlotItem, multiselect, setMultiselect, setMessage, selectionOnlySuccessiveSlots, onlySuccessiveSlotsAreSelected, disableWeekendInteractions ] )
+	}, [ entries, slotsArray, timeSteps, selectedGroup, onGroupClick, renderGroup, selectedTimeSlots, selectedTimeSlotItem, onTimeSlotClick, onTimeSlotItemClick, renderTimeSlotItem, setMessage, selectionOnlySuccessiveSlots, onlySuccessiveSlotsAreSelected, disableWeekendInteractions ] )
 
 	return (
 		<>
