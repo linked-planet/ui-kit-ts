@@ -216,6 +216,8 @@ const endDateInitial = dayjs().startOf( "day" ).add( 5, "days" ).add( 16, "hours
 
 export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
+	// region: timetable
+
 	const [ tableType, setTableType ] = useState<"multi" | "combi">( "combi" )
 	const [ rounding, setRounding ] = useState<"round" | "ceil" | "floor">( "round" )
 	const [ timeSteps, setTimeSteps ] = useState( 120 )
@@ -240,7 +242,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 		setSelectedTimeSlots( undefined )
 	}, [ tableType ] )
 
-	// click handlers
+	/* click handlers */
 	const onGroupClickCB = useCallback( ( group: ExampleGroup ) => {
 		setSelectedGroup( prev => {
 			if ( prev?.title === group.title && prev.subtitle === group.subtitle ) {
@@ -515,10 +517,12 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 		</>
 	);
 
+	// endregion: timetable
+
 	return (
 		<ShowcaseWrapperItem
 			name="Time Table"
-			sourceCodeExampleId="time-table"
+			sourceCodeExampleId="timetable"
 			overallSourceCode={ props.overallSourceCode }
 			packages={ [
 				{

@@ -47,7 +47,8 @@ export function LocaleProvider ( { locale, children }: { locale?: Locale | undef
 		}
 		localStorage.setItem( localeStorageKey, localeUsed )
 		document.documentElement.lang = localeUsed
-		loadTranslation( localeUsed ).then( setTranslation )
+		//loadTranslation( localeUsed ).then( setTranslation )
+		fetchTranslation( localeUsed ).then( setTranslation )
 	}, [ localeUsed ] )
 
 
@@ -69,8 +70,14 @@ export const useLocale = () => {
 
 
 
-async function loadTranslation ( locale: string ) {
+/*async function loadTranslation ( locale: string ) {
 	console.log( "loading translation for locale", locale )
 	const mod = await import( `${ translationsPath }/${ locale }.json` )
 	return mod.default
+}*/
+
+async function fetchTranslation ( locale: string ) {
+	console.log( "loading translation for locale", locale )
+	const res = await fetch( `${ translationsPath }/${ locale }.json` )
+	return res.json()
 }

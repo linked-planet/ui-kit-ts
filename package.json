@@ -17,15 +17,16 @@
 	],
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build:lib": "vite build -c vite.config.lib.ts && copy libraray/src/translations dist/translations",
-		"build:sc": "vite build -c vite.config.showcase.ts",
+		"build:lib": "vite build -c vite.config.lib.ts && npm run messages:compile",
+		"build:sc": "vite build -c vite.config.showcase.ts && npm run messages:compile && node ./showcase/copySources.js",
+		"preview": "npm run build:sc && vite preview -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
-		"dev:sc": "vite -c vite.config.showcase.ts --open",
+		"dev:sc": "node ./showcase/copySources.js && npm run messages:compile && vite -c vite.config.showcase.ts --open",
 		"eslint": "eslint **/*.ts*",
 		"stylelint": "stylelint **/*.css",
 		"clean": "rm -rf dist && rm -rf dist-showcase",
 		"messages:extract": "formatjs extract './library/src/**/*.{ts,tsx}' --ignore '**/*.d.ts' --out-file ./library/src/localization/translations/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
-		"messages:compile": "formatjs compile-folder ./library/src/localization/translations  ./library/src/localization/translations-compiled"
+		"messages:compile": "formatjs compile-folder library/src/localization/translations library/src/localization/translations-compiled && mkdir -p dist && mkdir -p dist-showcase && cp -r library/src/localization/translations-compiled dist/ && cp -r library/src/localization/translations-compiled showcase/public/"
 	},
 	"author": "Philip Karlsson",
 	"contributors": [

@@ -95,7 +95,7 @@ export default function InlineMessage ( {
 				style={ {
 					display,
 					backgroundColor: bgColor,
-					border: `${ token( "border.width.025", "1px" ) } solid ${ borderColor }`,
+					border: `${ token( "border.width.025", "2px" ) } solid ${ borderColor }`,
 					borderRadius: token( "border.radius.025", "2px" ),
 					color: textColor,
 					padding: token( "spacing.025", "2px" ),
