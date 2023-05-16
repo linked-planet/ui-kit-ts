@@ -401,7 +401,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 							left: `${ ( c / colSpan ) * 100 }%`,
 							width: `${ width }%`,
 							height: "100%",
-							borderBottom: `1px solid ${ token( "color.border" ) }`,
+							borderBottom: timeSlotIsSelectedOverlayDiv ? `1px solid ${ token( "color.border" ) }` : undefined,
 						} }
 						{ ...getMouseHandlers( iClosure ) }
 					/>
