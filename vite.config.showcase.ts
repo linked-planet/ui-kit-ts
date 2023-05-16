@@ -9,6 +9,7 @@ export default defineConfig({
 	define: {
 		"process.env": {}, // this is necessary because form.js in @atlaskit uses process.env.NODE_ENV
 	},
+	publicDir: "showcase/public",
 	plugins: [react(), tsconfigPaths()],
 	server: {
 		port: 3000,
