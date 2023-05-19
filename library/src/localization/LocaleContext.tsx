@@ -1,4 +1,4 @@
-import React, { useState, Dispatch, useEffect } from "react"
+import React, { useState, Dispatch, useEffect, useContext } from "react"
 import type { SetStateAction } from "react"
 
 export const availableLocales = [
@@ -61,7 +61,7 @@ export function LocaleProvider ( { locale, children }: { locale?: Locale | undef
 
 
 export const useLocale = () => {
-	const context = React.useContext( localizationContext )
+	const context = useContext( localizationContext )
 	if ( context === undefined ) {
 		throw new Error( 'useLocale must be used within a LocaleProvider' )
 	}

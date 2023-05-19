@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useMemo, useState } from "react"
+import React, { MouseEvent, useContext, useEffect, useMemo, useState } from "react"
 import type { Dayjs } from "dayjs"
 import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "./LPTimeTable"
 
@@ -8,9 +8,10 @@ import styles from "./LPTimeTable.module.css"
 import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
 import ItemWrapper from "./ItemWrapper"
 import { token } from "@atlaskit/tokens"
-import { MessageUrgency } from "../inlinemessage/InlineMessage"
+import { Message } from "../inlinemessage/InlineMessage"
 
 import * as Messages from "./Messages"
+import { useMessage } from "./MessageContext"
 
 interface RowEntry<I> {
 	startSlot: number
@@ -31,7 +32,7 @@ interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	selectedTimeSlotItem: I | undefined
 
 	renderGroup: ( ( _: G ) => JSX.Element ) | undefined
-	renderTimeSlotItem: ( ( group: G, item: I, isSelected: boolean ) => JSX.Element ) | undefined
+	renderTimeSlotItem: ( ( group: G, item: I, selectedItem: I | undefined ) => JSX.Element ) | undefined
 
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined
 	onTimeSlotClick: ( ( _: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void ) | undefined
@@ -40,10 +41,6 @@ interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 
 	/* how long is 1 time slot */
 	timeSteps: number
-
-	tableType: "multi" | "combi"
-
-	setMessage: ( msg: { urgency: MessageUrgency, text: JSX.Element, timeOut?: number } | undefined ) => void
 
 	/* if true, only the slots of the same group and in successive order can be selected */
 	selectionOnlySuccessiveSlots: boolean
@@ -64,12 +61,12 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 		onTimeSlotClick,
 		onGroupClick,
 		timeSteps,
-		tableType,
-		setMessage,
 		selectionOnlySuccessiveSlots,
 		disableWeekendInteractions,
 	}: TimeTableProps<G, I>
 ) {
+
+	const { setMessage } = useMessage()
 
 	const [ multiselect, setMultiselect ] = useState( false )
 
@@ -107,8 +104,8 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 	}, [ successiveError, setMessage ] )
 	//#endregion
 
-	const table = tableType === "multi" ?
-		<MultiLineTableRows
+	const table = (
+		<CombiTableRows<G, I>
 			entries={ entries }
 			slotsArray={ slotsArray }
 			timeSteps={ timeSteps }
@@ -122,30 +119,11 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 			selectedTimeSlotItem={ selectedTimeSlotItem }
 			multiselect={ multiselect }
 			setMultiselect={ setMultiselect }
-			setMessage={ setMessage }
-			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
-			onlySuccessiveSlotsAreSelected={ !successiveError }
-			disableWeekendInteractions={ disableWeekendInteractions }
-		/> :
-		<CombiTableRows
-			entries={ entries }
-			slotsArray={ slotsArray }
-			timeSteps={ timeSteps }
-			onGroupClick={ onGroupClick }
-			onTimeSlotItemClick={ onTimeSlotItemClick }
-			onTimeSlotClick={ onTimeSlotClick }
-			renderGroup={ renderGroup }
-			renderTimeSlotItem={ renderTimeSlotItem }
-			selectedGroup={ selectedGroup }
-			selectedTimeSlots={ selectedTimeSlots }
-			selectedTimeSlotItem={ selectedTimeSlotItem }
-			multiselect={ multiselect }
-			setMultiselect={ setMultiselect }
-			setMessage={ setMessage }
 			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 			onlySuccessiveSlotsAreSelected={ !successiveError }
 			disableWeekendInteractions={ disableWeekendInteractions }
 		/>
+	)
 
 	return (
 		<>
@@ -210,7 +188,6 @@ function getItemLeftAndWidth (
 	return { left, width }
 }
 
-
 const clickDiffToMouseDown = 100
 let multiselectDebounceHelper: number | undefined = undefined
 
@@ -221,15 +198,13 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	group,
 	timeSlotNumber,
 	groupRow,
-	groupRowMax,
+	isLastGroupRow,
 	rowEntryItem,
 	selectedTimeSlots,
 	selectedTimeSlotItem,
 	onTimeSlotClick,
 	onTimeSlotItemClick,
 	renderTimeSlotItem,
-	bottomBorderType,
-	setMessage,
 	selectionOnlySuccessiveSlots,
 	onlySuccessiveSlotsAreSelected,
 	disableWeekendInteractions,
@@ -239,24 +214,357 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	group: G,
 	timeSlotNumber: number,
 	groupRow: number,
-	groupRowMax: number,
+	isLastGroupRow: boolean,
 	rowEntryItem: RowEntry<I> | null,
 	selectedTimeSlots: SelectedTimeSlot<G>[] | undefined,
 	selectedTimeSlotItem: I | undefined,
 	onTimeSlotClick: ( ( s: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void ) | undefined,
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined,
-	renderTimeSlotItem: ( ( group: G, item: I, isSelected: boolean ) => JSX.Element ) | undefined,
-	bottomBorderType: "bold" | "normal",
-	setMessage: ( msg: { urgency: MessageUrgency, text: JSX.Element, timeOut?: number } | undefined ) => void
+	renderTimeSlotItem: ( ( group: G, item: I, selectedItem: I | undefined ) => JSX.Element ) | undefined,
 	selectionOnlySuccessiveSlots: boolean, // allows the selection of only successive slots
 	onlySuccessiveSlotsAreSelected: boolean, // true if only successive slots are selected
 	disableWeekendInteractions: boolean,
 } ) {
 
+	const mouseHandlersCreator = useMouseHandlersCreator(
+		group, groupRow,
+		slotsArray,
+		disableWeekendInteractions,
+		onTimeSlotClick,
+		selectedTimeSlots,
+		selectionOnlySuccessiveSlots, onlySuccessiveSlotsAreSelected,
+	)
+
+	const timeSlot = slotsArray[ timeSlotNumber ]
+	const timeSlotIsSelected = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) )
+	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
+
+	if ( rowEntryItem && rowEntryItem.startSlot === timeSlotNumber ) {
+		const colSpan = rowEntryItem.length * 2
+		let overlaySelectionDiv: JSX.Element[] | undefined = undefined;
+		if ( colSpan > 2 ) {
+			overlaySelectionDiv = []
+			for ( let c = 0; c < colSpan; c = c + 2 ) {
+				const iClosure = timeSlotNumber + ( c / 2 )
+
+				const timeSlotOfDiv = slotsArray[ iClosure ]
+				const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlotOfDiv ) )
+				const isWeekendDayDiv = timeSlotOfDiv.day() === 0 || timeSlotOfDiv.day() === 6
+				const width = 2 / colSpan * 100
+
+				let classes = timeSlotIsSelectedOverlayDiv ? styles.selected : ""
+				if ( isWeekendDayDiv ) classes += ` ${ styles.weekend }`
+				if ( !isWeekendDayDiv || !disableWeekendInteractions ) classes += ` ${ styles.hover }`
+				const mouseHandlers = mouseHandlersCreator ? mouseHandlersCreator( iClosure ) : undefined
+
+
+				overlaySelectionDiv.push(
+					<div
+						key={ c }
+						className={ classes }
+						style={ {
+							position: "absolute",
+							top: 0,
+							left: `${ ( c / colSpan ) * 100 }%`,
+							width: `${ width }%`,
+							height: "100%",
+							borderBottom: timeSlotIsSelectedOverlayDiv ? `1px solid ${ token( "color.border" ) }` : undefined,
+						} }
+						{ ...mouseHandlers }
+					/>
+				)
+			}
+		}
+
+		const tdMouseHandler = ( !overlaySelectionDiv || overlaySelectionDiv.length === 0 ) && mouseHandlersCreator ? mouseHandlersCreator( timeSlotNumber ) : undefined
+
+		// rowEntryItems are sorted by startSlot
+		let widthBefore = 0 // this is needed for the relative positioning inside the flex item container
+		const items = rowEntryItem.items.map( ( item, i ) => {
+			const leftAndWidth = getItemLeftAndWidth( rowEntryItem, item, slotsArray, timeSteps )
+			let left = leftAndWidth.left
+			const width = leftAndWidth.width
+
+			// need to calculate the offset from the width of the one before
+			if ( i > 0 ) {
+				left = left - widthBefore
+			}
+			widthBefore += width
+			return (
+				<ItemWrapper
+					key={ i }
+					group={ group }
+					item={ item }
+					width={ width }
+					left={ left }
+					selectedTimeSlotItem={ selectedTimeSlotItem }
+					onTimeSlotItemClick={ onTimeSlotItemClick }
+					renderTimeSlotItem={ renderTimeSlotItem }
+				/>
+			)
+		} )
+
+		let classes = timeSlotIsSelected && overlaySelectionDiv?.length === 0 ? styles.selected : ""
+		if ( isWeekendDay ) classes += ` ${ styles.weekend }`
+		if ( ( !isWeekendDay || !disableWeekendInteractions ) && overlaySelectionDiv?.length === 0 ) classes += ` ${ styles.hover }`
+
+
+		return (
+			<td
+				key={ timeSlotNumber }
+				colSpan={ colSpan }
+				className={ classes }
+				style={ {
+					borderBottomColor: isLastGroupRow ? token( "color.border.bold" ) : token( "color.border" ),
+				} }
+				{ ...tdMouseHandler }
+			>
+				<div
+					style={ {
+						display: "flex",
+						position: "relative",
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+					} }
+				>
+					{ items }
+				</div>
+				{ overlaySelectionDiv }
+			</td>
+		)
+	}
+
+	// the normal empty TD
+	let classes = timeSlotIsSelected ? styles.selected : ""
+	if ( isWeekendDay ) classes += ` ${ styles.weekend }`
+	if ( !isWeekendDay || !disableWeekendInteractions ) classes += ` ${ styles.hover }`
+	const mouseHandlers = mouseHandlersCreator ? mouseHandlersCreator( timeSlotNumber ) : undefined
+	return (
+		<td
+			key={ timeSlotNumber }
+			{ ...mouseHandlers }
+			className={ classes }
+			style={ {
+				//borderBottomColor: isLastGroupRow ? "var(--ds-border-bold)" : "var(--ds-border)",
+				borderBottomColor: isLastGroupRow ? token( "color.border.bold" ) : token( "color.border" ),
+				//borderBottomWidth: isLastGroupRow ? "1px" : "1px",
+			} }
+			colSpan={ 2 }
+		/>
+	)
+}
+
+
+function GroupHeaderTableCell<G extends TimeTableGroup> (
+	{
+		group,
+		groupRowMax,
+		selectedGroup,
+		onGroupClick,
+		renderGroup,
+	}: {
+		group: G,
+		groupRowMax: number,
+		selectedGroup: G | undefined,
+		onGroupClick: ( ( group: G ) => void ) | undefined,
+		renderGroup: ( ( group: G, isSelected: boolean ) => JSX.Element ) | undefined,
+	}
+) {
+	return (
+		<td
+			onClick={ () => {
+				if ( onGroupClick ) onGroupClick( group )
+			} }
+			rowSpan={ groupRowMax + 1 }
+			className={ `${ selectedGroup === group ? styles.selected : "" } ${ styles.groupHeader }` }
+		>
+
+			{ renderGroup ? renderGroup( group, group === selectedGroup ) : <Group group={ group } /> }
+		</td>
+	)
+}
+
+
+
+
+type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
+	entries: TimeTableEntry<G, I>[],
+	slotsArray: Dayjs[]
+	timeSteps: number
+	onGroupClick: ( ( group: G ) => void ) | undefined
+	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined
+	onTimeSlotClick: ( ( s: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void ) | undefined
+	renderGroup?: ( group: G, isSelected: boolean ) => JSX.Element
+	renderTimeSlotItem?: ( group: G, item: I, selectedItem: I | undefined ) => JSX.Element
+	selectedGroup: G | undefined
+	selectedTimeSlots: SelectedTimeSlot<G>[] | undefined
+	selectedTimeSlotItem: I | undefined,
+	multiselect: boolean,
+	setMultiselect: ( multiselect: boolean ) => void,
+	selectionOnlySuccessiveSlots: boolean,
+	onlySuccessiveSlotsAreSelected: boolean,
+	disableWeekendInteractions: boolean,
+}
+
+let showedItemsOufOfDayRangeWarning = false
+
+
+function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
+	{
+		entries,
+		slotsArray,
+		timeSteps,
+		onGroupClick,
+		onTimeSlotItemClick,
+		onTimeSlotClick,
+		renderGroup,
+		renderTimeSlotItem,
+		selectedGroup,
+		selectedTimeSlots,
+		selectedTimeSlotItem,
+		selectionOnlySuccessiveSlots,
+		onlySuccessiveSlotsAreSelected,
+		disableWeekendInteractions,
+	}: TableRowsProps<G, I>
+) {
+
+	const { setMessage } = useMessage()
+
+
+
+	const { tableRows, itemsOutsideDayRangeCount } = useMemo( () => {
+		let itemsOutsideDayRangeCount = 0
+		const tableRows = entries.map( ( groupEntry, g ) => {
+
+			const { mergedRowItems: rowItems, maxGroupRow: maxGroupRow, itemsOutsideDayRange } = getGroupItemStack( groupEntry.items, slotsArray, timeSteps )
+			itemsOutsideDayRangeCount += itemsOutsideDayRange
+
+			const group = groupEntry.group
+			const trs = []
+			for ( let r = 0; r <= maxGroupRow; r++ ) {
+				const tds = []
+
+				if ( r === 0 ) {
+					tds.push(
+						<GroupHeaderTableCell<G>
+							key={ -1 }
+							group={ group }
+							groupRowMax={ maxGroupRow }
+							selectedGroup={ selectedGroup }
+							onGroupClick={ onGroupClick }
+							renderGroup={ renderGroup }
+						/>
+					);
+				}
+
+				for ( let timeSlotNumber = 0; timeSlotNumber < slotsArray.length; timeSlotNumber++ ) {
+
+					let rowEntryItem: RowEntry<I> | null = null
+					for ( const rowEntry of rowItems ) {
+						if ( rowEntry.groupRow === r && rowEntry.startSlot === timeSlotNumber ) {
+							rowEntryItem = rowEntry
+						}
+					}
+
+					tds.push(
+						<TableCell<G, I>
+							key={ timeSlotNumber }
+							group={ group }
+							timeSlotNumber={ timeSlotNumber }
+							groupRow={ r }
+							isLastGroupRow={ r === maxGroupRow }
+							rowEntryItem={ rowEntryItem }
+							slotsArray={ slotsArray }
+							timeSteps={ timeSteps }
+							selectedTimeSlots={ selectedTimeSlots }
+							selectedTimeSlotItem={ selectedTimeSlotItem }
+							onTimeSlotItemClick={ onTimeSlotItemClick }
+							onTimeSlotClick={ onTimeSlotClick }
+							renderTimeSlotItem={ renderTimeSlotItem }
+							selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
+							onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
+							disableWeekendInteractions={ disableWeekendInteractions }
+						/>
+					)
+
+					if ( rowEntryItem ) {
+						timeSlotNumber += rowEntryItem.length - 1
+					}
+				}
+
+				trs.push(
+					<tr
+						key={ r }
+						style={ {
+							backgroundColor: g % 2 === 0 ? token( "elevation.surface.sunken" ) : token( "elevation.surface" ),
+							height: "3rem", // height works as min height in tables
+						} }
+					>
+						{ tds }
+					</tr>
+				)
+			}
+
+			return (
+				<React.Fragment
+					key={ g }
+				>
+					{ trs }
+				</React.Fragment>
+			)
+		} )
+		return { tableRows, itemsOutsideDayRangeCount }
+	}, [ disableWeekendInteractions, entries, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, onlySuccessiveSlotsAreSelected, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, selectionOnlySuccessiveSlots, slotsArray, timeSteps ] )
+
+	useEffect( () => {
+		if ( !showedItemsOufOfDayRangeWarning ) {
+			if ( itemsOutsideDayRangeCount > 0 ) {
+				setMessage( {
+					urgency: "warning",
+					text: `${ itemsOutsideDayRangeCount } items are outside of the day range.`
+				} )
+			}
+		}
+	}, [ itemsOutsideDayRangeCount, setMessage ] )
+
+	return (
+		<>
+			{ tableRows }
+		</>
+	)
+
+}
+
+/**
+ * Creates a function which creates the mouse event handler for the table cells (the interaction cell, the first row of each group)
+ * @param group 
+ * @param groupRow the group row in a group, 0 is the interaction row
+ * @param slotsArray 
+ * @param disableWeekendInteractions // if time slots on the weekend are event clickable
+ * @param onTimeSlotClick 
+ * @param selectedTimeSlots 
+ * @param selectionOnlySuccessiveSlots 
+ * @param onlySuccessiveSlotsAreSelected 
+ */
+function useMouseHandlersCreator<G extends TimeTableGroup> (
+	group: G,
+	groupRow: number,
+	slotsArray: Dayjs[],
+	disableWeekendInteractions: boolean,
+	onTimeSlotClick: ( ( timeSlot: SelectedTimeSlot<G>, fromMultiselect: boolean ) => void ) | undefined,
+	selectedTimeSlots: SelectedTimeSlot<G>[] | undefined,
+	selectionOnlySuccessiveSlots: boolean,
+	onlySuccessiveSlotsAreSelected: boolean,
+) {
+
+	const { setMessage } = useMessage()
+
+	if ( !onTimeSlotClick ) return undefined
+
 	//#region  user interaction
 	const mouseClickHandler = ( fromMultiselect: boolean, timeSlotNumber: number ) => {
-		if ( !onTimeSlotClick ) return
-
 		const timeSlot = slotsArray[ timeSlotNumber ]
 		if ( !selectionOnlySuccessiveSlots ) {
 			onTimeSlotClick( { group, timeSlotStart: timeSlot, groupRow }, fromMultiselect )
@@ -325,7 +633,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 
 
 
-	const getMouseHandlers = ( timeSlotNumber: number ) => {
+	return ( timeSlotNumber: number ) => {
 		const timeSlot = slotsArray[ timeSlotNumber ]
 		const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 
@@ -368,157 +676,45 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	}
 	//#endregion
 
+}
 
 
-	const timeSlot = slotsArray[ timeSlotNumber ]
-	const timeSlotIsSelected = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlot ) )
-	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
-
-	if ( rowEntryItem && rowEntryItem.startSlot === timeSlotNumber ) {
-		const colSpan = rowEntryItem.length * 2
-		let overlaySelectionDiv: JSX.Element[] | undefined = undefined;
-		if ( colSpan > 2 ) {
-			overlaySelectionDiv = []
-			for ( let c = 0; c < colSpan; c = c + 2 ) {
-				const iClosure = timeSlotNumber + ( c / 2 )
-
-				const timeSlotOfDiv = slotsArray[ iClosure ]
-				const timeSlotIsSelectedOverlayDiv = selectedTimeSlots?.find( it => it.group === group && it.timeSlotStart.isSame( timeSlotOfDiv ) )
-				const isWeekendDayDiv = timeSlotOfDiv.day() === 0 || timeSlotOfDiv.day() === 6
-				const width = 2 / colSpan * 100
-
-				let classes = timeSlotIsSelectedOverlayDiv ? styles.selected : ""
-				if ( isWeekendDayDiv ) classes += ` ${ styles.weekend }`
-				if ( !isWeekendDayDiv || !disableWeekendInteractions ) classes += ` ${ styles.hover }`
-
-				overlaySelectionDiv.push(
-					<div
-						key={ c }
-						className={ classes }
-						style={ {
-							position: "absolute",
-							top: 0,
-							left: `${ ( c / colSpan ) * 100 }%`,
-							width: `${ width }%`,
-							height: "100%",
-							borderBottom: timeSlotIsSelectedOverlayDiv ? `1px solid ${ token( "color.border" ) }` : undefined,
-						} }
-						{ ...getMouseHandlers( iClosure ) }
-					/>
-				)
-			}
+/**
+ * create the group item stack of all items in a group (it create first a row item for each item in the group and then merges them to one stack where non overlapping items are merged together)
+ * @param groupItems 
+ * @param slotsArray 
+ * @param timeSteps 
+ * @returns 
+ */
+function getGroupItemStack<I extends TimeSlotBooking> (
+	groupItems: I[],
+	slotsArray: Dayjs[],
+	timeSteps: number,
+) {
+	let itemsOutsideDayRange = 0
+	// create a row item for each item in the group
+	const rowItemsUnmerged: RowEntry<I>[] = groupItems.reduce( ( rowItems, item ) => {
+		const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps )
+		if ( startAndEndSlot == null ) {
+			itemsOutsideDayRange++
+			return rowItems
 		}
 
-		const tdMouseHandler = !overlaySelectionDiv || overlaySelectionDiv.length === 0 ? getMouseHandlers( timeSlotNumber ) : undefined
+		const { startSlot, endSlot } = startAndEndSlot
+		const length = endSlot - startSlot
 
-		// rowEntryItems are sorted by startSlot
-		let widthBefore = 0 // this is needed for the relative positioning inside the flex item container
-		const items = rowEntryItem.items.map( ( item, i ) => {
-			const leftAndWidth = getItemLeftAndWidth( rowEntryItem, item, slotsArray, timeSteps )
-			let left = leftAndWidth.left
-			const width = leftAndWidth.width
-
-			// need to calculate the offset from the width of the one before
-			if ( i > 0 ) {
-				left = left - widthBefore
-			}
-			widthBefore += width
-			return (
-				<ItemWrapper
-					key={ i }
-					group={ group }
-					item={ item }
-					width={ width }
-					left={ left }
-					selectedTimeSlotItem={ selectedTimeSlotItem }
-					onTimeSlotItemClick={ onTimeSlotItemClick }
-					renderTimeSlotItem={ renderTimeSlotItem }
-				/>
-			)
+		rowItems.push( {
+			items: [ item ],
+			startSlot,
+			length,
+			groupRow: 0,
 		} )
+		return rowItems
+	}, [] as RowEntry<I>[] )
 
-		let classes = timeSlotIsSelected && overlaySelectionDiv?.length === 0 ? styles.selected : ""
-		if ( isWeekendDay ) classes += ` ${ styles.weekend }`
-		if ( ( !isWeekendDay || !disableWeekendInteractions ) && overlaySelectionDiv?.length === 0 ) classes += ` ${ styles.hover }`
-
-
-		return (
-			<td
-				key={ timeSlotNumber }
-				colSpan={ colSpan }
-				className={ classes }
-				style={ {
-					borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
-				} }
-				{ ...tdMouseHandler }
-			>
-				<div
-					style={ {
-						display: "flex",
-						position: "relative",
-						top: 0,
-						left: 0,
-						right: 0,
-						bottom: 0,
-					} }
-				>
-					{ items }
-				</div>
-				{ overlaySelectionDiv }
-			</td>
-		)
-	}
-
-	// the normal empty TD
-	let classes = timeSlotIsSelected ? styles.selected : ""
-	if ( isWeekendDay ) classes += ` ${ styles.weekend }`
-	if ( !isWeekendDay || !disableWeekendInteractions ) classes += ` ${ styles.hover }`
-	return (
-		<td
-			key={ timeSlotNumber }
-			{ ...getMouseHandlers( timeSlotNumber ) }
-			className={ classes }
-			style={ {
-				//borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? "var(--ds-border-bold)" : "var(--ds-border)",
-				borderBottomColor: groupRow === groupRowMax && bottomBorderType === "bold" ? token( "color.border.bold" ) : token( "color.border" ),
-				//borderBottomWidth: groupRow === groupRowMax && bottomBorderType === "bold" ? "1px" : "1px",
-			} }
-			colSpan={ 2 }
-		/>
-	)
+	// merges the row items where there are no overlaps
+	return { ...mergeCombiRowItemsCascade( rowItemsUnmerged ), itemsOutsideDayRange }
 }
-
-
-function GroupHeaderTableCell<G extends TimeTableGroup> (
-	{
-		group,
-		groupRowMax,
-		selectedGroup,
-		onGroupClick,
-		renderGroup,
-	}: {
-		group: G,
-		groupRowMax: number,
-		selectedGroup: G | undefined,
-		onGroupClick: ( ( group: G ) => void ) | undefined,
-		renderGroup: ( ( group: G, isSelected: boolean ) => JSX.Element ) | undefined,
-	}
-) {
-	return (
-		<td
-			onClick={ () => {
-				if ( onGroupClick ) onGroupClick( group )
-			} }
-			rowSpan={ groupRowMax + 1 }
-			className={ `${ selectedGroup === group ? styles.selected : "" } ${ styles.groupHeader }` }
-		>
-
-			{ renderGroup ? renderGroup( group, group === selectedGroup ) : <Group group={ group } /> }
-		</td>
-	)
-}
-
-
 
 /**
  * Merges row items in the same group, or put them into the next row if they overlap. Does this until no merge is happening anymore.
@@ -596,330 +792,8 @@ function mergeCombiRowItemsCascade<I extends TimeSlotBooking> ( rowItemsUnmerged
 }
 
 
-type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
-	entries: TimeTableEntry<G, I>[],
-	slotsArray: Dayjs[]
-	timeSteps: number
-	onGroupClick: ( ( group: G ) => void ) | undefined
-	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined
-	onTimeSlotClick: ( ( s: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void ) | undefined
-	renderGroup?: ( group: G, isSelected: boolean ) => JSX.Element
-	renderTimeSlotItem?: ( group: G, item: I, isSelected: boolean ) => JSX.Element
-	selectedGroup: G | undefined
-	selectedTimeSlots: SelectedTimeSlot<G>[] | undefined
-	selectedTimeSlotItem: I | undefined,
-	multiselect: boolean,
-	setMultiselect: ( multiselect: boolean ) => void,
-	selectionOnlySuccessiveSlots: boolean,
-	setMessage: ( msg: { urgency: MessageUrgency, text: JSX.Element, timeOut?: number } | undefined ) => void
-	onlySuccessiveSlotsAreSelected: boolean,
-	disableWeekendInteractions: boolean,
-}
-
-let showedItemsOufOfDayRangeWarning = false
 
 
-function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
-	{
-		entries,
-		slotsArray,
-		timeSteps,
-		onGroupClick,
-		onTimeSlotItemClick,
-		onTimeSlotClick,
-		renderGroup,
-		renderTimeSlotItem,
-		selectedGroup,
-		selectedTimeSlots,
-		selectedTimeSlotItem,
-		selectionOnlySuccessiveSlots,
-		setMessage,
-		onlySuccessiveSlotsAreSelected,
-		disableWeekendInteractions,
-	}: TableRowsProps<G, I>
-) {
-
-	const tableRows = useMemo( () => {
-		return entries.map( ( groupEntry, g ) => {
-
-			const rowItemsUnmerged: RowEntry<I>[] = groupEntry.items.reduce( ( rowItems, item ) => {
-				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps )
-				if ( startAndEndSlot == null ) {
-					console.log( "Item is out of day range of the time slots: ", item )
-					if ( !showedItemsOufOfDayRangeWarning ) {
-						setMessage( {
-							urgency: "warning",
-							text: <Messages.BookingsOutsideOfDayRange />,
-						} )
-						showedItemsOufOfDayRangeWarning = true
-					}
-					return rowItems
-				}
-
-				const { startSlot, endSlot } = startAndEndSlot
-				const length = endSlot - startSlot
-
-				rowItems.push( {
-					items: [ item ],
-					startSlot,
-					length,
-					groupRow: 0,
-				} )
-				return rowItems
-			}, [] as RowEntry<I>[] )
-
-			const { mergedRowItems: rowItems, maxGroupRow: maxGroupRow } = mergeCombiRowItemsCascade( rowItemsUnmerged )
-
-			const group = groupEntry.group
-			const trs = []
-			for ( let r = 0; r <= maxGroupRow; r++ ) {
-				const tds = []
-
-				if ( r === 0 ) {
-					tds.push(
-						<GroupHeaderTableCell<G>
-							key={ -1 }
-							group={ group }
-							groupRowMax={ maxGroupRow }
-							selectedGroup={ selectedGroup }
-							onGroupClick={ onGroupClick }
-							renderGroup={ renderGroup }
-						/>
-					);
-				}
-
-				for ( let timeSlotNumber = 0; timeSlotNumber < slotsArray.length; timeSlotNumber++ ) {
-
-					let rowEntryItem: RowEntry<I> | null = null
-					for ( const rowEntry of rowItems ) {
-						if ( rowEntry.groupRow === r && rowEntry.startSlot === timeSlotNumber ) {
-							rowEntryItem = rowEntry
-						}
-					}
-
-					tds.push(
-						<TableCell<G, I>
-							key={ timeSlotNumber }
-							group={ group }
-							timeSlotNumber={ timeSlotNumber }
-							groupRow={ r }
-							groupRowMax={ maxGroupRow }
-							rowEntryItem={ rowEntryItem }
-							slotsArray={ slotsArray }
-							timeSteps={ timeSteps }
-							selectedTimeSlots={ selectedTimeSlots }
-							selectedTimeSlotItem={ selectedTimeSlotItem }
-							onTimeSlotItemClick={ onTimeSlotItemClick }
-							onTimeSlotClick={ onTimeSlotClick }
-							renderTimeSlotItem={ renderTimeSlotItem }
-							bottomBorderType={ maxGroupRow === r ? "bold" : "normal" }
-							selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
-							setMessage={ setMessage }
-							onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
-							disableWeekendInteractions={ disableWeekendInteractions }
-						/>
-					)
-
-					if ( rowEntryItem ) {
-						timeSlotNumber += rowEntryItem.length - 1
-					}
-				}
-
-				trs.push(
-					<tr
-						key={ r }
-						style={ {
-							backgroundColor: g % 2 === 0 ? token( "elevation.surface.sunken" ) : token( "elevation.surface" ),
-							height: "3rem", // height works as min height in tables
-						} }
-					>
-						{ tds }
-					</tr>
-				)
-			}
-
-			return (
-				<>
-					{ trs }
-				</>
-			)
-		} )
-	}, [ disableWeekendInteractions, entries, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, onlySuccessiveSlotsAreSelected, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, selectionOnlySuccessiveSlots, setMessage, slotsArray, timeSteps ] )
-
-	return (
-		<>
-			{ tableRows }
-		</>
-	)
-
-}
 
 
-function MultiLineTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
-	{
-		entries,
-		slotsArray,
-		timeSteps,
-		onGroupClick,
-		onTimeSlotItemClick,
-		onTimeSlotClick,
-		renderGroup,
-		renderTimeSlotItem,
-		selectedGroup,
-		selectedTimeSlots,
-		selectedTimeSlotItem,
-		setMessage,
-		selectionOnlySuccessiveSlots,
-		onlySuccessiveSlotsAreSelected,
-		disableWeekendInteractions,
-	}: TableRowsProps<G, I>
-) {
-	const tableRows = useMemo( () => {
-		return entries.map( ( groupEntry, g ) => {
-			const rowItems: RowEntry<I>[] = groupEntry.items.map( ( item ) => {
-
-				const startAndEndSlot = getStartAndEndSlot( item.startDate, item.endDate, slotsArray, timeSteps )
-				if ( startAndEndSlot == null ) {
-					console.log( "Item is out of day range of the time slots: ", item )
-					return null
-				}
-				const { startSlot, endSlot } = startAndEndSlot
-				const length = endSlot - startSlot
-
-				return {
-					items: [ item ],
-					startSlot,
-					length,
-					groupRow: 0,
-				}
-			} ).filter( it => it != null ) as RowEntry<I>[]
-			// if we enable this, the items in the groups will be sorted according to their start slot
-			// right now they are simply in the order they come in
-			//rowItems.sort( ( a, b ) => a.startSlot - b.startSlot )
-
-			const isEmptyRow = rowItems.length === 0
-			const group = groupEntry.group
-
-			if ( isEmptyRow ) {
-
-				const tds = slotsArray.map( ( timeSlot, timeSlotNumber ) => {
-					return <TableCell<G, I>
-						key={ timeSlotNumber }
-						slotsArray={ slotsArray }
-						timeSteps={ timeSteps }
-						group={ group }
-						timeSlotNumber={ timeSlotNumber }
-						groupRow={ 0 }
-						groupRowMax={ 0 }
-						rowEntryItem={ null }
-						selectedTimeSlots={ selectedTimeSlots }
-						selectedTimeSlotItem={ selectedTimeSlotItem }
-						onTimeSlotClick={ onTimeSlotClick }
-						onTimeSlotItemClick={ onTimeSlotItemClick }
-						renderTimeSlotItem={ renderTimeSlotItem }
-						bottomBorderType={ "bold" }
-						setMessage={ setMessage }
-						selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
-						onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
-						disableWeekendInteractions={ disableWeekendInteractions }
-					/>
-				} )
-
-				return (
-					<tr
-						key={ g }
-						onClick={ () => {
-							if ( onGroupClick ) onGroupClick( group )
-						} }
-						style={ {
-							backgroundColor: g % 2 === 0 ? token( "elevation.surface.sunken" ) : token( "elevation.surface" ),
-							height: "3rem", // height works as min height in tables
-						} }
-						className={ selectedGroup === group ? styles.selected : "" }
-					>
-						<GroupHeaderTableCell<G>
-							key={ -1 }
-							group={ group }
-							groupRowMax={ 0 }
-							onGroupClick={ onGroupClick }
-							renderGroup={ renderGroup }
-							selectedGroup={ selectedGroup }
-						/>
-						{ tds }
-					</tr>
-				)
-			} else {
-
-				// each row item is an own row
-				return rowItems.map( ( rowEntry, j ) => {
-					const isLastGroupItem = j === rowItems.length - 1
-					const tds: JSX.Element[] = []
-					for ( let timeSlotNumber = 0; timeSlotNumber < slotsArray.length; timeSlotNumber++ ) {
-						const isEntry = rowEntry.startSlot === timeSlotNumber
-						tds.push(
-							<TableCell<G, I>
-								key={ timeSlotNumber }
-								slotsArray={ slotsArray }
-								timeSteps={ timeSteps }
-								group={ group }
-								timeSlotNumber={ timeSlotNumber }
-								groupRow={ j }
-								groupRowMax={ rowItems.length - 1 }
-								rowEntryItem={ isEntry ? rowEntry : null }
-								selectedTimeSlots={ selectedTimeSlots }
-								selectedTimeSlotItem={ selectedTimeSlotItem }
-								onTimeSlotClick={ onTimeSlotClick }
-								onTimeSlotItemClick={ onTimeSlotItemClick }
-								renderTimeSlotItem={ renderTimeSlotItem }
-								bottomBorderType={ isLastGroupItem ? "bold" : "normal" }
-								setMessage={ setMessage }
-								selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
-								onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
-								disableWeekendInteractions={ disableWeekendInteractions }
-							/>
-						)
-						if ( isEntry ) {
-							timeSlotNumber += rowEntry.length - 1
-						}
-					}
-
-
-					if ( j == 0 ) {
-						//#region  add group fixed column
-						tds.unshift(
-							<GroupHeaderTableCell<G>
-								key={ -1 }
-								group={ group }
-								groupRowMax={ rowItems.length - 1 }
-								onGroupClick={ onGroupClick }
-								renderGroup={ renderGroup }
-								selectedGroup={ selectedGroup }
-							/>
-						);
-					}
-					//#endregion
-
-					return (
-						<tr
-							key={ j }
-							style={ {
-								backgroundColor: g % 2 === 0 ? token( "elevation.surface.sunken" ) : token( "elevation.surface" ),
-								height: "3rem", // height works as min height in tables
-							} }
-						>
-							{ tds }
-						</tr>
-					)
-				} )
-			}
-
-		} )
-	}, [ entries, slotsArray, timeSteps, selectedGroup, onGroupClick, renderGroup, selectedTimeSlots, selectedTimeSlotItem, onTimeSlotClick, onTimeSlotItemClick, renderTimeSlotItem, setMessage, selectionOnlySuccessiveSlots, onlySuccessiveSlotsAreSelected, disableWeekendInteractions ] )
-
-	return (
-		<>
-			{ tableRows }
-		</>
-	)
-}
 

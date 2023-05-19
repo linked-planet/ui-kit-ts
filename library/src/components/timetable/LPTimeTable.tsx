@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import React, { MutableRefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
@@ -11,12 +11,13 @@ import styles from "./LPTimeTable.module.css"
 import TimeLineTable from "./TimeLineTable"
 import { getStartAndEndSlot } from "./timeTableUtils"
 import InlineMessage from "../inlinemessage"
-import type { MessageUrgency } from "../inlinemessage/InlineMessage"
+import type { Message } from "../inlinemessage"
 import { token } from "@atlaskit/tokens"
 import * as Messages from "./Messages"
 import { IntlProvider } from "react-intl-next"
 import { LocaleProvider, useLocale } from "../../localization"
 import { Locale } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
+import { MessageProvider, useMessage } from "./MessageContext"
 
 export interface TimeSlotBooking {
 	title: string
@@ -42,13 +43,14 @@ export interface SelectedTimeSlot<G extends TimeTableGroup> {
 	groupRow: number
 }
 
+
 export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	/* The start date also defines the time the time slots starts in the morning */
 	startDate: Dayjs
 	/* The end date also defines the time the time slots ends in the evening */
 	endDate: Dayjs
 	/* how long is 1 time slot in minutes */
-	timeSteps: number
+	timeStepsMinutes: number
 
 	entries: TimeTableEntry<G, I>[]
 
@@ -61,15 +63,13 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	renderGroup?: ( group: G ) => JSX.Element
 
 	/* overwrite render function for the time slot items */
-	renderTimeSlotItem?: ( group: G, item: I, isSelected: boolean ) => JSX.Element
+	renderTimeSlotItem?: ( group: G, item: I, selectedItem: I | undefined ) => JSX.Element
 
 	onTimeSlotItemClick?: ( group: G, item: I ) => void
 
 	onTimeSlotClick?: ( _: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void
 
 	onGroupClick?: ( group: G ) => void
-
-	tableType: "multi" | "combi"
 
 	/* overwrite current time, mostly useful for debugging */
 	nowOverwrite?: Dayjs
@@ -132,7 +132,9 @@ const LPTimeTableLocalized = <G extends TimeTableGroup, I extends TimeSlotBookin
 	const { locale, translation } = useLocale()
 	return (
 		<IntlProvider locale={ locale } messages={ translation }>
-			<LPTimeTableImpl { ...props } />
+			<MessageProvider>
+				<LPTimeTableImpl { ...props } />
+			</MessageProvider>
 		</IntlProvider>
 	)
 }
@@ -145,9 +147,8 @@ const LPTimeTableLocalized = <G extends TimeTableGroup, I extends TimeSlotBookin
 const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	startDate,
 	endDate,
-	timeSteps: timeStepsProp,
+	timeStepsMinutes,
 	entries,
-	tableType,
 	selectedGroup,
 	selectedTimeSlots,
 	selectedTimeSlotItem,
@@ -172,81 +173,22 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	const tableHeaderRef = useRef<HTMLTableSectionElement>( null )
 	const tableBodyRef = useRef<HTMLTableSectionElement>( null )
 	const nowRef = useRef<Dayjs>( nowOverwrite ?? dayjs() )
-	const [ message, setMessage ] = useState<{ urgency: MessageUrgency, text: JSX.Element, timeOut?: number }>()
 
-	//#region calculate time slots settings
-	const { timeSlotsPerDay, daysDiff, timeSteps } = useMemo( () => {
+	const { message, setMessage } = useMessage()
+
+	//#region calculate time slots, dates array and the final time steps size in minutes
+	const { daysArray, slotsArray, timeSteps, timeSlotsPerDay } = useMemo( () => {
 		// to avoid overflow onto the next day if the time steps are too large
-		let timeSlotsPerDay = 0
-		let timeSteps = timeStepsProp
-		if ( startDate.add( timeSteps, "minutes" ).day() !== startDate.day() ) {
-			timeSteps = startDate.startOf( "day" ).add( 1, "day" ).diff( startDate, "minutes" ) - 1 // -1 to end at the same day if the time steps are from someplace during the day until
-			setMessage( {
-				urgency: "warning",
-				text: <Messages.UnfittingTimeSlot timeSteps={ timeSteps } />,
-			} )
-		}
-
-		const daysDiff = endDate.diff( startDate, 'days' )
-		if ( daysDiff < 0 ) {
-			setMessage( {
-				urgency: "error",
-				text: <Messages.EndDateAfterStartDate />,
-			} )
-			return { timeSlotsPerDay, daysDiff, timeSteps }
-		}
-
-		if ( timeSteps === 0 ) {
-			setMessage( {
-				urgency: "error",
-				text: <Messages.TimeSlotSizeGreaterZero />,
-			} )
-			return { timeSlotsPerDay, daysDiff, timeSteps }
-		}
-
-		let timeDiff = dayjs().startOf( 'day' ).add( endDate.hour(), 'hours' ).add( endDate.minute(), 'minutes' ).diff(
-			dayjs().startOf( 'day' ).add( startDate.hour(), 'hours' ).add( startDate.minute(), 'minutes' ), "minutes" )
-
-		if ( timeDiff === 0 ) {
-			// we set it to 24 hours
-			timeDiff = 24 * 60
-		}
-
-		timeSlotsPerDay = Math.abs( timeDiff ) / timeSteps
-		if ( rounding === "ceil" ) {
-			timeSlotsPerDay = Math.ceil( timeSlotsPerDay )
-		} else if ( rounding == "floor" ) {
-			timeSlotsPerDay = Math.floor( timeSlotsPerDay )
-		} else {
-			timeSlotsPerDay = Math.round( timeSlotsPerDay )
-		}
-
-		return { timeSlotsPerDay, daysDiff, timeSteps }
-	}, [ timeStepsProp, startDate, endDate, rounding ] )
+		const { timeSlotsPerDay, daysDifference, timeSteps } = calculateTimeSlotProperties( startDate, endDate, timeStepsMinutes, rounding ?? "round", setMessage )
+		const timeAndDayArrays = calculateTimeSlots( timeSlotsPerDay, daysDifference, timeSteps, startDate )
+		return { daysArray: timeAndDayArrays?.daysArray, slotsArray: timeAndDayArrays?.slotsArray, timeSteps, timeSlotsPerDay }
+	}, [ startDate, endDate, timeStepsMinutes, rounding, setMessage ] )
 	//#endregion
 
+	console.log( "time steps", timeSteps, "time slots per day", timeSlotsPerDay )
 
-	//#region get the days array for the header and the time slots
-	const timeSlotSettings = useMemo( () => {
-		if ( !isFinite( timeSlotsPerDay ) ) {
-			return null
-		}
-		const daysArray = Array.from( { length: daysDiff }, ( x, i ) => i ).map( ( day ) => {
-			return dayjs( startDate ).add( day, 'days' )
-		} )
 
-		const slotsArray = daysArray.flatMap( ( date ) => {
-			console.log( "timeSlotsPerDay", timeSlotsPerDay )
-			return Array.from( { length: timeSlotsPerDay }, ( _, i ) => i * timeSteps ).map( ( minutes ) => {
-				return dayjs( date ).add( minutes, "minutes" )
-			} )
-		} )
-
-		return { daysArray, slotsArray }
-	}, [ daysDiff, startDate, timeSteps, timeSlotsPerDay ] )
-	//#endregion
-
-	//#region draw the time slot bars
+	//#region draw the time slot vertical bars, and the now bar showing the current time (if it is in the time frame)
 	useLayoutEffect( () => {
 		if ( tableBodyRef.current ) {
 			const tbodyFirstRow = tableBodyRef.current?.children[ 0 ] as HTMLTableRowElement | undefined
@@ -277,7 +219,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	// adjust the now bar moves the now bar to the current time slot, if it exists
 	// and also adjusts the orange border of the time slot header
 	const adjustNowBar = useCallback( () => {
-		if ( !timeSlotSettings?.daysArray || !timeSlotSettings?.slotsArray.length ) {
+		if ( !daysArray || !slotsArray ) {
 			return
 		}
 
@@ -288,84 +230,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 			nowRef.current = dayjs()
 		}
 
-
-		// remove the orange border from the header cell
-		const headerTimeslotRow = tableHeaderRef.current?.children[ 1 ]
-		if ( !headerTimeslotRow ) {
-			setMessage( {
-				urgency: "error",
-				text: <Messages.NoHeaderTimeSlotRow />
-			} )
-			console.log( "no header time slot row found" )
-			return
-		}
-		const headerTimeSlotCells = headerTimeslotRow.children
-		for ( const headerTimeSlotCell of headerTimeSlotCells ) {
-			headerTimeSlotCell.classList.remove( styles.nowHeaderTimeSlot )
-		}
-
-		const startAndEndSlot = getStartAndEndSlot( nowRef.current, nowRef.current, timeSlotSettings.slotsArray, timeSteps )
-		if ( !startAndEndSlot ) {
-			// we need to remove the now bar, if it is there
-			nowBarRef.current?.remove()
-			return // we are outside of the range of time
-		}
-
-		const startSlot = startAndEndSlot.startSlot
-
-		// the first row in the body is used for the time slot bars
-		const tbodyFirstRow = tableBodyRef.current?.children[ 0 ] as HTMLTableRowElement | undefined
-		// now get the current time slot index element (not -1 because the first empty element for the groups)
-
-		const slotBar = tbodyFirstRow?.children[ startSlot + 1 ] as HTMLDivElement | undefined
-		if ( !slotBar ) {
-			console.log( "unable to find time slot column for the now bar: ", startSlot )
-			return
-		}
-
-		// adjust the nowbar div to the right parent, or create it if it doesn't exist
-		if ( nowBarRef.current ) {
-			if ( nowBarRef.current.parentElement !== slotBar ) {
-				slotBar.appendChild( nowBarRef.current )
-			}
-		} else {
-			nowBarRef.current = document.createElement( "div" )
-			nowBarRef.current.className = styles.nowBar
-			slotBar.appendChild( nowBarRef.current )
-		}
-
-		const currentTimeSlot = timeSlotSettings.slotsArray[ startSlot ]
-		const diffNow = nowRef.current.diff( currentTimeSlot, "minutes" )
-		const diffPerc = diffNow / timeSteps
-		nowBarRef.current.style.left = `${ diffPerc * 100 }%`
-		nowBarRef.current.style.height = tableBodyRef.current?.offsetHeight + "px"
-
-
-		// add orange border
-		const nowTimeSlotCell = headerTimeSlotCells[ startSlot + 1 ]
-		if ( !nowTimeSlotCell ) {
-			console.error( "unable to find header for time slot of the current time" )
-			return
-		}
-		nowTimeSlotCell.classList.add( styles.nowHeaderTimeSlot, styles.unselectable )
-
-		// adjust the date header
-		const headerDateRow = tableHeaderRef.current?.children[ 0 ]
-		if ( !headerDateRow ) {
-			console.error( "unable to find header date row" )
-			return
-		}
-		const headerDateCells = headerDateRow.children
-		for ( const headerDateCell of headerDateCells ) {
-			headerDateCell.classList.remove( styles.nowHeaderDate )
-			const textContent = headerDateCell.textContent
-			const nowTextContent = nowRef.current.format( headerDateFormat )
-			if ( textContent === nowTextContent ) {
-				headerDateCell.classList.add( styles.nowHeaderDate )
-			}
-		}
-
-	}, [ nowOverwrite, timeSlotSettings?.daysArray, timeSlotSettings?.slotsArray, timeSteps ] )
+		moveNowBar( slotsArray, nowRef, timeSteps, nowBarRef, tableHeaderRef, tableBodyRef, setMessage )
+	}, [ daysArray, slotsArray, nowOverwrite, timeSteps, setMessage ] )
+	//#endregion
 
 
 	// initial run, and start interval to move the now bar
@@ -427,10 +294,10 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	}, [] )*/
 
 	if (
-		!timeSlotSettings?.daysArray ||
-		timeSlotSettings.daysArray.length === 0 ||
-		!timeSlotSettings.slotsArray ||
-		timeSlotSettings.slotsArray.length === 0 ) {
+		!daysArray ||
+		daysArray.length === 0 ||
+		!slotsArray ||
+		slotsArray.length === 0 ) {
 		return (
 			<div>
 				<InlineMessage message={ message ?? { text: "" } } />
@@ -495,7 +362,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 				>
 					<colgroup>
 						<col style={ { width: firstColumnWidth } } />
-						{ timeSlotSettings.slotsArray.map( ( _, i ) => {
+						{ slotsArray.map( ( _, i ) => {
 							return (
 								<>
 									<col
@@ -520,7 +387,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 									top: 0,
 									borderLeftStyle: "none",
 									width: firstColumnWidth,
-									borderRight: `${ token( "border.width.050", "1px" ) } solid ${ token( "color.border.bold" ) }`,
+									borderRight: `1px solid ${ token( "color.border.bold" ) }`,
 									backgroundColor: token( "elevation.surface" ),
 								} }
 								className={ styles.unselectable }
@@ -535,7 +402,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 									{ `${ startDate.format( "DD.MM." ) } - ${ endDate.format( "DD.MM.YY" ) }` }
 								</div>
 							</th>
-							{ timeSlotSettings.daysArray.map( ( date ) => {
+							{ daysArray.map( ( date ) => {
 								return (
 									<th
 										key={ date.toISOString() }
@@ -567,7 +434,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 									left: 0,
 									top: 0,
 									borderLeftStyle: "none",
-									borderRight: `${ token( "border.width.050", "1px" ) } solid ${ token( "color.border.bold" ) }`,
+									borderRight: `1px solid ${ token( "color.border.bold" ) }`,
 								} }
 							>
 								<div
@@ -577,17 +444,17 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 										justifyContent: "right",
 									} }
 								>
-									{ `${ timeSlotSettings.slotsArray[ 0 ].format( "HH:mm" ) } - ${ timeSlotSettings.slotsArray[ 0 ].add( timeSlotsPerDay * timeSteps, "minutes" ).format( "HH:mm" ) } [${ timeSlotSettings.slotsArray.length }]` }
+									{ `${ slotsArray[ 0 ].format( "HH:mm" ) } - ${ slotsArray[ 0 ].add( timeSlotsPerDay * timeSteps, "minutes" ).format( "HH:mm" ) } [${ slotsArray.length }]` }
 								</div>
 							</th>
-							{ timeSlotSettings.slotsArray.map( ( slot, i ) => {
-								const isNewDay = i === 0 || !timeSlotSettings.slotsArray[ i - 1 ].isSame( slot, "day" )
+							{ slotsArray.map( ( slot, i ) => {
+								const isNewDay = i === 0 || !slotsArray[ i - 1 ].isSame( slot, "day" )
 								return (
 									<th
 										key={ i }
 										style={ {
-											paddingLeft: isNewDay ? token( "space.050", "4px" ) : token( "space.025", "2px" ),
-											borderLeftWidth: isNewDay && i > 0 ? token( "border.width.050", "1px" ) : "0",
+											paddingLeft: isNewDay ? "4px" : "2px",
+											borderLeftWidth: isNewDay && i > 0 ? "1px" : "0",
 										} }
 										colSpan={ 2 }
 										className={ `${ styles.unselectable } ${ styles.headerTimeSlot }` }
@@ -604,8 +471,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 						<tr className={ styles.nowRow }>
 							<td>
 							</td>
-							{ timeSlotSettings.slotsArray.map( ( slot, i ) => {
-								const isNextNewDay = i < timeSlotSettings.slotsArray.length - 1 && !timeSlotSettings.slotsArray[ i + 1 ].isSame( slot, "day" )
+							{ slotsArray.map( ( slot, i ) => {
+								const isNextNewDay = i < slotsArray.length - 1 && !slotsArray[ i + 1 ].isSame( slot, "day" )
 								return (
 									<td
 										key={ i }
@@ -627,7 +494,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 						</tr>
 						<TimeLineTable<G, I>
 							entries={ entries }
-							slotsArray={ timeSlotSettings.slotsArray }
+							slotsArray={ slotsArray }
 							selectedGroup={ selectedGroup }
 							selectedTimeSlots={ selectedTimeSlots }
 							selectedTimeSlotItem={ selectedTimeSlotItem }
@@ -637,8 +504,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 							onTimeSlotClick={ onTimeSlotClick }
 							onGroupClick={ onGroupClick }
 							timeSteps={ timeSteps }
-							tableType={ tableType }
-							setMessage={ setMessage }
 							selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 							disableWeekendInteractions={ disableWeekendInteractions }
 						/>
@@ -661,6 +526,222 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 			</button>
 		</>
 	)
+}
+
+
+
+/**
+ * Calculates the time slots for the given time frame.
+ * @param startDate date and time when the time frame starts (defines also the start time of each day)
+ * @param endDate date and time when the time frame ends (defines also the end time of each day)
+ * @param timeStepsMinute duration of one time step in minutes
+ * @param rounding rounding of the time steps if they don't fit into the time frame
+ * @param setMessage  function to set a message
+ * @returns the amount of time slots per day, the difference in day of the time frame, the time step duration after the rounding
+ */
+function calculateTimeSlotProperties (
+	startDate: Dayjs,
+	endDate: Dayjs,
+	timeStepsMinute: number,
+	rounding: "ceil" | "floor" | "round",
+	setMessage: ( message: Message ) => void,
+) {
+	let timeSlotsPerDay = 0
+	let timeSteps = timeStepsMinute
+	if ( startDate.add( timeSteps, "minutes" ).day() !== startDate.day() ) {
+		timeSteps = startDate.startOf( "day" ).add( 1, "day" ).diff( startDate, "minutes" ) - 1 // -1 to end at the same day if the time steps are from someplace during the day until
+		setMessage( {
+			urgency: "warning",
+			text: <Messages.UnfittingTimeSlot timeSteps={ timeSteps } />,
+		} )
+	}
+
+	const daysDifference = endDate.diff( startDate, 'days' )
+	if ( daysDifference < 0 ) {
+		setMessage( {
+			urgency: "error",
+			text: <Messages.EndDateAfterStartDate />,
+		} )
+		return { timeSlotsPerDay, daysDifference, timeSteps }
+	}
+
+	if ( timeSteps === 0 ) {
+		setMessage( {
+			urgency: "error",
+			text: <Messages.TimeSlotSizeGreaterZero />,
+		} )
+		return { timeSlotsPerDay, daysDifference, timeSteps }
+	}
+
+	let timeDiff = dayjs().startOf( 'day' ).add( endDate.hour(), 'hours' ).add( endDate.minute(), 'minutes' ).diff(
+		dayjs().startOf( 'day' ).add( startDate.hour(), 'hours' ).add( startDate.minute(), 'minutes' ), "minutes" )
+
+	if ( timeDiff === 0 ) {
+		// we set it to 24 hours
+		timeDiff = 24 * 60
+	}
+
+	timeSlotsPerDay = Math.abs( timeDiff ) / timeSteps
+	if ( rounding === "ceil" ) {
+		timeSlotsPerDay = Math.ceil( timeSlotsPerDay )
+	} else if ( rounding == "floor" ) {
+		timeSlotsPerDay = Math.floor( timeSlotsPerDay )
+	} else {
+		timeSlotsPerDay = Math.round( timeSlotsPerDay )
+	}
+
+	return { timeSlotsPerDay, daysDifference, timeSteps }
+}
+
+
+
+/**
+ * Calculates the actual time slots for the given time frame.
+ * @param timeSlotsPerDay 
+ * @param daysDifference 
+ * @param startDate 
+ * @param timeSteps 
+ * @returns 
+ */
+function calculateTimeSlots (
+	timeSlotsPerDay: number,
+	daysDifference: number,
+	timeSteps: number,
+	startDate: Dayjs,
+) {
+	if ( !isFinite( timeSlotsPerDay ) ) {
+		return null
+	}
+	const daysArray = Array.from( { length: daysDifference }, ( x, i ) => i ).map( ( day ) => {
+		return dayjs( startDate ).add( day, 'days' )
+	} )
+
+	const slotsArray = daysArray.flatMap( ( date ) => {
+		console.log( "timeSlotsPerDay", timeSlotsPerDay )
+		return Array.from( { length: timeSlotsPerDay }, ( _, i ) => i * timeSteps ).map( ( minutes ) => {
+			return dayjs( date ).add( minutes, "minutes" )
+		} )
+	} )
+
+	return { daysArray, slotsArray }
+}
+
+
+/**
+ * Moves the now bar to the right location, if it is visible in the time frame, and adjusts the header title cell of the date where the now bar is.
+ * @param slotsArray 
+ * @param now 
+ * @param timeSteps 
+ * @param nowBarRef 
+ * @param tableHeaderRef 
+ * @param tableBodyRef 
+ * @param setMessage 
+ * @returns 
+ */
+function moveNowBar (
+	slotsArray: Dayjs[],
+	nowRef: MutableRefObject<Dayjs>,
+	timeSteps: number,
+	nowBarRef: MutableRefObject<HTMLDivElement | undefined>,
+	tableHeaderRef: MutableRefObject<HTMLTableSectionElement | null>,
+	tableBodyRef: MutableRefObject<HTMLTableSectionElement | null>,
+	setMessage: ( message: Message ) => void,
+) {
+
+	if (
+		!tableHeaderRef.current ||
+		!tableBodyRef.current
+	) {
+		console.log( "time table header or body ref not yet set" )
+		return
+	}
+
+	const now = nowRef.current
+	let nowBar = nowBarRef.current
+	const tableHeader = tableHeaderRef.current
+	const tableBody = tableBodyRef.current
+
+
+	// remove the orange border from the header cell
+	const headerTimeslotRow = tableHeader.children[ 1 ]
+	if ( !headerTimeslotRow ) {
+		setMessage( {
+			urgency: "error",
+			text: <Messages.NoHeaderTimeSlotRow />
+		} )
+		console.log( "no header time slot row found" )
+		return
+	}
+	const headerTimeSlotCells = headerTimeslotRow.children
+	for ( const headerTimeSlotCell of headerTimeSlotCells ) {
+		headerTimeSlotCell.classList.remove( styles.nowHeaderTimeSlot )
+	}
+
+	const startAndEndSlot = getStartAndEndSlot( now, now, slotsArray, timeSteps )
+	if ( !startAndEndSlot ) {
+		// we need to remove the now bar, if it is there
+		if ( nowBar ) {
+			nowBar.remove()
+			nowBarRef.current = undefined
+		}
+		return // we are outside of the range of time
+	}
+
+	const startSlot = startAndEndSlot.startSlot
+
+	// the first row in the body is used for the time slot bars
+	const tbodyFirstRow = tableBody.children[ 0 ] as HTMLTableRowElement | undefined
+	// now get the current time slot index element (not -1 because the first empty element for the groups)
+
+	const slotBar = tbodyFirstRow?.children[ startSlot + 1 ] as HTMLDivElement | undefined
+	if ( !slotBar ) {
+		console.log( "unable to find time slot column for the now bar: ", startSlot )
+		return
+	}
+
+	// adjust the nowbar div to the right parent, or create it if it doesn't exist
+	if ( nowBar ) {
+		if ( nowBar.parentElement !== slotBar ) {
+			slotBar.appendChild( nowBar )
+		}
+	} else {
+		nowBar = document.createElement( "div" )
+		nowBar.className = styles.nowBar
+		slotBar.appendChild( nowBar )
+		nowBarRef.current = nowBar
+	}
+
+	const currentTimeSlot = slotsArray[ startSlot ]
+	const diffNow = now.diff( currentTimeSlot, "minutes" )
+	const diffPerc = diffNow / timeSteps
+	nowBar.style.left = `${ diffPerc * 100 }%`
+	nowBar.style.height = tableBody.offsetHeight + "px"
+
+
+	// add orange border
+	const nowTimeSlotCell = headerTimeSlotCells[ startSlot + 1 ]
+	if ( !nowTimeSlotCell ) {
+		console.error( "unable to find header for time slot of the current time" )
+		return
+	}
+	nowTimeSlotCell.classList.add( styles.nowHeaderTimeSlot, styles.unselectable )
+
+	// adjust the date header to mark the current date
+	const headerDateRow = tableHeader.children[ 0 ]
+	if ( !headerDateRow ) {
+		console.error( "unable to find header date row" )
+		return
+	}
+	const headerDateCells = headerDateRow.children
+	for ( const headerDateCell of headerDateCells ) {
+		headerDateCell.classList.remove( styles.nowHeaderDate )
+		const textContent = headerDateCell.textContent
+		const nowTextContent = now.format( headerDateFormat )
+		if ( textContent === nowTextContent ) {
+			headerDateCell.classList.add( styles.nowHeaderDate )
+		}
+	}
+
 }
 
 

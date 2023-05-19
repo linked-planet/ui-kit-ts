@@ -17,7 +17,7 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 	item: I,
 	selectedTimeSlotItem: I | undefined,
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined,
-	renderTimeSlotItem: ( ( group: G, item: I, isSelected: boolean ) => JSX.Element ) | undefined,
+	renderTimeSlotItem: ( ( group: G, item: I, selectedItem: I | undefined ) => JSX.Element ) | undefined,
 	left: number,
 	width: number,
 } ) {
@@ -43,13 +43,14 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 				ref={ ref }
 				className={ utilStyles.fadeIn }
 				style={ {
+					position: "relative",
 					zIndex: 1,
 				} }
 				onClick={ () => {
 					if ( onTimeSlotItemClick ) onTimeSlotItemClick( group, item )
 				} }
 			>
-				{ renderTimeSlotItem ? renderTimeSlotItem( group, item, item === selectedTimeSlotItem ) : <Item group={ group } item={ item } isSelected={ item === selectedTimeSlotItem } /> }
+				{ renderTimeSlotItem ? renderTimeSlotItem( group, item, selectedTimeSlotItem ) : <Item group={ group } item={ item } isSelected={ item === selectedTimeSlotItem } /> }
 			</div>
 		</div>
 	)

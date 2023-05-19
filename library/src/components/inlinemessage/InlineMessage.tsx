@@ -4,15 +4,17 @@ import { token } from "@atlaskit/tokens"
 
 export type MessageUrgency = "success" | "error" | "warning" | "information" | "danger" | undefined
 
+export type Message = {
+	text: string | JSX.Element,
+	urgency?: MessageUrgency,
+	timeOut?: number, // in seconds
+}
+
 export default function InlineMessage ( {
 	message,
 	display = "block",
 }: {
-	message: {
-		text: string | JSX.Element,
-		urgency?: MessageUrgency,
-		timeOut?: number, // in seconds
-	},
+	message: Message,
 	display?: "inline-block" | "block",
 } ) {
 
@@ -95,10 +97,10 @@ export default function InlineMessage ( {
 				style={ {
 					display,
 					backgroundColor: bgColor,
-					border: `${ token( "border.width.025", "2px" ) } solid ${ borderColor }`,
-					borderRadius: token( "border.radius.025", "2px" ),
+					border: `2px solid ${ borderColor }`,
+					borderRadius: "2px",
 					color: textColor,
-					padding: token( "spacing.025", "2px" ),
+					padding: "2px",
 					transition: "all 0.25s ease-in-out",
 					boxSizing: "border-box",
 					overflow: "hidden",
