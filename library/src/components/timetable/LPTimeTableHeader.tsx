@@ -4,7 +4,7 @@ import { token } from "@atlaskit/tokens"
 
 import styles from "./LPTimeTable.module.css"
 
-const headerDateFormat = "ddd, DD.MM.YYYY"
+export const headerDateFormat = "ddd, DD.MM.YYYY"
 const headerTimeSlotFormat = "HH:mm"
 
 type Props = {

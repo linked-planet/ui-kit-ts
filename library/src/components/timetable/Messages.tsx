@@ -4,6 +4,11 @@ import { FormattedMessage } from "react-intl-next"
 
 /// LPTimeTable
 //#region 
+export const ItemsOutsideDayTimeFrame = ( { outsideItemCount }: { outsideItemCount: number } ) => <FormattedMessage
+	defaultMessage={ "Found {itemCount} outside of the valid time frame of each day." }
+	values={ { outsideItemCount } }
+	id="timetable.itemsOutsideTimeFrame"
+/>
 
 export const UnfittingTimeSlot = ( { timeSteps }: { timeSteps: number } ) => <FormattedMessage
 	defaultMessage={ "Start time does not accommodate one time slot before the next day, reducing time slot size to {timeSteps} size." }

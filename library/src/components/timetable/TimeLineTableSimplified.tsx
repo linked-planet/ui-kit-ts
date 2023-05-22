@@ -8,20 +8,12 @@ import styles from "./LPTimeTable.module.css"
 import { isOverlapping } from "./timeTableUtils"
 import ItemWrapper from "./ItemWrapper"
 import { token } from "@atlaskit/tokens"
-import { Message } from "../inlinemessage/InlineMessage"
 
 import * as Messages from "./Messages"
 import { useMessage } from "./MessageContext"
 
-interface RowEntry<I> {
-	startSlot: number
-	items: I[]
-	length: number //number of time slots
 
-	groupRow: number
-}
-
-interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
+interface TimeLineTableSimplifiedProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	/* Entries define the groups, and the items in the groups */
 	entries: TimeTableEntry<G, I>[]
 	slotsArray: Dayjs[]
@@ -42,9 +34,6 @@ interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	/* how long is 1 time slot */
 	timeSteps: number
 
-	/* if true, only the slots of the same group and in successive order can be selected */
-	selectionOnlySuccessiveSlots: boolean
-
 	disableWeekendInteractions: boolean
 }
 
@@ -61,7 +50,7 @@ export default function TimeLineTableSimplified<G extends TimeTableGroup, I exte
 		onGroupClick,
 		timeSteps,
 		disableWeekendInteractions,
-	}: TimeTableProps<G, I>
+	}: TimeLineTableSimplifiedProps<G, I>
 ) {
 	//#region check is all selected time slots are successive, if not, show error message
 	let successiveError: JSX.Element | undefined = undefined
@@ -217,7 +206,6 @@ function TableCellSimple<G extends TimeTableGroup> ( {
 	// the normal empty TD
 	let classes = timeSlotIsSelected ? styles.selected : ""
 	if ( isWeekendDay ) classes += ` ${ styles.weekend }`
-	if ( !isWeekendDay || !disableWeekendInteractions ) classes += ` ${ styles.hover }`
 	const mouseHandlers = mouseHandlersCreator ? mouseHandlersCreator( timeSlotNumber ) : undefined
 	return (
 		<td
@@ -226,7 +214,7 @@ function TableCellSimple<G extends TimeTableGroup> ( {
 			className={ classes }
 			style={ {
 				//borderBottomColor: isLastGroupRow ? "var(--ds-border-bold)" : "var(--ds-border)",
-				borderBottomColor: isLastGroupRow ? token( "color.border.bold" ) : token( "color.border" ),
+				borderBottomColor: isLastGroupRow ? token( "color.border.bold" ) : undefined,
 				//borderBottomWidth: isLastGroupRow ? "1px" : "1px",
 			} }
 			colSpan={ 2 } // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
@@ -381,6 +369,9 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	renderTimeSlotItem: ( ( group: G, item: I, selectedTimeSlotItem: I | undefined ) => JSX.Element ) | undefined,
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined,
 } ) {
+
+	const { setMessage } = useMessage()
+
 	const itemRows = getGroupItemStack( items )
 
 	const trs: JSX.Element[] = []
@@ -427,31 +418,48 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	)
 
 	// add normal rows
+	let foundOutsideOfDayRange = 0
 	for ( let r = 0; r < itemRows.length; r++ ) {
 		const tds = []
 		const itemsOfRow = itemRows[ r ]
-		const itemsWithStart = itemsOfRow.map( item => ( { item, ...getStartAndEndSlot( item, slotsArray ) } ) )
-		for ( let timeSlotNumber = 0; timeSlotNumber < slotsArray.length; timeSlotNumber++ ) {
-			const itemsOfTimeSlot = itemsWithStart.filter( it => it.startSlot === timeSlotNumber )
-			const itemsWithRenderProps = itemsOfTimeSlot.map( ( it, i ) => {
-				const { startSlot, endSlot } = getStartAndEndSlot( it.item, slotsArray )
-				const { left, width } = getLeftAndWidth( it.item, startSlot, endSlot, slotsArray, timeSteps )
-				return { left, width, item: it.item }
-			} )
+		const itemsWithStart = itemsOfRow.map( item => {
+			const startAndEnd = getStartAndEndSlot( item, slotsArray )
+			if ( !startAndEnd ) {
+				foundOutsideOfDayRange++
+				return null
+			}
+			return { item, ...startAndEnd }
+		} )
 
-			const itemsToRender = itemsWithRenderProps.map( ( it, i ) => (
-				<ItemWrapper
-					key={ i }
-					group={ group }
-					item={ it.item }
-					width={ it.width }
-					left={ it.left }
-					selectedTimeSlotItem={ selectedTimeSlotItem }
-					onTimeSlotItemClick={ onTimeSlotItemClick }
-					renderTimeSlotItem={ renderTimeSlotItem }
-				/>
-			)
-			)
+		for ( let timeSlotNumber = 0; timeSlotNumber < slotsArray.length; timeSlotNumber++ ) {
+			const itemsOfTimeSlot = itemsWithStart.filter( it => ( it && it.startSlot === timeSlotNumber ) ) as { item: I, startSlot: number, endSlot: number }[]
+			const itemsWithRenderProps = itemsOfTimeSlot.map( it => {
+				const { left, width } = getLeftAndWidth( it.item, it.startSlot, it.endSlot, slotsArray, timeSteps )
+				return { left, width, item: it.item }
+			} ).filter( it => it !== null ) as { left: number, width: number, item: I }[]
+
+			const gridCols: string[] = []
+			const itemsToRender = itemsWithRenderProps.map( ( it, i ) => {
+				const diffLeft = i > 0 ? it.left - itemsWithRenderProps[ i - 1 ].left - itemsWithRenderProps[ i - 1 ].width : it.left
+
+				const colWidth = diffLeft + it.width
+				const itemWidthInColumn = it.width / colWidth
+				const leftInColumn = diffLeft / colWidth
+				gridCols.push( `${ colWidth * 100 }%` )
+
+				return (
+					<ItemWrapper
+						key={ i }
+						group={ group }
+						item={ it.item }
+						width={ itemWidthInColumn }
+						left={ leftInColumn }
+						selectedTimeSlotItem={ selectedTimeSlotItem }
+						onTimeSlotItemClick={ onTimeSlotItemClick }
+						renderTimeSlotItem={ renderTimeSlotItem }
+					/>
+				)
+			} )
 
 			tds.push(
 				<TableCellSimple<G>
@@ -466,7 +474,14 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 					onTimeSlotClick={ onTimeSlotClick }
 					disableWeekendInteractions={ disableWeekendInteractions }
 				>
-					{ itemsToRender }
+					<div
+						style={ {
+							display: "grid",
+							gridTemplateColumns: gridCols.join( " " ),
+						} }
+					>
+						{ itemsToRender }
+					</div>
 				</TableCellSimple>
 			)
 		}
@@ -482,6 +497,13 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			</tr>
 		)
 	}
+
+	/*if ( foundOutsideOfDayRange ) {
+		setMessage( {
+			urgency: "warning",
+			text: <Messages.ItemsOutsideDayTimeFrame outsideItemCount={ foundOutsideOfDayRange } />
+		} )
+	}*/
 
 	return (
 		<>
@@ -670,8 +692,9 @@ function getStartAndEndSlot (
 	if ( startSlot > 0 ) {
 		// if the item starts in the middle of a slot, we need to go back one slot to get the start slot
 		// but only if the time slot before is on the same day, else it means that the booking starts before the time frame range of the day
-		if ( slotsArray[ startSlot ].date() === slotsArray[ startSlot - 1 ].date() ) {
-			startSlot--
+		startSlot--
+		if ( slotsArray[ startSlot ].date() != item.startDate.date() ) {
+			startSlot++
 		}
 	}
 
@@ -685,6 +708,10 @@ function getStartAndEndSlot (
 		}
 	}
 
+	// if endSlot < startSlot its before the range of the day
+	if ( endSlot < startSlot ) {
+		return null
+	}
 	return { startSlot, endSlot }
 }
 
@@ -704,15 +731,16 @@ function getLeftAndWidth (
 	slotsArray: Dayjs[],
 	timeSteps: number,
 ) {
-	let left = slotsArray[ startSlot ].diff( item.startDate, "minute" ) / timeSteps
+	let left = item.startDate.diff( slotsArray[ startSlot ], "minute" ) / timeSteps
+	console.log( "LEFT", left )
 	if ( left < 0 ) {
 		// if the start is before the time slot, we need to set the left to 0
 		left = 0
 	}
-	left *= 100
 
-	let width = slotsArray[ endSlot ].diff( item.endDate, "minute" ) / timeSteps
-	width = ( ( endSlot - startSlot ) - width ) * 100
+	let width = slotsArray[ endSlot ].add( timeSteps, "minutes" ).diff( item.endDate, "minute" ) / timeSteps
+	console.log( "WIDTH", width, endSlot, startSlot, ( ( endSlot + 1 - startSlot ) - ( left + width ) ) )
+	width = ( ( endSlot + 1 - startSlot ) - ( left + width ) )
 
 	if ( width < 0 ) {
 		console.log( "NEGATIVE WIDTH", item, startSlot, endSlot, slotsArray, timeSteps )

@@ -92,9 +92,14 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 2-2"
 			},
 			{
+				startDate: dayjs().startOf( "day" ).add( 8, "hours" ).add( 41, "minutes" ),
+				endDate: dayjs().startOf( "day" ).add( 8, "hours" ).add( 50, "minutes" ),
+				title: "Item 2-3"
+			},
+			{
 				startDate: dayjs().startOf( "day" ).add( 8, "hours" ),
 				endDate: dayjs().startOf( "day" ).add( 10, "hours" ),
-				title: "Item 2-3"
+				title: "Item 2-4"
 			},
 		],
 	},
@@ -132,7 +137,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 			{
 				// this case ends after the end of the day
 				startDate: dayjs().startOf( "day" ).add( -1, "day" ).add( 8, "hours" ),
-				endDate: dayjs().startOf( "day" ).add( 1, "day" ).add( 17, "hours" ),
+				endDate: dayjs().startOf( "day" ).add( 1, "day" ).add( 16, "hours" ),
 				title: "Item 4-1"
 			},
 			{
@@ -476,6 +481,31 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					requestEntryRangeCB={ requestEntryRangeCB }
 					maxEntryCount={ 100 }
 					locale={ locale }
+					tableType="extended"
+				/>
+
+				<LPTimeTable
+					firstColumnWidth={ firstColumnWidth }
+					columnWidth={ columnWidth }
+					startDate={ timeFrame.startDate }
+					endDate={ timeFrame.endDate }
+					timeStepsMinutes={ timeSteps }
+					entries={ entries }
+					selectedGroup={ selectedGroup }
+					selectedTimeSlots={ selectedTimeSlots }
+					selectedTimeSlotItem={ selectedTimeSlotItem }
+					//renderGroup={ ( group ) => <Group group={ group } /> }
+					//renderItem={ ( item ) => <Item item={ item } /> }
+					onTimeSlotItemClick={ onTimeSlotItemClickCB }
+					onTimeSlotClick={ onTimeSlotClickCB }
+					onGroupClick={ onGroupClickCB }
+					rounding={ rounding }
+					nowOverwrite={ nowOverwrite }
+					requestTimeFrameCB={ requestNewTimeFrameCB }
+					requestEntryRangeCB={ requestEntryRangeCB }
+					maxEntryCount={ 100 }
+					locale={ locale }
+					tableType="default"
 				/>
 			</div>
 			{ showCreateNewItemModal && selectedTimeSlots && selectedTimeSlots.length > 0 && (

@@ -18,7 +18,8 @@ import { IntlProvider } from "react-intl-next"
 import { LocaleProvider, useLocale } from "../../localization"
 import { Locale } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import { MessageProvider, useMessage } from "./MessageContext"
-import { LPTimeTableHeader } from "./LPTimeTableHeader"
+import { headerDateFormat, LPTimeTableHeader } from "./LPTimeTableHeader"
+import TimeLineTableSimplified from "./TimeLineTableSimplified"
 
 export interface TimeSlotBooking {
 	title: string
@@ -110,11 +111,9 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	locale?: Locale
 
 
-	type?: "default" | "extended"
+	tableType?: "default" | "extended"
 }
 
-const headerDateFormat = "ddd, DD.MM.YYYY"
-const headerTimeSlotFormat = "HH:mm"
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
 
 
@@ -171,7 +170,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	disableWeekendInteractions = true,
 	selectionOnlySuccessiveSlots = true,
 	nowOverwrite,
-	type = "default"
+	tableType = "default"
 }: LPTimeTableProps<G, I> ) => {
 
 	const nowBarRef = useRef<HTMLDivElement | undefined>()
@@ -399,21 +398,40 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 								)
 							} ) }
 						</tr>
-						<TimeLineTable<G, I>
-							entries={ entries }
-							slotsArray={ slotsArray }
-							selectedGroup={ selectedGroup }
-							selectedTimeSlots={ selectedTimeSlots }
-							selectedTimeSlotItem={ selectedTimeSlotItem }
-							renderGroup={ renderGroup }
-							renderTimeSlotItem={ renderTimeSlotItem }
-							onTimeSlotItemClick={ onTimeSlotItemClick }
-							onTimeSlotClick={ onTimeSlotClick }
-							onGroupClick={ onGroupClick }
-							timeSteps={ timeSteps }
-							selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
-							disableWeekendInteractions={ disableWeekendInteractions }
-						/>
+						{ tableType === "extended" &&
+							<TimeLineTable<G, I>
+								entries={ entries }
+								slotsArray={ slotsArray }
+								selectedGroup={ selectedGroup }
+								selectedTimeSlots={ selectedTimeSlots }
+								selectedTimeSlotItem={ selectedTimeSlotItem }
+								renderGroup={ renderGroup }
+								renderTimeSlotItem={ renderTimeSlotItem }
+								onTimeSlotItemClick={ onTimeSlotItemClick }
+								onTimeSlotClick={ onTimeSlotClick }
+								onGroupClick={ onGroupClick }
+								timeSteps={ timeSteps }
+								selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
+								disableWeekendInteractions={ disableWeekendInteractions }
+							/>
+						}
+						{ tableType === "default" &&
+							<TimeLineTableSimplified<G, I>
+								entries={ entries }
+								slotsArray={ slotsArray }
+								selectedGroup={ selectedGroup }
+								selectedTimeSlots={ selectedTimeSlots }
+								selectedTimeSlotItem={ selectedTimeSlotItem }
+								renderGroup={ renderGroup }
+								renderTimeSlotItem={ renderTimeSlotItem }
+								onTimeSlotItemClick={ onTimeSlotItemClick }
+								onTimeSlotClick={ onTimeSlotClick }
+								onGroupClick={ onGroupClick }
+								timeSteps={ timeSteps }
+								disableWeekendInteractions={ disableWeekendInteractions }
+							/>
+						}
+
 					</tbody>
 				</table >
 			</div>
