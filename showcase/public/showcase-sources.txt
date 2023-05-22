@@ -1488,14 +1488,13 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					columnWidth={ columnWidth }
 					startDate={ timeFrame.startDate }
 					endDate={ timeFrame.endDate }
-					timeSteps={ timeSteps }
+					timeStepsMinutes={ timeSteps }
 					entries={ entries }
 					selectedGroup={ selectedGroup }
 					selectedTimeSlots={ selectedTimeSlots }
 					selectedTimeSlotItem={ selectedTimeSlotItem }
 					//renderGroup={ ( group ) => <Group group={ group } /> }
 					//renderItem={ ( item ) => <Item item={ item } /> }
-					tableType={ tableType }
 					onTimeSlotItemClick={ onTimeSlotItemClickCB }
 					onTimeSlotClick={ onTimeSlotClickCB }
 					onGroupClick={ onGroupClickCB }

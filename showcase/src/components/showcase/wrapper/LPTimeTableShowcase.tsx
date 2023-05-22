@@ -380,21 +380,6 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					} }
 				>
 					<label
-						style={ { marginRight: "1rem" } }
-						htmlFor="multiLine"
-					>
-						Table Type:
-					</label>
-					<select
-						name="tabletype"
-						onChange={ e => setTableType( e.target.value as "multi" | "combi" ) }
-						value={ tableType }
-					>
-						<option value="single">single</option>
-						<option value="multi">multi</option>
-						<option value="combi">combi</option>
-					</select>
-					<label
 						htmlFor="firstcolwidth"
 						style={ {
 							marginRight: "1rem"

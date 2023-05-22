@@ -408,8 +408,6 @@ type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	disableWeekendInteractions: boolean,
 }
 
-let showedItemsOufOfDayRangeWarning = false
-
 
 function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 	{
@@ -519,13 +517,11 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 	}, [ disableWeekendInteractions, entries, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, onlySuccessiveSlotsAreSelected, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, selectionOnlySuccessiveSlots, slotsArray, timeSteps ] )
 
 	useEffect( () => {
-		if ( !showedItemsOufOfDayRangeWarning ) {
-			if ( itemsOutsideDayRangeCount > 0 ) {
-				setMessage( {
-					urgency: "warning",
-					text: `${ itemsOutsideDayRangeCount } items are outside of the day range.`
-				} )
-			}
+		if ( itemsOutsideDayRangeCount > 0 ) {
+			setMessage( {
+				urgency: "warning",
+				text: `${ itemsOutsideDayRangeCount } items are outside of the day range.`
+			} )
 		}
 	}, [ itemsOutsideDayRangeCount, setMessage ] )
 

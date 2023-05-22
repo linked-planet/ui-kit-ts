@@ -18,6 +18,7 @@ import { IntlProvider } from "react-intl-next"
 import { LocaleProvider, useLocale } from "../../localization"
 import { Locale } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import { MessageProvider, useMessage } from "./MessageContext"
+import { LPTimeTableHeader } from "./LPTimeTableHeader"
 
 export interface TimeSlotBooking {
 	title: string
@@ -107,6 +108,9 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	 * Sets the language used for the messages.
 	 */
 	locale?: Locale
+
+
+	type?: "default" | "extended"
 }
 
 const headerDateFormat = "ddd, DD.MM.YYYY"
@@ -167,6 +171,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	disableWeekendInteractions = true,
 	selectionOnlySuccessiveSlots = true,
 	nowOverwrite,
+	type = "default"
 }: LPTimeTableProps<G, I> ) => {
 
 	const nowBarRef = useRef<HTMLDivElement | undefined>()
@@ -177,11 +182,11 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	const { message, setMessage } = useMessage()
 
 	//#region calculate time slots, dates array and the final time steps size in minutes
-	const { daysArray, slotsArray, timeSteps, timeSlotsPerDay } = useMemo( () => {
+	const { slotsArray, timeSteps, timeSlotsPerDay } = useMemo( () => {
 		// to avoid overflow onto the next day if the time steps are too large
 		const { timeSlotsPerDay, daysDifference, timeSteps } = calculateTimeSlotProperties( startDate, endDate, timeStepsMinutes, rounding ?? "round", setMessage )
-		const timeAndDayArrays = calculateTimeSlots( timeSlotsPerDay, daysDifference, timeSteps, startDate )
-		return { daysArray: timeAndDayArrays?.daysArray, slotsArray: timeAndDayArrays?.slotsArray, timeSteps, timeSlotsPerDay }
+		const slotsArray = calculateTimeSlots( timeSlotsPerDay, daysDifference, timeSteps, startDate )
+		return { slotsArray, timeSteps, timeSlotsPerDay }
 	}, [ startDate, endDate, timeStepsMinutes, rounding, setMessage ] )
 	//#endregion
 
@@ -219,7 +224,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	// adjust the now bar moves the now bar to the current time slot, if it exists
 	// and also adjusts the orange border of the time slot header
 	const adjustNowBar = useCallback( () => {
-		if ( !daysArray || !slotsArray ) {
+		if ( !slotsArray ) {
 			return
 		}
 
@@ -231,7 +236,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 		}
 
 		moveNowBar( slotsArray, nowRef, timeSteps, nowBarRef, tableHeaderRef, tableBodyRef, setMessage )
-	}, [ daysArray, slotsArray, nowOverwrite, timeSteps, setMessage ] )
+	}, [ slotsArray, nowOverwrite, timeSteps, setMessage ] )
 	//#endregion
 
 
@@ -294,8 +299,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	}, [] )*/
 
 	if (
-		!daysArray ||
-		daysArray.length === 0 ||
 		!slotsArray ||
 		slotsArray.length === 0 ) {
 		return (
@@ -360,112 +363,16 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 					} }
 					className={ styles.lpTimeTable }
 				>
-					<colgroup>
-						<col style={ { width: firstColumnWidth } } />
-						{ slotsArray.map( ( _, i ) => {
-							return (
-								<>
-									<col
-										key={ i * 2 }
-										style={ { width: columnWidth } }
-										width={ columnWidth }
-									/>
-									<col
-										key={ i * 2 + 1 }
-									/>
-								</>
-							)
-						} ) }
-					</colgroup>
-					<thead ref={ tableHeaderRef }>
-						<tr>
-							<th
-								style={ {
-									zIndex: 4,
-									position: "sticky",
-									left: 0,
-									top: 0,
-									borderLeftStyle: "none",
-									width: firstColumnWidth,
-									borderRight: `1px solid ${ token( "color.border.bold" ) }`,
-									backgroundColor: token( "elevation.surface" ),
-								} }
-								className={ styles.unselectable }
-							>
-								<div
-									style={ {
-										display: "flex",
-										justifyContent: "right",
-										paddingRight: "0.3rem",
-									} }
-								>
-									{ `${ startDate.format( "DD.MM." ) } - ${ endDate.format( "DD.MM.YY" ) }` }
-								</div>
-							</th>
-							{ daysArray.map( ( date ) => {
-								return (
-									<th
-										key={ date.toISOString() }
-										colSpan={ timeSlotsPerDay * 2 }
-										style={ {
-											backgroundColor: token( "elevation.surface" ),
-										} }
-									>
-										<div
-											style={ {
-												display: "flex",
-												justifyContent: "center",
-											} }
-											className={ styles.unselectable }
-										>
-											{ date.format( headerDateFormat ) }
-										</div>
-									</th>
-								)
-							} )
-							}
-						</tr>
-						<tr>
-							<th
-								className={ `${ styles.unselectable } ${ styles.headerTimeSlot }` }
-								style={ {
-									zIndex: 4,
-									position: "sticky",
-									left: 0,
-									top: 0,
-									borderLeftStyle: "none",
-									borderRight: `1px solid ${ token( "color.border.bold" ) }`,
-								} }
-							>
-								<div
-									style={ {
-										paddingRight: "0.3rem",
-										display: "flex",
-										justifyContent: "right",
-									} }
-								>
-									{ `${ slotsArray[ 0 ].format( "HH:mm" ) } - ${ slotsArray[ 0 ].add( timeSlotsPerDay * timeSteps, "minutes" ).format( "HH:mm" ) } [${ slotsArray.length }]` }
-								</div>
-							</th>
-							{ slotsArray.map( ( slot, i ) => {
-								const isNewDay = i === 0 || !slotsArray[ i - 1 ].isSame( slot, "day" )
-								return (
-									<th
-										key={ i }
-										style={ {
-											paddingLeft: isNewDay ? "4px" : "2px",
-											borderLeftWidth: isNewDay && i > 0 ? "1px" : "0",
-										} }
-										colSpan={ 2 }
-										className={ `${ styles.unselectable } ${ styles.headerTimeSlot }` }
-									>
-										{ slot.format( headerTimeSlotFormat ) }
-									</th>
-								)
-							} )
-							}
-						</tr>
-					</thead>
+					<LPTimeTableHeader
+						slotsArray={ slotsArray }
+						timeSteps={ timeSteps }
+						columnWidth={ columnWidth }
+						firstColumnWidth={ firstColumnWidth }
+						startDate={ startDate }
+						endDate={ endDate }
+						timeSlotsPerDay={ timeSlotsPerDay }
+						ref={ tableHeaderRef }
+					/>
 					<tbody ref={ tableBodyRef }>
 						{/* render the time slot bars, it has to be as body tds because of the z-index in the theader */ }
 						<tr className={ styles.nowRow }>
@@ -623,7 +530,7 @@ function calculateTimeSlots (
 		} )
 	} )
 
-	return { daysArray, slotsArray }
+	return slotsArray
 }
 
 
