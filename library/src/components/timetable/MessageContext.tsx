@@ -6,7 +6,7 @@ const messageContext = createContext<{
 	setMessage: Dispatch<React.SetStateAction<Message | undefined>>,
 } | undefined>( undefined )
 
-export function MessageProvider ( { children }: { children: React.ReactNode } ) {
+export function MessageProvider ( { children }: { children: JSX.Element } ) {
 	const [ message, setMessage ] = useState<Message>()
 
 	return (

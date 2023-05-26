@@ -36,7 +36,6 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 				position: "relative",
 				left: `${ left * 100 }%`,
 				width: `${ width * 100 }%`,
-				//width: "100%",
 				top: 0,
 			} }
 		>
@@ -46,7 +45,6 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 				style={ {
 					position: "relative",
 					zIndex: 1,
-					//width: `${ width * 100 }%`,
 				} }
 				onClick={ () => {
 					if ( onTimeSlotItemClick ) onTimeSlotItemClick( group, item )

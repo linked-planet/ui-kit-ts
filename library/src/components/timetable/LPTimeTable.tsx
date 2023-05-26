@@ -19,7 +19,7 @@ import { LocaleProvider, useLocale } from "../../localization"
 import { Locale } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import { MessageProvider, useMessage } from "./MessageContext"
 import { headerDateFormat, LPTimeTableHeader } from "./LPTimeTableHeader"
-import TimeLineTableSimplified from "./TimeLineTableSimplified"
+import TimeLineTableSimplified from "./TimeTableSimplified/TimeLineTableSimplified"
 
 export interface TimeSlotBooking {
 	title: string
@@ -188,9 +188,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 		return { slotsArray, timeSteps, timeSlotsPerDay }
 	}, [ startDate, endDate, timeStepsMinutes, rounding, setMessage ] )
 	//#endregion
-
-	console.log( "time steps", timeSteps, "time slots per day", timeSlotsPerDay )
-
 
 	//#region draw the time slot vertical bars, and the now bar showing the current time (if it is in the time frame)
 	useLayoutEffect( () => {
@@ -419,8 +416,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 							<TimeLineTableSimplified<G, I>
 								entries={ entries }
 								slotsArray={ slotsArray }
-								selectedGroup={ selectedGroup }
-								selectedTimeSlots={ selectedTimeSlots }
 								selectedTimeSlotItem={ selectedTimeSlotItem }
 								renderGroup={ renderGroup }
 								renderTimeSlotItem={ renderTimeSlotItem }

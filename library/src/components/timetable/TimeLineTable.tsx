@@ -268,7 +268,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 							left: `${ ( c / colSpan ) * 100 }%`,
 							width: `${ width }%`,
 							height: "100%",
-							borderBottom: timeSlotIsSelectedOverlayDiv ? `1px solid ${ token( "color.border" ) }` : undefined,
+							borderBottom: timeSlotIsSelectedOverlayDiv ? `1px solid ${ isLastGroupRow ? token( "color.border.bold" ) : token( "color.border" ) }` : undefined,
 						} }
 						{ ...mouseHandlers }
 					/>
@@ -315,7 +315,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				colSpan={ colSpan }
 				className={ classes }
 				style={ {
-					borderBottomColor: isLastGroupRow ? token( "color.border.bold" ) : token( "color.border" ),
+					borderBottom: `1px solid ${ isLastGroupRow ? token( "color.border.bold" ) : token( "color.border" ) }`,
 				} }
 				{ ...tdMouseHandler }
 			>
@@ -347,9 +347,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			{ ...mouseHandlers }
 			className={ classes }
 			style={ {
-				//borderBottomColor: isLastGroupRow ? "var(--ds-border-bold)" : "var(--ds-border)",
-				borderBottomColor: isLastGroupRow ? token( "color.border.bold" ) : token( "color.border" ),
-				//borderBottomWidth: isLastGroupRow ? "1px" : "1px",
+				borderBottom: `1px solid ${ isLastGroupRow ? token( "color.border.bold" ) : token( "color.border" ) }`,
 			} }
 			colSpan={ 2 }
 		/>

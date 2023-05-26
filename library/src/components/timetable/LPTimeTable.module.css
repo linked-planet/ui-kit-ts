@@ -28,7 +28,6 @@
 }
 
 .lpTimeTable tbody td {
-	border-bottom: var(--ds-width-050, 1px) solid var(--ds-border);
 	padding: 0;
 	border-left-width: 0;
 	border-right-width: 0;
