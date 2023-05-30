@@ -5,7 +5,7 @@ import dayjs, { Dayjs } from "dayjs"
 import "./LPTimeTable.module.css"
 import styles from "./LPTimeTable.module.css"
 import TimeLineTable from "./TimeLineTable"
-import { getStartAndEndSlot } from "./timeTableUtils"
+import { getStartAndEndSlot, itemsOutsideOfDayRange } from "./timeTableUtils"
 import InlineMessage from "../inlinemessage"
 import type { Message } from "../inlinemessage"
 import { token } from "@atlaskit/tokens"
@@ -16,6 +16,8 @@ import { Locale } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import { MessageProvider, useMessage } from "./MessageContext"
 import { headerDateFormat, LPTimeTableHeader } from "./LPTimeTableHeader"
 import TimeLineTableSimplified from "./TimeTableSimplified/TimeLineTableSimplified"
+import { TimeTableConfigProvider } from "./TimeTableConfigContext"
+import { SelectedTimeSlotsProvider } from "./SelectedTimeSlotsContext"
 
 export interface TimeSlotBooking {
 	title: string
@@ -204,6 +206,25 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	} )
 	//#endregion
 
+	//#region Message is items of entries are outside of the time frame of the day
+	useEffect( () => {
+		if ( !slotsArray ) {
+			return
+		}
+		let foundItemsOutsideOfDayRange = 0
+		for ( const entry of entries ) {
+			const itemsOutside = itemsOutsideOfDayRange( entry.items, slotsArray, timeSteps )
+			foundItemsOutsideOfDayRange += itemsOutside.length
+		}
+		if ( foundItemsOutsideOfDayRange ) {
+			setMessage( {
+				urgency: "warning",
+				text: <Messages.ItemsOutsideDayTimeFrame outsideItemCount={ foundItemsOutsideOfDayRange } />
+			} )
+		}
+	}, [ entries, setMessage, slotsArray, timeSteps ] )
+	//#endregion
+
 	//#region now bar
 	// adjust the now bar moves the now bar to the current time slot, if it exists
 	// and also adjusts the orange border of the time slot header
@@ -281,90 +302,88 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 					<InlineMessage message={ message ?? { text: "" } } />
 				</div>
 			</div>
-			<div
-				style={ {
-					overflowX: "auto",
-					//overflowY: "hidden",
-					height,
-				} }
-			>
-				<table
-					style={ {
-						userSelect: "none",
-					} }
-					className={ styles.lpTimeTable }
-				>
-					<LPTimeTableHeader
-						slotsArray={ slotsArray }
-						timeSteps={ timeSteps }
-						columnWidth={ columnWidth }
-						firstColumnWidth={ firstColumnWidth }
-						startDate={ startDate }
-						endDate={ endDate }
-						timeSlotsPerDay={ timeSlotsPerDay }
-						ref={ tableHeaderRef }
-					/>
-					<tbody ref={ tableBodyRef }>
-						{/* render the time slot bars, it has to be as body tds because of the z-index in the theader */ }
-						<tr className={ styles.nowRow }>
-							<td>
-							</td>
-							{ slotsArray.map( ( slot, i ) => {
-								const isNextNewDay = i < slotsArray.length - 1 && !slotsArray[ i + 1 ].isSame( slot, "day" )
-								return (
-									<td
-										key={ i }
-										style={ {
-											position: "relative",
-										} }
-										colSpan={ 2 }
-									>
-										<div
-											className={ styles.timeSlotBar }
-											style={ {
-												backgroundColor: isNextNewDay ? token( "color.border.bold" ) : undefined,
-											} }
-										>
-										</div>
+			<TimeTableConfigProvider slotsArray={ slotsArray } timeSteps={ timeSteps } disableWeekendInteractions={ disableWeekendInteractions }>
+				<SelectedTimeSlotsProvider slotsArray={ slotsArray } timeSteps={ timeSteps }>
+					<div
+						style={ {
+							overflowX: "auto",
+							//overflowY: "hidden",
+							height,
+						} }
+					>
+						<table
+							style={ {
+								userSelect: "none",
+							} }
+							className={ styles.lpTimeTable }
+						>
+							<LPTimeTableHeader
+								slotsArray={ slotsArray }
+								timeSteps={ timeSteps }
+								columnWidth={ columnWidth }
+								firstColumnWidth={ firstColumnWidth }
+								startDate={ startDate }
+								endDate={ endDate }
+								timeSlotsPerDay={ timeSlotsPerDay }
+								ref={ tableHeaderRef }
+							/>
+							<tbody ref={ tableBodyRef }>
+								{/* render the time slot bars, it has to be as body tds because of the z-index in the theader */ }
+								<tr className={ styles.nowRow }>
+									<td>
 									</td>
-								)
-							} ) }
-						</tr>
-						{ tableType === "extended" &&
-							<TimeLineTable<G, I>
-								entries={ entries }
-								slotsArray={ slotsArray }
-								selectedGroup={ selectedGroup }
-								selectedTimeSlots={ selectedTimeSlots }
-								selectedTimeSlotItem={ selectedTimeSlotItem }
-								renderGroup={ renderGroup }
-								renderTimeSlotItem={ renderTimeSlotItem }
-								onTimeSlotItemClick={ onTimeSlotItemClick }
-								onTimeSlotClick={ onTimeSlotClick }
-								onGroupClick={ onGroupClick }
-								timeSteps={ timeSteps }
-								selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
-								disableWeekendInteractions={ disableWeekendInteractions }
-							/>
-						}
-						{ tableType === "default" &&
-							<TimeLineTableSimplified<G, I>
-								entries={ entries }
-								slotsArray={ slotsArray }
-								selectedTimeSlotItem={ selectedTimeSlotItem }
-								renderGroup={ renderGroup }
-								renderTimeSlotItem={ renderTimeSlotItem }
-								onTimeSlotItemClick={ onTimeSlotItemClick }
-								onTimeSlotClick={ onTimeSlotClick }
-								onGroupClick={ onGroupClick }
-								timeSteps={ timeSteps }
-								disableWeekendInteractions={ disableWeekendInteractions }
-							/>
-						}
+									{ slotsArray.map( ( slot, i ) => {
+										const isNextNewDay = i < slotsArray.length - 1 && !slotsArray[ i + 1 ].isSame( slot, "day" )
+										return (
+											<td
+												key={ i }
+												style={ {
+													position: "relative",
+												} }
+												colSpan={ 2 }
+											>
+												<div
+													className={ styles.timeSlotBar }
+													style={ {
+														backgroundColor: isNextNewDay ? token( "color.border.bold" ) : undefined,
+													} }
+												>
+												</div>
+											</td>
+										)
+									} ) }
+								</tr>
+								{ tableType === "extended" &&
+									<TimeLineTable<G, I>
+										entries={ entries }
+										selectedGroup={ selectedGroup }
+										selectedTimeSlots={ selectedTimeSlots }
+										selectedTimeSlotItem={ selectedTimeSlotItem }
+										renderGroup={ renderGroup }
+										renderTimeSlotItem={ renderTimeSlotItem }
+										onTimeSlotItemClick={ onTimeSlotItemClick }
+										onTimeSlotClick={ onTimeSlotClick }
+										onGroupClick={ onGroupClick }
+										selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
+									/>
+								}
+								{ tableType === "default" &&
+									<TimeLineTableSimplified<G, I>
+										entries={ entries }
+										selectedTimeSlotItem={ selectedTimeSlotItem }
+										renderGroup={ renderGroup }
+										renderTimeSlotItem={ renderTimeSlotItem }
+										onTimeSlotItemClick={ onTimeSlotItemClick }
+										onTimeSlotClick={ onTimeSlotClick }
+										onGroupClick={ onGroupClick }
+									/>
+								}
 
-					</tbody>
-				</table >
-			</div>
+							</tbody>
+						</table >
+					</div>
+				</SelectedTimeSlotsProvider>
+			</TimeTableConfigProvider>
 		</>
 	)
 }

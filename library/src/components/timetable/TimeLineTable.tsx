@@ -1,4 +1,4 @@
-import React, { MouseEvent, useContext, useEffect, useMemo, useState } from "react"
+import React, { MouseEvent, useEffect, useMemo, useState } from "react"
 import type { Dayjs } from "dayjs"
 import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "./LPTimeTable"
 
@@ -8,10 +8,10 @@ import styles from "./LPTimeTable.module.css"
 import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
 import ItemWrapper from "./ItemWrapper"
 import { token } from "@atlaskit/tokens"
-import { Message } from "../inlinemessage/InlineMessage"
 
 import * as Messages from "./Messages"
 import { useMessage } from "./MessageContext"
+import { useTimeTableConfig } from "./TimeTableConfigContext"
 
 interface RowEntry<I> {
 	startSlot: number
@@ -24,7 +24,6 @@ interface RowEntry<I> {
 interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	/* Entries define the groups, and the items in the groups */
 	entries: TimeTableEntry<G, I>[]
-	slotsArray: Dayjs[]
 
 	selectedGroup: G | undefined
 	selectedTimeSlots: SelectedTimeSlot<G>[] | undefined
@@ -39,19 +38,13 @@ interface TimeTableProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 
 	onGroupClick: ( ( _: G ) => void ) | undefined
 
-	/* how long is 1 time slot */
-	timeSteps: number
-
 	/* if true, only the slots of the same group and in successive order can be selected */
 	selectionOnlySuccessiveSlots: boolean
-
-	disableWeekendInteractions: boolean
 }
 
 export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSlotBooking> (
 	{
 		entries,
-		slotsArray,
 		selectedGroup,
 		selectedTimeSlots,
 		selectedTimeSlotItem,
@@ -60,15 +53,14 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 		onTimeSlotItemClick,
 		onTimeSlotClick,
 		onGroupClick,
-		timeSteps,
 		selectionOnlySuccessiveSlots,
-		disableWeekendInteractions,
 	}: TimeTableProps<G, I>
 ) {
 
 	const { setMessage } = useMessage()
 
 	const [ multiselect, setMultiselect ] = useState( false )
+	const { slotsArray } = useTimeTableConfig()
 
 
 	//#region check is all selected time slots are successive, if not, show error message
@@ -107,8 +99,6 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 	const table = (
 		<CombiTableRows<G, I>
 			entries={ entries }
-			slotsArray={ slotsArray }
-			timeSteps={ timeSteps }
 			onGroupClick={ onGroupClick }
 			onTimeSlotItemClick={ onTimeSlotItemClick }
 			onTimeSlotClick={ onTimeSlotClick }
@@ -121,7 +111,6 @@ export default function TimeLineTable<G extends TimeTableGroup, I extends TimeSl
 			setMultiselect={ setMultiselect }
 			selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 			onlySuccessiveSlotsAreSelected={ !successiveError }
-			disableWeekendInteractions={ disableWeekendInteractions }
 		/>
 	)
 
@@ -193,8 +182,6 @@ let multiselectDebounceHelper: number | undefined = undefined
 
 
 function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
-	slotsArray,
-	timeSteps,
 	group,
 	timeSlotNumber,
 	groupRow,
@@ -207,10 +194,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	renderTimeSlotItem,
 	selectionOnlySuccessiveSlots,
 	onlySuccessiveSlotsAreSelected,
-	disableWeekendInteractions,
 }: {
-	slotsArray: Dayjs[],
-	timeSteps: number,
 	group: G,
 	timeSlotNumber: number,
 	groupRow: number,
@@ -223,13 +207,12 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	renderTimeSlotItem: ( ( group: G, item: I, selectedItem: I | undefined ) => JSX.Element ) | undefined,
 	selectionOnlySuccessiveSlots: boolean, // allows the selection of only successive slots
 	onlySuccessiveSlotsAreSelected: boolean, // true if only successive slots are selected
-	disableWeekendInteractions: boolean,
 } ) {
+
+	const { slotsArray, disableWeekendInteractions, timeSteps } = useTimeTableConfig()
 
 	const mouseHandlersCreator = useMouseHandlersCreator(
 		group, groupRow,
-		slotsArray,
-		disableWeekendInteractions,
 		onTimeSlotClick,
 		selectedTimeSlots,
 		selectionOnlySuccessiveSlots, onlySuccessiveSlotsAreSelected,
@@ -389,8 +372,6 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
 
 type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	entries: TimeTableEntry<G, I>[],
-	slotsArray: Dayjs[]
-	timeSteps: number
 	onGroupClick: ( ( group: G ) => void ) | undefined
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined
 	onTimeSlotClick: ( ( s: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void ) | undefined
@@ -403,15 +384,12 @@ type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	setMultiselect: ( multiselect: boolean ) => void,
 	selectionOnlySuccessiveSlots: boolean,
 	onlySuccessiveSlotsAreSelected: boolean,
-	disableWeekendInteractions: boolean,
 }
 
 
 function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 	{
 		entries,
-		slotsArray,
-		timeSteps,
 		onGroupClick,
 		onTimeSlotItemClick,
 		onTimeSlotClick,
@@ -422,11 +400,11 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 		selectedTimeSlotItem,
 		selectionOnlySuccessiveSlots,
 		onlySuccessiveSlotsAreSelected,
-		disableWeekendInteractions,
 	}: TableRowsProps<G, I>
 ) {
 
 	const { setMessage } = useMessage()
+	const { slotsArray, timeSteps } = useTimeTableConfig()
 
 
 
@@ -472,8 +450,6 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 							groupRow={ r }
 							isLastGroupRow={ r === maxGroupRow }
 							rowEntryItem={ rowEntryItem }
-							slotsArray={ slotsArray }
-							timeSteps={ timeSteps }
 							selectedTimeSlots={ selectedTimeSlots }
 							selectedTimeSlotItem={ selectedTimeSlotItem }
 							onTimeSlotItemClick={ onTimeSlotItemClick }
@@ -481,7 +457,6 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 							renderTimeSlotItem={ renderTimeSlotItem }
 							selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
 							onlySuccessiveSlotsAreSelected={ onlySuccessiveSlotsAreSelected }
-							disableWeekendInteractions={ disableWeekendInteractions }
 						/>
 					)
 
@@ -512,7 +487,7 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 			)
 		} )
 		return { tableRows, itemsOutsideDayRangeCount }
-	}, [ disableWeekendInteractions, entries, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, onlySuccessiveSlotsAreSelected, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, selectionOnlySuccessiveSlots, slotsArray, timeSteps ] )
+	}, [ entries, onGroupClick, onTimeSlotClick, onTimeSlotItemClick, onlySuccessiveSlotsAreSelected, renderGroup, renderTimeSlotItem, selectedGroup, selectedTimeSlotItem, selectedTimeSlots, selectionOnlySuccessiveSlots, slotsArray, timeSteps ] )
 
 	useEffect( () => {
 		if ( itemsOutsideDayRangeCount > 0 ) {
@@ -545,8 +520,6 @@ function CombiTableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 function useMouseHandlersCreator<G extends TimeTableGroup> (
 	group: G,
 	groupRow: number,
-	slotsArray: Dayjs[],
-	disableWeekendInteractions: boolean,
 	onTimeSlotClick: ( ( timeSlot: SelectedTimeSlot<G>, fromMultiselect: boolean ) => void ) | undefined,
 	selectedTimeSlots: SelectedTimeSlot<G>[] | undefined,
 	selectionOnlySuccessiveSlots: boolean,
@@ -554,6 +527,7 @@ function useMouseHandlersCreator<G extends TimeTableGroup> (
 ) {
 
 	const { setMessage } = useMessage()
+	const { slotsArray, disableWeekendInteractions } = useTimeTableConfig()
 
 	if ( !onTimeSlotClick ) return undefined
 

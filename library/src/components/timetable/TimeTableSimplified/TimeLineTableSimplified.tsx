@@ -5,21 +5,19 @@ import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup 
 import { Group } from "../Group"
 
 import styles from "../LPTimeTable.module.css"
-import { isOverlapping, itemsOutsideOfDayRange } from "../timeTableUtils"
+import { isOverlapping } from "../timeTableUtils"
 import ItemWrapper from "../ItemWrapper"
 import { token } from "@atlaskit/tokens"
 
 import * as Messages from "../Messages"
 import { useMessage } from "../MessageContext"
-import { TimeTableConfigProvider, useTimeTableConfig } from "./TimeTableConfigContext"
-import { SelectedTimeSlotsProvider, useSelectedTimeSlots } from "./SelectedTimeSlotsContext"
+import { useTimeTableConfig } from "../TimeTableConfigContext"
+import { useSelectedTimeSlots } from "../SelectedTimeSlotsContext"
 
 
 interface TimeLineTableSimplifiedProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	/* Entries define the groups, and the items in the groups */
 	entries: TimeTableEntry<G, I>[]
-	slotsArray: Dayjs[]
-
 
 	selectedTimeSlotItem: I | undefined
 
@@ -30,72 +28,50 @@ interface TimeLineTableSimplifiedProps<G extends TimeTableGroup, I extends TimeS
 	onTimeSlotClick: ( ( _: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void ) | undefined
 
 	onGroupClick: ( ( _: G ) => void ) | undefined
-
-	/* how long is 1 time slot */
-	timeSteps: number
-
-	disableWeekendInteractions: boolean
-}
-
-
-/**
- * Component keeping the actual table rows and the providers for the config and the time slot selection. 
- */
-export default function TimeLineTableSimplified<G extends TimeTableGroup, I extends TimeSlotBooking> (
-	{
-		entries,
-		slotsArray,
-		selectedTimeSlotItem,
-		renderGroup,
-		renderTimeSlotItem,
-		onTimeSlotItemClick,
-		onGroupClick,
-		timeSteps,
-		disableWeekendInteractions,
-	}: TimeLineTableSimplifiedProps<G, I>
-) {
-
-	const { setMessage } = useMessage()
-
-	const table = (
-		<TableRows
-			entries={ entries }
-			onGroupClick={ onGroupClick }
-			onTimeSlotItemClick={ onTimeSlotItemClick }
-			renderGroup={ renderGroup }
-			renderTimeSlotItem={ renderTimeSlotItem }
-			selectedTimeSlotItem={ selectedTimeSlotItem }
-		/>
-	)
-
-	useEffect( () => {
-		let foundItemsOutsideOfDayRange = 0
-		for ( const entry of entries ) {
-			const itemsOutside = itemsOutsideOfDayRange( entry.items, slotsArray, timeSteps )
-			foundItemsOutsideOfDayRange += itemsOutside.length
-		}
-		if ( foundItemsOutsideOfDayRange ) {
-			console.log( "OUTSIDE", foundItemsOutsideOfDayRange )
-			setMessage( {
-				urgency: "warning",
-				text: <Messages.ItemsOutsideDayTimeFrame outsideItemCount={ foundItemsOutsideOfDayRange } />
-			} )
-		}
-	}, [ entries, setMessage, slotsArray, timeSteps ] )
-
-	return (
-		<SelectedTimeSlotsProvider slotsArray={ slotsArray } timeSteps={ timeSteps }>
-			<TimeTableConfigProvider slotsArray={ slotsArray } timeSteps={ timeSteps } disableWeekendInteractions={ disableWeekendInteractions }>
-				{ table }
-			</TimeTableConfigProvider>
-		</SelectedTimeSlotsProvider>
-	)
 }
 
 
 
 const clickDiffToMouseDown = 100 // this is to separate a click from a drag
 let multiselectDebounceHelper: number | undefined = undefined // if its a drag, this will be set to a timeout that will trigger the multiselect
+
+/**
+ * Creates the table rows for the given entries.
+ */
+export default function TimeLineTableSimplified<G extends TimeTableGroup, I extends TimeSlotBooking> (
+	{
+		entries,
+		onGroupClick,
+		onTimeSlotItemClick,
+		renderGroup,
+		renderTimeSlotItem,
+		selectedTimeSlotItem,
+	}: TimeLineTableSimplifiedProps<G, I>
+) {
+	const tableRows = useMemo( () => {
+		return entries.map( ( groupEntry, g ) => (
+			<GroupRows<G, I>
+				key={ g }
+				group={ groupEntry.group }
+				items={ groupEntry.items }
+				onGroupHeaderClick={ onGroupClick }
+				onTimeSlotItemClick={ onTimeSlotItemClick }
+				renderGroup={ renderGroup }
+				renderTimeSlotItem={ renderTimeSlotItem }
+				selectedTimeSlotItem={ selectedTimeSlotItem }
+			/>
+		)
+		)
+	}, [ entries, onGroupClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedTimeSlotItem ] )
+
+	return (
+		<>
+			{ tableRows }
+		</>
+	)
+
+}
+
 
 /**
  * The group header cell spanning all rows of the group. 
@@ -128,17 +104,6 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
 	)
 }
 
-
-
-
-type TableRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
-	entries: TimeTableEntry<G, I>[],
-	onGroupClick: ( ( group: G ) => void ) | undefined
-	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined
-	renderGroup: ( ( group: G, isSelected: boolean ) => JSX.Element ) | undefined
-	renderTimeSlotItem?: ( group: G, item: I, selectedItem: I | undefined ) => JSX.Element
-	selectedTimeSlotItem: I | undefined,
-}
 
 /**
  * 
@@ -228,42 +193,6 @@ function InteractionTableCell<G extends TimeTableGroup> ( {
 	)
 }
 
-/**
- * Creates the table rows for the given entries.
- */
-function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
-	{
-		entries,
-		onGroupClick,
-		onTimeSlotItemClick,
-		renderGroup,
-		renderTimeSlotItem,
-		selectedTimeSlotItem,
-	}: TableRowsProps<G, I>
-) {
-	const tableRows = useMemo( () => {
-		return entries.map( ( groupEntry, g ) => (
-			<GroupRows<G, I>
-				key={ g }
-				group={ groupEntry.group }
-				items={ groupEntry.items }
-				onGroupHeaderClick={ onGroupClick }
-				onTimeSlotItemClick={ onTimeSlotItemClick }
-				renderGroup={ renderGroup }
-				renderTimeSlotItem={ renderTimeSlotItem }
-				selectedTimeSlotItem={ selectedTimeSlotItem }
-			/>
-		)
-		)
-	}, [ entries, onGroupClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedTimeSlotItem ] )
-
-	return (
-		<>
-			{ tableRows }
-		</>
-	)
-
-}
 
 /**
  * Group rows create the table rows for the groups. Each group has 1..n table rows depending on the stacked items. The more overlapping items the more rows.

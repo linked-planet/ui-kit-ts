@@ -1,9 +1,9 @@
 
 import React, { createContext, useContext, Dispatch, useReducer, useCallback, useEffect } from "react"
-import type { TimeTableGroup } from "../LPTimeTable"
+import type { TimeTableGroup } from "./LPTimeTable"
 
-import * as Messages from "../Messages"
-import { useMessage } from "../MessageContext"
+import * as Messages from "./Messages"
+import { useMessage } from "./MessageContext"
 import { Dayjs } from "dayjs"
 
 
