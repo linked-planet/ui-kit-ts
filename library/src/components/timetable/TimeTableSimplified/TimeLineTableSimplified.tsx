@@ -1,4 +1,4 @@
-import React, { MouseEvent, useMemo } from "react"
+import React, { CSSProperties, MouseEvent, useMemo } from "react"
 import type { Dayjs } from "dayjs"
 import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "../LPTimeTable"
 
@@ -180,31 +180,48 @@ function InteractionTableCell<G extends TimeTableGroup> ( {
 	)
 
 	const timeSlot = slotsArray[ timeSlotNumber ]
-	const timeSlotIsSelected = selectedTimeSlots && selectedTimeSlots.group === group && selectedTimeSlots.timeSlots.find( it => it.isSame( timeSlot ) )
+	const timeSlotIsSelected = ( selectedTimeSlots && selectedTimeSlots.group === group ) ? selectedTimeSlots.timeSlots.findIndex( it => it.isSame( timeSlot ) ) : -1
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
+	const isFirstOfSelection = timeSlotIsSelected === 0
+	const isLastOfSelection = selectedTimeSlots && selectedTimeSlots.timeSlots && selectedTimeSlots.timeSlots.length > 0 ? timeSlotIsSelected === selectedTimeSlots?.timeSlots.length - 1 : false
+	if ( timeSlotIsSelected > -1 ) {
+		console.log( "isLastOfSelection", isLastOfSelection, "isFirstOfSelection", isFirstOfSelection, "timeSlotIsSelected", timeSlotIsSelected, "selectedTimeSlots", selectedTimeSlots )
+	}
 
 	// the normal empty TD
-	let classes = timeSlotIsSelected ? styles.selected : ""
+	const styles: CSSProperties = {
+		backgroundColor: timeSlotIsSelected > -1 ? token( "color.background.selected.hovered" ) : token( "color.background.neutral.bold.hovered" ),
+		borderColor: timeSlotIsSelected > -1 ? token( "color.background.neutral.bold.hovered" ) : undefined,
+		borderTopWidth: timeSlotIsSelected > -1 ? "2px" : undefined,
+		borderBottomWidth: timeSlotIsSelected > -1 ? "2px" : undefined,
+		borderStyle: timeSlotIsSelected > -1 ? "solid" : undefined,
+		borderLeftWidth: isFirstOfSelection ? "2px" : "0px",
+		borderRightWidth: isLastOfSelection ? "2px" : "0px",
+		borderTopRightRadius: isLastOfSelection ? "4px" : undefined,
+		borderBottomRightRadius: isLastOfSelection ? "4px" : undefined,
+		borderTopLeftRadius: isFirstOfSelection ? "4px" : undefined,
+		borderBottomLeftRadius: isFirstOfSelection ? "4px" : undefined,
+	}
+	if ( isWeekendDay && disableWeekendInteractions ) {
+		styles.backgroundColor = token( "color.background.neutral.bold" )
+	}
+
+	/*let classes = timeSlotIsSelected > -1 ? styles.selected : ""
 	if ( isWeekendDay ) classes += ` ${ styles.weekend }`
 	if ( !isWeekendDay || !disableWeekendInteractions ) classes += ` ${ styles.hover }`
-
-	const backgroundColor = ( !timeSlotIsSelected && isWeekendDay ) ?
+	if ( isFirstOfSelection ) classes += ` ${ token("color.background.") }`
+	
+	const backgroundColor = ( timeSlotIsSelected === -1 && isWeekendDay ) ?
 		token( "color.background.neutral.bold" ) :
-		timeSlotIsSelected ?
-			token( "color.background.neutral.bold.pressed" ) :
-			token( "color.background.neutral.bold.hovered" )
+		timeSlotIsSelected > -1 ?
+			token( "color.background.selected.pressed" ) :
+			token( "color.background.neutral.bold.hovered" )*/
 
 	return (
 		<td
 			key={ timeSlotNumber }
 			{ ...mouseHandlers }
-			className={ classes }
-			style={ {
-				backgroundColor,
-				//borderBottomColor: isLastGroupRow && bottomBorderType === "bold" ? "var(--ds-border-bold)" : "var(--ds-border)",
-				borderBottomColor: token( "color.border" ),
-				//borderBottomWidth: isLastGroupRow && bottomBorderType === "bold" ? "1px" : "1px",
-			} }
+			style={ styles }
 			colSpan={ 2 } // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 		/>
 	)
@@ -647,7 +664,6 @@ function getStartAndEndSlot (
 		endSlot = slotsArray.length - 1
 	} else {
 		// if the item end after the last time slot of the day, we still set the end slot to the last time slot of the day
-		console.log( "endSlot", endSlot, slotsArray, startSlot, item.title, item.startDate, item.endDate )
 		if ( slotsArray[ endSlot ].date() !== slotsArray[ endSlot - 1 ].date() ) {
 			endSlot--
 		}
