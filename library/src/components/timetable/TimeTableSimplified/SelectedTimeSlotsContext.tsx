@@ -1,5 +1,5 @@
 
-import React, { useState, createContext, useContext, Dispatch, SetStateAction } from "react"
+import React, { useState, createContext, useContext, Dispatch, SetStateAction, useEffect } from "react"
 import type { Dayjs } from "dayjs"
 import type { TimeTableGroup } from "../LPTimeTable"
 
@@ -19,6 +19,10 @@ const selectedTimeSlotsContext = createContext<ContextType | undefined>( undefin
 
 export function SelectedTimeSlotsProvider ( { children }: { children: JSX.Element } ) {
 	const [ selectedTimeSlots, setSelectedTimeSlots ] = useState<SelectedTimeSlots | undefined>( undefined )
+
+	useEffect( () => {
+		console.log( "selectedTimeSlots", selectedTimeSlots )
+	}, [ selectedTimeSlots ] )
 
 	return (
 		<selectedTimeSlotsContext.Provider value={ { selectedTimeSlots, setSelectedTimeSlots } }>

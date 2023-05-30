@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useMemo, useState } from "react"
+import React, { MouseEvent, useMemo } from "react"
 import type { Dayjs } from "dayjs"
 import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "../LPTimeTable"
 
@@ -38,7 +38,9 @@ interface TimeLineTableSimplifiedProps<G extends TimeTableGroup, I extends TimeS
 }
 
 
-
+/**
+ * Component keeping the actual table rows and the providers for the config and the time slot selection. 
+ */
 export default function TimeLineTableSimplified<G extends TimeTableGroup, I extends TimeSlotBooking> (
 	{
 		entries,
@@ -65,11 +67,11 @@ export default function TimeLineTableSimplified<G extends TimeTableGroup, I exte
 	)
 
 	return (
-		<TimeTableConfigProvider slotsArray={ slotsArray } timeSteps={ timeSteps } disableWeekendInteractions={ disableWeekendInteractions }>
-			<SelectedTimeSlotsProvider>
+		<SelectedTimeSlotsProvider>
+			<TimeTableConfigProvider slotsArray={ slotsArray } timeSteps={ timeSteps } disableWeekendInteractions={ disableWeekendInteractions }>
 				{ table }
-			</SelectedTimeSlotsProvider>
-		</TimeTableConfigProvider>
+			</TimeTableConfigProvider>
+		</SelectedTimeSlotsProvider>
 	)
 }
 
@@ -78,7 +80,9 @@ export default function TimeLineTableSimplified<G extends TimeTableGroup, I exte
 const clickDiffToMouseDown = 100 // this is to separate a click from a drag
 let multiselectDebounceHelper: number | undefined = undefined // if its a drag, this will be set to a timeout that will trigger the multiselect
 
-
+/**
+ * The group header cell spanning all rows of the group. 
+ */
 function GroupHeaderTableCell<G extends TimeTableGroup> (
 	{
 		group,
@@ -168,7 +172,6 @@ function InteractionTableCell<G extends TimeTableGroup> ( {
 
 	const { selectedTimeSlots } = useSelectedTimeSlots()
 	const { disableWeekendInteractions, slotsArray } = useTimeTableConfig()
-
 	const mouseHandlers = useMouseHandlers(
 		timeSlotNumber,
 		group,
@@ -176,11 +179,9 @@ function InteractionTableCell<G extends TimeTableGroup> ( {
 		disableWeekendInteractions,
 	)
 
-
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const timeSlotIsSelected = selectedTimeSlots && selectedTimeSlots.group === group && selectedTimeSlots.timeSlots.find( it => it.isSame( timeSlot ) )
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
-
 
 	// the normal empty TD
 	let classes = timeSlotIsSelected ? styles.selected : ""
@@ -209,7 +210,9 @@ function InteractionTableCell<G extends TimeTableGroup> ( {
 	)
 }
 
-
+/**
+ * Creates the table rows for the given entries.
+ */
 function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 	{
 		entries,
@@ -244,7 +247,12 @@ function TableRows<G extends TimeTableGroup, I extends TimeSlotBooking> (
 
 }
 
-
+/**
+ * Group rows create the table rows for the groups. Each group has 1..n table rows depending on the stacked items. The more overlapping items the more rows.
+ * The Group header always spans all rows.
+ * @param param0 
+ * @returns 
+ */
 function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	group,
 	items,
@@ -533,7 +541,7 @@ function useMouseHandlers<G extends TimeTableGroup> (
 		return
 	}
 
-	// the actual mouse hanlders
+	// the actual mouse handlers
 	return {
 		onMouseOver: ( e: MouseEvent ) => {
 			if ( e.buttons !== 1 ) { // we only want to react to left mouse button
@@ -561,7 +569,9 @@ function useMouseHandlers<G extends TimeTableGroup> (
 			}, clickDiffToMouseDown )
 		},
 		onMouseUp: () => {
-			if ( disableWeekendInteractions && isWeekendDay ) return
+			if ( disableWeekendInteractions && isWeekendDay ) {
+				return
+			}
 			if ( multiselectDebounceHelper ) {
 				// click detection, if timeout is still running, this is a click
 				clearTimeout( multiselectDebounceHelper )

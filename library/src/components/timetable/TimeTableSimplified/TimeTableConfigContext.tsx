@@ -1,6 +1,7 @@
 
 import React, { useState, createContext, useContext, Dispatch, SetStateAction, useEffect } from "react"
 import type { Dayjs } from "dayjs"
+import { useSelectedTimeSlots } from "./SelectedTimeSlotsContext"
 
 
 type TimeTableConfig = {
@@ -32,13 +33,17 @@ export function TimeTableConfigProvider ( {
 	const [ slotsArray, setSlotsArray ] = useState<Dayjs[]>( slotsArrayProp )
 	const [ disableWeekendInteractions, setDisableWeekendInteractions ] = useState<boolean>( disableWeekendInteractionsProps )
 
+	const { setSelectedTimeSlots } = useSelectedTimeSlots()
+
 	useEffect( () => {
 		setTimeSteps( timeStepsProp )
-	}, [ timeStepsProp ] )
+		setSelectedTimeSlots( undefined )
+	}, [ setSelectedTimeSlots, timeStepsProp ] )
 
 	useEffect( () => {
 		setSlotsArray( slotsArrayProp )
-	}, [ slotsArrayProp ] )
+		setSelectedTimeSlots( undefined )
+	}, [ setSelectedTimeSlots, slotsArrayProp ] )
 
 	useEffect( () => {
 		setDisableWeekendInteractions( disableWeekendInteractionsProps )

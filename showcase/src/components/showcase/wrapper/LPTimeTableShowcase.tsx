@@ -498,12 +498,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					<ChevronRightIcon label="nexttimeframe" />
 				</Button>
 			</div>
-			<div
-				style={ {
-					marginTop: "2rem",
-					//height: "400px",
-				} }
-			>
+			<>
 				<LPTimeTable
 					firstColumnWidth={ firstColumnWidth }
 					columnWidth={ columnWidth }
@@ -545,7 +540,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					locale={ locale }
 					tableType="default"
 				/>
-			</div>
+			</>
 			<Button
 				title="Load more entries."
 				onClick={ requestMoreEntriesCB }
