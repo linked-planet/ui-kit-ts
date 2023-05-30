@@ -6,6 +6,11 @@ import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/Sh
 import { LPTimeTable, SelectedTimeSlot, useLocale } from "@linked-planet/ui-kit-ts"
 import type { TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "@linked-planet/ui-kit-ts"
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
+import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
+import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
+import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
+import Button from "@atlaskit/button"
+
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
 type ExampleGroup = TimeTableGroup
@@ -281,24 +286,38 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	}, [] )
 
 
-	const requestNewTimeFrameCB = ( startDate: Dayjs, endDate: Dayjs ) => {
+	//#region time frame and groups pagination
+	const requestNextTimeFrameCB = () => {
+		const dayDiff = timeFrame.endDate.diff( timeFrame.startDate, "days" )
+		const nextStartDate = timeFrame.startDate.add( dayDiff, "days" )
+		const nextEndDate = timeFrame.endDate.add( dayDiff, "days" )
 		setTimeFrame( {
-			startDate,
-			endDate,
+			startDate: nextStartDate,
+			endDate: nextEndDate,
 		} )
-		const newEntries = createTestEntries( startDate, endDate, entries )
+		const newEntries = createTestEntries( nextStartDate, nextEndDate, entries )
 		setEntries( newEntries )
 	}
 
-	const requestEntryRangeCB = ( start: number, end: number ) => {
-		if ( end < exampleEntries.length ) {
-			setEntries( exampleEntries.slice( start, end ) )
-		} else {
-			const missing = end - exampleEntries.length
-			const missingGroups = createMoreTestGroups( timeFrame.startDate, timeFrame.endDate, missing, exampleEntries.length )
-			setEntries( [ ...exampleEntries, ...missingGroups ] )
-		}
+	const requestPrevTimeFrameCB = () => {
+		const dayDiff = timeFrame.endDate.diff( timeFrame.startDate, "days" )
+		const prevStartDate = timeFrame.startDate.add( -dayDiff, "days" )
+		const prevEndDate = timeFrame.endDate.add( -dayDiff, "days" )
+		setTimeFrame( {
+			startDate: prevStartDate,
+			endDate: prevEndDate,
+		} )
+		const newEntries = createTestEntries( prevStartDate, prevEndDate, entries )
+		setEntries( newEntries )
 	}
+
+	const requestMoreEntriesCB = () => {
+		const missing = entries.length + 10 - exampleEntries.length
+		const missingGroups = createMoreTestGroups( timeFrame.startDate, timeFrame.endDate, missing, exampleEntries.length )
+		setEntries( [ ...exampleEntries, ...missingGroups ] )
+	}
+	//#endregion
+
 
 	const { locale } = useLocale()
 
@@ -456,6 +475,31 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 			</div>
 			<div
 				style={ {
+					display: "flex",
+					alignItems: "flex-start",
+				} }
+			>
+				<Button
+					onClick={ requestPrevTimeFrameCB }
+					title="Previous Time Frame"
+					style={ {
+						margin: "0 0.5rem 0.5rem 0",
+					} }
+				>
+					<ChevronLeftIcon label="prevtimeframe" />
+				</Button>
+				<Button
+					onClick={ requestNextTimeFrameCB }
+					title="Next Time Frame"
+					style={ {
+						margin: "0 0.5rem 0.5rem 0",
+					} }
+				>
+					<ChevronRightIcon label="nexttimeframe" />
+				</Button>
+			</div>
+			<div
+				style={ {
 					marginTop: "2rem",
 					//height: "400px",
 				} }
@@ -477,9 +521,6 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					onGroupClick={ onGroupClickCB }
 					rounding={ rounding }
 					nowOverwrite={ nowOverwrite }
-					requestTimeFrameCB={ requestNewTimeFrameCB }
-					requestEntryRangeCB={ requestEntryRangeCB }
-					maxEntryCount={ 100 }
 					locale={ locale }
 					tableType="extended"
 				/>
@@ -501,13 +542,16 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					onGroupClick={ onGroupClickCB }
 					rounding={ rounding }
 					nowOverwrite={ nowOverwrite }
-					requestTimeFrameCB={ requestNewTimeFrameCB }
-					requestEntryRangeCB={ requestEntryRangeCB }
-					maxEntryCount={ 100 }
 					locale={ locale }
 					tableType="default"
 				/>
 			</div>
+			<Button
+				title="Load more entries."
+				onClick={ requestMoreEntriesCB }
+			>
+				<ChevronDownIcon label="entryloader" />
+			</Button>
 			{ showCreateNewItemModal && selectedTimeSlots && selectedTimeSlots.length > 0 && (
 				<CreateNewTimeTableItemDialog
 					selectedTimeSlots={ selectedTimeSlots }

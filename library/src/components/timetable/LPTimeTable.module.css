@@ -105,26 +105,3 @@
 .unselectable {
 	user-select: none !important;
 }
-
-.switchTimeFrameBtn {
-	border: none;
-	cursor: pointer;
-	color: var(--ds-text);
-	background-color: var(--ds-background-neutral);
-	height: 2.5rem;
-	width: 2.5rem;
-}
-
-.switchTimeFrameBtn:hover {
-	background-color: var(--ds-background-neutral-hovered);
-	scale: 1.1;
-}
-
-.switchTimeFrameBtn:active {
-	background-color: var(--ds-background-neutral-pressed);
-	scale: 1.4;
-}
-
-.switchTimeFrameBtn:focus {
-	outline: none;
-}

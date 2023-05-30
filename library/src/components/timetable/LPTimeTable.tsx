@@ -1,8 +1,4 @@
-import React, { MutableRefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
-import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
-import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
-
+import React, { MutableRefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react"
 import dayjs, { Dayjs } from "dayjs"
 
 //import styles from "./LPTimeTable.module.css";
@@ -87,11 +83,6 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	 */
 	rounding?: "floor" | "ceil" | "round"
 
-	requestTimeFrameCB: ( nextStartDate: Dayjs, nextEndDate: Dayjs ) => void
-	requestEntryRangeCB: ( start: number, end: number ) => void
-
-	maxEntryCount: number
-
 	height?: string
 
 	/** One can only select successive time slots
@@ -163,10 +154,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	firstColumnWidth,
 	columnWidth,
 	rounding,
-	requestTimeFrameCB,
-	requestEntryRangeCB,
 	height,
-	maxEntryCount,
 	disableWeekendInteractions = true,
 	selectionOnlySuccessiveSlots = true,
 	nowOverwrite,
@@ -247,35 +235,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	//#endregion
 
 
-	//#region time frame and groups pagination
-	const onNextTimeFrameClick = () => {
-		if ( !requestTimeFrameCB ) return;
-		const dayDiff = endDate.diff( startDate, "days" )
-		const nextStartDate = startDate.add( dayDiff, "days" )
-		const nextEndDate = endDate.add( dayDiff, "days" )
-		requestTimeFrameCB( nextStartDate, nextEndDate )
-	}
-
-	const onPreviousTimeFrameClick = () => {
-		if ( !requestTimeFrameCB ) return;
-		const dayDiff = endDate.diff( startDate, "days" )
-		const prevStartDate = startDate.add( -dayDiff, "days" )
-		const prevEndDate = endDate.add( -dayDiff, "days" )
-		requestTimeFrameCB( prevStartDate, prevEndDate )
-	}
-
-	const onLoadMoreGroupsClick = () => {
-		if ( !requestEntryRangeCB ) return;
-		let newEnd = entries.length + 10;
-		if ( newEnd > maxEntryCount ) {
-			newEnd = maxEntryCount
-		}
-		requestEntryRangeCB( 0, newEnd )
-	}
-	//#endregion
-
-
-
 	// scroll now bar into view if it exists
 	// TODO fix this, it doesn't work
 	/*useLayoutEffect( () => {
@@ -313,30 +272,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 					alignItems: "flex-start",
 				} }
 			>
-				{ onPreviousTimeFrameClick &&
-					<button
-						className={ styles.switchTimeFrameBtn }
-						onClick={ onPreviousTimeFrameClick }
-						title="Previous Time Frame"
-						style={ {
-							margin: "0 0.5rem 0.5rem 0",
-						} }
-					>
-						<ChevronLeftIcon label="prevtimeframe" />
-					</button>
-				}
-				{ onNextTimeFrameClick &&
-					<button
-						className={ styles.switchTimeFrameBtn }
-						onClick={ onNextTimeFrameClick }
-						title="Next Time Frame"
-						style={ {
-							margin: "0 0.5rem 0.5rem 0",
-						} }
-					>
-						<ChevronRightIcon label="nexttimeframe" />
-					</button>
-				}
 				<div
 					style={ {
 						flexGrow: 1,
@@ -430,20 +365,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 					</tbody>
 				</table >
 			</div>
-			<button
-				style={ {
-					position: "sticky",
-					top: 0,
-					left: 0,
-					marginTop: "0.5rem",
-				} }
-				className={ styles.switchTimeFrameBtn }
-				title="Load more entries."
-				disabled={ entries.length >= maxEntryCount }
-				onClick={ onLoadMoreGroupsClick }
-			>
-				<ChevronDownIcon label="entryloader" />
-			</button>
 		</>
 	)
 }

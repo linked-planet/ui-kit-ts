@@ -614,6 +614,14 @@ function getStartAndEndSlot (
 	item: TimeSlotBooking,
 	slotsArray: Dayjs[],
 ) {
+
+	if ( item.endDate.isBefore( slotsArray[ 0 ] ) ) {
+		return null
+	}
+	if ( item.startDate.isAfter( slotsArray[ slotsArray.length - 1 ] ) ) {
+		return null
+	}
+
 	let startSlot = slotsArray.findIndex( slot => slot.isAfter( item.startDate ) )
 	if ( startSlot > 0 ) {
 		// if the item starts in the middle of a slot, we need to go back one slot to get the start slot
@@ -629,6 +637,7 @@ function getStartAndEndSlot (
 		endSlot = slotsArray.length - 1
 	} else {
 		// if the item end after the last time slot of the day, we still set the end slot to the last time slot of the day
+		console.log( "endSlot", endSlot, slotsArray, startSlot, item.title, item.startDate, item.endDate )
 		if ( slotsArray[ endSlot ].date() !== slotsArray[ endSlot - 1 ].date() ) {
 			endSlot--
 		}
