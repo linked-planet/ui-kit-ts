@@ -77,6 +77,23 @@ export function getStartAndEndSlot(
 	return { startSlot, endSlot }
 }
 
+export function itemsOutsideOfDayRange(
+	items: TimeSlotBooking[],
+	slotsArray: Dayjs[],
+	timeSteps: number
+) {
+	const itemsOutsideRange = items.filter((it) => {
+		const startAndEndSlot = getStartAndEndSlot(
+			it.startDate,
+			it.endDate,
+			slotsArray,
+			timeSteps
+		)
+		return startAndEndSlot === null
+	})
+	return itemsOutsideRange
+}
+
 /*export function getCombiGroupRow(
 	item: TimeSlotBooking,
 	startSlot: number,

@@ -5,7 +5,7 @@ import { FormattedMessage } from "react-intl-next"
 /// LPTimeTable
 //#region 
 export const ItemsOutsideDayTimeFrame = ( { outsideItemCount }: { outsideItemCount: number } ) => <FormattedMessage
-	defaultMessage={ "Found {itemCount} outside of the valid time frame of each day." }
+	defaultMessage={ "Found {outsideItemCount} outside of the valid time frame of each day." }
 	values={ { outsideItemCount } }
 	id="timetable.itemsOutsideTimeFrame"
 />

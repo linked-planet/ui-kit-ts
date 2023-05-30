@@ -1,9 +1,10 @@
 
-import React, { createContext, useContext, Dispatch, useReducer, useCallback } from "react"
+import React, { createContext, useContext, Dispatch, useReducer, useCallback, useEffect } from "react"
 import type { TimeTableGroup } from "../LPTimeTable"
 
 import * as Messages from "../Messages"
 import { useMessage } from "../MessageContext"
+import { Dayjs } from "dayjs"
 
 
 export type SelectedTimeSlots = {
@@ -21,8 +22,12 @@ const selectedTimeSlotsContext = createContext<ContextType | undefined>( undefin
 
 
 export function SelectedTimeSlotsProvider ( {
+	slotsArray,
+	timeSteps,
 	children
 }: {
+	slotsArray: Dayjs[],
+	timeSteps: number,
 	children: JSX.Element
 } ) {
 	const [ selectedTimeSlots, setSelectedTimeSlots ] = useReducer( ( state: SelectedTimeSlots | undefined, action: SelectedTimeSlots | undefined ) => {
@@ -33,6 +38,12 @@ export function SelectedTimeSlotsProvider ( {
 
 	const { setMessage } = useMessage()
 
+	useEffect( () => {
+		console.log( "RESETTING SELECTED TIME SLOTS" )
+		setSelectedTimeSlots( undefined )
+	}, [ slotsArray, timeSteps ] )
+
+	// callback to toggle a time slot
 	const toggleTimeSlotCB = useCallback( ( timeSlot: number, group: TimeTableGroup, isFromDrag: boolean ) => {
 		if ( !selectedTimeSlots ) {
 			setSelectedTimeSlots( {

@@ -1,11 +1,11 @@
-import React, { CSSProperties, MouseEvent, useMemo } from "react"
+import React, { CSSProperties, MouseEvent, useEffect, useMemo } from "react"
 import type { Dayjs } from "dayjs"
 import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "../LPTimeTable"
 
 import { Group } from "../Group"
 
 import styles from "../LPTimeTable.module.css"
-import { isOverlapping } from "../timeTableUtils"
+import { isOverlapping, itemsOutsideOfDayRange } from "../timeTableUtils"
 import ItemWrapper from "../ItemWrapper"
 import { token } from "@atlaskit/tokens"
 
@@ -55,6 +55,8 @@ export default function TimeLineTableSimplified<G extends TimeTableGroup, I exte
 	}: TimeLineTableSimplifiedProps<G, I>
 ) {
 
+	const { setMessage } = useMessage()
+
 	const table = (
 		<TableRows
 			entries={ entries }
@@ -66,8 +68,23 @@ export default function TimeLineTableSimplified<G extends TimeTableGroup, I exte
 		/>
 	)
 
+	useEffect( () => {
+		let foundItemsOutsideOfDayRange = 0
+		for ( const entry of entries ) {
+			const itemsOutside = itemsOutsideOfDayRange( entry.items, slotsArray, timeSteps )
+			foundItemsOutsideOfDayRange += itemsOutside.length
+		}
+		if ( foundItemsOutsideOfDayRange ) {
+			console.log( "OUTSIDE", foundItemsOutsideOfDayRange )
+			setMessage( {
+				urgency: "warning",
+				text: <Messages.ItemsOutsideDayTimeFrame outsideItemCount={ foundItemsOutsideOfDayRange } />
+			} )
+		}
+	}, [ entries, setMessage, slotsArray, timeSteps ] )
+
 	return (
-		<SelectedTimeSlotsProvider>
+		<SelectedTimeSlotsProvider slotsArray={ slotsArray } timeSteps={ timeSteps }>
 			<TimeTableConfigProvider slotsArray={ slotsArray } timeSteps={ timeSteps } disableWeekendInteractions={ disableWeekendInteractions }>
 				{ table }
 			</TimeTableConfigProvider>
@@ -391,13 +408,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 		}
 		return trs
 	}, [ items, group, renderGroup, onGroupHeaderClick, slotsArray, timeSteps, selectedTimeSlotItem, onTimeSlotItemClick, renderTimeSlotItem ] )
-
-	/*if ( foundOutsideOfDayRange ) {
-		setMessage( {
-			urgency: "warning",
-			text: <Messages.ItemsOutsideDayTimeFrame outsideItemCount={ foundOutsideOfDayRange } />
-		} )
-	}*/
 
 	return (
 		<>
