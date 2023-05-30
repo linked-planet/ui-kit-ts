@@ -175,18 +175,13 @@ function InteractionTableCell<G extends TimeTableGroup> ( {
 	const mouseHandlers = useMouseHandlers(
 		timeSlotNumber,
 		group,
-		slotsArray,
-		disableWeekendInteractions,
 	)
 
 	const timeSlot = slotsArray[ timeSlotNumber ]
-	const timeSlotIsSelected = ( selectedTimeSlots && selectedTimeSlots.group === group ) ? selectedTimeSlots.timeSlots.findIndex( it => it.isSame( timeSlot ) ) : -1
+	const timeSlotIsSelected = ( selectedTimeSlots && selectedTimeSlots.group === group ) ? selectedTimeSlots.timeSlots.findIndex( it => it === timeSlotNumber ) : -1
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 	const isFirstOfSelection = timeSlotIsSelected === 0
 	const isLastOfSelection = selectedTimeSlots && selectedTimeSlots.timeSlots && selectedTimeSlots.timeSlots.length > 0 ? timeSlotIsSelected === selectedTimeSlots?.timeSlots.length - 1 : false
-	if ( timeSlotIsSelected > -1 ) {
-		console.log( "isLastOfSelection", isLastOfSelection, "isFirstOfSelection", isFirstOfSelection, "timeSlotIsSelected", timeSlotIsSelected, "selectedTimeSlots", selectedTimeSlots )
-	}
 
 	// the normal empty TD
 	const styles: CSSProperties = {
@@ -205,17 +200,6 @@ function InteractionTableCell<G extends TimeTableGroup> ( {
 	if ( isWeekendDay && disableWeekendInteractions ) {
 		styles.backgroundColor = token( "color.background.neutral.bold" )
 	}
-
-	/*let classes = timeSlotIsSelected > -1 ? styles.selected : ""
-	if ( isWeekendDay ) classes += ` ${ styles.weekend }`
-	if ( !isWeekendDay || !disableWeekendInteractions ) classes += ` ${ styles.hover }`
-	if ( isFirstOfSelection ) classes += ` ${ token("color.background.") }`
-	
-	const backgroundColor = ( timeSlotIsSelected === -1 && isWeekendDay ) ?
-		token( "color.background.neutral.bold" ) :
-		timeSlotIsSelected > -1 ?
-			token( "color.background.selected.pressed" ) :
-			token( "color.background.neutral.bold.hovered" )*/
 
 	return (
 		<td
@@ -426,128 +410,19 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 
 /**
  * Creates a function which creates the mouse event handler for the table cells (the interaction cell, the first row of each group)
- * @param group 
- * @param slotsArray 
- * @param disableWeekendInteractions // if time slots on the weekend are event clickable
+ * @param timeSlotNumber  the time slot number of the table cell
+ * @param group  the group of the table cell
  */
 function useMouseHandlers<G extends TimeTableGroup> (
 	timeSlotNumber: number,
 	group: G,
-	slotsArray: Dayjs[],
-	disableWeekendInteractions: boolean,
 ) {
 
-	const { selectedTimeSlots, setSelectedTimeSlots } = useSelectedTimeSlots()
+	const { toggleTimeSlotCB } = useSelectedTimeSlots()
 	const { setMessage } = useMessage()
+	const { slotsArray, disableWeekendInteractions } = useTimeTableConfig()
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
-
-
-	const mouseClickHandler = ( fromMultiselect: boolean ) => {
-		if ( selectedTimeSlots && selectedTimeSlots?.timeSlots.length > 0 ) {
-
-			if ( disableWeekendInteractions && isWeekendDay ) {
-				setMessage( {
-					urgency: "information",
-					text: <Messages.WeekendsDeactivated />,
-					timeOut: 3,
-				} )
-				return
-			}
-
-			const sameGroup = selectedTimeSlots.group === group
-			if ( !sameGroup ) {
-				setMessage( {
-					urgency: "information",
-					text: <Messages.OnlySameGroupTimeSlots />,
-					timeOut: 3,
-				} )
-				return
-			}
-
-			const timeSlotBefore = timeSlotNumber > 0 ? slotsArray[ timeSlotNumber - 1 ] : null
-			const timeSlotAfter = timeSlotNumber < slotsArray.length - 1 ? slotsArray[ timeSlotNumber + 1 ] : null
-			const successiveOrFormerEntries = selectedTimeSlots.timeSlots.reduce( ( acc: { before: Dayjs | undefined, clicked: Dayjs | undefined, after: Dayjs | undefined }, it: Dayjs ) => {
-				if ( it.isSame( timeSlotBefore ) ) {
-					acc.before = it
-				} else if ( it.isSame( timeSlotAfter ) ) {
-					acc.after = it
-				} else if ( it.isSame( timeSlot ) ) {
-					acc.clicked = it
-				}
-				return acc
-			}, { before: undefined, clicked: undefined, after: undefined } )
-
-			if (
-				successiveOrFormerEntries.clicked &&
-				successiveOrFormerEntries.after &&
-				successiveOrFormerEntries.before
-			) {
-				// then the user clicked on the middle between selected time slots
-				setMessage( {
-					urgency: "information",
-					text: <Messages.DeselectFromOuterBorder />,
-					timeOut: 3,
-				} )
-				return
-			}
-
-			if ( successiveOrFormerEntries.after || successiveOrFormerEntries.before ) {
-				if ( !fromMultiselect ) {
-					if ( successiveOrFormerEntries.clicked ) {
-						// that means this is selected, so we handle it as a deselect
-						setSelectedTimeSlots( {
-							group,
-							timeSlots: selectedTimeSlots.timeSlots.filter( it => !it.isSame( timeSlot ) )
-						} )
-						return
-					}
-				}
-				// that means this is not selected, so we handle it as a select
-				if ( !selectedTimeSlots.timeSlots.find( it => it.isSame( timeSlot ) ) ) {
-					setSelectedTimeSlots( {
-						group,
-						timeSlots: [
-							...selectedTimeSlots.timeSlots,
-							timeSlot
-						]
-					} )
-				}
-				return
-			}
-
-			if ( successiveOrFormerEntries.clicked ) {
-				// that means this is selected, so we handle it as a deselect, but only of that is the only selected time slot
-				if ( selectedTimeSlots.timeSlots.length === 1 ) {
-					setSelectedTimeSlots( undefined )
-					return
-				}
-				setMessage( {
-					urgency: "information",
-					text: <Messages.DeselectFromOuterBorder />,
-					timeOut: 3,
-				} )
-				return
-			}
-
-			// that means this is not selected, but there are other selected time slots of this group, but not directly before of after
-			setMessage( {
-				urgency: "information",
-				text: <Messages.OnlySuccessiveTimeSlots />,
-				timeOut: 3,
-			} )
-			return
-		} // end of selection exists
-
-		// that means there is no selection yet
-		setSelectedTimeSlots( {
-			group,
-			timeSlots: [
-				timeSlot
-			]
-		} )
-	} // end of mouse click handler create function
-
 
 	const handleWeekendError = () => {
 		setMessage( {
@@ -571,7 +446,7 @@ function useMouseHandlers<G extends TimeTableGroup> (
 				handleWeekendError()
 				return
 			}
-			mouseClickHandler( true )
+			toggleTimeSlotCB( timeSlotNumber, group, true )
 		},
 		onMouseDown: () => {
 			if ( disableWeekendInteractions && isWeekendDay ) {
@@ -582,7 +457,7 @@ function useMouseHandlers<G extends TimeTableGroup> (
 			multiselectDebounceHelper = setTimeout( () => {
 				clearTimeout( multiselectDebounceHelper )
 				multiselectDebounceHelper = undefined
-				mouseClickHandler( true )
+				toggleTimeSlotCB( timeSlotNumber, group, true )
 			}, clickDiffToMouseDown )
 		},
 		onMouseUp: () => {
@@ -593,7 +468,7 @@ function useMouseHandlers<G extends TimeTableGroup> (
 				// click detection, if timeout is still running, this is a click
 				clearTimeout( multiselectDebounceHelper )
 				multiselectDebounceHelper = undefined
-				mouseClickHandler( false )
+				toggleTimeSlotCB( timeSlotNumber, group, false )
 			}
 		},
 	}
@@ -602,8 +477,8 @@ function useMouseHandlers<G extends TimeTableGroup> (
 
 /**
  * create the group item stack of all items in a group by looking for overlapping items, and moving them in the next row until there are no overlaps
- * @param groupItems 
- * @returns 
+ * @param groupItems  the items of the group
+ * @returns  the items grouped by row that one row has no overlapping items
  */
 function getGroupItemStack<I extends TimeSlotBooking> (
 	groupItems: I[],
