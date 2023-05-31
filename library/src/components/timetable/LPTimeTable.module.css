@@ -34,10 +34,6 @@
 	position: relative;
 }
 
-.hover:hover {
-	background-color: var(--ds-background-neutral-hovered);
-}
-
 .lpTimeTable .nowRow {
 	height: 0;
 }
@@ -52,7 +48,6 @@
 	border-bottom-width: var(--ds-width-050, 1px);
 	border-style: solid;
 	border-color: var(--ds-border-bold);
-	background-color: var(--ds-surface);
 	user-select: none !important;
 }
 
@@ -96,10 +91,6 @@
 
 .weekend {
 	background-color: var(--ds-background-neutral);
-}
-
-.selected {
-	background-color: var(--ds-background-selected-hovered);
 }
 
 .unselectable {

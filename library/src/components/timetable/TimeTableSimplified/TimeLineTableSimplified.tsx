@@ -54,6 +54,7 @@ export default function TimeLineTableSimplified<G extends TimeTableGroup, I exte
 			<GroupRows<G, I>
 				key={ g }
 				group={ groupEntry.group }
+				groupNumber={ g }
 				items={ groupEntry.items }
 				onGroupHeaderClick={ onGroupClick }
 				onTimeSlotItemClick={ onTimeSlotItemClick }
@@ -80,16 +81,16 @@ export default function TimeLineTableSimplified<G extends TimeTableGroup, I exte
 function GroupHeaderTableCell<G extends TimeTableGroup> (
 	{
 		group,
+		groupNumber,
 		groupRowMax,
-		selectedGroup,
 		onGroupClick,
 		renderGroup,
 	}: {
 		group: G,
+		groupNumber: number,
 		groupRowMax: number,
-		selectedGroup: G | undefined,
 		onGroupClick: ( ( group: G ) => void ) | undefined,
-		renderGroup: ( ( group: G, isSelected: boolean ) => JSX.Element ) | undefined,
+		renderGroup: ( ( group: G ) => JSX.Element ) | undefined,
 	}
 ) {
 	return (
@@ -98,28 +99,32 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
 				if ( onGroupClick ) onGroupClick( group )
 			} }
 			rowSpan={ groupRowMax + 1 }
-			className={ `${ selectedGroup === group ? styles.selected : "" } ${ styles.groupHeader }` }
+			className={ `${ styles.groupHeader }` }
+			style={ {
+				backgroundColor: groupNumber % 2 === 0 ? token( "color.background.neutral.subtle" ) : token( "color.background.neutral" ),
+			} }
 		>
-			{ renderGroup ? renderGroup( group, group === selectedGroup ) : <Group group={ group } /> }
+			{ renderGroup ? renderGroup( group ) : <Group group={ group } /> }
 		</td>
 	)
 }
 
 
 /**
- * 
  * The TableCellSimple is the standard cell of the table. The children are the entries that are rendered in the cell.
  */
 function TableCell ( {
 	slotsArray,
 	timeSlotNumber,
 	group,
+	groupNumber,
 	isLastGroupRow,
 	children,
 }: {
 	slotsArray: Dayjs[],
 	timeSlotNumber: number,
 	group: TimeTableGroup,
+	groupNumber: number,
 	isLastGroupRow: boolean,
 	children: JSX.Element | JSX.Element[] | undefined,
 } ) {
@@ -132,16 +137,14 @@ function TableCell ( {
 		group,
 	)
 
-	// the normal empty TD
-	const classes = isWeekendDay ? styles.weekend : undefined
 	return (
 		<td
 			key={ timeSlotNumber }
 			{ ...mouseHandlers }
-			className={ classes }
 			style={ {
 				borderBottom: isLastGroupRow ? `1px solid ${ token( "color.border.bold" ) }` : undefined,
 				paddingBottom: isLastGroupRow ? "10px" : undefined,
+				backgroundColor: isWeekendDay ? token( "elevation.surface.pressed" ) : groupNumber % 2 === 0 ? token( "color.background.neutral.subtle" ) : token( "color.background.neutral" ),
 			} }
 			colSpan={ 2 } // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 		>
@@ -156,10 +159,12 @@ function TableCell ( {
  */
 function PlaceholderTableCell<G extends TimeTableGroup> ( {
 	group,
+	groupNumber,
 	timeSlotNumber,
 	isOnlyGroupRow,
 }: {
 	group: G,
+	groupNumber: number,
 	timeSlotNumber: number,
 	isOnlyGroupRow: boolean,
 } ) {
@@ -185,7 +190,7 @@ function PlaceholderTableCell<G extends TimeTableGroup> ( {
 	}
 
 	const styles: CSSProperties = {
-		backgroundColor: isWeekendDay ? token( "color.background.neutral" ) : undefined,
+		backgroundColor: isWeekendDay ? token( "elevation.surface.pressed" ) : groupNumber % 2 === 0 ? token( "color.background.neutral.subtle" ) : token( "elevation.surface.hovered" ),
 		verticalAlign: "top",
 		paddingTop: "1px",
 		borderBottom: isOnlyGroupRow ? `1px solid ${ token( "color.border.bold" ) }` : undefined,
@@ -212,6 +217,7 @@ function PlaceholderTableCell<G extends TimeTableGroup> ( {
  */
 function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	group,
+	groupNumber,
 	items,
 	renderGroup,
 	onGroupHeaderClick,
@@ -220,8 +226,9 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	onTimeSlotItemClick,
 }: {
 	group: G,
+	groupNumber: number,
 	items: I[],
-	renderGroup: ( ( group: G, isSelected: boolean ) => JSX.Element ) | undefined
+	renderGroup: ( ( group: G ) => JSX.Element ) | undefined
 	onGroupHeaderClick: ( ( group: G ) => void ) | undefined,
 	selectedTimeSlotItem: I | undefined,
 	renderTimeSlotItem: ( ( group: G, item: I, selectedTimeSlotItem: I | undefined ) => JSX.Element ) | undefined,
@@ -242,9 +249,9 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			<GroupHeaderTableCell<G>
 				key={ -1 }
 				group={ group }
+				groupNumber={ groupNumber }
 				groupRowMax={ rowCount } // group header spans all rows of the group
 				renderGroup={ renderGroup }
-				selectedGroup={ undefined }
 				onGroupClick={ onGroupHeaderClick }
 			/>
 		)
@@ -255,6 +262,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				<PlaceholderTableCell<G>
 					key={ timeSlotNumber }
 					group={ group }
+					groupNumber={ groupNumber }
 					timeSlotNumber={ timeSlotNumber }
 					isOnlyGroupRow={ rowCount === 0 }
 				/>
@@ -323,6 +331,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 						isLastGroupRow={ r === itemRows.length - 1 }
 						slotsArray={ slotsArray }
 						group={ group }
+						groupNumber={ groupNumber }
 					>
 						<div
 							style={ {
@@ -348,7 +357,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			)
 		}
 		return trs
-	}, [ items, group, renderGroup, onGroupHeaderClick, slotsArray, timeSteps, selectedTimeSlotItem, onTimeSlotItemClick, renderTimeSlotItem ] )
+	}, [ items, group, groupNumber, renderGroup, onGroupHeaderClick, slotsArray, timeSteps, selectedTimeSlotItem, onTimeSlotItemClick, renderTimeSlotItem ] )
 
 	return (
 		<>
