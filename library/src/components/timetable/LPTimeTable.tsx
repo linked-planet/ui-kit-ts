@@ -7,9 +7,6 @@ import styles from "./LPTimeTable.module.css"
 import { getStartAndEndSlot, itemsOutsideOfDayRange } from "./timeTableUtils"
 import InlineMessage from "../inlinemessage"
 import { token } from "@atlaskit/tokens"
-import { IntlProvider } from "react-intl-next"
-import { LocaleProvider, useLocale } from "../../localization"
-import { Locale } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import { TimeTableMessage, TimeTableMessageProvider, TranslatedTimeTableMessages, useTimeTableMessage } from "./TimeTableMessageContext"
 import { headerDateFormat, LPTimeTableHeader } from "./LPTimeTableHeader"
 import TimeLineTableSimplified from "./TimeLineTableSimplified"
@@ -103,7 +100,7 @@ const nowbarUpdateIntervall = 1000 * 60 // 1 minute
 
 export default function LPTimeTable<G extends TimeTableGroup, I extends TimeSlotBooking> ( props: LPTimeTableProps<G, I> ) {
 	return (
-		<TimeTableMessageProvider>
+		<TimeTableMessageProvider messagesTranslations={ props.timeTableMessages }>
 			<LPTimeTableImpl { ...props } />
 		</TimeTableMessageProvider>
 	)
