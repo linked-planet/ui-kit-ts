@@ -4,18 +4,15 @@ import dayjs, { Dayjs } from "dayjs"
 //import styles from "./LPTimeTable.module.css";
 import "./LPTimeTable.module.css"
 import styles from "./LPTimeTable.module.css"
-import TimeLineTable from "./TimeLineTable"
 import { getStartAndEndSlot, itemsOutsideOfDayRange } from "./timeTableUtils"
 import InlineMessage from "../inlinemessage"
-import type { Message } from "../inlinemessage"
 import { token } from "@atlaskit/tokens"
-import * as Messages from "./Messages"
 import { IntlProvider } from "react-intl-next"
 import { LocaleProvider, useLocale } from "../../localization"
 import { Locale } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
-import { MessageProvider, useMessage } from "./MessageContext"
+import { TimeTableMessage, TimeTableMessageProvider, TranslatedTimeTableMessages, useTimeTableMessage } from "./TimeTableMessageContext"
 import { headerDateFormat, LPTimeTableHeader } from "./LPTimeTableHeader"
-import TimeLineTableSimplified from "./TimeTableSimplified/TimeLineTableSimplified"
+import TimeLineTableSimplified from "./TimeLineTableSimplified"
 import { TimeTableConfigProvider } from "./TimeTableConfigContext"
 import { SelectedTimeSlotsProvider } from "./SelectedTimeSlotsContext"
 
@@ -54,9 +51,6 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 
 	entries: TimeTableEntry<G, I>[]
 
-	selectedGroup?: G
-	selectedTimeSlots?: SelectedTimeSlot<G>[]
-
 	selectedTimeSlotItem?: I
 
 	/* overwrite render function for the group (left column) */
@@ -87,11 +81,6 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 
 	height?: string
 
-	/** One can only select successive time slots
-	 * @default true
-	 */
-	selectionOnlySuccessiveSlots?: boolean
-
 	/** 
 	 * Disabled user interactions with time slots on the weekend
 	 * @default true
@@ -101,10 +90,7 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	/**
 	 * Sets the language used for the messages.
 	 */
-	locale?: Locale
-
-
-	tableType?: "default" | "extended"
+	timeTableMessages?: TranslatedTimeTableMessages
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -117,21 +103,9 @@ const nowbarUpdateIntervall = 1000 * 60 // 1 minute
 
 export default function LPTimeTable<G extends TimeTableGroup, I extends TimeSlotBooking> ( props: LPTimeTableProps<G, I> ) {
 	return (
-		<LocaleProvider locale={ props.locale }>
-			<LPTimeTableLocalized { ...props } />
-		</LocaleProvider>
-	)
-}
-
-
-const LPTimeTableLocalized = <G extends TimeTableGroup, I extends TimeSlotBooking> ( props: LPTimeTableProps<G, I> ) => {
-	const { locale, translation } = useLocale()
-	return (
-		<IntlProvider locale={ locale } messages={ translation }>
-			<MessageProvider>
-				<LPTimeTableImpl { ...props } />
-			</MessageProvider>
-		</IntlProvider>
+		<TimeTableMessageProvider>
+			<LPTimeTableImpl { ...props } />
+		</TimeTableMessageProvider>
 	)
 }
 
@@ -145,8 +119,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	endDate,
 	timeStepsMinutes,
 	entries,
-	selectedGroup,
-	selectedTimeSlots,
 	selectedTimeSlotItem,
 	renderGroup,
 	renderTimeSlotItem,
@@ -158,9 +130,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	rounding,
 	height,
 	disableWeekendInteractions = true,
-	selectionOnlySuccessiveSlots = true,
 	nowOverwrite,
-	tableType = "default"
 }: LPTimeTableProps<G, I> ) => {
 
 	const nowBarRef = useRef<HTMLDivElement | undefined>()
@@ -168,7 +138,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	const tableBodyRef = useRef<HTMLTableSectionElement>( null )
 	const nowRef = useRef<Dayjs>( nowOverwrite ?? dayjs() )
 
-	const { message, setMessage } = useMessage()
+	const { setMessage, translatedMessage } = useTimeTableMessage()
 
 	//#region calculate time slots, dates array and the final time steps size in minutes
 	const { slotsArray, timeSteps, timeSlotsPerDay } = useMemo( () => {
@@ -187,7 +157,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 			if ( !slotBars ) {
 				setMessage( {
 					urgency: "error",
-					text: <Messages.TimeSlotColumnsNotFound />,
+					messageKey: "timetable.timeSlotColumnsNotFound"
 				} )
 				console.log( "unable to find time slot columns for the time slot bars" )
 				return
@@ -219,7 +189,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 		if ( foundItemsOutsideOfDayRange ) {
 			setMessage( {
 				urgency: "warning",
-				text: <Messages.ItemsOutsideDayTimeFrame outsideItemCount={ foundItemsOutsideOfDayRange } />
+				messageKey: "timetable.bookingsOutsideOfDayRange",
+				//text: <Messages.ItemsOutsideDayTimeFrame outsideItemCount={ foundItemsOutsideOfDayRange } />
 			} )
 		}
 	}, [ entries, setMessage, slotsArray, timeSteps ] )
@@ -279,7 +250,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 		slotsArray.length === 0 ) {
 		return (
 			<div>
-				<InlineMessage message={ message ?? { text: "" } } />
+				<InlineMessage message={ translatedMessage ?? { text: "" } } />
 				Invalid time slot size
 			</div>
 		)
@@ -299,7 +270,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 						alignSelf: "flex-start"
 					} }
 				>
-					<InlineMessage message={ message ?? { text: "" } } />
+					<InlineMessage message={ translatedMessage ?? { text: "" } } />
 				</div>
 			</div>
 			<TimeTableConfigProvider slotsArray={ slotsArray } timeSteps={ timeSteps } disableWeekendInteractions={ disableWeekendInteractions }>
@@ -353,32 +324,15 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 										)
 									} ) }
 								</tr>
-								{ tableType === "extended" &&
-									<TimeLineTable<G, I>
-										entries={ entries }
-										selectedGroup={ selectedGroup }
-										selectedTimeSlots={ selectedTimeSlots }
-										selectedTimeSlotItem={ selectedTimeSlotItem }
-										renderGroup={ renderGroup }
-										renderTimeSlotItem={ renderTimeSlotItem }
-										onTimeSlotItemClick={ onTimeSlotItemClick }
-										onTimeSlotClick={ onTimeSlotClick }
-										onGroupClick={ onGroupClick }
-										selectionOnlySuccessiveSlots={ selectionOnlySuccessiveSlots }
-									/>
-								}
-								{ tableType === "default" &&
-									<TimeLineTableSimplified<G, I>
-										entries={ entries }
-										selectedTimeSlotItem={ selectedTimeSlotItem }
-										renderGroup={ renderGroup }
-										renderTimeSlotItem={ renderTimeSlotItem }
-										onTimeSlotItemClick={ onTimeSlotItemClick }
-										onTimeSlotClick={ onTimeSlotClick }
-										onGroupClick={ onGroupClick }
-									/>
-								}
-
+								<TimeLineTableSimplified<G, I>
+									entries={ entries }
+									selectedTimeSlotItem={ selectedTimeSlotItem }
+									renderGroup={ renderGroup }
+									renderTimeSlotItem={ renderTimeSlotItem }
+									onTimeSlotItemClick={ onTimeSlotItemClick }
+									onTimeSlotClick={ onTimeSlotClick }
+									onGroupClick={ onGroupClick }
+								/>
 							</tbody>
 						</table >
 					</div>
@@ -404,7 +358,7 @@ function calculateTimeSlotProperties (
 	endDate: Dayjs,
 	timeStepsMinute: number,
 	rounding: "ceil" | "floor" | "round",
-	setMessage: ( message: Message ) => void,
+	setMessage: ( message: TimeTableMessage ) => void,
 ) {
 	let timeSlotsPerDay = 0
 	let timeSteps = timeStepsMinute
@@ -412,7 +366,7 @@ function calculateTimeSlotProperties (
 		timeSteps = startDate.startOf( "day" ).add( 1, "day" ).diff( startDate, "minutes" ) - 1 // -1 to end at the same day if the time steps are from someplace during the day until
 		setMessage( {
 			urgency: "warning",
-			text: <Messages.UnfittingTimeSlot timeSteps={ timeSteps } />,
+			messageKey: "timetable.unfittingTimeSlotMessage",
 		} )
 	}
 
@@ -420,7 +374,7 @@ function calculateTimeSlotProperties (
 	if ( daysDifference < 0 ) {
 		setMessage( {
 			urgency: "error",
-			text: <Messages.EndDateAfterStartDate />,
+			messageKey: "timetable.endDateAfterStartDate",
 		} )
 		return { timeSlotsPerDay, daysDifference, timeSteps }
 	}
@@ -428,7 +382,7 @@ function calculateTimeSlotProperties (
 	if ( timeSteps === 0 ) {
 		setMessage( {
 			urgency: "error",
-			text: <Messages.TimeSlotSizeGreaterZero />,
+			messageKey: "timetable.timeSlotSizeGreaterZero",
 		} )
 		return { timeSlotsPerDay, daysDifference, timeSteps }
 	}
@@ -505,7 +459,7 @@ function moveNowBar (
 	nowBarRef: MutableRefObject<HTMLDivElement | undefined>,
 	tableHeaderRef: MutableRefObject<HTMLTableSectionElement | null>,
 	tableBodyRef: MutableRefObject<HTMLTableSectionElement | null>,
-	setMessage: ( message: Message ) => void,
+	setMessage: ( message: TimeTableMessage ) => void,
 ) {
 
 	if (
@@ -527,7 +481,7 @@ function moveNowBar (
 	if ( !headerTimeslotRow ) {
 		setMessage( {
 			urgency: "error",
-			text: <Messages.NoHeaderTimeSlotRow />
+			messageKey: "timetable.noHeaderTimeSlotRow",
 		} )
 		console.log( "no header time slot row found" )
 		return

@@ -2,8 +2,7 @@
 import React, { createContext, useContext, Dispatch, useReducer, useCallback, useEffect } from "react"
 import type { TimeTableGroup } from "./LPTimeTable"
 
-import * as Messages from "./Messages"
-import { useMessage } from "./MessageContext"
+import { useTimeTableMessage } from "./TimeTableMessageContext"
 import { Dayjs } from "dayjs"
 
 
@@ -36,7 +35,7 @@ export function SelectedTimeSlotsProvider ( {
 		return action
 	}, undefined )
 
-	const { setMessage } = useMessage()
+	const { setMessage } = useTimeTableMessage()
 
 	useEffect( () => {
 		setSelectedTimeSlots( undefined )
@@ -55,7 +54,7 @@ export function SelectedTimeSlotsProvider ( {
 		if ( selectedTimeSlots.group !== group ) {
 			setMessage( {
 				urgency: "information",
-				text: <Messages.OnlySameGroupTimeSlots />,
+				messageKey: "timetable.onlySameGroupTimeSlots",
 				timeOut: 3,
 			} )
 			return
@@ -70,7 +69,7 @@ export function SelectedTimeSlotsProvider ( {
 			if ( timeSlotBefore !== undefined && timeSlotAfter !== undefined ) {
 				setMessage( {
 					urgency: "information",
-					text: <Messages.DeselectFromOuterBorder />,
+					messageKey: "timetable.deselectFromOuterBorder",
 					timeOut: 3,
 				} )
 				return
@@ -99,7 +98,7 @@ export function SelectedTimeSlotsProvider ( {
 		// that means this is not selected, but there are other selected time slots of this group, but not directly before of after
 		setMessage( {
 			urgency: "information",
-			text: <Messages.OnlySuccessiveTimeSlots />,
+			messageKey: "timetable.onlySuccessiveTimeSlots",
 			timeOut: 3,
 		} )
 	}, [ selectedTimeSlots, setMessage ] )
