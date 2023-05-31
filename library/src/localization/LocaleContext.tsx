@@ -21,7 +21,7 @@ const translationsPath = "./translations-compiled"
 
 
 /**
- * The Locale Context simply keeps track of the current set locale, and saves it to localStorage.
+ * The Locale Context keeps track of the current set locale, and saves it to localStorage, and fetches the translation for the locale.
  */
 export function LocaleProvider ( { locale, children }: { locale?: Locale | undefined, children: React.ReactNode } ) {
 	const [ localeUsed, setLocale ] = useState( locale ?? localStorage.getItem( localeStorageKey ) as Locale ?? navigator.language.substring( 0, 2 ) )
