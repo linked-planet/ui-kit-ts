@@ -184,10 +184,6 @@ function PlaceholderTableCell<G extends TimeTableGroup> ( {
 		)
 	}
 
-	if ( timeSlotSelectedIndex > -1 ) {
-		console.log( "SELECTED TS", selectedTimeSlots?.timeSlots, timeSlotNumber, timeSlotSelectedIndex, isFirstOfSelection, isLastOfSelection )
-	}
-
 	const styles: CSSProperties = {
 		backgroundColor: isWeekendDay ? token( "color.background.neutral" ) : undefined,
 		verticalAlign: "top",
@@ -414,6 +410,19 @@ function useMouseHandlers<G extends TimeTableGroup> (
 				multiselectDebounceHelper = undefined
 				toggleTimeSlotCB( timeSlotNumber, group, true )
 			}, clickDiffToMouseDown )
+		},
+		onMouseLeave: ( e: MouseEvent ) => {
+			if ( e.buttons !== 1 ) { // we only want to react to left mouse button
+				// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
+				clearTimeout( multiselectDebounceHelper )
+				multiselectDebounceHelper = undefined
+				return
+			}
+			if ( disableWeekendInteractions && isWeekendDay ) {
+				handleWeekendError()
+				return
+			}
+			toggleTimeSlotCB( timeSlotNumber, group, true )
 		},
 		onMouseUp: () => {
 			if ( disableWeekendInteractions && isWeekendDay ) {
