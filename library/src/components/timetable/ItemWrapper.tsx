@@ -22,13 +22,25 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 	width: number,
 } ) {
 
+	//#region fade out animation
 	const ref = useRef<HTMLDivElement>( null )
-
 	useEffect( () => {
 		return () => {
 			ref.current?.classList.add( utilStyles.fadeOut )
 		}
 	}, [] )
+	//#endregion
+
+	//#region this is required because we do not want that the table cells behind the items react to it
+	const mouseHandler = {
+		onMouseDown: ( e: React.MouseEvent<HTMLDivElement, MouseEvent> ) => {
+			e.stopPropagation()
+		},
+		onMouseUp: ( e: React.MouseEvent<HTMLDivElement, MouseEvent> ) => {
+			e.stopPropagation()
+		}
+	}
+	//#endregion
 
 	return (
 		<div
@@ -38,6 +50,7 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 				width: `${ width * 100 }%`,
 				top: 0,
 			} }
+			{ ...mouseHandler }
 		>
 			<div
 				ref={ ref }

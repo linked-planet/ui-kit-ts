@@ -157,9 +157,11 @@ function TableCell ( {
 function PlaceholderTableCell<G extends TimeTableGroup> ( {
 	group,
 	timeSlotNumber,
+	isOnlyGroupRow,
 }: {
 	group: G,
 	timeSlotNumber: number,
+	isOnlyGroupRow: boolean,
 } ) {
 
 	const { selectedTimeSlots } = useSelectedTimeSlots()
@@ -190,6 +192,7 @@ function PlaceholderTableCell<G extends TimeTableGroup> ( {
 		backgroundColor: isWeekendDay ? token( "color.background.neutral" ) : undefined,
 		verticalAlign: "top",
 		paddingTop: "1px",
+		borderBottom: isOnlyGroupRow ? `1px solid ${ token( "color.border.bold" ) }` : undefined,
 	}
 
 	return (
@@ -233,7 +236,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 
 	const trs = useMemo( () => {
 		const itemRows = getGroupItemStack( items )
-		const rowCount = itemRows.length ? itemRows.length : 1
+		const rowCount = itemRows.length
 
 		const trs: JSX.Element[] = []
 
@@ -257,6 +260,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 					key={ timeSlotNumber }
 					group={ group }
 					timeSlotNumber={ timeSlotNumber }
+					isOnlyGroupRow={ rowCount === 0 }
 				/>
 			)
 		}
