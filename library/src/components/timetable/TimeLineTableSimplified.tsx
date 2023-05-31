@@ -1,19 +1,18 @@
 import React, { CSSProperties, MouseEvent, useMemo } from "react"
 import type { Dayjs } from "dayjs"
-import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "../LPTimeTable"
+import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "./LPTimeTable"
 
-import { Group } from "../Group"
+import { Group } from "./Group"
 
-import styles from "../LPTimeTable.module.css"
-import { isOverlapping } from "../timeTableUtils"
-import ItemWrapper from "../ItemWrapper"
+import styles from "./LPTimeTable.module.css"
+import { isOverlapping } from "./timeTableUtils"
+import ItemWrapper from "./ItemWrapper"
 import { token } from "@atlaskit/tokens"
 
-import * as Messages from "../Messages"
-import { useMessage } from "../MessageContext"
-import { useTimeTableConfig } from "../TimeTableConfigContext"
-import { useSelectedTimeSlots } from "../SelectedTimeSlotsContext"
-import { PlaceHolderItem } from "../PlaceholderItem"
+import { useTimeTableMessage } from "./TimeTableMessageContext"
+import { useTimeTableConfig } from "./TimeTableConfigContext"
+import { useSelectedTimeSlots } from "./SelectedTimeSlotsContext"
+import { PlaceHolderItem } from "./PlaceholderItem"
 
 
 interface TimeLineTableSimplifiedProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
@@ -379,7 +378,7 @@ function useMouseHandlers<G extends TimeTableGroup> (
 ) {
 
 	const { toggleTimeSlotCB } = useSelectedTimeSlots()
-	const { setMessage } = useMessage()
+	const { setMessage } = useTimeTableMessage()
 	const { slotsArray, disableWeekendInteractions } = useTimeTableConfig()
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
@@ -387,7 +386,7 @@ function useMouseHandlers<G extends TimeTableGroup> (
 	const handleWeekendError = () => {
 		setMessage( {
 			urgency: "information",
-			text: <Messages.WeekendsDeactivated />,
+			messageKey: "timetable.weekendsDeactivated",
 			timeOut: 3,
 		} )
 		return
