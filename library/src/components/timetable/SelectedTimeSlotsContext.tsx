@@ -39,7 +39,6 @@ export function SelectedTimeSlotsProvider ( {
 	const { setMessage } = useMessage()
 
 	useEffect( () => {
-		console.log( "RESETTING SELECTED TIME SLOTS" )
 		setSelectedTimeSlots( undefined )
 	}, [ slotsArray, timeSteps ] )
 

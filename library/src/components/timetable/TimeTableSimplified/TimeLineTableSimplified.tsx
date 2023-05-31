@@ -512,8 +512,19 @@ function getLeftAndWidth (
 		left = 0
 	}
 
-	let width = slotsArray[ endSlot ].add( timeSteps, "minutes" ).diff( item.endDate, "minute" ) / timeSteps
+	console.log( "ENDSLOT", endSlot, item.endDate, slotsArray[ endSlot ].add( timeSteps, "minutes" ).diff( item.endDate, "minute" ) / timeSteps )
+
+	let endTime = item.endDate
+	if ( endSlot === slotsArray.length - 1 || slotsArray[ endSlot ].date() !== slotsArray[ endSlot + 1 ].date() ) {
+		// if the end is after the last time slot of, we need to do a cut-off
+		endTime = slotsArray[ endSlot ].add( timeSteps, "minutes" )
+	}
+
+	let width = slotsArray[ endSlot ].add( timeSteps, "minutes" ).diff( endTime, "minute" ) / timeSteps
+	// check if this is the last time slot of the day
+
 	width = ( ( endSlot + 1 - startSlot ) - ( left + width ) )
+	console.log( "WIDTH start", startSlot, "end", endSlot, "width", width, "left", left )
 
 	if ( width < 0 ) {
 		// this should not happen, but if it does, we need to log it to find the error

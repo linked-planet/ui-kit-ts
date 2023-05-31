@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react"
+import React, { useCallback } from "react"
 import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -47,6 +47,12 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				startDate: dayjs().startOf( "day" ).add( 15, "hours" ).add( 10, "minutes" ),
 				endDate: dayjs().startOf( "day" ).add( 16, "hours" ),
 				title: "Item 1-3"
+			},
+			{
+				// expected to be on group row 0
+				startDate: dayjs().startOf( "day" ).add( 7, "hours" ),
+				endDate: dayjs().startOf( "day" ).add( 8, "hours" ).add( 10, "minutes" ),
+				title: "Item 1-3-1"
 			},
 			{
 				// expected to be on group row 0
@@ -163,7 +169,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 			},
 		],
 	}
-];
+]
 
 
 
@@ -228,9 +234,8 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	// region: timetable
 
-	const [ tableType, setTableType ] = useState<"multi" | "combi">( "combi" )
 	const [ rounding, setRounding ] = useState<"round" | "ceil" | "floor">( "round" )
-	const [ timeSteps, setTimeSteps ] = useState( 120 )
+	const [ timeSteps, setTimeSteps ] = useState( 110 )
 	const [ firstColumnWidth, setFirstColumnWidth ] = useState( 150 )
 	const [ columnWidth, setColumnWidth ] = useState( 70 )
 
@@ -245,12 +250,6 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	const [ entries, setEntries ] = useState( exampleEntries )
 	const [ showCreateNewItemModal, setShowCreateNewItemModal ] = useState( false )
-
-
-	useEffect( () => {
-		console.log( "table type changed, clearing selected time slots." );
-		setSelectedTimeSlots( undefined )
-	}, [ tableType ] )
 
 	/* click handlers */
 	const onGroupClickCB = useCallback( ( group: ExampleGroup ) => {
