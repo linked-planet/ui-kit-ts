@@ -1,4 +1,4 @@
-import React, { CSSProperties, MouseEvent, useEffect, useMemo } from "react"
+import React, { CSSProperties, MouseEvent, useMemo } from "react"
 import type { Dayjs } from "dayjs"
 import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "../LPTimeTable"
 
@@ -13,6 +13,7 @@ import * as Messages from "../Messages"
 import { useMessage } from "../MessageContext"
 import { useTimeTableConfig } from "../TimeTableConfigContext"
 import { useSelectedTimeSlots } from "../SelectedTimeSlotsContext"
+import { PlaceHolderItem } from "../PlaceholderItem"
 
 
 interface TimeLineTableSimplifiedProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
@@ -109,14 +110,16 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
  * 
  * The TableCellSimple is the standard cell of the table. The children are the entries that are rendered in the cell.
  */
-function TableCellSimple ( {
+function TableCell ( {
 	slotsArray,
 	timeSlotNumber,
+	group,
 	isLastGroupRow,
 	children,
 }: {
 	slotsArray: Dayjs[],
 	timeSlotNumber: number,
+	group: TimeTableGroup,
 	isLastGroupRow: boolean,
 	children: JSX.Element | JSX.Element[] | undefined,
 } ) {
@@ -124,14 +127,21 @@ function TableCellSimple ( {
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 
+	const mouseHandlers = useMouseHandlers(
+		timeSlotNumber,
+		group,
+	)
+
 	// the normal empty TD
 	const classes = isWeekendDay ? styles.weekend : undefined
 	return (
 		<td
 			key={ timeSlotNumber }
+			{ ...mouseHandlers }
 			className={ classes }
 			style={ {
-				borderBottomColor: isLastGroupRow ? token( "color.border.bold" ) : undefined,
+				borderBottom: isLastGroupRow ? `1px solid ${ token( "color.border.bold" ) }` : undefined,
+				paddingBottom: isLastGroupRow ? "10px" : undefined,
 			} }
 			colSpan={ 2 } // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 		>
@@ -142,9 +152,9 @@ function TableCellSimple ( {
 
 
 /**
- * The InteractionTableCells are the cells on top of each group, which are used to select the time slots, and render the place holder item.
+ * The PlaceholderTableCell are the cells on top of each group, which are used to render the placeholder and allows the user to select the cells (else there might be no space).
  */
-function InteractionTableCell<G extends TimeTableGroup> ( {
+function PlaceholderTableCell<G extends TimeTableGroup> ( {
 	group,
 	timeSlotNumber,
 }: {
@@ -153,43 +163,44 @@ function InteractionTableCell<G extends TimeTableGroup> ( {
 } ) {
 
 	const { selectedTimeSlots } = useSelectedTimeSlots()
-	const { disableWeekendInteractions, slotsArray } = useTimeTableConfig()
+	const { slotsArray } = useTimeTableConfig()
 	const mouseHandlers = useMouseHandlers(
 		timeSlotNumber,
 		group,
 	)
 
 	const timeSlot = slotsArray[ timeSlotNumber ]
-	const timeSlotIsSelected = ( selectedTimeSlots && selectedTimeSlots.group === group ) ? selectedTimeSlots.timeSlots.findIndex( it => it === timeSlotNumber ) : -1
+	const timeSlotSelectedIndex = ( selectedTimeSlots && selectedTimeSlots.group === group ) ? selectedTimeSlots.timeSlots.findIndex( it => it === timeSlotNumber ) : -1
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
-	const isFirstOfSelection = timeSlotIsSelected === 0
-	const isLastOfSelection = selectedTimeSlots && selectedTimeSlots.timeSlots && selectedTimeSlots.timeSlots.length > 0 ? timeSlotIsSelected === selectedTimeSlots?.timeSlots.length - 1 : false
+	const isFirstOfSelection = timeSlotSelectedIndex === 0
+	const isLastOfSelection = selectedTimeSlots && selectedTimeSlots.timeSlots && selectedTimeSlots.timeSlots.length > 0 ? timeSlotSelectedIndex === selectedTimeSlots?.timeSlots.length - 1 : false
 
-	// the normal empty TD
-	const styles: CSSProperties = {
-		backgroundColor: timeSlotIsSelected > -1 ? token( "color.background.selected.hovered" ) : token( "color.background.neutral.bold.hovered" ),
-		borderColor: timeSlotIsSelected > -1 ? token( "color.background.neutral.bold.hovered" ) : undefined,
-		borderTopWidth: timeSlotIsSelected > -1 ? "2px" : undefined,
-		borderBottomWidth: timeSlotIsSelected > -1 ? "2px" : undefined,
-		borderStyle: timeSlotIsSelected > -1 ? "solid" : undefined,
-		borderLeftWidth: isFirstOfSelection ? "2px" : "0px",
-		borderRightWidth: isLastOfSelection ? "2px" : "0px",
-		borderTopRightRadius: isLastOfSelection ? "4px" : undefined,
-		borderBottomRightRadius: isLastOfSelection ? "4px" : undefined,
-		borderTopLeftRadius: isFirstOfSelection ? "4px" : undefined,
-		borderBottomLeftRadius: isFirstOfSelection ? "4px" : undefined,
+	let placeHolderItem: JSX.Element | undefined = undefined
+	if ( timeSlotSelectedIndex > -1 ) {
+		placeHolderItem = (
+			<PlaceHolderItem isFirst={ isFirstOfSelection } isLast={ isLastOfSelection } />
+		)
 	}
-	if ( isWeekendDay && disableWeekendInteractions ) {
-		styles.backgroundColor = token( "color.background.neutral.bold" )
+
+	if ( timeSlotSelectedIndex > -1 ) {
+		console.log( "SELECTED TS", selectedTimeSlots?.timeSlots, timeSlotNumber, timeSlotSelectedIndex, isFirstOfSelection, isLastOfSelection )
+	}
+
+	const styles: CSSProperties = {
+		backgroundColor: isWeekendDay ? token( "color.background.neutral" ) : undefined,
+		verticalAlign: "top",
+		paddingTop: "1px",
 	}
 
 	return (
 		<td
 			key={ timeSlotNumber }
+			colSpan={ 2 } // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			{ ...mouseHandlers }
 			style={ styles }
-			colSpan={ 2 } // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
-		/>
+		>
+			{ placeHolderItem }
+		</td>
 	)
 }
 
@@ -242,7 +253,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 		// and interaction row
 		for ( let timeSlotNumber = 0; timeSlotNumber < slotsArray.length; timeSlotNumber++ ) {
 			tds.push(
-				<InteractionTableCell<G>
+				<PlaceholderTableCell<G>
 					key={ timeSlotNumber }
 					group={ group }
 					timeSlotNumber={ timeSlotNumber }
@@ -254,7 +265,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			<tr
 				style={ {
 					backgroundColor: token( "elevation.surface" ),
-					height: "1rem", // height works as min height in tables
+					height: "1.5rem", // height works as min height in tables
 				} }
 			>
 				{ tds }
@@ -306,11 +317,12 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 				} )
 
 				tds.push(
-					<TableCellSimple
+					<TableCell
 						key={ timeSlotNumber }
 						timeSlotNumber={ timeSlotNumber }
 						isLastGroupRow={ r === itemRows.length - 1 }
 						slotsArray={ slotsArray }
+						group={ group }
 					>
 						<div
 							style={ {
@@ -320,7 +332,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 						>
 							{ itemsToRender }
 						</div>
-					</TableCellSimple>
+					</TableCell>
 				)
 			}
 
@@ -512,19 +524,18 @@ function getLeftAndWidth (
 		left = 0
 	}
 
-	console.log( "ENDSLOT", endSlot, item.endDate, slotsArray[ endSlot ].add( timeSteps, "minutes" ).diff( item.endDate, "minute" ) / timeSteps )
-
 	let endTime = item.endDate
 	if ( endSlot === slotsArray.length - 1 || slotsArray[ endSlot ].date() !== slotsArray[ endSlot + 1 ].date() ) {
 		// if the end is after the last time slot of, we need to do a cut-off
-		endTime = slotsArray[ endSlot ].add( timeSteps, "minutes" )
+		if ( item.endDate.isAfter( slotsArray[ endSlot ].add( timeSteps, "minutes" ) ) ) {
+			endTime = slotsArray[ endSlot ].add( timeSteps, "minutes" )
+		}
 	}
 
 	let width = slotsArray[ endSlot ].add( timeSteps, "minutes" ).diff( endTime, "minute" ) / timeSteps
-	// check if this is the last time slot of the day
 
+	// check if this is the last time slot of the day
 	width = ( ( endSlot + 1 - startSlot ) - ( left + width ) )
-	console.log( "WIDTH start", startSlot, "end", endSlot, "width", width, "left", left )
 
 	if ( width < 0 ) {
 		// this should not happen, but if it does, we need to log it to find the error

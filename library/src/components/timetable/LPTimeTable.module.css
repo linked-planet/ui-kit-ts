@@ -46,7 +46,7 @@
 .lpTimeTable .groupHeader {
 	position: sticky;
 	left: 0;
-	z-index: 2;
+	z-index: 3;
 	border-width: 0;
 	border-right-width: var(--ds-width-050, 1px);
 	border-bottom-width: var(--ds-width-050, 1px);

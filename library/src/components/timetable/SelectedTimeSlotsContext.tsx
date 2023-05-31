@@ -32,7 +32,7 @@ export function SelectedTimeSlotsProvider ( {
 } ) {
 	const [ selectedTimeSlots, setSelectedTimeSlots ] = useReducer( ( state: SelectedTimeSlots | undefined, action: SelectedTimeSlots | undefined ) => {
 		if ( !action ) return undefined
-		action.timeSlots.sort()
+		action.timeSlots.sort( ( a, b ) => a - b )
 		return action
 	}, undefined )
 
