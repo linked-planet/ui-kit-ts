@@ -67,8 +67,9 @@ export const UnableToFindEarliestTS = () => <FormattedMessage
 />
 
 
-export const BookingsOutsideOfDayRange = () => <FormattedMessage
-	defaultMessage={ "Bookings found out of day range of the available time slots." }
+export const BookingsOutsideOfDayRange = ( { itemCount }: { itemCount: number } ) => <FormattedMessage
+	defaultMessage={ "{itemCount} Bookings found out of day range of the available time slots." }
+	values={ { itemCount } }
 	id="timetable.bookingsOutsideOfDayRange"
 />
 

@@ -51,6 +51,9 @@ export function LocaleProvider ( { locale, children }: { locale?: Locale | undef
 		fetchTranslation( localeUsed ).then( setTranslation )
 	}, [ localeUsed ] )
 
+	useEffect( () => {
+		console.log( "translation changed", translation )
+	}, [ translation ] )
 
 	return (
 		<localizationContext.Provider value={ { locale: localeUsed, setLocale, translation } }>
@@ -65,7 +68,33 @@ export const useLocale = () => {
 	if ( context === undefined ) {
 		throw new Error( 'useLocale must be used within a LocaleProvider' )
 	}
+
+	useEffect( () => {
+		console.log( "locale changed", context.locale )
+	}, [ context.locale ] )
+
+	useEffect( () => {
+		console.log( "translation changed useLocale", context.translation )
+	}, [ context.translation ] )
+
 	return context
+}
+
+export const useTranslation = () => {
+	const context = useContext( localizationContext )
+	if ( context === undefined ) {
+		throw new Error( 'useTranslation must be used within a LocaleProvider' )
+	}
+
+	useEffect( () => {
+		console.log( "locale changed useTranslateion", context.locale )
+	}, [ context.locale ] )
+
+	useEffect( () => {
+		console.log( "translation changed useTranslateion", context.translation )
+	}, [ context.translation ] )
+
+	return context.translation
 }
 
 

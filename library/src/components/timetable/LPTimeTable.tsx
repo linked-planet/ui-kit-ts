@@ -98,9 +98,14 @@ const nowbarUpdateIntervall = 1000 * 60 // 1 minute
  */
 
 
-export default function LPTimeTable<G extends TimeTableGroup, I extends TimeSlotBooking> ( props: LPTimeTableProps<G, I> ) {
+export default function LPTimeTable<G extends TimeTableGroup, I extends TimeSlotBooking> ( { timeTableMessages, ...props }: LPTimeTableProps<G, I> ) {
+
+	useEffect( () => {
+		console.log( "LPTIME TABLE MSG", timeTableMessages )
+	}, [ timeTableMessages ] )
+
 	return (
-		<TimeTableMessageProvider messagesTranslations={ props.timeTableMessages }>
+		<TimeTableMessageProvider messagesTranslations={ timeTableMessages }>
 			<LPTimeTableImpl { ...props } />
 		</TimeTableMessageProvider>
 	)
@@ -187,7 +192,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 			setMessage( {
 				urgency: "warning",
 				messageKey: "timetable.bookingsOutsideOfDayRange",
-				//text: <Messages.ItemsOutsideDayTimeFrame outsideItemCount={ foundItemsOutsideOfDayRange } />
+				messageValues: { itemCount: foundItemsOutsideOfDayRange }
 			} )
 		}
 	}, [ entries, setMessage, slotsArray, timeSteps ] )
@@ -361,9 +366,13 @@ function calculateTimeSlotProperties (
 	let timeSteps = timeStepsMinute
 	if ( startDate.add( timeSteps, "minutes" ).day() !== startDate.day() ) {
 		timeSteps = startDate.startOf( "day" ).add( 1, "day" ).diff( startDate, "minutes" ) - 1 // -1 to end at the same day if the time steps are from someplace during the day until
+		console.log( "TEEEEEEST" );
 		setMessage( {
 			urgency: "warning",
 			messageKey: "timetable.unfittingTimeSlotMessage",
+			messageValues: {
+				timeSteps: timeStepsMinute,
+			}
 		} )
 	}
 

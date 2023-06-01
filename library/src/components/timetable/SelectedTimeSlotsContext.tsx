@@ -82,7 +82,7 @@ export function SelectedTimeSlotsProvider ( {
 				setSelectedTimeSlots( undefined )
 				return
 			}
-			if ( timeSlotBefore || timeSlotAfter !== undefined ) {
+			if ( timeSlotBefore !== undefined || timeSlotAfter !== undefined ) {
 				setSelectedTimeSlots( {
 					timeSlots: selectedTimeSlots.timeSlots.filter( it => it !== timeSlot ),
 					group,

@@ -1025,7 +1025,7 @@ import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import Button from "@atlaskit/button"
 
 import { IntlProvider } from "react-intl-next"
-import { Locale } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
+import { Locale, useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
@@ -1586,7 +1586,8 @@ function TimeTableLocalized ( {
 	nowOverwrite?: Dayjs,
 } ) {
 
-	const { locale, translation } = useLocale()
+	const { locale } = useLocale()
+	const translation = useTranslation()
 	console.log( "Time Table Locale is:", locale )
 	console.log( "Time Table Translation is:", translation )
 

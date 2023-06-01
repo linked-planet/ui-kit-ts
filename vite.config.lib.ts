@@ -14,7 +14,7 @@ export default defineConfig({
 			entry: resolve(__dirname, "library/src/index.ts"),
 			name: "@linked-planet/ui-kit-ts",
 			fileName: (format) => `ui-kit.${format}.js`,
-			formats: ["es", "umd"],
+			formats: ["es"],
 		},
 		rollupOptions: {
 			external: [

@@ -12,8 +12,9 @@ import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import Button from "@atlaskit/button"
 
 import { IntlProvider } from "react-intl-next"
-import { Locale } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
-import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
+import { Locale, useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
+import type { TimeTableMessage, TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
+import { LPTimeTableProps } from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -310,6 +311,8 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	}
 	//#endregion
 
+	const translation = useTranslation() as TranslatedTimeTableMessages
+
 
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
 
@@ -479,22 +482,22 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 				</Button>
 			</div>
 			<>
-				<LocaleProvider>
-					<TimeTableLocalized
-						firstColumnWidth={ firstColumnWidth }
-						columnWidth={ columnWidth }
-						startDate={ timeFrame.startDate }
-						endDate={ timeFrame.endDate }
-						timeStepsMinutes={ timeSteps }
-						entries={ entries }
-						selectedTimeSlotItem={ selectedTimeSlotItem }
-						//renderGroup={ ( group ) => <Group group={ group } /> }
-						//renderTimeSlotItem={ ( group: TimeTableGroup, item: TimeSlotBooking, selectedItem: TimeSlotBooking | undefined  ) => <Item item={ item } /> }
-						onTimeSlotItemClick={ onTimeSlotItemClickCB }
-						rounding={ rounding }
-						nowOverwrite={ nowOverwrite }
-					/>
-				</LocaleProvider>
+				<LPTimeTable
+					firstColumnWidth={ firstColumnWidth }
+					columnWidth={ columnWidth }
+					startDate={ timeFrame.startDate }
+					endDate={ timeFrame.endDate }
+					timeStepsMinutes={ timeSteps }
+					entries={ entries }
+					selectedTimeSlotItem={ selectedTimeSlotItem }
+					//renderGroup={ ( group ) => <Group group={ group } /> }
+					//renderTimeSlotItem={ ( group: TimeTableGroup, item: TimeSlotBooking, selectedItem: TimeSlotBooking | undefined  ) => <Item item={ item } /> }
+					onTimeSlotItemClick={ onTimeSlotItemClickCB }
+					rounding={ rounding }
+					nowOverwrite={ nowOverwrite }
+					timeTableMessages={ translation }
+
+				/>
 			</>
 			<Button
 				title="Load more entries."
@@ -543,55 +546,6 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					( example ),
 				]
 			}
-		/>
-	)
-}
-
-
-
-function TimeTableLocalized ( {
-	startDate,
-	endDate,
-	timeStepsMinutes,
-	entries,
-	selectedTimeSlotItem,
-	onTimeSlotItemClick,
-	firstColumnWidth,
-	columnWidth,
-	rounding,
-	nowOverwrite,
-}: {
-	startDate: Dayjs,
-	endDate: Dayjs,
-	timeStepsMinutes: number,
-	entries: TimeTableEntry<TimeTableGroup, TimeSlotBooking>[],
-	selectedTimeSlotItem?: TimeSlotBooking,
-	onTimeSlotItemClick: ( group: TimeTableGroup, item: TimeSlotBooking ) => void,
-	firstColumnWidth: number,
-	columnWidth: number,
-	rounding: "ceil" | "floor" | "round",
-	nowOverwrite?: Dayjs,
-} ) {
-
-	const { locale, translation } = useLocale()
-	console.log( "Time Table Locale is:", locale )
-	console.log( "Time Table Translation is:", translation )
-
-	return (
-		<LPTimeTable
-			firstColumnWidth={ firstColumnWidth }
-			columnWidth={ columnWidth }
-			startDate={ startDate }
-			endDate={ endDate }
-			timeStepsMinutes={ timeStepsMinutes }
-			entries={ entries }
-			selectedTimeSlotItem={ selectedTimeSlotItem }
-			//renderGroup={ ( group ) => <Group group={ group } /> }
-			//renderTimeSlotItem={ ( group: TimeTableGroup, item: TimeSlotBooking, selectedItem: TimeSlotBooking | undefined  ) => <Item item={ item } /> }
-			onTimeSlotItemClick={ onTimeSlotItemClick }
-			rounding={ rounding }
-			nowOverwrite={ nowOverwrite }
-			timeTableMessages={ translation as TranslatedTimeTableMessages }
 		/>
 	)
 }
