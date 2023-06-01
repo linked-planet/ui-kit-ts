@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, Dispatch, useReducer, useCallback, useEffect } from "react"
+import React, { createContext, useContext, Dispatch, useReducer, useCallback, useEffect, useState, useMemo } from "react"
 import type { TimeTableGroup } from "./LPTimeTable"
 
 import { useTimeTableMessage } from "./TimeTableMessageContext"
@@ -15,6 +15,9 @@ type ContextType = {
 	selectedTimeSlots: SelectedTimeSlots | undefined,
 	setSelectedTimeSlots: Dispatch<SelectedTimeSlots | undefined>,
 	toggleTimeSlotCB: ( timeSlot: number, group: TimeTableGroup, isFromDrag: boolean ) => void | undefined,
+
+	multiselectionMode: boolean,
+	setMultiselectionMode: Dispatch<boolean>,
 }
 
 const selectedTimeSlotsContext = createContext<ContextType | undefined>( undefined )
@@ -29,14 +32,15 @@ export function SelectedTimeSlotsProvider ( {
 	timeSteps: number,
 	children: JSX.Element
 } ) {
+	const { setMessage } = useTimeTableMessage()
+	const [ multiselectionMode, setMultiselectionMode ] = useState( false ) // keeps track if the user selects time slots while dragging the mouse
 	const [ selectedTimeSlots, setSelectedTimeSlots ] = useReducer( ( state: SelectedTimeSlots | undefined, action: SelectedTimeSlots | undefined ) => {
 		if ( !action ) return undefined
 		action.timeSlots.sort( ( a, b ) => a - b )
 		return action
 	}, undefined )
 
-	const { setMessage } = useTimeTableMessage()
-
+	// remove any selection in case funadmental time table properties change
 	useEffect( () => {
 		setSelectedTimeSlots( undefined )
 	}, [ slotsArray, timeSteps ] )
@@ -109,6 +113,8 @@ export function SelectedTimeSlotsProvider ( {
 				selectedTimeSlots,
 				setSelectedTimeSlots,
 				toggleTimeSlotCB,
+				multiselectionMode,
+				setMultiselectionMode,
 			} }
 		>
 			{ children }
@@ -123,4 +129,14 @@ export function useSelectedTimeSlots () {
 	const ret = useContext( selectedTimeSlotsContext )
 	if ( !ret ) throw new Error( "useSelectedTimeSlots must be used within a SelectedTimeSlotsProvider" )
 	return ret
+}
+
+
+/**
+ * Hook that keeps track of the selected time slots.
+ */
+export function useMultiSelectionMode () {
+	const ret = useContext( selectedTimeSlotsContext )
+	if ( !ret ) throw new Error( "useMultiSelectionMode must be used within a SelectedTimeSlotsProvider" )
+	return { multiSelectionMode: ret.multiselectionMode, setMultiSelectionMode: ret.setMultiselectionMode }
 }

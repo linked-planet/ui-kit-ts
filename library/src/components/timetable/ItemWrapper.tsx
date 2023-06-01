@@ -3,6 +3,7 @@ import { Item } from "./Item"
 import type { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
 
 import utilStyles from "../../utils.module.css"
+import { useMultiSelectionMode } from "./SelectedTimeSlotsContext"
 
 export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	group,
@@ -21,7 +22,6 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 	left: number,
 	width: number,
 } ) {
-
 	//#region fade out animation
 	const ref = useRef<HTMLDivElement>( null )
 	useEffect( () => {
@@ -42,6 +42,8 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 	}
 	//#endregion
 
+	const { multiSelectionMode } = useMultiSelectionMode()
+
 	return (
 		<div
 			style={ {
@@ -49,6 +51,7 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 				left: `${ left * 100 }%`,
 				width: `${ width * 100 }%`,
 				top: 0,
+				pointerEvents: multiSelectionMode ? "none" : "auto",
 			} }
 			{ ...mouseHandler }
 		>

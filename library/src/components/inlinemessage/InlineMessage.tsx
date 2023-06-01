@@ -121,6 +121,7 @@ export default function InlineMessage ( {
 						appearance={ closeBtnAppearance }
 						style={ {
 							borderRadius: "100%",
+							userSelect: "none",
 						} }
 						onClick={ () => setOpen( false ) }
 					>

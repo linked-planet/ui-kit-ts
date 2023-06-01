@@ -11,7 +11,7 @@ import { token } from "@atlaskit/tokens"
 
 import { useTimeTableMessage } from "./TimeTableMessageContext"
 import { useTimeTableConfig } from "./TimeTableConfigContext"
-import { useSelectedTimeSlots } from "./SelectedTimeSlotsContext"
+import { useMultiSelectionMode, useSelectedTimeSlots } from "./SelectedTimeSlotsContext"
 import { PlaceHolderItem } from "./PlaceholderItem"
 
 
@@ -29,11 +29,6 @@ interface TimeLineTableSimplifiedProps<G extends TimeTableGroup, I extends TimeS
 
 	onGroupClick: ( ( _: G ) => void ) | undefined
 }
-
-
-
-const clickDiffToMouseDown = 100 // this is to separate a click from a drag
-let multiselectDebounceHelper: number | undefined = undefined // if its a drag, this will be set to a timeout that will trigger the multiselect
 
 /**
  * Creates the table rows for the given entries.
@@ -379,6 +374,7 @@ function useMouseHandlers<G extends TimeTableGroup> (
 ) {
 
 	const { selectedTimeSlots, toggleTimeSlotCB } = useSelectedTimeSlots()
+	const { multiSelectionMode, setMultiSelectionMode } = useMultiSelectionMode()
 	const { setMessage } = useTimeTableMessage()
 	const { slotsArray, disableWeekendInteractions } = useTimeTableConfig()
 	const timeSlot = slotsArray[ timeSlotNumber ]
@@ -395,36 +391,24 @@ function useMouseHandlers<G extends TimeTableGroup> (
 
 	// the actual mouse handlers
 	return {
-		/*onMouseOver: ( e: MouseEvent ) => {
+		onMouseMove: ( e: MouseEvent ) => {
 			if ( e.buttons !== 1 ) { // we only want to react to left mouse button
-				// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
-				clearTimeout( multiselectDebounceHelper )
-				multiselectDebounceHelper = undefined
 				return
 			}
 			if ( disableWeekendInteractions && isWeekendDay ) {
 				handleWeekendError()
 				return
 			}
+			setMultiSelectionMode( true )
 			toggleTimeSlotCB( timeSlotNumber, group, true )
-		},*/
-		onMouseDown: () => {
-			if ( disableWeekendInteractions && isWeekendDay ) {
-				handleWeekendError()
-				return
-			}
-
-			multiselectDebounceHelper = setTimeout( () => {
-				clearTimeout( multiselectDebounceHelper )
-				multiselectDebounceHelper = undefined
-				toggleTimeSlotCB( timeSlotNumber, group, true )
-			}, clickDiffToMouseDown )
 		},
 		onMouseLeave: ( e: MouseEvent ) => {
 			if ( e.buttons !== 1 ) { // we only want to react to left mouse button
 				// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
-				clearTimeout( multiselectDebounceHelper )
-				multiselectDebounceHelper = undefined
+				setMultiSelectionMode( false )
+				return
+			}
+			if ( !multiSelectionMode ) {
 				return
 			}
 			if ( disableWeekendInteractions && isWeekendDay ) {
@@ -436,8 +420,10 @@ function useMouseHandlers<G extends TimeTableGroup> (
 		},
 		onMouseEnter: ( e: MouseEvent ) => {
 			if ( e.buttons !== 1 ) { // we only want to react to left mouse button	
-				clearTimeout( multiselectDebounceHelper )
-				multiselectDebounceHelper = undefined
+				setMultiSelectionMode( false )
+				return
+			}
+			if ( !multiSelectionMode ) {
 				return
 			}
 			if ( disableWeekendInteractions && isWeekendDay ) {
@@ -445,21 +431,23 @@ function useMouseHandlers<G extends TimeTableGroup> (
 				return
 			}
 			// to remove time slots again when dragging
-			if ( mouseLeftTS != null && mouseLeftTS !== timeSlotNumber && selectedTimeSlots?.timeSlots.includes( mouseLeftTS ) ) {
+			if (
+				mouseLeftTS != null &&
+				( mouseLeftTS === timeSlotNumber + 1 || mouseLeftTS === timeSlotNumber - 1 ) &&
+				selectedTimeSlots?.timeSlots.includes( mouseLeftTS )
+			) {
 				toggleTimeSlotCB( mouseLeftTS, group, false )
 			}
 			toggleTimeSlotCB( timeSlotNumber, group, true )
+			setMultiSelectionMode( true )
 		},
 		onMouseUp: () => {
+			setMultiSelectionMode( false )
 			if ( disableWeekendInteractions && isWeekendDay ) {
+				handleWeekendError()
 				return
 			}
-			if ( multiselectDebounceHelper ) {
-				// click detection, if timeout is still running, this is a click
-				clearTimeout( multiselectDebounceHelper )
-				multiselectDebounceHelper = undefined
-				toggleTimeSlotCB( timeSlotNumber, group, false )
-			}
+			toggleTimeSlotCB( timeSlotNumber, group, multiSelectionMode )
 		},
 	}
 }
@@ -578,7 +566,7 @@ function getLeftAndWidth (
 
 	if ( width < 0 ) {
 		// this should not happen, but if it does, we need to log it to find the error
-		console.log( "LPTimeTable - item with negative width found:", item, startSlot, endSlot, slotsArray, timeSteps )
+		console.log( "LPTimeTable - item with negative width found:", width, item, startSlot, endSlot, slotsArray, timeSteps )
 	}
 
 	return { left, width }
