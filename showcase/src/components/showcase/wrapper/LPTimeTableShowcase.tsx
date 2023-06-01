@@ -3,7 +3,7 @@ import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { LPTimeTable, useLocale, LocaleProvider } from "@linked-planet/ui-kit-ts"
+import { LPTimeTable } from "@linked-planet/ui-kit-ts"
 import type { TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "@linked-planet/ui-kit-ts"
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
@@ -11,10 +11,8 @@ import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import Button from "@atlaskit/button"
 
-import { IntlProvider } from "react-intl-next"
-import { Locale, useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
-import type { TimeTableMessage, TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
-import { LPTimeTableProps } from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
+import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
+import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -267,7 +265,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	const [ selectedTimeSlotItem, setSelectedTimeSlotItem ] = useState<ExampleItem | undefined>()
 
 	const [ entries, setEntries ] = useState( exampleEntries )
-	const [ showCreateNewItemModal, setShowCreateNewItemModal ] = useState( false )
+
 
 	const onTimeSlotItemClickCB = useCallback( ( group: ExampleGroup, item: ExampleItem ) => {
 		setSelectedTimeSlotItem( prev => {
@@ -311,9 +309,41 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	}
 	//#endregion
 
+
+	const [ showCreateNewItemModal, setShowCreateNewItemModal ] = useState( false )
+	const [ selectedTimeRange, setSelectedTimeRange ] = useState<{ startDate: Dayjs, endDate: Dayjs, group: TimeTableGroup } | undefined>()
+
+	const onSelectedTimeRangeCB = useCallback( ( s: { group: TimeTableGroup, startDate: Dayjs, endDate: Dayjs } | undefined ) => {
+		if ( s ) {
+			setSelectedTimeRange( s )
+			setShowCreateNewItemModal( !!s )
+		}
+		return true
+	}, [] )
+
+	const onCreateNewItemConfirmCB = useCallback( ( group: TimeTableGroup, item: TimeSlotBooking ) => {
+		console.log( "onCreateNewItemConfirmCB", group, item )
+		setShowCreateNewItemModal( false )
+		setEntries( prev => {
+			const groupIndex = prev.findIndex( e => e.group === group )
+			if ( groupIndex === -1 ) {
+				console.error( "group not found", group )
+				return prev
+			}
+			const newEntries = [ ...prev ]
+			const newGroup = { ...newEntries[ groupIndex ] }
+			const newGroupItems = [ ...newGroup.items ]
+			newGroupItems.push( item )
+			newGroup.items = newGroupItems
+			newEntries[ groupIndex ] = newGroup
+			return newEntries
+		} )
+		setSelectedTimeRange( undefined )
+	}, [] )
+
+
+
 	const translation = useTranslation() as TranslatedTimeTableMessages
-
-
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
 
 	const example = (
@@ -496,7 +526,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					rounding={ rounding }
 					nowOverwrite={ nowOverwrite }
 					timeTableMessages={ translation }
-
+					onTimeRangeSelected={ onSelectedTimeRangeCB }
 				/>
 			</>
 			<Button
@@ -505,26 +535,16 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 			>
 				<ChevronDownIcon label="entryloader" />
 			</Button>
-			{/* showCreateNewItemModal && selectedTimeSlots && selectedTimeSlots.length > 0 && (
+			{ showCreateNewItemModal && selectedTimeRange && (
 				<CreateNewTimeTableItemDialog
-					selectedTimeSlots={ selectedTimeSlots }
-					timeSteps={ timeSteps }
+					group={ selectedTimeRange.group }
+					startDate={ selectedTimeRange.startDate }
+					endDate={ selectedTimeRange.endDate }
 					onCancel={ () => setShowCreateNewItemModal( false ) }
-					onConfirm={ ( group, newItem ) => {
-						setShowCreateNewItemModal( false )
-						setSelectedTimeSlots( undefined )
-						const grIdx = entries.findIndex( it => it.group === group )
-						if ( grIdx === -1 ) {
-							alert( "unable to find group: " + group.title )
-							return
-						}
-						const groupEntry = entries[ grIdx ]
-						groupEntry.items = [ ...groupEntry.items, newItem ]
-						setEntries( [ ...entries ] )
-						console.log( "entry created:", newItem )
-					} }
+					onConfirm={ onCreateNewItemConfirmCB }
+					timeSteps={ timeSteps }
 				/>
-				) */}
+			) }
 		</>
 	);
 

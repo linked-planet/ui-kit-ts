@@ -58,7 +58,8 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 
 	onTimeSlotItemClick?: ( group: G, item: I ) => void
 
-	onTimeSlotClick?: ( _: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void
+	/* this function gets called when a selection was made, i.g. to create a booking. the return value states if the selection should be cleared or not */
+	onTimeRangeSelected?: ( s: { group: G, startDate: Dayjs, endDate: Dayjs } | undefined ) => boolean
 
 	onGroupClick?: ( group: G ) => void
 
@@ -99,11 +100,6 @@ const nowbarUpdateIntervall = 1000 * 60 // 1 minute
 
 
 export default function LPTimeTable<G extends TimeTableGroup, I extends TimeSlotBooking> ( { timeTableMessages, ...props }: LPTimeTableProps<G, I> ) {
-
-	useEffect( () => {
-		console.log( "LPTIME TABLE MSG", timeTableMessages )
-	}, [ timeTableMessages ] )
-
 	return (
 		<TimeTableMessageProvider messagesTranslations={ timeTableMessages }>
 			<LPTimeTableImpl { ...props } />
@@ -125,8 +121,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	renderGroup,
 	renderTimeSlotItem,
 	onTimeSlotItemClick,
-	onTimeSlotClick,
 	onGroupClick,
+	onTimeRangeSelected,
 	firstColumnWidth,
 	columnWidth,
 	rounding,
@@ -276,7 +272,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 				</div>
 			</div>
 			<TimeTableConfigProvider slotsArray={ slotsArray } timeSteps={ timeSteps } disableWeekendInteractions={ disableWeekendInteractions }>
-				<SelectedTimeSlotsProvider slotsArray={ slotsArray } timeSteps={ timeSteps }>
+				<SelectedTimeSlotsProvider slotsArray={ slotsArray } timeSteps={ timeSteps } onTimeRangeSelected={ onTimeRangeSelected }>
 					<div
 						style={ {
 							overflowX: "auto",
@@ -332,7 +328,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 									renderGroup={ renderGroup }
 									renderTimeSlotItem={ renderTimeSlotItem }
 									onTimeSlotItemClick={ onTimeSlotItemClick }
-									onTimeSlotClick={ onTimeSlotClick }
 									onGroupClick={ onGroupClick }
 								/>
 							</tbody>

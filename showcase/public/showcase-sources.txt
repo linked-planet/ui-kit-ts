@@ -1016,7 +1016,7 @@ import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { LPTimeTable, useLocale, LocaleProvider } from "@linked-planet/ui-kit-ts"
+import { LPTimeTable } from "@linked-planet/ui-kit-ts"
 import type { TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "@linked-planet/ui-kit-ts"
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
@@ -1024,8 +1024,7 @@ import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import Button from "@atlaskit/button"
 
-import { IntlProvider } from "react-intl-next"
-import { Locale, useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
+import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
@@ -1280,6 +1279,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	const [ entries, setEntries ] = useState( exampleEntries )
 	const [ showCreateNewItemModal, setShowCreateNewItemModal ] = useState( false )
+	const [ selectedTimeRange, setSelectedTimeRange ] = useState<{ startDate: Dayjs, endDate: Dayjs, group: TimeTableGroup } | undefined>()
 
 	const onTimeSlotItemClickCB = useCallback( ( group: ExampleGroup, item: ExampleItem ) => {
 		setSelectedTimeSlotItem( prev => {
@@ -1322,6 +1322,20 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 		setEntries( [ ...exampleEntries, ...missingGroups ] )
 	}
 	//#endregion
+
+
+	const onSelectedTimeRangeCB = useCallback( ( group: TimeTableGroup, startDate: Dayjs, endDate: Dayjs ) => {
+		setSelectedTimeRange( {
+			startDate,
+			endDate,
+			group,
+		} )
+		setShowCreateNewItemModal( true )
+	}, [] )
+
+
+
+	const translation = useTranslation() as TranslatedTimeTableMessages
 
 
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
@@ -1492,22 +1506,23 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 				</Button>
 			</div>
 			<>
-				<LocaleProvider>
-					<TimeTableLocalized
-						firstColumnWidth={ firstColumnWidth }
-						columnWidth={ columnWidth }
-						startDate={ timeFrame.startDate }
-						endDate={ timeFrame.endDate }
-						timeStepsMinutes={ timeSteps }
-						entries={ entries }
-						selectedTimeSlotItem={ selectedTimeSlotItem }
-						//renderGroup={ ( group ) => <Group group={ group } /> }
-						//renderTimeSlotItem={ ( group: TimeTableGroup, item: TimeSlotBooking, selectedItem: TimeSlotBooking | undefined  ) => <Item item={ item } /> }
-						onTimeSlotItemClick={ onTimeSlotItemClickCB }
-						rounding={ rounding }
-						nowOverwrite={ nowOverwrite }
-					/>
-				</LocaleProvider>
+				<LPTimeTable
+					firstColumnWidth={ firstColumnWidth }
+					columnWidth={ columnWidth }
+					startDate={ timeFrame.startDate }
+					endDate={ timeFrame.endDate }
+					timeStepsMinutes={ timeSteps }
+					entries={ entries }
+					selectedTimeSlotItem={ selectedTimeSlotItem }
+					//renderGroup={ ( group ) => <Group group={ group } /> }
+					//renderTimeSlotItem={ ( group: TimeTableGroup, item: TimeSlotBooking, selectedItem: TimeSlotBooking | undefined  ) => <Item item={ item } /> }
+					onTimeSlotItemClick={ onTimeSlotItemClickCB }
+					rounding={ rounding }
+					nowOverwrite={ nowOverwrite }
+					timeTableMessages={ translation }
+					onTimeRangeSelected={ onSelectedTimeRangeCB }
+					clearSelectedTimeRange={ }
+				/>
 			</>
 			<Button
 				title="Load more entries."
@@ -1515,14 +1530,14 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 			>
 				<ChevronDownIcon label="entryloader" />
 			</Button>
-			{/* showCreateNewItemModal && selectedTimeSlots && selectedTimeSlots.length > 0 && (
+			{ showCreateNewItemModal && selectedTimeRange && (
 				<CreateNewTimeTableItemDialog
-					selectedTimeSlots={ selectedTimeSlots }
-					timeSteps={ timeSteps }
+					group={ selectedTimeRange.group }
+					startDate={ selectedTimeRange.startDate }
+					endDate={ selectedTimeRange.endDate }
 					onCancel={ () => setShowCreateNewItemModal( false ) }
 					onConfirm={ ( group, newItem ) => {
 						setShowCreateNewItemModal( false )
-						setSelectedTimeSlots( undefined )
 						const grIdx = entries.findIndex( it => it.group === group )
 						if ( grIdx === -1 ) {
 							alert( "unable to find group: " + group.title )
@@ -1533,8 +1548,9 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 						setEntries( [ ...entries ] )
 						console.log( "entry created:", newItem )
 					} }
+					timeSteps={ timeSteps }
 				/>
-				) */}
+			) }
 		</>
 	);
 
@@ -1560,55 +1576,6 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	)
 }
 
-
-
-function TimeTableLocalized ( {
-	startDate,
-	endDate,
-	timeStepsMinutes,
-	entries,
-	selectedTimeSlotItem,
-	onTimeSlotItemClick,
-	firstColumnWidth,
-	columnWidth,
-	rounding,
-	nowOverwrite,
-}: {
-	startDate: Dayjs,
-	endDate: Dayjs,
-	timeStepsMinutes: number,
-	entries: TimeTableEntry<TimeTableGroup, TimeSlotBooking>[],
-	selectedTimeSlotItem?: TimeSlotBooking,
-	onTimeSlotItemClick: ( group: TimeTableGroup, item: TimeSlotBooking ) => void,
-	firstColumnWidth: number,
-	columnWidth: number,
-	rounding: "ceil" | "floor" | "round",
-	nowOverwrite?: Dayjs,
-} ) {
-
-	const { locale } = useLocale()
-	const translation = useTranslation()
-	console.log( "Time Table Locale is:", locale )
-	console.log( "Time Table Translation is:", translation )
-
-	return (
-		<LPTimeTable
-			firstColumnWidth={ firstColumnWidth }
-			columnWidth={ columnWidth }
-			startDate={ startDate }
-			endDate={ endDate }
-			timeStepsMinutes={ timeStepsMinutes }
-			entries={ entries }
-			selectedTimeSlotItem={ selectedTimeSlotItem }
-			//renderGroup={ ( group ) => <Group group={ group } /> }
-			//renderTimeSlotItem={ ( group: TimeTableGroup, item: TimeSlotBooking, selectedItem: TimeSlotBooking | undefined  ) => <Item item={ item } /> }
-			onTimeSlotItemClick={ onTimeSlotItemClick }
-			rounding={ rounding }
-			nowOverwrite={ nowOverwrite }
-			timeTableMessages={ translation as TranslatedTimeTableMessages }
-		/>
-	)
-}
 import React from "react"
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 

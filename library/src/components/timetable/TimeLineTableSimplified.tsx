@@ -25,7 +25,6 @@ interface TimeLineTableSimplifiedProps<G extends TimeTableGroup, I extends TimeS
 	renderTimeSlotItem: ( ( group: G, item: I, selectedItem: I | undefined ) => JSX.Element ) | undefined
 
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined
-	onTimeSlotClick: ( ( _: SelectedTimeSlot<G>, isFromMultiselect: boolean ) => void ) | undefined
 
 	onGroupClick: ( ( _: G ) => void ) | undefined
 }
