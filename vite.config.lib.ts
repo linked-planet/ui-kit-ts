@@ -9,11 +9,12 @@ export default defineConfig({
 		outDir: "dist",
 		emptyOutDir: false, // without this, the typescript declaration files are going to get deleted, and not recreated when I don't have a change in the types.
 		sourcemap: true,
+		target: "es2022",
 		lib: {
 			entry: resolve(__dirname, "library/src/index.ts"),
 			name: "@linked-planet/ui-kit-ts",
 			fileName: (format) => `ui-kit.${format}.js`,
-			formats: ["es", "umd", "cjs"],
+			formats: ["es", "umd"],
 		},
 		rollupOptions: {
 			external: [

@@ -366,6 +366,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 }
 
 
+let mouseLeftTS: number | null = null
 
 /**
  * Creates a function which creates the mouse event handler for the table cells (the interaction cell, the first row of each group)
@@ -377,7 +378,7 @@ function useMouseHandlers<G extends TimeTableGroup> (
 	group: G,
 ) {
 
-	const { toggleTimeSlotCB } = useSelectedTimeSlots()
+	const { selectedTimeSlots, toggleTimeSlotCB } = useSelectedTimeSlots()
 	const { setMessage } = useTimeTableMessage()
 	const { slotsArray, disableWeekendInteractions } = useTimeTableConfig()
 	const timeSlot = slotsArray[ timeSlotNumber ]
@@ -394,7 +395,7 @@ function useMouseHandlers<G extends TimeTableGroup> (
 
 	// the actual mouse handlers
 	return {
-		onMouseOver: ( e: MouseEvent ) => {
+		/*onMouseOver: ( e: MouseEvent ) => {
 			if ( e.buttons !== 1 ) { // we only want to react to left mouse button
 				// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
 				clearTimeout( multiselectDebounceHelper )
@@ -406,7 +407,7 @@ function useMouseHandlers<G extends TimeTableGroup> (
 				return
 			}
 			toggleTimeSlotCB( timeSlotNumber, group, true )
-		},
+		},*/
 		onMouseDown: () => {
 			if ( disableWeekendInteractions && isWeekendDay ) {
 				handleWeekendError()
@@ -429,6 +430,23 @@ function useMouseHandlers<G extends TimeTableGroup> (
 			if ( disableWeekendInteractions && isWeekendDay ) {
 				handleWeekendError()
 				return
+			}
+			mouseLeftTS = timeSlotNumber
+			toggleTimeSlotCB( timeSlotNumber, group, true )
+		},
+		onMouseEnter: ( e: MouseEvent ) => {
+			if ( e.buttons !== 1 ) { // we only want to react to left mouse button	
+				clearTimeout( multiselectDebounceHelper )
+				multiselectDebounceHelper = undefined
+				return
+			}
+			if ( disableWeekendInteractions && isWeekendDay ) {
+				handleWeekendError()
+				return
+			}
+			// to remove time slots again when dragging
+			if ( mouseLeftTS != null && mouseLeftTS !== timeSlotNumber && selectedTimeSlots?.timeSlots.includes( mouseLeftTS ) ) {
+				toggleTimeSlotCB( mouseLeftTS, group, false )
 			}
 			toggleTimeSlotCB( timeSlotNumber, group, true )
 		},
