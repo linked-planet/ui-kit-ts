@@ -1,23 +1,52 @@
 import React from "react"
 import { token } from "@atlaskit/tokens"
+import type { Dayjs } from "dayjs"
+import { TimeTableGroup } from "./LPTimeTable"
 
 
-export function PlaceHolderItem ( { isFirst, isLast }: { isFirst: boolean, isLast: boolean } ): JSX.Element {
+type PlaceHolderItemProps<G extends TimeTableGroup> = {
+	group: G,
+	start: Dayjs,
+	end: Dayjs,
+	height: string,
+	clearTimeRangeSelectionCB: () => void,
+}
+
+
+
+/** The length state over how many cells the selection is spanning */
+export function PlaceHolderItem<G extends TimeTableGroup> ( { renderPlaceHolder, length, ...props }: PlaceHolderItemProps<G> & { length: number, renderPlaceHolder?: ( props: PlaceHolderItemProps<G> ) => JSX.Element } ): JSX.Element {
 	return (
 		<div
 			style={ {
-				backgroundColor: token( "color.background.brand.bold" ),
-				height: "1rem",
-				boxShadow: "rgba(50, 50, 93, 0.7) 0px 2px 5px 1px, rgba(0, 0, 0, 0.5) 0px 2px 2px 1px",
-				clipPath: "inset(0px 0px -5px 0px)",
-				borderTopLeftRadius: isFirst ? "0.25rem" : 0,
-				borderTopRightRadius: isLast ? "0.25rem" : 0,
-				borderBottomLeftRadius: isFirst ? "0.25rem" : 0,
-				borderBottomRightRadius: isLast ? "0.25rem" : 0,
 				zIndex: 1,
 				position: "relative",
+				width: length * 100 + "%",
+				height: props.height,
 			} }
 		>
+			{ renderPlaceHolder ? renderPlaceHolder( props ) : <PlaceHolderItemPlaceHolder { ...props } /> }
 		</div>
+	)
+}
+
+
+
+function PlaceHolderItemPlaceHolder<G extends TimeTableGroup> ( { group, start, end, height, clearTimeRangeSelectionCB }: PlaceHolderItemProps<G> ) {
+	return (
+		<div
+			style={ {
+				display: "flex",
+				justifyContent: "end",
+				width: "100%",
+				borderRadius: "0.25rem",
+				height: "100%",
+				backgroundColor: token( "color.background.brand.bold" ),
+				boxShadow: "rgba(50, 50, 93, 0.7) 0px 2px 5px 1px, rgba(0, 0, 0, 0.5) 0px 2px 2px 1px",
+			} }
+			onClick={ clearTimeRangeSelectionCB }
+		>
+		</div>
+
 	)
 }

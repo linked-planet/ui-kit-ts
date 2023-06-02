@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react"
+import React, { useCallback } from "react"
 import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -123,7 +123,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 			subtitle: "Group 3 description"
 		},
 		items: [
-			{
+			/*{
 				// this entry is totally before the available slots of the day 
 				startDate: dayjs().startOf( "day" ).add( 5, "hours" ),
 				endDate: dayjs().startOf( "day" ).add( 6, "hours" ),
@@ -133,7 +133,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				startDate: dayjs().startOf( "day" ).add( 1, "day" ).add( 9, "hours" ),
 				endDate: dayjs().startOf( "day" ).add( 2, "days" ).add( 9, "hours" ),
 				title: "Item 3-2"
-			},
+			},*/
 			{
 				// this entry is totally after the available slots of the day
 				startDate: dayjs().startOf( "day" ).add( 17, "hours" ),

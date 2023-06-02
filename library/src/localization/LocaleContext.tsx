@@ -87,11 +87,11 @@ export const useTranslation = () => {
 	}
 
 	useEffect( () => {
-		console.log( "locale changed useTranslateion", context.locale )
+		console.log( "locale changed useTranslation", context.locale )
 	}, [ context.locale ] )
 
 	useEffect( () => {
-		console.log( "translation changed useTranslateion", context.translation )
+		console.log( "translation changed useTranslation", context.translation )
 	}, [ context.translation ] )
 
 	return context.translation

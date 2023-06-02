@@ -69,8 +69,18 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	/* overwrite current time, mostly useful for debugging */
 	nowOverwrite?: Dayjs
 
+	/* FirstColumnWidth sets the width of the group header column */
 	firstColumnWidth: string | number
+
+	/* columnWidth sets the minimal width of the time slot column. If there is space, the columns will expand. */
 	columnWidth: string | number
+
+	/** placeHolderHeight sets the height of the placeholder item
+	 * @default "1.5rem"
+	*/
+	placeHolderHeight?: string
+
+	renderPlaceHolder?: ( group: G, start: Dayjs, end: Dayjs, ) => JSX.Element
 
 	/** Defines how a last not fitting time slot is handled by the day time range.
 	 * Round means that the time range will be rounded up/down to fit a last time slot.
@@ -80,6 +90,9 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	 */
 	rounding?: "floor" | "ceil" | "round"
 
+	/**
+	 * Height sets the max height of the time table. If the content is larger, it will be scrollable.
+	 */
 	height?: string
 
 	/** 
@@ -112,7 +125,7 @@ export default function LPTimeTable<G extends TimeTableGroup, I extends TimeSlot
 
 
 /**
- * The LPTimeTable depdens on the localization messages. It needs to be wrapped in an 
+ * The LPTimeTable depends on the localization messages. It needs to be wrapped in an 
  * @returns 
  */
 const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( {
@@ -123,6 +136,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	selectedTimeSlotItem,
 	renderGroup,
 	renderTimeSlotItem,
+	renderPlaceHolder,
 	onTimeSlotItemClick,
 	onGroupClick,
 	onTimeRangeSelected,
@@ -131,6 +145,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	columnWidth,
 	rounding,
 	height,
+	placeHolderHeight = "1.5rem",
 	disableWeekendInteractions = true,
 	nowOverwrite,
 }: LPTimeTableProps<G, I> ) => {
@@ -275,7 +290,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 					<InlineMessage message={ translatedMessage ?? { text: "" } } />
 				</div>
 			</div>
-			<TimeTableConfigProvider slotsArray={ slotsArray } timeSteps={ timeSteps } disableWeekendInteractions={ disableWeekendInteractions }>
+			<TimeTableConfigProvider slotsArray={ slotsArray } timeSteps={ timeSteps } disableWeekendInteractions={ disableWeekendInteractions } placeHolderHeight={ placeHolderHeight } renderPlaceHolder={ renderPlaceHolder }>
 				<SelectedTimeSlotsProvider slotsArray={ slotsArray } timeSteps={ timeSteps } onTimeRangeSelected={ onTimeRangeSelected } setClearSelectedTimeRangeCB={ setClearSelectedTimeRangeCB }>
 					<div
 						style={ {

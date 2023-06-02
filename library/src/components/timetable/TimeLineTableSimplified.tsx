@@ -1,6 +1,6 @@
-import React, { CSSProperties, MouseEvent, useMemo } from "react"
+import React, { CSSProperties, MouseEvent, useCallback, useMemo } from "react"
 import type { Dayjs } from "dayjs"
-import type { SelectedTimeSlot, TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "./LPTimeTable"
+import type { TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "./LPTimeTable"
 
 import { Group } from "./Group"
 
@@ -13,7 +13,6 @@ import { useTimeTableMessage } from "./TimeTableMessageContext"
 import { useTimeTableConfig } from "./TimeTableConfigContext"
 import { useMultiSelectionMode, useSelectedTimeSlots } from "./SelectedTimeSlotsContext"
 import { PlaceHolderItem } from "./PlaceholderItem"
-
 
 interface TimeLineTableSimplifiedProps<G extends TimeTableGroup, I extends TimeSlotBooking> {
 	/* Entries define the groups, and the items in the groups */
@@ -96,6 +95,7 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
 			style={ {
 				backgroundColor: groupNumber % 2 === 0 ? token( "color.background.neutral.subtle" ) : token( "color.background.neutral" ),
 			} }
+
 		>
 			{ renderGroup ? renderGroup( group ) : <Group group={ group } /> }
 		</td>
@@ -125,20 +125,25 @@ function TableCell ( {
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 
+	const { disableWeekendInteractions } = useTimeTableConfig()
+
 	const mouseHandlers = useMouseHandlers(
 		timeSlotNumber,
 		group,
 	)
 
+	const style: CSSProperties = {
+		borderBottom: isLastGroupRow ? `1px solid ${ token( "color.border.bold" ) }` : undefined,
+		paddingBottom: isLastGroupRow ? "10px" : undefined,
+		backgroundColor: isWeekendDay ? token( "elevation.surface.pressed" ) : groupNumber % 2 === 0 ? token( "color.background.neutral.subtle" ) : token( "color.background.neutral" ),
+		cursor: isWeekendDay && disableWeekendInteractions ? "not-allowed" : "pointer",
+	}
+
 	return (
 		<td
 			key={ timeSlotNumber }
 			{ ...mouseHandlers }
-			style={ {
-				borderBottom: isLastGroupRow ? `1px solid ${ token( "color.border.bold" ) }` : undefined,
-				paddingBottom: isLastGroupRow ? "10px" : undefined,
-				backgroundColor: isWeekendDay ? token( "elevation.surface.pressed" ) : groupNumber % 2 === 0 ? token( "color.background.neutral.subtle" ) : token( "color.background.neutral" ),
-			} }
+			style={ style }
 			colSpan={ 2 } // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 		>
 			{ children }
@@ -162,38 +167,48 @@ function PlaceholderTableCell<G extends TimeTableGroup> ( {
 	isOnlyGroupRow: boolean,
 } ) {
 
-	const { selectedTimeSlots } = useSelectedTimeSlots()
-	const { slotsArray } = useTimeTableConfig()
+	const { selectedTimeSlots, setSelectedTimeSlots } = useSelectedTimeSlots()
+	const { slotsArray, timeSteps, placeHolderHeight } = useTimeTableConfig()
 	const mouseHandlers = useMouseHandlers(
 		timeSlotNumber,
 		group,
 	)
 
+	const clearTimeRangeSelectionCB = useCallback( () => {
+		setSelectedTimeSlots( undefined )
+	}, [ setSelectedTimeSlots ] )
+
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const timeSlotSelectedIndex = ( selectedTimeSlots && selectedTimeSlots.group === group ) ? selectedTimeSlots.timeSlots.findIndex( it => it === timeSlotNumber ) : -1
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 	const isFirstOfSelection = timeSlotSelectedIndex === 0
-	const isLastOfSelection = selectedTimeSlots && selectedTimeSlots.timeSlots && selectedTimeSlots.timeSlots.length > 0 ? timeSlotSelectedIndex === selectedTimeSlots?.timeSlots.length - 1 : false
 
 	let placeHolderItem: JSX.Element | undefined = undefined
-	if ( timeSlotSelectedIndex > -1 ) {
+	if ( isFirstOfSelection && selectedTimeSlots ) {
 		placeHolderItem = (
-			<PlaceHolderItem isFirst={ isFirstOfSelection } isLast={ isLastOfSelection } />
+			<PlaceHolderItem
+				group={ group }
+				start={ timeSlot }
+				end={ slotsArray[ selectedTimeSlots.timeSlots[ selectedTimeSlots.timeSlots.length - 1 ] ].add( timeSteps, "minutes" ) }
+				length={ selectedTimeSlots.timeSlots.length }
+				height={ placeHolderHeight }
+				clearTimeRangeSelectionCB={ clearTimeRangeSelectionCB }
+			/>
 		)
 	}
 
 	const styles: CSSProperties = {
 		backgroundColor: isWeekendDay ? token( "elevation.surface.pressed" ) : groupNumber % 2 === 0 ? token( "color.background.neutral.subtle" ) : token( "elevation.surface.hovered" ),
 		verticalAlign: "top",
-		paddingTop: "1px",
 		borderBottom: isOnlyGroupRow ? `1px solid ${ token( "color.border.bold" ) }` : undefined,
+		cursor: "pointer",
 	}
 
 	return (
 		<td
 			key={ timeSlotNumber }
 			colSpan={ 2 } // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
-			{ ...mouseHandlers }
+			{ ...( timeSlotSelectedIndex === -1 ? mouseHandlers : undefined ) }
 			style={ styles }
 		>
 			{ placeHolderItem }
@@ -228,7 +243,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined,
 } ) {
 
-	const { slotsArray, timeSteps } = useTimeTableConfig()
+	const { slotsArray, timeSteps, placeHolderHeight } = useTimeTableConfig()
 
 	const trs = useMemo( () => {
 		const itemRows = getGroupItemStack( items )
@@ -266,7 +281,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			<tr
 				style={ {
 					backgroundColor: token( "elevation.surface" ),
-					height: "1.5rem", // height works as min height in tables
+					height: placeHolderHeight, // height works as min height in tables
 				} }
 			>
 				{ tds }
@@ -493,13 +508,29 @@ function getStartAndEndSlot (
 	item: TimeSlotBooking,
 	slotsArray: Dayjs[],
 ) {
-
 	if ( item.endDate.isBefore( slotsArray[ 0 ] ) ) {
 		return null
 	}
 	if ( item.startDate.isAfter( slotsArray[ slotsArray.length - 1 ] ) ) {
 		return null
 	}
+
+
+	// get start of time frame of the day
+	const startTimeHour = slotsArray[ 0 ].hour()
+	const startTimeMinute = slotsArray[ 0 ].minute()
+	const endTimeHour = slotsArray[ slotsArray.length - 1 ].hour()
+	const endTimeMinute = slotsArray[ slotsArray.length - 1 ].minute()
+
+	// check if the item starts before the time frame of the day
+	if ( item.endDate.hour() < startTimeHour || ( item.endDate.hour() === startTimeHour && item.startDate.minute() <= startTimeMinute ) ) {
+		return null
+	}
+	// check if the item ends after the time frame of the day
+	if ( item.startDate.hour() > endTimeHour || ( item.startDate.hour() === endTimeHour && item.startDate.minute() >= endTimeMinute ) ) {
+		return null
+	}
+
 
 	let startSlot = slotsArray.findIndex( slot => slot.isAfter( item.startDate ) )
 	if ( startSlot > 0 ) {
