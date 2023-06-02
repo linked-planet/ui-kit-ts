@@ -59,7 +59,10 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	onTimeSlotItemClick?: ( group: G, item: I ) => void
 
 	/* this function gets called when a selection was made, i.g. to create a booking. the return value states if the selection should be cleared or not */
-	onTimeRangeSelected?: ( s: { group: G, startDate: Dayjs, endDate: Dayjs } | undefined ) => boolean
+	onTimeRangeSelected?: ( s: { group: G, startDate: Dayjs, endDate: Dayjs } | undefined ) => boolean | void
+
+	/* The selected time range context sets this callback to be able for a time table parent component to clear the selected time range from outside */
+	setClearSelectedTimeRangeCB?: ( cb: () => void ) => void
 
 	onGroupClick?: ( group: G ) => void
 
@@ -123,6 +126,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	onTimeSlotItemClick,
 	onGroupClick,
 	onTimeRangeSelected,
+	setClearSelectedTimeRangeCB,
 	firstColumnWidth,
 	columnWidth,
 	rounding,
@@ -272,7 +276,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 				</div>
 			</div>
 			<TimeTableConfigProvider slotsArray={ slotsArray } timeSteps={ timeSteps } disableWeekendInteractions={ disableWeekendInteractions }>
-				<SelectedTimeSlotsProvider slotsArray={ slotsArray } timeSteps={ timeSteps } onTimeRangeSelected={ onTimeRangeSelected }>
+				<SelectedTimeSlotsProvider slotsArray={ slotsArray } timeSteps={ timeSteps } onTimeRangeSelected={ onTimeRangeSelected } setClearSelectedTimeRangeCB={ setClearSelectedTimeRangeCB }>
 					<div
 						style={ {
 							overflowX: "auto",

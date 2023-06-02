@@ -1278,8 +1278,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	const [ selectedTimeSlotItem, setSelectedTimeSlotItem ] = useState<ExampleItem | undefined>()
 
 	const [ entries, setEntries ] = useState( exampleEntries )
-	const [ showCreateNewItemModal, setShowCreateNewItemModal ] = useState( false )
-	const [ selectedTimeRange, setSelectedTimeRange ] = useState<{ startDate: Dayjs, endDate: Dayjs, group: TimeTableGroup } | undefined>()
+
 
 	const onTimeSlotItemClickCB = useCallback( ( group: ExampleGroup, item: ExampleItem ) => {
 		setSelectedTimeSlotItem( prev => {
@@ -1324,20 +1323,44 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 	//#endregion
 
 
-	const onSelectedTimeRangeCB = useCallback( ( group: TimeTableGroup, startDate: Dayjs, endDate: Dayjs ) => {
-		setSelectedTimeRange( {
-			startDate,
-			endDate,
-			group,
+	const [ showCreateNewItemModal, setShowCreateNewItemModal ] = useState( false )
+	const [ selectedTimeRange, setSelectedTimeRange ] = useState<{ startDate: Dayjs, endDate: Dayjs, group: TimeTableGroup } | undefined>()
+	const [ clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB ] = useState<() => void | undefined>()
+
+	const onSelectedTimeRangeCB = useCallback( ( s: { group: TimeTableGroup, startDate: Dayjs, endDate: Dayjs } | undefined ) => {
+		if ( s ) {
+			setSelectedTimeRange( s )
+			setShowCreateNewItemModal( !!s )
+		}
+		return true
+	}, [] )
+
+	const onCreateNewItemConfirmCB = useCallback( ( group: TimeTableGroup, item: TimeSlotBooking ) => {
+		setShowCreateNewItemModal( false )
+		setEntries( prev => {
+			const groupIndex = prev.findIndex( e => e.group === group )
+			if ( groupIndex === -1 ) {
+				console.error( "group not found", group )
+				return prev
+			}
+			const newEntries = [ ...prev ]
+			const newGroup = { ...newEntries[ groupIndex ] }
+			const newGroupItems = [ ...newGroup.items ]
+			newGroupItems.push( item )
+			newGroup.items = newGroupItems
+			newEntries[ groupIndex ] = newGroup
+			// clears the selected time range in the table using a callback set by the selected time slots context in the time table
+			if ( clearSelectedTimeRangeCB ) {
+				clearSelectedTimeRangeCB()
+			}
+			return newEntries
 		} )
-		setShowCreateNewItemModal( true )
+		setSelectedTimeRange( undefined )
 	}, [] )
 
 
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
-
-
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
 
 	const example = (
@@ -1521,7 +1544,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					nowOverwrite={ nowOverwrite }
 					timeTableMessages={ translation }
 					onTimeRangeSelected={ onSelectedTimeRangeCB }
-					clearSelectedTimeRange={ }
+					setClearSelectedTimeRangeCB={ setClearSelectedTimeRangeCB }
 				/>
 			</>
 			<Button
@@ -1536,18 +1559,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					startDate={ selectedTimeRange.startDate }
 					endDate={ selectedTimeRange.endDate }
 					onCancel={ () => setShowCreateNewItemModal( false ) }
-					onConfirm={ ( group, newItem ) => {
-						setShowCreateNewItemModal( false )
-						const grIdx = entries.findIndex( it => it.group === group )
-						if ( grIdx === -1 ) {
-							alert( "unable to find group: " + group.title )
-							return
-						}
-						const groupEntry = entries[ grIdx ]
-						groupEntry.items = [ ...groupEntry.items, newItem ]
-						setEntries( [ ...entries ] )
-						console.log( "entry created:", newItem )
-					} }
+					onConfirm={ onCreateNewItemConfirmCB }
 					timeSteps={ timeSteps }
 				/>
 			) }

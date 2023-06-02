@@ -28,11 +28,14 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup> ( {
 	slotsArray,
 	timeSteps,
 	onTimeRangeSelected,
+	setClearSelectedTimeRangeCB,
 	children
 }: {
 	slotsArray: Dayjs[],
 	timeSteps: number,
-	onTimeRangeSelected?: ( s: { group: G, startDate: Dayjs, endDate: Dayjs } | undefined ) => boolean, // if return is true, clear selection
+	onTimeRangeSelected?: ( s: { group: G, startDate: Dayjs, endDate: Dayjs } | undefined ) => boolean | void, // if return is true, clear selection
+	// this is a callback that can be used to clear the selected time slots... maybe there is a better way to do this?
+	setClearSelectedTimeRangeCB?: ( cb: () => void ) => void,
 	children: JSX.Element
 } ) {
 	const { setMessage } = useTimeTableMessage()
@@ -43,10 +46,23 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup> ( {
 		return action
 	}, undefined )
 
-	// remove any selection in case funadmental time table properties change
+	// remove any selection in case fundamental time table properties change
 	useEffect( () => {
 		setSelectedTimeSlotsG( undefined )
 	}, [ slotsArray, timeSteps ] )
+
+	// maybe there is a better way to clear the selection from the parent component, then returning a callback from this component
+	const clearSelectionCB = useCallback( () => () => {
+		console.log( "CLEARING SELECTION" )
+		setSelectedTimeSlotsG( undefined )
+	}, [] )
+	useEffect( () => {
+		if ( setClearSelectedTimeRangeCB ) {
+			console.log( "SETTIN CLEAR CB", clearSelectionCB )
+			setClearSelectedTimeRangeCB( clearSelectionCB )
+		}
+	}, [ setClearSelectedTimeRangeCB, clearSelectionCB ] )
+
 
 	// callback to toggle a time slot
 	const toggleTimeSlotCBG = useCallback( ( timeSlot: number, group: G, isFromDrag: boolean ) => {

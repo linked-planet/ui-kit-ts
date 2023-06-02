@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useEffect } from "react"
 import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -312,17 +312,9 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	const [ showCreateNewItemModal, setShowCreateNewItemModal ] = useState( false )
 	const [ selectedTimeRange, setSelectedTimeRange ] = useState<{ startDate: Dayjs, endDate: Dayjs, group: TimeTableGroup } | undefined>()
-
-	const onSelectedTimeRangeCB = useCallback( ( s: { group: TimeTableGroup, startDate: Dayjs, endDate: Dayjs } | undefined ) => {
-		if ( s ) {
-			setSelectedTimeRange( s )
-			setShowCreateNewItemModal( !!s )
-		}
-		return true
-	}, [] )
+	const [ clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB ] = useState<() => void>()
 
 	const onCreateNewItemConfirmCB = useCallback( ( group: TimeTableGroup, item: TimeSlotBooking ) => {
-		console.log( "onCreateNewItemConfirmCB", group, item )
 		setShowCreateNewItemModal( false )
 		setEntries( prev => {
 			const groupIndex = prev.findIndex( e => e.group === group )
@@ -336,11 +328,14 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 			newGroupItems.push( item )
 			newGroup.items = newGroupItems
 			newEntries[ groupIndex ] = newGroup
+			// clears the selected time range in the table using a callback set by the selected time slots context in the time table
+			if ( clearSelectedTimeRangeCB ) {
+				clearSelectedTimeRangeCB()
+			}
 			return newEntries
 		} )
 		setSelectedTimeRange( undefined )
-	}, [] )
-
+	}, [ clearSelectedTimeRangeCB ] )
 
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
@@ -510,6 +505,18 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 				>
 					<ChevronRightIcon label="nexttimeframe" />
 				</Button>
+				<Button
+					isDisabled={ !selectedTimeRange }
+					onClick={ () => {
+						setShowCreateNewItemModal( true )
+					} }
+					title="Create New Item"
+					style={ {
+						margin: "0 0.5rem 0.5rem 0",
+					} }
+				>
+					Create New Item
+				</Button>
 			</div>
 			<>
 				<LPTimeTable
@@ -526,7 +533,8 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					rounding={ rounding }
 					nowOverwrite={ nowOverwrite }
 					timeTableMessages={ translation }
-					onTimeRangeSelected={ onSelectedTimeRangeCB }
+					onTimeRangeSelected={ setSelectedTimeRange }
+					setClearSelectedTimeRangeCB={ setClearSelectedTimeRangeCB }
 				/>
 			</>
 			<Button
