@@ -53,12 +53,10 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup> ( {
 
 	// maybe there is a better way to clear the selection from the parent component, then returning a callback from this component
 	const clearSelectionCB = useCallback( () => () => {
-		console.log( "CLEARING SELECTION" )
 		setSelectedTimeSlotsG( undefined )
 	}, [] )
 	useEffect( () => {
 		if ( setClearSelectedTimeRangeCB ) {
-			console.log( "SETTIN CLEAR CB", clearSelectionCB )
 			setClearSelectedTimeRangeCB( clearSelectionCB )
 		}
 	}, [ setClearSelectedTimeRangeCB, clearSelectionCB ] )
