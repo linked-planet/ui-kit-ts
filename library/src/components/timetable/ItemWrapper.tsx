@@ -5,6 +5,13 @@ import type { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
 import utilStyles from "../../utils.module.css"
 import { useMultiSelectionMode } from "./SelectedTimeSlotsContext"
 
+
+export type RenderItemProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
+	group: G,
+	item: I,
+	selectedItem: I | undefined,
+}
+
 export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	group,
 	item,
@@ -18,7 +25,7 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 	item: I,
 	selectedTimeSlotItem: I | undefined,
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined,
-	renderTimeSlotItem: ( ( group: G, item: I, selectedItem: I | undefined ) => JSX.Element ) | undefined,
+	renderTimeSlotItem: ( ( props: RenderItemProps<G, I> ) => JSX.Element ) | undefined,
 	left: number,
 	width: number,
 } ) {
@@ -66,7 +73,7 @@ export default function ItemWrapper<G extends TimeTableGroup, I extends TimeSlot
 					if ( onTimeSlotItemClick ) onTimeSlotItemClick( group, item )
 				} }
 			>
-				{ renderTimeSlotItem ? renderTimeSlotItem( group, item, selectedTimeSlotItem ) : <Item group={ group } item={ item } isSelected={ item === selectedTimeSlotItem } /> }
+				{ renderTimeSlotItem ? renderTimeSlotItem( { group, item, selectedItem: selectedTimeSlotItem } ) : <Item group={ group } item={ item } selectedItem={ selectedTimeSlotItem } /> }
 			</div>
 		</div>
 	)

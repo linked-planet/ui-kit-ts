@@ -3,7 +3,7 @@ import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { LPTimeTable } from "@linked-planet/ui-kit-ts"
+import { LPTimeTable, PlaceholderItemProps } from "@linked-planet/ui-kit-ts"
 import type { TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "@linked-planet/ui-kit-ts"
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
@@ -13,6 +13,8 @@ import Button from "@atlaskit/button"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
+import { Group } from "@linked-planet/ui-kit-ts/components/timetable/Group"
+import { Item } from "@linked-planet/ui-kit-ts/components/timetable/Item"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -527,8 +529,16 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					timeStepsMinutes={ timeSteps }
 					entries={ entries }
 					selectedTimeSlotItem={ selectedTimeSlotItem }
-					//renderGroup={ ( group ) => <Group group={ group } /> }
-					//renderTimeSlotItem={ ( group: TimeTableGroup, item: TimeSlotBooking, selectedItem: TimeSlotBooking | undefined  ) => <Item item={ item } /> }
+					renderGroup={ Group }
+					renderTimeSlotItem={ Item }
+					renderPlaceHolder={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
+						<div
+							style={ { height: props.height, backgroundColor: "rgba(0,0,0,0.1)", textAlign: "center" } }
+							onClick={ () => props.clearTimeRangeSelectionCB() }
+						>
+							Placeholder
+						</div>
+					) }
 					onTimeSlotItemClick={ onTimeSlotItemClickCB }
 					rounding={ rounding }
 					nowOverwrite={ nowOverwrite }

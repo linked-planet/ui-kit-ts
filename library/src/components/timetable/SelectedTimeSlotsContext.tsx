@@ -65,7 +65,6 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup> ( {
 
 	// callback to toggle a time slot
 	const toggleTimeSlotCBG = useCallback( ( timeSlot: number, group: G, isFromDrag: boolean ) => {
-		console.log( "TOGGLE TIME SLOT" )
 		if ( !selectedTimeSlots ) {
 			setSelectedTimeSlotsG( {
 				timeSlots: [ timeSlot ],
@@ -88,9 +87,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup> ( {
 		const alreadySelected = selectedTimeSlots.timeSlots.includes( timeSlot )
 
 		if ( alreadySelected ) {
-			console.log( "ALREADY SELECTED" )
 			if ( isFromDrag ) {
-				console.log( "DRAG ACTIVE" )
 				return // we only add during drag selection 
 			}
 			if ( timeSlotBefore !== undefined && timeSlotAfter !== undefined ) {
@@ -106,7 +103,6 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup> ( {
 				return
 			}
 			if ( timeSlotBefore !== undefined || timeSlotAfter !== undefined ) {
-				console.log( "REMOVE TIME SLOT", timeSlot )
 				setSelectedTimeSlotsG( {
 					timeSlots: selectedTimeSlots.timeSlots.filter( it => it !== timeSlot ),
 					group,
@@ -115,7 +111,6 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup> ( {
 			return
 		}
 
-		console.log( "NOT SELECTED YET" )
 		// not selected yet
 		if ( timeSlotBefore !== undefined || timeSlotAfter !== undefined ) {
 			setSelectedTimeSlotsG( {

@@ -2,6 +2,7 @@
 import React, { createContext, useContext } from "react"
 import type { Dayjs } from "dayjs"
 import type { TimeTableGroup } from "./LPTimeTable"
+import { PlaceholderItemProps } from "./PlaceholderItem"
 
 
 type TimeTableConfig<G extends TimeTableGroup> = {
@@ -9,7 +10,7 @@ type TimeTableConfig<G extends TimeTableGroup> = {
 	slotsArray: Dayjs[],
 	disableWeekendInteractions: boolean,
 	placeHolderHeight: string,
-	renderPlaceHolder: ( ( group: G, start: Dayjs, end: Dayjs, height: string ) => JSX.Element ) | undefined,
+	renderPlaceHolder: ( ( props: PlaceholderItemProps<G> ) => JSX.Element ) | undefined,
 }
 
 
@@ -22,16 +23,9 @@ export function TimeTableConfigProvider<G extends TimeTableGroup> ( {
 	placeHolderHeight,
 	renderPlaceHolder,
 	children
-}: {
-	timeSteps: number,
-	slotsArray: Dayjs[],
-	disableWeekendInteractions: boolean,
-	placeHolderHeight: string,
-	renderPlaceHolder: ( ( group: G, start: Dayjs, end: Dayjs, height: string ) => JSX.Element ) | undefined,
-	children: JSX.Element
-} ) {
+}: TimeTableConfig<G> & { children: React.ReactNode } ) {
 
-	const renderPlaceHolderG = renderPlaceHolder as ( ( group: TimeTableGroup, start: Dayjs, end: Dayjs, height: string ) => JSX.Element ) | undefined
+	const renderPlaceHolderG = renderPlaceHolder as ( ( props: PlaceholderItemProps<TimeTableGroup> ) => JSX.Element ) | undefined
 
 	return (
 		<timeTableConfigContext.Provider value={ {
@@ -47,7 +41,7 @@ export function TimeTableConfigProvider<G extends TimeTableGroup> ( {
 }
 
 /**
- * Keeps all the properties coming from outside to configure the timetable. this handles easy access wihout the need to pass all the props around.
+ * Keeps all the properties coming from outside to configure the timetable. this handles easy access without the need to pass all the props around.
  */
 export function useTimeTableConfig<G extends TimeTableGroup> () {
 	const ret = useContext( timeTableConfigContext )

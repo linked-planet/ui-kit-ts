@@ -1016,7 +1016,7 @@ import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { LPTimeTable } from "@linked-planet/ui-kit-ts"
+import { LPTimeTable, PlaceholderItemProps } from "@linked-planet/ui-kit-ts"
 import type { TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "@linked-planet/ui-kit-ts"
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
@@ -1542,6 +1542,14 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					selectedTimeSlotItem={ selectedTimeSlotItem }
 					//renderGroup={ ( group ) => <Group group={ group } /> }
 					//renderTimeSlotItem={ ( group: TimeTableGroup, item: TimeSlotBooking, selectedItem: TimeSlotBooking | undefined  ) => <Item item={ item } /> }
+					renderPlaceHolder={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
+						<div
+							style={ { height: props.height, backgroundColor: "rgba(0,0,0,0.1)", textAlign: "center" } }
+							onClick={ () => props.clearTimeRangeSelectionCB() }
+						>
+							Placeholder
+						</div>
+					) }
 					onTimeSlotItemClick={ onTimeSlotItemClickCB }
 					rounding={ rounding }
 					nowOverwrite={ nowOverwrite }

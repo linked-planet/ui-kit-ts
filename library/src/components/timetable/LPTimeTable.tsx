@@ -12,6 +12,8 @@ import { headerDateFormat, LPTimeTableHeader } from "./LPTimeTableHeader"
 import TimeLineTableSimplified from "./TimeLineTableSimplified"
 import { TimeTableConfigProvider } from "./TimeTableConfigContext"
 import { SelectedTimeSlotsProvider } from "./SelectedTimeSlotsContext"
+import { RenderItemProps } from "./ItemWrapper"
+import { PlaceholderItemProps } from "./PlaceholderItem"
 
 export interface TimeSlotBooking {
 	title: string
@@ -51,10 +53,10 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	selectedTimeSlotItem?: I
 
 	/* overwrite render function for the group (left column) */
-	renderGroup?: ( group: G ) => JSX.Element
+	renderGroup?: ( props: { group: G } ) => JSX.Element
 
 	/* overwrite render function for the time slot items */
-	renderTimeSlotItem?: ( group: G, item: I, selectedItem: I | undefined ) => JSX.Element
+	renderTimeSlotItem?: ( props: RenderItemProps<G, I> ) => JSX.Element
 
 	onTimeSlotItemClick?: ( group: G, item: I ) => void
 
@@ -80,7 +82,7 @@ export interface LPTimeTableProps<G extends TimeTableGroup, I extends TimeSlotBo
 	*/
 	placeHolderHeight?: string
 
-	renderPlaceHolder?: ( group: G, start: Dayjs, end: Dayjs, ) => JSX.Element
+	renderPlaceHolder?: ( props: PlaceholderItemProps<G> ) => JSX.Element
 
 	/** Defines how a last not fitting time slot is handled by the day time range.
 	 * Round means that the time range will be rounded up/down to fit a last time slot.
@@ -267,7 +269,13 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 					<InlineMessage message={ translatedMessage ?? { text: "" } } />
 				</div>
 			</div>
-			<TimeTableConfigProvider slotsArray={ slotsArray } timeSteps={ timeSteps } disableWeekendInteractions={ disableWeekendInteractions } placeHolderHeight={ placeHolderHeight } renderPlaceHolder={ renderPlaceHolder }>
+			<TimeTableConfigProvider
+				slotsArray={ slotsArray }
+				timeSteps={ timeSteps }
+				disableWeekendInteractions={ disableWeekendInteractions }
+				placeHolderHeight={ placeHolderHeight }
+				renderPlaceHolder={ renderPlaceHolder }
+			>
 				<SelectedTimeSlotsProvider slotsArray={ slotsArray } timeSteps={ timeSteps } onTimeRangeSelected={ onTimeRangeSelected } setClearSelectedTimeRangeCB={ setClearSelectedTimeRangeCB }>
 					<div
 						style={ {

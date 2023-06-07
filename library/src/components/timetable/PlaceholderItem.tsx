@@ -4,7 +4,7 @@ import type { Dayjs } from "dayjs"
 import { TimeTableGroup } from "./LPTimeTable"
 
 
-type PlaceHolderItemProps<G extends TimeTableGroup> = {
+export type PlaceholderItemProps<G extends TimeTableGroup> = {
 	group: G,
 	start: Dayjs,
 	end: Dayjs,
@@ -18,14 +18,14 @@ type PlaceHolderItemProps<G extends TimeTableGroup> = {
  * Wrapper item for the placeholder item.
  * The length state over how many cells the selection is spanning
  */
-export function PlaceHolderItem<G extends TimeTableGroup> ( { renderPlaceHolder, length, ...props }: PlaceHolderItemProps<G> & { length: number, renderPlaceHolder?: ( props: PlaceHolderItemProps<G> ) => JSX.Element } ): JSX.Element {
+export function PlaceHolderItem<G extends TimeTableGroup> ( { renderPlaceHolder, ...props }: PlaceholderItemProps<G> & { renderPlaceHolder?: ( props: PlaceholderItemProps<G> ) => JSX.Element } ): JSX.Element {
+	console.log( "PLACEHOLDER ITEM", renderPlaceHolder )
 	return (
 		<div
 			style={ {
 				zIndex: 1,
 				position: "absolute",
-				width: length * 100 + "%",
-				//height: props.height,
+				width: "100%",
 			} }
 		>
 			{ renderPlaceHolder ? renderPlaceHolder( props ) : <PlaceHolderItemPlaceHolder { ...props } /> }
@@ -37,7 +37,7 @@ export function PlaceHolderItem<G extends TimeTableGroup> ( { renderPlaceHolder,
 /**
  * render the current placeholder item (which is a placeholder itself) 
  */
-function PlaceHolderItemPlaceHolder<G extends TimeTableGroup> ( { group, start, end, height, clearTimeRangeSelectionCB }: PlaceHolderItemProps<G> ) {
+function PlaceHolderItemPlaceHolder<G extends TimeTableGroup> ( { group, start, end, height, clearTimeRangeSelectionCB }: PlaceholderItemProps<G> ) {
 	return (
 		<div
 			style={ {

@@ -6,7 +6,7 @@ import { Group } from "./Group"
 
 import styles from "./LPTimeTable.module.css"
 import { isOverlapping } from "./timeTableUtils"
-import ItemWrapper from "./ItemWrapper"
+import ItemWrapper, { RenderItemProps } from "./ItemWrapper"
 import { token } from "@atlaskit/tokens"
 
 import { useTimeTableMessage } from "./TimeTableMessageContext"
@@ -20,8 +20,8 @@ interface TimeLineTableSimplifiedProps<G extends TimeTableGroup, I extends TimeS
 
 	selectedTimeSlotItem: I | undefined
 
-	renderGroup: ( ( _: G ) => JSX.Element ) | undefined
-	renderTimeSlotItem: ( ( group: G, item: I, selectedItem: I | undefined ) => JSX.Element ) | undefined
+	renderGroup: ( ( props: { group: G } ) => JSX.Element ) | undefined
+	renderTimeSlotItem: ( ( props: RenderItemProps<G, I> ) => JSX.Element ) | undefined
 
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined
 
@@ -87,7 +87,7 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
 		groupNumber: number,
 		groupRowMax: number,
 		onGroupClick: ( ( group: G ) => void ) | undefined,
-		renderGroup: ( ( group: G ) => JSX.Element ) | undefined,
+		renderGroup: ( ( props: { group: G } ) => JSX.Element ) | undefined,
 	}
 ) {
 	return (
@@ -102,7 +102,7 @@ function GroupHeaderTableCell<G extends TimeTableGroup> (
 			} }
 
 		>
-			{ renderGroup ? renderGroup( group ) : <Group group={ group } /> }
+			{ renderGroup ? renderGroup( { group } ) : <Group group={ group } /> }
 		</td>
 	)
 }
@@ -164,16 +164,14 @@ function PlaceholderTableCell<G extends TimeTableGroup> ( {
 	group,
 	groupNumber,
 	timeSlotNumber,
-	isOnlyGroupRow,
 }: {
 	group: G,
 	groupNumber: number,
 	timeSlotNumber: number,
-	isOnlyGroupRow: boolean,
 } ) {
 
 	const { selectedTimeSlots, setSelectedTimeSlots } = useSelectedTimeSlots()
-	const { slotsArray, timeSteps, placeHolderHeight } = useTimeTableConfig()
+	const { slotsArray, timeSteps, placeHolderHeight, renderPlaceHolder } = useTimeTableConfig()
 	const mouseHandlers = useMouseHandlers(
 		timeSlotNumber,
 		group,
@@ -185,7 +183,7 @@ function PlaceholderTableCell<G extends TimeTableGroup> ( {
 
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const timeSlotSelectedIndex = ( selectedTimeSlots && selectedTimeSlots.group === group ) ? selectedTimeSlots.timeSlots.findIndex( it => it === timeSlotNumber ) : -1
-	//const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
+	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 	const isFirstOfSelection = timeSlotSelectedIndex === 0
 
 	let placeHolderItem: JSX.Element | undefined = undefined
@@ -195,25 +193,27 @@ function PlaceholderTableCell<G extends TimeTableGroup> ( {
 				group={ group }
 				start={ timeSlot }
 				end={ slotsArray[ selectedTimeSlots.timeSlots[ selectedTimeSlots.timeSlots.length - 1 ] ].add( timeSteps, "minutes" ) }
-				length={ selectedTimeSlots.timeSlots.length }
 				height={ placeHolderHeight }
 				clearTimeRangeSelectionCB={ clearTimeRangeSelectionCB }
+				renderPlaceHolder={ renderPlaceHolder }
 			/>
 		)
 	}
 
+	if ( timeSlotSelectedIndex > 0 ) {
+		return <></> // the cell is not rendered since the placeholder item spans over multiple selected cells
+	}
+
 	const styles: CSSProperties = {
-		//backgroundColor: isWeekendDay ? token( "elevation.surface.pressed" ) : groupNumber % 2 === 0 ? token( "color.background.neutral.subtle" ) : token( "elevation.surface.hovered" ),
+		backgroundColor: isWeekendDay ? token( "elevation.surface.pressed" ) : groupNumber % 2 === 0 ? token( "color.background.neutral.subtle" ) : token( "elevation.surface.hovered" ),
 		verticalAlign: "top",
-		//borderBottom: isOnlyGroupRow ? `1px solid ${ token( "color.border.bold" ) }` : undefined,
 		cursor: "pointer",
-		backgroundColor: "red",
 	}
 
 	return (
 		<td
 			key={ timeSlotNumber }
-			colSpan={ 2 } // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
+			colSpan={ selectedTimeSlots && isFirstOfSelection ? 2 * selectedTimeSlots.timeSlots.length : 2 } // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			{ ...( timeSlotSelectedIndex === -1 ? mouseHandlers : { onClick: () => console.log( "NOPE" ) } ) }
 			style={ styles }
 		>
@@ -242,10 +242,10 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 	group: G,
 	groupNumber: number,
 	items: I[],
-	renderGroup: ( ( group: G ) => JSX.Element ) | undefined
+	renderGroup: ( ( props: { group: G } ) => JSX.Element ) | undefined
 	onGroupHeaderClick: ( ( group: G ) => void ) | undefined,
 	selectedTimeSlotItem: I | undefined,
-	renderTimeSlotItem: ( ( group: G, item: I, selectedTimeSlotItem: I | undefined ) => JSX.Element ) | undefined,
+	renderTimeSlotItem: ( ( props: RenderItemProps<G, I> ) => JSX.Element ) | undefined,
 	onTimeSlotItemClick: ( ( group: G, item: I ) => void ) | undefined,
 } ) {
 
@@ -278,24 +278,21 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 					group={ group }
 					groupNumber={ groupNumber }
 					timeSlotNumber={ timeSlotNumber }
-					isOnlyGroupRow={ rowCount === 0 }
 				/>
 			)
 		}
-
 		trs.push(
 			<tr
 				style={ {
 					backgroundColor: token( "elevation.surface" ),
-					//height: placeHolderHeight, // height works as min height in tables
-					height: "1px",
+					height: placeHolderHeight, // height works as min height in tables
 				} }
 			>
 				{ tds }
 			</tr>
 		)
-		console.log( "ROWCOUNT", rowCount )
 
+		// and the normal rows
 		for ( let r = 0; r < rowCount; r++ ) {
 			const tds = []
 			const itemsOfRow = itemRows[ r ] ?? []
@@ -342,7 +339,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 					<TableCell
 						key={ timeSlotNumber }
 						timeSlotNumber={ timeSlotNumber }
-						isLastGroupRow={ r === itemRows.length - 1 }
+						isLastGroupRow={ r === rowCount - 1 }
 						slotsArray={ slotsArray }
 						group={ group }
 						groupNumber={ groupNumber }
