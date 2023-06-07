@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react"
+import React, { MutableRefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 
 //import styles from "./LPTimeTable.module.css";
@@ -129,8 +129,8 @@ export default function LPTimeTable<G extends TimeTableGroup, I extends TimeSlot
  * @returns 
  */
 const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( {
-	startDate,
-	endDate,
+	startDate: startDateP,
+	endDate: endDateP,
 	timeStepsMinutes,
 	entries,
 	selectedTimeSlotItem,
@@ -150,6 +150,21 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	nowOverwrite,
 }: LPTimeTableProps<G, I> ) => {
 
+	const [ startDate, setStartDate ] = useState<Dayjs>( startDateP )
+	const [ endDate, setEndDate ] = useState<Dayjs>( endDateP )
+
+	useEffect( () => {
+		if ( !startDateP.isSame( startDate ) ) {
+			setStartDate( startDateP )
+		}
+	}, [ startDateP, startDate ] )
+	useEffect( () => {
+		if ( !endDateP.isSame( endDate ) ) {
+			setEndDate( endDateP )
+		}
+	}, [ endDateP, endDate ] )
+
+
 
 	const tableHeaderRef = useRef<HTMLTableSectionElement>( null )
 	const tableBodyRef = useRef<HTMLTableSectionElement>( null )
@@ -159,11 +174,29 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	//#region calculate time slots, dates array and the final time steps size in minutes
 	const { slotsArray, timeSteps, timeSlotsPerDay } = useMemo( () => {
 		// to avoid overflow onto the next day if the time steps are too large
+		console.info( "LPTimeTable: calculating time slots", startDate, endDate, timeStepsMinutes, rounding )
 		const { timeSlotsPerDay, daysDifference, timeSteps } = calculateTimeSlotProperties( startDate, endDate, timeStepsMinutes, rounding ?? "round", setMessage )
 		const slotsArray = calculateTimeSlots( timeSlotsPerDay, daysDifference, timeSteps, startDate )
 		return { slotsArray, timeSteps, timeSlotsPerDay }
 	}, [ startDate, endDate, timeStepsMinutes, rounding, setMessage ] )
 	//#endregion
+
+	//TO REMOVE
+	useEffect( () => {
+		console.info( "LPTimeTable: startDate changed", startDate )
+	}, [ startDate ] )
+	useEffect( () => {
+		console.info( "LPTimeTable: endDate changed", endDate )
+	}, [ endDate ] )
+	useEffect( () => {
+		console.info( "LPTimeTable: timeStepsMinutes changed", timeStepsMinutes )
+	}, [ timeStepsMinutes ] )
+	useEffect( () => {
+		console.info( "LPTimeTable: rounding changed", rounding )
+	}, [ rounding ] )
+	useEffect( () => {
+		console.info( "LPTimeTable: setMessage changed", setMessage )
+	}, [ setMessage ] )
 
 
 	//#region Message is items of entries are outside of the time frame of the day

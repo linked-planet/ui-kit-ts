@@ -23,9 +23,9 @@ export function PlaceHolderItem<G extends TimeTableGroup> ( { renderPlaceHolder,
 		<div
 			style={ {
 				zIndex: 1,
-				position: "relative",
+				position: "absolute",
 				width: length * 100 + "%",
-				height: props.height,
+				//height: props.height,
 			} }
 		>
 			{ renderPlaceHolder ? renderPlaceHolder( props ) : <PlaceHolderItemPlaceHolder { ...props } /> }
@@ -45,7 +45,7 @@ function PlaceHolderItemPlaceHolder<G extends TimeTableGroup> ( { group, start, 
 				justifyContent: "end",
 				width: "100%",
 				borderRadius: "0.25rem",
-				height: "100%",
+				height,
 				backgroundColor: token( "color.background.brand.bold" ),
 				boxShadow: "rgba(50, 50, 93, 0.3) 0px 1px 2px 1px, rgba(0, 0, 0, 0.1) 0px 2px 2px 1px",
 			} }

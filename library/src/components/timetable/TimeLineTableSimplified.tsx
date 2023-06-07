@@ -1,4 +1,4 @@
-import React, { CSSProperties, MouseEvent, useCallback, useMemo } from "react"
+import React, { CSSProperties, MouseEvent, useCallback, useEffect, useMemo } from "react"
 import type { Dayjs } from "dayjs"
 import type { TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "./LPTimeTable"
 
@@ -42,6 +42,7 @@ export default function TimeLineTableSimplified<G extends TimeTableGroup, I exte
 	}: TimeLineTableSimplifiedProps<G, I>
 ) {
 	const tableRows = useMemo( () => {
+		if ( !entries ) return []
 		return entries.map( ( groupEntry, g ) => (
 			<GroupRows<G, I>
 				key={ g }
@@ -57,6 +58,10 @@ export default function TimeLineTableSimplified<G extends TimeTableGroup, I exte
 		)
 		)
 	}, [ entries, onGroupClick, onTimeSlotItemClick, renderGroup, renderTimeSlotItem, selectedTimeSlotItem ] )
+
+	useEffect( () => {
+		console.log( "LPTimeTable - entries changed, rendering rows" )
+	}, [ entries ] )
 
 	return (
 		<>
@@ -180,7 +185,7 @@ function PlaceholderTableCell<G extends TimeTableGroup> ( {
 
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const timeSlotSelectedIndex = ( selectedTimeSlots && selectedTimeSlots.group === group ) ? selectedTimeSlots.timeSlots.findIndex( it => it === timeSlotNumber ) : -1
-	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
+	//const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 	const isFirstOfSelection = timeSlotSelectedIndex === 0
 
 	let placeHolderItem: JSX.Element | undefined = undefined
@@ -198,17 +203,18 @@ function PlaceholderTableCell<G extends TimeTableGroup> ( {
 	}
 
 	const styles: CSSProperties = {
-		backgroundColor: isWeekendDay ? token( "elevation.surface.pressed" ) : groupNumber % 2 === 0 ? token( "color.background.neutral.subtle" ) : token( "elevation.surface.hovered" ),
+		//backgroundColor: isWeekendDay ? token( "elevation.surface.pressed" ) : groupNumber % 2 === 0 ? token( "color.background.neutral.subtle" ) : token( "elevation.surface.hovered" ),
 		verticalAlign: "top",
-		borderBottom: isOnlyGroupRow ? `1px solid ${ token( "color.border.bold" ) }` : undefined,
+		//borderBottom: isOnlyGroupRow ? `1px solid ${ token( "color.border.bold" ) }` : undefined,
 		cursor: "pointer",
+		backgroundColor: "red",
 	}
 
 	return (
 		<td
 			key={ timeSlotNumber }
 			colSpan={ 2 } // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
-			{ ...( timeSlotSelectedIndex === -1 ? mouseHandlers : undefined ) }
+			{ ...( timeSlotSelectedIndex === -1 ? mouseHandlers : { onClick: () => console.log( "NOPE" ) } ) }
 			style={ styles }
 		>
 			{ placeHolderItem }
@@ -247,7 +253,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 
 	const trs = useMemo( () => {
 		const itemRows = getGroupItemStack( items )
-		const rowCount = itemRows.length
+		const rowCount = itemRows.length > 0 ? itemRows.length : 1 // if there are no rows, we draw an empty one
 
 		const trs: JSX.Element[] = []
 
@@ -281,14 +287,14 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			<tr
 				style={ {
 					backgroundColor: token( "elevation.surface" ),
-					height: placeHolderHeight, // height works as min height in tables
+					//height: placeHolderHeight, // height works as min height in tables
+					height: "1px",
 				} }
 			>
 				{ tds }
 			</tr>
 		)
-
-		// add normal rows
+		console.log( "ROWCOUNT", rowCount )
 
 		for ( let r = 0; r < rowCount; r++ ) {
 			const tds = []
@@ -365,7 +371,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking> ( {
 			)
 		}
 		return trs
-	}, [ items, group, groupNumber, renderGroup, onGroupHeaderClick, slotsArray, timeSteps, selectedTimeSlotItem, onTimeSlotItemClick, renderTimeSlotItem ] )
+	}, [ items, group, groupNumber, renderGroup, onGroupHeaderClick, placeHolderHeight, slotsArray, timeSteps, selectedTimeSlotItem, onTimeSlotItemClick, renderTimeSlotItem ] )
 
 	return (
 		<>

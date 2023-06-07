@@ -48,6 +48,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup> ( {
 
 	// remove any selection in case fundamental time table properties change
 	useEffect( () => {
+		console.log( "LPTimeTable - clearing selection because the slotsArray or timeSteps changed" )
 		setSelectedTimeSlotsG( undefined )
 	}, [ slotsArray, timeSteps ] )
 
@@ -64,6 +65,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup> ( {
 
 	// callback to toggle a time slot
 	const toggleTimeSlotCBG = useCallback( ( timeSlot: number, group: G, isFromDrag: boolean ) => {
+		console.log( "TOGGLE TIME SLOT" )
 		if ( !selectedTimeSlots ) {
 			setSelectedTimeSlotsG( {
 				timeSlots: [ timeSlot ],
@@ -86,7 +88,11 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup> ( {
 		const alreadySelected = selectedTimeSlots.timeSlots.includes( timeSlot )
 
 		if ( alreadySelected ) {
-			if ( isFromDrag ) return // we only add during drag selection 
+			console.log( "ALREADY SELECTED" )
+			if ( isFromDrag ) {
+				console.log( "DRAG ACTIVE" )
+				return // we only add during drag selection 
+			}
 			if ( timeSlotBefore !== undefined && timeSlotAfter !== undefined ) {
 				setMessage( {
 					urgency: "information",
@@ -100,6 +106,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup> ( {
 				return
 			}
 			if ( timeSlotBefore !== undefined || timeSlotAfter !== undefined ) {
+				console.log( "REMOVE TIME SLOT", timeSlot )
 				setSelectedTimeSlotsG( {
 					timeSlots: selectedTimeSlots.timeSlots.filter( it => it !== timeSlot ),
 					group,
@@ -107,6 +114,8 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup> ( {
 			}
 			return
 		}
+
+		console.log( "NOT SELECTED YET" )
 		// not selected yet
 		if ( timeSlotBefore !== undefined || timeSlotAfter !== undefined ) {
 			setSelectedTimeSlotsG( {
