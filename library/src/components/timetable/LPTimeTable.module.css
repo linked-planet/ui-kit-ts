@@ -82,7 +82,7 @@
 
 .timeSlotBar {
 	position: absolute;
-	background-color: var(--ds-border);
+	border-left: 1px solid var(--ds-border);
 	inset: 0 0 0 100%;
 	width: 1px;
 	height: 10px;

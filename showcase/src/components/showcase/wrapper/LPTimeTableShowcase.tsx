@@ -254,7 +254,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	const [ rounding, setRounding ] = useState<"round" | "ceil" | "floor">( "round" )
 	const [ timeSteps, setTimeSteps ] = useState( 110 )
-	const [ firstColumnWidth, setFirstColumnWidth ] = useState( 150 )
+	const [ groupHeaderColumnWidth, setGroupHeaderColumnWidth ] = useState( 150 )
 	const [ columnWidth, setColumnWidth ] = useState( 70 )
 
 	const [ timeFrame, setTimeFrame ] = useState( {
@@ -431,11 +431,11 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					<input
 						type="number"
 						name="firstcolwidth"
-						value={ firstColumnWidth }
+						value={ groupHeaderColumnWidth }
 						step={ 10 }
 						min={ 10 }
 						max={ 300 }
-						onChange={ ( e ) => setFirstColumnWidth( parseInt( e.target.value ) ) }
+						onChange={ ( e ) => setGroupHeaderColumnWidth( parseInt( e.target.value ) ) }
 						style={ {
 							width: "4rem",
 							textAlign: "center",
@@ -456,7 +456,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 						value={ columnWidth }
 						step={ 10 }
 						min={ 10 }
-						max={ 100 }
+						max={ 1000 }
 						onChange={ ( e ) => setColumnWidth( parseInt( e.target.value ) ) }
 						style={ {
 							width: "4rem",
@@ -520,7 +520,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 			</div>
 			<>
 				<LPTimeTable
-					firstColumnWidth={ firstColumnWidth }
+					groupHeaderColumnWidth={ groupHeaderColumnWidth }
 					columnWidth={ columnWidth }
 					startDate={ timeFrame.startDate }
 					endDate={ timeFrame.endDate }

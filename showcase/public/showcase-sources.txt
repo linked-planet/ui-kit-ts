@@ -1136,7 +1136,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 			subtitle: "Group 3 description"
 		},
 		items: [
-			{
+			/*{
 				// this entry is totally before the available slots of the day 
 				startDate: dayjs().startOf( "day" ).add( 5, "hours" ),
 				endDate: dayjs().startOf( "day" ).add( 6, "hours" ),
@@ -1146,7 +1146,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				startDate: dayjs().startOf( "day" ).add( 1, "day" ).add( 9, "hours" ),
 				endDate: dayjs().startOf( "day" ).add( 2, "days" ).add( 9, "hours" ),
 				title: "Item 3-2"
-			},
+			},*/
 			{
 				// this entry is totally after the available slots of the day
 				startDate: dayjs().startOf( "day" ).add( 17, "hours" ),
@@ -1267,7 +1267,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	const [ rounding, setRounding ] = useState<"round" | "ceil" | "floor">( "round" )
 	const [ timeSteps, setTimeSteps ] = useState( 110 )
-	const [ firstColumnWidth, setFirstColumnWidth ] = useState( 150 )
+	const [ groupHeaderColumnWidth, setGroupHeaderColumnWidth ] = useState( 150 )
 	const [ columnWidth, setColumnWidth ] = useState( 70 )
 
 	const [ timeFrame, setTimeFrame ] = useState( {
@@ -1325,15 +1325,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 
 	const [ showCreateNewItemModal, setShowCreateNewItemModal ] = useState( false )
 	const [ selectedTimeRange, setSelectedTimeRange ] = useState<{ startDate: Dayjs, endDate: Dayjs, group: TimeTableGroup } | undefined>()
-	const [ clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB ] = useState<() => void | undefined>()
-
-	const onSelectedTimeRangeCB = useCallback( ( s: { group: TimeTableGroup, startDate: Dayjs, endDate: Dayjs } | undefined ) => {
-		if ( s ) {
-			setSelectedTimeRange( s )
-			setShowCreateNewItemModal( !!s )
-		}
-		return true
-	}, [] )
+	const [ clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB ] = useState<() => void>()
 
 	const onCreateNewItemConfirmCB = useCallback( ( group: TimeTableGroup, item: TimeSlotBooking ) => {
 		setShowCreateNewItemModal( false )
@@ -1356,8 +1348,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 			return newEntries
 		} )
 		setSelectedTimeRange( undefined )
-	}, [] )
-
+	}, [ clearSelectedTimeRangeCB ] )
 
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
@@ -1453,11 +1444,11 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					<input
 						type="number"
 						name="firstcolwidth"
-						value={ firstColumnWidth }
+						value={ groupHeaderColumnWidth }
 						step={ 10 }
 						min={ 10 }
 						max={ 300 }
-						onChange={ ( e ) => setFirstColumnWidth( parseInt( e.target.value ) ) }
+						onChange={ ( e ) => setGroupHeaderColumnWidth( parseInt( e.target.value ) ) }
 						style={ {
 							width: "4rem",
 							textAlign: "center",
@@ -1478,7 +1469,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 						value={ columnWidth }
 						step={ 10 }
 						min={ 10 }
-						max={ 100 }
+						max={ 1000 }
 						onChange={ ( e ) => setColumnWidth( parseInt( e.target.value ) ) }
 						style={ {
 							width: "4rem",
@@ -1527,10 +1518,22 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 				>
 					<ChevronRightIcon label="nexttimeframe" />
 				</Button>
+				<Button
+					isDisabled={ !selectedTimeRange }
+					onClick={ () => {
+						setShowCreateNewItemModal( true )
+					} }
+					title="Create New Item"
+					style={ {
+						margin: "0 0.5rem 0.5rem 0",
+					} }
+				>
+					Create New Item
+				</Button>
 			</div>
 			<>
 				<LPTimeTable
-					firstColumnWidth={ firstColumnWidth }
+					groupHeaderColumnWidth={ groupHeaderColumnWidth }
 					columnWidth={ columnWidth }
 					startDate={ timeFrame.startDate }
 					endDate={ timeFrame.endDate }
@@ -1543,7 +1546,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					rounding={ rounding }
 					nowOverwrite={ nowOverwrite }
 					timeTableMessages={ translation }
-					onTimeRangeSelected={ onSelectedTimeRangeCB }
+					onTimeRangeSelected={ setSelectedTimeRange }
 					setClearSelectedTimeRangeCB={ setClearSelectedTimeRangeCB }
 				/>
 			</>

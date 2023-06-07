@@ -9,7 +9,7 @@ const headerTimeSlotFormat = "HH:mm"
 
 type Props = {
 	slotsArray: Dayjs[]
-	firstColumnWidth: number | string,
+	groupHeaderColumnWidth: number | string,
 	columnWidth: number | string,
 	startDate: Dayjs,
 	endDate: Dayjs,
@@ -19,7 +19,7 @@ type Props = {
 
 export const LPTimeTableHeader = forwardRef( function TimeTableHeader ( {
 	slotsArray,
-	firstColumnWidth,
+	groupHeaderColumnWidth,
 	columnWidth,
 	startDate,
 	endDate,
@@ -35,14 +35,20 @@ export const LPTimeTableHeader = forwardRef( function TimeTableHeader ( {
 		<>
 			{/* the colgroup defined the coliumn widths. There are always two column for one visible, one fixed size, and one which can expand if the table is smaller than the parent. */ }
 			<colgroup>
-				<col style={ { width: firstColumnWidth } } />
+				<col style={ {
+					minWidth: typeof groupHeaderColumnWidth === "string" ? groupHeaderColumnWidth : `${ groupHeaderColumnWidth }px`,
+					width: typeof groupHeaderColumnWidth === "string" ? groupHeaderColumnWidth : `${ groupHeaderColumnWidth }px`
+				} }
+				/>
 				{ slotsArray.map( ( _, i ) => {
 					return (
 						<>
 							<col
 								key={ i * 2 }
-								style={ { width: columnWidth } }
-								width={ columnWidth }
+								style={ {
+									minWidth: typeof columnWidth === "string" ? columnWidth : `${ columnWidth }px`,
+									width: typeof columnWidth === "string" ? columnWidth : `${ columnWidth }px`,
+								} }
 							/>
 							<col
 								key={ i * 2 + 1 }
@@ -60,7 +66,7 @@ export const LPTimeTableHeader = forwardRef( function TimeTableHeader ( {
 							left: 0,
 							top: 0,
 							borderLeftStyle: "none",
-							width: firstColumnWidth,
+							width: groupHeaderColumnWidth,
 							borderRight: `1px solid ${ token( "color.border.bold" ) }`,
 							backgroundColor: token( "elevation.surface" ),
 						} }

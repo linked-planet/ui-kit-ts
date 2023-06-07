@@ -14,7 +14,10 @@ type PlaceHolderItemProps<G extends TimeTableGroup> = {
 
 
 
-/** The length state over how many cells the selection is spanning */
+/** 
+ * Wrapper item for the placeholder item.
+ * The length state over how many cells the selection is spanning
+ */
 export function PlaceHolderItem<G extends TimeTableGroup> ( { renderPlaceHolder, length, ...props }: PlaceHolderItemProps<G> & { length: number, renderPlaceHolder?: ( props: PlaceHolderItemProps<G> ) => JSX.Element } ): JSX.Element {
 	return (
 		<div
@@ -31,7 +34,9 @@ export function PlaceHolderItem<G extends TimeTableGroup> ( { renderPlaceHolder,
 }
 
 
-
+/**
+ * render the current placeholder item (which is a placeholder itself) 
+ */
 function PlaceHolderItemPlaceHolder<G extends TimeTableGroup> ( { group, start, end, height, clearTimeRangeSelectionCB }: PlaceHolderItemProps<G> ) {
 	return (
 		<div
@@ -42,7 +47,7 @@ function PlaceHolderItemPlaceHolder<G extends TimeTableGroup> ( { group, start, 
 				borderRadius: "0.25rem",
 				height: "100%",
 				backgroundColor: token( "color.background.brand.bold" ),
-				boxShadow: "rgba(50, 50, 93, 0.7) 0px 2px 5px 1px, rgba(0, 0, 0, 0.5) 0px 2px 2px 1px",
+				boxShadow: "rgba(50, 50, 93, 0.3) 0px 1px 2px 1px, rgba(0, 0, 0, 0.1) 0px 2px 2px 1px",
 			} }
 			onClick={ clearTimeRangeSelectionCB }
 		>
