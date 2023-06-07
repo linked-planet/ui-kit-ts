@@ -255,6 +255,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 				timeSteps={ timeSteps }
 				disableWeekendInteractions={ disableWeekendInteractions }
 				placeHolderHeight={ placeHolderHeight }
+				columnWidth={ columnWidth }
 				renderPlaceHolder={ renderPlaceHolder }
 			>
 				<SelectedTimeSlotsProvider slotsArray={ slotsArray } timeSteps={ timeSteps } onTimeRangeSelected={ onTimeRangeSelected } setClearSelectedTimeRangeCB={ setClearSelectedTimeRangeCB }>

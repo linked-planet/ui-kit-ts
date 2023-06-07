@@ -130,7 +130,7 @@ function TableCell ( {
 	const timeSlot = slotsArray[ timeSlotNumber ]
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 
-	const { disableWeekendInteractions } = useTimeTableConfig()
+	const { disableWeekendInteractions, columnWidth } = useTimeTableConfig()
 
 	const mouseHandlers = useMouseHandlers(
 		timeSlotNumber,
@@ -142,6 +142,7 @@ function TableCell ( {
 		paddingBottom: isLastGroupRow ? "10px" : undefined,
 		backgroundColor: isWeekendDay ? token( "elevation.surface.pressed" ) : groupNumber % 2 === 0 ? token( "color.background.neutral.subtle" ) : token( "color.background.neutral" ),
 		cursor: isWeekendDay && disableWeekendInteractions ? "not-allowed" : "pointer",
+		maxWidth: columnWidth,
 	}
 
 	return (

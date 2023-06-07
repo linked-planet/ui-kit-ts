@@ -10,6 +10,7 @@ type TimeTableConfig<G extends TimeTableGroup> = {
 	slotsArray: Dayjs[],
 	disableWeekendInteractions: boolean,
 	placeHolderHeight: string,
+	columnWidth: number | string,
 	renderPlaceHolder: ( ( props: PlaceholderItemProps<G> ) => JSX.Element ) | undefined,
 }
 
@@ -21,6 +22,7 @@ export function TimeTableConfigProvider<G extends TimeTableGroup> ( {
 	slotsArray,
 	disableWeekendInteractions,
 	placeHolderHeight,
+	columnWidth,
 	renderPlaceHolder,
 	children
 }: TimeTableConfig<G> & { children: React.ReactNode } ) {
@@ -33,6 +35,7 @@ export function TimeTableConfigProvider<G extends TimeTableGroup> ( {
 			slotsArray,
 			disableWeekendInteractions,
 			placeHolderHeight,
+			columnWidth,
 			renderPlaceHolder: renderPlaceHolderG,
 		} }>
 			{ children }
