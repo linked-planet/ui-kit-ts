@@ -348,7 +348,7 @@ function TimeSlotBarRow ( {
 					urgency: "error",
 					messageKey: "timetable.timeSlotColumnsNotFound"
 				} )
-				console.log( "unable to find time slot columns for the time slot bars" )
+				console.log( "LPTimeTable - unable to find time slot columns for the time slot bars" )
 				return
 			}
 			for ( const slotBar of slotBars ) {
@@ -416,7 +416,6 @@ function calculateTimeSlotProperties (
 	let timeSteps = timeStepsMinute
 	if ( startDate.add( timeSteps, "minutes" ).day() !== startDate.day() ) {
 		timeSteps = startDate.startOf( "day" ).add( 1, "day" ).diff( startDate, "minutes" ) - 1 // -1 to end at the same day if the time steps are from someplace during the day until
-		console.log( "TEEEEEEST" );
 		setMessage( {
 			urgency: "warning",
 			messageKey: "timetable.unfittingTimeSlotMessage",
@@ -487,7 +486,7 @@ function calculateTimeSlots (
 	} )
 
 	const slotsArray = daysArray.flatMap( ( date ) => {
-		console.log( "timeSlotsPerDay", timeSlotsPerDay )
+		console.log( "LPTimeTable - timeSlotsPerDay", timeSlotsPerDay )
 		return Array.from( { length: timeSlotsPerDay }, ( _, i ) => i * timeSteps ).map( ( minutes ) => {
 			return dayjs( date ).add( minutes, "minutes" )
 		} )
@@ -522,7 +521,7 @@ function moveNowBar (
 		!tableHeaderRef.current ||
 		!tableBodyRef.current
 	) {
-		console.log( "time table header or body ref not yet set" )
+		console.log( "LPTimeTable - time table header or body ref not yet set" )
 		return
 	}
 
@@ -539,7 +538,7 @@ function moveNowBar (
 			urgency: "error",
 			messageKey: "timetable.noHeaderTimeSlotRow",
 		} )
-		console.log( "no header time slot row found" )
+		console.log( "LPTimeTable - no header time slot row found" )
 		return
 	}
 	const headerTimeSlotCells = headerTimeslotRow.children
@@ -565,7 +564,7 @@ function moveNowBar (
 
 	const slotBar = tbodyFirstRow?.children[ startSlot + 1 ] as HTMLDivElement | undefined
 	if ( !slotBar ) {
-		console.log( "unable to find time slot column for the now bar: ", startSlot )
+		console.log( "LPTimeTable - unable to find time slot column for the now bar: ", startSlot )
 		return
 	}
 
