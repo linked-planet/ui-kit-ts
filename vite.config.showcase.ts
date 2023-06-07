@@ -5,6 +5,7 @@ import tsconfigPaths from "vite-tsconfig-paths"
 export default defineConfig({
 	build: {
 		outDir: "dist-showcase",
+		target: "es2022",
 	},
 	define: {
 		"process.env": {}, // this is necessary because form.js in @atlaskit uses process.env.NODE_ENV

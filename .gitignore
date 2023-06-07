@@ -1,9 +1,12 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+
+
 # dependencies
 /showcase/package-lock.json
 */build
 */dist
+/dist-showcase
 */node_modules
 /.pnp
 .pnp.js
