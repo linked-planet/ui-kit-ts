@@ -19,7 +19,6 @@ export type PlaceholderItemProps<G extends TimeTableGroup> = {
  * The length state over how many cells the selection is spanning
  */
 export function PlaceHolderItem<G extends TimeTableGroup> ( { renderPlaceHolder, ...props }: PlaceholderItemProps<G> & { renderPlaceHolder?: ( props: PlaceholderItemProps<G> ) => JSX.Element } ): JSX.Element {
-	console.log( "PLACEHOLDER ITEM", renderPlaceHolder )
 	return (
 		<div
 			style={ {

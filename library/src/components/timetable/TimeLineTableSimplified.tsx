@@ -214,7 +214,7 @@ function PlaceholderTableCell<G extends TimeTableGroup> ( {
 		<td
 			key={ timeSlotNumber }
 			colSpan={ selectedTimeSlots && isFirstOfSelection ? 2 * selectedTimeSlots.timeSlots.length : 2 } // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
-			{ ...( timeSlotSelectedIndex === -1 ? mouseHandlers : { onClick: () => console.log( "NOPE" ) } ) }
+			{ ...( timeSlotSelectedIndex === -1 ? mouseHandlers : undefined ) }
 			style={ styles }
 		>
 			{ placeHolderItem }

@@ -41,7 +41,7 @@ export function LocaleProvider ( { locale, children }: { locale?: Locale | undef
 	useEffect( () => {
 		const loc = availableLocales.find( it => it.locale === localeUsed )
 		if ( !loc ) {
-			console.log( "locale not available", localeUsed, availableLocales )
+			console.info( "LocaleProvider - locale not available", localeUsed, ", available:", availableLocales )
 			setLocale( availableLocales[ 0 ].locale ) // set english as default
 			return
 		}
@@ -52,7 +52,7 @@ export function LocaleProvider ( { locale, children }: { locale?: Locale | undef
 	}, [ localeUsed ] )
 
 	useEffect( () => {
-		console.log( "translation changed", translation )
+		console.info( "LocaleProvider - translation changed", translation )
 	}, [ translation ] )
 
 	return (
@@ -70,11 +70,11 @@ export const useLocale = () => {
 	}
 
 	useEffect( () => {
-		console.log( "locale changed", context.locale )
+		console.info( "useLocale - locale changed", context.locale )
 	}, [ context.locale ] )
 
 	useEffect( () => {
-		console.log( "translation changed useLocale", context.translation )
+		console.info( "useLocale - translation changed", context.translation )
 	}, [ context.translation ] )
 
 	return context
@@ -87,11 +87,11 @@ export const useTranslation = () => {
 	}
 
 	useEffect( () => {
-		console.log( "locale changed useTranslation", context.locale )
+		console.info( "useTranslation - locale changed", context.locale )
 	}, [ context.locale ] )
 
 	useEffect( () => {
-		console.log( "translation changed useTranslation", context.translation )
+		console.info( "useTranslation - translations changed", context.translation )
 	}, [ context.translation ] )
 
 	return context.translation

@@ -529,7 +529,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 					timeStepsMinutes={ timeSteps }
 					entries={ entries }
 					selectedTimeSlotItem={ selectedTimeSlotItem }
-					renderGroup={ Group }
+					/*renderGroup={ Group }
 					renderTimeSlotItem={ Item }
 					renderPlaceHolder={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
 						<div
@@ -538,7 +538,7 @@ export default function LPTimeTableShowCase ( props: ShowcaseProps ) {
 						>
 							Placeholder
 						</div>
-					) }
+					) }*/
 					onTimeSlotItemClick={ onTimeSlotItemClickCB }
 					rounding={ rounding }
 					nowOverwrite={ nowOverwrite }

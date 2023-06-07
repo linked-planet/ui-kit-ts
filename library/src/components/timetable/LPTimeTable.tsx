@@ -176,30 +176,11 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking> ( 
 	//#region calculate time slots, dates array and the final time steps size in minutes
 	const { slotsArray, timeSteps, timeSlotsPerDay } = useMemo( () => {
 		// to avoid overflow onto the next day if the time steps are too large
-		console.info( "LPTimeTable: calculating time slots", startDate, endDate, timeStepsMinutes, rounding )
 		const { timeSlotsPerDay, daysDifference, timeSteps } = calculateTimeSlotProperties( startDate, endDate, timeStepsMinutes, rounding ?? "round", setMessage )
 		const slotsArray = calculateTimeSlots( timeSlotsPerDay, daysDifference, timeSteps, startDate )
 		return { slotsArray, timeSteps, timeSlotsPerDay }
 	}, [ startDate, endDate, timeStepsMinutes, rounding, setMessage ] )
 	//#endregion
-
-	//TO REMOVE
-	useEffect( () => {
-		console.info( "LPTimeTable: startDate changed", startDate )
-	}, [ startDate ] )
-	useEffect( () => {
-		console.info( "LPTimeTable: endDate changed", endDate )
-	}, [ endDate ] )
-	useEffect( () => {
-		console.info( "LPTimeTable: timeStepsMinutes changed", timeStepsMinutes )
-	}, [ timeStepsMinutes ] )
-	useEffect( () => {
-		console.info( "LPTimeTable: rounding changed", rounding )
-	}, [ rounding ] )
-	useEffect( () => {
-		console.info( "LPTimeTable: setMessage changed", setMessage )
-	}, [ setMessage ] )
-
 
 	//#region Message is items of entries are outside of the time frame of the day
 	useEffect( () => {
