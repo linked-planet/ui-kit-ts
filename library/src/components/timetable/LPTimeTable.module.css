@@ -1,0 +1,98 @@
+@import url("../../variables.css");
+
+.lpTimeTable {
+	display: table;
+	border-collapse: separate;
+	border-spacing: 0;
+	overflow: auto;
+	table-layout: fixed;
+}
+
+.lpTimeTable thead {
+	border-bottom-width: 0 !important; /* atlas-kit overrides this */
+	position: sticky;
+	top: 0;
+	z-index: 3;
+}
+
+.lpTimeTable tbody {
+	table-layout: fixed;
+}
+
+.lpTimeTable th {
+	position: relative;
+	padding: 0;
+	border-left-color: var(
+		--ds-border-bold
+	) !important; /* atlas-kit overrides this */
+}
+
+.lpTimeTable tbody td {
+	padding: 0;
+	border-left-width: 0;
+	border-right-width: 0;
+	position: relative;
+}
+
+.lpTimeTable .nowRow {
+	height: 0;
+}
+
+/* borders of the left sticky column */
+.lpTimeTable .groupHeader {
+	position: sticky;
+	left: 0;
+	z-index: 3;
+	border-width: 0;
+	border-right-width: var(--ds-width-050, 1px);
+	border-bottom-width: var(--ds-width-050, 1px);
+	border-style: solid;
+	border-color: var(--ds-border-bold);
+	user-select: none !important;
+}
+
+.lpTimeTable .headerTimeSlot {
+	border-color: var(--ds-border-bold);
+	border-bottom: var(--ds-width-050, 1px) solid var(--ds-border-bold);
+	color: var(--ds-text);
+	border-left-style: solid;
+	font-weight: 500;
+	background-color: var(--ds-surface);
+}
+
+.lpTimeTable .nowHeaderTimeSlot {
+	border-bottom-color: var(--ds-chart-orange-bold);
+	border-bottom-width: var(--ds-width-100, 2px);
+	font-weight: 700;
+}
+
+.lpTimeTable .nowHeaderDate {
+	color: var(--ds-text-subtle);
+}
+
+.lpTimeTable .nowBar {
+	position: absolute;
+	background-color: var(--ds-chart-orange-bold);
+	opacity: 0.6;
+	top: 100%;
+	bottom: 0;
+	width: 2px;
+	z-index: 1;
+}
+
+.timeSlotBar {
+	position: absolute;
+	border-left: 1px solid var(--ds-border);
+	inset: 0 0 0 100%;
+	width: 1px;
+	height: 10px;
+	z-index: 1;
+}
+
+.weekend {
+	background-color: var(--ds-background-neutral);
+}
+
+.unselectable {
+	user-select: none !important;
+}

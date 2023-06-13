@@ -1,0 +1,20 @@
+@import url("../../variables.css");
+
+.loader {
+	border: 6px solid var(--ds-border);
+	border-radius: 50%;
+	border-top: 6px solid var(--ds-border-bold);
+	animation: spin 2s linear infinite;
+	min-height: 1rem;
+	min-width: 1rem;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}

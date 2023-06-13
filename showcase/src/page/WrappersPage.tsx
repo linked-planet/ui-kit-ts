@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import AvatarShowcase from "../components/showcase/wrapper/AvatarShowcase";
 import AwesomeSliderShowcase from "../components/showcase/wrapper/AwesomeSliderShowcase";
 import BadgeShowcase from "../components/showcase/wrapper/BadgeShowcase";
@@ -30,77 +30,82 @@ import TextAreaShowcase from "../components/showcase/wrapper/TextAreaShowcase";
 import TextFieldShowcase from "../components/showcase/wrapper/TextFieldShowcase";
 import ToggleShowcase from "../components/showcase/wrapper/ToggleShowcase";
 import TooltipShowcase from "../components/showcase/wrapper/TooltipShowcase";
-import {useDispatch} from "react-redux"
+import LPTimeTableShowCase from "../components/showcase/wrapper/LPTimeTableShowcase";
+import { useDispatch } from "react-redux"
+import LoadingSpinnerShowcase from "../components/showcase/wrapper/LoadingSpinnerShowcase";
 
-function WrappersPage() {
+function WrappersPage () {
 
-    const dispatch = useDispatch()
-    const [overallSourceCode, setOverallSourceCode] = useState("")
-    // retrieve source code
+	const dispatch = useDispatch()
+	const [ overallSourceCode, setOverallSourceCode ] = useState( "" )
+	// retrieve source code
 
-    useEffect(() => {
-        fetch("./showcase-sources.txt")
-            .then((response) => response.text())
-            .then((sourceCode) => {
-                console.info("Loaded SourceCode:", sourceCode);
-                setOverallSourceCode(sourceCode);
-            });
-        dispatch({
-            type: "SET_MENU"
-        })
-    }, [])
+	useEffect( () => {
+		fetch( "./showcase-sources.txt" )
+			.then( ( response ) => response.text() )
+			.then( ( sourceCode ) => {
+				//console.info( "Loaded SourceCode:", sourceCode );
+				setOverallSourceCode( sourceCode );
+			} );
+		dispatch( {
+			type: "SET_MENU"
+		} )
+	}, [ dispatch ] )
 
-    return (
-        <div>
-            <h1>Wrappers</h1>
+	return (
+		<div>
+			<h1>Wrappers</h1>
 
-            <AvatarShowcase overallSourceCode={overallSourceCode}/>
+			<AvatarShowcase overallSourceCode={ overallSourceCode } />
 
-            <AwesomeSliderShowcase overallSourceCode={overallSourceCode}/>
+			<AwesomeSliderShowcase overallSourceCode={ overallSourceCode } />
 
-            <BadgeShowcase overallSourceCode={overallSourceCode}/>
+			<BadgeShowcase overallSourceCode={ overallSourceCode } />
 
-            <ButtonShowcase overallSourceCode={overallSourceCode}/>
+			<ButtonShowcase overallSourceCode={ overallSourceCode } />
 
-            <BannerShowcase overallSourceCode={overallSourceCode}/>
+			<BannerShowcase overallSourceCode={ overallSourceCode } />
 
-            <CalendarShowcase overallSourceCode={overallSourceCode}/>
+			<CalendarShowcase overallSourceCode={ overallSourceCode } />
 
-            <CheckboxShowcase overallSourceCode={overallSourceCode}/>
+			<CheckboxShowcase overallSourceCode={ overallSourceCode } />
 
-            <CodeBlockShowcase overallSourceCode={overallSourceCode}/>
+			<CodeBlockShowcase overallSourceCode={ overallSourceCode } />
 
-            <DateTimePickerShowcase overallSourceCode={overallSourceCode}/>
+			<DateTimePickerShowcase overallSourceCode={ overallSourceCode } />
 
-            <DateTimeRangePickerShowcase overallSourceCode={overallSourceCode}/>
+			<DateTimeRangePickerShowcase overallSourceCode={ overallSourceCode } />
 
-            <DropDownMenuShowcase overallSourceCode={overallSourceCode}/>
+			<DropDownMenuShowcase overallSourceCode={ overallSourceCode } />
 
-            <EmptyStateShowcase overallSourceCode={overallSourceCode}/>
+			<EmptyStateShowcase overallSourceCode={ overallSourceCode } />
 
-            <FlagShowcase overallSourceCode={overallSourceCode}/>
-            <FormShowcase overallSourceCode={overallSourceCode}/>
-            <IconShowcase overallSourceCode={overallSourceCode}/>
-            <JoyrideShowcase overallSourceCode={overallSourceCode}/>
-            <LozengeShowcase overallSourceCode={overallSourceCode}/>
-            <ModalShowcase overallSourceCode={overallSourceCode}/>
-            <PaginationShowcase overallSourceCode={overallSourceCode}/>
-            <PanelShowcase overallSourceCode={overallSourceCode}/>
-            <PopupShowcase overallSourceCode={overallSourceCode}/>
-            <SelectShowcase overallSourceCode={overallSourceCode}/>
-            <TabsShowcase overallSourceCode={overallSourceCode}/>
-            <TagShowcase overallSourceCode={overallSourceCode}/>
-            <DynamicTableShowcase overallSourceCode={overallSourceCode}/>
-            <TableTreeShowcase overallSourceCode={overallSourceCode}/>
-            <TextAreaShowcase overallSourceCode={overallSourceCode}/>
-            <TextFieldShowcase overallSourceCode={overallSourceCode}/>
-            <ToggleShowcase overallSourceCode={overallSourceCode}/>
-            <TooltipShowcase overallSourceCode={overallSourceCode}/>
-            {/*<LPEditorShowcase overallSourceCode={overallSourceCode} />*/}
-            <MenuShowcase overallSourceCode={overallSourceCode}/>
+			<LoadingSpinnerShowcase overallSourceCode={ overallSourceCode } />
 
-        </div>
-    )
+			<FlagShowcase overallSourceCode={ overallSourceCode } />
+			<FormShowcase overallSourceCode={ overallSourceCode } />
+			<IconShowcase overallSourceCode={ overallSourceCode } />
+			<JoyrideShowcase overallSourceCode={ overallSourceCode } />
+			<LozengeShowcase overallSourceCode={ overallSourceCode } />
+			<ModalShowcase overallSourceCode={ overallSourceCode } />
+			<PaginationShowcase overallSourceCode={ overallSourceCode } />
+			<PanelShowcase overallSourceCode={ overallSourceCode } />
+			<PopupShowcase overallSourceCode={ overallSourceCode } />
+			<SelectShowcase overallSourceCode={ overallSourceCode } />
+			<TabsShowcase overallSourceCode={ overallSourceCode } />
+			<TagShowcase overallSourceCode={ overallSourceCode } />
+			<DynamicTableShowcase overallSourceCode={ overallSourceCode } />
+			<TableTreeShowcase overallSourceCode={ overallSourceCode } />
+			<TextAreaShowcase overallSourceCode={ overallSourceCode } />
+			<TextFieldShowcase overallSourceCode={ overallSourceCode } />
+			<ToggleShowcase overallSourceCode={ overallSourceCode } />
+			<TooltipShowcase overallSourceCode={ overallSourceCode } />
+			{/*<LPEditorShowcase overallSourceCode={overallSourceCode} />*/ }
+			<MenuShowcase overallSourceCode={ overallSourceCode } />
+			<LPTimeTableShowCase overallSourceCode={ overallSourceCode } />
+
+		</div>
+	)
 }
 
 export default WrappersPage;

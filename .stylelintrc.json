@@ -1,0 +1,11 @@
+{
+	"extends": ["stylelint-config-standard"],
+	"plugins": ["stylelint-order"],
+	"rules": {
+		"custom-property-empty-line-before": null,
+		"selector-class-pattern": null,
+		"comment-empty-line-before": null,
+		"comment-whitespace-inside": "always"
+	},
+	"ignoreFiles": "dist/**/*"
+}
