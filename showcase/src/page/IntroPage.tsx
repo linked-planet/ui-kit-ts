@@ -19,14 +19,19 @@ function IntroPage () {
 
 			<p>UI-Kit-TS is published to <a href="https://www.npmjs.com/package/@linked-planet/ui-kit-ts" rel="noreferrer" target="_blank">npmjs</a>.</p>
 			<p> To use it in your project simply add the following dependency to your build.gradle:</p>
-			<p>
+			<div>
+				<code>npm install -s @linked-planet/ui-kit-ts</code>
+				<p>
+					It looks like CodeBlock of @atlaskit/code is bugged when using the bundle. It does not show the code at the moment.
+				</p>
 				<CodeBlock
 					text="npm install -s @linked-planet/ui-kit-ts"
 					showLineNumbers={ false }
+					language="bash"
 				/>
-			</p>
+			</div>
 		</div>
 	)
 }
 
-export default IntroPage;
+export default IntroPage

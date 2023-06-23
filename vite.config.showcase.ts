@@ -1,4 +1,4 @@
-import { defineConfig } from "vite"
+import { defineConfig, splitVendorChunkPlugin } from "vite"
 import react from "@vitejs/plugin-react-swc"
 import tsconfigPaths from "vite-tsconfig-paths"
 
@@ -10,8 +10,9 @@ export default defineConfig({
 	define: {
 		"process.env": {}, // this is necessary because form.js in @atlaskit uses process.env.NODE_ENV
 	},
+	base: "./",
 	publicDir: "showcase/public",
-	plugins: [react(), tsconfigPaths()],
+	plugins: [react(), tsconfigPaths(), splitVendorChunkPlugin()],
 	server: {
 		port: 3000,
 	},

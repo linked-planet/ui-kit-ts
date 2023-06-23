@@ -40,14 +40,16 @@ export function initTheming() {
 	const prefersDark = window.matchMedia(
 		"(prefers-color-scheme: dark)"
 	).matches
-	//const initialTheme = ( localTheme || ( prefersDark ? Themes.Dark : Themes.Light ) ) as ETheme
-	const initialTheme: Theme = "light"
+	const initialTheme =
+		(localTheme as Theme) || (prefersDark ? "dark" : "light")
+	//const initialTheme: Theme = "light"
 
 	const html = document.querySelector("html")
 	if (html) {
 		if (
 			!html.getAttribute("data-theme") ||
-			!html.getAttribute("data-color-mode")
+			!html.getAttribute("data-color-mode") ||
+			html.getAttribute("data-color-mode") !== initialTheme
 		) {
 			// not theming active, we activate it
 			console.log("initializing Atlassian design system theming")
