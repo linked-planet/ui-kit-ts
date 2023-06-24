@@ -28,7 +28,6 @@ jobs:
               run: npm run build:sc
 
             - name: deploy Showcase to Github Pages
-              if: ${{ github.event_name == 'release' }}
               uses: JamesIves/github-pages-deploy-action@v4.4.1
               with:
                   branch: docs
