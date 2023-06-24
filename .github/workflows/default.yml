@@ -8,6 +8,7 @@ on:
         types: [created]
     schedule:
         - cron: "0 6 * * 1" # At 06:00 on Monday
+    workflow_dispatch: # to run from the Actions tab on GitHub
 
 jobs:
     build:
