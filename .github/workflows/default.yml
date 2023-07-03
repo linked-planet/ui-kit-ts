@@ -59,7 +59,7 @@ jobs:
                   git config user.name "GitHub Actions"
 
             - name: Update release version
-              run: npm version ${{ steps.release.outputs.shortVersion }}
+              run: npm version --no-git-tag-version ${{ steps.release.outputs.shortVersion }}
 
             - name: Install dependencies
               run: npm install
