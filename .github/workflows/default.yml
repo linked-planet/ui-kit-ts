@@ -52,6 +52,12 @@ jobs:
                   FULL_VERSION=${{ github.event.release.tag_name }}
                   SHORT_VERSION=${FULL_VERSION:1}
                   echo shortVersion=${SHORT_VERSION} >> $GITHUB_OUTPUT
+                  
+            - name: Configure Git user
+              if: ${{ github.event_name == 'release' }}
+              run: |
+                  git config user.email "actions@github.com"
+                  git config user.name "GitHub Actions"
 
             - name: Update release version
               run: npm version ${{ steps.release.outputs.shortVersion }}
