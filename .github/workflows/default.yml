@@ -54,7 +54,6 @@ jobs:
                   echo shortVersion=${SHORT_VERSION} >> $GITHUB_OUTPUT
                   
             - name: Configure Git user
-              if: ${{ github.event_name == 'release' }}
               run: |
                   git config user.email "actions@github.com"
                   git config user.name "GitHub Actions"
