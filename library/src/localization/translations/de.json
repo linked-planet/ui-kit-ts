@@ -8,6 +8,9 @@
 	"timetable.endDateAfterStartDate": {
 		"defaultMessage": "Das Enddatum muss nach dem Startdatum liegen."
 	},
+	"timetable.itemsOutsideTimeFrame": {
+		"defaultMessage": "Es sind {outsideItemCount} Einträge außerhalb des Zeitbereichs eines Tages."
+	},
 	"timetable.noHeaderTimeSlotRow": {
 		"defaultMessage": "Keine Kopfzeile für Zeitslots gefunden."
 	},

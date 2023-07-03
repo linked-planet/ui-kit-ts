@@ -2,6 +2,7 @@
   "timetable.bookingsOutsideOfDayRange": "{itemCount} Buchungen außerhalb des Tagesbereichs der verfügbaren Zeitslots gefunden.",
   "timetable.deselectFromOuterBorder": "Bitte entfernen Sie selektierte Zeitslots von den äußeren Rändern des selektierten Bereiches.",
   "timetable.endDateAfterStartDate": "Das Enddatum muss nach dem Startdatum liegen.",
+  "timetable.itemsOutsideTimeFrame": "Es sind {outsideItemCount} Einträge außerhalb des Zeitbereichs eines Tages.",
   "timetable.noHeaderTimeSlotRow": "Keine Kopfzeile für Zeitslots gefunden.",
   "timetable.onlySameGroupTimeSlots": "Bitte wählen Sie nur Zeitslots aus der gleichen Gruppe aus.",
   "timetable.onlySuccessiveTimeSlots": "Bitte wählen Sie nur aufeinanderfolgende Zeitslots aus.",

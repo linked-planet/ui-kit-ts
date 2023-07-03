@@ -4,7 +4,7 @@ import { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
 import styles from "./Item.module.css"
 import { RenderItemProps } from "./ItemWrapper"
 
-export function Item ( { item, group, selectedItem }: RenderItemProps<TimeTableGroup, TimeSlotBooking> ): JSX.Element {
+export function Item ( { item, selectedItem }: RenderItemProps<TimeTableGroup, TimeSlotBooking> ): JSX.Element {
 	const isSelected = selectedItem === item
 	return (
 		<div

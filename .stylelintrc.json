@@ -7,5 +7,5 @@
 		"comment-empty-line-before": null,
 		"comment-whitespace-inside": "always"
 	},
-	"ignoreFiles": "dist/**/*"
+	"ignoreFiles": ["dist/**/*", "dist-showcase/**/*"]
 }

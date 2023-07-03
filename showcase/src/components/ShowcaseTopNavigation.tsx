@@ -1,8 +1,7 @@
 import React from "react";
-import { TopNavigation } from "@atlaskit/page-layout";
-import { AtlassianNavigation, CustomProductHome, PrimaryButton, Profile } from "@atlaskit/atlassian-navigation";
-import { useNavigate } from "react-router";
-import { CustomThemeButton } from "@atlaskit/button";
+import { TopNavigation } from "@atlaskit/page-layout"
+import { AtlassianNavigation, CustomProductHome, PrimaryButton, Profile } from "@atlaskit/atlassian-navigation"
+import { useNavigate } from "react-router"
 import ThemeSwitch from "@linked-planet/ui-kit-ts/components/themeswitch"
 import { LocaleDropDown } from "@linked-planet/ui-kit-ts"
 export const ProfileIcon = () => {

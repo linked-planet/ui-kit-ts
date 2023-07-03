@@ -1,4 +1,4 @@
-@import url(../../../../library/src/variables.css);
+@import url("../../../../library/src/variables.css");
 
 .example {
 	border: 1px solid var(--ds-border);

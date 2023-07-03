@@ -36,7 +36,7 @@ export function PlaceHolderItem<G extends TimeTableGroup> ( { renderPlaceHolder,
 /**
  * render the current placeholder item (which is a placeholder itself) 
  */
-function PlaceHolderItemPlaceHolder<G extends TimeTableGroup> ( { group, start, end, height, clearTimeRangeSelectionCB }: PlaceholderItemProps<G> ) {
+function PlaceHolderItemPlaceHolder<G extends TimeTableGroup> ( { height, clearTimeRangeSelectionCB }: PlaceholderItemProps<G> ) {
 	return (
 		<div
 			style={ {

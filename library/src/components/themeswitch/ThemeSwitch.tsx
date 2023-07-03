@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import Button from "@atlaskit/button"
-import { Theme, themesAvailable, isTheme, applyTheme, getTheme, initTheming, switchTheme } from "../../theming"
+import { Theme, isTheme, getTheme, initTheming, switchTheme } from "../../theming"
 
 export default function ThemeSwitch () {
 	const [ theme, setTheme ] = useState<Theme>( "light" )

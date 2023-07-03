@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react"
+import React, { useState } from "react"
 import Modal, { ModalBody, ModalFooter, ModalHeader, ModalTitle, ModalTransition } from "@atlaskit/modal-dialog"
 import Button from "@atlaskit/button/standard-button"
 import { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
