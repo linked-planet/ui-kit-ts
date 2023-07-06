@@ -32,6 +32,18 @@ export function switchTheme() {
 	applyTheme("auto")
 }
 
+
+export function getCurrentTheme() {
+	const html = document.querySelector("html")
+	if (html) {
+		const currentTheme = html.getAttribute("data-color-mode")
+		if (currentTheme && isTheme(currentTheme)) {
+			return currentTheme
+		}
+	}
+	return undefined
+}
+
 /**
  * initTheming is a helper function in case there is not @atlassian/token and theming setup
  */

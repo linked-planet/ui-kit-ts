@@ -7,9 +7,9 @@ import IntroPage from "./page/IntroPage"
 import NotFoundPage from "./page/NotFoundPage"
 import ReduxPage from "./page/ReduxPage"
 import WrappersPage from "./page/WrappersPage"
-import "@atlaskit/css-reset";
+import "@atlaskit/css-reset"
 import { appStore } from "./state/appStore"
-import { Provider } from "react-redux";
+import { Provider } from "react-redux"
 import { QueryClientProvider } from "react-query"
 import ReactQueryPage from "./page/ReactQueryPage"
 
@@ -17,18 +17,17 @@ import "./custom.css"
 import { queryClient } from "./setup"
 import { initTheming } from "@linked-planet/ui-kit-ts/theming"
 import { LocaleProvider } from "@linked-planet/ui-kit-ts"
+import { setGlobalTheme } from "@atlaskit/tokens"
 
-
-
-function App () {
+function App() {
 	//require("./custom.css")
 
-	initTheming() // without it the table would be invisible because the css variables are not set
+	setGlobalTheme({}) // without it the table would be invisible because the css variables are not set
 
 	return (
 		<HashRouter>
-			<Provider store={ appStore }>
-				<QueryClientProvider client={ queryClient }>
+			<Provider store={appStore}>
+				<QueryClientProvider client={queryClient}>
 					<LocaleProvider>
 						<div className="App">
 							<PageLayout>
@@ -37,35 +36,39 @@ function App () {
 									<ShowcaseLeftSidebar />
 
 									<Main>
-										<div style={ {
-											margin: "50px 50px",
-											display: "flex",
-											flexDirection: "column"
-										} }>
+										<div
+											style={{
+												margin: "50px 50px",
+												display: "flex",
+												flexDirection: "column",
+											}}
+										>
 											<Routes>
 												<Route
 													path="/"
-													element={ <Navigate to="/intro" /> }
+													element={
+														<Navigate to="/intro" />
+													}
 												/>
 												<Route
 													path="/intro"
-													element={ <IntroPage /> }
+													element={<IntroPage />}
 												/>
 												<Route
 													path="/wrappers"
-													element={ <WrappersPage /> }
+													element={<WrappersPage />}
 												/>
 												<Route
 													path="/redux"
-													element={ <ReduxPage /> }
+													element={<ReduxPage />}
 												/>
 												<Route
 													path="/query"
-													element={ <ReactQueryPage /> }
+													element={<ReactQueryPage />}
 												/>
 												<Route
 													path="*"
-													element={ <NotFoundPage /> }
+													element={<NotFoundPage />}
 												/>
 											</Routes>
 										</div>
@@ -77,7 +80,7 @@ function App () {
 				</QueryClientProvider>
 			</Provider>
 		</HashRouter>
-	);
+	)
 }
 
-export default App;
+export default App

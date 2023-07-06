@@ -1016,7 +1016,7 @@ import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { LPTimeTable, PlaceholderItemProps } from "@linked-planet/ui-kit-ts"
+import { LPTimeTable } from "@linked-planet/ui-kit-ts"
 import type { TimeSlotBooking, TimeTableEntry, TimeTableGroup } from "@linked-planet/ui-kit-ts"
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
@@ -1026,8 +1026,6 @@ import Button from "@atlaskit/button"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
-import { Group } from "@linked-planet/ui-kit-ts/components/timetable/Group"
-import { Item } from "@linked-planet/ui-kit-ts/components/timetable/Item"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
