@@ -27,7 +27,7 @@ import { TimeTableConfigProvider } from "./TimeTableConfigContext"
 import { SelectedTimeSlotsProvider } from "./SelectedTimeSlotsContext"
 import { RenderItemProps } from "./ItemWrapper"
 import { PlaceholderItemProps } from "./PlaceholderItem"
-import { getCurrentTheme } from "@linked-planet/ui-kit-ts/theming"
+import { getCurrentTheme } from "../../theming"
 
 export interface TimeSlotBooking {
 	title: string
