@@ -29,7 +29,7 @@ import { PlaceHolderItem } from "./PlaceholderItem"
 
 interface TimeLineTableSimplifiedProps<
 	G extends TimeTableGroup,
-	I extends TimeSlotBooking
+	I extends TimeSlotBooking,
 > {
 	/* Entries define the groups, and the items in the groups */
 	entries: TimeTableEntry<G, I>[]
@@ -51,7 +51,7 @@ interface TimeLineTableSimplifiedProps<
  */
 export default function TimeLineTableSimplified<
 	G extends TimeTableGroup,
-	I extends TimeSlotBooking
+	I extends TimeSlotBooking,
 >({
 	entries,
 	onGroupClick,
@@ -118,7 +118,7 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 				backgroundColor:
 					groupNumber % 2 === 0
 						? token("elevation.surface")
-						: token("elevation.surface.pressed"),
+						: token("elevation.surface.hovered"),
 			}}
 		>
 			{renderGroup ? renderGroup({ group }) : <Group group={group} />}
@@ -162,7 +162,7 @@ function TableCell({
 				: token("color.background.neutral.pressed")
 			: groupNumber % 2 === 0
 			? token("elevation.surface")
-			: token("elevation.surface.overlay"),
+			: token("elevation.surface.hovered"),
 		cursor:
 			isWeekendDay && disableWeekendInteractions
 				? "not-allowed"
@@ -207,7 +207,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	const timeSlotSelectedIndex =
 		selectedTimeSlots && selectedTimeSlots.group === group
 			? selectedTimeSlots.timeSlots.findIndex(
-					(it) => it === timeSlotNumber
+					(it) => it === timeSlotNumber,
 			  )
 			: -1
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
@@ -242,7 +242,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 				: token("color.background.neutral.pressed")
 			: groupNumber % 2 === 0
 			? token("elevation.surface")
-			: token("elevation.surface.overlay"),
+			: token("elevation.surface.hovered"),
 		verticalAlign: "top",
 		cursor: "pointer",
 	}
@@ -308,7 +308,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				groupRowMax={rowCount} // group header spans all rows of the group
 				renderGroup={renderGroup}
 				onGroupClick={onGroupHeaderClick}
-			/>
+			/>,
 		)
 
 		// and interaction row
@@ -323,7 +323,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					group={group}
 					groupNumber={groupNumber}
 					timeSlotNumber={timeSlotNumber}
-				/>
+				/>,
 			)
 		}
 		trs.push(
@@ -334,7 +334,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				}}
 			>
 				{tds}
-			</tr>
+			</tr>,
 		)
 
 		// and the normal rows
@@ -356,7 +356,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				timeSlotNumber++
 			) {
 				const itemsOfTimeSlot = itemsWithStart.filter(
-					(it) => it && it.startSlot === timeSlotNumber
+					(it) => it && it.startSlot === timeSlotNumber,
 				) as { item: I; startSlot: number; endSlot: number }[]
 				const itemsWithRenderProps = itemsOfTimeSlot
 					.map((it) => {
@@ -365,7 +365,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 							it.startSlot,
 							it.endSlot,
 							slotsArray,
-							timeSteps
+							timeSteps,
 						)
 						return { left, width, item: it.item }
 					})
@@ -420,7 +420,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						>
 							{itemsToRender}
 						</div>
-					</TableCell>
+					</TableCell>,
 				)
 			}
 
@@ -432,7 +432,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					}}
 				>
 					{tds}
-				</tr>
+				</tr>,
 			)
 		}
 		return trs
@@ -462,7 +462,7 @@ let mouseLeftTS: number | null = null
  */
 function useMouseHandlers<G extends TimeTableGroup>(
 	timeSlotNumber: number,
-	group: G
+	group: G,
 ) {
 	const { selectedTimeSlots, toggleTimeSlotCB } = useSelectedTimeSlots()
 	const { multiSelectionMode, setMultiSelectionMode } =
@@ -654,7 +654,7 @@ function getLeftAndWidth(
 	startSlot: number,
 	endSlot: number,
 	slotsArray: Dayjs[],
-	timeSteps: number
+	timeSteps: number,
 ) {
 	let left = item.startDate.diff(slotsArray[startSlot], "minute") / timeSteps
 	if (left < 0) {
@@ -691,7 +691,7 @@ function getLeftAndWidth(
 			startSlot,
 			endSlot,
 			slotsArray,
-			timeSteps
+			timeSteps,
 		)
 	}
 
