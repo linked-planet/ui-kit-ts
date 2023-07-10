@@ -1,4 +1,10 @@
-import React, { createContext, Dispatch, useContext, useEffect, useState } from "react"
+import React, {
+	createContext,
+	Dispatch,
+	useContext,
+	useEffect,
+	useState,
+} from "react"
 import { Message } from "../inlinemessage"
 import type { default as TranslatedTimeTableMessagesJson } from "../../localization/translations-compiled/en.json"
 
@@ -11,57 +17,81 @@ export type TranslatedTimeTableMessages = typeof TranslatedTimeTableMessagesJson
  */
 //const germanMessages = await import( "../../localization/translations-compiled/de.json" )
 let germanMessages: TranslatedTimeTableMessages
-( async function main () {
+;(async function main() {
 	// You can use await inside this function block
-	germanMessages = await ( await import( "../../localization/translations-compiled/de.json" ) )
-} )();
-
+	const germanMessagesModule = await import(
+		"../../localization/translations-compiled/de.json"
+	)
+	germanMessages = germanMessagesModule.default
+})()
 
 //export type TranslatedTimeTableMessages = typeof germanMessages.default
 
 export type TimeTableMessage = Omit<Message, "text"> & {
-	messageKey: keyof TranslatedTimeTableMessages,
-	messageValues?: Record<string, string | number | boolean>,
+	messageKey: keyof TranslatedTimeTableMessages
+	messageValues?: Record<string, string | number | boolean>
 }
 
+const timeTableMessageContext = createContext<
+	| {
+			message: TimeTableMessage | undefined
+			setMessage: Dispatch<
+				React.SetStateAction<TimeTableMessage | undefined>
+			>
+			messagesTranslations: TranslatedTimeTableMessages
+	  }
+	| undefined
+>(undefined)
 
-const timeTableMessageContext = createContext<{
-	message: TimeTableMessage | undefined,
-	setMessage: Dispatch<React.SetStateAction<TimeTableMessage | undefined>>,
-	messagesTranslations: TranslatedTimeTableMessages,
-} | undefined>( undefined )
+export function TimeTableMessageProvider({
+	messagesTranslations = germanMessages,
+	children,
+}: {
+	messagesTranslations?: TranslatedTimeTableMessages
+	children: JSX.Element
+}) {
+	const [message, setMessage] = useState<TimeTableMessage>()
 
-export function TimeTableMessageProvider ( { messagesTranslations = germanMessages, children }: { messagesTranslations?: TranslatedTimeTableMessages, children: JSX.Element } ) {
-	const [ message, setMessage ] = useState<TimeTableMessage>()
-
-	useEffect( () => {
-		console.log( "messagesTranslations", messagesTranslations )
-	}, [ messagesTranslations ] )
+	useEffect(() => {
+		console.log("messagesTranslations", messagesTranslations)
+	}, [messagesTranslations])
 
 	return (
-		<timeTableMessageContext.Provider value={ { message, setMessage, messagesTranslations } }>
-			{ children }
+		<timeTableMessageContext.Provider
+			value={{ message, setMessage, messagesTranslations }}
+		>
+			{children}
 		</timeTableMessageContext.Provider>
 	)
 }
 
-export function useTimeTableMessage () {
-	const ret = useContext( timeTableMessageContext )
-	if ( !ret ) throw new Error( "useTimeTableMessage must be used within a TimeTableMessageProvider" )
-	let messageTranslation = ret.message ? ret.messagesTranslations[ ret.message.messageKey ] : undefined
-	if ( !messageTranslation && ret.message ) {
-		messageTranslation = `no translation found for key [${ ret.message?.messageKey }]`
-	} else if ( messageTranslation && ret.message?.messageValues ) {
-		Object.entries( ret.message.messageValues ).forEach( ( [ key, value ] ) => {
-			messageTranslation = messageTranslation?.replace( `{${ key }}`, value.toString() )
-		} )
+export function useTimeTableMessage() {
+	const ret = useContext(timeTableMessageContext)
+	if (!ret)
+		throw new Error(
+			"useTimeTableMessage must be used within a TimeTableMessageProvider",
+		)
+	let messageTranslation = ret.message
+		? ret.messagesTranslations[ret.message.messageKey]
+		: undefined
+	if (!messageTranslation && ret.message) {
+		messageTranslation = `no translation found for key [${ret.message?.messageKey}]`
+	} else if (messageTranslation && ret.message?.messageValues) {
+		Object.entries(ret.message.messageValues).forEach(([key, value]) => {
+			messageTranslation = messageTranslation?.replace(
+				`{${key}}`,
+				value.toString(),
+			)
+		})
 	}
 
-	const translatedMessage: Message | undefined = ret.message && messageTranslation ? {
-		...ret.message,
-		text: messageTranslation,
-	} : undefined
+	const translatedMessage: Message | undefined =
+		ret.message && messageTranslation
+			? {
+					...ret.message,
+					text: messageTranslation,
+			  }
+			: undefined
 
 	return { ...ret, translatedMessage }
 }
-
