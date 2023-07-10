@@ -3,6 +3,7 @@ import React, {
 	Dispatch,
 	useContext,
 	useEffect,
+	useMemo,
 	useState,
 } from "react"
 import { Message } from "../inlinemessage"
@@ -85,13 +86,16 @@ export function useTimeTableMessage() {
 		})
 	}
 
-	const translatedMessage: Message | undefined =
-		ret.message && messageTranslation
-			? {
-					...ret.message,
-					text: messageTranslation,
-			  }
-			: undefined
+	const translatedMessage: Message | undefined = useMemo(
+		() =>
+			ret.message && messageTranslation
+				? {
+						...ret.message,
+						text: messageTranslation,
+				  }
+				: undefined,
+		[ret.message, messageTranslation],
+	)
 
 	return { ...ret, translatedMessage }
 }

@@ -14,9 +14,6 @@
 	"timetable.noHeaderTimeSlotRow": {
 		"defaultMessage": "Keine Kopfzeile für Zeitslots gefunden."
 	},
-	"timetable.onlySameGroupTimeSlots": {
-		"defaultMessage": "Bitte wählen Sie nur Zeitslots aus der gleichen Gruppe aus."
-	},
 	"timetable.onlySuccessiveTimeSlots": {
 		"defaultMessage": "Bitte wählen Sie nur aufeinanderfolgende Zeitslots aus."
 	},

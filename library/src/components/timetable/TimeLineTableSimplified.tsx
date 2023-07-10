@@ -495,7 +495,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				return
 			}
 			setMultiSelectionMode(true)
-			toggleTimeSlotCB(timeSlotNumber, group, true)
+			toggleTimeSlotCB(timeSlotNumber, group, "drag")
 		},
 		onMouseLeave: (e: MouseEvent) => {
 			if (e.buttons !== 1) {
@@ -512,7 +512,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				return
 			}
 			mouseLeftTS = timeSlotNumber
-			toggleTimeSlotCB(timeSlotNumber, group, true)
+			toggleTimeSlotCB(timeSlotNumber, group, "drag")
 		},
 		onMouseEnter: (e: MouseEvent) => {
 			if (e.buttons !== 1) {
@@ -534,9 +534,9 @@ function useMouseHandlers<G extends TimeTableGroup>(
 					mouseLeftTS === timeSlotNumber - 1) &&
 				selectedTimeSlots?.timeSlots.includes(mouseLeftTS)
 			) {
-				toggleTimeSlotCB(mouseLeftTS, group, false)
+				toggleTimeSlotCB(mouseLeftTS, group, "remove")
 			}
-			toggleTimeSlotCB(timeSlotNumber, group, true)
+			toggleTimeSlotCB(timeSlotNumber, group, "drag")
 			setMultiSelectionMode(true)
 		},
 		onMouseUp: () => {
@@ -545,7 +545,11 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				handleWeekendError()
 				return
 			}
-			toggleTimeSlotCB(timeSlotNumber, group, multiSelectionMode)
+			toggleTimeSlotCB(
+				timeSlotNumber,
+				group,
+				multiSelectionMode ? "drag" : "click",
+			)
 		},
 	}
 }
