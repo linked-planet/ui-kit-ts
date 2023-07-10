@@ -17,7 +17,7 @@ type Props = {
 	timeSteps: number
 }
 
-const backgroundColor = token("color.background.neutral")
+const backgroundColor = token("elevation.surface.raised.pressed")
 
 export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 	{
@@ -86,6 +86,8 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								"color.border.bold",
 							)}`,
 							backgroundColor,
+							paddingTop: "1rem",
+							paddingBottom: "0.7rem",
 						}}
 						className={styles.unselectable}
 					>
@@ -108,6 +110,8 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								colSpan={timeSlotsPerDay * 2}
 								style={{
 									backgroundColor,
+									paddingTop: "1rem",
+									paddingBottom: "0.7rem",
 								}}
 							>
 								<div
@@ -161,6 +165,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 									borderLeftWidth:
 										isNewDay && i > 0 ? "1px" : "0",
 									backgroundColor,
+									paddingBottom: "0.25rem",
 								}}
 								colSpan={2}
 								className={`${styles.unselectable} ${styles.headerTimeSlot}`}

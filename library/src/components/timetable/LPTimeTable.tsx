@@ -280,6 +280,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					style={{
 						flexGrow: 1,
 						alignSelf: "flex-start",
+						marginBottom: "0.5rem",
 					}}
 				>
 					<InlineMessage
