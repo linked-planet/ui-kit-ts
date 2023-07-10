@@ -39,6 +39,7 @@ type InteractionType = "click" | "drag" | "remove"
 export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 	slotsArray,
 	timeSteps,
+	disableWeekendInteractions,
 	onTimeRangeSelected,
 	setClearSelectedTimeRangeCB,
 	children,
@@ -50,6 +51,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 	) => boolean | void // if return is true, clear selection
 	// this is a callback that can be used to clear the selected time slots... maybe there is a better way to do this?
 	setClearSelectedTimeRangeCB?: (cb: () => void) => void
+	disableWeekendInteractions?: boolean
 	children: JSX.Element
 }) {
 	const { setMessage } = useTimeTableMessage()
@@ -69,10 +71,10 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 	// remove any selection in case fundamental time table properties change
 	useEffect(() => {
 		console.log(
-			"LPTimeTable - clearing selection because the slotsArray or timeSteps changed",
+			"LPTimeTable - clearing selection because the slotsArray, timeSteps or weekend interactions changed",
 		)
 		setSelectedTimeSlotsG(undefined)
-	}, [slotsArray, timeSteps])
+	}, [slotsArray, timeSteps, disableWeekendInteractions])
 
 	// maybe there is a better way to clear the selection from the parent component, then returning a callback from this component
 	const clearSelectionCB = useCallback(
@@ -98,14 +100,6 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 				return
 			}
 
-			if (selectedTimeSlots.group !== group && interaction === "click") {
-				setSelectedTimeSlotsG({
-					timeSlots: [timeSlot],
-					group,
-				})
-				return
-			}
-
 			const timeSlotBefore = selectedTimeSlots.timeSlots.find(
 				(it) => timeSlot - 1 === it,
 			)
@@ -115,12 +109,18 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 			const alreadySelected =
 				selectedTimeSlots.timeSlots.includes(timeSlot)
 
-			console.log(
-				"timeSlotBefore",
-				timeSlotBefore,
-				timeSlotAfter,
-				alreadySelected,
-			)
+			if (interaction === "click") {
+				if (
+					selectedTimeSlots.group !== group ||
+					(!alreadySelected && !timeSlotAfter && !timeSlotBefore)
+				) {
+					setSelectedTimeSlotsG({
+						timeSlots: [timeSlot],
+						group,
+					})
+					return
+				}
+			}
 
 			if (alreadySelected) {
 				if (interaction === "drag") {
@@ -159,23 +159,42 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 				return
 			}
 
-			// not selected yet
-			if (timeSlotBefore !== undefined || timeSlotAfter !== undefined) {
+			if (interaction === "drag" && multiselectionMode) {
+				// selectedTimeSlots.timeSlots is already sorted
+				let min = selectedTimeSlots.timeSlots[0]
+				let max =
+					selectedTimeSlots.timeSlots[
+						selectedTimeSlots.timeSlots.length - 1
+					]
+				if (timeSlot < min) {
+					min = timeSlot
+				} else if (timeSlot > max) {
+					max = timeSlot
+				}
+				const newTimeSlots = []
+				for (let i = min; i <= max; i++) {
+					newTimeSlots.push(i)
+				}
+				setSelectedTimeSlotsG({
+					timeSlots: newTimeSlots,
+					group: selectedTimeSlots.group,
+				})
+			} else if (
+				timeSlotAfter !== undefined ||
+				timeSlotBefore !== undefined
+			) {
 				setSelectedTimeSlotsG({
 					timeSlots: [...selectedTimeSlots.timeSlots, timeSlot],
 					group: selectedTimeSlots.group,
 				})
-				return
+			} else {
+				setSelectedTimeSlotsG({
+					timeSlots: [timeSlot],
+					group: selectedTimeSlots.group,
+				})
 			}
-
-			// that means this is not selected, but there are other selected time slots of this group, but not directly before of after
-			setMessage({
-				urgency: "information",
-				messageKey: "timetable.onlySuccessiveTimeSlots",
-				timeOut: 3,
-			})
 		},
-		[selectedTimeSlots, setMessage],
+		[multiselectionMode, selectedTimeSlots, setMessage],
 	)
 
 	useEffect(() => {

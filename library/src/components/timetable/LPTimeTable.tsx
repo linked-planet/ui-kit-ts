@@ -42,7 +42,7 @@ export interface TimeTableGroup {
 
 export interface TimeTableEntry<
 	G extends TimeTableGroup,
-	I extends TimeSlotBooking
+	I extends TimeSlotBooking,
 > {
 	group: G
 	items: I[]
@@ -57,7 +57,7 @@ export interface SelectedTimeSlot<G extends TimeTableGroup> {
 
 export interface LPTimeTableProps<
 	G extends TimeTableGroup,
-	I extends TimeSlotBooking
+	I extends TimeSlotBooking,
 > {
 	/* The start date also defines the time the time slots starts in the morning */
 	startDate: Dayjs
@@ -80,7 +80,7 @@ export interface LPTimeTableProps<
 
 	/* this function gets called when a selection was made, i.g. to create a booking. the return value states if the selection should be cleared or not */
 	onTimeRangeSelected?: (
-		s: { group: G; startDate: Dayjs; endDate: Dayjs } | undefined
+		s: { group: G; startDate: Dayjs; endDate: Dayjs } | undefined,
 	) => boolean | void
 
 	/* The selected time range context sets this callback to be able for a time table parent component to clear the selected time range from outside */
@@ -137,11 +137,11 @@ const nowbarUpdateIntervall = 1000 * 60 // 1 minute
 
 export default function LPTimeTable<
 	G extends TimeTableGroup,
-	I extends TimeSlotBooking
+	I extends TimeSlotBooking,
 >({ timeTableMessages, ...props }: LPTimeTableProps<G, I>) {
 	if (!getCurrentTheme()) {
 		console.warn(
-			"LPTimeTable - no theme set, LPTable required Atlassian.design token to have the color scheme set correctly"
+			"LPTimeTable - no theme set, LPTable required Atlassian.design token to have the color scheme set correctly",
 		)
 	}
 
@@ -205,13 +205,13 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				endDate,
 				timeStepsMinutes,
 				rounding ?? "round",
-				setMessage
+				setMessage,
 			)
 		const slotsArray = calculateTimeSlots(
 			timeSlotsPerDay,
 			daysDifference,
 			timeSteps,
-			startDate
+			startDate,
 		)
 		return { slotsArray, timeSteps, timeSlotsPerDay }
 	}, [startDate, endDate, timeStepsMinutes, rounding, setMessage])
@@ -227,7 +227,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			const itemsOutside = itemsOutsideOfDayRange(
 				entry.items,
 				slotsArray,
-				timeSteps
+				timeSteps,
 			)
 			foundItemsOutsideOfDayRange += itemsOutside.length
 		}
@@ -300,6 +300,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					timeSteps={timeSteps}
 					onTimeRangeSelected={onTimeRangeSelected}
 					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
+					disableWeekendInteractions={disableWeekendInteractions}
 				>
 					<div
 						style={{
@@ -383,7 +384,7 @@ function TimeSlotBarRow({
 			// when the debugging overwrite is active, we still want to move the bar to test it
 			nowRef.current = nowRef.current.add(
 				nowbarUpdateIntervall,
-				"milliseconds"
+				"milliseconds",
 			)
 		} else {
 			nowRef.current = dayjs()
@@ -396,7 +397,7 @@ function TimeSlotBarRow({
 			nowBarRef,
 			tableHeaderRef,
 			tableBodyRef,
-			setMessage
+			setMessage,
 		)
 	}, [
 		slotsArray,
@@ -431,7 +432,7 @@ function TimeSlotBarRow({
 					messageKey: "timetable.timeSlotColumnsNotFound",
 				})
 				console.log(
-					"LPTimeTable - unable to find time slot columns for the time slot bars"
+					"LPTimeTable - unable to find time slot columns for the time slot bars",
 				)
 				return
 			}
@@ -499,7 +500,7 @@ function calculateTimeSlotProperties(
 	endDate: Dayjs,
 	timeStepsMinute: number,
 	rounding: "ceil" | "floor" | "round",
-	setMessage: (message: TimeTableMessage) => void
+	setMessage: (message: TimeTableMessage) => void,
 ) {
 	let timeSlotsPerDay = 0
 	let timeSteps = timeStepsMinute
@@ -542,7 +543,7 @@ function calculateTimeSlotProperties(
 				.startOf("day")
 				.add(startDate.hour(), "hours")
 				.add(startDate.minute(), "minutes"),
-			"minutes"
+			"minutes",
 		)
 
 	if (timeDiff === 0) {
@@ -574,7 +575,7 @@ function calculateTimeSlots(
 	timeSlotsPerDay: number,
 	daysDifference: number,
 	timeSteps: number,
-	startDate: Dayjs
+	startDate: Dayjs,
 ) {
 	if (!isFinite(timeSlotsPerDay)) {
 		return null
@@ -582,14 +583,14 @@ function calculateTimeSlots(
 	const daysArray = Array.from({ length: daysDifference }, (x, i) => i).map(
 		(day) => {
 			return dayjs(startDate).add(day, "days")
-		}
+		},
 	)
 
 	const slotsArray = daysArray.flatMap((date) => {
 		console.log("LPTimeTable - timeSlotsPerDay", timeSlotsPerDay)
 		return Array.from(
 			{ length: timeSlotsPerDay },
-			(_, i) => i * timeSteps
+			(_, i) => i * timeSteps,
 		).map((minutes) => {
 			return dayjs(date).add(minutes, "minutes")
 		})
@@ -616,7 +617,7 @@ function moveNowBar(
 	nowBarRef: MutableRefObject<HTMLDivElement | undefined>,
 	tableHeaderRef: MutableRefObject<HTMLTableSectionElement | null>,
 	tableBodyRef: MutableRefObject<HTMLTableSectionElement | null>,
-	setMessage: (message: TimeTableMessage) => void
+	setMessage: (message: TimeTableMessage) => void,
 ) {
 	if (!tableHeaderRef.current || !tableBodyRef.current) {
 		console.log("LPTimeTable - time table header or body ref not yet set")
@@ -667,7 +668,7 @@ function moveNowBar(
 	if (!slotBar) {
 		console.log(
 			"LPTimeTable - unable to find time slot column for the now bar: ",
-			startSlot
+			startSlot,
 		)
 		return
 	}

@@ -70,13 +70,6 @@ export const DeselectFromOuterBorder = () => (
 	/>
 )
 
-export const OnlySuccessiveTimeSlots = () => (
-	<FormattedMessage
-		defaultMessage={"Please select only successive time slots."}
-		id="timetable.onlySuccessiveTimeSlots"
-	/>
-)
-
 export const WeekendsDeactivated = () => (
 	<FormattedMessage
 		defaultMessage={"Weekends are deactivated."}

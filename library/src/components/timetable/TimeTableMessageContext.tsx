@@ -53,10 +53,6 @@ export function TimeTableMessageProvider({
 }) {
 	const [message, setMessage] = useState<TimeTableMessage>()
 
-	useEffect(() => {
-		console.log("messagesTranslations", messagesTranslations)
-	}, [messagesTranslations])
-
 	return (
 		<timeTableMessageContext.Provider
 			value={{ message, setMessage, messagesTranslations }}

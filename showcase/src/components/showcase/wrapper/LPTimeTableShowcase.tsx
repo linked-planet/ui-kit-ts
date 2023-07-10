@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { EventHandler, useCallback } from "react"
 import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -335,6 +335,8 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 	const [timeSteps, setTimeSteps] = useState(110)
 	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
 	const [columnWidth, setColumnWidth] = useState(70)
+	const [disabledWeekendInteractions, setDisabledWeekendInteractions] =
+		useState(true)
 
 	const [timeFrame, setTimeFrame] = useState({
 		startDate: startDateInitial,
@@ -454,6 +456,7 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 						display: "grid",
 						gridTemplateColumns: "auto auto",
 						gap: "0.5rem",
+						alignItems: "start",
 					}}
 				>
 					<label style={{ marginRight: "1rem" }} htmlFor="startdate">
@@ -511,6 +514,7 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 						display: "grid",
 						gridTemplateColumns: "auto auto",
 						gap: "0.5rem",
+						alignItems: "start",
 					}}
 				>
 					<label
@@ -578,6 +582,36 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 						<option value="floor">floor</option>
 					</select>
 				</div>
+				{/* time table settings */}
+				<div
+					style={{
+						display: "grid",
+						gridTemplateColumns: "auto auto",
+						gap: "0.5rem",
+						alignItems: "start",
+					}}
+				>
+					<label
+						htmlFor="diableweekends"
+						style={{
+							marginRight: "1rem",
+						}}
+					>
+						Disable Weekend Interactions:
+					</label>
+					<input
+						type="checkbox"
+						name="disableweekends"
+						checked={disabledWeekendInteractions}
+						onChange={(e) =>
+							setDisabledWeekendInteractions(e.target.checked)
+						}
+						style={{
+							textAlign: "center",
+							marginRight: "0.25rem",
+						}}
+					/>
+				</div>
 			</div>
 			<div
 				style={{
@@ -641,6 +675,7 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 					timeTableMessages={translation}
 					onTimeRangeSelected={setSelectedTimeRange}
 					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
+					disableWeekendInteractions={disabledWeekendInteractions}
 				/>
 			</>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>

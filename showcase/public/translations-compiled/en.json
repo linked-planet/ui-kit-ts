@@ -4,7 +4,6 @@
   "timetable.endDateAfterStartDate": "The end date must be after start date.",
   "timetable.itemsOutsideTimeFrame": "Found {outsideItemCount} outside of the valid time frame of each day.",
   "timetable.noHeaderTimeSlotRow": "No header time slot row found.",
-  "timetable.onlySuccessiveTimeSlots": "Please select only successive time slots.",
   "timetable.timeSlotColumnsNotFound": "Unable to find time slot columns for the time slot bars.",
   "timetable.timeSlotSizeGreaterZero": "Time slot size must be greater than zero.",
   "timetable.unableToFindEarliestTS": "Unable to find the earliest time slot.",

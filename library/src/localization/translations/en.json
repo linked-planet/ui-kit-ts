@@ -14,9 +14,6 @@
 	"timetable.noHeaderTimeSlotRow": {
 		"defaultMessage": "No header time slot row found."
 	},
-	"timetable.onlySuccessiveTimeSlots": {
-		"defaultMessage": "Please select only successive time slots."
-	},
 	"timetable.timeSlotColumnsNotFound": {
 		"defaultMessage": "Unable to find time slot columns for the time slot bars."
 	},

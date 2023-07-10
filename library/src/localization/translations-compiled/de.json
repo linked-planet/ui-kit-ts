@@ -4,7 +4,6 @@
   "timetable.endDateAfterStartDate": "Das Enddatum muss nach dem Startdatum liegen.",
   "timetable.itemsOutsideTimeFrame": "Es sind {outsideItemCount} Einträge außerhalb des Zeitbereichs eines Tages.",
   "timetable.noHeaderTimeSlotRow": "Keine Kopfzeile für Zeitslots gefunden.",
-  "timetable.onlySuccessiveTimeSlots": "Bitte wählen Sie nur aufeinanderfolgende Zeitslots aus.",
   "timetable.timeSlotColumnsNotFound": "Keine Spalten für die Zeitslots gefunden.",
   "timetable.timeSlotSizeGreaterZero": "Die Zeitslotgröße muss größer als 0 Minuten sein.",
   "timetable.unableToFindEarliestTS": "Der früheste Zeitslot konnte nicht gefunden werden.",
