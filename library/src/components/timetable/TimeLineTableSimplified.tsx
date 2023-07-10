@@ -46,6 +46,11 @@ interface TimeLineTableSimplifiedProps<
 	onGroupClick: ((_: G) => void) | undefined
 }
 
+const weekendColor0 = token("elevation.surface.raised.hovered")
+const weekendColor1 = token("elevation.surface.raised.pressed")
+const dayColor0 = token("elevation.surface")
+const dayColor1 = token("elevation.surface.hovered")
+
 /**
  * Creates the table rows for the given entries.
  */
@@ -115,10 +120,7 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 			rowSpan={groupRowMax + 1}
 			className={`${styles.groupHeader}`}
 			style={{
-				backgroundColor:
-					groupNumber % 2 === 0
-						? token("elevation.surface")
-						: token("elevation.surface.hovered"),
+				backgroundColor: groupNumber % 2 === 0 ? dayColor0 : dayColor1,
 			}}
 		>
 			{renderGroup ? renderGroup({ group }) : <Group group={group} />}
@@ -158,11 +160,11 @@ function TableCell({
 		paddingBottom: isLastGroupRow ? "10px" : undefined,
 		backgroundColor: isWeekendDay
 			? groupNumber % 2 === 0
-				? token("color.background.neutral.hovered")
-				: token("color.background.neutral.pressed")
+				? weekendColor0
+				: weekendColor1
 			: groupNumber % 2 === 0
-			? token("elevation.surface")
-			: token("elevation.surface.hovered"),
+			? dayColor0
+			: dayColor1,
 		cursor:
 			isWeekendDay && disableWeekendInteractions
 				? "not-allowed"
@@ -238,11 +240,11 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	const styles: CSSProperties = {
 		backgroundColor: isWeekendDay
 			? groupNumber % 2 === 0
-				? token("color.background.neutral.hovered")
-				: token("color.background.neutral.pressed")
+				? weekendColor0
+				: weekendColor1
 			: groupNumber % 2 === 0
-			? token("elevation.surface")
-			: token("elevation.surface.hovered"),
+			? dayColor0
+			: dayColor1,
 		verticalAlign: "top",
 		cursor: "pointer",
 	}
