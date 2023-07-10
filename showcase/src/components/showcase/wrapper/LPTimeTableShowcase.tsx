@@ -638,7 +638,7 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 					onTimeSlotItemClick={onTimeSlotItemClickCB}
 					rounding={rounding}
 					nowOverwrite={nowOverwrite}
-					timeTableMessages={undefined}
+					timeTableMessages={translation}
 					onTimeRangeSelected={setSelectedTimeRange}
 					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
 				/>
