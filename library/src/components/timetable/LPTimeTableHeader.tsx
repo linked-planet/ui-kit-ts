@@ -15,6 +15,7 @@ type Props = {
 	endDate: Dayjs
 	timeSlotsPerDay: number
 	timeSteps: number
+	showTimeSlotHeader: boolean
 }
 
 const backgroundColor = token("elevation.surface.raised.pressed")
@@ -28,6 +29,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 		endDate,
 		timeSlotsPerDay,
 		timeSteps,
+		showTimeSlotHeader,
 	}: Props,
 	tableHeaderRef: React.Ref<HTMLTableSectionElement>,
 ) {
@@ -88,6 +90,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							backgroundColor,
 							paddingTop: "1rem",
 							paddingBottom: "0.7rem",
+							borderTopLeftRadius: "2px",
 						}}
 						className={styles.unselectable}
 					>
@@ -95,7 +98,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							style={{
 								display: "flex",
 								justifyContent: "right",
-								paddingRight: "0.3rem",
+								paddingRight: "1rem",
 							}}
 						>
 							{`${startDate.format("DD.MM.")} - ${endDate.format(
@@ -103,7 +106,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							)}`}
 						</div>
 					</th>
-					{days.map((date) => {
+					{days.map((date, i) => {
 						return (
 							<th
 								key={date.toISOString()}
@@ -112,6 +115,10 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 									backgroundColor,
 									paddingTop: "1rem",
 									paddingBottom: "0.7rem",
+									borderTopRightRadius:
+										i === days.length - 1
+											? "2px"
+											: undefined,
 								}}
 							>
 								<div
@@ -142,17 +149,21 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							backgroundColor,
 						}}
 					>
-						<div
-							style={{
-								paddingRight: "0.3rem",
-								display: "flex",
-								justifyContent: "right",
-							}}
-						>
-							{`${slotsArray[0].format("HH:mm")} - ${slotsArray[0]
-								.add(timeSlotsPerDay * timeSteps, "minutes")
-								.format("HH:mm")} [${slotsArray.length}]`}
-						</div>
+						{showTimeSlotHeader && (
+							<div
+								style={{
+									paddingRight: "1rem",
+									display: "flex",
+									justifyContent: "right",
+								}}
+							>
+								{`${slotsArray[0].format(
+									"HH:mm",
+								)} - ${slotsArray[0]
+									.add(timeSlotsPerDay * timeSteps, "minutes")
+									.format("HH:mm")} [${slotsArray.length}]`}
+							</div>
+						)}
 					</th>
 					{slotsArray.map((slot, i) => {
 						const isNewDay =
@@ -170,7 +181,9 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								colSpan={2}
 								className={`${styles.unselectable} ${styles.headerTimeSlot}`}
 							>
-								{slot.format(headerTimeSlotFormat)}
+								{showTimeSlotHeader
+									? slot.format(headerTimeSlotFormat)
+									: undefined}
 							</th>
 						)
 					})}

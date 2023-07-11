@@ -21,6 +21,16 @@ import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleCont
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
+const debounceTimeout = 500
+let debounceTimeoutCurrent: number | undefined = undefined
+function debounceHelper(callback: () => void) {
+	if (debounceTimeoutCurrent) {
+		clearTimeout(debounceTimeoutCurrent)
+	}
+	debounceTimeoutCurrent = setTimeout(() => {
+		callback()
+	}, debounceTimeout)
+}
 
 type ExampleGroup = TimeTableGroup
 
@@ -333,10 +343,12 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 		"round",
 	)
 	const [timeSteps, setTimeSteps] = useState(110)
+	const [timeStepsInputValue, setTimeStepsInputValue] = useState(110)
 	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
 	const [columnWidth, setColumnWidth] = useState(70)
 	const [disabledWeekendInteractions, setDisabledWeekendInteractions] =
 		useState(true)
+	const [showTimeSlotHeader, setShowTimeSlotHeader] = useState(true)
 
 	const [timeFrame, setTimeFrame] = useState({
 		startDate: startDateInitial,
@@ -496,11 +508,15 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 					<input
 						type="number"
 						name="timesteps"
-						value={timeSteps}
+						value={timeStepsInputValue}
 						step={10}
 						min={10}
 						max={1200}
-						onChange={(e) => setTimeSteps(parseInt(e.target.value))}
+						onChange={(e) => {
+							const val = parseInt(e.target.value)
+							setTimeStepsInputValue(val)
+							debounceHelper(() => setTimeSteps(val))
+						}}
 						style={{
 							width: "4rem",
 							textAlign: "center",
@@ -533,7 +549,11 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 						min={10}
 						max={300}
 						onChange={(e) =>
-							setGroupHeaderColumnWidth(parseInt(e.target.value))
+							debounceHelper(() =>
+								setGroupHeaderColumnWidth(
+									parseInt(e.target.value),
+								),
+							)
 						}
 						style={{
 							width: "4rem",
@@ -557,7 +577,9 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 						min={10}
 						max={1000}
 						onChange={(e) =>
-							setColumnWidth(parseInt(e.target.value))
+							debounceHelper(() =>
+								setColumnWidth(parseInt(e.target.value)),
+							)
 						}
 						style={{
 							width: "4rem",
@@ -606,6 +628,26 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 						onChange={(e) =>
 							setDisabledWeekendInteractions(e.target.checked)
 						}
+						style={{
+							textAlign: "center",
+							marginRight: "0.25rem",
+						}}
+					/>
+					<label
+						htmlFor="showtimeslotheader"
+						style={{
+							marginRight: "1rem",
+						}}
+					>
+						Show Time Slot Header:
+					</label>
+					<input
+						type="checkbox"
+						name="showtimeslotheader"
+						checked={showTimeSlotHeader}
+						onChange={(e) => {
+							setShowTimeSlotHeader(e.target.checked)
+						}}
 						style={{
 							textAlign: "center",
 							marginRight: "0.25rem",
@@ -676,6 +718,7 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 					onTimeRangeSelected={setSelectedTimeRange}
 					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
 					disableWeekendInteractions={disabledWeekendInteractions}
+					showTimeSlotHeader={showTimeSlotHeader}
 				/>
 			</>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>

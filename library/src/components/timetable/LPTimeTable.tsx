@@ -124,6 +124,13 @@ export interface LPTimeTableProps<
 	disableWeekendInteractions?: boolean
 
 	/**
+	 * Show time slot header, when disabled, the header of the single time slots telling the time of the slot is not shown
+	 * (this is useful for a calendar view of days)
+	 * @default true
+	 */
+	showTimeSlotHeader?: boolean
+
+	/**
 	 * Sets the language used for the messages.
 	 */
 	timeTableMessages?: TranslatedTimeTableMessages
@@ -134,8 +141,7 @@ const nowbarUpdateIntervall = 1000 * 60 // 1 minute
 /**
  * Each column in the table is actually 2 columns. 1 fixed size one, and 1 dynamic sized on. Like that I can simulate min-width on the columns, which else is not allowed.
  */
-
-export default function LPTimeTable<
+const memoid = React.memo(function LPTimeTable<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 >({ timeTableMessages, ...props }: LPTimeTableProps<G, I>) {
@@ -150,7 +156,8 @@ export default function LPTimeTable<
 			<LPTimeTableImpl {...props} />
 		</TimeTableMessageProvider>
 	)
-}
+})
+export default memoid
 
 /**
  * The LPTimeTable depends on the localization messages. It needs to be wrapped in an
@@ -175,6 +182,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	height,
 	placeHolderHeight = "1.5rem",
 	disableWeekendInteractions = true,
+	showTimeSlotHeader = true,
 	nowOverwrite,
 }: LPTimeTableProps<G, I>) => {
 	const [startDate, setStartDate] = useState<Dayjs>(startDateP)
@@ -324,6 +332,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								startDate={startDate}
 								endDate={endDate}
 								timeSlotsPerDay={timeSlotsPerDay}
+								showTimeSlotHeader={showTimeSlotHeader}
 								ref={tableHeaderRef}
 							/>
 							<tbody ref={tableBodyRef}>
