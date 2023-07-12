@@ -140,8 +140,10 @@ const nowbarUpdateIntervall = 1000 * 60 // 1 minute
 
 /**
  * Each column in the table is actually 2 columns. 1 fixed size one, and 1 dynamic sized on. Like that I can simulate min-width on the columns, which else is not allowed.
+ *
+ * Thte index exports a memoized version of the LPTimeTable, which is used by the parent component.
  */
-const memoid = React.memo(function LPTimeTable<
+export default function LPTimeTable<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 >({ timeTableMessages, ...props }: LPTimeTableProps<G, I>) {
@@ -156,8 +158,7 @@ const memoid = React.memo(function LPTimeTable<
 			<LPTimeTableImpl {...props} />
 		</TimeTableMessageProvider>
 	)
-})
-export default memoid
+}
 
 /**
  * The LPTimeTable depends on the localization messages. It needs to be wrapped in an
@@ -249,6 +250,55 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	}, [entries, setMessage, slotsArray, timeSteps])
 	//#endregion
 
+	//#region now bar
+
+	const nowBarRef = useRef<HTMLDivElement | undefined>()
+	const nowRef = useRef<Dayjs>(nowOverwrite ?? dayjs())
+	// adjust the now bar moves the now bar to the current time slot, if it exists
+	// and also adjusts the orange border of the time slot header
+	const adjustNowBar = useCallback(() => {
+		if (!slotsArray) {
+			return
+		}
+
+		if (nowOverwrite) {
+			// when the debugging overwrite is active, we still want to move the bar to test it
+			nowRef.current = nowRef.current.add(
+				nowbarUpdateIntervall,
+				"milliseconds",
+			)
+		} else {
+			nowRef.current = dayjs()
+		}
+
+		moveNowBar(
+			slotsArray,
+			nowRef,
+			timeSteps,
+			nowBarRef,
+			tableHeaderRef,
+			tableBodyRef,
+			setMessage,
+		)
+	}, [
+		slotsArray,
+		nowOverwrite,
+		timeSteps,
+		tableHeaderRef,
+		tableBodyRef,
+		setMessage,
+	])
+
+	// initial run, and start interval to move the now bar
+	useEffect(() => {
+		adjustNowBar()
+		const interval = setInterval(adjustNowBar, 1000 * 60) // run every minute
+		return () => {
+			clearInterval(interval)
+		}
+	}, [adjustNowBar])
+	//#endregion
+
 	// scroll now bar into view if it exists
 	// TODO fix this, it doesn't work
 	/*useLayoutEffect( () => {
@@ -336,14 +386,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								ref={tableHeaderRef}
 							/>
 							<tbody ref={tableBodyRef}>
-								{/* render the time slot bars, it has to be as body tds because of the z-index in the theader */}
-								<TimeSlotBarRow
-									timeSteps={timeSteps}
-									slotsArray={slotsArray}
-									tableBodyRef={tableBodyRef}
-									tableHeaderRef={tableHeaderRef}
-									nowOverwrite={nowOverwrite}
-								/>
 								<TimeLineTableSimplified<G, I>
 									entries={entries}
 									selectedTimeSlotItem={selectedTimeSlotItem}
@@ -358,141 +400,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				</SelectedTimeSlotsProvider>
 			</TimeTableConfigProvider>
 		</>
-	)
-}
-
-/**
- * Renders an empty row for the time slot bars and the now bar
- */
-function TimeSlotBarRow({
-	slotsArray,
-	tableBodyRef,
-	tableHeaderRef,
-	timeSteps,
-	nowOverwrite,
-}: {
-	slotsArray: Dayjs[]
-	tableBodyRef: React.RefObject<HTMLTableSectionElement>
-	tableHeaderRef: React.RefObject<HTMLTableSectionElement>
-	timeSteps: number
-	nowOverwrite?: Dayjs
-}) {
-	const nowBarRef = useRef<HTMLDivElement | undefined>()
-	const nowRef = useRef<Dayjs>(nowOverwrite ?? dayjs())
-
-	const { setMessage } = useTimeTableMessage()
-
-	//#region now bar
-	// adjust the now bar moves the now bar to the current time slot, if it exists
-	// and also adjusts the orange border of the time slot header
-	const adjustNowBar = useCallback(() => {
-		if (!slotsArray) {
-			return
-		}
-
-		if (nowOverwrite) {
-			// when the debugging overwrite is active, we still want to move the bar to test it
-			nowRef.current = nowRef.current.add(
-				nowbarUpdateIntervall,
-				"milliseconds",
-			)
-		} else {
-			nowRef.current = dayjs()
-		}
-
-		moveNowBar(
-			slotsArray,
-			nowRef,
-			timeSteps,
-			nowBarRef,
-			tableHeaderRef,
-			tableBodyRef,
-			setMessage,
-		)
-	}, [
-		slotsArray,
-		nowOverwrite,
-		timeSteps,
-		tableHeaderRef,
-		tableBodyRef,
-		setMessage,
-	])
-	//#endregion
-
-	// initial run, and start interval to move the now bar
-	useEffect(() => {
-		adjustNowBar()
-		const interval = setInterval(adjustNowBar, 1000 * 60) // run every minute
-		return () => {
-			clearInterval(interval)
-		}
-	}, [adjustNowBar])
-	//#endregion
-
-	//#region draw the time slot vertical bars, and the now bar showing the current time (if it is in the time frame)
-	const painSlotLines = useCallback(() => {
-		if (tableBodyRef.current) {
-			const tbodyFirstRow = tableBodyRef.current?.children[0] as
-				| HTMLTableRowElement
-				| undefined
-			const slotBars = tbodyFirstRow?.children
-			if (!slotBars) {
-				setMessage({
-					urgency: "error",
-					messageKey: "timetable.timeSlotColumnsNotFound",
-				})
-				console.log(
-					"LPTimeTable - unable to find time slot columns for the time slot bars",
-				)
-				return
-			}
-			const slotBarHeight = tableBodyRef.current?.scrollHeight + "px"
-			for (const slotBar of slotBars) {
-				const slotBarTD = slotBar as HTMLTableCellElement
-				if (slotBarTD.children.length > 0) {
-					// the set bar height to the height of the table body
-					const slotBarDiv = slotBarTD.children[0] as HTMLDivElement
-					slotBarDiv.style.height = slotBarHeight
-					slotBar.classList.add(styles.unselectable)
-				}
-			}
-			adjustNowBar()
-		}
-	}, [tableBodyRef, adjustNowBar, setMessage])
-
-	useLayoutEffect(() => {
-		painSlotLines()
-	})
-	//#endregion
-
-	// row withouth any content, just to render the time slot bars
-	return (
-		<tr className={styles.nowRow}>
-			<td></td>
-			{slotsArray.map((slot, i) => {
-				const isNextNewDay =
-					i < slotsArray.length - 1 &&
-					!slotsArray[i + 1].isSame(slot, "day")
-				return (
-					<td
-						key={i}
-						style={{
-							position: "relative",
-						}}
-						colSpan={2}
-					>
-						<div
-							className={styles.timeSlotBar}
-							style={{
-								borderColor: isNextNewDay
-									? token("color.border.bold")
-									: undefined,
-							}}
-						></div>
-					</td>
-				)
-			})}
-		</tr>
 	)
 }
 

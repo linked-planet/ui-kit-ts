@@ -46,7 +46,7 @@ interface TimeLineTableSimplifiedProps<
 	onGroupClick: ((_: G) => void) | undefined
 }
 
-const weekendColor0 = token("elevation.surface.raised.hovered")
+const weekendColor0 = token("elevation.surface.raised")
 const weekendColor1 = token("elevation.surface.raised.pressed")
 const dayColor0 = token("elevation.surface")
 const dayColor1 = token("elevation.surface.hovered")
@@ -148,6 +148,13 @@ function TableCell({
 }) {
 	const timeSlot = slotsArray[timeSlotNumber]
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
+	const timeSlotAfter =
+		timeSlotNumber < slotsArray.length - 1
+			? slotsArray[timeSlotNumber + 1]
+			: undefined
+	const isLastSlotOfTheDay = timeSlotAfter
+		? timeSlotAfter.day() !== timeSlot.day()
+		: true
 
 	const { disableWeekendInteractions, columnWidth } = useTimeTableConfig()
 
@@ -169,6 +176,9 @@ function TableCell({
 			isWeekendDay && disableWeekendInteractions
 				? "not-allowed"
 				: "pointer",
+		borderRight: `${isLastSlotOfTheDay ? "2px" : "1px"} solid ${token(
+			"color.border",
+		)}`,
 		maxWidth: columnWidth,
 	}
 
@@ -214,6 +224,13 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 			: -1
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 	const isFirstOfSelection = timeSlotSelectedIndex === 0
+	const timeSlotAfter =
+		timeSlotNumber < slotsArray.length - 1
+			? slotsArray[timeSlotNumber + 1]
+			: undefined
+	const isLastSlotOfTheDay = timeSlotAfter
+		? timeSlotAfter.day() !== timeSlot.day()
+		: true
 
 	let placeHolderItem: JSX.Element | undefined = undefined
 	if (isFirstOfSelection && selectedTimeSlots) {
@@ -247,6 +264,9 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 			: dayColor1,
 		verticalAlign: "top",
 		cursor: "pointer",
+		borderRight: `${isLastSlotOfTheDay ? "2px" : "1px"} solid ${token(
+			"color.border",
+		)}`,
 	}
 
 	return (
@@ -330,6 +350,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		}
 		trs.push(
 			<tr
+				key={-1}
 				style={{
 					backgroundColor: token("elevation.surface"),
 					height: placeHolderHeight, // height works as min height in tables
@@ -428,6 +449,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 			trs.push(
 				<tr
+					key={r}
 					style={{
 						backgroundColor: token("elevation.surface"),
 						height: "1rem", // height works as min height in tables

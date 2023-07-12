@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react"
+import React, { forwardRef, Fragment } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import { token } from "@atlaskit/tokens"
 
@@ -18,7 +18,8 @@ type Props = {
 	showTimeSlotHeader: boolean
 }
 
-const backgroundColor = token("elevation.surface.raised.pressed")
+const backgroundColor = token("elevation.surface.sunken")
+const headerBorder = `3px solid ${token("color.border.bold")}`
 
 export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 	{
@@ -55,9 +56,8 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 				/>
 				{slotsArray.map((_, i) => {
 					return (
-						<>
+						<Fragment key={i * 2}>
 							<col
-								key={i * 2}
 								style={{
 									minWidth:
 										typeof columnWidth === "string"
@@ -69,8 +69,8 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 											: `${columnWidth}px`,
 								}}
 							/>
-							<col key={i * 2 + 1} />
-						</>
+							<col />
+						</Fragment>
 					)
 				})}
 			</colgroup>
@@ -84,9 +84,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							top: 0,
 							borderLeftStyle: "none",
 							width: groupHeaderColumnWidth,
-							borderRight: `1px solid ${token(
-								"color.border.bold",
-							)}`,
+							borderRight: headerBorder,
 							backgroundColor,
 							paddingTop: "1rem",
 							paddingBottom: "0.7rem",
@@ -113,6 +111,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								colSpan={timeSlotsPerDay * 2}
 								style={{
 									backgroundColor,
+
 									paddingTop: "1rem",
 									paddingBottom: "0.7rem",
 									borderTopRightRadius:
@@ -120,6 +119,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 											? "2px"
 											: undefined,
 								}}
+								className={`${styles.unselectable} ${styles.headerFullBorder}`}
 							>
 								<div
 									style={{
@@ -136,16 +136,15 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 				</tr>
 				<tr>
 					<th
-						className={`${styles.unselectable} ${styles.headerTimeSlot}`}
+						className={`${styles.unselectable}`}
 						style={{
 							zIndex: 4,
 							position: "sticky",
 							left: 0,
 							top: 0,
 							borderLeftStyle: "none",
-							borderRight: `1px solid ${token(
-								"color.border.bold",
-							)}`,
+							borderRight: headerBorder,
+							borderBottom: headerBorder,
 							backgroundColor,
 						}}
 					>
@@ -166,20 +165,24 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 						)}
 					</th>
 					{slotsArray.map((slot, i) => {
-						const isNewDay =
-							i === 0 || !slotsArray[i - 1].isSame(slot, "day")
+						const isLastOfDay =
+							i === slotsArray.length - 1 ||
+							!slotsArray[i + 1].isSame(slot, "day")
 						return (
 							<th
 								key={i}
 								style={{
-									paddingLeft: isNewDay ? "4px" : "2px",
-									borderLeftWidth:
-										isNewDay && i > 0 ? "1px" : "0",
 									backgroundColor,
 									paddingBottom: "0.25rem",
 								}}
 								colSpan={2}
-								className={`${styles.unselectable} ${styles.headerTimeSlot}`}
+								className={`${styles.unselectable} ${
+									styles.headerTimeSlot
+								} ${
+									isLastOfDay
+										? styles.headerFullBorder
+										: styles.headerHalfBorder
+								}`}
 							>
 								{showTimeSlotHeader
 									? slot.format(headerTimeSlotFormat)

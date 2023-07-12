@@ -44,25 +44,42 @@
 	left: 0;
 	z-index: 3;
 	border-width: 0;
-	border-right-width: var(--ds-width-050, 1px);
-	border-bottom-width: var(--ds-width-050, 1px);
+	border-right-width: 3px;
+	border-bottom-width: 1px;
 	border-style: solid;
 	border-color: var(--ds-border-bold);
 	user-select: none !important;
 }
 
 .lpTimeTable .headerTimeSlot {
-	border-color: var(--ds-border-bold);
-	border-bottom: var(--ds-width-050, 1px) solid var(--ds-border-bold);
+	border-bottom: var(--ds-width-050, 3px) solid var(--ds-border-bold);
 	color: var(--ds-text);
-	border-left-style: solid;
 	font-weight: 500;
 	background-color: var(--ds-surface);
+	padding-left: 5px;
+}
+
+.headerHalfBorder::after {
+	content: "";
+	position: absolute;
+	bottom: 1px;
+	right: 0;
+	height: 50%;
+	border-left: 1px solid var(--ds-border);
+}
+
+.headerFullBorder::after {
+	content: "";
+	position: absolute;
+	bottom: 1px;
+	right: 0;
+	height: 100%;
+	border-left: 2px solid var(--ds-border);
 }
 
 .lpTimeTable .nowHeaderTimeSlot {
 	border-bottom-color: var(--ds-chart-orange-bold);
-	border-bottom-width: var(--ds-width-100, 2px);
+	border-bottom-width: 3px;
 	font-weight: 700;
 }
 
@@ -74,23 +91,10 @@
 	position: absolute;
 	background-color: var(--ds-chart-orange-bold);
 	opacity: 0.6;
-	top: 100%;
+	top: 0;
 	bottom: 0;
 	width: 2px;
 	z-index: 1;
-}
-
-.timeSlotBar {
-	position: absolute;
-	border-left: 1px solid var(--ds-border);
-	inset: 0 0 0 100%;
-	width: 1px;
-	height: 10px;
-	z-index: 1;
-}
-
-.weekend {
-	background-color: var(--ds-background-neutral);
 }
 
 .unselectable {
