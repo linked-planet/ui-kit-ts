@@ -46,7 +46,7 @@ interface TimeLineTableSimplifiedProps<
 	onGroupClick: ((_: G) => void) | undefined
 }
 
-const weekendColor0 = token("elevation.surface.raised")
+const weekendColor0 = token("elevation.surface.raised.hovered")
 const weekendColor1 = token("elevation.surface.raised.pressed")
 const dayColor0 = token("elevation.surface")
 const dayColor1 = token("elevation.surface.hovered")

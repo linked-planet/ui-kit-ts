@@ -19,7 +19,7 @@ type Props = {
 }
 
 const backgroundColor = token("elevation.surface.sunken")
-const headerBorder = `3px solid ${token("color.border.bold")}`
+const headerBorder = `2px solid ${token("color.border.bold")}`
 
 export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 	{
@@ -85,9 +85,12 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							borderLeftStyle: "none",
 							width: groupHeaderColumnWidth,
 							borderRight: headerBorder,
+							borderBottom: showTimeSlotHeader
+								? `1px solid ${token("color.border")}`
+								: undefined,
 							backgroundColor,
 							paddingTop: "1rem",
-							paddingBottom: "0.7rem",
+							paddingBottom: "1rem",
 							borderTopLeftRadius: "2px",
 						}}
 						className={styles.unselectable}
@@ -113,7 +116,9 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 									backgroundColor,
 
 									paddingTop: "1rem",
-									paddingBottom: "0.7rem",
+									borderBottom: showTimeSlotHeader
+										? `1px solid ${token("color.border")}`
+										: undefined,
 									borderTopRightRadius:
 										i === days.length - 1
 											? "2px"
@@ -121,14 +126,15 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								}}
 								className={`${styles.unselectable} ${styles.headerFullBorder}`}
 							>
-								<div
-									style={{
-										display: "flex",
-										justifyContent: "center",
-									}}
-									className={styles.unselectable}
-								>
-									{date.format(headerDateFormat)}
+								<div>
+									<div
+										style={{
+											textAlign: "center",
+										}}
+										className={styles.unselectable}
+									>
+										{date.format(headerDateFormat)}
+									</div>
 								</div>
 							</th>
 						)
@@ -146,6 +152,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							borderRight: headerBorder,
 							borderBottom: headerBorder,
 							backgroundColor,
+							paddingTop: "1rem",
 						}}
 					>
 						{showTimeSlotHeader && (
@@ -173,7 +180,9 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								key={i}
 								style={{
 									backgroundColor,
-									paddingBottom: "0.25rem",
+									paddingBottom: "0.75rem",
+									paddingTop: "0.75rem",
+									borderBottom: headerBorder,
 								}}
 								colSpan={2}
 								className={`${styles.unselectable} ${

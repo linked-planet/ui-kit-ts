@@ -44,7 +44,7 @@
 	left: 0;
 	z-index: 3;
 	border-width: 0;
-	border-right-width: 3px;
+	border-right-width: 2px;
 	border-bottom-width: 1px;
 	border-style: solid;
 	border-color: var(--ds-border-bold);
@@ -52,11 +52,10 @@
 }
 
 .lpTimeTable .headerTimeSlot {
-	border-bottom: var(--ds-width-050, 3px) solid var(--ds-border-bold);
 	color: var(--ds-text);
 	font-weight: 500;
 	background-color: var(--ds-surface);
-	padding-left: 5px;
+	padding-left: 7px;
 }
 
 .headerHalfBorder::after {
@@ -64,7 +63,7 @@
 	position: absolute;
 	bottom: 1px;
 	right: 0;
-	height: 50%;
+	height: 100%;
 	border-left: 1px solid var(--ds-border);
 }
 
