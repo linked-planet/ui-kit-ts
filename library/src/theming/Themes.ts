@@ -1,4 +1,4 @@
-import { setGlobalTheme } from "@atlaskit/tokens"
+//import { setGlobalTheme } from "@atlaskit/tokens" -> when we import this, the whole theming is exported as bundles, we do not want that.
 
 export const themesAvailable = ["dark", "light"] as const
 
@@ -12,9 +12,13 @@ const LocalStorageThemeVar = "atlassian-theme"
 
 export function applyTheme(theme: Theme | "auto") {
 	localStorage.setItem(LocalStorageThemeVar, theme)
-	setGlobalTheme({
-		colorMode: theme ?? "auto",
-	})
+	// get the html element
+	const html = document.querySelector("html")
+	if (!html) {
+		return
+	}
+	// set the theme attribute
+	html.setAttribute("data-color-mode", theme)
 }
 
 export function switchTheme() {
@@ -24,14 +28,13 @@ export function switchTheme() {
 		let currentThemeIdx = themesAvailable.indexOf(currentTheme as Theme)
 		if (currentThemeIdx > -1) {
 			applyTheme(
-				themesAvailable[++currentThemeIdx % themesAvailable.length]
+				themesAvailable[++currentThemeIdx % themesAvailable.length],
 			)
 			return
 		}
 	}
 	applyTheme("auto")
 }
-
 
 export function getCurrentTheme() {
 	const html = document.querySelector("html")
@@ -50,7 +53,7 @@ export function getCurrentTheme() {
 export function initTheming() {
 	const localTheme = localStorage.getItem(LocalStorageThemeVar)
 	const prefersDark = window.matchMedia(
-		"(prefers-color-scheme: dark)"
+		"(prefers-color-scheme: dark)",
 	).matches
 	const initialTheme =
 		(localTheme as Theme) || (prefersDark ? "dark" : "light")
@@ -60,23 +63,19 @@ export function initTheming() {
 	if (html) {
 		if (
 			!html.getAttribute("data-theme") ||
-			!html.getAttribute("data-color-mode") ||
+			!html.getAttribute("data-color-mode")
+		) {
+			console.warn(
+				"initializing Atlassian design system theming first by calling setGlobalTheme({}) from the @atlassian/tokens package.",
+			)
+			return
+		}
+		if (
+			// theming active, but not the same as the initial theme
 			html.getAttribute("data-color-mode") !== initialTheme
 		) {
 			// not theming active, we activate it
-			console.log("initializing Atlassian design system theming")
 			applyTheme(initialTheme)
 		}
 	}
-}
-
-export function getTheme() {
-	const html = document.querySelector("html")
-	if (html) {
-		const currentTheme = html.getAttribute("data-color-mode")
-		if (currentTheme && isTheme(currentTheme)) {
-			return currentTheme
-		}
-	}
-	return undefined
 }

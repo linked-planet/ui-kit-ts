@@ -2,7 +2,6 @@ import React, {
 	MutableRefObject,
 	useCallback,
 	useEffect,
-	useLayoutEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -14,7 +13,6 @@ import "./LPTimeTable.module.css"
 import styles from "./LPTimeTable.module.css"
 import { getStartAndEndSlot, itemsOutsideOfDayRange } from "./timeTableUtils"
 import InlineMessage from "../inlinemessage"
-import { token } from "@atlaskit/tokens"
 import {
 	TimeTableMessage,
 	TimeTableMessageProvider,
@@ -149,7 +147,7 @@ export default function LPTimeTable<
 >({ timeTableMessages, ...props }: LPTimeTableProps<G, I>) {
 	if (!getCurrentTheme()) {
 		console.warn(
-			"LPTimeTable - no theme set, LPTable required Atlassian.design token to have the color scheme set correctly",
+			"LPTimeTable - no theme set, LPTable required Atlassian.design token to have the color scheme set correctly, call setGlobalTheme({}) from @atlassian/tokens to set the theme.",
 		)
 	}
 

@@ -15,15 +15,9 @@ import ReactQueryPage from "./page/ReactQueryPage"
 
 import "./custom.css"
 import { queryClient } from "./setup"
-import { initTheming } from "@linked-planet/ui-kit-ts/theming"
 import { LocaleProvider } from "@linked-planet/ui-kit-ts"
-import { setGlobalTheme } from "@atlaskit/tokens"
 
-function App() {
-	//require("./custom.css")
-
-	setGlobalTheme({}) // without it the table would be invisible because the css variables are not set
-
+export default function App() {
 	return (
 		<HashRouter>
 			<Provider store={appStore}>
@@ -82,5 +76,3 @@ function App() {
 		</HashRouter>
 	)
 }
-
-export default App

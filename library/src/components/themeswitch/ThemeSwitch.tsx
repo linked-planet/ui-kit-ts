@@ -1,34 +1,40 @@
 import React, { useEffect, useState } from "react"
 import Button from "@atlaskit/button"
-import { Theme, isTheme, getTheme, initTheming, switchTheme } from "../../theming"
+import {
+	Theme,
+	isTheme,
+	getCurrentTheme,
+	initTheming,
+	switchTheme,
+} from "../../theming"
 
-export default function ThemeSwitch () {
-	const [ theme, setTheme ] = useState<Theme>( "light" )
+export default function ThemeSwitch() {
+	const [theme, setTheme] = useState<Theme>("light")
 
-	useEffect( () => {
-		let currTheme = getTheme()
-		if ( !currTheme ) {
+	useEffect(() => {
+		let currTheme = getCurrentTheme()
+		if (!currTheme) {
 			initTheming()
 		}
-		currTheme = getTheme()
-		if ( !currTheme ) {
-			console.log( "ThemeSwitch - failed to get current theme" )
+		currTheme = getCurrentTheme()
+		if (!currTheme) {
+			console.log("ThemeSwitch - failed to get current theme")
 			return
 		}
-		setTheme( currTheme )
-	}, [] )
+		setTheme(currTheme)
+	}, [])
 
 	return (
 		<Button
-			style={ {
+			style={{
 				display: "flex",
 				alignItems: "center",
 				justifyContent: "center",
-			} }
+			}}
 			appearance="subtle"
 			about="Switch theme"
-			isDisabled={ !isTheme( theme ) }
-			onClick={ switchTheme }
+			isDisabled={!isTheme(theme)}
+			onClick={switchTheme}
 		>
 			Switch Theme
 		</Button>
