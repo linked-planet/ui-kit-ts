@@ -53,6 +53,9 @@ export default function ItemWrapper<
 		onMouseUp: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 			e.stopPropagation()
 		},
+		onMouseMove: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+			e.stopPropagation()
+		},
 	}
 	//#endregion
 

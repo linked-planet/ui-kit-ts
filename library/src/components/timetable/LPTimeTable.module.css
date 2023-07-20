@@ -23,7 +23,8 @@
 	position: relative;
 	padding: 0;
 	border-left-color: var(
-		--ds-border-bold
+		--ds-border-bold,
+		#758195
 	) !important; /* atlas-kit overrides this */
 }
 
@@ -41,7 +42,7 @@
 .lpTimeTable .headerTimeSlot {
 	color: var(--ds-text);
 	font-weight: 500;
-	background-color: var(--ds-surface);
+	background-color: var(--ds-surface, #fff);
 	padding-left: 7px;
 }
 
@@ -51,7 +52,7 @@
 	bottom: 1px;
 	right: 0;
 	height: 100%;
-	border-left: 1px solid var(--ds-border);
+	border-left: 1px solid var(--ds-border, #091e4224);
 }
 
 .headerFullBorder::after {
@@ -60,11 +61,11 @@
 	bottom: 1px;
 	right: 0;
 	height: 100%;
-	border-left: 2px solid var(--ds-border);
+	border-left: 2px solid var(--ds-border, #091e4224);
 }
 
 .lpTimeTable .nowHeaderTimeSlot {
-	border-bottom-color: var(--ds-chart-orange-bold);
+	border-bottom-color: var(--ds-chart-orange-bold, #d97008);
 	border-bottom-width: 3px;
 	font-weight: 700;
 }
@@ -75,7 +76,7 @@
 
 .lpTimeTable .nowBar {
 	position: absolute;
-	background-color: var(--ds-chart-orange-bold);
+	background-color: var(--ds-chart-orange-bold, #d97008);
 	opacity: 0.6;
 	top: 0;
 	bottom: 0;

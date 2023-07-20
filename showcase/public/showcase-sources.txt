@@ -1706,7 +1706,11 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 					Create New Item
 				</Button>
 			</div>
-			<>
+			<div
+				style={{
+					height: "600px",
+				}}
+			>
 				<LPTimeTable
 					groupHeaderColumnWidth={groupHeaderColumnWidth}
 					columnWidth={columnWidth}
@@ -1734,7 +1738,7 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 					disableWeekendInteractions={disabledWeekendInteractions}
 					showTimeSlotHeader={showTimeSlotHeader}
 				/>
-			</>
+			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
 				<ChevronDownIcon label="entryloader" />
 			</Button>

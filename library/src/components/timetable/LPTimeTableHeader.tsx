@@ -18,8 +18,8 @@ type Props = {
 	showTimeSlotHeader: boolean
 }
 
-const backgroundColor = token("elevation.surface.sunken")
-const headerBorder = `2px solid ${token("color.border.bold")}`
+const backgroundColor = token("elevation.surface.sunken", "#F7F8F9")
+const headerBorder = `2px solid ${token("color.border.bold", "#758195")}`
 
 export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 	{
@@ -86,7 +86,10 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							width: groupHeaderColumnWidth,
 							borderRight: headerBorder,
 							borderBottom: showTimeSlotHeader
-								? `1px solid ${token("color.border")}`
+								? `1px solid ${token(
+										"color.border",
+										"#091E4224",
+								  )}`
 								: undefined,
 							backgroundColor,
 							paddingTop: "1rem",
@@ -117,7 +120,10 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 
 									paddingTop: "1rem",
 									borderBottom: showTimeSlotHeader
-										? `1px solid ${token("color.border")}`
+										? `1px solid ${token(
+												"color.border",
+												"#091E4224",
+										  )}`
 										: undefined,
 									borderTopRightRadius:
 										i === days.length - 1

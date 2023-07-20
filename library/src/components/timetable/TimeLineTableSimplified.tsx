@@ -46,10 +46,10 @@ interface TimeLineTableSimplifiedProps<
 	onGroupClick: ((_: G) => void) | undefined
 }
 
-const weekendColor0 = token("elevation.surface.raised.hovered")
-const weekendColor1 = token("elevation.surface.raised.pressed")
-const dayColor0 = token("elevation.surface")
-const dayColor1 = token("elevation.surface.hovered")
+const weekendColor0 = token("elevation.surface.raised.hovered", "#F1F2F4")
+const weekendColor1 = token("elevation.surface.raised.pressed", "#DCDFE4")
+const dayColor0 = token("elevation.surface", "#FFFFFF")
+const dayColor1 = token("elevation.surface.hovered", "#F1F2F4")
 
 /**
  * Creates the table rows for the given entries.
@@ -128,7 +128,7 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 				borderRightWidth: "2px",
 				borderBottomWidth: "1px",
 				borderStyle: "solid",
-				borderColor: token("color.border.bold"),
+				borderColor: token("color.border.bold", "#758195"),
 			}}
 		>
 			{renderGroup ? renderGroup({ group }) : <Group group={group} />}
@@ -170,7 +170,7 @@ function TableCell({
 
 	const style: CSSProperties = {
 		borderBottom: isLastGroupRow
-			? `1px solid ${token("color.border.bold")}`
+			? `1px solid ${token("color.border.bold", "#758195")}`
 			: undefined,
 		paddingBottom: isLastGroupRow ? "10px" : undefined,
 		backgroundColor: isWeekendDay
@@ -186,6 +186,7 @@ function TableCell({
 				: "pointer",
 		borderRight: `${isLastSlotOfTheDay ? "2px" : "1px"} solid ${token(
 			"color.border",
+			"#091E4224",
 		)}`,
 		maxWidth: columnWidth,
 	}
@@ -274,6 +275,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 		cursor: "pointer",
 		borderRight: `${isLastSlotOfTheDay ? "2px" : "1px"} solid ${token(
 			"color.border",
+			"#091E4224",
 		)}`,
 	}
 
@@ -360,7 +362,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			<tr
 				key={-1}
 				style={{
-					backgroundColor: token("elevation.surface"),
+					backgroundColor: token("elevation.surface", "#FFFFFF"),
 					height: placeHolderHeight, // height works as min height in tables
 				}}
 			>
@@ -459,7 +461,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				<tr
 					key={r}
 					style={{
-						backgroundColor: token("elevation.surface"),
+						backgroundColor: token("elevation.surface", "#FFFFFF"),
 						height: "1rem", // height works as min height in tables
 					}}
 				>

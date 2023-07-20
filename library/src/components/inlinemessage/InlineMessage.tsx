@@ -8,6 +8,7 @@ export type MessageUrgency =
 	| "warning"
 	| "information"
 	| "danger"
+	| "discovery"
 	| undefined
 
 export type Message = {
@@ -48,36 +49,42 @@ export default function InlineMessage({
 	let closeBtnAppearance: Appearance = "default"
 	switch (message.urgency) {
 		case "success":
-			bgColor = token("color.background.success")
-			textColor = token("color.text.success")
-			borderColor = token("color.border.success")
+			bgColor = token("color.background.success", "#DFFCF0")
+			textColor = token("color.text.success", "#216E4E")
+			borderColor = token("color.border.success", "#22A06B")
 			break
 		case "error":
-			bgColor = token("color.background.danger")
-			textColor = token("color.text.danger")
-			borderColor = token("color.border.danger")
+			bgColor = token("color.background.danger", "#FFEDEB")
+			textColor = token("color.text.danger", "#AE2A19")
+			borderColor = token("color.border.danger", "#E34935")
 			closeBtnAppearance = "danger"
 			break
 		case "warning":
-			bgColor = token("color.background.warning")
-			textColor = token("color.text.warning")
-			borderColor = token("color.border.warning")
+			bgColor = token("color.background.warning", "#FFF7D6")
+			textColor = token("color.text.warning", "#974F0C")
+			borderColor = token("color.border.warning", "#D97008")
 			closeBtnAppearance = "warning"
 			break
 		case "information":
-			bgColor = token("color.background.information")
-			textColor = token("color.text.information")
-			borderColor = token("color.border.information")
+			bgColor = token("color.background.information", "#E9F2FF")
+			textColor = token("color.text.information", "#0055CC")
+			borderColor = token("color.border.information", "#1D7AFC")
 			closeBtnAppearance = "primary"
 			break
 		case "danger":
-			bgColor = token("color.background.danger")
-			textColor = token("color.text.danger")
-			borderColor = token("color.border.danger")
+			bgColor = token("color.background.danger", "#FFEDEB")
+			textColor = token("color.text.danger", "#AE2A19")
+			borderColor = token("color.border.danger", "#E34935")
 			closeBtnAppearance = "danger"
 			break
+		case "discovery":
+			bgColor = token("color.background.discovery", "#F3F0FF")
+			textColor = token("color.text.discovery", "#5E4DB2")
+			borderColor = token("color.border.discovery", "#8270DB")
+			closeBtnAppearance = "link"
+			break
 		default:
-			borderColor = token("color.border")
+			borderColor = token("color.border", "#091E4224")
 			break
 	}
 

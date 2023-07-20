@@ -1,6 +1,6 @@
 //import { setGlobalTheme } from "@atlaskit/tokens" -> when we import this, the whole theming is exported as bundles, we do not want that.
 
-export const themesAvailable = ["dark", "light"] as const
+export const themesAvailable = ["dark", "light", "original"] as const // original is the use of fallback colors in jira, no --ds-* variables are set
 
 export type Theme = (typeof themesAvailable)[number]
 
@@ -27,9 +27,10 @@ export function switchTheme() {
 		const currentTheme = html.getAttribute("data-color-mode")
 		let currentThemeIdx = themesAvailable.indexOf(currentTheme as Theme)
 		if (currentThemeIdx > -1) {
-			applyTheme(
-				themesAvailable[++currentThemeIdx % themesAvailable.length],
-			)
+			const next =
+				themesAvailable[++currentThemeIdx % themesAvailable.length]
+			console.log("apply theme", next)
+			applyTheme(next)
 			return
 		}
 	}
