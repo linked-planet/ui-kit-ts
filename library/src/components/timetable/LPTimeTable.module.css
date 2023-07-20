@@ -71,7 +71,7 @@
 }
 
 .lpTimeTable .nowHeaderDate {
-	color: var(--ds-text-subtle);
+	color: var(--ds-text-subtle, #44546f);
 }
 
 .lpTimeTable .nowBar {
