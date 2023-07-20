@@ -178,7 +178,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	groupHeaderColumnWidth,
 	columnWidth,
 	rounding,
-	height,
+	height = "100%",
 	placeHolderHeight = "1.5rem",
 	disableWeekendInteractions = true,
 	showTimeSlotHeader = true,
@@ -361,7 +361,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				>
 					<div
 						style={{
-							overflowX: "auto",
+							overflow: "auto",
 							//overflowY: "hidden",
 							height,
 						}}

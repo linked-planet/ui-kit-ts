@@ -118,9 +118,17 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 				if (onGroupClick) onGroupClick(group)
 			}}
 			rowSpan={groupRowMax + 1}
-			className={`${styles.groupHeader}`}
+			className={`${styles.unselectable}`}
 			style={{
 				backgroundColor: groupNumber % 2 === 0 ? dayColor0 : dayColor1,
+				position: "sticky",
+				left: 0,
+				zIndex: 2,
+				borderWidth: 0,
+				borderRightWidth: "2px",
+				borderBottomWidth: "1px",
+				borderStyle: "solid",
+				borderColor: token("color.border.bold"),
 			}}
 		>
 			{renderGroup ? renderGroup({ group }) : <Group group={group} />}

@@ -21,6 +21,7 @@ import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleCont
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
+
 const debounceTimeout = 500
 let debounceTimeoutCurrent: number | undefined = undefined
 function debounceHelper(callback: () => void) {
@@ -692,7 +693,11 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 					Create New Item
 				</Button>
 			</div>
-			<>
+			<div
+				style={{
+					height: "600px",
+				}}
+			>
 				<LPTimeTable
 					groupHeaderColumnWidth={groupHeaderColumnWidth}
 					columnWidth={columnWidth}
@@ -720,7 +725,7 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 					disableWeekendInteractions={disabledWeekendInteractions}
 					showTimeSlotHeader={showTimeSlotHeader}
 				/>
-			</>
+			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
 				<ChevronDownIcon label="entryloader" />
 			</Button>
