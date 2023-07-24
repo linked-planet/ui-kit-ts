@@ -10,12 +10,13 @@ import WrappersPage from "./page/WrappersPage"
 import "@atlaskit/css-reset"
 import { appStore } from "./state/appStore"
 import { Provider } from "react-redux"
-import { QueryClientProvider } from "react-query"
+import { QueryClient, QueryClientProvider } from "react-query"
 import ReactQueryPage from "./page/ReactQueryPage"
 
 import "./custom.css"
-import { queryClient } from "./setup"
 import { LocaleProvider } from "@linked-planet/ui-kit-ts"
+
+const queryClient = new QueryClient()
 
 export default function App() {
 	return (

@@ -53,6 +53,7 @@ export default defineConfig({
 				"@atlaskit/textfield",
 				"@atlaskit/toggle",
 				"@atlaskit/token",
+				"@emotion/styled",
 				"@monaco-editor/react",
 				"@reduxjs/toolkit",
 			],

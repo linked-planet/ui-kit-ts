@@ -31,6 +31,7 @@ import TextFieldShowcase from "../components/showcase/wrapper/TextFieldShowcase"
 import ToggleShowcase from "../components/showcase/wrapper/ToggleShowcase"
 import TooltipShowcase from "../components/showcase/wrapper/TooltipShowcase"
 import LPTimeTableShowCase from "../components/showcase/wrapper/LPTimeTableShowcase"
+import PageLayoutShowcase from "../components/PageLayoutShowcase"
 import { useDispatch } from "react-redux"
 import LoadingSpinnerShowcase from "../components/showcase/wrapper/LoadingSpinnerShowcase"
 import UtilsShowCase from "../components/showcase/wrapper/UtilsShowCase"
@@ -106,6 +107,7 @@ function WrappersPage() {
 			<MenuShowcase overallSourceCode={overallSourceCode} />
 			<LPTimeTableShowCase overallSourceCode={overallSourceCode} />
 			<UtilsShowCase overallSourceCode={overallSourceCode} />
+			<PageLayoutShowcase overallSourceCode={overallSourceCode} />
 		</div>
 	)
 }
