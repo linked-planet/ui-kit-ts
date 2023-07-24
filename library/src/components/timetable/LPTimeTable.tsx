@@ -145,10 +145,12 @@ export default function LPTimeTable<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 >({ timeTableMessages, ...props }: LPTimeTableProps<G, I>) {
-	if (!getCurrentTheme()) {
+	const [showedWarning, setShowedWarning] = useState(false)
+	if (!showedWarning && !getCurrentTheme()) {
 		console.warn(
 			"LPTimeTable - no theme set, LPTable required Atlassian.design token to have the color scheme set correctly, call setGlobalTheme({}) from @atlassian/tokens to set the theme.",
 		)
+		setShowedWarning(true)
 	}
 
 	return (

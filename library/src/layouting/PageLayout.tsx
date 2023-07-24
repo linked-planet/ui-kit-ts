@@ -34,6 +34,7 @@ const PageHeaderLine = styled.div`
 	width: 100%;
 	gap: 4px;
 	margin-bottom: 8px;
+	align-items: center;
 `
 
 const PageBody = styled.div`
