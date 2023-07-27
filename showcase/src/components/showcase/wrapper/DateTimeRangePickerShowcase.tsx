@@ -13,12 +13,47 @@ function DateTimeRangePickerShowcase(props: ShowcaseProps) {
 
 	const [startDate, setStartDate] = useState<string>()
 	const [endDate, setEndDate] = useState<string>()
+	const [weekendDisabled, setWeekendDisabled] = useState(false)
+	const [disabled, setDisabled] = useState(false)
 
 	const example = (
 		<div style={{ minWidth: 300 }}>
-			<div>
+			<div
+				style={{
+					display: "grid",
+					gridTemplateColumns: "1fr 1fr",
+				}}
+			>
 				<div>Start Date: {startDate}</div>
 				<div>End Date: {endDate}</div>
+				<label htmlFor="disableWeekends">
+					Disable Weekends
+					<input
+						id="disableWeekends"
+						type="checkbox"
+						onChange={(e) => {
+							if (e.target.checked) {
+								setWeekendDisabled(true)
+							} else {
+								setWeekendDisabled(false)
+							}
+						}}
+					/>
+				</label>
+				<label htmlFor="disableAll">
+					Disabled
+					<input
+						id="disableAll"
+						type="checkbox"
+						onChange={(e) => {
+							if (e.target.checked) {
+								setDisabled(true)
+							} else {
+								setDisabled(false)
+							}
+						}}
+					/>
+				</label>
 			</div>
 			<DateTimeRange
 				minDate={today}
@@ -32,7 +67,9 @@ function DateTimeRangePickerShowcase(props: ShowcaseProps) {
 				}}
 				startDate={startDate}
 				endDate={endDate}
-				weekStartDate={0}
+				weekStartDate={1}
+				disableWeekend={weekendDisabled}
+				disabled={disabled}
 			/>
 		</div>
 	)

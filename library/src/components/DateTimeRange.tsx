@@ -13,6 +13,10 @@ export interface DateTimeRangeProps {
 	endDate?: string
 	locale: string
 	weekStartDate: WeekDay
+	disableWeekend?: boolean
+
+	disabled?: boolean
+
 	onChange: (start: string, end: string) => void
 	onCollision: (dateString: string) => void
 }
@@ -49,6 +53,15 @@ function getSelectedDates(
 function checkCollisions(to: Dayjs, disabledDates: Dayjs[]) {
 	const intersection = disabledDates.find((it) => it.isSame(to, "day"))
 	return intersection
+}
+
+function weekendFilter(date: string) {
+	const dayOfWeek = dayjs(date).day()
+	return dayOfWeek === 0 || dayOfWeek === 6
+}
+
+function allDisabledFilter(date: string) {
+	return true
 }
 
 export const DateTimeRange: FC<DateTimeRangeProps> = ({ ...props }) => {
@@ -97,6 +110,13 @@ export const DateTimeRange: FC<DateTimeRangeProps> = ({ ...props }) => {
 			disabled={props.disabledDates}
 			previouslySelected={[]}
 			selected={selectedDates}
+			disabledDateFilter={
+				props.disabled
+					? allDisabledFilter
+					: props.disableWeekend
+					? weekendFilter
+					: undefined
+			}
 			onSelect={(event) => {
 				const selectedDate = event.iso
 				onDateSelect(selectedDate)
