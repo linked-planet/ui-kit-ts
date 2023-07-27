@@ -5,12 +5,29 @@ import { WeekDay } from "@atlaskit/calendar/types"
 
 export class EndDateBeforeStartDateError extends Error {}
 
-export interface DateTimeRangeProps {
+export interface DateRangeProps {
 	minDate?: string
 	maxDate?: string
-	disabledDates: string[]
-	startDate?: string
-	endDate?: string
+	disabledDates?: string[]
+	selectedStartDate?: string
+	selectedEndDate?: string
+
+	/** this sets the viewed month before the user changes it.
+	 * starts with 1 for January, 2 for February, etc.
+	 * it cannot be used to control the viewed month from the outside.
+	 **/
+	viewDefaultMonth?: number
+	/** this sets the viewed year before the user changes it.
+	 * it cannot be used to control the viewed year from the outside.
+	 **/
+	viewDefaultYear?: number
+
+	/** this sets the viewed day before the user changes it.
+	 * starts with 1. 0 will be the current day of the month.
+	 * it cannot be used to control the viewed day from the outside.
+	 **/
+	viewDefaultDay?: number
+
 	locale: string
 	weekStartDate: WeekDay
 	disableWeekend?: boolean
@@ -60,19 +77,21 @@ function weekendFilter(date: string) {
 	return dayOfWeek === 0 || dayOfWeek === 6
 }
 
-function allDisabledFilter(date: string) {
+function allDisabledFilter() {
 	return true
 }
 
-export const DateTimeRange: FC<DateTimeRangeProps> = ({ ...props }) => {
+export function DateRangePicker(props: DateRangeProps) {
 	const [startDate, setStartDate] = useState(
-		props.startDate ? dayjs(props.startDate) : undefined,
+		props.selectedStartDate ? dayjs(props.selectedStartDate) : undefined,
 	)
 	const [endDate, setEndDate] = useState(
-		props.endDate ? dayjs(props.endDate) : undefined,
+		props.selectedEndDate ? dayjs(props.selectedEndDate) : undefined,
 	)
 
-	const disabledDates = props.disabledDates.map((item) => dayjs(item))
+	const disabledDates = props.disabledDates
+		? props.disabledDates.map((item) => dayjs(item))
+		: []
 
 	function onDateSelect(value: string) {
 		const pickedDate = dayjs(value)
@@ -103,6 +122,21 @@ export const DateTimeRange: FC<DateTimeRangeProps> = ({ ...props }) => {
 
 	const selectedDates = getSelectedDates(startDate, endDate)
 
+	const defaultMonth =
+		props.viewDefaultMonth != undefined
+			? props.viewDefaultMonth
+			: startDate?.month() ?? endDate?.month() ?? undefined
+
+	const defaultYear =
+		props.viewDefaultYear != undefined
+			? props.viewDefaultYear
+			: startDate?.year() ?? endDate?.year() ?? undefined
+
+	const defaultDay =
+		props.viewDefaultDay != undefined
+			? props.viewDefaultDay
+			: startDate?.date() ?? endDate?.date() ?? undefined
+
 	return (
 		<Calendar
 			minDate={props.minDate}
@@ -110,6 +144,9 @@ export const DateTimeRange: FC<DateTimeRangeProps> = ({ ...props }) => {
 			disabled={props.disabledDates}
 			previouslySelected={[]}
 			selected={selectedDates}
+			defaultMonth={defaultMonth}
+			defaultYear={defaultYear}
+			defaultDay={defaultDay}
 			disabledDateFilter={
 				props.disabled
 					? allDisabledFilter

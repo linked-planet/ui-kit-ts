@@ -2,11 +2,11 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { DateTimeRange } from "@linked-planet/ui-kit-ts"
+import { DateRangePicker } from "@linked-planet/ui-kit-ts"
 import dayjs from "dayjs"
 
-function DateTimeRangePickerShowcase(props: ShowcaseProps) {
-	// region: datetime-range-picker
+function Example() {
+	// region: date-range-picker
 	const today = dayjs().format("YYYY-MM-DD")
 	const todayPlus2 = dayjs().add(2, "day").format("YYYY-MM-DD")
 	const todayPlus10 = dayjs().add(10, "day").format("YYYY-MM-DD")
@@ -16,7 +16,7 @@ function DateTimeRangePickerShowcase(props: ShowcaseProps) {
 	const [weekendDisabled, setWeekendDisabled] = useState(false)
 	const [disabled, setDisabled] = useState(false)
 
-	const example = (
+	return (
 		<div style={{ minWidth: 300 }}>
 			<div
 				style={{
@@ -27,7 +27,6 @@ function DateTimeRangePickerShowcase(props: ShowcaseProps) {
 				<div>Start Date: {startDate}</div>
 				<div>End Date: {endDate}</div>
 				<label htmlFor="disableWeekends">
-					Disable Weekends
 					<input
 						id="disableWeekends"
 						type="checkbox"
@@ -39,9 +38,9 @@ function DateTimeRangePickerShowcase(props: ShowcaseProps) {
 							}
 						}}
 					/>
+					Disable Weekends
 				</label>
 				<label htmlFor="disableAll">
-					Disabled
 					<input
 						id="disableAll"
 						type="checkbox"
@@ -53,9 +52,10 @@ function DateTimeRangePickerShowcase(props: ShowcaseProps) {
 							}
 						}}
 					/>
+					Disabled
 				</label>
 			</div>
-			<DateTimeRange
+			<DateRangePicker
 				minDate={today}
 				maxDate={todayPlus10}
 				disabledDates={[todayPlus2]}
@@ -65,30 +65,63 @@ function DateTimeRangePickerShowcase(props: ShowcaseProps) {
 					setStartDate(start)
 					setEndDate(end)
 				}}
-				startDate={startDate}
-				endDate={endDate}
+				selectedStartDate={startDate}
+				selectedEndDate={endDate}
 				weekStartDate={1}
 				disableWeekend={weekendDisabled}
 				disabled={disabled}
 			/>
 		</div>
 	)
-	// endregion: datetime-range-picker
+	// region: date-range-picker
+}
+
+function Example2() {
+	// region: date-range-picker-2
+	const [startDate, setStartDate] = useState<string>()
+	const [endDate, setEndDate] = useState<string>()
+
+	const viewDefaultMonth = 2
+	const viewDefaultYear = 1911
+	const viewDefaultDay = 8
 
 	return (
+		<DateRangePicker
+			locale="de-DE"
+			onCollision={() => console.info("Collision detected")}
+			onChange={(start: string, end: string) => {
+				setStartDate(start)
+				setEndDate(end)
+			}}
+			viewDefaultMonth={viewDefaultMonth}
+			viewDefaultYear={viewDefaultYear}
+			viewDefaultDay={viewDefaultDay}
+			selectedStartDate={startDate}
+			selectedEndDate={endDate}
+			weekStartDate={1}
+		/>
+	)
+	// region: date-range-picker-2
+}
+
+function DateRangePickerShowcase(props: ShowcaseProps) {
+	return (
 		<ShowcaseWrapperItem
-			name="Date time Range picker"
-			sourceCodeExampleId="datetime-range-picker"
+			name="Date range picker"
+			sourceCodeExampleId="date-range-picker"
 			overallSourceCode={props.overallSourceCode}
 			packages={[
 				{
-					name: "@atlaskit/datetime-picker",
-					url: "https://atlassian.design/components/datetime-picker/examples",
+					name: "@atlaskit/calendar",
+					url: "https://atlassian.design/components/calendar/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				<Example key={"example0"} />,
+				<Example2 key={"example1"} />,
+			]}
 		/>
 	)
 }
 
-export default DateTimeRangePickerShowcase
+export default DateRangePickerShowcase

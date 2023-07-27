@@ -1,4 +1,4 @@
-export * from "./DateTimeRange"
+export * from "./DateRangePicker"
 export * from "./Page"
 export * from "./timetable"
 export * from "./loadingspinner"
