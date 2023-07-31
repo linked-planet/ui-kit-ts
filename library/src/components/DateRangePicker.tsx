@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react"
+import React, { FC, useEffect, useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import Calendar from "@atlaskit/calendar"
 import { WeekDay } from "@atlaskit/calendar/types"
@@ -34,8 +34,8 @@ export interface DateRangeProps {
 
 	disabled?: boolean
 
-	onChange: (start: string, end: string) => void
-	onCollision: (dateString: string) => void
+	onChange?: (start: string, end: string) => void
+	onCollision?: (dateString: string) => void
 }
 
 function toDateString(date: Dayjs) {
@@ -89,15 +89,42 @@ export function DateRangePicker(props: DateRangeProps) {
 		props.selectedEndDate ? dayjs(props.selectedEndDate) : undefined,
 	)
 
+	useEffect(() => {
+		if (props.selectedStartDate) {
+			const start = dayjs(props.selectedStartDate)
+			setStartDate((prev) => {
+				if (prev && prev.isSame(start)) {
+					return prev
+				}
+				return start
+			})
+		}
+		if (props.selectedEndDate) {
+			const end = dayjs(props.selectedEndDate)
+			setEndDate((prev) => {
+				if (prev && prev.isSame(end)) {
+					return prev
+				}
+				return end
+			})
+		}
+	}, [props.selectedEndDate, props.selectedStartDate])
+
 	const disabledDates = props.disabledDates
 		? props.disabledDates.map((item) => dayjs(item))
 		: []
 
 	function onDateSelect(value: string) {
+		if (!props.onChange) {
+			console.log("DateRangePicker: onChange is not defined")
+			return
+		}
 		const pickedDate = dayjs(value)
 		const collision = checkCollisions(pickedDate, disabledDates)
 		if (collision) {
-			props.onCollision(collision.format("YYYY-MM-DD"))
+			if (props.onCollision) {
+				props.onCollision(toDateString(collision))
+			}
 			return
 		}
 
@@ -111,8 +138,8 @@ export function DateRangePicker(props: DateRangeProps) {
 			} else {
 				setEndDate(pickedDate)
 				props.onChange(
-					startDate.format("YYYY-MM-DD"),
-					pickedDate.format("YYYY-MM-DD"),
+					toDateString(startDate),
+					toDateString(pickedDate),
 				)
 			}
 		} else {
@@ -125,7 +152,11 @@ export function DateRangePicker(props: DateRangeProps) {
 	const defaultMonth =
 		props.viewDefaultMonth != undefined
 			? props.viewDefaultMonth
-			: startDate?.month() ?? endDate?.month() ?? undefined
+			: startDate?.month() != undefined
+			? startDate.month() + 1
+			: endDate?.month() != undefined
+			? endDate?.month() + 1
+			: undefined
 
 	const defaultYear =
 		props.viewDefaultYear != undefined

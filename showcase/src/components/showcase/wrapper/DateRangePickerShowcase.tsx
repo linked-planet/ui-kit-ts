@@ -77,29 +77,51 @@ function Example() {
 }
 
 function Example2() {
-	// region: date-range-picker-2
-	const [startDate, setStartDate] = useState<string>()
-	const [endDate, setEndDate] = useState<string>()
-
-	const viewDefaultMonth = 2
-	const viewDefaultYear = 1911
-	const viewDefaultDay = 8
+	const selectedStartDate = dayjs()
+		.set("year", 1911)
+		.set("month", 1) //month are 0-indexed in dayjs!
+		.set("date", 11)
+		.format("YYYY-MM-DD")
+	const selectedEndDate = dayjs()
+		.set("year", 1911)
+		.set("month", 1)
+		.set("date", 16)
+		.format("YYYY-MM-DD")
 
 	return (
-		<DateRangePicker
-			locale="de-DE"
-			onCollision={() => console.info("Collision detected")}
-			onChange={(start: string, end: string) => {
-				setStartDate(start)
-				setEndDate(end)
-			}}
-			viewDefaultMonth={viewDefaultMonth}
-			viewDefaultYear={viewDefaultYear}
-			viewDefaultDay={viewDefaultDay}
-			selectedStartDate={startDate}
-			selectedEndDate={endDate}
-			weekStartDate={1}
-		/>
+		<>
+			<p>No onChange handler, selection will not change.</p>
+			<p>Initial calendar view gets derived from selected start date</p>
+			<DateRangePicker
+				locale="de-DE"
+				onCollision={() => console.info("Collision detected")}
+				selectedStartDate={selectedStartDate}
+				selectedEndDate={selectedEndDate}
+				weekStartDate={1}
+			/>
+		</>
+	)
+	// region: date-range-picker-2
+}
+
+function Example3() {
+	const viewDefaultMonth = 8
+	const viewDefaultYear = 1985
+	const viewDefaultDay = 2
+
+	return (
+		<>
+			<p>No onChange handler, selection will not change.</p>
+			<p>Used viewDefault properties to set the initial calendar view.</p>
+			<DateRangePicker
+				locale="de-DE"
+				onCollision={() => console.info("Collision detected")}
+				viewDefaultMonth={viewDefaultMonth}
+				viewDefaultYear={viewDefaultYear}
+				viewDefaultDay={viewDefaultDay}
+				weekStartDate={1}
+			/>
+		</>
 	)
 	// region: date-range-picker-2
 }
@@ -107,7 +129,7 @@ function Example2() {
 function DateRangePickerShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
-			name="Date range picker"
+			name="Date Range Picker"
 			sourceCodeExampleId="date-range-picker"
 			overallSourceCode={props.overallSourceCode}
 			packages={[
@@ -119,6 +141,7 @@ function DateRangePickerShowcase(props: ShowcaseProps) {
 			examples={[
 				<Example key={"example0"} />,
 				<Example2 key={"example1"} />,
+				<Example3 key={"example2"} />,
 			]}
 		/>
 	)

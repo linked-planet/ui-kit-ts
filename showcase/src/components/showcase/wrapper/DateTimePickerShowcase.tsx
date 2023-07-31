@@ -15,7 +15,7 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 
 	return (
 		<ShowcaseWrapperItem
-			name="Date range picker"
+			name="Date Time Picker"
 			sourceCodeExampleId="datetime-picker"
 			overallSourceCode={props.overallSourceCode}
 			packages={[
