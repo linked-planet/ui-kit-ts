@@ -90,6 +90,10 @@ export default function InlineMessage({
 
 	return (
 		<div
+			style={{
+				width: "100%",
+				boxSizing: "border-box",
+			}}
 			onMouseEnter={() => {
 				if (!message.text) return
 				setOpen(true)

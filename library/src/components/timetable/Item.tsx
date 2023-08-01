@@ -19,7 +19,13 @@ export function Item({
 			}`}
 			title={title}
 		>
-			<p>{item.title ?? "no name"}</p>
+			<p
+				style={{
+					overflow: "hidden",
+				}}
+			>
+				{item.title ?? "no name"}
+			</p>
 		</div>
 	)
 }

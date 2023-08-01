@@ -398,6 +398,9 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				const itemsOfTimeSlot = itemsWithStart.filter(
 					(it) => it && it.startSlot === timeSlotNumber,
 				) as { item: I; startSlot: number; endSlot: number }[]
+
+				let currentLeft = 0
+
 				const itemsWithRenderProps = itemsOfTimeSlot
 					.map((it) => {
 						const { left, width } = getLeftAndWidth(
@@ -407,7 +410,16 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 							slotsArray,
 							timeSteps,
 						)
-						return { left, width, item: it.item }
+
+						const leftUsed = left - currentLeft
+						if (leftUsed < 0) {
+							console.error(
+								"LPTimeTable - relative grid placement problem, should not happen: leftUsed < 0",
+							)
+						}
+						currentLeft = left + width
+
+						return { left: leftUsed, width, item: it.item }
 					})
 					.filter((it) => it !== null) as {
 					left: number
@@ -415,24 +427,15 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					item: I
 				}[]
 
+				let gridTemplateColumns = ""
 				const itemsToRender = itemsWithRenderProps.map((it, i) => {
-					/*const diffLeft =
-						i > 0
-							? it.left -
-							  itemsWithRenderProps[i - 1].left -
-							  itemsWithRenderProps[i - 1].width
-							: it.left
-
-					const colWidth = diffLeft + it.width
-					const itemWidthInColumn = it.width / colWidth
-					const leftInColumn = diffLeft / colWidth
-					if (colWidth * 100 > gridColWidth) {
-						gridColWidth = colWidth * 100
-					}*/
-
-					/*const itemWidthInColumn = `calc(${it.width}px + ${
-						it.width * 100
-					}%)`*/
+					const colW =
+						typeof columnWidth === "number"
+							? columnWidth + "px"
+							: columnWidth
+					gridTemplateColumns += `calc(${
+						it.left + it.width
+					} * ${colW}) `
 
 					const itemWidthInColumn = `calc(${it.width} * ${
 						typeof columnWidth === "number"
@@ -445,10 +448,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 							? columnWidth + "px"
 							: columnWidth
 					})`
-
-					//const leftInColumn = it.left * 100 + "%"
-
-					console.log("TEST", itemWidthInColumn, leftInColumn)
 
 					return (
 						<ItemWrapper
@@ -477,7 +476,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 							<div
 								style={{
 									display: "grid",
-									//gridTemplateColumns: `${gridColWidth}%`,
+									gridTemplateColumns,
 									boxSizing: "border-box",
 								}}
 							>

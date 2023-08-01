@@ -291,6 +291,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 	const tableHeaderRef = useRef<HTMLTableSectionElement>(null)
 	const tableBodyRef = useRef<HTMLTableSectionElement>(null)
+	const inlineMessageRef = useRef<HTMLDivElement>(null)
 
 	const { setMessage, translatedMessage } = useTimeTableMessage()
 
@@ -424,23 +425,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 	return (
 		<>
-			<div
-				style={{
-					display: "flex",
-					alignItems: "flex-start",
-				}}
-			>
-				<div
-					style={{
-						flexGrow: 1,
-						alignSelf: "flex-start",
-						marginBottom: "0.5rem",
-					}}
-				>
-					<InlineMessage
-						message={translatedMessage ?? { text: "" }}
-					/>
-				</div>
+			<div ref={inlineMessageRef}>
+				<InlineMessage message={translatedMessage ?? { text: "" }} />
 			</div>
 			<TimeTableConfigProvider
 				slotsArray={slotsArray}
@@ -461,7 +447,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 						style={{
 							overflow: "auto",
 							//overflowY: "hidden",
-							height,
+							height: `calc(${height} - ${inlineMessageRef.current?.clientHeight}px)`,
 						}}
 					>
 						<table

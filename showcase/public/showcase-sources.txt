@@ -1145,13 +1145,13 @@ type ExampleGroup = TimeTableGroup
 type ExampleItem = TimeSlotBooking
 
 const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
-	{
+	/*{
 		group: {
 			title: "Empty Group",
 		},
 		items: [],
 	},
-	/*{
+	{
 		group: {
 			title: "Group 1",
 			subtitle: "Group 1 description",
@@ -1236,7 +1236,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 1-2-2",
 			},
 		],
-	},
+	},*/
 	{
 		group: {
 			title: "Group 2",
@@ -1277,13 +1277,24 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 2-3",
 			},
 			{
+				startDate: dayjs()
+					.startOf("day")
+					.add(8, "hours")
+					.add(51, "minutes"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(9, "hours")
+					.add(50, "minutes"),
+				title: "Item 2-3-1",
+			},
+			{
 				startDate: dayjs().startOf("day").add(8, "hours"),
 				endDate: dayjs().startOf("day").add(10, "hours"),
 				title: "Item 2-4",
 			},
 		],
 	},
-	{
+	/*{
 		group: {
 			title: "Group 3",
 			subtitle: "Group 3 description",
@@ -1307,14 +1318,14 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 3-3",
 			},
 		],
-	},*/
+	},
 	{
 		group: {
 			title: "Group 4",
 			subtitle: "Group 4 description",
 		},
 		items: [
-			/*{
+			{
 				// this case ends after the end of the day
 				startDate: dayjs()
 					.startOf("day")
@@ -1333,8 +1344,8 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 					.add(1, "day")
 					.add(13.75, "hours"),
 				title: "Item 4-2",
-			},*/
-			/*{
+			},
+			{
 				// this case starts before the start of the day
 				startDate: dayjs()
 					.startOf("day")
@@ -1356,7 +1367,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 					.add(4, "day")
 					.add(13.75, "hours"),
 				title: "Item 4-4",
-			},*/
+			},
 		],
 	},
 	{
@@ -1372,7 +1383,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 4-1",
 			},
 		],
-	},
+	},*/
 ]
 
 function createTestItems(

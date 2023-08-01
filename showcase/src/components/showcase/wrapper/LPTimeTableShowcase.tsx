@@ -39,7 +39,7 @@ type ExampleGroup = TimeTableGroup
 type ExampleItem = TimeSlotBooking
 
 const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
-	{
+	/*{
 		group: {
 			title: "Empty Group",
 		},
@@ -171,6 +171,17 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 2-3",
 			},
 			{
+				startDate: dayjs()
+					.startOf("day")
+					.add(8, "hours")
+					.add(51, "minutes"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(9, "hours")
+					.add(50, "minutes"),
+				title: "Item 2-3-1",
+			},
+			{
 				startDate: dayjs().startOf("day").add(8, "hours"),
 				endDate: dayjs().startOf("day").add(10, "hours"),
 				title: "Item 2-4",
@@ -252,7 +263,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 4-4",
 			},
 		],
-	},
+	},*/
 	{
 		group: {
 			title: "Group 5",
@@ -838,26 +849,6 @@ function ExampleCalendar() {
 							marginRight: "0.25rem",
 						}}
 					/>
-					<label
-						htmlFor="showtimeslotheader"
-						style={{
-							marginRight: "1rem",
-						}}
-					>
-						Show Time Slot Header:
-					</label>
-					<input
-						type="checkbox"
-						name="showtimeslotheader"
-						checked={showTimeSlotHeader}
-						onChange={(e) => {
-							setShowTimeSlotHeader(e.target.checked)
-						}}
-						style={{
-							textAlign: "center",
-							marginRight: "0.25rem",
-						}}
-					/>
 				</div>
 			</div>
 			<div
@@ -906,8 +897,8 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 				},
 			]}
 			examples={[
-				<Example key="example0" />,
-				//<ExampleCalendar key="exampleCalendar" />,
+				//<Example key="example0" />,
+				<ExampleCalendar key="exampleCalendar" />,
 			]}
 		/>
 	)

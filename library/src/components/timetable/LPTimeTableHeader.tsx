@@ -4,7 +4,7 @@ import { token } from "@atlaskit/tokens"
 
 import styles from "./LPTimeTable.module.css"
 
-export const headerDateFormat = "ddd, DD.MM.YYYY"
+export const headerDateFormat = "ddd,\n DD.MM.YY"
 const headerTimeSlotFormat = "HH:mm"
 
 type Props = {
@@ -93,7 +93,9 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								: undefined,
 							backgroundColor,
 							paddingTop: "1rem",
-							paddingBottom: "1rem",
+							paddingBottom: showTimeSlotHeader
+								? "1rem"
+								: "1.5rem",
 							borderTopLeftRadius: "2px",
 						}}
 						className={styles.unselectable}
@@ -110,6 +112,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							)}`}
 						</div>
 					</th>
+					{/* DAYS */}
 					{days.map((date, i) => {
 						return (
 							<th
@@ -136,6 +139,8 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 									<div
 										style={{
 											textAlign: "center",
+											paddingLeft: "1rem",
+											paddingRight: "1rem",
 										}}
 										className={styles.unselectable}
 									>
@@ -146,6 +151,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 						)
 					})}
 				</tr>
+				{/* TIME SLOTS */}
 				<tr>
 					<th
 						className={`${styles.unselectable}`}
@@ -158,7 +164,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							borderRight: headerBorder,
 							borderBottom: headerBorder,
 							backgroundColor,
-							paddingTop: "1rem",
+							paddingTop: showTimeSlotHeader ? "1rem" : undefined,
 						}}
 					>
 						{showTimeSlotHeader && (
@@ -186,8 +192,12 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								key={i}
 								style={{
 									backgroundColor,
-									paddingBottom: "0.75rem",
-									paddingTop: "0.75rem",
+									paddingBottom: showTimeSlotHeader
+										? "0.75rem"
+										: undefined,
+									paddingTop: showTimeSlotHeader
+										? "0.75rem"
+										: undefined,
 									borderBottom: headerBorder,
 								}}
 								colSpan={2}
