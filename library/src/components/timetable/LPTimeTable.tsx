@@ -53,6 +53,8 @@ export interface SelectedTimeSlot<G extends TimeTableGroup> {
 	groupRow: number
 }
 
+type ViewType = "hours" | "days"
+
 export interface LPTimeTableProps<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
@@ -62,7 +64,7 @@ export interface LPTimeTableProps<
 	/* The end date also defines the time the time slots ends in the evening */
 	endDate: Dayjs
 	/* how long is 1 time slot in minutes */
-	timeStepsMinutes: number
+	timeStepsMinutes?: number
 
 	entries: TimeTableEntry<G, I>[]
 
@@ -132,6 +134,8 @@ export interface LPTimeTableProps<
 	 * Sets the language used for the messages.
 	 */
 	timeTableMessages?: TranslatedTimeTableMessages
+
+	viewType?: ViewType
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -139,7 +143,7 @@ const nowbarUpdateIntervall = 1000 * 60 // 1 minute
 /**
  * Each column in the table is actually 2 columns. 1 fixed size one, and 1 dynamic sized on. Like that I can simulate min-width on the columns, which else is not allowed.
  *
- * Thte index exports a memoized version of the LPTimeTable, which is used by the parent component.
+ * The index exports a memoized version of the LPTimeTable, which is used by the parent component.
  */
 export default function LPTimeTable<
 	G extends TimeTableGroup,
@@ -160,6 +164,13 @@ export default function LPTimeTable<
 	)
 }
 
+export function LPCalendarTimeTable<
+	G extends TimeTableGroup,
+	I extends TimeSlotBooking,
+>(props: LPTimeTableProps<G, I>) {
+	return <LPTimeTable {...props} viewType="days" showTimeSlotHeader={false} />
+}
+
 /**
  * The LPTimeTable depends on the localization messages. It needs to be wrapped in an
  * @returns
@@ -167,7 +178,7 @@ export default function LPTimeTable<
 const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	startDate: startDateP,
 	endDate: endDateP,
-	timeStepsMinutes,
+	timeStepsMinutes = 60,
 	entries,
 	selectedTimeSlotItem,
 	renderGroup,
@@ -182,23 +193,101 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	rounding,
 	height = "100%",
 	placeHolderHeight = "1.5rem",
+	viewType = "hours",
 	disableWeekendInteractions = true,
 	showTimeSlotHeader = true,
 	nowOverwrite,
 }: LPTimeTableProps<G, I>) => {
-	const [startDate, setStartDate] = useState<Dayjs>(startDateP)
-	const [endDate, setEndDate] = useState<Dayjs>(endDateP)
+	// if we have viewType of days, we need to round the start and end date to the start and end of the day
+	const [startDate, setStartDate] = useState<Dayjs>(
+		viewType === "days" ? startDateP.startOf("day") : startDateP,
+	)
+	const [endDate, setEndDate] = useState<Dayjs>(
+		viewType === "days"
+			? endDateP.hour() > 0 || endDateP.minute() > 0
+				? endDateP.startOf("day").add(1, "day")
+				: endDateP
+			: endDateP,
+	)
 
+	// change on viewType
 	useEffect(() => {
-		if (!startDateP.isSame(startDate)) {
-			setStartDate(startDateP)
+		if (viewType === "days") {
+			setStartDate((curr) => {
+				const startOfDay = curr.startOf("day")
+				if (curr.isSame(startOfDay)) {
+					return curr
+				}
+				return startOfDay
+			})
+
+			setEndDate((curr) => {
+				const endOfDay = curr.startOf("day").add(1, "day")
+				if (curr.isSame(endOfDay)) {
+					return curr
+				}
+				return endOfDay
+			})
+		} else if (viewType === "hours") {
+			setStartDate((curr) => {
+				const startH = startDateP.hour()
+				const startM = startDateP.minute()
+				const startOfDay = curr
+					.startOf("day")
+					.hour(startH)
+					.minute(startM)
+				if (curr.isSame(startOfDay)) {
+					return curr
+				}
+				return startOfDay
+			})
+			setEndDate((curr) => {
+				const endH = endDateP.hour()
+				const endM = endDateP.minute()
+				if (curr.hour() === endH && curr.minute() === endM) {
+					return curr
+				}
+				if (endH > 0 || endM > 0) {
+					const endOfDay = curr
+						.startOf("day")
+						.subtract(1, "day")
+						.hour(endH)
+						.minute(endM)
+					if (curr.isSame(endOfDay)) {
+						return curr
+					}
+				}
+				return curr
+			})
+		} else {
+			console.warn("LPTimeTable - unknown viewType", viewType)
 		}
-	}, [startDateP, startDate])
+	}, [viewType, startDateP, endDateP])
+
+	// change on startDateP and endDateP
 	useEffect(() => {
-		if (!endDateP.isSame(endDate)) {
-			setEndDate(endDateP)
-		}
-	}, [endDateP, endDate])
+		const startUsed =
+			viewType === "days" ? startDateP.startOf("day") : startDateP
+		const endUsed =
+			viewType === "days"
+				? endDateP.hour() > 0 || endDateP.minute() > 0
+					? endDateP.startOf("day").add(1, "day")
+					: endDateP
+				: endDateP
+		setStartDate((curr) => {
+			if (curr.isSame(startUsed)) {
+				return curr
+			}
+			return startUsed
+		})
+
+		setEndDate((curr) => {
+			if (curr.isSame(endUsed)) {
+				return curr
+			}
+			return endUsed
+		})
+	}, [startDateP, viewType, endDateP])
 
 	const tableHeaderRef = useRef<HTMLTableSectionElement>(null)
 	const tableBodyRef = useRef<HTMLTableSectionElement>(null)
@@ -209,13 +298,20 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const { slotsArray, timeSteps, timeSlotsPerDay } = useMemo(() => {
 		// to avoid overflow onto the next day if the time steps are too large
 		const { timeSlotsPerDay, daysDifference, timeSteps } =
-			calculateTimeSlotProperties(
-				startDate,
-				endDate,
-				timeStepsMinutes,
-				rounding ?? "round",
-				setMessage,
-			)
+			viewType === "hours"
+				? calculateTimeSlotProperties(
+						startDate,
+						endDate,
+						timeStepsMinutes,
+						rounding ?? "round",
+						setMessage,
+				  )
+				: calculateTimeSlotPropertiesForView(
+						startDate,
+						endDate,
+						viewType,
+						setMessage,
+				  )
 		const slotsArray = calculateTimeSlots(
 			timeSlotsPerDay,
 			daysDifference,
@@ -223,7 +319,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			startDate,
 		)
 		return { slotsArray, timeSteps, timeSlotsPerDay }
-	}, [startDate, endDate, timeStepsMinutes, rounding, setMessage])
+	}, [viewType, startDate, endDate, timeStepsMinutes, rounding, setMessage])
 	//#endregion
 
 	//#region Message is items of entries are outside of the time frame of the day
@@ -419,7 +515,7 @@ function calculateTimeSlotProperties(
 	rounding: "ceil" | "floor" | "round",
 	setMessage: (message: TimeTableMessage) => void,
 ) {
-	let timeSlotsPerDay = 0
+	let timeSlotsPerDay = 0 // how many timeslot per day/week
 	let timeSteps = timeStepsMinute
 	if (startDate.add(timeSteps, "minutes").day() !== startDate.day()) {
 		timeSteps =
@@ -475,6 +571,39 @@ function calculateTimeSlotProperties(
 		timeSlotsPerDay = Math.floor(timeSlotsPerDay)
 	} else {
 		timeSlotsPerDay = Math.round(timeSlotsPerDay)
+	}
+
+	return { timeSlotsPerDay, daysDifference, timeSteps }
+}
+
+/**
+ * Calculates the time slots for the given time frame.
+ * @param startDate date and time when the time frame starts (defines also the start time of each day)
+ * @param endDate date and time when the time frame ends (defines also the end time of each day)
+ * @param timeStepsMinute duration of one time step in minutes
+ * @param rounding rounding of the time steps if they don't fit into the time frame
+ * @param setMessage  function to set a message
+ * @returns the amount of time slots per day, the difference in day of the time frame, the time step duration after the rounding
+ */
+function calculateTimeSlotPropertiesForView(
+	startDate: Dayjs,
+	endDate: Dayjs,
+	viewType: Omit<ViewType, "hours">,
+	setMessage: (message: TimeTableMessage) => void,
+) {
+	const timeSlotsPerDay = 1
+	const timeSteps = 24 * 60 // 1 day in minutes
+	const daysDifference = endDate.diff(startDate, "days")
+	if (daysDifference < 0) {
+		setMessage({
+			urgency: "error",
+			messageKey: "timetable.endDateAfterStartDate",
+		})
+		return {
+			timeSlotsPerDay,
+			daysDifference: 0,
+			timeSteps,
+		}
 	}
 
 	return { timeSlotsPerDay, daysDifference, timeSteps }

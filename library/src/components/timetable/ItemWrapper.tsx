@@ -33,8 +33,8 @@ export default function ItemWrapper<
 	renderTimeSlotItem:
 		| ((props: RenderItemProps<G, I>) => JSX.Element)
 		| undefined
-	left: number
-	width: number
+	left: string
+	width: string
 }) {
 	//#region fade out animation
 	const ref = useRef<HTMLDivElement>(null)
@@ -65,10 +65,11 @@ export default function ItemWrapper<
 		<div
 			style={{
 				position: "relative",
-				left: `${left * 100}%`,
-				width: `${width * 100}%`,
+				left,
+				width,
 				top: 0,
 				pointerEvents: multiSelectionMode ? "none" : "auto",
+				boxSizing: "border-box",
 			}}
 			{...mouseHandler}
 		>

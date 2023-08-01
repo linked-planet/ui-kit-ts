@@ -92,6 +92,9 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 	// callback to toggle a time slot
 	const toggleTimeSlotCBG = useCallback(
 		(timeSlot: number, group: G, interaction: InteractionType) => {
+			if (!onTimeRangeSelected) {
+				return
+			}
 			if (!selectedTimeSlots) {
 				setSelectedTimeSlotsG({
 					timeSlots: [timeSlot],
@@ -194,7 +197,12 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 				})
 			}
 		},
-		[multiselectionMode, selectedTimeSlots, setMessage],
+		[
+			multiselectionMode,
+			onTimeRangeSelected,
+			selectedTimeSlots,
+			setMessage,
+		],
 	)
 
 	useEffect(() => {

@@ -19,6 +19,7 @@ import Button from "@atlaskit/button"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
+import { LPCalendarTimeTable } from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -235,7 +236,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 					.add(7.4, "hours"),
 				endDate: dayjs()
 					.startOf("day")
-					.add(2, "days")
+					.add(4, "days")
 					.add(13.75, "hours"),
 				title: "Item 4-3",
 			},
@@ -246,7 +247,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 					.add(10.2, "hours"),
 				endDate: dayjs()
 					.startOf("day")
-					.add(1, "day")
+					.add(4, "day")
 					.add(13.75, "hours"),
 				title: "Item 4-4",
 			},
@@ -259,7 +260,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 		},
 		items: [
 			{
-				// this case ends after the end of the day
+				// this case ends after the end of the day and starts before
 				startDate: dayjs().startOf("day").add(-2, "day"),
 				endDate: dayjs().startOf("day").add(7, "days"),
 				title: "Item 4-1",
@@ -337,7 +338,7 @@ function createMoreTestGroups(
 const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
 const endDateInitial = dayjs().startOf("day").add(5, "days").add(16, "hours")
 
-export default function LPTimeTableShowCase(props: ShowcaseProps) {
+function Example() {
 	// region: timetable
 
 	const [rounding, setRounding] = useState<"round" | "ceil" | "floor">(
@@ -455,7 +456,7 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
 
-	const example = (
+	return (
 		<>
 			<div
 				style={{
@@ -743,7 +744,156 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 	)
 
 	// endregion: timetable
+}
 
+function ExampleCalendar() {
+	// region: timetable
+
+	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
+	const [columnWidth, setColumnWidth] = useState(70)
+	const [disabledWeekendInteractions, setDisabledWeekendInteractions] =
+		useState(true)
+	const [showTimeSlotHeader, setShowTimeSlotHeader] = useState(true)
+
+	const [timeFrame, setTimeFrame] = useState({
+		startDate: startDateInitial,
+		endDate: endDateInitial,
+	})
+
+	const [entries, setEntries] = useState(exampleEntries)
+
+	const translation = useTranslation() as TranslatedTimeTableMessages
+	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
+
+	return (
+		<>
+			<div
+				style={{
+					display: "flex",
+					gap: "2rem",
+				}}
+			>
+				{/* time table setup values */}
+				<div
+					style={{
+						display: "grid",
+						gridTemplateColumns: "auto auto",
+						gap: "0.5rem",
+						alignItems: "start",
+					}}
+				>
+					<label style={{ marginRight: "1rem" }} htmlFor="startdate">
+						Start:
+					</label>
+					<input
+						type="datetime-local"
+						value={timeFrame.startDate.format("YYYY-MM-DD")}
+						onChange={(e) => {
+							setTimeFrame({
+								startDate: dayjs(e.target.value),
+								endDate: timeFrame.endDate,
+							})
+						}}
+					/>
+					<label style={{ marginRight: "1rem" }} htmlFor="enddate">
+						End:
+					</label>
+					<input
+						type="datetime-local"
+						value={timeFrame.endDate.format("YYYY-MM-DD")}
+						onChange={(e) => {
+							setTimeFrame({
+								startDate: timeFrame.startDate,
+								endDate: dayjs(e.target.value),
+							})
+						}}
+					/>
+				</div>
+				{/* time table settings */}
+				<div
+					style={{
+						display: "grid",
+						gridTemplateColumns: "auto auto",
+						gap: "0.5rem",
+						alignItems: "start",
+					}}
+				>
+					<label
+						htmlFor="diableweekends"
+						style={{
+							marginRight: "1rem",
+						}}
+					>
+						Disable Weekend Interactions:
+					</label>
+					<input
+						type="checkbox"
+						name="disableweekends"
+						checked={disabledWeekendInteractions}
+						onChange={(e) =>
+							setDisabledWeekendInteractions(e.target.checked)
+						}
+						style={{
+							textAlign: "center",
+							marginRight: "0.25rem",
+						}}
+					/>
+					<label
+						htmlFor="showtimeslotheader"
+						style={{
+							marginRight: "1rem",
+						}}
+					>
+						Show Time Slot Header:
+					</label>
+					<input
+						type="checkbox"
+						name="showtimeslotheader"
+						checked={showTimeSlotHeader}
+						onChange={(e) => {
+							setShowTimeSlotHeader(e.target.checked)
+						}}
+						style={{
+							textAlign: "center",
+							marginRight: "0.25rem",
+						}}
+					/>
+				</div>
+			</div>
+			<div
+				style={{
+					height: "600px",
+				}}
+			>
+				<LPCalendarTimeTable
+					groupHeaderColumnWidth={groupHeaderColumnWidth}
+					columnWidth={columnWidth}
+					startDate={timeFrame.startDate}
+					endDate={timeFrame.endDate}
+					entries={entries}
+					/*renderGroup={ Group }
+					renderTimeSlotItem={ Item }
+					renderPlaceHolder={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
+						<div
+							style={ { height: props.height, backgroundColor: "rgba(0,0,0,0.1)", textAlign: "center" } }
+							onClick={ () => props.clearTimeRangeSelectionCB() }
+						>
+							Placeholder
+						</div>
+					) }*/
+					nowOverwrite={nowOverwrite}
+					timeTableMessages={translation}
+					disableWeekendInteractions={disabledWeekendInteractions}
+					showTimeSlotHeader={showTimeSlotHeader}
+				/>
+			</div>
+		</>
+	)
+
+	// endregion: timetable
+}
+
+export default function TimeTableShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Time Table"
@@ -755,7 +905,10 @@ export default function LPTimeTableShowCase(props: ShowcaseProps) {
 					url: "https://github.com/linked-planet/ui-kit-ts",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				<Example key="example0" />,
+				//<ExampleCalendar key="exampleCalendar" />,
+			]}
 		/>
 	)
 }

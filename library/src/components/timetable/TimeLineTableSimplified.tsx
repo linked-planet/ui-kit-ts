@@ -169,6 +169,7 @@ function TableCell({
 	const mouseHandlers = useMouseHandlers(timeSlotNumber, group)
 
 	const style: CSSProperties = {
+		boxSizing: "border-box",
 		borderBottom: isLastGroupRow
 			? `1px solid ${token("color.border.bold", "#758195")}`
 			: undefined,
@@ -264,6 +265,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	}
 
 	const styles: CSSProperties = {
+		boxSizing: "border-box",
 		backgroundColor: isWeekendDay
 			? groupNumber % 2 === 0
 				? weekendColor0
@@ -322,7 +324,8 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		| undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 }) {
-	const { slotsArray, timeSteps, placeHolderHeight } = useTimeTableConfig()
+	const { slotsArray, timeSteps, placeHolderHeight, columnWidth } =
+		useTimeTableConfig()
 
 	const trs = useMemo(() => {
 		const itemRows = getGroupItemStack(items)
@@ -375,7 +378,11 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			const tds = []
 			const itemsOfRow = itemRows[r] ?? []
 			const itemsWithStart = itemsOfRow.map((item) => {
-				const startAndEnd = getStartAndEndSlot(item, slotsArray)
+				const startAndEnd = getStartAndEndSlot(
+					item,
+					slotsArray,
+					timeSteps,
+				)
 				if (!startAndEnd) {
 					// outside of the day range
 					return null
@@ -408,9 +415,8 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					item: I
 				}[]
 
-				const gridCols: string[] = []
 				const itemsToRender = itemsWithRenderProps.map((it, i) => {
-					const diffLeft =
+					/*const diffLeft =
 						i > 0
 							? it.left -
 							  itemsWithRenderProps[i - 1].left -
@@ -420,7 +426,29 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					const colWidth = diffLeft + it.width
 					const itemWidthInColumn = it.width / colWidth
 					const leftInColumn = diffLeft / colWidth
-					gridCols.push(`${colWidth * 100}%`)
+					if (colWidth * 100 > gridColWidth) {
+						gridColWidth = colWidth * 100
+					}*/
+
+					/*const itemWidthInColumn = `calc(${it.width}px + ${
+						it.width * 100
+					}%)`*/
+
+					const itemWidthInColumn = `calc(${it.width} * ${
+						typeof columnWidth === "number"
+							? columnWidth + "px"
+							: columnWidth
+					})`
+
+					const leftInColumn = `calc(${it.left} * ${
+						typeof columnWidth === "number"
+							? columnWidth + "px"
+							: columnWidth
+					})`
+
+					//const leftInColumn = it.left * 100 + "%"
+
+					console.log("TEST", itemWidthInColumn, leftInColumn)
 
 					return (
 						<ItemWrapper
@@ -445,14 +473,17 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						group={group}
 						groupNumber={groupNumber}
 					>
-						<div
-							style={{
-								display: "grid",
-								gridTemplateColumns: gridCols.join(" "),
-							}}
-						>
-							{itemsToRender}
-						</div>
+						{itemsToRender.length > 0 ? (
+							<div
+								style={{
+									display: "grid",
+									//gridTemplateColumns: `${gridColWidth}%`,
+									boxSizing: "border-box",
+								}}
+							>
+								{itemsToRender}
+							</div>
+						) : undefined}
 					</TableCell>,
 				)
 			}
@@ -463,6 +494,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					style={{
 						backgroundColor: token("elevation.surface", "#FFFFFF"),
 						height: "1rem", // height works as min height in tables
+						boxSizing: "border-box",
 					}}
 				>
 					{tds}
@@ -479,6 +511,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		placeHolderHeight,
 		slotsArray,
 		timeSteps,
+		columnWidth,
 		selectedTimeSlotItem,
 		onTimeSlotItemClick,
 		renderTimeSlotItem,
@@ -621,34 +654,15 @@ function getGroupItemStack<I extends TimeSlotBooking>(groupItems: I[]) {
  * @param item
  * @param slotsArray
  */
-function getStartAndEndSlot(item: TimeSlotBooking, slotsArray: Dayjs[]) {
+function getStartAndEndSlot(
+	item: TimeSlotBooking,
+	slotsArray: Dayjs[],
+	timeSteps: number,
+) {
 	if (item.endDate.isBefore(slotsArray[0])) {
 		return null
 	}
 	if (item.startDate.isAfter(slotsArray[slotsArray.length - 1])) {
-		return null
-	}
-
-	// get start of time frame of the day
-	const startTimeHour = slotsArray[0].hour()
-	const startTimeMinute = slotsArray[0].minute()
-	const endTimeHour = slotsArray[slotsArray.length - 1].hour()
-	const endTimeMinute = slotsArray[slotsArray.length - 1].minute()
-
-	// check if the item starts before the time frame of the day
-	if (
-		item.endDate.hour() < startTimeHour ||
-		(item.endDate.hour() === startTimeHour &&
-			item.startDate.minute() <= startTimeMinute)
-	) {
-		return null
-	}
-	// check if the item ends after the time frame of the day
-	if (
-		item.startDate.hour() > endTimeHour ||
-		(item.startDate.hour() === endTimeHour &&
-			item.startDate.minute() >= endTimeMinute)
-	) {
 		return null
 	}
 
@@ -676,6 +690,16 @@ function getStartAndEndSlot(item: TimeSlotBooking, slotsArray: Dayjs[]) {
 	if (endSlot < startSlot) {
 		return null
 	}
+
+	if (item.endDate.isBefore(slotsArray[startSlot])) {
+		return null
+	}
+
+	if (item.startDate.isAfter(slotsArray[endSlot].add(timeSteps, "minutes"))) {
+		return null
+	}
+
+	console.log("startSlot", startSlot, "endSlot", endSlot)
 	return { startSlot, endSlot }
 }
 
@@ -694,7 +718,8 @@ function getLeftAndWidth(
 	slotsArray: Dayjs[],
 	timeSteps: number,
 ) {
-	let left = item.startDate.diff(slotsArray[startSlot], "minute") / timeSteps
+	const dstartMin = item.startDate.diff(slotsArray[startSlot], "minute")
+	let left = dstartMin / timeSteps
 	if (left < 0) {
 		// if the start is before the time slot, we need to set the left to 0
 		left = 0
@@ -713,12 +738,12 @@ function getLeftAndWidth(
 		}
 	}
 
-	let width =
-		slotsArray[endSlot].add(timeSteps, "minutes").diff(endTime, "minute") /
-		timeSteps
+	const dmin = endTime.diff(slotsArray[endSlot], "minute")
+	let width = dmin / timeSteps
 
 	// check if this is the last time slot of the day
-	width = endSlot + 1 - startSlot - (left + width)
+	//width = endSlot + 1 - startSlot - (left + width)
+	width = endSlot - startSlot + width - left
 
 	if (width < 0) {
 		// this should not happen, but if it does, we need to log it to find the error
