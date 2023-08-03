@@ -189,14 +189,11 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 	const tableCellRef = useRef<HTMLTableCellElement>(null)
 	const [tableCellWidth, setTableCellWidth] = useState(
-		tableCellRef.current?.offsetWidth ?? columnWidth,
+		tableCellRef.current?.offsetWidth ?? 70,
 	)
-	const resizeCallback = useCallback(
-		(observedSize: ObservedSize) => {
-			setTableCellWidth(observedSize.width ?? columnWidth)
-		},
-		[columnWidth],
-	)
+	const resizeCallback = useCallback((observedSize: ObservedSize) => {
+		setTableCellWidth(observedSize.width ?? 70)
+	}, [])
 	useResizeObserver({
 		ref: tableCellRef,
 		onResize: resizeCallback,
@@ -230,8 +227,9 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	}
 
 	// TIME SLOT ITEMS
+	let gridTemplateColumns = ""
 	let currentLeft = 0
-	const itemsWithRenderProps = bookingItemsBeginningInCell.map((it) => {
+	const itemsToRender = bookingItemsBeginningInCell.map((it, i) => {
 		if (!it) {
 			return null
 		}
@@ -244,45 +242,20 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		)
 
 		const leftUsed = left - currentLeft
+		currentLeft = left + width
 		if (leftUsed < 0) {
 			console.error(
-				"LPTimeTable - relative grid placement problem, should not happen: leftUsed < 0",
+				"LPTimeTable - leftUsed is negative, this should not happen",
+				leftUsed,
+				left,
+				currentLeft,
 			)
 		}
-		currentLeft = left + width
 
-		return {
-			left: leftUsed,
-			width,
-			item: it.item,
-			borderPixels: it.borderPixels,
-		}
-	})
-
-	let gridTemplateColumns = ""
-	const itemsToRender = itemsWithRenderProps.map((it, i) => {
-		if (!it) {
-			return null
-		}
-
-		console.log("BORDERPIXELS", it.borderPixels)
-		console.log("TABLE CELL WIDTH", tableCellRef.current?.offsetWidth)
-
-		const gridTemplateColumnWidth = it.left + it.width
-		/*gridTemplateColumns += `calc(${it.borderPixels}px + ${
-			gridTemplateColumnWidth * 100
-		}%) `*/
-		/*gridTemplateColumns += `calc(${gridTemplateColumnWidth} * ${
-			typeof columnWidth === "number" ? columnWidth + "px" : columnWidth
-		}) `*/
-		gridTemplateColumns += `calc(${tableCellWidth}px * ${gridTemplateColumnWidth}) `
-		console.log("GRIDTEMPLATECOLUMNS", gridTemplateColumns)
-
-		const itemWidthInColumn = `${
-			(it.width / gridTemplateColumnWidth) * 100
-		}%`
-
-		const leftInColumn = `${(it.left / gridTemplateColumnWidth) * 100}%`
+		const gridTemplateColumnWidth = (leftUsed + width) * tableCellWidth
+		gridTemplateColumns += `${gridTemplateColumnWidth}px `
+		const itemWidthInColumn = `${width * tableCellWidth}px` // could be 100% as well
+		const leftInColumn = `${leftUsed * tableCellWidth}px`
 
 		return (
 			<ItemWrapper
@@ -297,7 +270,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			/>
 		)
 	})
-	//
 
 	return (
 		<td
@@ -525,9 +497,9 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				timeSlotNumber < slotsArray.length;
 				timeSlotNumber++
 			) {
-				const itemsOfTimeSlot = itemsWithStart.filter(
-					(it) => it && it.startSlot === timeSlotNumber,
-				)
+				const itemsOfTimeSlot = itemsWithStart
+					.filter((it) => it && it.startSlot === timeSlotNumber)
+					.sort((a, b) => a.item.startDate.diff(b.item.startDate))
 
 				tds.push(
 					<TableCell<G, I>
@@ -775,7 +747,6 @@ function getStartAndEndSlot(
 		return null
 	}
 
-	console.log("startSlot", startSlot, "endSlot", endSlot)
 	return { startSlot, endSlot, borderPixels }
 }
 

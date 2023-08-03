@@ -39,7 +39,7 @@ type ExampleGroup = TimeTableGroup
 type ExampleItem = TimeSlotBooking
 
 const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
-	/*{
+	{
 		group: {
 			title: "Empty Group",
 		},
@@ -212,8 +212,8 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 3-3",
 			},
 		],
-	},*/
-	/*{
+	},
+	{
 		group: {
 			title: "Group 4",
 			subtitle: "Group 4 description",
@@ -268,7 +268,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 4-4-5",
 			},
 		],
-	},*/
+	},
 	{
 		group: {
 			title: "Group 5",
@@ -280,6 +280,12 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				startDate: dayjs().startOf("day").add(-2, "day"),
 				endDate: dayjs().startOf("day").add(7, "days"),
 				title: "Item 4-1",
+			},
+			{
+				// this case ends after the end of the day and starts before
+				startDate: dayjs().startOf("day").add(12, "hours"),
+				endDate: dayjs().startOf("day").add(1, "day").add(12, "hours"),
+				title: "Item 4-1-1",
 			},
 		],
 	},

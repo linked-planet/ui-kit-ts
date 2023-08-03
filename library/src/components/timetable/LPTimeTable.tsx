@@ -620,7 +620,6 @@ function calculateTimeSlots(
 	)
 
 	const slotsArray = daysArray.flatMap((date) => {
-		console.log("LPTimeTable - timeSlotsPerDay", timeSlotsPerDay)
 		return Array.from(
 			{ length: timeSlotsPerDay },
 			(_, i) => i * timeSteps,
