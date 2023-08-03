@@ -4,12 +4,15 @@ import React, {
 	useCallback,
 	useEffect,
 	useMemo,
+	useRef,
+	useState,
 } from "react"
 import type { Dayjs } from "dayjs"
 import type {
 	TimeSlotBooking,
 	TimeTableEntry,
 	TimeTableGroup,
+	TimeTableViewType,
 } from "./LPTimeTable"
 
 import { Group } from "./Group"
@@ -26,6 +29,7 @@ import {
 	useSelectedTimeSlots,
 } from "./SelectedTimeSlotsContext"
 import { PlaceHolderItem } from "./PlaceholderItem"
+import useResizeObserver, { ObservedSize } from "use-resize-observer"
 
 interface TimeLineTableSimplifiedProps<
 	G extends TimeTableGroup,
@@ -50,6 +54,8 @@ const weekendColor0 = token("elevation.surface.raised.hovered", "#F1F2F4")
 const weekendColor1 = token("elevation.surface.raised.pressed", "#DCDFE4")
 const dayColor0 = token("elevation.surface", "#FFFFFF")
 const dayColor1 = token("elevation.surface.hovered", "#F1F2F4")
+const timeSlotBorderWidth = 1
+const newDayBorderWidth = 2
 
 /**
  * Creates the table rows for the given entries.
@@ -139,20 +145,32 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 /**
  * The TableCellSimple is the standard cell of the table. The children are the entries that are rendered in the cell.
  */
-function TableCell({
+function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	slotsArray,
 	timeSlotNumber,
 	group,
 	groupNumber,
 	isLastGroupRow,
-	children,
+	bookingItemsBeginningInCell,
+	selectedTimeSlotItem,
+	renderTimeSlotItem,
+	onTimeSlotItemClick,
 }: {
 	slotsArray: Dayjs[]
 	timeSlotNumber: number
-	group: TimeTableGroup
+	group: G
 	groupNumber: number
 	isLastGroupRow: boolean
-	children: JSX.Element | JSX.Element[] | undefined
+	bookingItemsBeginningInCell: {
+		item: I
+		endSlot: number
+		borderPixels: number
+	}[]
+	selectedTimeSlotItem: I | undefined
+	renderTimeSlotItem:
+		| ((props: RenderItemProps<G, I>) => JSX.Element)
+		| undefined
+	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 }) {
 	const timeSlot = slotsArray[timeSlotNumber]
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
@@ -164,9 +182,27 @@ function TableCell({
 		? timeSlotAfter.day() !== timeSlot.day()
 		: true
 
-	const { disableWeekendInteractions, columnWidth } = useTimeTableConfig()
+	const { disableWeekendInteractions, columnWidth, viewType, timeSteps } =
+		useTimeTableConfig()
 
 	const mouseHandlers = useMouseHandlers(timeSlotNumber, group)
+
+	const tableCellRef = useRef<HTMLTableCellElement>(null)
+	const [tableCellWidth, setTableCellWidth] = useState(
+		tableCellRef.current?.offsetWidth ?? columnWidth,
+	)
+	const resizeCallback = useCallback(
+		(observedSize: ObservedSize) => {
+			setTableCellWidth(observedSize.width ?? columnWidth)
+		},
+		[columnWidth],
+	)
+	useResizeObserver({
+		ref: tableCellRef,
+		onResize: resizeCallback,
+		box: "border-box",
+		round: (n: number) => n, // we don't need rounding here
+	})
 
 	const style: CSSProperties = {
 		boxSizing: "border-box",
@@ -185,12 +221,83 @@ function TableCell({
 			isWeekendDay && disableWeekendInteractions
 				? "not-allowed"
 				: "pointer",
-		borderRight: `${isLastSlotOfTheDay ? "2px" : "1px"} solid ${token(
-			"color.border",
-			"#091E4224",
-		)}`,
+		borderRight: `${
+			isLastSlotOfTheDay && viewType === "hours"
+				? newDayBorderWidth + "px"
+				: timeSlotBorderWidth + "px"
+		} solid ${token("color.border", "#091E4224")}`,
 		maxWidth: columnWidth,
 	}
+
+	// TIME SLOT ITEMS
+	let currentLeft = 0
+	const itemsWithRenderProps = bookingItemsBeginningInCell.map((it) => {
+		if (!it) {
+			return null
+		}
+		const { left, width } = getLeftAndWidth(
+			it.item,
+			timeSlotNumber,
+			it.endSlot,
+			slotsArray,
+			timeSteps,
+		)
+
+		const leftUsed = left - currentLeft
+		if (leftUsed < 0) {
+			console.error(
+				"LPTimeTable - relative grid placement problem, should not happen: leftUsed < 0",
+			)
+		}
+		currentLeft = left + width
+
+		return {
+			left: leftUsed,
+			width,
+			item: it.item,
+			borderPixels: it.borderPixels,
+		}
+	})
+
+	let gridTemplateColumns = ""
+	const itemsToRender = itemsWithRenderProps.map((it, i) => {
+		if (!it) {
+			return null
+		}
+
+		console.log("BORDERPIXELS", it.borderPixels)
+		console.log("TABLE CELL WIDTH", tableCellRef.current?.offsetWidth)
+
+		const gridTemplateColumnWidth = it.left + it.width
+		/*gridTemplateColumns += `calc(${it.borderPixels}px + ${
+			gridTemplateColumnWidth * 100
+		}%) `*/
+		/*gridTemplateColumns += `calc(${gridTemplateColumnWidth} * ${
+			typeof columnWidth === "number" ? columnWidth + "px" : columnWidth
+		}) `*/
+		gridTemplateColumns += `calc(${tableCellWidth}px * ${gridTemplateColumnWidth}) `
+		console.log("GRIDTEMPLATECOLUMNS", gridTemplateColumns)
+
+		const itemWidthInColumn = `${
+			(it.width / gridTemplateColumnWidth) * 100
+		}%`
+
+		const leftInColumn = `${(it.left / gridTemplateColumnWidth) * 100}%`
+
+		return (
+			<ItemWrapper
+				key={i}
+				group={group}
+				item={it.item}
+				width={itemWidthInColumn}
+				left={leftInColumn}
+				selectedTimeSlotItem={selectedTimeSlotItem}
+				onTimeSlotItemClick={onTimeSlotItemClick}
+				renderTimeSlotItem={renderTimeSlotItem}
+			/>
+		)
+	})
+	//
 
 	return (
 		<td
@@ -198,8 +305,19 @@ function TableCell({
 			{...mouseHandlers}
 			style={style}
 			colSpan={2} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
+			ref={tableCellRef}
 		>
-			{children}
+			{itemsToRender.length > 0 ? (
+				<div
+					style={{
+						display: "grid",
+						gridTemplateColumns,
+						boxSizing: "border-box",
+					}}
+				>
+					{itemsToRender}
+				</div>
+			) : undefined}
 		</td>
 	)
 }
@@ -211,10 +329,12 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	group,
 	groupNumber,
 	timeSlotNumber,
+	viewType,
 }: {
 	group: G
 	groupNumber: number
 	timeSlotNumber: number
+	viewType: TimeTableViewType
 }) {
 	const { selectedTimeSlots, setSelectedTimeSlots } = useSelectedTimeSlots()
 	const { slotsArray, timeSteps, placeHolderHeight, renderPlaceHolder } =
@@ -275,10 +395,11 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 			: dayColor1,
 		verticalAlign: "top",
 		cursor: "pointer",
-		borderRight: `${isLastSlotOfTheDay ? "2px" : "1px"} solid ${token(
-			"color.border",
-			"#091E4224",
-		)}`,
+		borderRight: `${
+			isLastSlotOfTheDay && viewType === "hours"
+				? newDayBorderWidth + "px"
+				: timeSlotBorderWidth + "px"
+		} solid ${token("color.border", "#091E4224")}`,
 	}
 
 	return (
@@ -324,7 +445,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		| undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 }) {
-	const { slotsArray, timeSteps, placeHolderHeight, columnWidth } =
+	const { slotsArray, timeSteps, placeHolderHeight, viewType, columnWidth } =
 		useTimeTableConfig()
 
 	const trs = useMemo(() => {
@@ -358,6 +479,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					group={group}
 					groupNumber={groupNumber}
 					timeSlotNumber={timeSlotNumber}
+					viewType={viewType}
 				/>,
 			)
 		}
@@ -377,18 +499,26 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		for (let r = 0; r < rowCount; r++) {
 			const tds = []
 			const itemsOfRow = itemRows[r] ?? []
-			const itemsWithStart = itemsOfRow.map((item) => {
-				const startAndEnd = getStartAndEndSlot(
-					item,
-					slotsArray,
-					timeSteps,
-				)
-				if (!startAndEnd) {
-					// outside of the day range
-					return null
-				}
-				return { item, ...startAndEnd }
-			})
+			const itemsWithStart = itemsOfRow
+				.map((item) => {
+					const startAndEnd = getStartAndEndSlot(
+						item,
+						slotsArray,
+						timeSteps,
+						viewType,
+					)
+					if (!startAndEnd) {
+						// outside of the day range
+						return null
+					}
+					return { item, ...startAndEnd }
+				})
+				.filter((it) => it !== null) as {
+				item: I
+				startSlot: number
+				endSlot: number
+				borderPixels: number
+			}[]
 
 			for (
 				let timeSlotNumber = 0;
@@ -397,93 +527,21 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			) {
 				const itemsOfTimeSlot = itemsWithStart.filter(
 					(it) => it && it.startSlot === timeSlotNumber,
-				) as { item: I; startSlot: number; endSlot: number }[]
-
-				let currentLeft = 0
-
-				const itemsWithRenderProps = itemsOfTimeSlot
-					.map((it) => {
-						const { left, width } = getLeftAndWidth(
-							it.item,
-							it.startSlot,
-							it.endSlot,
-							slotsArray,
-							timeSteps,
-						)
-
-						const leftUsed = left - currentLeft
-						if (leftUsed < 0) {
-							console.error(
-								"LPTimeTable - relative grid placement problem, should not happen: leftUsed < 0",
-							)
-						}
-						currentLeft = left + width
-
-						return { left: leftUsed, width, item: it.item }
-					})
-					.filter((it) => it !== null) as {
-					left: number
-					width: number
-					item: I
-				}[]
-
-				let gridTemplateColumns = ""
-				const itemsToRender = itemsWithRenderProps.map((it, i) => {
-					const colW =
-						typeof columnWidth === "number"
-							? columnWidth + "px"
-							: columnWidth
-					gridTemplateColumns += `calc(${
-						it.left + it.width
-					} * ${colW}) `
-
-					const itemWidthInColumn = `calc(${it.width} * ${
-						typeof columnWidth === "number"
-							? columnWidth + "px"
-							: columnWidth
-					})`
-
-					const leftInColumn = `calc(${it.left} * ${
-						typeof columnWidth === "number"
-							? columnWidth + "px"
-							: columnWidth
-					})`
-
-					return (
-						<ItemWrapper
-							key={i}
-							group={group}
-							item={it.item}
-							width={itemWidthInColumn}
-							left={leftInColumn}
-							selectedTimeSlotItem={selectedTimeSlotItem}
-							onTimeSlotItemClick={onTimeSlotItemClick}
-							renderTimeSlotItem={renderTimeSlotItem}
-						/>
-					)
-				})
+				)
 
 				tds.push(
-					<TableCell
+					<TableCell<G, I>
 						key={timeSlotNumber}
 						timeSlotNumber={timeSlotNumber}
 						isLastGroupRow={r === rowCount - 1}
 						slotsArray={slotsArray}
 						group={group}
 						groupNumber={groupNumber}
-					>
-						{itemsToRender.length > 0 ? (
-							<div
-								style={{
-									display: "grid",
-									gridTemplateColumns,
-									boxSizing: "border-box",
-								}}
-							>
-								{itemsToRender}
-							</div>
-						) : undefined}
-					</TableCell>,
+						bookingItemsBeginningInCell={itemsOfTimeSlot}
+						selectedTimeSlotItem={selectedTimeSlotItem}
+						onTimeSlotItemClick={onTimeSlotItemClick}
+						renderTimeSlotItem={renderTimeSlotItem}
+					/>,
 				)
 			}
 
@@ -509,8 +567,8 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		onGroupHeaderClick,
 		placeHolderHeight,
 		slotsArray,
+		viewType,
 		timeSteps,
-		columnWidth,
 		selectedTimeSlotItem,
 		onTimeSlotItemClick,
 		renderTimeSlotItem,
@@ -657,7 +715,8 @@ function getStartAndEndSlot(
 	item: TimeSlotBooking,
 	slotsArray: Dayjs[],
 	timeSteps: number,
-) {
+	viewType: TimeTableViewType,
+): { startSlot: number; endSlot: number; borderPixels: number } | null {
 	if (item.endDate.isBefore(slotsArray[0])) {
 		return null
 	}
@@ -675,7 +734,25 @@ function getStartAndEndSlot(
 		}
 	}
 
-	let endSlot = slotsArray.findIndex((slot) => slot.isAfter(item.endDate))
+	let endSlot = -1
+	let borderPixels = 0
+	for (let i = 0; i < slotsArray.length; i++) {
+		const slot = slotsArray[i]
+		if (slot.isAfter(item.endDate)) {
+			endSlot = i
+			break
+		}
+		if (i > startSlot) {
+			const slotBefore = slotsArray[i - 1]
+			if (slot.date() !== slotBefore.date() && viewType === "hours") {
+				borderPixels += newDayBorderWidth
+			} else {
+				borderPixels += timeSlotBorderWidth
+			}
+		}
+	}
+
+	slotsArray.findIndex((slot) => slot.isAfter(item.endDate))
 	if (endSlot === -1) {
 		endSlot = slotsArray.length - 1
 	} else {
@@ -699,7 +776,7 @@ function getStartAndEndSlot(
 	}
 
 	console.log("startSlot", startSlot, "endSlot", endSlot)
-	return { startSlot, endSlot }
+	return { startSlot, endSlot, borderPixels }
 }
 
 /**

@@ -1236,7 +1236,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 1-2-2",
 			},
 		],
-	},*/
+	},
 	{
 		group: {
 			title: "Group 2",
@@ -1294,7 +1294,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 			},
 		],
 	},
-	/*{
+	{
 		group: {
 			title: "Group 3",
 			subtitle: "Group 3 description",
@@ -1318,8 +1318,8 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 3-3",
 			},
 		],
-	},
-	{
+	},*/
+	/*{
 		group: {
 			title: "Group 4",
 			subtitle: "Group 4 description",
@@ -1368,8 +1368,13 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 					.add(13.75, "hours"),
 				title: "Item 4-4",
 			},
+			{
+				startDate: dayjs().startOf("day").add(-1, "day"),
+				endDate: dayjs().startOf("day").add(3, "day"),
+				title: "Item 4-4-5",
+			},
 		],
-	},
+	},*/
 	{
 		group: {
 			title: "Group 5",
@@ -1383,7 +1388,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 4-1",
 			},
 		],
-	},*/
+	},
 ]
 
 function createTestItems(
@@ -1955,26 +1960,6 @@ function ExampleCalendar() {
 							marginRight: "0.25rem",
 						}}
 					/>
-					<label
-						htmlFor="showtimeslotheader"
-						style={{
-							marginRight: "1rem",
-						}}
-					>
-						Show Time Slot Header:
-					</label>
-					<input
-						type="checkbox"
-						name="showtimeslotheader"
-						checked={showTimeSlotHeader}
-						onChange={(e) => {
-							setShowTimeSlotHeader(e.target.checked)
-						}}
-						style={{
-							textAlign: "center",
-							marginRight: "0.25rem",
-						}}
-					/>
 				</div>
 			</div>
 			<div
@@ -2024,7 +2009,7 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 			]}
 			examples={[
 				<Example key="example0" />,
-				//<ExampleCalendar key="exampleCalendar" />,
+				<ExampleCalendar key="exampleCalendar" />,
 			]}
 		/>
 	)

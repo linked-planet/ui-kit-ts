@@ -141,6 +141,8 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 											textAlign: "center",
 											paddingLeft: "1rem",
 											paddingRight: "1rem",
+											overflow: "hidden",
+											textOverflow: "ellipsis",
 										}}
 										className={styles.unselectable}
 									>

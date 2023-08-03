@@ -10,8 +10,8 @@ export function Item({
 }: RenderItemProps<TimeTableGroup, TimeSlotBooking>): JSX.Element {
 	const isSelected = selectedItem === item
 	const title = `${item.title}:\n${item.startDate.format(
-		"HH:mm YYYY-MM-DD",
-	)} -\n${item.endDate.format("HH:mm YYYY-MM-DD")}`
+		"HH:mm DD-MM-YY",
+	)} -\n${item.endDate.format("HH:mm DD-MM-YY")}`
 	return (
 		<div
 			className={`${styles.timeSlotItem} ${

@@ -212,8 +212,8 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 3-3",
 			},
 		],
-	},
-	{
+	},*/
+	/*{
 		group: {
 			title: "Group 4",
 			subtitle: "Group 4 description",
@@ -261,6 +261,11 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 					.add(4, "day")
 					.add(13.75, "hours"),
 				title: "Item 4-4",
+			},
+			{
+				startDate: dayjs().startOf("day").add(-1, "day"),
+				endDate: dayjs().startOf("day").add(3, "day"),
+				title: "Item 4-4-5",
 			},
 		],
 	},*/
@@ -897,7 +902,7 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 				},
 			]}
 			examples={[
-				//<Example key="example0" />,
+				<Example key="example0" />,
 				<ExampleCalendar key="exampleCalendar" />,
 			]}
 		/>

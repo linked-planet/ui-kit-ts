@@ -53,7 +53,7 @@ export interface SelectedTimeSlot<G extends TimeTableGroup> {
 	groupRow: number
 }
 
-type ViewType = "hours" | "days"
+export type TimeTableViewType = "hours" | "days"
 
 export interface LPTimeTableProps<
 	G extends TimeTableGroup,
@@ -135,7 +135,7 @@ export interface LPTimeTableProps<
 	 */
 	timeTableMessages?: TranslatedTimeTableMessages
 
-	viewType?: ViewType
+	viewType?: TimeTableViewType
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -434,6 +434,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				disableWeekendInteractions={disableWeekendInteractions}
 				placeHolderHeight={placeHolderHeight}
 				columnWidth={columnWidth}
+				viewType={viewType}
 				renderPlaceHolder={renderPlaceHolder}
 			>
 				<SelectedTimeSlotsProvider
@@ -574,7 +575,7 @@ function calculateTimeSlotProperties(
 function calculateTimeSlotPropertiesForView(
 	startDate: Dayjs,
 	endDate: Dayjs,
-	viewType: Omit<ViewType, "hours">,
+	viewType: Omit<TimeTableViewType, "hours">,
 	setMessage: (message: TimeTableMessage) => void,
 ) {
 	const timeSlotsPerDay = 1
