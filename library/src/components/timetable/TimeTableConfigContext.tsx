@@ -10,6 +10,8 @@ type TimeTableConfig<G extends TimeTableGroup> = {
 	placeHolderHeight: string
 	columnWidth: number | string
 	viewType: TimeTableViewType
+	hideOutOfRangeMarkers: boolean
+	timeSlotSelectionDisabled: boolean
 	renderPlaceHolder:
 		| ((props: PlaceholderItemProps<G>) => JSX.Element)
 		| undefined
@@ -26,6 +28,8 @@ export function TimeTableConfigProvider<G extends TimeTableGroup>({
 	placeHolderHeight,
 	columnWidth,
 	viewType,
+	hideOutOfRangeMarkers,
+	timeSlotSelectionDisabled,
 	renderPlaceHolder,
 	children,
 }: TimeTableConfig<G> & { children: React.ReactNode }) {
@@ -42,6 +46,8 @@ export function TimeTableConfigProvider<G extends TimeTableGroup>({
 				placeHolderHeight,
 				columnWidth,
 				viewType,
+				hideOutOfRangeMarkers,
+				timeSlotSelectionDisabled,
 				renderPlaceHolder: renderPlaceHolderG,
 			}}
 		>

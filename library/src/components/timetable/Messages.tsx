@@ -91,10 +91,34 @@ export const BookingsOutsideOfDayRange = ({
 }) => (
 	<FormattedMessage
 		defaultMessage={
-			"{itemCount} Bookings found out of day range of the available time slots."
+			"{itemCount} bookings found out of day range of the available time slots."
 		}
 		values={{ itemCount }}
 		id="timetable.bookingsOutsideOfDayRange"
+	/>
+)
+
+export const BookingsAfterDayRange = ({ itemCount }: { itemCount: number }) => (
+	<FormattedMessage
+		defaultMessage={
+			"{itemCount} bookings found after the day range of the available time slots."
+		}
+		values={{ itemCount }}
+		id="timetable.bookingsAfterDayRange"
+	/>
+)
+
+export const BookingsBeforeDayRange = ({
+	itemCount,
+}: {
+	itemCount: number
+}) => (
+	<FormattedMessage
+		defaultMessage={
+			"{itemCount} bookings found before the day range of the available time slots."
+		}
+		values={{ itemCount }}
+		id="timetable.bookingsBeforeDayRange"
 	/>
 )
 

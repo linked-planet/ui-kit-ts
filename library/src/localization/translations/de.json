@@ -1,4 +1,10 @@
 {
+	"timetable.bookingsAfterDayRange": {
+		"defaultMessage": "{itemCount} Einträge vor Beginn des Tageszeitbereichs."
+	},
+	"timetable.bookingsBeforeDayRange": {
+		"defaultMessage": "{itemCount} Einträge nach Ende des Tageszeitbereichs."
+	},
 	"timetable.bookingsOutsideOfDayRange": {
 		"defaultMessage": "{itemCount} Buchungen außerhalb des Tagesbereichs der verfügbaren Zeitslots gefunden."
 	},

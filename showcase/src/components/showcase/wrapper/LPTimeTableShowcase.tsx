@@ -19,7 +19,10 @@ import Button from "@atlaskit/button"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
-import { LPCalendarTimeTable } from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
+import {
+	LPCalendarTimeTable,
+	TimeTableViewType,
+} from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -373,6 +376,8 @@ function Example() {
 	const [disabledWeekendInteractions, setDisabledWeekendInteractions] =
 		useState(true)
 	const [showTimeSlotHeader, setShowTimeSlotHeader] = useState(true)
+	const [hideOutOfDayRangeMarkers, setHideOutOfDayRangeMarkers] =
+		useState(false)
 
 	const [timeFrame, setTimeFrame] = useState({
 		startDate: startDateInitial,
@@ -448,6 +453,8 @@ function Example() {
 	>()
 	const [clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB] =
 		useState<() => void>()
+	const [disableTimeRangeSelection, setDisableTimeRangeSelection] =
+		useState(false)
 
 	const onCreateNewItemConfirmCB = useCallback(
 		(group: TimeTableGroup, item: TimeSlotBooking) => {
@@ -474,6 +481,8 @@ function Example() {
 		},
 		[clearSelectedTimeRangeCB],
 	)
+
+	const [viewType, setViewType] = useState<TimeTableViewType>("hours")
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
@@ -677,6 +686,64 @@ function Example() {
 							marginRight: "0.25rem",
 						}}
 					/>
+					<label
+						htmlFor="hideoutofdayrange"
+						style={{
+							marginRight: "1rem",
+						}}
+					>
+						Hide Out Of Day Range Markers:
+					</label>
+					<input
+						type="checkbox"
+						name="hideoutofdayrange"
+						checked={hideOutOfDayRangeMarkers}
+						onChange={(e) => {
+							setHideOutOfDayRangeMarkers(e.target.checked)
+						}}
+						style={{
+							textAlign: "center",
+							marginRight: "0.25rem",
+						}}
+					/>
+					<label
+						htmlFor="disabletimerangeselection"
+						style={{
+							marginRight: "1rem",
+						}}
+					>
+						Disable Time Range Selection
+					</label>
+					<input
+						type="checkbox"
+						name="disabletimerangeselection"
+						checked={disableTimeRangeSelection}
+						onChange={(e) => {
+							setDisableTimeRangeSelection(e.target.checked)
+						}}
+						style={{
+							textAlign: "center",
+							marginRight: "0.25rem",
+						}}
+					/>
+					<label
+						htmlFor="viewtype"
+						style={{
+							marginRight: "1rem",
+						}}
+					>
+						View Type
+					</label>
+					<select
+						name="viewtype"
+						onChange={(e) =>
+							setViewType(e.target.value as TimeTableViewType)
+						}
+						value={viewType}
+					>
+						<option value="days">Days</option>
+						<option value="hours">Hours</option>
+					</select>
 				</div>
 			</div>
 			<div
@@ -743,10 +810,16 @@ function Example() {
 					rounding={rounding}
 					nowOverwrite={nowOverwrite}
 					timeTableMessages={translation}
-					onTimeRangeSelected={setSelectedTimeRange}
+					onTimeRangeSelected={
+						!disableTimeRangeSelection
+							? setSelectedTimeRange
+							: undefined
+					}
 					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
 					disableWeekendInteractions={disabledWeekendInteractions}
 					showTimeSlotHeader={showTimeSlotHeader}
+					hideOutOfRangeMarkers={hideOutOfDayRangeMarkers}
+					viewType={viewType}
 				/>
 			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>

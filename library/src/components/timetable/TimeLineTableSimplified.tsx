@@ -1,5 +1,6 @@
 import React, {
 	CSSProperties,
+	Fragment,
 	MouseEvent,
 	useCallback,
 	useEffect,
@@ -18,7 +19,7 @@ import type {
 import { Group } from "./Group"
 
 import styles from "./LPTimeTable.module.css"
-import { isOverlapping } from "./timeTableUtils"
+import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
 import ItemWrapper, { RenderItemProps } from "./ItemWrapper"
 import { token } from "@atlaskit/tokens"
 
@@ -123,7 +124,7 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 			onClick={() => {
 				if (onGroupClick) onGroupClick(group)
 			}}
-			rowSpan={groupRowMax + 1}
+			rowSpan={groupRowMax}
 			className={`${styles.unselectable}`}
 			style={{
 				backgroundColor: groupNumber % 2 === 0 ? dayColor0 : dayColor1,
@@ -150,6 +151,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	timeSlotNumber,
 	group,
 	groupNumber,
+	isFirstRow,
 	isLastGroupRow,
 	bookingItemsBeginningInCell,
 	selectedTimeSlotItem,
@@ -160,12 +162,15 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	timeSlotNumber: number
 	group: G
 	groupNumber: number
+	isFirstRow: boolean
 	isLastGroupRow: boolean
-	bookingItemsBeginningInCell: {
-		item: I
-		endSlot: number
-		borderPixels: number
-	}[]
+	bookingItemsBeginningInCell:
+		| {
+				item: I
+				endSlot: number
+				status: "before" | "after" | "in"
+		  }[]
+		| undefined
 	selectedTimeSlotItem: I | undefined
 	renderTimeSlotItem:
 		| ((props: RenderItemProps<G, I>) => JSX.Element)
@@ -182,8 +187,14 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		? timeSlotAfter.day() !== timeSlot.day()
 		: true
 
-	const { disableWeekendInteractions, columnWidth, viewType, timeSteps } =
-		useTimeTableConfig()
+	const {
+		disableWeekendInteractions,
+		columnWidth,
+		viewType,
+		timeSteps,
+		hideOutOfRangeMarkers,
+		timeSlotSelectionDisabled,
+	} = useTimeTableConfig()
 
 	const mouseHandlers = useMouseHandlers(timeSlotNumber, group)
 
@@ -207,6 +218,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			? `1px solid ${token("color.border.bold", "#758195")}`
 			: undefined,
 		paddingBottom: isLastGroupRow ? "10px" : undefined,
+		paddingTop: isFirstRow ? "10px" : undefined,
 		backgroundColor: isWeekendDay
 			? groupNumber % 2 === 0
 				? weekendColor0
@@ -229,67 +241,121 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	// TIME SLOT ITEMS
 	let gridTemplateColumns = ""
 	let currentLeft = 0
-	const itemsToRender = bookingItemsBeginningInCell.map((it, i) => {
-		if (!it) {
-			return null
-		}
-		const { left, width } = getLeftAndWidth(
-			it.item,
-			timeSlotNumber,
-			it.endSlot,
-			slotsArray,
-			timeSteps,
-		)
+	let beforeCount = 0
+	let afterCount = 0
+	const itemsToRender = bookingItemsBeginningInCell
+		? bookingItemsBeginningInCell.map((it, i, arr) => {
+				if (it.status === "before") {
+					beforeCount++
+					return null
+				}
+				if (it.status === "after") {
+					afterCount++
+					return null
+				}
 
-		const leftUsed = left - currentLeft
-		currentLeft = left + width
-		if (leftUsed < 0) {
-			console.error(
-				"LPTimeTable - leftUsed is negative, this should not happen",
-				leftUsed,
-				left,
-				currentLeft,
-			)
-		}
+				const { left, width } = getLeftAndWidth(
+					it.item,
+					timeSlotNumber,
+					it.endSlot,
+					slotsArray,
+					timeSteps,
+				)
 
-		const gridTemplateColumnWidth = (leftUsed + width) * tableCellWidth
-		gridTemplateColumns += `${gridTemplateColumnWidth}px `
-		const itemWidthInColumn = `${width * tableCellWidth}px` // could be 100% as well
-		const leftInColumn = `${leftUsed * tableCellWidth}px`
+				const leftUsed = left - currentLeft
+				currentLeft = left + width
+				if (leftUsed < 0) {
+					console.error(
+						"LPTimeTable - leftUsed is negative, this should not happen",
+						leftUsed,
+						left,
+						currentLeft,
+					)
+				}
 
-		return (
-			<ItemWrapper
-				key={i}
-				group={group}
-				item={it.item}
-				width={itemWidthInColumn}
-				left={leftInColumn}
-				selectedTimeSlotItem={selectedTimeSlotItem}
-				onTimeSlotItemClick={onTimeSlotItemClick}
-				renderTimeSlotItem={renderTimeSlotItem}
-			/>
-		)
-	})
+				const gridTemplateColumnWidth =
+					(leftUsed + width) * tableCellWidth
+				gridTemplateColumns += `${gridTemplateColumnWidth}px `
+				const itemWidthInColumn = `${width * tableCellWidth}px` // could be 100% as well
+				const leftInColumn = `${leftUsed * tableCellWidth}px`
+
+				return (
+					<ItemWrapper
+						key={i}
+						group={group}
+						item={it.item}
+						width={itemWidthInColumn}
+						left={leftInColumn}
+						selectedTimeSlotItem={selectedTimeSlotItem}
+						onTimeSlotItemClick={onTimeSlotItemClick}
+						renderTimeSlotItem={renderTimeSlotItem}
+					/>
+				)
+		  })
+		: null
+
+	const mouseHandlersUsed = timeSlotSelectionDisabled ? {} : mouseHandlers
 
 	return (
 		<td
 			key={timeSlotNumber}
-			{...mouseHandlers}
+			{...mouseHandlersUsed}
 			style={style}
 			colSpan={2} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			ref={tableCellRef}
 		>
-			{itemsToRender.length > 0 ? (
-				<div
-					style={{
-						display: "grid",
-						gridTemplateColumns,
-						boxSizing: "border-box",
-					}}
-				>
-					{itemsToRender}
-				</div>
-			) : undefined}
+			{itemsToRender && itemsToRender.length > 0 && (
+				<>
+					{beforeCount > 0 && !hideOutOfRangeMarkers && (
+						<div
+							style={{
+								position: "absolute",
+								top: 0,
+								left: 0,
+								width: "0.15rem",
+								height: "100%",
+								opacity: 0.5,
+								borderTopRightRadius: "100%",
+								borderBottomRightRadius: "100%",
+								backgroundColor: token(
+									"color.background.accent.lime.bolder",
+									"#4f819e",
+								),
+							}}
+							title={`${beforeCount} more items`}
+						/>
+					)}
+					<div
+						style={{
+							display: "grid",
+							gridTemplateColumns,
+							boxSizing: "border-box",
+						}}
+					>
+						{itemsToRender}
+					</div>
+					{afterCount > 0 && !hideOutOfRangeMarkers && (
+						<div
+							style={{
+								position: "absolute",
+								top: 0,
+								right: 0,
+								width: "0.15rem",
+								height: "100%",
+								opacity: 0.5,
+								borderTopLeftRadius: "100%",
+								borderBottomLeftRadius: "100%",
+								backgroundColor: token(
+									"color.background.accent.lime.bolder",
+									"#4f819e",
+								),
+								transform: "translate(0%, 0%)",
+							}}
+							title={`${afterCount} more items`}
+						/>
+					)}
+				</>
+			)}
 		</td>
 	)
 }
@@ -417,103 +483,100 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		| undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 }) {
-	const { slotsArray, timeSteps, placeHolderHeight, viewType, columnWidth } =
-		useTimeTableConfig()
+	const {
+		slotsArray,
+		timeSteps,
+		placeHolderHeight,
+		viewType,
+		timeSlotSelectionDisabled,
+	} = useTimeTableConfig()
 
 	const trs = useMemo(() => {
-		const itemRows = getGroupItemStack(items)
+		const itemRows = getGroupItemStack(items, slotsArray, timeSteps)
 		const rowCount = itemRows.length > 0 ? itemRows.length : 1 // if there are no rows, we draw an empty one
 
 		const trs: JSX.Element[] = []
 
-		const tds = []
 		// create group header
-		tds.push(
+		const groupHeader = (
 			<GroupHeaderTableCell<G>
-				key={-1}
 				group={group}
 				groupNumber={groupNumber}
-				groupRowMax={rowCount} // group header spans all rows of the group
+				groupRowMax={
+					timeSlotSelectionDisabled ? rowCount : rowCount + 1
+				} // group header spans all rows of the group + the interaction row
 				renderGroup={renderGroup}
 				onGroupClick={onGroupHeaderClick}
-			/>,
+			/>
 		)
 
 		// and interaction row
-		for (
-			let timeSlotNumber = 0;
-			timeSlotNumber < slotsArray.length;
-			timeSlotNumber++
-		) {
-			tds.push(
-				<PlaceholderTableCell<G>
-					key={timeSlotNumber}
-					group={group}
-					groupNumber={groupNumber}
-					timeSlotNumber={timeSlotNumber}
-					viewType={viewType}
-				/>,
+		if (!timeSlotSelectionDisabled) {
+			const tds = [
+				<Fragment key={-1}>{groupHeader}</Fragment>, // empty cell for the group header
+			]
+			for (
+				let timeSlotNumber = 0;
+				timeSlotNumber < slotsArray.length;
+				timeSlotNumber++
+			) {
+				tds.push(
+					<PlaceholderTableCell<G>
+						key={timeSlotNumber}
+						group={group}
+						groupNumber={groupNumber}
+						timeSlotNumber={timeSlotNumber}
+						viewType={viewType}
+					/>,
+				)
+			}
+			trs.push(
+				<tr
+					key={-1}
+					style={{
+						backgroundColor: token("elevation.surface", "#FFFFFF"),
+						height: placeHolderHeight, // height works as min height in tables
+					}}
+				>
+					{tds}
+				</tr>,
 			)
 		}
-		trs.push(
-			<tr
-				key={-1}
-				style={{
-					backgroundColor: token("elevation.surface", "#FFFFFF"),
-					height: placeHolderHeight, // height works as min height in tables
-				}}
-			>
-				{tds}
-			</tr>,
-		)
 
 		// and the normal rows
 		for (let r = 0; r < rowCount; r++) {
-			const tds = []
-			const itemsOfRow = itemRows[r] ?? []
-			const itemsWithStart = itemsOfRow
-				.map((item) => {
-					const startAndEnd = getStartAndEndSlot(
-						item,
-						slotsArray,
-						timeSteps,
-						viewType,
-					)
-					if (!startAndEnd) {
-						// outside of the day range
-						return null
-					}
-					return { item, ...startAndEnd }
-				})
-				.filter((it) => it !== null) as {
-				item: I
-				startSlot: number
-				endSlot: number
-				borderPixels: number
-			}[]
+			const tds =
+				timeSlotSelectionDisabled && r === 0
+					? [<Fragment key={-1}>{groupHeader}</Fragment>]
+					: []
+			const itemsOfRow = itemRows[r] ?? null
 
 			for (
 				let timeSlotNumber = 0;
 				timeSlotNumber < slotsArray.length;
 				timeSlotNumber++
 			) {
-				const itemsOfTimeSlot = itemsWithStart
-					.filter((it) => it && it.startSlot === timeSlotNumber)
-					.sort((a, b) => a.item.startDate.diff(b.item.startDate))
+				const itemsOfTimeSlot = itemsOfRow
+					? itemsOfRow.filter(
+							(it) => it && it.startSlot === timeSlotNumber,
+					  )
+					: undefined
 
 				tds.push(
-					<TableCell<G, I>
-						key={timeSlotNumber}
-						timeSlotNumber={timeSlotNumber}
-						isLastGroupRow={r === rowCount - 1}
-						slotsArray={slotsArray}
-						group={group}
-						groupNumber={groupNumber}
-						bookingItemsBeginningInCell={itemsOfTimeSlot}
-						selectedTimeSlotItem={selectedTimeSlotItem}
-						onTimeSlotItemClick={onTimeSlotItemClick}
-						renderTimeSlotItem={renderTimeSlotItem}
-					/>,
+					<Fragment key={timeSlotNumber}>
+						<TableCell<G, I>
+							timeSlotNumber={timeSlotNumber}
+							isLastGroupRow={r === rowCount - 1}
+							isFirstRow={r === 0}
+							slotsArray={slotsArray}
+							group={group}
+							groupNumber={groupNumber}
+							bookingItemsBeginningInCell={itemsOfTimeSlot}
+							selectedTimeSlotItem={selectedTimeSlotItem}
+							onTimeSlotItemClick={onTimeSlotItemClick}
+							renderTimeSlotItem={renderTimeSlotItem}
+						/>
+					</Fragment>,
 				)
 			}
 
@@ -533,14 +596,15 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		return trs
 	}, [
 		items,
+		slotsArray,
+		timeSteps,
 		group,
 		groupNumber,
 		renderGroup,
 		onGroupHeaderClick,
+		timeSlotSelectionDisabled,
 		placeHolderHeight,
-		slotsArray,
 		viewType,
-		timeSteps,
 		selectedTimeSlotItem,
 		onTimeSlotItemClick,
 		renderTimeSlotItem,
@@ -653,101 +717,84 @@ function useMouseHandlers<G extends TimeTableGroup>(
  * @param groupItems  the items of the group
  * @returns  the items grouped by row that one row has no overlapping items
  */
-function getGroupItemStack<I extends TimeSlotBooking>(groupItems: I[]) {
-	const itemRows: I[][] = []
+function getGroupItemStack<I extends TimeSlotBooking>(
+	groupItems: I[],
+	slotsArray: Dayjs[],
+	timeSteps: number,
+) {
+	const timeFrameStartHour = slotsArray[0].hour()
+	const timeFrameStartMinute = slotsArray[0].minute()
+	const timeFrameEndHour = slotsArray[slotsArray.length - 1].hour()
+	const timeFrameEndMinute = slotsArray[slotsArray.length - 1].minute()
+
+	const itemRows: {
+		startSlot: number
+		endSlot: number
+		status: "before" | "after" | "in"
+		item: I
+	}[][] = []
 	groupItems.forEach((item) => {
 		let added = false
+
+		const startEndSlots = getStartAndEndSlot(item, slotsArray, timeSteps)
+
+		const ret = {
+			...startEndSlots,
+			item,
+		}
+
+		if (
+			item.startDate.startOf("day") === item.endDate.startOf("day") &&
+			(item.endDate.hour() < timeFrameStartHour ||
+				(item.endDate.hour() === timeFrameStartHour &&
+					item.endDate.minute() < timeFrameStartMinute))
+		) {
+			if (itemRows.length === 0) {
+				itemRows.push([ret])
+			} else {
+				itemRows[0].push(ret)
+			}
+			return
+		}
+
+		if (
+			timeFrameEndHour !== 0 &&
+			timeFrameEndMinute !== 0 &&
+			(item.startDate.hour() > timeFrameEndHour ||
+				(item.startDate.hour() === timeFrameEndHour &&
+					item.startDate.minute() > timeFrameEndMinute))
+		) {
+			if (itemRows.length === 0) {
+				itemRows.push([ret])
+			} else {
+				itemRows[0].push(ret)
+			}
+			return
+		}
+
 		for (let r = 0; r < itemRows.length; r++) {
 			const itemRow = itemRows[r]
 			// find collision
-			const collision = itemRow.find((it) => isOverlapping(it, item))
+			const collision = itemRow.find((it) => isOverlapping(it.item, item))
 			if (!collision) {
 				// no collision, add to row
-				itemRow.push(item)
+				itemRow.push(ret)
 				added = true
 				break
 			}
 		}
 		if (!added) {
 			// create new row
-			itemRows.push([item])
+			itemRows.push([ret])
 		}
 	})
 
+	// sort the rows
+	itemRows.forEach((row) => {
+		row.sort((a, b) => a.item.startDate.diff(b.item.startDate))
+	})
+
 	return itemRows
-}
-
-/**
- * find the start and time slot of an item. If the item starts before the time slot of the day, the first time slot of the day is returned.
- * respective if the item end after the last time slot of the day, the last time slot of the day is returned.
- * @param item
- * @param slotsArray
- */
-function getStartAndEndSlot(
-	item: TimeSlotBooking,
-	slotsArray: Dayjs[],
-	timeSteps: number,
-	viewType: TimeTableViewType,
-): { startSlot: number; endSlot: number; borderPixels: number } | null {
-	if (item.endDate.isBefore(slotsArray[0])) {
-		return null
-	}
-	if (item.startDate.isAfter(slotsArray[slotsArray.length - 1])) {
-		return null
-	}
-
-	let startSlot = slotsArray.findIndex((slot) => slot.isAfter(item.startDate))
-	if (startSlot > 0) {
-		// if the item starts in the middle of a slot, we need to go back one slot to get the start slot
-		// but only if the time slot before is on the same day, else it means that the booking starts before the time frame range of the day
-		startSlot--
-		if (slotsArray[startSlot].date() != item.startDate.date()) {
-			startSlot++
-		}
-	}
-
-	let endSlot = -1
-	let borderPixels = 0
-	for (let i = 0; i < slotsArray.length; i++) {
-		const slot = slotsArray[i]
-		if (slot.isAfter(item.endDate)) {
-			endSlot = i
-			break
-		}
-		if (i > startSlot) {
-			const slotBefore = slotsArray[i - 1]
-			if (slot.date() !== slotBefore.date() && viewType === "hours") {
-				borderPixels += newDayBorderWidth
-			} else {
-				borderPixels += timeSlotBorderWidth
-			}
-		}
-	}
-
-	slotsArray.findIndex((slot) => slot.isAfter(item.endDate))
-	if (endSlot === -1) {
-		endSlot = slotsArray.length - 1
-	} else {
-		// if the item end after the last time slot of the day, we still set the end slot to the last time slot of the day
-		if (slotsArray[endSlot].date() !== slotsArray[endSlot - 1].date()) {
-			endSlot--
-		}
-	}
-
-	// if endSlot < startSlot its before the range of the day
-	if (endSlot < startSlot) {
-		return null
-	}
-
-	if (item.endDate.isBefore(slotsArray[startSlot])) {
-		return null
-	}
-
-	if (item.startDate.isAfter(slotsArray[endSlot].add(timeSteps, "minutes"))) {
-		return null
-	}
-
-	return { startSlot, endSlot, borderPixels }
 }
 
 /**

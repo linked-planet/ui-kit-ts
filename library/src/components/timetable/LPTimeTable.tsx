@@ -11,7 +11,13 @@ import dayjs, { Dayjs } from "dayjs"
 //import styles from "./LPTimeTable.module.css";
 import "./LPTimeTable.module.css"
 import styles from "./LPTimeTable.module.css"
-import { getStartAndEndSlot, itemsOutsideOfDayRange } from "./timeTableUtils"
+import {
+	calculateTimeSlotProperties,
+	calculateTimeSlotPropertiesForView,
+	calculateTimeSlots,
+	getStartAndEndSlot,
+	itemsOutsideOfDayRange,
+} from "./timeTableUtils"
 import InlineMessage from "../inlinemessage"
 import {
 	TimeTableMessage,
@@ -136,6 +142,11 @@ export interface LPTimeTableProps<
 	timeTableMessages?: TranslatedTimeTableMessages
 
 	viewType?: TimeTableViewType
+
+	/**
+	 * Hides the small sideline markers when there are bookings before the begin of the day time slot range, or after the end.
+	 */
+	hideOutOfRangeMarkers?: boolean
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -196,6 +207,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	viewType = "hours",
 	disableWeekendInteractions = true,
 	showTimeSlotHeader = true,
+	hideOutOfRangeMarkers = false,
 	nowOverwrite,
 }: LPTimeTableProps<G, I>) => {
 	// if we have viewType of days, we need to round the start and end date to the start and end of the day
@@ -435,6 +447,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				placeHolderHeight={placeHolderHeight}
 				columnWidth={columnWidth}
 				viewType={viewType}
+				hideOutOfRangeMarkers={hideOutOfRangeMarkers}
+				timeSlotSelectionDisabled={!onTimeRangeSelected}
 				renderPlaceHolder={renderPlaceHolder}
 			>
 				<SelectedTimeSlotsProvider
@@ -487,151 +501,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 }
 
 /**
- * Calculates the time slots for the given time frame.
- * @param startDate date and time when the time frame starts (defines also the start time of each day)
- * @param endDate date and time when the time frame ends (defines also the end time of each day)
- * @param timeStepsMinute duration of one time step in minutes
- * @param rounding rounding of the time steps if they don't fit into the time frame
- * @param setMessage  function to set a message
- * @returns the amount of time slots per day, the difference in day of the time frame, the time step duration after the rounding
- */
-function calculateTimeSlotProperties(
-	startDate: Dayjs,
-	endDate: Dayjs,
-	timeStepsMinute: number,
-	rounding: "ceil" | "floor" | "round",
-	setMessage: (message: TimeTableMessage) => void,
-) {
-	let timeSlotsPerDay = 0 // how many timeslot per day/week
-	let timeSteps = timeStepsMinute
-	if (startDate.add(timeSteps, "minutes").day() !== startDate.day()) {
-		timeSteps =
-			startDate.startOf("day").add(1, "day").diff(startDate, "minutes") -
-			1 // -1 to end at the same day if the time steps are from someplace during the day until
-		setMessage({
-			urgency: "warning",
-			messageKey: "timetable.unfittingTimeSlotMessage",
-			messageValues: {
-				timeSteps: timeStepsMinute,
-			},
-		})
-	}
-
-	const daysDifference = endDate.diff(startDate, "days")
-	if (daysDifference < 0) {
-		setMessage({
-			urgency: "error",
-			messageKey: "timetable.endDateAfterStartDate",
-		})
-		return { timeSlotsPerDay, daysDifference, timeSteps }
-	}
-
-	if (timeSteps === 0) {
-		setMessage({
-			urgency: "error",
-			messageKey: "timetable.timeSlotSizeGreaterZero",
-		})
-		return { timeSlotsPerDay, daysDifference, timeSteps }
-	}
-
-	let timeDiff = dayjs()
-		.startOf("day")
-		.add(endDate.hour(), "hours")
-		.add(endDate.minute(), "minutes")
-		.diff(
-			dayjs()
-				.startOf("day")
-				.add(startDate.hour(), "hours")
-				.add(startDate.minute(), "minutes"),
-			"minutes",
-		)
-
-	if (timeDiff === 0) {
-		// we set it to 24 hours
-		timeDiff = 24 * 60
-	}
-
-	timeSlotsPerDay = Math.abs(timeDiff) / timeSteps
-	if (rounding === "ceil") {
-		timeSlotsPerDay = Math.ceil(timeSlotsPerDay)
-	} else if (rounding == "floor") {
-		timeSlotsPerDay = Math.floor(timeSlotsPerDay)
-	} else {
-		timeSlotsPerDay = Math.round(timeSlotsPerDay)
-	}
-
-	return { timeSlotsPerDay, daysDifference, timeSteps }
-}
-
-/**
- * Calculates the time slots for the given time frame.
- * @param startDate date and time when the time frame starts (defines also the start time of each day)
- * @param endDate date and time when the time frame ends (defines also the end time of each day)
- * @param timeStepsMinute duration of one time step in minutes
- * @param rounding rounding of the time steps if they don't fit into the time frame
- * @param setMessage  function to set a message
- * @returns the amount of time slots per day, the difference in day of the time frame, the time step duration after the rounding
- */
-function calculateTimeSlotPropertiesForView(
-	startDate: Dayjs,
-	endDate: Dayjs,
-	viewType: Omit<TimeTableViewType, "hours">,
-	setMessage: (message: TimeTableMessage) => void,
-) {
-	const timeSlotsPerDay = 1
-	const timeSteps = 24 * 60 // 1 day in minutes
-	const daysDifference = endDate.diff(startDate, "days")
-	if (daysDifference < 0) {
-		setMessage({
-			urgency: "error",
-			messageKey: "timetable.endDateAfterStartDate",
-		})
-		return {
-			timeSlotsPerDay,
-			daysDifference: 0,
-			timeSteps,
-		}
-	}
-
-	return { timeSlotsPerDay, daysDifference, timeSteps }
-}
-
-/**
- * Calculates the actual time slots for the given time frame.
- * @param timeSlotsPerDay
- * @param daysDifference
- * @param startDate
- * @param timeSteps
- * @returns
- */
-function calculateTimeSlots(
-	timeSlotsPerDay: number,
-	daysDifference: number,
-	timeSteps: number,
-	startDate: Dayjs,
-) {
-	if (!isFinite(timeSlotsPerDay)) {
-		return null
-	}
-	const daysArray = Array.from({ length: daysDifference }, (x, i) => i).map(
-		(day) => {
-			return dayjs(startDate).add(day, "days")
-		},
-	)
-
-	const slotsArray = daysArray.flatMap((date) => {
-		return Array.from(
-			{ length: timeSlotsPerDay },
-			(_, i) => i * timeSteps,
-		).map((minutes) => {
-			return dayjs(date).add(minutes, "minutes")
-		})
-	})
-
-	return slotsArray
-}
-
-/**
  * Moves the now bar to the right location, if it is visible in the time frame, and adjusts the header title cell of the date where the now bar is.
  * @param slotsArray
  * @param now
@@ -676,8 +545,13 @@ function moveNowBar(
 		headerTimeSlotCell.classList.remove(styles.nowHeaderTimeSlot)
 	}
 
-	const startAndEndSlot = getStartAndEndSlot(now, now, slotsArray, timeSteps)
-	if (!startAndEndSlot) {
+	const nowItem: TimeSlotBooking = {
+		title: "nowBar",
+		startDate: now,
+		endDate: now,
+	}
+	const startAndEndSlot = getStartAndEndSlot(nowItem, slotsArray, timeSteps)
+	if (startAndEndSlot.status !== "in") {
 		// we need to remove the now bar, if it is there
 		if (nowBar) {
 			nowBar.remove()

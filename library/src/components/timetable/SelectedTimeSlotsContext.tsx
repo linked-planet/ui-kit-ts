@@ -74,7 +74,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 			"LPTimeTable - clearing selection because the slotsArray, timeSteps or weekend interactions changed",
 		)
 		setSelectedTimeSlotsG(undefined)
-	}, [slotsArray, timeSteps, disableWeekendInteractions])
+	}, [slotsArray, timeSteps, disableWeekendInteractions, onTimeRangeSelected])
 
 	// maybe there is a better way to clear the selection from the parent component, then returning a callback from this component
 	const clearSelectionCB = useCallback(

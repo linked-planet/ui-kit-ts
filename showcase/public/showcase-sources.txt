@@ -1334,7 +1334,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				endDate: dayjs().startOf("day").add(1, "day").add(16, "hours"),
 				title: "Item 4-1",
 			},
-			{
+			/*{
 				startDate: dayjs()
 					.startOf("day")
 					.add(-1, "day")
@@ -1367,7 +1367,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 					.add(4, "day")
 					.add(13.75, "hours"),
 				title: "Item 4-4",
-			},
+			},*/
 			{
 				startDate: dayjs().startOf("day").add(-1, "day"),
 				endDate: dayjs().startOf("day").add(3, "day"),
@@ -1375,7 +1375,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 			},
 		],
 	},
-	{
+	/*{
 		group: {
 			title: "Group 5",
 			subtitle: "Whole Time Frame",
@@ -1387,8 +1387,14 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				endDate: dayjs().startOf("day").add(7, "days"),
 				title: "Item 4-1",
 			},
+			{
+				// this case ends after the end of the day and starts before
+				startDate: dayjs().startOf("day").add(12, "hours"),
+				endDate: dayjs().startOf("day").add(1, "day").add(12, "hours"),
+				title: "Item 4-1-1",
+			},
 		],
-	},
+	},*/
 ]
 
 function createTestItems(
@@ -1473,6 +1479,8 @@ function Example() {
 	const [disabledWeekendInteractions, setDisabledWeekendInteractions] =
 		useState(true)
 	const [showTimeSlotHeader, setShowTimeSlotHeader] = useState(true)
+	const [hideOutOfDayRangeMarkers, setHideOutOfDayRangeMarkers] =
+		useState(false)
 
 	const [timeFrame, setTimeFrame] = useState({
 		startDate: startDateInitial,
@@ -1548,6 +1556,8 @@ function Example() {
 	>()
 	const [clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB] =
 		useState<() => void>()
+	const [disableTimeRangeSelection, setDisableTimeRangeSelection] =
+		useState(false)
 
 	const onCreateNewItemConfirmCB = useCallback(
 		(group: TimeTableGroup, item: TimeSlotBooking) => {
@@ -1777,6 +1787,46 @@ function Example() {
 							marginRight: "0.25rem",
 						}}
 					/>
+					<label
+						htmlFor="hideoutofdayrange"
+						style={{
+							marginRight: "1rem",
+						}}
+					>
+						Hide Out Of Day Range Markers:
+					</label>
+					<input
+						type="checkbox"
+						name="hideoutofdayrange"
+						checked={hideOutOfDayRangeMarkers}
+						onChange={(e) => {
+							setHideOutOfDayRangeMarkers(e.target.checked)
+						}}
+						style={{
+							textAlign: "center",
+							marginRight: "0.25rem",
+						}}
+					/>
+					<label
+						htmlFor="disabletimerangeselection"
+						style={{
+							marginRight: "1rem",
+						}}
+					>
+						Disable Time Range Selection
+					</label>
+					<input
+						type="checkbox"
+						name="disabletimerangeselection"
+						checked={disableTimeRangeSelection}
+						onChange={(e) => {
+							setDisableTimeRangeSelection(e.target.checked)
+						}}
+						style={{
+							textAlign: "center",
+							marginRight: "0.25rem",
+						}}
+					/>
 				</div>
 			</div>
 			<div
@@ -1843,10 +1893,15 @@ function Example() {
 					rounding={rounding}
 					nowOverwrite={nowOverwrite}
 					timeTableMessages={translation}
-					onTimeRangeSelected={setSelectedTimeRange}
+					onTimeRangeSelected={
+						!disableTimeRangeSelection
+							? setSelectedTimeRange
+							: undefined
+					}
 					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
 					disableWeekendInteractions={disabledWeekendInteractions}
 					showTimeSlotHeader={showTimeSlotHeader}
+					hideOutOfRangeMarkers={hideOutOfDayRangeMarkers}
 				/>
 			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
