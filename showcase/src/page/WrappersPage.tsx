@@ -35,6 +35,7 @@ import PageLayoutShowcase from "../components/PageLayoutShowcase"
 import { useDispatch } from "react-redux"
 import LoadingSpinnerShowcase from "../components/showcase/wrapper/LoadingSpinnerShowcase"
 import UtilsShowCase from "../components/showcase/wrapper/UtilsShowCase"
+import InlineMessageShowcase from "../components/showcase/wrapper/InlineMessageShowcase"
 
 function WrappersPage() {
 	const dispatch = useDispatch()
@@ -83,11 +84,11 @@ function WrappersPage() {
 
 			<EmptyStateShowcase overallSourceCode={overallSourceCode} />
 
-			<LoadingSpinnerShowcase overallSourceCode={overallSourceCode} />
-
 			<FlagShowcase overallSourceCode={overallSourceCode} />
 			<FormShowcase overallSourceCode={overallSourceCode} />
 			<IconShowcase overallSourceCode={overallSourceCode} />
+			<InlineMessageShowcase overallSourceCode={overallSourceCode} />
+			<LoadingSpinnerShowcase overallSourceCode={overallSourceCode} />
 			<JoyrideShowcase overallSourceCode={overallSourceCode} />
 			<LozengeShowcase overallSourceCode={overallSourceCode} />
 			<ModalShowcase overallSourceCode={overallSourceCode} />

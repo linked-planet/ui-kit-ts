@@ -1028,6 +1028,36 @@ function IconShowcase ( props: ShowcaseProps ) {
 }
 
 export default IconShowcase;
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
+import { InlineMessage } from "@linked-planet/ui-kit-ts"
+
+export default function InlineMessageShowcase(props: ShowcaseProps) {
+	const example = (
+		<>
+			<InlineMessage height="2rem" />
+		</>
+	)
+
+	return (
+		<ShowcaseWrapperItem
+			name="Inline Message"
+			sourceCodeExampleId="inlinemessage"
+			overallSourceCode={props.overallSourceCode}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://www.github.com/linked-planet/ui-kit-ts",
+				},
+			]}
+			examples={[example]}
+		/>
+	)
+}
+
 import React, { useState } from "react";
 import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
 import ReactJoyride from "react-joyride";
@@ -1125,7 +1155,10 @@ import Button from "@atlaskit/button"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
-import { LPCalendarTimeTable } from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
+import {
+	LPCalendarTimeTable,
+	TimeTableViewType,
+} from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -1145,7 +1178,7 @@ type ExampleGroup = TimeTableGroup
 type ExampleItem = TimeSlotBooking
 
 const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
-	/*{
+	{
 		group: {
 			title: "Empty Group",
 		},
@@ -1318,7 +1351,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 3-3",
 			},
 		],
-	},*/
+	},
 	{
 		group: {
 			title: "Group 4",
@@ -1334,7 +1367,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				endDate: dayjs().startOf("day").add(1, "day").add(16, "hours"),
 				title: "Item 4-1",
 			},
-			/*{
+			{
 				startDate: dayjs()
 					.startOf("day")
 					.add(-1, "day")
@@ -1367,7 +1400,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 					.add(4, "day")
 					.add(13.75, "hours"),
 				title: "Item 4-4",
-			},*/
+			},
 			{
 				startDate: dayjs().startOf("day").add(-1, "day"),
 				endDate: dayjs().startOf("day").add(3, "day"),
@@ -1375,7 +1408,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 			},
 		],
 	},
-	/*{
+	{
 		group: {
 			title: "Group 5",
 			subtitle: "Whole Time Frame",
@@ -1394,7 +1427,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 4-1-1",
 			},
 		],
-	},*/
+	},
 ]
 
 function createTestItems(
@@ -1584,6 +1617,8 @@ function Example() {
 		},
 		[clearSelectedTimeRangeCB],
 	)
+
+	const [viewType, setViewType] = useState<TimeTableViewType>("hours")
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
@@ -1827,6 +1862,24 @@ function Example() {
 							marginRight: "0.25rem",
 						}}
 					/>
+					<label
+						htmlFor="viewtype"
+						style={{
+							marginRight: "1rem",
+						}}
+					>
+						View Type
+					</label>
+					<select
+						name="viewtype"
+						onChange={(e) =>
+							setViewType(e.target.value as TimeTableViewType)
+						}
+						value={viewType}
+					>
+						<option value="days">Days</option>
+						<option value="hours">Hours</option>
+					</select>
 				</div>
 			</div>
 			<div
@@ -1902,6 +1955,7 @@ function Example() {
 					disableWeekendInteractions={disabledWeekendInteractions}
 					showTimeSlotHeader={showTimeSlotHeader}
 					hideOutOfRangeMarkers={hideOutOfDayRangeMarkers}
+					viewType={viewType}
 				/>
 			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>

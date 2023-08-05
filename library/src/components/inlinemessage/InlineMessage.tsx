@@ -11,6 +11,8 @@ export type MessageUrgency =
 	| "discovery"
 	| undefined
 
+export type OpeningDirection = "topdown" | "bottomup"
+
 export type Message = {
 	text: string | JSX.Element
 	urgency?: MessageUrgency
@@ -20,9 +22,11 @@ export type Message = {
 export default function InlineMessage({
 	message,
 	display = "block",
+	openingDirection = "topdown",
 }: {
 	message: Message
 	display?: "inline-block" | "block"
+	openingDirection?: OpeningDirection
 }) {
 	const [open, setOpen] = useState(true)
 	const [msg, setMessage] = useState(message)
@@ -114,14 +118,15 @@ export default function InlineMessage({
 					display,
 					backgroundColor: bgColor,
 					border: `2px solid ${borderColor}`,
-					borderRadius: "2px",
+					borderRadius: "4px",
 					color: textColor,
 					padding: "2px",
 					transition: "all 0.25s ease-in-out",
 					boxSizing: "border-box",
 					overflow: "hidden",
 					scale: open ? "1 1" : "1 0",
-					transformOrigin: "top",
+					transformOrigin:
+						openingDirection === "topdown" ? "top" : "bottom",
 				}}
 			>
 				<div
@@ -138,10 +143,17 @@ export default function InlineMessage({
 						style={{
 							borderRadius: "100%",
 							userSelect: "none",
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+							height: "20px",
+							width: "20px",
+							padding: "0px",
+							color: textColor,
 						}}
 						onClick={() => setOpen(false)}
 					>
-						X
+						x
 					</Button>
 				</div>
 			</div>

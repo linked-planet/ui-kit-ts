@@ -18,7 +18,7 @@ import {
 	getStartAndEndSlot,
 	itemsOutsideOfDayRange,
 } from "./timeTableUtils"
-import InlineMessage from "../inlinemessage"
+import { InlineMessage } from "../inlinemessage"
 import {
 	TimeTableMessage,
 	TimeTableMessageProvider,
@@ -32,6 +32,8 @@ import { SelectedTimeSlotsProvider } from "./SelectedTimeSlotsContext"
 import { RenderItemProps } from "./ItemWrapper"
 import { PlaceholderItemProps } from "./PlaceholderItem"
 import { getCurrentTheme } from "../../theming"
+import useResizeObserver from "use-resize-observer"
+import type { ObservedSize } from "use-resize-observer"
 
 export interface TimeSlotBooking {
 	title: string
@@ -388,15 +390,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			tableHeaderRef,
 			tableBodyRef,
 			setMessage,
+			undefined,
 		)
-	}, [
-		slotsArray,
-		nowOverwrite,
-		timeSteps,
-		tableHeaderRef,
-		tableBodyRef,
-		setMessage,
-	])
+	}, [slotsArray, nowOverwrite, timeSteps, setMessage])
 
 	// initial run, and start interval to move the now bar
 	useEffect(() => {
@@ -406,6 +402,31 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			clearInterval(interval)
 		}
 	}, [adjustNowBar])
+
+	const observedSizeChangedCB = useCallback(
+		(observedSize: ObservedSize) => {
+			if (!slotsArray) {
+				return
+			}
+			moveNowBar(
+				slotsArray,
+				nowRef,
+				timeSteps,
+				nowBarRef,
+				tableHeaderRef,
+				tableBodyRef,
+				setMessage,
+				observedSize,
+			)
+		},
+		[setMessage, slotsArray, timeSteps],
+	)
+
+	useResizeObserver({
+		ref: tableBodyRef,
+		round: (n: number) => n,
+		onResize: observedSizeChangedCB,
+	})
 	//#endregion
 
 	// scroll now bar into view if it exists
@@ -438,7 +459,10 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	return (
 		<>
 			<div ref={inlineMessageRef}>
-				<InlineMessage message={translatedMessage ?? { text: "" }} />
+				<InlineMessage
+					message={translatedMessage ?? { text: "" }}
+					openingDirection="bottomup"
+				/>
 			</div>
 			<TimeTableConfigProvider
 				slotsArray={slotsArray}
@@ -519,6 +543,7 @@ function moveNowBar(
 	tableHeaderRef: MutableRefObject<HTMLTableSectionElement | null>,
 	tableBodyRef: MutableRefObject<HTMLTableSectionElement | null>,
 	setMessage: (message: TimeTableMessage) => void,
+	observedTableBodySize: ObservedSize | undefined,
 ) {
 	if (!tableHeaderRef.current || !tableBodyRef.current) {
 		console.log("LPTimeTable - time table header or body ref not yet set")
@@ -595,7 +620,7 @@ function moveNowBar(
 	const diffNow = now.diff(currentTimeSlot, "minutes")
 	const diffPerc = diffNow / timeSteps
 	nowBar.style.left = `${diffPerc * 100}%`
-	nowBar.style.height = tableBody.scrollHeight + "px"
+	nowBar.style.height = tableBody.clientHeight + "px"
 
 	// add orange border
 	const nowTimeSlotCell = headerTimeSlotCells[startSlot + 1]

@@ -19,7 +19,10 @@ type Props = {
 }
 
 const backgroundColor = token("elevation.surface.sunken", "#F7F8F9")
-const headerBorder = `2px solid ${token("color.border.bold", "#758195")}`
+const headerBorder = `2px solid ${token(
+	"color.border.bold",
+	"#758195",
+)}` as const
 
 export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 	{

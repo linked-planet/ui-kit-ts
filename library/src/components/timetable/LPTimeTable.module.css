@@ -65,8 +65,8 @@
 }
 
 .lpTimeTable .nowHeaderTimeSlot {
-	border-bottom-color: var(--ds-chart-orange-bold, #d97008);
-	border-bottom-width: 3px;
+	border-bottom-color: var(--ds-chart-orange-bold, #d97008) !important;
+	border-bottom-width: 3px !important;
 	font-weight: 700;
 }
 
