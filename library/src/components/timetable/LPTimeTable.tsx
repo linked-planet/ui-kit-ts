@@ -79,7 +79,7 @@ export interface LPTimeTableProps<
 	selectedTimeSlotItem?: I
 
 	/* overwrite render function for the group (left column) */
-	renderGroup?: (props: { group: G }) => JSX.Element
+	renderGroup?: (props: G) => JSX.Element
 
 	/* overwrite render function for the time slot items */
 	renderTimeSlotItem?: (props: RenderItemProps<G, I>) => JSX.Element

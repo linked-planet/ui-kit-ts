@@ -41,7 +41,7 @@ interface TimeLineTableSimplifiedProps<
 
 	selectedTimeSlotItem: I | undefined
 
-	renderGroup: ((props: { group: G }) => JSX.Element) | undefined
+	renderGroup: ((props: G) => JSX.Element) | undefined
 	renderTimeSlotItem:
 		| ((props: RenderItemProps<G, I>) => JSX.Element)
 		| undefined
@@ -117,7 +117,7 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 	groupNumber: number
 	groupRowMax: number
 	onGroupClick: ((group: G) => void) | undefined
-	renderGroup: ((props: { group: G }) => JSX.Element) | undefined
+	renderGroup: ((props: G) => JSX.Element) | undefined
 }) {
 	return (
 		<td
@@ -138,7 +138,7 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 				borderColor: token("color.border.bold", "#758195"),
 			}}
 		>
-			{renderGroup ? renderGroup({ group }) : <Group group={group} />}
+			{renderGroup ? renderGroup(group) : <Group group={group} />}
 		</td>
 	)
 }
@@ -475,7 +475,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	group: G
 	groupNumber: number
 	items: I[]
-	renderGroup: ((props: { group: G }) => JSX.Element) | undefined
+	renderGroup: ((props: G) => JSX.Element) | undefined
 	onGroupHeaderClick: ((group: G) => void) | undefined
 	selectedTimeSlotItem: I | undefined
 	renderTimeSlotItem:
