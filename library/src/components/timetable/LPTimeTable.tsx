@@ -134,7 +134,7 @@ export interface LPTimeTableProps<
 	/**
 	 * Show time slot header, when disabled, the header of the single time slots telling the time of the slot is not shown
 	 * (this is useful for a calendar view of days)
-	 * @default true
+	 * @default true if viewType is "hours", else false
 	 */
 	showTimeSlotHeader?: boolean
 
@@ -208,7 +208,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	placeHolderHeight = "1.5rem",
 	viewType = "hours",
 	disableWeekendInteractions = true,
-	showTimeSlotHeader = true,
+	showTimeSlotHeader,
 	hideOutOfRangeMarkers = false,
 	nowOverwrite,
 }: LPTimeTableProps<G, I>) => {
@@ -504,7 +504,11 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								startDate={startDate}
 								endDate={endDate}
 								timeSlotsPerDay={timeSlotsPerDay}
-								showTimeSlotHeader={showTimeSlotHeader}
+								showTimeSlotHeader={
+									showTimeSlotHeader == undefined
+										? viewType === "hours"
+										: showTimeSlotHeader
+								}
 								ref={tableHeaderRef}
 							/>
 							<tbody ref={tableBodyRef}>
