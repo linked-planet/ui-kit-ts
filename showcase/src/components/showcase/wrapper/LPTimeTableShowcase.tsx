@@ -290,6 +290,11 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				endDate: dayjs().startOf("day").add(1, "day").add(12, "hours"),
 				title: "Item 4-1-1",
 			},
+			{
+				startDate: dayjs().startOf("day").add(1, "day"),
+				endDate: dayjs().startOf("day").add(1, "day"),
+				title: "Item 4-1-2",
+			},
 		],
 	},
 ]

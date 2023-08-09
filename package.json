@@ -25,7 +25,8 @@
 		"stylelint": "stylelint **/*.css",
 		"clean": "rm -rf dist && rm -rf dist-showcase",
 		"messages:extract": "formatjs extract './library/src/**/*.{ts,tsx}' --ignore '**/*.d.ts' --out-file ./library/src/localization/translations/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
-		"messages:compile": "formatjs compile-folder library/src/localization/translations library/src/localization/translations-compiled && mkdir -p dist && mkdir -p dist-showcase && cp -r library/src/localization/translations-compiled dist/ && cp -r library/src/localization/translations-compiled showcase/public/"
+		"messages:compile": "formatjs compile-folder library/src/localization/translations library/src/localization/translations-compiled && mkdir -p dist && mkdir -p dist-showcase && cp -r library/src/localization/translations-compiled dist/ && cp -r library/src/localization/translations-compiled showcase/public/",
+		"messages": "npm run messages:extract && npm run messages:compile"
 	},
 	"author": "Philip Karlsson",
 	"contributors": [

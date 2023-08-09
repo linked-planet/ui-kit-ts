@@ -1,5 +1,5 @@
 import dayjs, { Dayjs } from "dayjs"
-import { TimeSlotBooking, TimeTableViewType } from "./LPTimeTable"
+import { TimeSlotBooking } from "./LPTimeTable"
 import { TimeTableMessage } from "./TimeTableMessageContext"
 
 export function isOverlapping(
@@ -15,19 +15,24 @@ export function isOverlapping(
 	return true
 }
 
-export function itemsOutsideOfDayRange(
+export function itemsOutsideOfDayRangeORSameStartAndEnd(
 	items: TimeSlotBooking[],
 	slotsArray: Dayjs[],
 	timeSteps: number,
 ) {
+	const itemsWithSameStartAndEnd: TimeSlotBooking[] = []
 	const itemsOutsideRange = items.filter((it) => {
+		if (it.startDate.isSame(it.endDate)) {
+			itemsWithSameStartAndEnd.push(it)
+			return false
+		}
 		const startAndEndSlot = getStartAndEndSlot(it, slotsArray, timeSteps)
 		return (
 			startAndEndSlot.status === "after" ||
 			startAndEndSlot.status === "before"
 		)
 	})
-	return itemsOutsideRange
+	return { itemsOutsideRange, itemsWithSameStartAndEnd }
 }
 
 /**
@@ -40,7 +45,11 @@ export function getStartAndEndSlot(
 	item: TimeSlotBooking,
 	slotsArray: Dayjs[],
 	timeSteps: number,
-): { startSlot: number; endSlot: number; status: "before" | "after" | "in" } {
+): {
+	startSlot: number
+	endSlot: number
+	status: "before" | "after" | "in"
+} {
 	if (item.endDate.isBefore(slotsArray[0])) {
 		return { startSlot: 0, endSlot: 0, status: "before" }
 	}
@@ -144,7 +153,6 @@ export function calculateTimeSlots(
 export function calculateTimeSlotPropertiesForView(
 	startDate: Dayjs,
 	endDate: Dayjs,
-	viewType: Omit<TimeTableViewType, "hours">,
 	setMessage: (message: TimeTableMessage) => void,
 ) {
 	const timeSlotsPerDay = 1

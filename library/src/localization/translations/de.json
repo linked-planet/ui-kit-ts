@@ -1,12 +1,12 @@
 {
 	"timetable.bookingsAfterDayRange": {
-		"defaultMessage": "{itemCount} Einträge vor Beginn des Tageszeitbereichs."
+		"defaultMessage": "{itemCount} {itemCount, plural, one {Eintrag} other {Einträge}} vor Beginn des Tageszeitbereichs."
 	},
 	"timetable.bookingsBeforeDayRange": {
-		"defaultMessage": "{itemCount} Einträge nach Ende des Tageszeitbereichs."
+		"defaultMessage": "{itemCount} {itemCount, plural, one {Eintrag} other {Einträge}} nach Ende des Tageszeitbereichs."
 	},
 	"timetable.bookingsOutsideOfDayRange": {
-		"defaultMessage": "{itemCount} Buchungen außerhalb des Tagesbereichs der verfügbaren Zeitslots gefunden."
+		"defaultMessage": "{itemCount} {itemCount, plural, one {Eintrag} other {Einträge}} außerhalb des Tagesbereichs der verfügbaren Zeitslots gefunden."
 	},
 	"timetable.deselectFromOuterBorder": {
 		"defaultMessage": "Bitte entfernen Sie selektierte Zeitslots von den äußeren Rändern des selektierten Bereiches."
@@ -15,10 +15,16 @@
 		"defaultMessage": "Das Enddatum muss nach dem Startdatum liegen."
 	},
 	"timetable.itemsOutsideTimeFrame": {
-		"defaultMessage": "Es sind {outsideItemCount} Einträge außerhalb des Zeitbereichs eines Tages."
+		"defaultMessage": "Es sind {outsideItemCount} {outsideItemCount, plural, one {Eintrag} other {Einträge}} außerhalb des Zeitbereichs eines Tages."
 	},
 	"timetable.noHeaderTimeSlotRow": {
 		"defaultMessage": "Keine Kopfzeile für Zeitslots gefunden."
+	},
+	"timetable.sameStartAndEndAndOutsideOfDayRange": {
+		"defaultMessage": "{sameStartAndEndCount} {sameStartAndEndCount, plural, one {Eintrag} other {Einträge}} mit der gleichen Start- und Endzeit gefunden, und {outsideCount} außerhalb des Tageszeitbereichs."
+	},
+	"timetable.sameStartAndEndTimeDate": {
+		"defaultMessage": "{itemCount} {itemCount, plural, one {Eintrag} other {Einträge}} mit der gleichen Start- und Endzeit gefunden."
 	},
 	"timetable.timeSlotColumnsNotFound": {
 		"defaultMessage": "Keine Spalten für die Zeitslots gefunden."

@@ -16,7 +16,7 @@ import {
 	calculateTimeSlotPropertiesForView,
 	calculateTimeSlots,
 	getStartAndEndSlot,
-	itemsOutsideOfDayRange,
+	itemsOutsideOfDayRangeORSameStartAndEnd,
 } from "./timeTableUtils"
 import { InlineMessage } from "../inlinemessage"
 import {
@@ -324,7 +324,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				: calculateTimeSlotPropertiesForView(
 						startDate,
 						endDate,
-						viewType,
 						setMessage,
 				  )
 		const slotsArray = calculateTimeSlots(
@@ -342,20 +341,47 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		if (!slotsArray) {
 			return
 		}
-		let foundItemsOutsideOfDayRange = 0
+		let foundItemsOutsideOfDayRangeCount = 0
+		let itemsWithSameStartAndEndCount = 0
 		for (const entry of entries) {
-			const itemsOutside = itemsOutsideOfDayRange(
-				entry.items,
-				slotsArray,
-				timeSteps,
-			)
-			foundItemsOutsideOfDayRange += itemsOutside.length
+			const { itemsOutsideRange, itemsWithSameStartAndEnd } =
+				itemsOutsideOfDayRangeORSameStartAndEnd(
+					entry.items,
+					slotsArray,
+					timeSteps,
+				)
+			foundItemsOutsideOfDayRangeCount += itemsOutsideRange.length
+			itemsWithSameStartAndEndCount += itemsWithSameStartAndEnd.length
 		}
-		if (foundItemsOutsideOfDayRange) {
+		if (
+			foundItemsOutsideOfDayRangeCount &&
+			!itemsWithSameStartAndEndCount
+		) {
 			setMessage({
 				urgency: "warning",
 				messageKey: "timetable.bookingsOutsideOfDayRange",
-				messageValues: { itemCount: foundItemsOutsideOfDayRange },
+				messageValues: { itemCount: foundItemsOutsideOfDayRangeCount },
+			})
+		} else if (
+			itemsWithSameStartAndEndCount &&
+			!foundItemsOutsideOfDayRangeCount
+		) {
+			setMessage({
+				urgency: "warning",
+				messageKey: "timetable.sameStartAndEndTimeDate",
+				messageValues: { itemCount: itemsWithSameStartAndEndCount },
+			})
+		} else if (
+			itemsWithSameStartAndEndCount &&
+			foundItemsOutsideOfDayRangeCount
+		) {
+			setMessage({
+				urgency: "warning",
+				messageKey: "timetable.sameStartAndEndAndOutsideOfDayRange",
+				messageValues: {
+					outsideCount: foundItemsOutsideOfDayRangeCount,
+					sameStartAndEndCount: itemsWithSameStartAndEndCount,
+				},
 			})
 		}
 	}, [entries, setMessage, slotsArray, timeSteps])
