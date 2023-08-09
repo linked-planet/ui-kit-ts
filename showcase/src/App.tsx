@@ -2,7 +2,7 @@ import React from "react"
 import { Content, Main, PageLayout } from "@atlaskit/page-layout"
 import ShowcaseTopNavigation from "./components/ShowcaseTopNavigation"
 import ShowcaseLeftSidebar from "./components/ShowcaseLeftSidebar"
-import { HashRouter, Navigate, Route, Routes } from "react-router-dom"
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import IntroPage from "./page/IntroPage"
 import NotFoundPage from "./page/NotFoundPage"
 import ReduxPage from "./page/ReduxPage"
@@ -20,7 +20,7 @@ const queryClient = new QueryClient()
 
 export default function App() {
 	return (
-		<HashRouter>
+		<BrowserRouter>
 			<Provider store={appStore}>
 				<QueryClientProvider client={queryClient}>
 					<LocaleProvider>
@@ -74,6 +74,6 @@ export default function App() {
 					</LocaleProvider>
 				</QueryClientProvider>
 			</Provider>
-		</HashRouter>
+		</BrowserRouter>
 	)
 }

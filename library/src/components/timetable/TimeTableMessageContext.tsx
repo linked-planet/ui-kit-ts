@@ -8,6 +8,7 @@ import React, {
 } from "react"
 import { Message } from "../inlinemessage"
 import type { default as TranslatedTimeTableMessagesJson } from "../../localization/translations-compiled/en.json"
+import IntlMessageFormat from "intl-messageformat"
 
 export type TranslatedTimeTableMessages = typeof TranslatedTimeTableMessagesJson
 
@@ -39,7 +40,7 @@ const timeTableMessageContext = createContext<
 			setMessage: Dispatch<
 				React.SetStateAction<TimeTableMessage | undefined>
 			>
-			messagesTranslations: TranslatedTimeTableMessages
+			messagesTranslationsIntl: Record<string, IntlMessageFormat>
 	  }
 	| undefined
 >(undefined)
@@ -53,9 +54,23 @@ export function TimeTableMessageProvider({
 }) {
 	const [message, setMessage] = useState<TimeTableMessage>()
 
+	const [messagesTranslationsIntl, setMessagesTranslationsIntl] = useState<
+		Record<string, IntlMessageFormat>
+	>({})
+
+	useEffect(() => {
+		const intlMessageFormatted = Object.fromEntries(
+			Object.entries(messagesTranslations).map(([key, value]) => [
+				key,
+				new IntlMessageFormat(value),
+			]),
+		)
+		setMessagesTranslationsIntl(intlMessageFormatted)
+	}, [messagesTranslations])
+
 	return (
 		<timeTableMessageContext.Provider
-			value={{ message, setMessage, messagesTranslations }}
+			value={{ message, setMessage, messagesTranslationsIntl }}
 		>
 			{children}
 		</timeTableMessageContext.Provider>
@@ -68,18 +83,20 @@ export function useTimeTableMessage() {
 		throw new Error(
 			"useTimeTableMessage must be used within a TimeTableMessageProvider",
 		)
-	let messageTranslation = ret.message
-		? ret.messagesTranslations[ret.message.messageKey]
+	let messageTranslation: string | undefined = undefined
+	ret.message
+		? `no translation found for key [${ret.message?.messageKey}]`
 		: undefined
-	if (!messageTranslation && ret.message) {
+
+	const messageTranslationIntl = ret.message
+		? ret.messagesTranslationsIntl[ret.message.messageKey]
+		: undefined
+	if (!messageTranslationIntl) {
 		messageTranslation = `no translation found for key [${ret.message?.messageKey}]`
-	} else if (messageTranslation && ret.message?.messageValues) {
-		Object.entries(ret.message.messageValues).forEach(([key, value]) => {
-			messageTranslation = messageTranslation?.replace(
-				`{${key}}`,
-				value.toString(),
-			)
-		})
+	} else {
+		messageTranslation = messageTranslationIntl
+			.format(ret.message?.messageValues)
+			.toLocaleString()
 	}
 
 	const translatedMessage: Message | undefined = useMemo(

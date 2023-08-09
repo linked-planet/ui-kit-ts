@@ -21,7 +21,7 @@
     "defaultMessage": "No header time slot row found."
   },
   "timetable.sameStartAndEndAndOutsideOfDayRange": {
-    "defaultMessage": "Found {sameStartAndEndCount} {sameStartAndEndCount, plural, one {booking} other {bookings}} with the same start and end date and time, and {outsideCount} outside of the valid time frame of each day."
+    "defaultMessage": "Found {sameStartAndEndCount, plural, one {booking} other {# bookings}} with the same start and end date and time, and {outsideCount, number} outside of the valid time frame of each day."
   },
   "timetable.sameStartAndEndTimeDate": {
     "defaultMessage": "Found {itemCount} {itemCount, plural, one {booking} other {bookings}} with the same start and end date and time."

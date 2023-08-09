@@ -20,7 +20,6 @@ import LozengeShowcase from "../components/showcase/wrapper/LozengeShowcase"
 import MenuShowcase from "../components/showcase/wrapper/MenuShowcase"
 import ModalShowcase from "../components/showcase/wrapper/ModalShowcase"
 import PaginationShowcase from "../components/showcase/wrapper/PaginationShowcase"
-import PanelShowcase from "../components/showcase/wrapper/PanelShowcase"
 import PopupShowcase from "../components/showcase/wrapper/PopupShowcase"
 import SelectShowcase from "../components/showcase/wrapper/SelectShowcase"
 import TableTreeShowcase from "../components/showcase/wrapper/TableTreeShowcase"
@@ -93,7 +92,6 @@ function WrappersPage() {
 			<LozengeShowcase overallSourceCode={overallSourceCode} />
 			<ModalShowcase overallSourceCode={overallSourceCode} />
 			<PaginationShowcase overallSourceCode={overallSourceCode} />
-			<PanelShowcase overallSourceCode={overallSourceCode} />
 			<PopupShowcase overallSourceCode={overallSourceCode} />
 			<SelectShowcase overallSourceCode={overallSourceCode} />
 			<TabsShowcase overallSourceCode={overallSourceCode} />
@@ -102,11 +100,11 @@ function WrappersPage() {
 			<TableTreeShowcase overallSourceCode={overallSourceCode} />
 			<TextAreaShowcase overallSourceCode={overallSourceCode} />
 			<TextFieldShowcase overallSourceCode={overallSourceCode} />
+			<LPTimeTableShowCase overallSourceCode={overallSourceCode} />
 			<ToggleShowcase overallSourceCode={overallSourceCode} />
 			<TooltipShowcase overallSourceCode={overallSourceCode} />
 			{/*<LPEditorShowcase overallSourceCode={overallSourceCode} />*/}
 			<MenuShowcase overallSourceCode={overallSourceCode} />
-			<LPTimeTableShowCase overallSourceCode={overallSourceCode} />
 			<UtilsShowCase overallSourceCode={overallSourceCode} />
 			<PageLayoutShowcase overallSourceCode={overallSourceCode} />
 		</div>

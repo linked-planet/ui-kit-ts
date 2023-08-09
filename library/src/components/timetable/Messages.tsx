@@ -1,5 +1,5 @@
 import React from "react"
-import { FormattedMessage } from "react-intl-next"
+import { FormattedMessage } from "react-intl"
 
 /// LPTimeTable
 //#region
@@ -36,7 +36,7 @@ export const OutsideAndItemSameStartAndEnd = ({
 }) => (
 	<FormattedMessage
 		defaultMessage={
-			"Found {sameStartAndEndCount} {sameStartAndEndCount, plural, one {booking} other {bookings}} with the same start and end date and time, and {outsideCount} outside of the valid time frame of each day."
+			"Found {sameStartAndEndCount, plural, one {booking} other {# bookings}} with the same start and end date and time, and {outsideCount, number} outside of the valid time frame of each day."
 		}
 		values={{ outsideCount, sameStartAndEndCount }}
 		id="timetable.sameStartAndEndAndOutsideOfDayRange"
