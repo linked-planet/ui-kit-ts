@@ -224,90 +224,34 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			: endDateP,
 	)
 
+	const { setMessage, translatedMessage } = useTimeTableMessage()
+
 	// change on viewType
 	useEffect(() => {
+		setMessage(undefined) // clear the message on time frame change
+		let start = startDateP
+		let end = endDateP
 		if (viewType === "days") {
-			setStartDate((curr) => {
-				const startOfDay = curr.startOf("day")
-				if (curr.isSame(startOfDay)) {
-					return curr
-				}
-				return startOfDay
-			})
-
-			setEndDate((curr) => {
-				const endOfDay = curr.startOf("day").add(1, "day")
-				if (curr.isSame(endOfDay)) {
-					return curr
-				}
-				return endOfDay
-			})
-		} else if (viewType === "hours") {
-			setStartDate((curr) => {
-				const startH = startDateP.hour()
-				const startM = startDateP.minute()
-				const startOfDay = curr
-					.startOf("day")
-					.hour(startH)
-					.minute(startM)
-				if (curr.isSame(startOfDay)) {
-					return curr
-				}
-				return startOfDay
-			})
-			setEndDate((curr) => {
-				const endH = endDateP.hour()
-				const endM = endDateP.minute()
-				if (curr.hour() === endH && curr.minute() === endM) {
-					return curr
-				}
-				if (endH > 0 || endM > 0) {
-					const endOfDay = curr
-						.startOf("day")
-						.subtract(1, "day")
-						.hour(endH)
-						.minute(endM)
-					if (curr.isSame(endOfDay)) {
-						return curr
-					}
-				}
-				return curr
-			})
-		} else {
-			console.warn("LPTimeTable - unknown viewType", viewType)
-		}
-	}, [viewType, startDateP, endDateP])
-
-	// change on startDateP and endDateP
-	useEffect(() => {
-		const startUsed =
-			viewType === "days" ? startDateP.startOf("day") : startDateP
-		const endUsed =
-			viewType === "days"
-				? endDateP.hour() > 0 || endDateP.minute() > 0
+			start = startDateP.startOf("day")
+			end =
+				endDateP.hour() > 0 || endDateP.minute() > 0
 					? endDateP.startOf("day").add(1, "day")
 					: endDateP
-				: endDateP
+		}
 		setStartDate((curr) => {
-			if (curr.isSame(startUsed)) {
-				return curr
-			}
-			return startUsed
+			return curr.isSame(start) ? curr : start
 		})
-
 		setEndDate((curr) => {
-			if (curr.isSame(endUsed)) {
+			if (curr.isSame(end)) {
 				return curr
 			}
-			return endUsed
+			return end
 		})
-	}, [startDateP, viewType, endDateP])
+	}, [viewType, startDateP, endDateP, setMessage])
 
 	const tableHeaderRef = useRef<HTMLTableSectionElement>(null)
 	const tableBodyRef = useRef<HTMLTableSectionElement>(null)
 	const inlineMessageRef = useRef<HTMLDivElement>(null)
-
-	const { setMessage, translatedMessage } = useTimeTableMessage()
 
 	//#region calculate time slots, dates array and the final time steps size in minutes
 	const { slotsArray, timeSteps, timeSlotsPerDay } = useMemo(() => {

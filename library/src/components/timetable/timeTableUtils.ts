@@ -8,7 +8,9 @@ export function isOverlapping(
 ) {
 	if (
 		item.endDate.isBefore(slotItem.startDate) ||
-		item.startDate.isAfter(slotItem.endDate)
+		item.endDate.isSame(slotItem.startDate) ||
+		item.startDate.isAfter(slotItem.endDate) ||
+		item.startDate.isSame(slotItem.endDate)
 	) {
 		return false
 	}

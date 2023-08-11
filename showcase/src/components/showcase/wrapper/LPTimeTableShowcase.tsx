@@ -282,18 +282,48 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				// this case ends after the end of the day and starts before
 				startDate: dayjs().startOf("day").add(-2, "day"),
 				endDate: dayjs().startOf("day").add(7, "days"),
-				title: "Item 4-1",
+				title: "Item 5-1",
 			},
 			{
 				// this case ends after the end of the day and starts before
 				startDate: dayjs().startOf("day").add(12, "hours"),
 				endDate: dayjs().startOf("day").add(1, "day").add(12, "hours"),
-				title: "Item 4-1-1",
+				title: "Item 5-2",
 			},
 			{
 				startDate: dayjs().startOf("day").add(1, "day"),
 				endDate: dayjs().startOf("day").add(1, "day"),
-				title: "Item 4-1-2",
+				title: "Item 5-3",
+			},
+		],
+	},
+	{
+		group: {
+			title: "Group 6 (Directly Connected)",
+			subtitle: "Whole Time Frame",
+		},
+		items: [
+			{
+				// this case ends after the end of the day and starts before
+				startDate: dayjs().startOf("day").add(7, "hours"),
+				endDate: dayjs().startOf("day").add(12, "hours"),
+				title: "Item 6-1",
+			},
+			{
+				// this case ends after the end of the day and starts before
+				startDate: dayjs().startOf("day").add(12, "hours"),
+				endDate: dayjs().startOf("day").add(16, "hours"),
+				title: "Item 6-1-1",
+			},
+			{
+				startDate: dayjs().startOf("day").add(1, "day"),
+				endDate: dayjs().startOf("day").add(2, "day"),
+				title: "Item 6-2-1",
+			},
+			{
+				startDate: dayjs().startOf("day").add(2, "day"),
+				endDate: dayjs().startOf("day").add(3, "day"),
+				title: "Item 6-2-2",
 			},
 		],
 	},
