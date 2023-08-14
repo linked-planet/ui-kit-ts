@@ -19,7 +19,11 @@ import type {
 import { Group } from "./Group"
 
 import styles from "./LPTimeTable.module.css"
-import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
+import {
+	getStartAndEndSlot,
+	isOverlapping,
+	TimeFrameDay,
+} from "./timeTableUtils"
 import ItemWrapper, { RenderItemProps } from "./ItemWrapper"
 import { token } from "@atlaskit/tokens"
 
@@ -191,9 +195,10 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		disableWeekendInteractions,
 		columnWidth,
 		viewType,
-		timeSteps,
+		timeFrameDay,
 		hideOutOfRangeMarkers,
 		timeSlotSelectionDisabled,
+		timeSlotMinutes,
 	} = useTimeTableConfig()
 
 	const mouseHandlers = useMouseHandlers(timeSlotNumber, group)
@@ -259,7 +264,9 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					timeSlotNumber,
 					it.endSlot,
 					slotsArray,
-					timeSteps,
+					timeFrameDay,
+					viewType,
+					timeSlotMinutes,
 				)
 
 				const leftUsed = left - currentLeft
@@ -368,14 +375,16 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	groupNumber,
 	timeSlotNumber,
 	viewType,
+	timeSlotMinutes,
 }: {
 	group: G
 	groupNumber: number
 	timeSlotNumber: number
 	viewType: TimeTableViewType
+	timeSlotMinutes: number
 }) {
 	const { selectedTimeSlots, setSelectedTimeSlots } = useSelectedTimeSlots()
-	const { slotsArray, timeSteps, placeHolderHeight, renderPlaceHolder } =
+	const { slotsArray, placeHolderHeight, renderPlaceHolder } =
 		useTimeTableConfig()
 	const mouseHandlers = useMouseHandlers(timeSlotNumber, group)
 
@@ -410,7 +419,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 					selectedTimeSlots.timeSlots[
 						selectedTimeSlots.timeSlots.length - 1
 					]
-				].add(timeSteps, "minutes")}
+				].add(timeSlotMinutes, "minutes")}
 				height={placeHolderHeight}
 				clearTimeRangeSelectionCB={clearTimeRangeSelectionCB}
 				renderPlaceHolder={renderPlaceHolder}
@@ -485,14 +494,21 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 }) {
 	const {
 		slotsArray,
-		timeSteps,
 		placeHolderHeight,
 		viewType,
 		timeSlotSelectionDisabled,
+		timeFrameDay,
+		timeSlotMinutes,
 	} = useTimeTableConfig()
 
 	const trs = useMemo(() => {
-		const itemRows = getGroupItemStack(items, slotsArray, timeSteps)
+		const itemRows = getGroupItemStack(
+			items,
+			slotsArray,
+			timeFrameDay,
+			timeSlotMinutes,
+			viewType,
+		)
 		const rowCount = itemRows.length > 0 ? itemRows.length : 1 // if there are no rows, we draw an empty one
 
 		const trs: JSX.Element[] = []
@@ -526,6 +542,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						group={group}
 						groupNumber={groupNumber}
 						timeSlotNumber={timeSlotNumber}
+						timeSlotMinutes={timeSlotMinutes}
 						viewType={viewType}
 					/>,
 				)
@@ -597,13 +614,14 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	}, [
 		items,
 		slotsArray,
-		timeSteps,
+		timeFrameDay,
 		group,
 		groupNumber,
+		timeSlotSelectionDisabled,
 		renderGroup,
 		onGroupHeaderClick,
-		timeSlotSelectionDisabled,
 		placeHolderHeight,
+		timeSlotMinutes,
 		viewType,
 		selectedTimeSlotItem,
 		onTimeSlotItemClick,
@@ -720,7 +738,9 @@ function useMouseHandlers<G extends TimeTableGroup>(
 function getGroupItemStack<I extends TimeSlotBooking>(
 	groupItems: I[],
 	slotsArray: Dayjs[],
-	timeSteps: number,
+	timeFrameDay: TimeFrameDay,
+	timeSlotMinutes: number,
+	viewType: TimeTableViewType,
 ) {
 	const timeFrameStartHour = slotsArray[0].hour()
 	const timeFrameStartMinute = slotsArray[0].minute()
@@ -736,7 +756,13 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 	groupItems.forEach((item) => {
 		let added = false
 
-		const startEndSlots = getStartAndEndSlot(item, slotsArray, timeSteps)
+		const startEndSlots = getStartAndEndSlot(
+			item,
+			slotsArray,
+			timeFrameDay,
+			timeSlotMinutes,
+			viewType,
+		)
 
 		const ret = {
 			...startEndSlots,
@@ -810,34 +836,99 @@ function getLeftAndWidth(
 	startSlot: number,
 	endSlot: number,
 	slotsArray: Dayjs[],
-	timeSteps: number,
+	timeFrameDay: TimeFrameDay,
+	viewType: TimeTableViewType,
+	timeSlotMinutes: number,
 ) {
-	const dstartMin = item.startDate.diff(slotsArray[startSlot], "minute")
-	let left = dstartMin / timeSteps
+	let itemModStart = item.startDate
+	const timeFrameStartStart = slotsArray[0]
+		.startOf("day")
+		.add(timeFrameDay.startHour, "hours")
+		.add(timeFrameDay.startMinute, "minutes")
+	if (item.startDate.isBefore(timeFrameStartStart)) {
+		itemModStart = timeFrameStartStart
+	} else if (
+		item.startDate.hour() < timeFrameDay.startHour ||
+		(item.startDate.hour() === timeFrameDay.startHour &&
+			item.startDate.minute() < timeFrameDay.startMinute)
+	) {
+		itemModStart = item.startDate
+			.startOf("day")
+			.add(timeFrameDay.startHour, "hour")
+			.add(timeFrameDay.startMinute, "minutes")
+	}
+
+	let itemModEnd = item.endDate
+	let timeFrameEndEnd = slotsArray[slotsArray.length - 1]
+		.startOf("day")
+		.add(timeFrameDay.endHour, "hour")
+		.add(timeFrameDay.endMinute, "minutes")
+	if (viewType !== "hours") {
+		timeFrameEndEnd = timeFrameEndEnd.add(1, viewType).subtract(1, "day")
+	}
+	if (itemModEnd.isAfter(timeFrameEndEnd)) {
+		itemModEnd = timeFrameEndEnd
+	} else if (item.endDate.hour() === 0 && item.endDate.minute() === 0) {
+		itemModEnd = itemModEnd.subtract(1, "minute")
+		itemModEnd = itemModEnd
+			.startOf("day")
+			.add(timeFrameDay.endHour, "hour")
+			.add(timeFrameDay.endMinute, "minutes")
+	} else if (
+		item.endDate.hour() > timeFrameDay.endHour ||
+		(item.endDate.hour() === timeFrameDay.endHour &&
+			item.endDate.minute() > timeFrameDay.endMinute)
+	) {
+		itemModEnd = itemModEnd
+			.startOf("day")
+			.add(timeFrameDay.endHour, "hour")
+			.add(timeFrameDay.endMinute, "minutes")
+	}
+
+	const dTimeDay = 24 * 60 - timeFrameDay.oneDayMinutes
+
+	let slotStart = slotsArray[startSlot]
+	if (viewType !== "hours") {
+		slotStart = slotStart
+			.add(timeFrameDay.startHour, "hour")
+			.add(timeFrameDay.startMinute, "minutes")
+	}
+	const dstartDays = itemModStart.diff(slotStart, "day")
+	let dstartMin = itemModStart.diff(slotStart, "minute")
+	if (dstartDays > 0) {
+		dstartMin -= dstartDays * dTimeDay
+	}
+	let left = dstartMin / timeSlotMinutes
 	if (left < 0) {
+		console.log("SHOULD NOT BE")
 		// if the start is before the time slot, we need to set the left to 0
 		left = 0
 	}
 
-	let endTime = item.endDate
-	if (
-		endSlot === slotsArray.length - 1 ||
-		slotsArray[endSlot].date() !== slotsArray[endSlot + 1].date()
-	) {
-		// if the end is after the last time slot of, we need to do a cut-off
-		if (
-			item.endDate.isAfter(slotsArray[endSlot].add(timeSteps, "minutes"))
-		) {
-			endTime = slotsArray[endSlot].add(timeSteps, "minutes")
+	const timeSpanDays = itemModEnd.diff(itemModStart, "day")
+	let timeSpanMin = itemModEnd.diff(itemModStart, "minute")
+	if (timeSpanDays > 0) {
+		timeSpanMin -= timeSpanDays * dTimeDay
+	}
+	const width = timeSpanMin / timeSlotMinutes
+
+	/*let dmin = itemModEnd.diff(slotsArray[endSlot], "minute")
+	// because of the time frame of the day, i need to remove the amount if minutes missing to the days end  * the amount of days of the time slot to get the correct end
+	if (viewType !== "hours") {
+		const daysCount = Math.floor(dmin / (26 * 60))
+		if (daysCount > 0) {
+			const diffToDayEnd = itemModEnd.diff(
+				itemModEnd.endOf("day"),
+				"minute",
+			)
+			dmin -= daysCount * diffToDayEnd
 		}
 	}
-
-	const dmin = endTime.diff(slotsArray[endSlot], "minute")
-	let width = dmin / timeSteps
+	let width = dmin / timeSteps*/
 
 	// check if this is the last time slot of the day
 	//width = endSlot + 1 - startSlot - (left + width)
-	width = endSlot - startSlot + width - left
+	//width = endSlot - startSlot + width - left
 
 	if (width < 0) {
 		// this should not happen, but if it does, we need to log it to find the error
@@ -848,7 +939,7 @@ function getLeftAndWidth(
 			startSlot,
 			endSlot,
 			slotsArray,
-			timeSteps,
+			timeSlotMinutes,
 		)
 	}
 

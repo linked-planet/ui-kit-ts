@@ -1,4 +1,4 @@
-import React, { EventHandler, useCallback } from "react"
+import React, { useCallback } from "react"
 import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -19,10 +19,7 @@ import Button from "@atlaskit/button"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
-import {
-	LPCalendarTimeTable,
-	TimeTableViewType,
-} from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
+import { TimeTableViewType } from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -401,9 +398,6 @@ const endDateInitial = dayjs().startOf("day").add(5, "days").add(16, "hours")
 function Example() {
 	// region: timetable
 
-	const [rounding, setRounding] = useState<"round" | "ceil" | "floor">(
-		"round",
-	)
 	const [timeSteps, setTimeSteps] = useState(110)
 	const [timeStepsInputValue, setTimeStepsInputValue] = useState(110)
 	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
@@ -655,22 +649,6 @@ function Example() {
 							marginRight: "0.25rem",
 						}}
 					/>
-					<label style={{ marginRight: "1rem" }} htmlFor="multiLine">
-						Unfitting Time Slot Handling:
-					</label>
-					<select
-						name="rounding"
-						onChange={(e) =>
-							setRounding(
-								e.target.value as "ceil" | "floor" | "round",
-							)
-						}
-						value={rounding}
-					>
-						<option value="round">round</option>
-						<option value="ceil">ceil</option>
-						<option value="floor">floor</option>
-					</select>
 				</div>
 				{/* time table settings */}
 				<div
@@ -776,8 +754,11 @@ function Example() {
 						}
 						value={viewType}
 					>
-						<option value="days">Days</option>
 						<option value="hours">Hours</option>
+						<option value="days">Days</option>
+						<option value="weeks">Weeks</option>
+						<option value="months">Months</option>
+						<option value="years">Years</option>
 					</select>
 				</div>
 			</div>
@@ -842,7 +823,6 @@ function Example() {
 						</div>
 					) }*/
 					onTimeSlotItemClick={onTimeSlotItemClickCB}
-					rounding={rounding}
 					nowOverwrite={nowOverwrite}
 					timeTableMessages={translation}
 					onTimeRangeSelected={
@@ -878,123 +858,67 @@ function Example() {
 
 function ExampleCalendar() {
 	// region: timetable
-
-	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
-	const [columnWidth, setColumnWidth] = useState(70)
-	const [disabledWeekendInteractions, setDisabledWeekendInteractions] =
-		useState(true)
-	const [showTimeSlotHeader, setShowTimeSlotHeader] = useState(true)
-
 	const [timeFrame, setTimeFrame] = useState({
-		startDate: startDateInitial,
-		endDate: endDateInitial,
+		startDate: startDateInitial.startOf("day"),
+		endDate: endDateInitial.startOf("day"),
 	})
 
 	const [entries, setEntries] = useState(exampleEntries)
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
-	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
-
 	return (
 		<>
-			<div
-				style={{
-					display: "flex",
-					gap: "2rem",
-				}}
-			>
-				{/* time table setup values */}
-				<div
-					style={{
-						display: "grid",
-						gridTemplateColumns: "auto auto",
-						gap: "0.5rem",
-						alignItems: "start",
-					}}
-				>
-					<label style={{ marginRight: "1rem" }} htmlFor="startdate">
-						Start:
-					</label>
-					<input
-						type="datetime-local"
-						value={timeFrame.startDate.format("YYYY-MM-DD")}
-						onChange={(e) => {
-							setTimeFrame({
-								startDate: dayjs(e.target.value),
-								endDate: timeFrame.endDate,
-							})
-						}}
-					/>
-					<label style={{ marginRight: "1rem" }} htmlFor="enddate">
-						End:
-					</label>
-					<input
-						type="datetime-local"
-						value={timeFrame.endDate.format("YYYY-MM-DD")}
-						onChange={(e) => {
-							setTimeFrame({
-								startDate: timeFrame.startDate,
-								endDate: dayjs(e.target.value),
-							})
-						}}
-					/>
-				</div>
-				{/* time table settings */}
-				<div
-					style={{
-						display: "grid",
-						gridTemplateColumns: "auto auto",
-						gap: "0.5rem",
-						alignItems: "start",
-					}}
-				>
-					<label
-						htmlFor="diableweekends"
-						style={{
-							marginRight: "1rem",
-						}}
-					>
-						Disable Weekend Interactions:
-					</label>
-					<input
-						type="checkbox"
-						name="disableweekends"
-						checked={disabledWeekendInteractions}
-						onChange={(e) =>
-							setDisabledWeekendInteractions(e.target.checked)
-						}
-						style={{
-							textAlign: "center",
-							marginRight: "0.25rem",
-						}}
-					/>
-				</div>
-			</div>
 			<div
 				style={{
 					height: "600px",
 				}}
 			>
-				<LPCalendarTimeTable
-					groupHeaderColumnWidth={groupHeaderColumnWidth}
-					columnWidth={columnWidth}
+				<LPTimeTable
+					groupHeaderColumnWidth={150}
+					columnWidth={70}
 					startDate={timeFrame.startDate}
 					endDate={timeFrame.endDate}
 					entries={entries}
-					/*renderGroup={ Group }
-					renderTimeSlotItem={ Item }
-					renderPlaceHolder={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
-						<div
-							style={ { height: props.height, backgroundColor: "rgba(0,0,0,0.1)", textAlign: "center" } }
-							onClick={ () => props.clearTimeRangeSelectionCB() }
-						>
-							Placeholder
-						</div>
-					) }*/
-					nowOverwrite={nowOverwrite}
 					timeTableMessages={translation}
-					disableWeekendInteractions={disabledWeekendInteractions}
-					showTimeSlotHeader={showTimeSlotHeader}
+					disableWeekendInteractions={true}
+					showTimeSlotHeader={false}
+					viewType={"days"}
+				/>
+			</div>
+		</>
+	)
+
+	// endregion: timetable
+}
+
+function ExampleMonthCalendar() {
+	// region: timetable
+	const [timeFrame, setTimeFrame] = useState({
+		startDate: startDateInitial.startOf("month").subtract(1, "day"),
+		endDate: endDateInitial.endOf("month").add(1, "day"),
+	})
+
+	const [entries, setEntries] = useState(exampleEntries)
+
+	const translation = useTranslation() as TranslatedTimeTableMessages
+
+	return (
+		<>
+			<div
+				style={{
+					height: "600px",
+				}}
+			>
+				<LPTimeTable
+					groupHeaderColumnWidth={150}
+					columnWidth={70}
+					startDate={timeFrame.startDate}
+					endDate={timeFrame.endDate}
+					entries={entries}
+					timeTableMessages={translation}
+					disableWeekendInteractions={true}
+					viewType={"months"}
+					showTimeSlotHeader={false}
 				/>
 			</div>
 		</>
@@ -1018,6 +942,7 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 			examples={[
 				<Example key="example0" />,
 				<ExampleCalendar key="exampleCalendar" />,
+				<ExampleMonthCalendar key="exampleMonthCalendar" />,
 			]}
 		/>
 	)

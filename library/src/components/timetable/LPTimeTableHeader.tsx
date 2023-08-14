@@ -3,6 +3,8 @@ import dayjs, { Dayjs } from "dayjs"
 import { token } from "@atlaskit/tokens"
 
 import styles from "./LPTimeTable.module.css"
+import { TimeTableViewType } from "./LPTimeTable"
+import { TimeFrameDay } from "./timeTableUtils"
 
 export const headerDateFormat = "ddd,\n DD.MM.YY"
 const headerTimeSlotFormat = "HH:mm"
@@ -13,9 +15,9 @@ type Props = {
 	columnWidth: number | string
 	startDate: Dayjs
 	endDate: Dayjs
-	timeSlotsPerDay: number
-	timeSteps: number
+	viewType: TimeTableViewType
 	showTimeSlotHeader: boolean
+	timeFrameDay: TimeFrameDay
 }
 
 const backgroundColor = token("elevation.surface.sunken", "#F7F8F9")
@@ -31,15 +33,29 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 		columnWidth,
 		startDate,
 		endDate,
-		timeSlotsPerDay,
-		timeSteps,
+		viewType,
 		showTimeSlotHeader,
+		timeFrameDay,
 	}: Props,
 	tableHeaderRef: React.Ref<HTMLTableSectionElement>,
 ) {
-	const days = [
-		...new Set(slotsArray.map((it) => it.startOf("day").format())),
+	const viewTypeUnit = viewType === "hours" ? "days" : viewType
+	const daysOrWeeksOrMonths = [
+		...new Set(slotsArray.map((it) => it.startOf(viewTypeUnit).format())),
 	].map((it) => dayjs(it))
+
+	let untilUnitChange = 1
+	for (let i = 1; i < slotsArray.length; i++) {
+		const first = slotsArray[i - 1]
+		const second = slotsArray[i]
+		if (first.startOf(viewTypeUnit).isSame(second.startOf(viewTypeUnit))) {
+			untilUnitChange++
+		} else {
+			break
+		}
+	}
+
+	const topHeaderColSpan = untilUnitChange
 
 	return (
 		<>
@@ -116,11 +132,11 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 						</div>
 					</th>
 					{/* DAYS */}
-					{days.map((date, i) => {
+					{daysOrWeeksOrMonths.map((date, i) => {
 						return (
 							<th
 								key={date.toISOString()}
-								colSpan={timeSlotsPerDay * 2}
+								colSpan={topHeaderColSpan * 2}
 								style={{
 									backgroundColor,
 
@@ -132,7 +148,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 										  )}`
 										: undefined,
 									borderTopRightRadius:
-										i === days.length - 1
+										i === daysOrWeeksOrMonths.length - 1
 											? "2px"
 											: undefined,
 								}}
@@ -180,11 +196,15 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 									justifyContent: "right",
 								}}
 							>
-								{`${slotsArray[0].format(
-									"HH:mm",
-								)} - ${slotsArray[0]
-									.add(timeSlotsPerDay * timeSteps, "minutes")
-									.format("HH:mm")} [${slotsArray.length}]`}
+								{`${dayjs()
+									.startOf("day")
+									.add(timeFrameDay.startHour, "hours")
+									.add(timeFrameDay.startMinute, "minutes")
+									.format("HH:mm")} - ${dayjs()
+									.startOf("day")
+									.add(timeFrameDay.endHour, "hours")
+									.add(timeFrameDay.endMinute, "minutes")
+									.format("HH:mm")}`}
 							</div>
 						)}
 					</th>

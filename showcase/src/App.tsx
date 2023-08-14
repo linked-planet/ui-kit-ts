@@ -20,7 +20,7 @@ const queryClient = new QueryClient()
 
 export default function App() {
 	return (
-		<BrowserRouter>
+		<BrowserRouter basename="ui-kit-ts">
 			<Provider store={appStore}>
 				<QueryClientProvider client={queryClient}>
 					<LocaleProvider>

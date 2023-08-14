@@ -11,6 +11,7 @@ import type { TimeTableGroup } from "./LPTimeTable"
 
 import { useTimeTableMessage } from "./TimeTableMessageContext"
 import { Dayjs } from "dayjs"
+import { TimeFrameDay } from "./timeTableUtils"
 
 export type SelectedTimeSlots<G extends TimeTableGroup> = {
 	timeSlots: number[]
@@ -38,14 +39,16 @@ type InteractionType = "click" | "drag" | "remove"
 
 export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 	slotsArray,
-	timeSteps,
+	timeFrameDay,
+	timeSlotMinutes,
 	disableWeekendInteractions,
 	onTimeRangeSelected,
 	setClearSelectedTimeRangeCB,
 	children,
 }: {
 	slotsArray: Dayjs[]
-	timeSteps: number
+	timeFrameDay: TimeFrameDay
+	timeSlotMinutes: number // length of 1 slot in minutes (for example if the day starts at 8, and ends at 16, and the time slot is a week, that this means (16-8)*60*7 minutes)
 	onTimeRangeSelected?: (
 		s: { group: G; startDate: Dayjs; endDate: Dayjs } | undefined,
 	) => boolean | void // if return is true, clear selection
@@ -71,10 +74,15 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 	// remove any selection in case fundamental time table properties change
 	useEffect(() => {
 		console.log(
-			"LPTimeTable - clearing selection because the slotsArray, timeSteps or weekend interactions changed",
+			"LPTimeTable - clearing selection because the slotsArray, time of the day or weekend interactions changed",
 		)
 		setSelectedTimeSlotsG(undefined)
-	}, [slotsArray, timeSteps, disableWeekendInteractions, onTimeRangeSelected])
+	}, [
+		slotsArray,
+		timeFrameDay,
+		disableWeekendInteractions,
+		onTimeRangeSelected,
+	])
 
 	// maybe there is a better way to clear the selection from the parent component, then returning a callback from this component
 	const clearSelectionCB = useCallback(
@@ -219,18 +227,12 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 				selectedTimeSlots.timeSlots[
 					selectedTimeSlots.timeSlots.length - 1
 				]
-			].add(timeSteps, "minutes"),
+			].add(timeSlotMinutes, "minutes"),
 		})
 		if (shouldClearSelection) {
 			setSelectedTimeSlotsG(undefined)
 		}
-	}, [
-		selectedTimeSlots,
-		multiselectionMode,
-		onTimeRangeSelected,
-		slotsArray,
-		timeSteps,
-	])
+	}, [selectedTimeSlots, multiselectionMode, onTimeRangeSelected, slotsArray])
 
 	const setSelectedTimeSlots = setSelectedTimeSlotsG as Dispatch<
 		SelectedTimeSlots<TimeTableGroup> | undefined

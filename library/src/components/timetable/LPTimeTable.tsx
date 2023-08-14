@@ -12,11 +12,10 @@ import dayjs, { Dayjs } from "dayjs"
 import "./LPTimeTable.module.css"
 import styles from "./LPTimeTable.module.css"
 import {
-	calculateTimeSlotProperties,
 	calculateTimeSlotPropertiesForView,
-	calculateTimeSlots,
 	getStartAndEndSlot,
 	itemsOutsideOfDayRangeORSameStartAndEnd,
+	TimeFrameDay,
 } from "./timeTableUtils"
 import { InlineMessage } from "../inlinemessage"
 import {
@@ -61,7 +60,7 @@ export interface SelectedTimeSlot<G extends TimeTableGroup> {
 	groupRow: number
 }
 
-export type TimeTableViewType = "hours" | "days"
+export type TimeTableViewType = "hours" | "days" | "weeks" | "months" | "years" // this must be one of the unit types of dayjs
 
 export interface LPTimeTableProps<
 	G extends TimeTableGroup,
@@ -111,14 +110,6 @@ export interface LPTimeTableProps<
 	placeHolderHeight?: string
 
 	renderPlaceHolder?: (props: PlaceholderItemProps<G>) => JSX.Element
-
-	/** Defines how a last not fitting time slot is handled by the day time range.
-	 * Round means that the time range will be rounded up/down to fit a last time slot.
-	 * Floor means that the time range will be rounded down and the unfitting time slot is removed.
-	 * Ceil means that the time range will be rounded up to fit the last time slot.
-	 * @default "round"
-	 */
-	rounding?: "floor" | "ceil" | "round"
 
 	/**
 	 * Height sets the max height of the time table. If the content is larger, it will be scrollable.
@@ -177,20 +168,13 @@ export default function LPTimeTable<
 	)
 }
 
-export function LPCalendarTimeTable<
-	G extends TimeTableGroup,
-	I extends TimeSlotBooking,
->(props: LPTimeTableProps<G, I>) {
-	return <LPTimeTable {...props} viewType="days" showTimeSlotHeader={false} />
-}
-
 /**
  * The LPTimeTable depends on the localization messages. It needs to be wrapped in an
  * @returns
  */
 const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
-	startDate: startDateP,
-	endDate: endDateP,
+	startDate,
+	endDate,
 	timeStepsMinutes = 60,
 	entries,
 	selectedTimeSlotItem,
@@ -203,7 +187,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	setClearSelectedTimeRangeCB,
 	groupHeaderColumnWidth,
 	columnWidth,
-	rounding,
 	height = "100%",
 	placeHolderHeight = "1.5rem",
 	viewType = "hours",
@@ -213,74 +196,34 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	nowOverwrite,
 }: LPTimeTableProps<G, I>) => {
 	// if we have viewType of days, we need to round the start and end date to the start and end of the day
-	const [startDate, setStartDate] = useState<Dayjs>(
-		viewType === "days" ? startDateP.startOf("day") : startDateP,
-	)
-	const [endDate, setEndDate] = useState<Dayjs>(
-		viewType === "days"
-			? endDateP.hour() > 0 || endDateP.minute() > 0
-				? endDateP.startOf("day").add(1, "day")
-				: endDateP
-			: endDateP,
-	)
-
 	const { setMessage, translatedMessage } = useTimeTableMessage()
 
 	// change on viewType
 	useEffect(() => {
 		setMessage(undefined) // clear the message on time frame change
-		let start = startDateP
-		let end = endDateP
-		if (viewType === "days") {
-			start = startDateP.startOf("day")
-			end =
-				endDateP.hour() > 0 || endDateP.minute() > 0
-					? endDateP.startOf("day").add(1, "day")
-					: endDateP
-		}
-		setStartDate((curr) => {
-			return curr.isSame(start) ? curr : start
-		})
-		setEndDate((curr) => {
-			if (curr.isSame(end)) {
-				return curr
-			}
-			return end
-		})
-	}, [viewType, startDateP, endDateP, setMessage])
+	}, [viewType, startDate, endDate, setMessage])
 
 	const tableHeaderRef = useRef<HTMLTableSectionElement>(null)
 	const tableBodyRef = useRef<HTMLTableSectionElement>(null)
 	const inlineMessageRef = useRef<HTMLDivElement>(null)
 
 	//#region calculate time slots, dates array and the final time steps size in minutes
-	const { slotsArray, timeSteps, timeSlotsPerDay } = useMemo(() => {
+	const { slotsArray, timeFrameDay, timeSlotMinutes } = useMemo(() => {
 		// to avoid overflow onto the next day if the time steps are too large
-		const { timeSlotsPerDay, daysDifference, timeSteps } =
-			viewType === "hours"
-				? calculateTimeSlotProperties(
-						startDate,
-						endDate,
-						timeStepsMinutes,
-						rounding ?? "round",
-						setMessage,
-				  )
-				: calculateTimeSlotPropertiesForView(
-						startDate,
-						endDate,
-						setMessage,
-				  )
-		const slotsArray = calculateTimeSlots(
-			timeSlotsPerDay,
-			daysDifference,
-			timeSteps,
-			startDate,
-		)
-		return { slotsArray, timeSteps, timeSlotsPerDay }
-	}, [viewType, startDate, endDate, timeStepsMinutes, rounding, setMessage])
+		const { timeFrameDay, slotsArray, timeSlotMinutes } =
+			calculateTimeSlotPropertiesForView(
+				startDate,
+				endDate,
+				timeStepsMinutes,
+				viewType,
+				setMessage,
+			)
+
+		return { slotsArray, timeFrameDay, timeSlotMinutes }
+	}, [viewType, startDate, endDate, timeStepsMinutes, setMessage])
 	//#endregion
 
-	//#region Message is items of entries are outside of the time frame of the day
+	//#region Message if items of entries are outside of the time frame of the day
 	useEffect(() => {
 		if (!slotsArray) {
 			return
@@ -292,7 +235,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				itemsOutsideOfDayRangeORSameStartAndEnd(
 					entry.items,
 					slotsArray,
-					timeSteps,
+					timeFrameDay,
+					timeSlotMinutes,
+					viewType,
 				)
 			foundItemsOutsideOfDayRangeCount += itemsOutsideRange.length
 			itemsWithSameStartAndEndCount += itemsWithSameStartAndEnd.length
@@ -328,7 +273,14 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				},
 			})
 		}
-	}, [entries, setMessage, slotsArray, timeSteps])
+	}, [
+		entries,
+		setMessage,
+		slotsArray,
+		timeFrameDay,
+		timeSlotMinutes,
+		viewType,
+	])
 	//#endregion
 
 	//#region now bar
@@ -355,14 +307,22 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		moveNowBar(
 			slotsArray,
 			nowRef,
-			timeSteps,
 			nowBarRef,
 			tableHeaderRef,
 			tableBodyRef,
+			timeFrameDay,
+			timeSlotMinutes,
+			viewType,
 			setMessage,
-			undefined,
 		)
-	}, [slotsArray, nowOverwrite, timeSteps, setMessage])
+	}, [
+		slotsArray,
+		nowOverwrite,
+		timeFrameDay,
+		timeSlotMinutes,
+		viewType,
+		setMessage,
+	])
 
 	// initial run, and start interval to move the now bar
 	useEffect(() => {
@@ -374,22 +334,23 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	}, [adjustNowBar])
 
 	const observedSizeChangedCB = useCallback(
-		(observedSize: ObservedSize) => {
+		(_: ObservedSize) => {
 			if (!slotsArray) {
 				return
 			}
 			moveNowBar(
 				slotsArray,
 				nowRef,
-				timeSteps,
 				nowBarRef,
 				tableHeaderRef,
 				tableBodyRef,
+				timeFrameDay,
+				timeSlotMinutes,
+				viewType,
 				setMessage,
-				observedSize,
 			)
 		},
-		[setMessage, slotsArray, timeSteps],
+		[setMessage, slotsArray, timeFrameDay, timeSlotMinutes, viewType],
 	)
 
 	useResizeObserver({
@@ -436,7 +397,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			</div>
 			<TimeTableConfigProvider
 				slotsArray={slotsArray}
-				timeSteps={timeSteps}
+				timeFrameDay={timeFrameDay}
 				disableWeekendInteractions={disableWeekendInteractions}
 				placeHolderHeight={placeHolderHeight}
 				columnWidth={columnWidth}
@@ -444,13 +405,15 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				hideOutOfRangeMarkers={hideOutOfRangeMarkers}
 				timeSlotSelectionDisabled={!onTimeRangeSelected}
 				renderPlaceHolder={renderPlaceHolder}
+				timeSlotMinutes={timeSlotMinutes}
 			>
 				<SelectedTimeSlotsProvider
 					slotsArray={slotsArray}
-					timeSteps={timeSteps}
 					onTimeRangeSelected={onTimeRangeSelected}
 					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
 					disableWeekendInteractions={disableWeekendInteractions}
+					timeFrameDay={timeFrameDay}
+					timeSlotMinutes={timeSlotMinutes}
 				>
 					<div
 						style={{
@@ -468,12 +431,12 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 						>
 							<LPTimeTableHeader
 								slotsArray={slotsArray}
-								timeSteps={timeSteps}
 								columnWidth={columnWidth}
 								groupHeaderColumnWidth={groupHeaderColumnWidth}
 								startDate={startDate}
 								endDate={endDate}
-								timeSlotsPerDay={timeSlotsPerDay}
+								viewType={viewType}
+								timeFrameDay={timeFrameDay}
 								showTimeSlotHeader={
 									showTimeSlotHeader == undefined
 										? viewType === "hours"
@@ -503,7 +466,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
  * Moves the now bar to the right location, if it is visible in the time frame, and adjusts the header title cell of the date where the now bar is.
  * @param slotsArray
  * @param now
- * @param timeSteps
  * @param nowBarRef
  * @param tableHeaderRef
  * @param tableBodyRef
@@ -513,12 +475,13 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 function moveNowBar(
 	slotsArray: Dayjs[],
 	nowRef: MutableRefObject<Dayjs>,
-	timeSteps: number,
 	nowBarRef: MutableRefObject<HTMLDivElement | undefined>,
 	tableHeaderRef: MutableRefObject<HTMLTableSectionElement | null>,
 	tableBodyRef: MutableRefObject<HTMLTableSectionElement | null>,
+	timeFrameDay: TimeFrameDay,
+	timeSlotMinutes: number,
+	viewType: TimeTableViewType,
 	setMessage: (message: TimeTableMessage) => void,
-	observedTableBodySize: ObservedSize | undefined,
 ) {
 	if (!tableHeaderRef.current || !tableBodyRef.current) {
 		console.log("LPTimeTable - time table header or body ref not yet set")
@@ -550,7 +513,14 @@ function moveNowBar(
 		startDate: now,
 		endDate: now,
 	}
-	const startAndEndSlot = getStartAndEndSlot(nowItem, slotsArray, timeSteps)
+
+	const startAndEndSlot = getStartAndEndSlot(
+		nowItem,
+		slotsArray,
+		timeFrameDay,
+		timeSlotMinutes,
+		viewType,
+	)
 	if (startAndEndSlot.status !== "in") {
 		// we need to remove the now bar, if it is there
 		if (nowBar) {
@@ -591,9 +561,21 @@ function moveNowBar(
 		nowBarRef.current = nowBar
 	}
 
-	const currentTimeSlot = slotsArray[startSlot]
-	const diffNow = now.diff(currentTimeSlot, "minutes")
-	const diffPerc = diffNow / timeSteps
+	let currentTimeSlot = slotsArray[startSlot]
+	if (viewType !== "hours") {
+		currentTimeSlot = currentTimeSlot
+			.add(timeFrameDay.startHour, "hour")
+			.add(timeFrameDay.startMinute, "minute")
+	}
+
+	const diffNowDays = now.diff(currentTimeSlot, "days")
+	let diffNow = now.diff(currentTimeSlot, "minutes")
+	if (diffNowDays > 0) {
+		const dDay = 24 * 60 - timeFrameDay.oneDayMinutes
+		diffNow = diffNow - dDay * diffNowDays
+	}
+
+	const diffPerc = diffNow / timeSlotMinutes
 	nowBar.style.left = `${diffPerc * 100}%`
 	nowBar.style.height = tableBody.clientHeight + "px"
 

@@ -2,10 +2,12 @@ import React, { createContext, useContext } from "react"
 import type { Dayjs } from "dayjs"
 import type { TimeTableGroup, TimeTableViewType } from "./LPTimeTable"
 import { PlaceholderItemProps } from "./PlaceholderItem"
+import { TimeFrameDay } from "./timeTableUtils"
 
 type TimeTableConfig<G extends TimeTableGroup> = {
-	timeSteps: number
+	timeFrameDay: TimeFrameDay
 	slotsArray: Dayjs[]
+	timeSlotMinutes: number // length of 1 slot in minutes (for example if the day starts at 8, and ends at 16, and the time slot is a week, that this means (16-8)*60*7 minutes)
 	disableWeekendInteractions: boolean
 	placeHolderHeight: string
 	columnWidth: number | string
@@ -22,8 +24,9 @@ const timeTableConfigContext = createContext<
 >(undefined)
 
 export function TimeTableConfigProvider<G extends TimeTableGroup>({
-	timeSteps,
+	timeFrameDay,
 	slotsArray,
+	timeSlotMinutes,
 	disableWeekendInteractions,
 	placeHolderHeight,
 	columnWidth,
@@ -40,7 +43,8 @@ export function TimeTableConfigProvider<G extends TimeTableGroup>({
 	return (
 		<timeTableConfigContext.Provider
 			value={{
-				timeSteps,
+				timeFrameDay,
+				timeSlotMinutes, // time steps between the slots in minutes
 				slotsArray,
 				disableWeekendInteractions,
 				placeHolderHeight,

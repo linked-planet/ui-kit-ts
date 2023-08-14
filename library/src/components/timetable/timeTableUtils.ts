@@ -1,6 +1,14 @@
 import dayjs, { Dayjs } from "dayjs"
-import { TimeSlotBooking } from "./LPTimeTable"
+import { TimeSlotBooking, TimeTableViewType } from "./LPTimeTable"
 import { TimeTableMessage } from "./TimeTableMessageContext"
+
+export type TimeFrameDay = {
+	startHour: number
+	endHour: number
+	startMinute: number
+	endMinute: number
+	oneDayMinutes: number
+}
 
 export function isOverlapping(
 	item: TimeSlotBooking,
@@ -20,7 +28,9 @@ export function isOverlapping(
 export function itemsOutsideOfDayRangeORSameStartAndEnd(
 	items: TimeSlotBooking[],
 	slotsArray: Dayjs[],
-	timeSteps: number,
+	timeFrameDay: TimeFrameDay,
+	timeSlotMinutes: number,
+	viewType: TimeTableViewType,
 ) {
 	const itemsWithSameStartAndEnd: TimeSlotBooking[] = []
 	const itemsOutsideRange = items.filter((it) => {
@@ -28,7 +38,13 @@ export function itemsOutsideOfDayRangeORSameStartAndEnd(
 			itemsWithSameStartAndEnd.push(it)
 			return false
 		}
-		const startAndEndSlot = getStartAndEndSlot(it, slotsArray, timeSteps)
+		const startAndEndSlot = getStartAndEndSlot(
+			it,
+			slotsArray,
+			timeFrameDay,
+			timeSlotMinutes,
+			viewType,
+		)
 		return (
 			startAndEndSlot.status === "after" ||
 			startAndEndSlot.status === "before"
@@ -46,16 +62,37 @@ export function itemsOutsideOfDayRangeORSameStartAndEnd(
 export function getStartAndEndSlot(
 	item: TimeSlotBooking,
 	slotsArray: Dayjs[],
-	timeSteps: number,
+	timeFrameDay: TimeFrameDay,
+	timeSlotMinutes: number,
+	viewType: TimeTableViewType,
 ): {
 	startSlot: number
 	endSlot: number
 	status: "before" | "after" | "in"
 } {
-	if (item.endDate.isBefore(slotsArray[0])) {
+	let timeFrameStart = slotsArray[0]
+	if (viewType !== "hours") {
+		timeFrameStart = timeFrameStart
+			.add(timeFrameDay.startHour, "hours")
+			.add(timeFrameDay.startMinute, "minutes")
+	}
+	let timeFrameEnd = slotsArray[slotsArray.length - 1]
+		.startOf("day")
+		.add(timeFrameDay.endHour, "hours")
+		.add(timeFrameDay.endMinute, "minutes")
+	if (viewType !== "hours") {
+		timeFrameEnd = timeFrameEnd.add(1, viewType).subtract(1, "day")
+	}
+	if (
+		item.endDate.isBefore(timeFrameStart) ||
+		item.endDate.isSame(timeFrameStart)
+	) {
 		return { startSlot: 0, endSlot: 0, status: "before" }
 	}
-	if (item.startDate.isAfter(slotsArray[slotsArray.length - 1])) {
+	if (
+		item.startDate.isAfter(timeFrameEnd) ||
+		item.startDate.isSame(timeFrameEnd)
+	) {
 		return {
 			startSlot: slotsArray.length - 1,
 			endSlot: slotsArray.length - 1,
@@ -68,21 +105,18 @@ export function getStartAndEndSlot(
 		// if the item starts in the middle of a slot, we need to go back one slot to get the start slot
 		// but only if the time slot before is on the same day, else it means that the booking starts before the time frame range of the day
 		startSlot--
-		if (slotsArray[startSlot].date() != item.startDate.date()) {
-			startSlot++
+		if (viewType === "hours") {
+			// if the previous timeslot is on a different day, we know item starts before the first time slot of a day
+			if (slotsArray[startSlot].diff(slotsArray[startSlot + 1], "day")) {
+				startSlot++
+			}
 		}
 	}
-
-	let endSlot = -1
-	for (let i = 0; i < slotsArray.length; i++) {
-		const slot = slotsArray[i]
-		if (slot.isAfter(item.endDate)) {
-			endSlot = i
-			break
-		}
+	if (startSlot === -1) {
+		startSlot = 0
 	}
 
-	slotsArray.findIndex((slot) => slot.isAfter(item.endDate))
+	let endSlot = slotsArray.findIndex((slot) => slot.isAfter(item.endDate))
 	if (endSlot === -1) {
 		endSlot = slotsArray.length - 1
 	} else {
@@ -97,11 +131,28 @@ export function getStartAndEndSlot(
 		return { startSlot: startSlot, endSlot: startSlot, status: "before" }
 	}
 
-	if (item.endDate.isBefore(slotsArray[startSlot])) {
+	let startSlotStart = slotsArray[startSlot]
+	if (viewType !== "hours") {
+		startSlotStart = startSlotStart
+			.add(timeFrameDay.startHour, "hours")
+			.add(timeFrameDay.startMinute, "minutes")
+	}
+
+	if (item.endDate.isBefore(startSlotStart)) {
 		return { startSlot: startSlot, endSlot: startSlot, status: "before" }
 	}
 
-	if (item.startDate.isAfter(slotsArray[endSlot].add(timeSteps, "minutes"))) {
+	let endSlotEnd = slotsArray[endSlot]
+	if (viewType === "hours") {
+		endSlotEnd = endSlotEnd.add(timeSlotMinutes, "minutes")
+	} else {
+		endSlotEnd = endSlotEnd
+			.add(timeFrameDay.endHour, "hours")
+			.add(timeFrameDay.endMinute, "minutes")
+			.add(1, viewType)
+			.subtract(1, "day")
+	}
+	if (item.startDate.isAfter(endSlotEnd)) {
 		return { startSlot: endSlot, endSlot: endSlot, status: "after" }
 	}
 
@@ -116,7 +167,7 @@ export function getStartAndEndSlot(
  * @param timeSteps
  * @returns
  */
-export function calculateTimeSlots(
+function calculateTimeSlotsHoursView(
 	timeSlotsPerDay: number,
 	daysDifference: number,
 	timeSteps: number,
@@ -152,49 +203,15 @@ export function calculateTimeSlots(
  * @param setMessage  function to set a message
  * @returns the amount of time slots per day, the difference in day of the time frame, the time step duration after the rounding
  */
-export function calculateTimeSlotPropertiesForView(
-	startDate: Dayjs,
-	endDate: Dayjs,
-	setMessage: (message: TimeTableMessage) => void,
-) {
-	const timeSlotsPerDay = 1
-	const timeSteps = 24 * 60 // 1 day in minutes
-	const daysDifference = endDate.diff(startDate, "days")
-	if (daysDifference < 0) {
-		setMessage({
-			urgency: "error",
-			messageKey: "timetable.endDateAfterStartDate",
-		})
-		return {
-			timeSlotsPerDay,
-			daysDifference: 0,
-			timeSteps,
-		}
-	}
-
-	return { timeSlotsPerDay, daysDifference, timeSteps }
-}
-
-/**
- * Calculates the time slots for the given time frame.
- * @param startDate date and time when the time frame starts (defines also the start time of each day)
- * @param endDate date and time when the time frame ends (defines also the end time of each day)
- * @param timeStepsMinute duration of one time step in minutes
- * @param rounding rounding of the time steps if they don't fit into the time frame
- * @param setMessage  function to set a message
- * @returns the amount of time slots per day, the difference in day of the time frame, the time step duration after the rounding
- */
-export function calculateTimeSlotProperties(
+function calculateTimeSlotPropertiesForHoursView(
 	startDate: Dayjs,
 	endDate: Dayjs,
 	timeStepsMinute: number,
-	rounding: "ceil" | "floor" | "round",
 	setMessage: (message: TimeTableMessage) => void,
 ) {
-	let timeSlotsPerDay = 0 // how many timeslot per day/week
-	let timeSteps = timeStepsMinute
-	if (startDate.add(timeSteps, "minutes").day() !== startDate.day()) {
-		timeSteps =
+	let timeSlotsPerDay = 0 // how many time slots per day
+	if (startDate.add(timeStepsMinute, "minutes").day() !== startDate.day()) {
+		timeStepsMinute =
 			startDate.startOf("day").add(1, "day").diff(startDate, "minutes") -
 			1 // -1 to end at the same day if the time steps are from someplace during the day until
 		setMessage({
@@ -206,27 +223,43 @@ export function calculateTimeSlotProperties(
 		})
 	}
 
-	const daysDifference = endDate.diff(startDate, "days")
+	const timeFrameDay: TimeFrameDay = {
+		startHour: startDate.hour(),
+		startMinute: startDate.minute(),
+		endHour: endDate.hour(),
+		endMinute: endDate.minute(),
+		oneDayMinutes: 0,
+	}
+
+	let daysDifference = endDate.diff(startDate, "days")
 	if (daysDifference < 0) {
 		setMessage({
 			urgency: "error",
 			messageKey: "timetable.endDateAfterStartDate",
 		})
-		return { timeSlotsPerDay, daysDifference, timeSteps }
+		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
+	}
+	if (endDate.hour() > 0 || (endDate.hour() === 0 && endDate.minute() > 0)) {
+		daysDifference++
 	}
 
-	if (timeSteps === 0) {
+	if (timeStepsMinute === 0) {
 		setMessage({
 			urgency: "error",
 			messageKey: "timetable.timeSlotSizeGreaterZero",
 		})
-		return { timeSlotsPerDay, daysDifference, timeSteps }
+		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
 	}
 
-	let timeDiff = dayjs()
+	let endDateUsed = endDate
+	if (endDateUsed.hour() === 0 && endDateUsed.minute() === 0) {
+		endDateUsed = endDateUsed.subtract(1, "minute")
+	}
+
+	const timeDiff = dayjs()
 		.startOf("day")
-		.add(endDate.hour(), "hours")
-		.add(endDate.minute(), "minutes")
+		.add(endDateUsed.hour(), "hours")
+		.add(endDateUsed.minute(), "minutes")
 		.diff(
 			dayjs()
 				.startOf("day")
@@ -235,19 +268,152 @@ export function calculateTimeSlotProperties(
 			"minutes",
 		)
 
-	if (timeDiff === 0) {
-		// we set it to 24 hours
-		timeDiff = 24 * 60
+	timeSlotsPerDay = Math.floor(Math.abs(timeDiff) / timeStepsMinute)
+
+	const slotsArray = calculateTimeSlotsHoursView(
+		timeSlotsPerDay,
+		daysDifference,
+		timeStepsMinute,
+		startDate,
+	)
+
+	if (!slotsArray || slotsArray.length === 0) {
+		console.log(
+			"timeTableUtils - calculateTimeSlotPropertiesForHoursView - no slotsArray",
+		)
+		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
 	}
 
-	timeSlotsPerDay = Math.abs(timeDiff) / timeSteps
-	if (rounding === "ceil") {
-		timeSlotsPerDay = Math.ceil(timeSlotsPerDay)
-	} else if (rounding == "floor") {
-		timeSlotsPerDay = Math.floor(timeSlotsPerDay)
-	} else {
-		timeSlotsPerDay = Math.round(timeSlotsPerDay)
+	// adapt the timeFrameDay to the time slots, since the end time might have been adapted to the latest time slot end time
+	const timeSlotEndEnd = slotsArray[slotsArray.length - 1].add(
+		timeStepsMinute,
+		"minutes",
+	)
+	timeFrameDay.endHour = timeSlotEndEnd.hour()
+	timeFrameDay.endMinute = timeSlotEndEnd.minute()
+	timeFrameDay.oneDayMinutes = timeStepsMinute * timeSlotsPerDay
+
+	return { timeFrameDay, slotsArray, timeSlotMinutes: timeStepsMinute }
+}
+
+/**
+ * Calculates the time slots for the given time frame.
+ * @param startDate date and time when the time frame starts (defines also the start time of each day)
+ * @param endDate date and time when the time frame ends (defines also the end time of each day)
+ * @param timeStepsMinute duration of one time step in minutes
+ * @param rounding rounding of the time steps if they don't fit into the time frame
+ * @param setMessage  function to set a message
+ * @returns the amount of time slots per day, the difference in day of the time frame, the time step duration after the rounding
+ */
+export function calculateTimeSlotPropertiesForView(
+	startDate: Dayjs,
+	endDate: Dayjs,
+	timeStepsMinute: number,
+	vieWType: TimeTableViewType,
+	setMessage: (message: TimeTableMessage) => void,
+) {
+	const startHour = startDate.hour()
+	const startMinute = startDate.minute()
+	let endHour = endDate.hour()
+	let endMinute = endDate.minute()
+
+	if (endDate.isBefore(startDate)) {
+		setMessage({
+			urgency: "error",
+			messageKey: "timetable.endDateAfterStartDate",
+		})
+		return {
+			timeFrameDay: {
+				startHour,
+				startMinute,
+				endHour,
+				endMinute,
+				oneDayMinutes: 0,
+			},
+			slotsArray: [],
+			timeSlotMinutes: 0,
+		}
 	}
 
-	return { timeSlotsPerDay, daysDifference, timeSteps }
+	if (vieWType === "hours") {
+		return calculateTimeSlotPropertiesForHoursView(
+			startDate,
+			endDate,
+			timeStepsMinute,
+			setMessage,
+		)
+	}
+
+	// get the actual end time fitting to the time slots
+	let endDateTime = endDate
+		.startOf("day")
+		.add(startHour, "hours")
+		.add(startMinute, "minutes")
+	while (endDateTime.isBefore(endDate) || endDateTime.isSame(endDate)) {
+		endDateTime = endDateTime.add(timeStepsMinute, "minutes")
+	}
+	endDateTime = endDateTime.subtract(timeStepsMinute, "minutes")
+	endHour = endDateTime.hour()
+	endMinute = endDateTime.minute()
+
+	if (
+		vieWType !== "days" &&
+		vieWType !== "weeks" &&
+		vieWType !== "months" &&
+		vieWType !== "years"
+	) {
+		throw new Error(
+			"Unknown view type, should be 'hours', 'days', 'weeks', 'months' or 'years'",
+		)
+	}
+
+	const unit = vieWType
+
+	const start = startDate.startOf(unit)
+	const end = endDate.endOf(unit)
+	const diff = end.diff(start, unit) + 1
+	const slotsArray = Array.from({ length: diff }, (x, i) => i).map((i) => {
+		return dayjs(start).add(i, unit)
+	})
+
+	let oneDayMinutes = dayjs()
+		.startOf("day")
+		.add(endHour, "hours")
+		.add(endMinute, "minutes")
+		.diff(
+			dayjs()
+				.startOf("day")
+				.add(startHour, "hours")
+				.add(startMinute, "minutes"),
+			"minutes",
+		)
+	if (oneDayMinutes === 0) {
+		const endOfDay = dayjs().endOf("day")
+		endHour = endOfDay.hour()
+		endMinute = endOfDay.minute()
+		oneDayMinutes = endOfDay.diff(
+			dayjs()
+				.startOf("day")
+				.add(startHour, "hours")
+				.add(endHour, "minutes"),
+			"minutes",
+		)
+	}
+
+	const timeFrameDay: TimeFrameDay = {
+		startHour,
+		startMinute,
+		endHour,
+		endMinute,
+		oneDayMinutes,
+	}
+
+	// how many minutes has 1 time slot
+	const unitDays = dayjs()
+		.startOf("day")
+		.add(1, unit)
+		.diff(dayjs().startOf("day"), "days")
+	const timeSlotMinutes = unitDays * oneDayMinutes
+
+	return { timeFrameDay, slotsArray, timeSlotMinutes }
 }
