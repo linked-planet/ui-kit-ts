@@ -38,6 +38,12 @@ function ShowcaseTopNavigation() {
 					>
 						<span>Wrappers</span>
 					</PrimaryButton>,
+					<PrimaryButton
+						key={1}
+						onClick={() => navigation("/single")}
+					>
+						<span>Single Components</span>
+					</PrimaryButton>,
 					<PrimaryButton key={2} onClick={() => navigation("/redux")}>
 						<span>Redux</span>
 					</PrimaryButton>,

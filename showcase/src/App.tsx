@@ -6,7 +6,6 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import IntroPage from "./page/IntroPage"
 import NotFoundPage from "./page/NotFoundPage"
 import ReduxPage from "./page/ReduxPage"
-import WrappersPage from "./page/WrappersPage"
 import "@atlaskit/css-reset"
 import { appStore } from "./state/appStore"
 import { Provider } from "react-redux"
@@ -15,6 +14,8 @@ import ReactQueryPage from "./page/ReactQueryPage"
 
 import "./custom.css"
 import { LocaleProvider } from "@linked-planet/ui-kit-ts"
+import SinglePage from "./page/SinglePage"
+import WrappersPage from "./page/WrappersPage"
 
 const queryClient = new QueryClient()
 
@@ -52,6 +53,10 @@ export default function App() {
 												<Route
 													path="/wrappers"
 													element={<WrappersPage />}
+												/>
+												<Route
+													path="/single"
+													element={<SinglePage />}
 												/>
 												<Route
 													path="/redux"
