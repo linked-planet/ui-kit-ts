@@ -414,6 +414,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					disableWeekendInteractions={disableWeekendInteractions}
 					timeFrameDay={timeFrameDay}
 					timeSlotMinutes={timeSlotMinutes}
+					viewType={viewType}
 				>
 					<div
 						style={{

@@ -1,21 +1,20 @@
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Avatar, { AvatarItem } from "@atlaskit/avatar"
 
-function AvatarShowcase ( props: ShowcaseProps ) {
-
+function AvatarShowcase(props: ShowcaseProps) {
 	// region: avatar
 	const example1 = (
-		<AvatarItem
-			avatar={ <Avatar size="large" presence="online" /> }
-		/>
+		<AvatarItem avatar={<Avatar size="large" presence="online" />} />
 	)
 
 	const example2 = (
 		<AvatarItem
 			primaryText="Carl Coder"
 			secondaryText="Software Engineer"
-			avatar={ <Avatar size="large" presence="online" /> }
+			avatar={<Avatar size="large" presence="online" />}
 		/>
 	)
 	// endregion: avatar
@@ -24,23 +23,16 @@ function AvatarShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Avatar"
 			sourceCodeExampleId="avatar"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/avatar",
-					url: "https://atlassian.design/components/avatar/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example1 ),
-					( example2 )
-				]
-			}
+					url: "https://atlassian.design/components/avatar/examples",
+				},
+			]}
+			examples={[example1, example2]}
 		/>
 	)
-
 }
 
-export default AvatarShowcase;
+export default AvatarShowcase

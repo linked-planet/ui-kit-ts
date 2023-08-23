@@ -1,12 +1,13 @@
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import Tabs, { Tab, TabList, TabPanel } from "@atlaskit/tabs";
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import Tabs, { Tab, TabList, TabPanel } from "@atlaskit/tabs"
 
-function TabsShowcase ( props: ShowcaseProps ) {
-
+function TabsShowcase(props: ShowcaseProps) {
 	// region: tabs
 	const example = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<Tabs id="tab-example">
 				<TabList>
 					<Tab>First tab</Tab>
@@ -27,22 +28,16 @@ function TabsShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Tabs"
 			sourceCodeExampleId="tabs"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/tabs",
-					url: "https://atlassian.design/components/tabs/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/tabs/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default TabsShowcase;
+export default TabsShowcase

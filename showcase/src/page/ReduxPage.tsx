@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
-import { CodeBlock } from "@atlaskit/code";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react"
+import { CodeBlock } from "@atlaskit/code"
+import { useDispatch } from "react-redux"
 
-function ReduxPage () {
-
+function ReduxPage() {
 	const reduxInstall = `npm install -s react-redux @types/react-redux @reduxjs/toolkit`
 
 	const reduxAppStore = `// state/appStore.ts
@@ -86,64 +85,72 @@ dispatch({
     notification: notification
 })`
 	const dispatch = useDispatch()
-	useEffect( () => {
-		dispatch( {
-			type: "SET_MENU"
-		} )
-	}, [ dispatch ] )
+	useEffect(() => {
+		dispatch({
+			type: "SET_MENU",
+		})
+	}, [dispatch])
 
 	return (
 		<div>
 			<h1>Redux</h1>
-			<p>Redux is used for global state handling. For example for handling notifications.</p>
+			<p>
+				Redux is used for global state handling. For example for
+				handling notifications.
+			</p>
 
-			<div id="dependencies" menu-name="Dependencies" className="menu pd">
+			<div
+				id="dependencies"
+				data-menu-name="Dependencies"
+				className="menu pd"
+			>
 				<h5>Dependencies</h5>
 				<p>This library uses the following dependencies:</p>
 				<br />
-				<CodeBlock
-					language="bash"
-					text={ reduxInstall }
-				/>
+				<CodeBlock language="bash" text={reduxInstall} />
 			</div>
 
-			<div id="init-appstore" menu-name="Init AppStore" className="menu pd">
+			<div
+				id="init-appstore"
+				data-menu-name="Init AppStore"
+				className="menu pd"
+			>
 				<h5>Init appStore</h5>
 				<br />
-				<CodeBlock
-					language="typescript"
-					text={ reduxAppStore }
-				/>
+				<CodeBlock language="typescript" text={reduxAppStore} />
 			</div>
 
-			<div id="integrate-appstore" menu-name="Integrate AppStore" className="menu pd">
+			<div
+				id="integrate-appstore"
+				data-menu-name="Integrate AppStore"
+				className="menu pd"
+			>
 				<h5>Integrate appStore</h5>
 				<br />
-				<CodeBlock
-					language="tsx"
-					text={ reduxRegister }
-				/>
+				<CodeBlock language="tsx" text={reduxRegister} />
 			</div>
 
-			<div id="create-reducer" menu-name="Create Reducer" className="menu pd">
+			<div
+				id="create-reducer"
+				data-enu-name="Create Reducer"
+				className="menu pd"
+			>
 				<h5>Create reducer</h5>
 				<br />
-				<CodeBlock
-					language="typescript"
-					text={ reduxReducer }
-				/>
+				<CodeBlock language="typescript" text={reduxReducer} />
 			</div>
 
-			<div id="use-redux" menu-name="Use Redux States" className="menu pd">
+			<div
+				id="use-redux"
+				data-menu-name="Use Redux States"
+				className="menu pd"
+			>
 				<h5>Use and change redux states</h5>
 				<br />
-				<CodeBlock
-					language="typescript"
-					text={ reduxUsage }
-				/>
+				<CodeBlock language="typescript" text={reduxUsage} />
 			</div>
 		</div>
 	)
 }
 
-export default ReduxPage;
+export default ReduxPage

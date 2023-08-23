@@ -22,9 +22,9 @@ const menuReducer = (state: MenuItem[] = initialState, action: Action) => {
 				(item) => {
 					return {
 						id: item.id,
-						menuName: item.getAttribute("menu-name"),
+						menuName: item.getAttribute("data-menu-name"),
 					}
-				}
+				},
 			)
 			return [...ids]
 		}

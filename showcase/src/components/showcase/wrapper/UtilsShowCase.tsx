@@ -112,7 +112,7 @@ export default function UtilsShowCase(props: ShowcaseProps) {
 		<ShowcaseWrapperItem
 			name="Utilities"
 			sourceCodeExampleId="utils"
-			overallSourceCode={props.overallSourceCode}
+			{...props}
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",

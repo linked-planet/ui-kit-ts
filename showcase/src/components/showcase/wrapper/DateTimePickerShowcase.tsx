@@ -17,7 +17,7 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 		<ShowcaseWrapperItem
 			name="Date Time Picker"
 			sourceCodeExampleId="datetime-picker"
-			overallSourceCode={props.overallSourceCode}
+			{...props}
 			packages={[
 				{
 					name: "@atlaskit/datetime-picker",

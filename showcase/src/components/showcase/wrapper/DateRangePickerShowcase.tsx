@@ -131,7 +131,7 @@ function DateRangePickerShowcase(props: ShowcaseProps) {
 		<ShowcaseWrapperItem
 			name="Date Range Picker"
 			sourceCodeExampleId="date-range-picker"
-			overallSourceCode={props.overallSourceCode}
+			{...props}
 			packages={[
 				{
 					name: "@atlaskit/calendar",

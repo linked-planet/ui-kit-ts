@@ -1,10 +1,11 @@
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import { SimpleTag } from "@atlaskit/tag";
-import TagGroup from "@atlaskit/tag-group";
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { SimpleTag } from "@atlaskit/tag"
+import TagGroup from "@atlaskit/tag-group"
 
-function TagShowcase ( props: ShowcaseProps ) {
-
+function TagShowcase(props: ShowcaseProps) {
 	// region: tags
 	const example = (
 		<TagGroup>
@@ -18,26 +19,20 @@ function TagShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Tag & Tag-Group"
 			sourceCodeExampleId="tags"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/tag",
-					url: "https://atlassian.design/components/tag/examples"
+					url: "https://atlassian.design/components/tag/examples",
 				},
 				{
 					name: "@atlaskit/tag-group",
-					url: "https://atlassian.design/components/tag-group/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/tag-group/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default TagShowcase;
+export default TagShowcase

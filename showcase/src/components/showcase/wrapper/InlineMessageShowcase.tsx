@@ -72,7 +72,7 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 		<ShowcaseWrapperItem
 			name="Inline Message"
 			sourceCodeExampleId="inlinemessage"
-			overallSourceCode={props.overallSourceCode}
+			{...props}
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",

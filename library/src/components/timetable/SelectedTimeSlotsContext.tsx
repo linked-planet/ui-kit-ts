@@ -7,7 +7,7 @@ import React, {
 	useEffect,
 	useState,
 } from "react"
-import type { TimeTableGroup } from "./LPTimeTable"
+import type { TimeTableGroup, TimeTableViewType } from "./LPTimeTable"
 
 import { useTimeTableMessage } from "./TimeTableMessageContext"
 import { Dayjs } from "dayjs"
@@ -40,6 +40,7 @@ type InteractionType = "click" | "drag" | "remove"
 export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 	slotsArray,
 	timeFrameDay,
+	viewType,
 	timeSlotMinutes,
 	disableWeekendInteractions,
 	onTimeRangeSelected,
@@ -48,6 +49,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 }: {
 	slotsArray: Dayjs[]
 	timeFrameDay: TimeFrameDay
+	viewType: TimeTableViewType
 	timeSlotMinutes: number // length of 1 slot in minutes (for example if the day starts at 8, and ends at 16, and the time slot is a week, that this means (16-8)*60*7 minutes)
 	onTimeRangeSelected?: (
 		s: { group: G; startDate: Dayjs; endDate: Dayjs } | undefined,
@@ -61,8 +63,12 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 	const [multiselectionMode, setMultiselectionMode] = useState(false) // keeps track if the user selects time slots while dragging the mouse
 	const [selectedTimeSlots, setSelectedTimeSlotsG] = useReducer(
 		(
-			state: SelectedTimeSlots<G> | undefined,
-			action: SelectedTimeSlots<G> | undefined,
+			state:
+				| (SelectedTimeSlots<G> & { viewType: TimeTableViewType })
+				| undefined,
+			action:
+				| (SelectedTimeSlots<G> & { viewType: TimeTableViewType })
+				| undefined,
 		) => {
 			if (!action) return undefined
 			action.timeSlots.sort((a, b) => a - b)
@@ -82,6 +88,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 		timeFrameDay,
 		disableWeekendInteractions,
 		onTimeRangeSelected,
+		viewType,
 	])
 
 	// maybe there is a better way to clear the selection from the parent component, then returning a callback from this component
@@ -107,6 +114,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 				setSelectedTimeSlotsG({
 					timeSlots: [timeSlot],
 					group,
+					viewType,
 				})
 				return
 			}
@@ -128,6 +136,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 					setSelectedTimeSlotsG({
 						timeSlots: [timeSlot],
 						group,
+						viewType,
 					})
 					return
 				}
@@ -165,6 +174,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 							(it) => it !== timeSlot,
 						),
 						group: selectedTimeSlots.group,
+						viewType,
 					})
 				}
 				return
@@ -189,6 +199,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 				setSelectedTimeSlotsG({
 					timeSlots: newTimeSlots,
 					group: selectedTimeSlots.group,
+					viewType,
 				})
 			} else if (
 				timeSlotAfter !== undefined ||
@@ -197,11 +208,13 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 				setSelectedTimeSlotsG({
 					timeSlots: [...selectedTimeSlots.timeSlots, timeSlot],
 					group: selectedTimeSlots.group,
+					viewType,
 				})
 			} else {
 				setSelectedTimeSlotsG({
 					timeSlots: [timeSlot],
 					group: selectedTimeSlots.group,
+					viewType,
 				})
 			}
 		},
@@ -210,6 +223,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 			onTimeRangeSelected,
 			selectedTimeSlots,
 			setMessage,
+			viewType,
 		],
 	)
 
@@ -220,19 +234,46 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 			onTimeRangeSelected(undefined)
 			return
 		}
+		if (selectedTimeSlots.viewType !== viewType) {
+			setSelectedTimeSlotsG(undefined)
+			return // race condition with the clearing useEffect above
+		}
+		let startDate = slotsArray[selectedTimeSlots.timeSlots[0]]
+		let endDate = slotsArray[
+			selectedTimeSlots.timeSlots[selectedTimeSlots.timeSlots.length - 1]
+		].add(timeSlotMinutes, "minutes")
+
+		if (viewType !== "hours") {
+			startDate = startDate
+				.startOf("day")
+				.add(timeFrameDay.startHour, "hours")
+				.add(timeFrameDay.startMinute, "minutes")
+			endDate = endDate
+				.startOf("day")
+				.add(timeFrameDay.endHour, "hours")
+				.add(timeFrameDay.endMinute, "minutes")
+		}
+
 		const shouldClearSelection = onTimeRangeSelected({
 			group: selectedTimeSlots.group,
-			startDate: slotsArray[selectedTimeSlots.timeSlots[0]],
-			endDate: slotsArray[
-				selectedTimeSlots.timeSlots[
-					selectedTimeSlots.timeSlots.length - 1
-				]
-			].add(timeSlotMinutes, "minutes"),
+			startDate,
+			endDate,
 		})
 		if (shouldClearSelection) {
 			setSelectedTimeSlotsG(undefined)
 		}
-	}, [selectedTimeSlots, multiselectionMode, onTimeRangeSelected, slotsArray])
+	}, [
+		selectedTimeSlots,
+		multiselectionMode,
+		onTimeRangeSelected,
+		slotsArray,
+		timeSlotMinutes,
+		timeFrameDay.startHour,
+		timeFrameDay.startMinute,
+		viewType,
+		timeFrameDay.endHour,
+		timeFrameDay.endMinute,
+	])
 
 	const setSelectedTimeSlots = setSelectedTimeSlotsG as Dispatch<
 		SelectedTimeSlots<TimeTableGroup> | undefined

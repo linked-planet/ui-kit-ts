@@ -1,18 +1,17 @@
-import React, { useState } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Checkbox from "@atlaskit/checkbox"
 
-function CheckboxShowcase ( props: ShowcaseProps ) {
-
+function CheckboxShowcase(props: ShowcaseProps) {
 	// region: checkbox
-	const [ isCheckboxActive, setIsCheckboxActive ] = useState( false )
+	const [isCheckboxActive, setIsCheckboxActive] = useState(false)
 	const example = (
 		<Checkbox
 			label="This is my checkbox"
-			isChecked={ isCheckboxActive }
-			onChange={ () =>
-				setIsCheckboxActive( !isCheckboxActive )
-			}
+			isChecked={isCheckboxActive}
+			onChange={() => setIsCheckboxActive(!isCheckboxActive)}
 		/>
 	)
 	// endregion: checkbox
@@ -21,22 +20,16 @@ function CheckboxShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Checkbox"
 			sourceCodeExampleId="checkbox"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/checkbox",
-					url: "https://atlassian.design/components/checkbox/example"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/checkbox/example",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default CheckboxShowcase;
+export default CheckboxShowcase

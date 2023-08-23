@@ -1,37 +1,36 @@
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Select from "@atlaskit/select"
 
-function SelectShowcase ( props: ShowcaseProps ) {
-
+function SelectShowcase(props: ShowcaseProps) {
 	// region: select
 	const example1 = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<Select
 				inputId="select-1"
-				options={ [
+				options={[
 					{ label: "First option", value: "first" },
-					{ label: "Second option", value: "second" }
-				] }
+					{ label: "Second option", value: "second" },
+				]}
 			/>
 		</div>
 	)
 	const example2 = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<Select
 				inputId="select-s"
-				options={ [
+				options={[
 					{
-						label: "First group", options: [
-							{ label: "First option", value: "first" }
-						]
+						label: "First group",
+						options: [{ label: "First option", value: "first" }],
 					},
 					{
-						label: "Second group", options: [
-							{ label: "Second option", value: "second" }
-						]
+						label: "Second group",
+						options: [{ label: "Second option", value: "second" }],
 					},
-				] }
+				]}
 			/>
 		</div>
 	)
@@ -41,23 +40,16 @@ function SelectShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Select"
 			sourceCodeExampleId="select"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/select",
-					url: "https://atlassian.design/components/select/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example1 ),
-					( example2 ),
-				]
-			}
+					url: "https://atlassian.design/components/select/examples",
+				},
+			]}
+			examples={[example1, example2]}
 		/>
 	)
-
 }
 
-export default SelectShowcase;
+export default SelectShowcase

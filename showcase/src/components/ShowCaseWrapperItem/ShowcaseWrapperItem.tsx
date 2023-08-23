@@ -11,9 +11,11 @@ export interface Package {
 
 export interface ShowcaseProps {
 	overallSourceCode: string
+	id?: string
 }
 
 export interface ShowcaseWrapperItemProps {
+	id?: string
 	name: string
 	packages: Array<Package>
 	sourceCodeExampleId?: string
@@ -59,6 +61,7 @@ export default function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
 
 	useEffect(() => {
 		const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+			console.log("INTERSECTION", ref?.current?.id)
 			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
 					if (ref.current) {
@@ -78,12 +81,12 @@ export default function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
 	}, [])
 
 	useEffect(() => {
-		if (window.location.hash === "#" + props.sourceCodeExampleId) {
+		if (window.location.hash === "#" + props.id) {
 			if (ref.current) {
 				ref.current.scrollIntoView()
 			}
 		}
-	}, [props.sourceCodeExampleId])
+	}, [props.id])
 
 	/*console.info( "ShowCaseWrapperItem overallSourceCode", props.overallSourceCode )
 	console.info( "ShowCaseWrapperItem sourceCodeExampleId", props.sourceCodeExampleId )
@@ -91,8 +94,8 @@ export default function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
 
 	return (
 		<div
-			id={props.sourceCodeExampleId}
-			menu-name={props.name}
+			id={props.id}
+			data-menu-name={props.name}
 			className="menu"
 			style={{ padding: "20px 20px" }}
 			ref={ref}

@@ -1,17 +1,18 @@
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import Button from "@atlaskit/button";
-import EmptyState from "@atlaskit/empty-state";
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import Button from "@atlaskit/button"
+import EmptyState from "@atlaskit/empty-state"
 
-function EmptyStateShowcase ( props: ShowcaseProps ) {
-
+function EmptyStateShowcase(props: ShowcaseProps) {
 	// region: empty-state
 	const example = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<EmptyState
 				header="Empty state"
-				description={ <span>Content of this state</span> }
-				primaryAction={ <Button>Dummy button</Button> }
+				description={<span>Content of this state</span>}
+				primaryAction={<Button>Dummy button</Button>}
 			/>
 		</div>
 	)
@@ -21,22 +22,16 @@ function EmptyStateShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Empty state"
 			sourceCodeExampleId="empty-state"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/empty-state",
-					url: "https://atlassian.design/components/empty-state/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/empty-state/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default EmptyStateShowcase;
+export default EmptyStateShowcase

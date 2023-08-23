@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
-import { CodeBlock } from "@atlaskit/code";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react"
+import { CodeBlock } from "@atlaskit/code"
+import { useDispatch } from "react-redux"
 
-function ReactQueryPage () {
-
+function ReactQueryPage() {
 	const dispatch = useDispatch()
 
 	const reactQueryInstall = `npm install -s react-query axios`
@@ -40,64 +39,68 @@ return (
 ...
 )`
 
-	useEffect( () => {
-		dispatch( {
-			type: "SET_MENU"
-		} )
-	}, [ dispatch ] )
+	useEffect(() => {
+		dispatch({
+			type: "SET_MENU",
+		})
+	}, [dispatch])
 
 	return (
 		<div>
 			<h1>React-Query</h1>
-			<p>React-Query is for fetching data from REST and use it as states inside the application</p>
+			<p>
+				React-Query is for fetching data from REST and use it as states
+				inside the application
+			</p>
 
-			<div id="dependencies" menu-name="Dependencies" className="menu pd">
+			<div
+				id="dependencies"
+				data-menu-name="Dependencies"
+				className="menu pd"
+			>
 				<h5>Dependencies</h5>
 				<p>This library uses the following dependencies:</p>
 				<br />
-				<CodeBlock
-					language="bash"
-					text={ reactQueryInstall }
-				/>
+				<CodeBlock language="bash" text={reactQueryInstall} />
 			</div>
 
-			<div id="create-client" menu-name="Create Client" className="menu pd">
+			<div
+				id="create-client"
+				data-menu-name="Create Client"
+				className="menu pd"
+			>
 				<h5>Create queryClient</h5>
 				<br />
-				<CodeBlock
-					language="typescript"
-					text={ initQueryClient }
-				/>
+				<CodeBlock language="typescript" text={initQueryClient} />
 			</div>
 
-			<div id="integrate-client" menu-name="Integrate Client" className="menu pd">
+			<div
+				id="integrate-client"
+				data-menu-name="Integrate Client"
+				className="menu pd"
+			>
 				<h5>Integrate queryClient</h5>
 				<br />
-				<CodeBlock
-					language="tsx"
-					text={ reactQueryRegister }
-				/>
+				<CodeBlock language="tsx" text={reactQueryRegister} />
 			</div>
 
-			<div id="create-query" menu-name="Create Query" className="menu pd">
-				<h5 >Create Query</h5>
+			<div
+				id="create-query"
+				data-menu-name="Create Query"
+				className="menu pd"
+			>
+				<h5>Create Query</h5>
 				<br />
-				<CodeBlock
-					language="typescript"
-					text={ reactQueryQuery }
-				/>
+				<CodeBlock language="typescript" text={reactQueryQuery} />
 			</div>
 
-			<div id="use-query" menu-name="Use Query" className="menu pd">
+			<div id="use-query" data-menu-name="Use Query" className="menu pd">
 				<h5>Use react query data</h5>
 				<br />
-				<CodeBlock
-					language="typescript"
-					text={ reactQueryUsage }
-				/>
+				<CodeBlock language="typescript" text={reactQueryUsage} />
 			</div>
 		</div>
 	)
 }
 
-export default ReactQueryPage;
+export default ReactQueryPage

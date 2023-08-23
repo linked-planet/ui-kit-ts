@@ -1,15 +1,16 @@
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import ArrowDownIcon from "@atlaskit/icon/glyph/arrow-down";
-import BulletListIcon from "@atlaskit/icon/glyph/bullet-list";
-import CheckCircleIcon from "@atlaskit/icon/glyph/check-circle";
-import LogIcon from "@atlaskit/icon/glyph/backlog";
-import RefreshIcon from "@atlaskit/icon/glyph/refresh";
-import SendIcon from "@atlaskit/icon/glyph/send";
-import TrashIcon from "@atlaskit/icon/glyph/trash";
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import ArrowDownIcon from "@atlaskit/icon/glyph/arrow-down"
+import BulletListIcon from "@atlaskit/icon/glyph/bullet-list"
+import CheckCircleIcon from "@atlaskit/icon/glyph/check-circle"
+import LogIcon from "@atlaskit/icon/glyph/backlog"
+import RefreshIcon from "@atlaskit/icon/glyph/refresh"
+import SendIcon from "@atlaskit/icon/glyph/send"
+import TrashIcon from "@atlaskit/icon/glyph/trash"
 
-function IconShowcase ( props: ShowcaseProps ) {
-
+function IconShowcase(props: ShowcaseProps) {
 	// region: icon
 	const example = (
 		<div>
@@ -28,22 +29,16 @@ function IconShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Icon"
 			sourceCodeExampleId="icon"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/icon",
-					url: "https://atlassian.design/components/icon/icon-explorer"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/icon/icon-explorer",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default IconShowcase;
+export default IconShowcase

@@ -1,29 +1,37 @@
-import React, { useState } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import Button, { ButtonGroup } from "@atlaskit/button";
-import CrossIcon from "@atlaskit/icon/glyph/cross";
-import Modal, { ModalBody, ModalFooter, ModalHeader, ModalTitle, ModalTransition } from "@atlaskit/modal-dialog";
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import Button, { ButtonGroup } from "@atlaskit/button"
+import CrossIcon from "@atlaskit/icon/glyph/cross"
+import Modal, {
+	ModalBody,
+	ModalFooter,
+	ModalHeader,
+	ModalTitle,
+	ModalTransition,
+} from "@atlaskit/modal-dialog"
 
-
-function ModalShowcase ( props: ShowcaseProps ) {
-
+function ModalShowcase(props: ShowcaseProps) {
 	// region: modal
-	const [ isModalActive, setIsModalActive ] = useState( false )
+	const [isModalActive, setIsModalActive] = useState(false)
 	const example = (
 		<div>
-			<Button onClick={ () => setIsModalActive( true ) }>
-				Show modal
-			</Button>
+			<Button onClick={() => setIsModalActive(true)}>Show modal</Button>
 
-			{ isModalActive &&
+			{isModalActive && (
 				<ModalTransition>
-					<Modal onClose={ () => setIsModalActive( false ) }>
+					<Modal onClose={() => setIsModalActive(false)}>
 						<ModalHeader>
 							<ModalTitle>Sample Modal</ModalTitle>
 							<Button
 								appearance="link"
-								onClick={ () => setIsModalActive( false ) }>
-								<CrossIcon label="Close popup" primaryColor="#000" />
+								onClick={() => setIsModalActive(false)}
+							>
+								<CrossIcon
+									label="Close popup"
+									primaryColor="#000"
+								/>
 							</Button>
 						</ModalHeader>
 
@@ -33,13 +41,18 @@ function ModalShowcase ( props: ShowcaseProps ) {
 
 						<ModalFooter>
 							<ButtonGroup>
-								<Button autoFocus={ true } appearance="primary"
-									onClick={ () => setIsModalActive( false ) }>Close</Button>
+								<Button
+									autoFocus={true}
+									appearance="primary"
+									onClick={() => setIsModalActive(false)}
+								>
+									Close
+								</Button>
 							</ButtonGroup>
 						</ModalFooter>
 					</Modal>
 				</ModalTransition>
-			}
+			)}
 		</div>
 	)
 	// endregion: modal
@@ -48,22 +61,16 @@ function ModalShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Modal"
 			sourceCodeExampleId="modal"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/modal-dialog",
-					url: "https://atlassian.design/components/modal-dialog/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example )
-				]
-			}
+					url: "https://atlassian.design/components/modal-dialog/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default ModalShowcase;
+export default ModalShowcase

@@ -1,12 +1,13 @@
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import TextArea from "@atlaskit/textarea";
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import TextArea from "@atlaskit/textarea"
 
-function TextAreaShowcase ( props: ShowcaseProps ) {
-
+function TextAreaShowcase(props: ShowcaseProps) {
 	// region: textarea
 	const example = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<TextArea defaultValue="Content of text area..." />
 		</div>
 	)
@@ -16,22 +17,16 @@ function TextAreaShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Text area"
 			sourceCodeExampleId="textarea"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/textarea",
-					url: "https://atlassian.design/components/textarea/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/textarea/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default TextAreaShowcase;
+export default TextAreaShowcase

@@ -1,16 +1,14 @@
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Calendar from "@atlaskit/calendar"
 
-function CalendarShowcase ( props: ShowcaseProps ) {
-
+function CalendarShowcase(props: ShowcaseProps) {
 	// region: calendar
 	const example = (
-		<div style={ { minWidth: 300 } }>
-			<Calendar
-				locale="de-DE"
-				weekStartDay={ 1 }
-			/>
+		<div style={{ minWidth: 300 }}>
+			<Calendar locale="de-DE" weekStartDay={1} />
 		</div>
 	)
 	// endregion: calendar
@@ -19,22 +17,16 @@ function CalendarShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Calendar"
 			sourceCodeExampleId="calendar"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/calendar",
-					url: "https://atlassian.design/components/calendar/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/calendar/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default CalendarShowcase;
+export default CalendarShowcase

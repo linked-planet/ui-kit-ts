@@ -931,7 +931,7 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Time Table"
-			sourceCodeExampleId="timetable"
+			{...props}
 			overallSourceCode={props.overallSourceCode}
 			packages={[
 				{

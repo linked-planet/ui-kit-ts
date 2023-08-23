@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
-import { useShowCases } from "./SinglePage"
+import useShowCases from "../useShowcases"
 
 function WrappersPage() {
 	const dispatch = useDispatch()
@@ -24,7 +24,9 @@ function WrappersPage() {
 	return (
 		<div>
 			<h1>Wrappers</h1>
-			{...scs}
+			{Object.entries(scs).map(([id, component]) =>
+				React.cloneElement(component, { id }),
+			)}
 		</div>
 	)
 }

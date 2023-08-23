@@ -1,21 +1,20 @@
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Avatar, { AvatarItem } from "@atlaskit/avatar"
 
-function AvatarShowcase ( props: ShowcaseProps ) {
-
+function AvatarShowcase(props: ShowcaseProps) {
 	// region: avatar
 	const example1 = (
-		<AvatarItem
-			avatar={ <Avatar size="large" presence="online" /> }
-		/>
+		<AvatarItem avatar={<Avatar size="large" presence="online" />} />
 	)
 
 	const example2 = (
 		<AvatarItem
 			primaryText="Carl Coder"
 			secondaryText="Software Engineer"
-			avatar={ <Avatar size="large" presence="online" /> }
+			avatar={<Avatar size="large" presence="online" />}
 		/>
 	)
 	// endregion: avatar
@@ -24,52 +23,55 @@ function AvatarShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Avatar"
 			sourceCodeExampleId="avatar"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/avatar",
-					url: "https://atlassian.design/components/avatar/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example1 ),
-					( example2 )
-				]
-			}
+					url: "https://atlassian.design/components/avatar/examples",
+				},
+			]}
+			examples={[example1, example2]}
 		/>
 	)
-
 }
 
-export default AvatarShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+export default AvatarShowcase
+
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AwesomeSlider from "react-awesome-slider"
 
 import "react-awesome-slider/dist/styles.css"
 
-function AwesomeSliderShowcase ( props: ShowcaseProps ) {
-
+function AwesomeSliderShowcase(props: ShowcaseProps) {
 	// region: awesome-slider
 	const example = (
-		<div style={ { minWidth: 600, display: "flex", height: 200, position: "relative", zIndex: 0 } }>
-			<AwesomeSlider bullets={ false }>
+		<div
+			style={{
+				minWidth: 600,
+				display: "flex",
+				height: 200,
+				position: "relative",
+				zIndex: 0,
+			}}
+		>
+			<AwesomeSlider bullets={false}>
 				<div>
 					<img
-						style={ { objectFit: "scale-down" } }
+						style={{ objectFit: "scale-down" }}
 						src="images/logo.png"
-						width={ 100 }
-						height={ 100 }
+						width={100}
+						height={100}
 					/>
 				</div>
 				<div>
 					<img
-						style={ { objectFit: "scale-down" } }
+						style={{ objectFit: "scale-down" }}
 						src="images/github-logo.png"
-						width={ 100 }
-						height={ 100 }
+						width={100}
+						height={100}
 					/>
 				</div>
 			</AwesomeSlider>
@@ -81,96 +83,71 @@ function AwesomeSliderShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Awesome Slider"
 			sourceCodeExampleId="awesome-slider"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "react-awesome-slider",
-					url: "https://github.com/rcaferati/react-awesome-slider"
-				}
-			] }
-
-			examples={
-				[
-					( example )
-				]
-			}
+					url: "https://github.com/rcaferati/react-awesome-slider",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default AwesomeSliderShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+export default AwesomeSliderShowcase
+
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Badge from "@atlaskit/badge"
 
-function BadgeShowcase ( props: ShowcaseProps ) {
-
+function BadgeShowcase(props: ShowcaseProps) {
 	// region: badge
-	const example = (
-		<Badge></Badge>
-	)
+	const example = <Badge></Badge>
 
-	const example2 = (
-		<Badge
-			appearance="added"
-		/>
-	)
+	const example2 = <Badge appearance="added" />
 
-	const example3 = (
-		<Badge
-			appearance="important"
-		/>
-	)
+	const example3 = <Badge appearance="important" />
 	// endregion: badge
 
 	return (
 		<ShowcaseWrapperItem
 			name="Badge"
 			sourceCodeExampleId="badge"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/badge",
-					url: "https://atlassian.design/components/badge/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-					( example2 ),
-					( example3 ),
-				]
-			}
+					url: "https://atlassian.design/components/badge/examples",
+				},
+			]}
+			examples={[example, example2, example3]}
 		/>
 	)
-
 }
 
-export default BadgeShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+export default BadgeShowcase
+
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Banner from "@atlaskit/banner"
 import WarningIcon from "@atlaskit/icon/glyph/warning"
 import ErrorIcon from "@atlaskit/icon/glyph/error"
 
-function BannerShowcase ( props: ShowcaseProps ) {
-
+function BannerShowcase(props: ShowcaseProps) {
 	// region: banner
 	const example = (
-		<Banner
-			appearance="announcement"
-		>
+		<Banner appearance="announcement">
 			<span>Content of the banner...</span>
 		</Banner>
 	)
 
 	const example2 = (
-		<Banner
-			appearance="warning"
-			icon={ <WarningIcon label="" /> }
-		>
+		<Banner appearance="warning" icon={<WarningIcon label="" />}>
 			<span>Content of the banner...</span>
 		</Banner>
 	)
@@ -178,7 +155,12 @@ function BannerShowcase ( props: ShowcaseProps ) {
 	const example3 = (
 		<Banner
 			appearance="error"
-			icon={ <ErrorIcon secondaryColor="var(--ds-background-danger-bold, #DE350B)" label="" /> }
+			icon={
+				<ErrorIcon
+					secondaryColor="var(--ds-background-danger-bold, #DE350B)"
+					label=""
+				/>
+			}
 		>
 			<span>Content of the banner...</span>
 		</Banner>
@@ -189,52 +171,48 @@ function BannerShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Banner"
 			sourceCodeExampleId="banner"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/banner",
-					url: "https://atlassian.design/components/banner/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-					( example2 ),
-					( example3 ),
-				]
-			}
+					url: "https://atlassian.design/components/banner/examples",
+				},
+			]}
+			examples={[example, example2, example3]}
 		/>
 	)
-
 }
 
-export default BannerShowcase;
-import React, { useState } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+export default BannerShowcase
+
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Button, { ButtonGroup, LoadingButton } from "@atlaskit/button"
 
-function ButtonShowcase ( props: ShowcaseProps ) {
-
+function ButtonShowcase(props: ShowcaseProps) {
 	// region: button
-	const [ isLoading, setIsLoading ] = useState( false )
+	const [isLoading, setIsLoading] = useState(false)
 
 	const example = (
 		<ButtonGroup>
 			<Button
 				appearance="primary"
-				onClick={ () => console.log( "Button pressed" ) }
-			>Normal button</Button>
+				onClick={() => console.log("Button pressed")}
+			>
+				Normal button
+			</Button>
 
 			<LoadingButton
-				isLoading={ isLoading }
-				onClick={
-					() => {
-						setIsLoading( true )
-						window.setTimeout( () => setIsLoading( false ), 3000 )
-					}
-				}
-			>Loading Button</LoadingButton>
+				isLoading={isLoading}
+				onClick={() => {
+					setIsLoading(true)
+					window.setTimeout(() => setIsLoading(false), 3000)
+				}}
+			>
+				Loading Button
+			</LoadingButton>
 		</ButtonGroup>
 	)
 	// endregion: button
@@ -243,38 +221,31 @@ function ButtonShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Button & Button-Group"
 			sourceCodeExampleId="button"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/button",
-					url: "https://atlassian.design/components/button/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/button/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default ButtonShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+export default ButtonShowcase
+
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Calendar from "@atlaskit/calendar"
 
-function CalendarShowcase ( props: ShowcaseProps ) {
-
+function CalendarShowcase(props: ShowcaseProps) {
 	// region: calendar
 	const example = (
-		<div style={ { minWidth: 300 } }>
-			<Calendar
-				locale="de-DE"
-				weekStartDay={ 1 }
-			/>
+		<div style={{ minWidth: 300 }}>
+			<Calendar locale="de-DE" weekStartDay={1} />
 		</div>
 	)
 	// endregion: calendar
@@ -283,40 +254,34 @@ function CalendarShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Calendar"
 			sourceCodeExampleId="calendar"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/calendar",
-					url: "https://atlassian.design/components/calendar/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/calendar/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default CalendarShowcase;
-import React, { useState } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+export default CalendarShowcase
+
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Checkbox from "@atlaskit/checkbox"
 
-function CheckboxShowcase ( props: ShowcaseProps ) {
-
+function CheckboxShowcase(props: ShowcaseProps) {
 	// region: checkbox
-	const [ isCheckboxActive, setIsCheckboxActive ] = useState( false )
+	const [isCheckboxActive, setIsCheckboxActive] = useState(false)
 	const example = (
 		<Checkbox
 			label="This is my checkbox"
-			isChecked={ isCheckboxActive }
-			onChange={ () =>
-				setIsCheckboxActive( !isCheckboxActive )
-			}
+			isChecked={isCheckboxActive}
+			onChange={() => setIsCheckboxActive(!isCheckboxActive)}
 		/>
 	)
 	// endregion: checkbox
@@ -325,68 +290,54 @@ function CheckboxShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Checkbox"
 			sourceCodeExampleId="checkbox"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/checkbox",
-					url: "https://atlassian.design/components/checkbox/example"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/checkbox/example",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default CheckboxShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+export default CheckboxShowcase
+
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { CodeBlock } from "@atlaskit/code"
 
-function CodeBlockShowcase ( props: ShowcaseProps ) {
-
+function CodeBlockShowcase(props: ShowcaseProps) {
 	// region: code-block
 	const code = `class Hello {
     public static void main(String args...) {
         System.out.println('Hello world')
     }
 }`
-	const example = (
-		<CodeBlock
-			language="java"
-			text={ code }
-		/>
-	)
+	const example = <CodeBlock language="java" text={code} />
 	// endregion: code-block
 
 	return (
 		<ShowcaseWrapperItem
 			name="Code block"
 			sourceCodeExampleId="code-block"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/code",
-					url: "https://atlassian.design/components/code/code-block/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/code/code-block/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default CodeBlockShowcase;
+export default CodeBlockShowcase
+
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
@@ -520,7 +471,7 @@ function DateRangePickerShowcase(props: ShowcaseProps) {
 		<ShowcaseWrapperItem
 			name="Date Range Picker"
 			sourceCodeExampleId="date-range-picker"
-			overallSourceCode={props.overallSourceCode}
+			{...props}
 			packages={[
 				{
 					name: "@atlaskit/calendar",
@@ -557,7 +508,7 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 		<ShowcaseWrapperItem
 			name="Date Time Picker"
 			sourceCodeExampleId="datetime-picker"
-			overallSourceCode={props.overallSourceCode}
+			{...props}
 			packages={[
 				{
 					name: "@atlaskit/datetime-picker",
@@ -571,17 +522,23 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 
 export default DateTimePickerShowcase
 
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import DropdownMenu, { DropdownItemCheckbox, DropdownItemGroup, DropdownItem } from "@atlaskit/dropdown-menu"
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import DropdownMenu, {
+	DropdownItemCheckbox,
+	DropdownItemGroup,
+	DropdownItem,
+} from "@atlaskit/dropdown-menu"
 
-function DropDownMenuShowcase ( props: ShowcaseProps ) {
-
+function DropDownMenuShowcase(props: ShowcaseProps) {
 	// region: dropdown-menu
 	const example = (
-		<DropdownMenu
-			trigger="Dropdown">
-			<DropdownItemCheckbox id="dropdown-item-checkbox-it">Dropdown Checkbox Item</DropdownItemCheckbox>
+		<DropdownMenu trigger="Dropdown">
+			<DropdownItemCheckbox id="dropdown-item-checkbox-it">
+				Dropdown Checkbox Item
+			</DropdownItemCheckbox>
 			<DropdownItemGroup title="Group">
 				<DropdownItem>First dropdown item</DropdownItem>
 				<DropdownItem>Second dropdown item</DropdownItem>
@@ -594,101 +551,127 @@ function DropDownMenuShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Dropdown menu"
 			sourceCodeExampleId="dropdown-menu"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/dropdown-menu",
-					url: "https://atlassian.design/components/dropdown-menu/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/dropdown-menu/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default DropDownMenuShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+export default DropDownMenuShowcase
+
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import DynamicTable from "@atlaskit/dynamic-table"
-import Button from "@atlaskit/button";
+import Button from "@atlaskit/button"
 
-function DynamicTableShowcase ( props: ShowcaseProps ) {
-
+function DynamicTableShowcase(props: ShowcaseProps) {
 	// region: table
 	const example = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<DynamicTable
 				caption=""
-				head={
+				head={{
+					cells: [
+						{
+							key: "first",
+							content: "First col",
+							isSortable: true,
+						},
+						{
+							key: "second",
+							content: "Second col",
+							isSortable: true,
+						},
+						{ key: "third", content: <span>Action col</span> },
+					],
+				}}
+				rowsPerPage={3}
+				rows={[
 					{
+						key: "1stRow",
 						cells: [
-							{ key: "first", content: "First col", isSortable: true },
-							{ key: "second", content: "Second col", isSortable: true },
-							{ key: "third", content: ( <span>Action col</span> ) }
-						]
-					}
+							{ content: "1-1" },
+							{ content: "1-2" },
+							{
+								content: (
+									<Button appearance="primary">Delete</Button>
+								),
+							},
+						],
+					},
+					{
+						key: "2ndRow",
+						cells: [
+							{ content: "2-1" },
+							{ content: "2-2" },
+							{
+								content: (
+									<Button appearance="primary">Delete</Button>
+								),
+							},
+						],
+					},
+					{
+						key: "3rdRow",
+						cells: [
+							{ content: "3-1" },
+							{ content: "3-2" },
+							{
+								content: (
+									<Button appearance="primary">Delete</Button>
+								),
+							},
+						],
+					},
+					{
+						key: "4thRow",
+						cells: [
+							{ content: "4-1" },
+							{ content: "4-2" },
+							{
+								content: (
+									<Button appearance="primary">Delete</Button>
+								),
+							},
+						],
+					},
+					{
+						key: "5thRow",
+						cells: [
+							{ content: "5-1" },
+							{ content: "5-2" },
+							{
+								content: (
+									<Button appearance="primary">Delete</Button>
+								),
+							},
+						],
+					},
+					{
+						key: "6thRow",
+						cells: [
+							{ content: "6-1" },
+							{ content: "6-2" },
+							{
+								content: (
+									<Button appearance="primary">Delete</Button>
+								),
+							},
+						],
+					},
+				]}
+				onSort={(item) => console.log("Sorting", item)}
+				onSetPage={(pageNumber) =>
+					console.log("SetPageNumber", pageNumber)
 				}
-				rowsPerPage={ 3 }
-				rows={
-					[
-						{
-							key: "1stRow", cells:
-								[
-									{ content: "1-1" },
-									{ content: "1-2" },
-									{ content: <Button appearance="primary">Delete</Button> },
-								]
-						},
-						{
-							key: "2ndRow", cells:
-								[
-									{ content: "2-1" },
-									{ content: "2-2" },
-									{ content: <Button appearance="primary">Delete</Button> },
-								]
-						},
-						{
-							key: "3rdRow", cells:
-								[
-									{ content: "3-1" },
-									{ content: "3-2" },
-									{ content: <Button appearance="primary">Delete</Button> },
-								]
-						},
-						{
-							key: "4thRow", cells:
-								[
-									{ content: "4-1" },
-									{ content: "4-2" },
-									{ content: <Button appearance="primary">Delete</Button> },
-								]
-						},
-						{
-							key: "5thRow", cells:
-								[
-									{ content: "5-1" },
-									{ content: "5-2" },
-									{ content: <Button appearance="primary">Delete</Button> },
-								]
-						},
-						{
-							key: "6thRow", cells:
-								[
-									{ content: "6-1" },
-									{ content: "6-2" },
-									{ content: <Button appearance="primary">Delete</Button> },
-								]
-						}
-					]
-				}
-				onSort={ ( item ) => console.log( "Sorting", item ) }
-				onSetPage={ ( pageNumber ) => console.log( "SetPageNumber", pageNumber ) }
 			></DynamicTable>
 		</div>
 	)
@@ -698,39 +681,35 @@ function DynamicTableShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Dynamic table"
 			sourceCodeExampleId="table"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/dynamic-table",
-					url: "https://atlassian.design/components/dynamic-table/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/dynamic-table/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default DynamicTableShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import Button from "@atlaskit/button";
-import EmptyState from "@atlaskit/empty-state";
+export default DynamicTableShowcase
 
-function EmptyStateShowcase ( props: ShowcaseProps ) {
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import Button from "@atlaskit/button"
+import EmptyState from "@atlaskit/empty-state"
 
+function EmptyStateShowcase(props: ShowcaseProps) {
 	// region: empty-state
 	const example = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<EmptyState
 				header="Empty state"
-				description={ <span>Content of this state</span> }
-				primaryAction={ <Button>Dummy button</Button> }
+				description={<span>Content of this state</span>}
+				primaryAction={<Button>Dummy button</Button>}
 			/>
 		</div>
 	)
@@ -740,38 +719,34 @@ function EmptyStateShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Empty state"
 			sourceCodeExampleId="empty-state"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/empty-state",
-					url: "https://atlassian.design/components/empty-state/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/empty-state/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default EmptyStateShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import Flag from "@atlaskit/flag";
-import WarningIcon from "@atlaskit/icon/glyph/warning";
+export default EmptyStateShowcase
 
-function FlagShowcase ( props: ShowcaseProps ) {
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import Flag from "@atlaskit/flag"
+import WarningIcon from "@atlaskit/icon/glyph/warning"
 
+function FlagShowcase(props: ShowcaseProps) {
 	// region: flag
 	const example = (
 		<Flag
 			id="flag-id"
 			title="Flag"
-			icon={ <WarningIcon label="" /> }
+			icon={<WarningIcon label="" />}
 			description="Description of flag"
 		/>
 	)
@@ -781,35 +756,43 @@ function FlagShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Flag"
 			sourceCodeExampleId="flag"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/flag",
-					url: "https://atlassian.design/components/flag/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/flag/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default FlagShowcase;
-import React, { Fragment } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import Form, { CheckboxField, Field, Fieldset, FormFooter, FormHeader, FormSection, HelperMessage } from "@atlaskit/form";
-import TextField from "@atlaskit/textfield";
-import Button, { ButtonGroup, LoadingButton } from "@atlaskit/button";
-import Checkbox from "@atlaskit/checkbox";
-import Select, { CreatableSelect, OptionType, ValueType } from "@atlaskit/select";
+export default FlagShowcase
 
-function FormShowcase ( props: ShowcaseProps ) {
+import React, { Fragment } from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import Form, {
+	CheckboxField,
+	Field,
+	Fieldset,
+	FormFooter,
+	FormHeader,
+	FormSection,
+	HelperMessage,
+} from "@atlaskit/form"
+import TextField from "@atlaskit/textfield"
+import Button, { ButtonGroup, LoadingButton } from "@atlaskit/button"
+import Checkbox from "@atlaskit/checkbox"
+import Select, {
+	CreatableSelect,
+	OptionType,
+	ValueType,
+} from "@atlaskit/select"
 
+function FormShowcase(props: ShowcaseProps) {
 	// region: form
 	interface TestData {
 		name: string
@@ -826,116 +809,152 @@ function FormShowcase ( props: ShowcaseProps ) {
 		readonlyField: "Read-only Field",
 		disabledField: "Disabled Field",
 		surname: "Coderrrr",
-		checkboxGroup: [ "Coder" ],
+		checkboxGroup: ["Coder"],
 		favoriteColor: "BLUE",
-		favoriteColorCreatable: "BLUE"
+		favoriteColorCreatable: "BLUE",
 	}
 
 	const example = (
-		<Form onSubmit={ ( formData: TestData ) => console.log( "Form submit:", formData ) }>
-			{ ( { formProps } ) => (
-				<form { ...formProps }>
-					<FormHeader title="Give me your input" description="I describe this form" />
+		<Form
+			onSubmit={(formData: TestData) =>
+				console.log("Form submit:", formData)
+			}
+		>
+			{({ formProps }) => (
+				<form {...formProps}>
+					<FormHeader
+						title="Give me your input"
+						description="I describe this form"
+					/>
 
 					<FormSection title="Your data" description="I'm curious">
-
-						<Field label="Name" name="name" defaultValue={ initFormData.name }>
-							{ ( { fieldProps } ) => (
+						<Field
+							label="Name"
+							name="name"
+							defaultValue={initFormData.name}
+						>
+							{({ fieldProps }) => (
 								<Fragment>
-									<TextField
-										{ ...fieldProps }
-									/>
+									<TextField {...fieldProps} />
 									<HelperMessage>Help!</HelperMessage>
 								</Fragment>
-							) }
+							)}
 						</Field>
 
-						<Field label="Read-only Field" name="readonlyField" defaultValue={ initFormData.readonlyField }>
-							{ ( { fieldProps } ) => (
+						<Field
+							label="Read-only Field"
+							name="readonlyField"
+							defaultValue={initFormData.readonlyField}
+						>
+							{({ fieldProps }) => (
 								<Fragment>
 									<TextField
-										readOnly={ true }
-										{ ...fieldProps }
+										readOnly={true}
+										{...fieldProps}
 									/>
 								</Fragment>
-							) }
+							)}
 						</Field>
 
-						<Field label="Disabled Field" name="disabledField" defaultValue={ initFormData.disabledField }>
-							{ ( { fieldProps } ) => (
+						<Field
+							label="Disabled Field"
+							name="disabledField"
+							defaultValue={initFormData.disabledField}
+						>
+							{({ fieldProps }) => (
 								<Fragment>
-									<TextField
-										disabled={ true }
-										{ ...fieldProps }
-									/>
+									<TextField {...fieldProps} />
 								</Fragment>
-							) }
+							)}
 						</Field>
 
-						<Field label="Surname" name="surname" defaultValue={ initFormData.surname }>
-							{ ( { fieldProps } ) => (
+						<Field
+							label="Surname"
+							name="surname"
+							defaultValue={initFormData.surname}
+						>
+							{({ fieldProps }) => (
 								<Fragment>
-									<TextField
-										{ ...fieldProps }
-									/>
+									<TextField {...fieldProps} />
 									<HelperMessage>Help!</HelperMessage>
 								</Fragment>
-							) }
+							)}
 						</Field>
 
 						<Fieldset legend="See more info">
-							{ [ "Coder", "React fan" ].map( ( item ) => {
+							{["Coder", "React fan"].map((item) => {
 								return (
 									<CheckboxField
 										name="checkboxGroup"
-										value={ item }
-										defaultIsChecked={ initFormData.checkboxGroup.includes( item ) }
-										key={ item }
+										value={item}
+										defaultIsChecked={initFormData.checkboxGroup.includes(
+											item,
+										)}
+										key={item}
 									>
-										{ ( { fieldProps } ) => (
-											<Checkbox { ...fieldProps } label={ item } />
-										) }
+										{({ fieldProps }) => (
+											<Checkbox
+												{...fieldProps}
+												label={item}
+											/>
+										)}
 									</CheckboxField>
 								)
-							} ) }
+							})}
 						</Fieldset>
 					</FormSection>
 
 					<FormSection title="More data" description="Tell me more">
-						<Field<ValueType<OptionType>> label="Favorite Color" name="favoriteColor" defaultValue={ { label: initFormData.favoriteColor, value: initFormData.favoriteColor } }>
-							{ ( { fieldProps } ) => (
+						<Field<ValueType<OptionType>>
+							label="Favorite Color"
+							name="favoriteColor"
+							defaultValue={{
+								label: initFormData.favoriteColor,
+								value: initFormData.favoriteColor,
+							}}
+						>
+							{({ fieldProps }) => (
 								<Fragment>
 									<Select
-										{ ...fieldProps }
+										{...fieldProps}
 										inputId="favoriteColor"
-										options={
-											[
-												{ label: "RED", value: "RED" },
-												{ label: "BLUE", value: "BLUE" }
-											]
-										}
-										defaultValue={ { label: initFormData.favoriteColor, value: initFormData.favoriteColor } }
+										options={[
+											{ label: "RED", value: "RED" },
+											{ label: "BLUE", value: "BLUE" },
+										]}
+										defaultValue={{
+											label: initFormData.favoriteColor,
+											value: initFormData.favoriteColor,
+										}}
 									/>
 								</Fragment>
-							) }
+							)}
 						</Field>
 
-						<Field<ValueType<OptionType>> label="Favorite Color (Creatable)" name="favoriteColorCreatable" defaultValue={ { label: initFormData.favoriteColor, value: initFormData.favoriteColor } }>
-							{ ( { fieldProps } ) => (
+						<Field<ValueType<OptionType>>
+							label="Favorite Color (Creatable)"
+							name="favoriteColorCreatable"
+							defaultValue={{
+								label: initFormData.favoriteColor,
+								value: initFormData.favoriteColor,
+							}}
+						>
+							{({ fieldProps }) => (
 								<Fragment>
 									<CreatableSelect
-										{ ...fieldProps }
+										{...fieldProps}
 										inputId="favoriteColorCreatable"
-										options={
-											[
-												{ label: "RED", value: "RED" },
-												{ label: "BLUE", value: "BLUE" }
-											]
-										}
-										defaultValue={ { label: initFormData.favoriteColorCreatable, value: initFormData.favoriteColorCreatable } }
+										options={[
+											{ label: "RED", value: "RED" },
+											{ label: "BLUE", value: "BLUE" },
+										]}
+										defaultValue={{
+											label: initFormData.favoriteColorCreatable,
+											value: initFormData.favoriteColorCreatable,
+										}}
 									/>
 								</Fragment>
-							) }
+							)}
 						</Field>
 					</FormSection>
 
@@ -945,13 +964,14 @@ function FormShowcase ( props: ShowcaseProps ) {
 							<LoadingButton
 								type="submit"
 								appearance="primary"
-								isLoading={ false }>
+								isLoading={false}
+							>
 								Save
 							</LoadingButton>
 						</ButtonGroup>
 					</FormFooter>
 				</form>
-			) }
+			)}
 		</Form>
 	)
 	// endregion: form
@@ -960,37 +980,33 @@ function FormShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Form"
 			sourceCodeExampleId="form"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/form",
-					url: "https://atlassian.design/components/form/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/form/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default FormShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import ArrowDownIcon from "@atlaskit/icon/glyph/arrow-down";
-import BulletListIcon from "@atlaskit/icon/glyph/bullet-list";
-import CheckCircleIcon from "@atlaskit/icon/glyph/check-circle";
-import LogIcon from "@atlaskit/icon/glyph/backlog";
-import RefreshIcon from "@atlaskit/icon/glyph/refresh";
-import SendIcon from "@atlaskit/icon/glyph/send";
-import TrashIcon from "@atlaskit/icon/glyph/trash";
+export default FormShowcase
 
-function IconShowcase ( props: ShowcaseProps ) {
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import ArrowDownIcon from "@atlaskit/icon/glyph/arrow-down"
+import BulletListIcon from "@atlaskit/icon/glyph/bullet-list"
+import CheckCircleIcon from "@atlaskit/icon/glyph/check-circle"
+import LogIcon from "@atlaskit/icon/glyph/backlog"
+import RefreshIcon from "@atlaskit/icon/glyph/refresh"
+import SendIcon from "@atlaskit/icon/glyph/send"
+import TrashIcon from "@atlaskit/icon/glyph/trash"
 
+function IconShowcase(props: ShowcaseProps) {
 	// region: icon
 	const example = (
 		<div>
@@ -1009,25 +1025,20 @@ function IconShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Icon"
 			sourceCodeExampleId="icon"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/icon",
-					url: "https://atlassian.design/components/icon/icon-explorer"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/icon/icon-explorer",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default IconShowcase;
+export default IconShowcase
+
 import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
@@ -1102,7 +1113,7 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 		<ShowcaseWrapperItem
 			name="Inline Message"
 			sourceCodeExampleId="inlinemessage"
-			overallSourceCode={props.overallSourceCode}
+			{...props}
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
@@ -1114,54 +1125,78 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React, { useState } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import ReactJoyride from "react-joyride";
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import ReactJoyride from "react-joyride"
 import Button, { ButtonGroup } from "@atlaskit/button"
 
-function JoyrideShowcase ( props: ShowcaseProps ) {
-
+function JoyrideShowcase(props: ShowcaseProps) {
 	// region: joyride
-	const [ isJoyrideActive, setIsJoyrideActive ] = useState( false )
+	const [isJoyrideActive, setIsJoyrideActive] = useState(false)
 	const example = (
 		<div>
 			<ButtonGroup>
-				<Button isSelected={ isJoyrideActive } onClick={ () => setIsJoyrideActive( true ) }>Start Tour</Button>
+				<Button
+					isSelected={isJoyrideActive}
+					onClick={() => setIsJoyrideActive(true)}
+				>
+					Start Tour
+				</Button>
 				<Button className="joyride-first">First step</Button>
 				<Button className="joyride-second">Second step</Button>
 				<Button className="joyride-third">Third step</Button>
 			</ButtonGroup>
 
 			<ReactJoyride
-				run={ isJoyrideActive }
-				continuous={ true }
-				showProgress={ true }
-				disableScrolling={ false }
-				scrollToFirstStep={ true }
-				scrollOffset={ 220 }
-				locale={ {
+				run={isJoyrideActive}
+				continuous={true}
+				showProgress={true}
+				disableScrolling={false}
+				scrollToFirstStep={true}
+				scrollOffset={220}
+				locale={{
 					back: "Zurück",
 					close: "Schließen",
 					last: "Fertig",
 					next: "Weiter",
 					open: "Öffnen",
-					skip: "Überspringen"
-				} }
-				callback={ ( joyrideState ) => {
-					switch ( joyrideState.action ) {
+					skip: "Überspringen",
+				}}
+				callback={(joyrideState) => {
+					switch (joyrideState.action) {
 						case "close":
-							setIsJoyrideActive( false )
+							setIsJoyrideActive(false)
 							break
 						case "reset":
-							setIsJoyrideActive( false )
+							setIsJoyrideActive(false)
 							break
 					}
-				} }
-				steps={ [
-					{ title: "First step title", target: ".joyride-first", disableBeacon: true, showSkipButton: true, content: ( <span>First step content...</span> ) },
-					{ title: "Second step title", target: ".joyride-second", disableBeacon: true, showSkipButton: true, content: ( <span>Second step content...</span> ) },
-					{ title: "Third step title", target: ".joyride-third", disableBeacon: true, showSkipButton: true, content: ( <span>Third step content...</span> ) },
-				] }
+				}}
+				steps={[
+					{
+						title: "First step title",
+						target: ".joyride-first",
+						disableBeacon: true,
+						showSkipButton: true,
+						content: <span>First step content...</span>,
+					},
+					{
+						title: "Second step title",
+						target: ".joyride-second",
+						disableBeacon: true,
+						showSkipButton: true,
+						content: <span>Second step content...</span>,
+					},
+					{
+						title: "Third step title",
+						target: ".joyride-third",
+						disableBeacon: true,
+						showSkipButton: true,
+						content: <span>Third step content...</span>,
+					},
+				]}
 			/>
 		</div>
 	)
@@ -1171,25 +1206,20 @@ function JoyrideShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Joyride"
 			sourceCodeExampleId="joyride"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "react-joyride",
-					url: "https://docs.react-joyride.com/"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://docs.react-joyride.com/",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default JoyrideShowcase;
+export default JoyrideShowcase
+
 import React, { useCallback } from "react"
 import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
@@ -2123,7 +2153,7 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Time Table"
-			sourceCodeExampleId="timetable"
+			{...props}
 			overallSourceCode={props.overallSourceCode}
 			packages={[
 				{
@@ -2141,12 +2171,13 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 }
 
 import React from "react"
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { LoadingSpinner } from "@linked-planet/ui-kit-ts"
 
-export default function LoadingSpinnerShowcase ( props: ShowcaseProps ) {
-
+export default function LoadingSpinnerShowcase(props: ShowcaseProps) {
 	const example = (
 		<div>
 			<LoadingSpinner height="2rem" />
@@ -2157,36 +2188,37 @@ export default function LoadingSpinnerShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Loading Spinner"
 			sourceCodeExampleId="loadingspinner"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://www.github.com/linked-planet/ui-kit-ts"
-				}
-			] }
-			examples={ [ example ] }
+					url: "https://www.github.com/linked-planet/ui-kit-ts",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
 }
 
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import Lozenge from "@atlaskit/lozenge";
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import Lozenge from "@atlaskit/lozenge"
 
-function LozengeShowcase ( props: ShowcaseProps ) {
-
+function LozengeShowcase(props: ShowcaseProps) {
 	// region: lozenge
-	const example1 = (
-		<Lozenge>First lozenge</Lozenge>
-	)
-	const example2 = (
-		<Lozenge appearance="new">Colored lozenge</Lozenge>
-	)
+	const example1 = <Lozenge>First lozenge</Lozenge>
+	const example2 = <Lozenge appearance="new">Colored lozenge</Lozenge>
 	const example3 = (
-		<Lozenge appearance="success" isBold>Colored bold lozenge</Lozenge>
+		<Lozenge appearance="success" isBold>
+			Colored bold lozenge
+		</Lozenge>
 	)
 	const example4 = (
-		<Lozenge appearance="success" isBold={ false }>Colored non-bold lozenge</Lozenge>
+		<Lozenge appearance="success" isBold={false}>
+			Colored non-bold lozenge
+		</Lozenge>
 	)
 	// endregion: lozenge
 
@@ -2194,40 +2226,32 @@ function LozengeShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Lozenge"
 			sourceCodeExampleId="lozenge"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/lozenge",
-					url: "https://atlassian.design/components/lozenge/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example1 ),
-					( example2 ),
-					( example3 ),
-					( example4 ),
-				]
-			}
+					url: "https://atlassian.design/components/lozenge/examples",
+				},
+			]}
+			examples={[example1, example2, example3, example4]}
 		/>
 	)
-
 }
 
-export default LozengeShowcase;
-import React, { useState } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import { HeadingItem, MenuGroup } from "@atlaskit/menu";
-import { SimpleTag } from "@atlaskit/tag";
-import Badge from "@atlaskit/badge";
+export default LozengeShowcase
 
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { HeadingItem, MenuGroup } from "@atlaskit/menu"
+import { SimpleTag } from "@atlaskit/tag"
+import Badge from "@atlaskit/badge"
 
-function MenuShowcase ( props: ShowcaseProps ) {
-
+function MenuShowcase(props: ShowcaseProps) {
 	// region: menu
-	const [ items ] = useState( [ "Menu A", "Menu B", "Menu C" ] )
-	const [ selectedItems, setSelectedItems ] = useState( [ "Menu A" ] )
+	const [items] = useState(["Menu A", "Menu B", "Menu C"])
+	const [selectedItems, setSelectedItems] = useState(["Menu A"])
 	const example = (
 		<div>
 			<MenuGroup>
@@ -2235,26 +2259,34 @@ function MenuShowcase ( props: ShowcaseProps ) {
 					<h4>Filter</h4>
 				</HeadingItem>
 
-				{ items.map( ( item ) => {
+				{items.map((item) => {
 					return (
 						<a
-							key={ item }
-							onClick={ () => {
-								if ( selectedItems.includes( item ) ) {
-									setSelectedItems( [ ...selectedItems.filter( ( it ) => it != item ) ] )
+							key={item}
+							onClick={() => {
+								if (selectedItems.includes(item)) {
+									setSelectedItems([
+										...selectedItems.filter(
+											(it) => it != item,
+										),
+									])
 								} else {
-									setSelectedItems( [ ...selectedItems, item ] )
+									setSelectedItems([...selectedItems, item])
 								}
-							} }
+							}}
 						>
 							<SimpleTag
-								color={ selectedItems.includes( item ) ? "grey" : "standard" }
-								text={ item }
+								color={
+									selectedItems.includes(item)
+										? "grey"
+										: "standard"
+								}
+								text={item}
 							/>
 							<Badge appearance="default">0</Badge>
 						</a>
 					)
-				} ) }
+				})}
 			</MenuGroup>
 		</div>
 	)
@@ -2264,51 +2296,54 @@ function MenuShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Menu"
 			sourceCodeExampleId="menu"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/menu",
-					url: "https://atlassian.design/components/menu/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example )
-				]
-			}
+					url: "https://atlassian.design/components/menu/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default MenuShowcase;
-import React, { useState } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import Button, { ButtonGroup } from "@atlaskit/button";
-import CrossIcon from "@atlaskit/icon/glyph/cross";
-import Modal, { ModalBody, ModalFooter, ModalHeader, ModalTitle, ModalTransition } from "@atlaskit/modal-dialog";
+export default MenuShowcase
 
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import Button, { ButtonGroup } from "@atlaskit/button"
+import CrossIcon from "@atlaskit/icon/glyph/cross"
+import Modal, {
+	ModalBody,
+	ModalFooter,
+	ModalHeader,
+	ModalTitle,
+	ModalTransition,
+} from "@atlaskit/modal-dialog"
 
-function ModalShowcase ( props: ShowcaseProps ) {
-
+function ModalShowcase(props: ShowcaseProps) {
 	// region: modal
-	const [ isModalActive, setIsModalActive ] = useState( false )
+	const [isModalActive, setIsModalActive] = useState(false)
 	const example = (
 		<div>
-			<Button onClick={ () => setIsModalActive( true ) }>
-				Show modal
-			</Button>
+			<Button onClick={() => setIsModalActive(true)}>Show modal</Button>
 
-			{ isModalActive &&
+			{isModalActive && (
 				<ModalTransition>
-					<Modal onClose={ () => setIsModalActive( false ) }>
+					<Modal onClose={() => setIsModalActive(false)}>
 						<ModalHeader>
 							<ModalTitle>Sample Modal</ModalTitle>
 							<Button
 								appearance="link"
-								onClick={ () => setIsModalActive( false ) }>
-								<CrossIcon label="Close popup" primaryColor="#000" />
+								onClick={() => setIsModalActive(false)}
+							>
+								<CrossIcon
+									label="Close popup"
+									primaryColor="#000"
+								/>
 							</Button>
 						</ModalHeader>
 
@@ -2318,13 +2353,18 @@ function ModalShowcase ( props: ShowcaseProps ) {
 
 						<ModalFooter>
 							<ButtonGroup>
-								<Button autoFocus={ true } appearance="primary"
-									onClick={ () => setIsModalActive( false ) }>Close</Button>
+								<Button
+									autoFocus={true}
+									appearance="primary"
+									onClick={() => setIsModalActive(false)}
+								>
+									Close
+								</Button>
 							</ButtonGroup>
 						</ModalFooter>
 					</Modal>
 				</ModalTransition>
-			}
+			)}
 		</div>
 	)
 	// endregion: modal
@@ -2333,40 +2373,38 @@ function ModalShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Modal"
 			sourceCodeExampleId="modal"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/modal-dialog",
-					url: "https://atlassian.design/components/modal-dialog/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example )
-				]
-			}
+					url: "https://atlassian.design/components/modal-dialog/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default ModalShowcase;
-import React, { useState } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+export default ModalShowcase
+
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Pagination from "@atlaskit/pagination"
 
-function PaginationShowcase ( props: ShowcaseProps ) {
-
+function PaginationShowcase(props: ShowcaseProps) {
 	// region: pagination
-	const [ selectedPage, setSelectedPage ] = useState( 0 )
+	const [selectedPage, setSelectedPage] = useState(0)
 	const example = (
 		<Pagination
-			pages={ [ ...Array( 10 ) ].map( ( item, index ) => { return index + 1 } ) }
-			defaultSelectedIndex={ 0 }
-			max={ 10 }
-			selectedIndex={ selectedPage }
-			onChange={ ( event, page ) => setSelectedPage( page - 1 ) }
+			pages={[...Array(10)].map((item, index) => {
+				return index + 1
+			})}
+			defaultSelectedIndex={0}
+			max={10}
+			selectedIndex={selectedPage}
+			onChange={(event, page) => setSelectedPage(page - 1)}
 		/>
 	)
 	// endregion: pagination
@@ -2375,47 +2413,48 @@ function PaginationShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Pagination"
 			sourceCodeExampleId="pagination"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/pagination",
-					url: "https://atlassian.design/components/pagination/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example )
-				]
-			}
+					url: "https://atlassian.design/components/pagination/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default PaginationShowcase;
-import React, { useState } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+export default PaginationShowcase
+
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Popup } from "@atlaskit/popup"
 import Button from "@atlaskit/button"
 
-function PopupShowcase ( props: ShowcaseProps ) {
-
+function PopupShowcase(props: ShowcaseProps) {
 	// region: popup
-	const [ isPopupActive, setIsPopupActive ] = useState( false )
+	const [isPopupActive, setIsPopupActive] = useState(false)
 	const example = (
 		<Popup
-			isOpen={ isPopupActive }
+			isOpen={isPopupActive}
 			placement="top"
-			onClose={ () => setIsPopupActive( false ) }
-			trigger={ () => (
-				<Button onClick={ () => setIsPopupActive( true ) } isSelected={ isPopupActive }>OpenPopup</Button>
-			) }
-			content={ () => (
-				<div style={ { padding: "15px 15px" } }>
+			onClose={() => setIsPopupActive(false)}
+			trigger={() => (
+				<Button
+					onClick={() => setIsPopupActive(true)}
+					isSelected={isPopupActive}
+				>
+					OpenPopup
+				</Button>
+			)}
+			content={() => (
+				<div style={{ padding: "15px 15px" }}>
 					<span>Popup content</span>
-				</div> )
-			}
+				</div>
+			)}
 		/>
 	)
 	// endregion: popup
@@ -2424,59 +2463,53 @@ function PopupShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Popup"
 			sourceCodeExampleId="popup"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/popup",
-					url: "https://atlassian.design/components/popup/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example )
-				]
-			}
+					url: "https://atlassian.design/components/popup/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default PopupShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+export default PopupShowcase
+
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Select from "@atlaskit/select"
 
-function SelectShowcase ( props: ShowcaseProps ) {
-
+function SelectShowcase(props: ShowcaseProps) {
 	// region: select
 	const example1 = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<Select
 				inputId="select-1"
-				options={ [
+				options={[
 					{ label: "First option", value: "first" },
-					{ label: "Second option", value: "second" }
-				] }
+					{ label: "Second option", value: "second" },
+				]}
 			/>
 		</div>
 	)
 	const example2 = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<Select
 				inputId="select-s"
-				options={ [
+				options={[
 					{
-						label: "First group", options: [
-							{ label: "First option", value: "first" }
-						]
+						label: "First group",
+						options: [{ label: "First option", value: "first" }],
 					},
 					{
-						label: "Second group", options: [
-							{ label: "Second option", value: "second" }
-						]
+						label: "Second group",
+						options: [{ label: "Second option", value: "second" }],
 					},
-				] }
+				]}
 			/>
 		</div>
 	)
@@ -2486,32 +2519,33 @@ function SelectShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Select"
 			sourceCodeExampleId="select"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/select",
-					url: "https://atlassian.design/components/select/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example1 ),
-					( example2 ),
-				]
-			}
+					url: "https://atlassian.design/components/select/examples",
+				},
+			]}
+			examples={[example1, example2]}
 		/>
 	)
-
 }
 
-export default SelectShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import TableTree, { Cell, Header, Headers, Row, Rows } from "@atlaskit/table-tree"
+export default SelectShowcase
 
-function TableTreeShowcase ( props: ShowcaseProps ) {
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import TableTree, {
+	Cell,
+	Header,
+	Headers,
+	Row,
+	Rows,
+} from "@atlaskit/table-tree"
 
+function TableTreeShowcase(props: ShowcaseProps) {
 	// region: table_tree
 	interface BookData {
 		title: string
@@ -2527,75 +2561,117 @@ function TableTreeShowcase ( props: ShowcaseProps ) {
 
 	const bookDataTree = [
 		{
-			id: "1", content: { title: "It is lonely at the top.", description: "1" }, hasChildren: true,
+			id: "1",
+			content: { title: "It is lonely at the top.", description: "1" },
+			hasChildren: true,
 			children: [
 				{
 					id: "1.1",
-					content: { title: "Look at me! I am nested.", description: "1.1" },
+					content: {
+						title: "Look at me! I am nested.",
+						description: "1.1",
+					},
 					hasChildren: true,
 					children: [
-						{ id: "1.1.1", content: { title: "I am deeply nested.", description: "1.1.1" }, hasChildren: false }
-					]
-				}
-			]
+						{
+							id: "1.1.1",
+							content: {
+								title: "I am deeply nested.",
+								description: "1.1.1",
+							},
+							hasChildren: false,
+						},
+					],
+				},
+			],
 		},
 		{
-			id: "2", content: { title: "Typescript is fun", description: "2" }, hasChildren: false
-		}
+			id: "2",
+			content: { title: "Typescript is fun", description: "2" },
+			hasChildren: false,
+		},
 	]
 
 	const bookDataTree2 = [
 		{
-			id: "1", title: "It is lonely at the top.", description: "1",
+			id: "1",
+			title: "It is lonely at the top.",
+			description: "1",
 			children: [
 				{
-					id: "1.1", title: "Look at me! I am nested.", description: "1.1", children: [
-						{ id: "1.1.1", title: "I am deeply nested.", description: "1.1.1" }
-					]
-				}
-			]
+					id: "1.1",
+					title: "Look at me! I am nested.",
+					description: "1.1",
+					children: [
+						{
+							id: "1.1.1",
+							title: "I am deeply nested.",
+							description: "1.1.1",
+						},
+					],
+				},
+			],
 		},
 		{
-			id: "2", title: "Typescript is fun", description: "2"
-		}
+			id: "2",
+			title: "Typescript is fun",
+			description: "2",
+		},
 	]
 	const example1 = (
 		<TableTree
-			headers={ [ "Title", "Numbering" ] }
-			columns={ [
-				( bookData: BookData ) => ( <span>{ bookData.title }</span> ),
-				( bookData: BookData ) => ( <span>{ bookData.description }</span> )
-			] }
-			columnWidths={ [ 300, 100 ] }
-			items={ bookDataTree }
+			headers={["Title", "Numbering"]}
+			columns={[
+				(bookData: BookData) => <span>{bookData.title}</span>,
+				(bookData: BookData) => <span>{bookData.description}</span>,
+			]}
+			columnWidths={[300, 100]}
+			items={bookDataTree}
 		/>
 	)
 	const example2 = (
 		<TableTree>
 			<Headers>
-				<Header width="400px" onClick={ () => window.alert( "OnClick Chapter Title Header" ) }>Chapter Title (Click
-					me)</Header>
+				<Header
+					width="400px"
+					onClick={() => window.alert("OnClick Chapter Title Header")}
+				>
+					Chapter Title (Click me)
+				</Header>
 				<Header width="100px">Numbering</Header>
 			</Headers>
 			<Rows
-				items={ bookDataTree2 }
-				render={ ( data: TableTreeItem ) => (
+				items={bookDataTree2}
+				render={(data: TableTreeItem) => (
 					<Row
-						itemId={ data.description }
-						items={ data.children }
-						hasChildren={ data?.children != undefined && data.children.length > 0 }
-						isDefaultExpaned={ false }
+						itemId={data.description}
+						items={data.children}
+						hasChildren={
+							data?.children != undefined &&
+							data.children.length > 0
+						}
+						isDefaultExpaned={false}
 					>
-						<Cell singleLine={ true }>
-							<div onClick={ () => window.alert( "onClick: " + data.title ) }>{ data.title }</div>
+						<Cell singleLine={true}>
+							<div
+								onClick={() =>
+									window.alert("onClick: " + data.title)
+								}
+							>
+								{data.title}
+							</div>
 						</Cell>
-						<Cell singleLine={ true }>
-							<div onClick={ () => window.alert( "onClick: " + data.description ) }>
-								{ data.description }
+						<Cell singleLine={true}>
+							<div
+								onClick={() =>
+									window.alert("onClick: " + data.description)
+								}
+							>
+								{data.description}
 							</div>
 						</Cell>
 					</Row>
-				) }
+				)}
 			/>
 		</TableTree>
 	)
@@ -2605,35 +2681,30 @@ function TableTreeShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="TableTree"
 			sourceCodeExampleId="table_tree"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/table-tree",
-					url: "https://atlassian.design/components/table-tree"
-				}
-			] }
-
-			examples={
-				[
-					( example1 ),
-					( example2 ),
-				]
-			}
+					url: "https://atlassian.design/components/table-tree",
+				},
+			]}
+			examples={[example1, example2]}
 		/>
 	)
-
 }
 
-export default TableTreeShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import Tabs, { Tab, TabList, TabPanel } from "@atlaskit/tabs";
+export default TableTreeShowcase
 
-function TabsShowcase ( props: ShowcaseProps ) {
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import Tabs, { Tab, TabList, TabPanel } from "@atlaskit/tabs"
 
+function TabsShowcase(props: ShowcaseProps) {
 	// region: tabs
 	const example = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<Tabs id="tab-example">
 				<TabList>
 					<Tab>First tab</Tab>
@@ -2654,32 +2725,28 @@ function TabsShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Tabs"
 			sourceCodeExampleId="tabs"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/tabs",
-					url: "https://atlassian.design/components/tabs/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/tabs/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default TabsShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import { SimpleTag } from "@atlaskit/tag";
-import TagGroup from "@atlaskit/tag-group";
+export default TabsShowcase
 
-function TagShowcase ( props: ShowcaseProps ) {
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { SimpleTag } from "@atlaskit/tag"
+import TagGroup from "@atlaskit/tag-group"
 
+function TagShowcase(props: ShowcaseProps) {
 	// region: tags
 	const example = (
 		<TagGroup>
@@ -2693,38 +2760,34 @@ function TagShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Tag & Tag-Group"
 			sourceCodeExampleId="tags"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/tag",
-					url: "https://atlassian.design/components/tag/examples"
+					url: "https://atlassian.design/components/tag/examples",
 				},
 				{
 					name: "@atlaskit/tag-group",
-					url: "https://atlassian.design/components/tag-group/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/tag-group/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default TagShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import TextArea from "@atlaskit/textarea";
+export default TagShowcase
 
-function TextAreaShowcase ( props: ShowcaseProps ) {
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import TextArea from "@atlaskit/textarea"
 
+function TextAreaShowcase(props: ShowcaseProps) {
 	// region: textarea
 	const example = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<TextArea defaultValue="Content of text area..." />
 		</div>
 	)
@@ -2734,39 +2797,35 @@ function TextAreaShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Text area"
 			sourceCodeExampleId="textarea"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/textarea",
-					url: "https://atlassian.design/components/textarea/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/textarea/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default TextAreaShowcase;
-import React from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
-import TextField from "@atlaskit/textfield";
+export default TextAreaShowcase
 
-function TextFieldShowcase ( props: ShowcaseProps ) {
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import TextField from "@atlaskit/textfield"
 
+function TextFieldShowcase(props: ShowcaseProps) {
 	// region: textfield
 	const example1 = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<TextField defaultValue="Content of text field..." />
 		</div>
 	)
 	const example2 = (
-		<div style={ { minWidth: 300 } }>
+		<div style={{ minWidth: 300 }}>
 			<TextField defaultValue="Password" type="password" />
 		</div>
 	)
@@ -2776,38 +2835,33 @@ function TextFieldShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Text field"
 			sourceCodeExampleId="textfield"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/textfield",
-					url: "https://atlassian.design/components/textfield/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example1 ),
-					( example2 ),
-				]
-			}
+					url: "https://atlassian.design/components/textfield/examples",
+				},
+			]}
+			examples={[example1, example2]}
 		/>
 	)
-
 }
 
-export default TextFieldShowcase;
-import React, { useState } from "react";
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem";
+export default TextFieldShowcase
+
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Toggle from "@atlaskit/toggle"
 
-function ToggleShowcase ( props: ShowcaseProps ) {
-
+function ToggleShowcase(props: ShowcaseProps) {
 	// region: toggle
-	const [ isToggleActive, setIsToggleActive ] = useState( false )
+	const [isToggleActive, setIsToggleActive] = useState(false)
 	const example = (
 		<Toggle
-			isChecked={ isToggleActive }
-			onChange={ () => setIsToggleActive( !isToggleActive ) }
+			isChecked={isToggleActive}
+			onChange={() => setIsToggleActive(!isToggleActive)}
 		/>
 	)
 	// endregion: toggle
@@ -2816,34 +2870,30 @@ function ToggleShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Toggle"
 			sourceCodeExampleId="toggle"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "@atlaskit/toggle",
-					url: "https://atlassian.design/components/toggle/examples"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://atlassian.design/components/toggle/examples",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default ToggleShowcase;
+export default ToggleShowcase
+
 import React from "react"
-import ShowcaseWrapperItem, { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import SearchIcon from "@atlaskit/icon/glyph/search"
 import { Tooltip } from "react-tooltip"
 
-import 'react-tooltip/dist/react-tooltip.css'
+import "react-tooltip/dist/react-tooltip.css"
 
-function TooltipShowcase ( props: ShowcaseProps ) {
-
+function TooltipShowcase(props: ShowcaseProps) {
 	// region: tooltip
 	// import 'react-tooltip/dist/react-tooltip.css'
 	const example = (
@@ -2851,8 +2901,7 @@ function TooltipShowcase ( props: ShowcaseProps ) {
 			<div id="tooltip-1">
 				<SearchIcon label="" />
 			</div>
-			<Tooltip data-tooltip-id="tooltip-1" place="right"
-			>
+			<Tooltip data-tooltip-id="tooltip-1" place="right">
 				<span>I&apos;m a tooltip...</span>
 			</Tooltip>
 		</div>
@@ -2863,25 +2912,20 @@ function TooltipShowcase ( props: ShowcaseProps ) {
 		<ShowcaseWrapperItem
 			name="Tooltip"
 			sourceCodeExampleId="tooltip"
-			overallSourceCode={ props.overallSourceCode }
-			packages={ [
+			{...props}
+			packages={[
 				{
 					name: "react-tooltip",
-					url: "https://github.com/wwayne/react-tooltip"
-				}
-			] }
-
-			examples={
-				[
-					( example ),
-				]
-			}
+					url: "https://github.com/wwayne/react-tooltip",
+				},
+			]}
+			examples={[example]}
 		/>
 	)
-
 }
 
-export default TooltipShowcase;
+export default TooltipShowcase
+
 import React, { useState } from "react"
 import {
 	debounceHelper,
@@ -2996,7 +3040,7 @@ export default function UtilsShowCase(props: ShowcaseProps) {
 		<ShowcaseWrapperItem
 			name="Utilities"
 			sourceCodeExampleId="utils"
-			overallSourceCode={props.overallSourceCode}
+			{...props}
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
