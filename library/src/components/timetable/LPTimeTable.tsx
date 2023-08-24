@@ -32,7 +32,6 @@ import { RenderItemProps } from "./ItemWrapper"
 import { PlaceholderItemProps } from "./PlaceholderItem"
 import { getCurrentTheme } from "../../theming"
 import useResizeObserver from "use-resize-observer"
-import type { ObservedSize } from "use-resize-observer"
 
 export interface TimeSlotBooking {
 	title: string
@@ -333,25 +332,22 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		}
 	}, [adjustNowBar])
 
-	const observedSizeChangedCB = useCallback(
-		(_: ObservedSize) => {
-			if (!slotsArray) {
-				return
-			}
-			moveNowBar(
-				slotsArray,
-				nowRef,
-				nowBarRef,
-				tableHeaderRef,
-				tableBodyRef,
-				timeFrameDay,
-				timeSlotMinutes,
-				viewType,
-				setMessage,
-			)
-		},
-		[setMessage, slotsArray, timeFrameDay, timeSlotMinutes, viewType],
-	)
+	const observedSizeChangedCB = useCallback(() => {
+		if (!slotsArray) {
+			return
+		}
+		moveNowBar(
+			slotsArray,
+			nowRef,
+			nowBarRef,
+			tableHeaderRef,
+			tableBodyRef,
+			timeFrameDay,
+			timeSlotMinutes,
+			viewType,
+			setMessage,
+		)
+	}, [setMessage, slotsArray, timeFrameDay, timeSlotMinutes, viewType])
 
 	useResizeObserver({
 		ref: tableBodyRef,

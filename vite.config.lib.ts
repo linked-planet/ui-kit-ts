@@ -2,6 +2,7 @@ import { defineConfig } from "vite"
 import { resolve } from "path"
 import react from "@vitejs/plugin-react-swc"
 import dts from "vite-plugin-dts"
+//import nodePolyfills from "rollup-plugin-polyfill-node"
 
 export default defineConfig({
 	build: {
@@ -16,7 +17,9 @@ export default defineConfig({
 			fileName: (format) => `ui-kit.${format}.js`,
 			formats: ["es"],
 		},
+
 		rollupOptions: {
+			//plugins: [nodePolyfills()],
 			external: [
 				"react",
 				"react-dom",
@@ -79,4 +82,12 @@ export default defineConfig({
 			},
 		}*/
 	],
+	define: {
+		//"process.env": {}, // this is necessary because form.js in @atlaskit uses process.env.NODE_ENV
+		//"process.env.NODE_ENV": {}, // this is necessary because form.js in @atlaskit uses process.env.NODE_ENV
+		// Some libraries use the global object, even though it doesn't exist in the browser.
+		// Alternatively, we could add `<script>window.global = window;</script>` to index.html.
+		// https://github.com/vitejs/vite/discussions/5912
+		//global: {},  -> this breaks @atlaskit/tokens build
+	},
 })
