@@ -97,7 +97,10 @@ export default function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
 			id={props.id}
 			data-menu-name={props.name}
 			className="menu"
-			style={{ padding: "20px 20px" }}
+			style={{
+				padding: "20px",
+				width: "100%",
+			}}
 			ref={ref}
 		>
 			<h3>{props.name}</h3>
@@ -117,14 +120,19 @@ export default function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
 				})}
 			</div>
 
-			<div style={{ marginLeft: "-8px" }}>
+			<div
+				style={{
+					marginLeft: "-8px",
+					width: "100%",
+				}}
+			>
 				<Tabs id={props.name + "-tabs"}>
 					<TabList>
 						<Tab>Example</Tab>
 						<Tab>Example Source</Tab>
 					</TabList>
 					<TabPanel>
-						<div style={{ overflow: "hidden" }}>
+						<div style={{ overflow: "hidden", width: "100%" }}>
 							{props.examples.map((example, i) => {
 								return (
 									<div key={i} className={styles.example}>
