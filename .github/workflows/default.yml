@@ -28,7 +28,8 @@ jobs:
               run: npm run build:sc
 
             - name: deploy Showcase to Github Pages
-              if: ${{ github.event_name == 'release' }}
+              # run deploy either on release of when manually triggered from the Actions tab on GitHub
+              if: ${{ github.event_name == 'release' || github.event_name == 'workflow_dispatch' }}
               uses: JamesIves/github-pages-deploy-action@v4.4.1
               with:
                   branch: docs

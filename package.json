@@ -17,7 +17,7 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build:lib": "vite build -c vite.config.lib.ts && npm run messages:compile",
-		"build:sc": "vite build -c vite.config.showcase.ts && npm run messages:compile && node ./showcase/copySources.js",
+		"build:sc": "vite build -c vite.config.showcase.ts && npm run messages:compile && node ./showcase/copySources.js && node ./showcase/copyIndexTo404.js",
 		"preview": "npm run build:sc && vite preview -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
 		"dev:sc": "node ./showcase/copySources.js && npm run messages:compile && vite -c vite.config.showcase.ts --open",

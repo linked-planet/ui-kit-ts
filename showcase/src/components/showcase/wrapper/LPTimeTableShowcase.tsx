@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useMemo } from "react"
 import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -858,12 +858,13 @@ function Example() {
 
 function ExampleCalendar() {
 	// region: timetable
-	const [timeFrame, setTimeFrame] = useState({
-		startDate: startDateInitial.startOf("day"),
-		endDate: endDateInitial.startOf("day"),
-	})
-
-	const [entries, setEntries] = useState(exampleEntries)
+	const timeFrame = useMemo(
+		() => ({
+			startDate: startDateInitial.startOf("day"),
+			endDate: endDateInitial.startOf("day"),
+		}),
+		[],
+	)
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	return (
@@ -878,7 +879,7 @@ function ExampleCalendar() {
 					columnWidth={70}
 					startDate={timeFrame.startDate}
 					endDate={timeFrame.endDate}
-					entries={entries}
+					entries={exampleEntries}
 					timeTableMessages={translation}
 					disableWeekendInteractions={true}
 					showTimeSlotHeader={false}
@@ -893,12 +894,13 @@ function ExampleCalendar() {
 
 function ExampleMonthCalendar() {
 	// region: timetable
-	const [timeFrame, setTimeFrame] = useState({
-		startDate: startDateInitial.startOf("month").subtract(1, "day"),
-		endDate: endDateInitial.endOf("month").add(1, "day"),
-	})
-
-	const [entries, setEntries] = useState(exampleEntries)
+	const timeFrame = useMemo(
+		() => ({
+			startDate: startDateInitial.startOf("month").subtract(1, "day"),
+			endDate: endDateInitial.endOf("month").add(1, "day"),
+		}),
+		[],
+	)
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 
@@ -914,7 +916,7 @@ function ExampleMonthCalendar() {
 					columnWidth={70}
 					startDate={timeFrame.startDate}
 					endDate={timeFrame.endDate}
-					entries={entries}
+					entries={exampleEntries}
 					timeTableMessages={translation}
 					disableWeekendInteractions={true}
 					viewType={"months"}

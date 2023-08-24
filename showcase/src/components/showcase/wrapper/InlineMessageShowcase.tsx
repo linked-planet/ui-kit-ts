@@ -4,9 +4,9 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { InlineMessage } from "@linked-planet/ui-kit-ts"
-import type { Message } from "@linked-planet/ui-kit-ts"
 
 export default function InlineMessageShowcase(props: ShowcaseProps) {
+	//#region inlinemessage
 	const example = (
 		<>
 			<InlineMessage
@@ -65,8 +65,17 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 				}}
 				openingDirection="bottomup"
 			/>
+			<InlineMessage
+				message={{
+					text: "This is a not removable message.",
+					timeOut: 5,
+					urgency: "information",
+				}}
+				removable={false}
+			/>
 		</>
 	)
+	//#endregion
 
 	return (
 		<ShowcaseWrapperItem
