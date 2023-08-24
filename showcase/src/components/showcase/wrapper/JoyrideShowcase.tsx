@@ -16,16 +16,19 @@ function JoyrideShowcase(props: ShowcaseProps) {
 	const example = (
 		<>
 			<InlineMessage
+				removable={true}
 				message={{
 					text: (
-						<>
+						<div>
 							If you get the error &apos;global is not
-							defined&apos; you have to add the following: &apos;
-							<pre>
-								if (!window.global) window.global = window
-							</pre>
-							&apos;
-						</>
+							defined&apos; you have to add the following:
+							<br></br>
+							<div>
+								<pre>
+									if (!window.global) window.global = window
+								</pre>
+							</div>
+						</div>
 					),
 					urgency: "warning",
 				}}

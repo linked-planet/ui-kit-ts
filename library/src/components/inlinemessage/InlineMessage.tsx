@@ -23,10 +23,12 @@ export default function InlineMessage({
 	message,
 	display = "block",
 	openingDirection = "topdown",
+	removable = true,
 }: {
 	message: Message
 	display?: "inline-block" | "block"
 	openingDirection?: OpeningDirection
+	removable?: boolean
 }) {
 	const [open, setOpen] = useState(true)
 	const [msg, setMessage] = useState(message)
@@ -121,6 +123,8 @@ export default function InlineMessage({
 					borderRadius: "4px",
 					color: textColor,
 					padding: "2px",
+					paddingLeft: "6px",
+					paddingRight: "6px",
 					transition: "all 0.25s ease-in-out",
 					boxSizing: "border-box",
 					overflow: "hidden",
@@ -138,23 +142,26 @@ export default function InlineMessage({
 					}}
 				>
 					{msg?.text ?? ""}
-					<Button
-						appearance={closeBtnAppearance}
-						style={{
-							borderRadius: "100%",
-							userSelect: "none",
-							display: "flex",
-							justifyContent: "center",
-							alignItems: "center",
-							height: "20px",
-							width: "20px",
-							padding: "0px",
-							color: textColor,
-						}}
-						onClick={() => setOpen(false)}
-					>
-						x
-					</Button>
+					{removable && (
+						<Button
+							appearance={closeBtnAppearance}
+							style={{
+								borderRadius: "100%",
+								userSelect: "none",
+								display: "flex",
+								justifyContent: "center",
+								alignItems: "center",
+								height: "20px",
+								width: "20px",
+								padding: "0px",
+								color: textColor,
+								marginLeft: "4px",
+							}}
+							onClick={() => setOpen(false)}
+						>
+							x
+						</Button>
+					)}
 				</div>
 			</div>
 		</div>
