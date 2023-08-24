@@ -4,6 +4,7 @@ import AvatarShowcase from "./components/showcase/wrapper/AvatarShowcase"
 import AwesomeSliderShowcase from "./components/showcase/wrapper/AwesomeSliderShowcase"
 import BadgeShowcase from "./components/showcase/wrapper/BadgeShowcase"
 import BannerShowcase from "./components/showcase/wrapper/BannerShowcase"
+import BookCardShowcase from "./components/showcase/wrapper/BookCardShowcase"
 import ButtonShowcase from "./components/showcase/wrapper/ButtonShowcase"
 import CalendarShowcase from "./components/showcase/wrapper/CalendarShowcase"
 import CheckboxShowcase from "./components/showcase/wrapper/CheckboxShowcase"
@@ -47,8 +48,11 @@ export default function useShowCases({
 				<AwesomeSliderShowcase overallSourceCode={overallSourceCode} />
 			),
 			badge: <BadgeShowcase overallSourceCode={overallSourceCode} />,
-			button: <ButtonShowcase overallSourceCode={overallSourceCode} />,
 			banner: <BannerShowcase overallSourceCode={overallSourceCode} />,
+			bookcard: (
+				<BookCardShowcase overallSourceCode={overallSourceCode} />
+			),
+			button: <ButtonShowcase overallSourceCode={overallSourceCode} />,
 			calendar: (
 				<CalendarShowcase overallSourceCode={overallSourceCode} />
 			),
@@ -75,13 +79,18 @@ export default function useShowCases({
 			flag: <FlagShowcase overallSourceCode={overallSourceCode} />,
 			form: <FormShowcase overallSourceCode={overallSourceCode} />,
 			icon: <IconShowcase overallSourceCode={overallSourceCode} />,
+			joyride: <JoyrideShowcase overallSourceCode={overallSourceCode} />,
 			inlinemessage: (
 				<InlineMessageShowcase overallSourceCode={overallSourceCode} />
 			),
 			loadingspinner: (
 				<LoadingSpinnerShowcase overallSourceCode={overallSourceCode} />
 			),
-			joyride: <JoyrideShowcase overallSourceCode={overallSourceCode} />,
+			menu2: <MenuShowcase overallSourceCode={overallSourceCode} />,
+			pagelayout: (
+				<PageLayoutShowcase overallSourceCode={overallSourceCode} />
+			),
+
 			lozenge: <LozengeShowcase overallSourceCode={overallSourceCode} />,
 			modal: <ModalShowcase overallSourceCode={overallSourceCode} />,
 			pagination: (
@@ -108,11 +117,7 @@ export default function useShowCases({
 			),
 			toggle: <ToggleShowcase overallSourceCode={overallSourceCode} />,
 			tooltip: <TooltipShowcase overallSourceCode={overallSourceCode} />,
-			menu2: <MenuShowcase overallSourceCode={overallSourceCode} />,
 			utils: <UtilsShowCase overallSourceCode={overallSourceCode} />,
-			pagelayout: (
-				<PageLayoutShowcase overallSourceCode={overallSourceCode} />
-			),
 		}),
 		[overallSourceCode],
 	)

@@ -185,6 +185,69 @@ function BannerShowcase(props: ShowcaseProps) {
 
 export default BannerShowcase
 
+import { BookCardComponents } from "@linked-planet/ui-kit-ts/components/BookCard"
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
+//#region bookcard
+function BookCardComponentsExample() {
+	return (
+		<div>
+			<BookCardComponents.BookCardBase>
+				<BookCardComponents.BookCardHeader>
+					<BookCardComponents.BookCardHeaderTitle>
+						Book Title
+					</BookCardComponents.BookCardHeaderTitle>
+					<BookCardComponents.BookCardHeaderSubtitle>
+						Book Subtitle
+					</BookCardComponents.BookCardHeaderSubtitle>
+				</BookCardComponents.BookCardHeader>
+				<BookCardComponents.BookCardBody>
+					<BookCardComponents.BookCardBodyEntry>
+						<BookCardComponents.BookCardBodyEntryTitle>
+							Book Entry Title
+						</BookCardComponents.BookCardBodyEntryTitle>
+						<div>Book Entry Content</div>
+					</BookCardComponents.BookCardBodyEntry>
+					<BookCardComponents.BookCardBodyEntry>
+						<BookCardComponents.BookCardBodyEntryTitle>
+							Book Entry Title
+						</BookCardComponents.BookCardBodyEntryTitle>
+						<div>Book Entry Content</div>
+					</BookCardComponents.BookCardBodyEntry>
+				</BookCardComponents.BookCardBody>
+			</BookCardComponents.BookCardBase>
+		</div>
+	)
+}
+
+function BookCardExample() {
+	return <></>
+}
+//#endregion
+
+export default function BookCardShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="Book Card (Components)"
+			sourceCodeExampleId="bookcard"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://www.github.com/linked-planet/ui-kit-ts",
+				},
+			]}
+			examples={[
+				<BookCardComponentsExample key="bookcardcomponentexample" />,
+				<BookCardExample key="bookcardexample" />,
+			]}
+		/>
+	)
+}
+
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
@@ -1045,9 +1108,9 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { InlineMessage } from "@linked-planet/ui-kit-ts"
-import type { Message } from "@linked-planet/ui-kit-ts"
 
 export default function InlineMessageShowcase(props: ShowcaseProps) {
+	//#region inlinemessage
 	const example = (
 		<>
 			<InlineMessage
@@ -1106,8 +1169,17 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 				}}
 				openingDirection="bottomup"
 			/>
+			<InlineMessage
+				message={{
+					text: "This is a not removable message.",
+					timeOut: 5,
+					urgency: "information",
+				}}
+				removable={false}
+			/>
 		</>
 	)
+	//#endregion
 
 	return (
 		<ShowcaseWrapperItem
@@ -1135,6 +1207,7 @@ import { InlineMessage } from "@linked-planet/ui-kit-ts"
 
 function JoyrideShowcase(props: ShowcaseProps) {
 	// fix missing global
+	// @ts-expect-error global is not defined
 	if (!window.global) window.global = window
 
 	// region: joyride
@@ -1142,16 +1215,19 @@ function JoyrideShowcase(props: ShowcaseProps) {
 	const example = (
 		<>
 			<InlineMessage
+				removable={true}
 				message={{
 					text: (
-						<>
+						<div>
 							If you get the error &apos;global is not
-							defined&apos; you have to add the following: &apos;
-							<pre>
-								if (!window.global) window.global = window
-							</pre>
-							&apos;
-						</>
+							defined&apos; you have to add the following:
+							<br></br>
+							<div>
+								<pre>
+									if (!window.global) window.global = window
+								</pre>
+							</div>
+						</div>
 					),
 					urgency: "warning",
 				}}
@@ -1241,7 +1317,7 @@ function JoyrideShowcase(props: ShowcaseProps) {
 
 export default JoyrideShowcase
 
-import React, { useCallback } from "react"
+import React, { useCallback, useMemo } from "react"
 import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -2101,12 +2177,13 @@ function Example() {
 
 function ExampleCalendar() {
 	// region: timetable
-	const [timeFrame, setTimeFrame] = useState({
-		startDate: startDateInitial.startOf("day"),
-		endDate: endDateInitial.startOf("day"),
-	})
-
-	const [entries, setEntries] = useState(exampleEntries)
+	const timeFrame = useMemo(
+		() => ({
+			startDate: startDateInitial.startOf("day"),
+			endDate: endDateInitial.startOf("day"),
+		}),
+		[],
+	)
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	return (
@@ -2121,7 +2198,7 @@ function ExampleCalendar() {
 					columnWidth={70}
 					startDate={timeFrame.startDate}
 					endDate={timeFrame.endDate}
-					entries={entries}
+					entries={exampleEntries}
 					timeTableMessages={translation}
 					disableWeekendInteractions={true}
 					showTimeSlotHeader={false}
@@ -2136,12 +2213,13 @@ function ExampleCalendar() {
 
 function ExampleMonthCalendar() {
 	// region: timetable
-	const [timeFrame, setTimeFrame] = useState({
-		startDate: startDateInitial.startOf("month").subtract(1, "day"),
-		endDate: endDateInitial.endOf("month").add(1, "day"),
-	})
-
-	const [entries, setEntries] = useState(exampleEntries)
+	const timeFrame = useMemo(
+		() => ({
+			startDate: startDateInitial.startOf("month").subtract(1, "day"),
+			endDate: endDateInitial.endOf("month").add(1, "day"),
+		}),
+		[],
+	)
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 
@@ -2157,7 +2235,7 @@ function ExampleMonthCalendar() {
 					columnWidth={70}
 					startDate={timeFrame.startDate}
 					endDate={timeFrame.endDate}
-					entries={entries}
+					entries={exampleEntries}
 					timeTableMessages={translation}
 					disableWeekendInteractions={true}
 					viewType={"months"}
