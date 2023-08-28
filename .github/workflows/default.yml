@@ -11,18 +11,7 @@ on:
     workflow_dispatch: # to run from the Actions tab on GitHub
 
 jobs:
-    get_latest_tag:
-        runs-on: ubuntu-latest
-        outputs:
-            latest_tag: ${{ steps.get_latest_tag.outputs.tag }}
-        steps:
-            - name: Get latest tag
-              id: get_latest_tag
-              # set as VITE_GH_RELEASE_TAG for vite to use in the build
-              run: echo ::set-output name=tag::$(git describe --tags --abbrev=0)
-
     build:
-        needs: get_latest_tag
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
