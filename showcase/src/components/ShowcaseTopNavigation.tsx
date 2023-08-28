@@ -11,7 +11,7 @@ import { LocaleDropDown, ThemeSwitch } from "@linked-planet/ui-kit-ts"
 export const ProfileIcon = () => {
 	return (
 		<img
-			src="./images/github-logo.png"
+			src="/images/github-logo.png"
 			style={{
 				borderRadius: "50%",
 				width: 32,
@@ -61,24 +61,27 @@ function ShowcaseTopNavigation() {
 						<LocaleDropDown />
 					</div>,
 				]}
-				renderAppSwitcher={() => <ThemeSwitch />}
+				renderAppSwitcher={undefined}
 				renderProductHome={() => (
 					<CustomProductHome
 						siteTitle="UI-Kit-TS"
 						iconUrl="./images/logo.png"
 						logoAlt=""
-						onClick={() => navigation("/utils")}
+						onClick={() => navigation("/intro")}
 						logoUrl="images/logo.png"
 						iconAlt=""
 					/>
 				)}
 				renderProfile={() => (
-					<Profile
-						tooltip=""
-						href="https://github.com/linked-planet/ui-kit-ts"
-						target="_blank"
-						icon={<ProfileIcon />}
-					/>
+					<>
+						<ThemeSwitch />
+						<Profile
+							tooltip=""
+							href="https://github.com/linked-planet/ui-kit-ts"
+							target="_blank"
+							icon={<ProfileIcon />}
+						/>
+					</>
 				)}
 			/>
 		</TopNavigation>

@@ -19,7 +19,7 @@ export default function SinglePage() {
 
 	const scs = useShowCases({ overallSourceCode })
 
-	const idFromUrl = location.hash.substring(1)
+	const idFromUrl = decodeURIComponent(location.hash.substring(1))
 
 	const { options, defaultOption } = useMemo(() => {
 		const options = Object.entries(scs).map(([id, component]) => ({
@@ -36,7 +36,11 @@ export default function SinglePage() {
 	}, [options, defaultOption])
 
 	return (
-		<>
+		<div
+			style={{
+				marginTop: "3rem",
+			}}
+		>
 			<Select
 				options={options}
 				onChange={(e) => {
@@ -44,10 +48,10 @@ export default function SinglePage() {
 						setSC(e)
 					}
 				}}
-				defaultValue={defaultOption ?? options[0]}
+				value={sc}
 				autoFocus
 			/>
 			{sc && React.cloneElement(sc.value, { id: sc.label })}
-		</>
+		</div>
 	)
 }
