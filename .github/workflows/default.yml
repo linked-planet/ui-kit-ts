@@ -25,7 +25,7 @@ jobs:
               run: npm run build:lib
 
             - name: npm build showcase
-              run: RELEASE_VERSION=${{ github.event.release.tag_name }} npm run build:sc
+              run: VITE_GH_RELEASE_TAG=${{ github.event.release.tag_name }} npm run build:sc
 
             - name: deploy Showcase to Github Pages
               # run deploy either on release or ...
