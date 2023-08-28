@@ -26,7 +26,7 @@ jobs:
 
             - name: get_latest_tag
               id: get_latest_tag
-              run: echo "latest_tag=$(git tag --sort=-version:refname | head -n 1)" >> $GITHUB_OUTPUT
+              run: echo "{latest_tag}={$(git tag --sort=-version:refname | head -n 1)}" >> $GITHUB_OUTPUT
 
             - name: npm build showcase
               run: VITE_GH_RELEASE_TAG=${{ steps.get_latest_tag.outputs.latest_tag }} npm run build:sc
