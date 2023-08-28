@@ -10,11 +10,19 @@ on:
         - cron: "0 6 * * 1" # At 06:00 on Monday
     workflow_dispatch: # to run from the Actions tab on GitHub
 
-env:
-    VITE_GH_RELEASE_TAG: ${{ github.ref }} # vite uses this in the build to replace the version in the index.html
-
 jobs:
+    get_latest_tag:
+        runs-on: ubuntu-latest
+        outputs:
+            latest_tag: ${{ steps.get_latest_tag.outputs.tag }}
+        steps:
+            - name: Get latest tag
+              id: get_latest_tag
+              # set as VITE_GH_RELEASE_TAG for vite to use in the build
+              run: echo ::set-output name=tag::$(git describe --tags --abbrev=0)
+
     build:
+        needs: get_latest_tag
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -27,8 +35,12 @@ jobs:
             - name: npm build library
               run: npm run build:lib
 
+            - name: get_latest_tag
+              id: get_latest_tag
+              run: echo ::set-output name=tag::$(git describe --tags --abbrev=0)
+
             - name: npm build showcase
-              run: npm run build:sc
+              run: VITE_GH_RELEASE_TAG=${{ steps.get_latest_tag.outputs.tag }} npm run build:sc
 
             - name: deploy Showcase to Github Pages
               # run deploy either on release or ...
