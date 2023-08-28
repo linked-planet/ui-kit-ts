@@ -28,7 +28,7 @@ function BookCardComponentsExample() {
 					</BookCardComponents.CardHeaderMeta>
 				</BookCardComponents.CardHeader>
 			}
-			defaultClosed={false}
+			closed={false}
 		>
 			<BookCardComponents.CardGridBody>
 				<BookCardComponents.CardBodyEntry>
@@ -54,9 +54,7 @@ function BookCardExample() {
 		"grid",
 	)
 
-	const [defaultClosed, setDefaultClosed] = useState<
-		boolean | undefined | null
-	>(false)
+	const [isClosed, setIsClosed] = useState<boolean | undefined | null>(false)
 
 	const children = useMemo(() => {
 		const childCount = bodyLayout === "column" ? 10 : 100
@@ -102,8 +100,8 @@ function BookCardExample() {
 			subtitle="Book Subtitle"
 			bodyLayout={bodyLayout}
 			bodyStyle={bodyStyle}
-			defaultClosed={defaultClosed}
-			actionsInfo={"Actions Informations:"}
+			closed={isClosed}
+			actionsInfo={"Action:"}
 			actions={
 				<>
 					<SimpleTag key="action" text="action item" color="blue" />
@@ -141,20 +139,20 @@ function BookCardExample() {
 				<Fieldset legend="Book Card Collapsible">
 					<ButtonGroup>
 						<Button
-							isSelected={defaultClosed === false}
-							onClick={() => setDefaultClosed(false)}
+							isSelected={isClosed === false}
+							onClick={() => setIsClosed(false)}
 						>
 							Default Closed False
 						</Button>
 						<Button
-							isSelected={defaultClosed === true}
-							onClick={() => setDefaultClosed(true)}
+							isSelected={isClosed === true}
+							onClick={() => setIsClosed(true)}
 						>
 							Default Closed True
 						</Button>
 						<Button
-							isSelected={defaultClosed === undefined}
-							onClick={() => setDefaultClosed(undefined)}
+							isSelected={isClosed === undefined}
+							onClick={() => setIsClosed(undefined)}
 						>
 							Default Closed Undefined
 						</Button>
@@ -164,7 +162,7 @@ function BookCardExample() {
 							marginBottom: "1rem",
 						}}
 					>
-						<b>defaultClosed: </b>
+						<b>closed: </b>
 						<br></br>
 						<em>true/false</em> - card is collapsible<br></br>
 						<em>undefined/null</em> - card is not collapsible
@@ -211,16 +209,16 @@ export default function BookCardShowcase(props: ShowcaseProps) {
 			]}
 			examples={[
 				{
+					title: "Complete Bookcard",
+					example: <BookCardExample key="bookcardexample" />,
+					sourceCodeExampleId: "bookcard",
+				},
+				{
 					title: "Components",
 					example: (
 						<BookCardComponentsExample key="bookcardcomponentexample" />
 					),
 					sourceCodeExampleId: "bookcardcomponents",
-				},
-				{
-					title: "Complete Bookcard",
-					example: <BookCardExample key="bookcardexample" />,
-					sourceCodeExampleId: "bookcard",
 				},
 			]}
 		/>

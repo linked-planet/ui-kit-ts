@@ -176,20 +176,21 @@ function calculateTimeSlotsHoursView(
 	if (!isFinite(timeSlotsPerDay)) {
 		return null
 	}
-	const daysArray = Array.from({ length: daysDifference }, (x, i) => i).map(
-		(day) => {
-			return dayjs(startDate).add(day, "days")
-		},
-	)
 
-	const slotsArray = daysArray.flatMap((date) => {
-		return Array.from(
-			{ length: timeSlotsPerDay },
-			(_, i) => i * timeSteps,
-		).map((minutes) => {
-			return dayjs(date).add(minutes, "minutes")
-		})
-	})
+	const daysArray = new Array(daysDifference)
+	for (let i = 0; i < daysDifference; i++) {
+		daysArray[i] = dayjs(startDate).add(i, "days")
+	}
+
+	const slotsArray = new Array(daysDifference * timeSlotsPerDay)
+	for (let i = 0; i < daysDifference; i++) {
+		const dayStartDate = i === 0 ? startDate : startDate.add(i, "days")
+		slotsArray[i * timeSlotsPerDay] = dayStartDate
+		for (let ts = 1; ts < timeSlotsPerDay; ts++) {
+			const timeSlot = dayStartDate.add(ts * timeSteps, "minutes")
+			slotsArray[i * timeSlotsPerDay + ts] = timeSlot
+		}
+	}
 
 	return slotsArray
 }

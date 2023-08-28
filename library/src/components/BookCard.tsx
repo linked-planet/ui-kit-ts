@@ -1,4 +1,10 @@
-import React, { CSSProperties, useCallback, useRef, useState } from "react"
+import React, {
+	CSSProperties,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react"
 
 import { token } from "@atlaskit/tokens"
 import styled from "@emotion/styled"
@@ -27,26 +33,31 @@ const bookCardBaseStyle: CSSProperties = {
 function CardBase({
 	children,
 	header,
-	defaultClosed,
+	closed,
 }: {
 	children?: React.ReactNode
 	header: React.ReactNode
-	defaultClosed?: boolean | undefined | null
+	closed?: boolean | undefined | null
 }) {
 	const detailsRef = useRef<HTMLDetailsElement>(null)
-	const [isOpen, setIsOpen] = useState<boolean | undefined | null>(
-		defaultClosed,
-	)
+	const [isClosed, setIsClosed] = useState<boolean | undefined | null>(closed)
+
+	useEffect(() => {
+		setIsClosed(closed)
+	}, [closed])
 
 	const onToggledCB = useCallback(() => {
-		setIsOpen((prev) => !prev)
-	}, [])
+		if (closed) {
+			return
+		}
+		setIsClosed((prev) => !prev)
+	}, [closed])
 
 	return (
 		<details
 			ref={detailsRef}
 			style={bookCardBaseStyle}
-			{...((defaultClosed == undefined || isOpen) && { open: true })}
+			{...((closed == undefined || !closed) && { open: true })}
 			//onToggle={onToggledCB}
 			onClick={(e) => e.preventDefault()}
 		>
@@ -61,7 +72,6 @@ function CardBase({
 					backgroundColor: headerBackgroundColor,
 					borderBottom: `1px solid ${borderColor}`,
 					borderTopRightRadius: "4px",
-					paddingRight: "4px",
 				}}
 			>
 				<div
@@ -73,14 +83,15 @@ function CardBase({
 				>
 					{header}
 				</div>
-				{defaultClosed != undefined && (
+				{closed != undefined && (
 					<div
 						style={{
-							marginLeft: "12px",
+							marginLeft: "-8px",
+							marginRight: "4px",
 						}}
 						onClick={onToggledCB}
 					>
-						{isOpen ? (
+						{!isClosed ? (
 							<ChevronUpIcon label="close" />
 						) : (
 							<ChevronDownIcon label="open" />
@@ -100,9 +111,8 @@ const CardHeader = styled.div`
 	justify-content: space-between;
 	gap: 30px;
 	min-width: 0;
-	width: 100%;
 
-	padding: 12px 12px;
+	padding: 12px;
 
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
@@ -230,7 +240,7 @@ export { BookCardComponents }
 type BookCardProps = {
 	title: React.ReactNode
 	subtitle?: React.ReactNode
-	defaultClosed?: boolean | undefined | null
+	closed?: boolean | undefined | null
 	bodyLayout: "row" | "grid" | "column"
 	bodyStyle?: CSSProperties
 	maxBodyHeight?: string
@@ -242,7 +252,7 @@ type BookCardProps = {
 export function BookCard({
 	title,
 	subtitle,
-	defaultClosed,
+	closed,
 	actions,
 	actionsInfo,
 	bodyStyle,
@@ -264,7 +274,7 @@ export function BookCard({
 
 	return (
 		<CardBase
-			defaultClosed={defaultClosed}
+			closed={closed}
 			header={
 				<CardHeader>
 					<CardHeaderMeta>

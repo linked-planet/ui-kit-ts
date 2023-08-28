@@ -128,7 +128,10 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 			const alreadySelected =
 				selectedTimeSlots.timeSlots.includes(timeSlot)
 
-			if (interaction === "click") {
+			if (
+				interaction === "click" ||
+				(interaction === "drag" && !multiselectionMode)
+			) {
 				if (
 					selectedTimeSlots.group !== group ||
 					(!alreadySelected && !timeSlotAfter && !timeSlotBefore)

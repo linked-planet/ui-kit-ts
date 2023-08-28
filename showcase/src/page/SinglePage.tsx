@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom"
 export default function SinglePage() {
 	const [overallSourceCode, setOverallSourceCode] = useState("")
 	const location = useLocation()
+	console.log("LOCATION", location.hash)
 
 	// retrieve source code
 	useEffect(() => {
@@ -26,7 +27,10 @@ export default function SinglePage() {
 			label: id,
 			value: component,
 		}))
-		const defaultOption = options.find((it) => it.label === idFromUrl)
+		const defaultOption = options.find(
+			(it) =>
+				it.label.toLocaleLowerCase() === idFromUrl.toLocaleLowerCase(),
+		)
 		return { options, defaultOption }
 	}, [scs, idFromUrl])
 

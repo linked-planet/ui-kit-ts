@@ -249,7 +249,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	let beforeCount = 0
 	let afterCount = 0
 	const itemsToRender = bookingItemsBeginningInCell
-		? bookingItemsBeginningInCell.map((it, i, arr) => {
+		? bookingItemsBeginningInCell.map((it, i) => {
 				if (it.status === "before") {
 					beforeCount++
 					return null
@@ -270,15 +270,17 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				)
 
 				const leftUsed = left - currentLeft
-				currentLeft = left + width
 				if (leftUsed < 0) {
 					console.error(
 						"LPTimeTable - leftUsed is negative, this should not happen",
+						i,
+						it,
 						leftUsed,
 						left,
 						currentLeft,
 					)
 				}
+				currentLeft = left + width
 
 				const gridTemplateColumnWidth =
 					(leftUsed + width) * tableCellWidth
@@ -742,11 +744,6 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 	timeSlotMinutes: number,
 	viewType: TimeTableViewType,
 ) {
-	const timeFrameStartHour = slotsArray[0].hour()
-	const timeFrameStartMinute = slotsArray[0].minute()
-	const timeFrameEndHour = slotsArray[slotsArray.length - 1].hour()
-	const timeFrameEndMinute = slotsArray[slotsArray.length - 1].minute()
-
 	const itemRows: {
 		startSlot: number
 		endSlot: number
@@ -771,9 +768,9 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 
 		if (
 			item.startDate.startOf("day") === item.endDate.startOf("day") &&
-			(item.endDate.hour() < timeFrameStartHour ||
-				(item.endDate.hour() === timeFrameStartHour &&
-					item.endDate.minute() < timeFrameStartMinute))
+			(item.endDate.hour() < timeFrameDay.startHour ||
+				(item.endDate.hour() === timeFrameDay.startHour &&
+					item.endDate.minute() < timeFrameDay.startMinute))
 		) {
 			if (itemRows.length === 0) {
 				itemRows.push([ret])
@@ -784,11 +781,9 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 		}
 
 		if (
-			timeFrameEndHour !== 0 &&
-			timeFrameEndMinute !== 0 &&
-			(item.startDate.hour() > timeFrameEndHour ||
-				(item.startDate.hour() === timeFrameEndHour &&
-					item.startDate.minute() > timeFrameEndMinute))
+			item.startDate.hour() > timeFrameDay.endHour ||
+			(item.startDate.hour() === timeFrameDay.endHour &&
+				item.startDate.minute() > timeFrameDay.endMinute)
 		) {
 			if (itemRows.length === 0) {
 				itemRows.push([ret])
