@@ -18,18 +18,19 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: "18.17.1"
+
+              # if i run the deployment of the github pages from the github web ui, without a release, then there is no github.event.release...
+            - name: get latest tag
+              id: get_latest_tag
+              run: |
+                  LATEST_TAG=$(git tag --sort=-version:refname | head -n 1)
+                  echo latest_tag=${LATEST_TAG} >> $GITHUB_OUTPUT
+
             - name: npm install
               run: npm install
 
             - name: npm build library
               run: npm run build:lib
-
-            # if i run the deployment of the github pages from the github web ui, without a release, then there is no github.event.release...
-            - name: get latest tag
-              id: get_latest_tag
-              run: |
-                  LATEST_TAG=${git tag --sort=-version:refname | head -n 1}
-                  echo latest_tag=${LATEST_TAG} >> $GITHUB_OUTPUT
 
             - name: npm build showcase
               run: VITE_GH_RELEASE_TAG=${{ steps.get_latest_tag.outputs.latest_tag }} npm run build:sc
