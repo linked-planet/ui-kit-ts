@@ -24,9 +24,12 @@ jobs:
             - name: npm build library
               run: npm run build:lib
 
-            - name: get_latest_tag
+            # if i run the deployment of the github pages from the github web ui, without a release, then there is no github.event.release...
+            - name: get latest tag
               id: get_latest_tag
-              run: echo "{latest_tag}={$(git tag --sort=-version:refname | head -n 1)}" >> $GITHUB_OUTPUT
+              run: |
+                  LATEST_TAG=${git tag --sort=-version:refname | head -n 1}
+                  echo latest_tag=${LATEST_TAG} >> $GITHUB_OUTPUT
 
             - name: npm build showcase
               run: VITE_GH_RELEASE_TAG=${{ steps.get_latest_tag.outputs.latest_tag }} npm run build:sc
@@ -56,7 +59,7 @@ jobs:
               run: |
                   FULL_VERSION=${{ github.event.release.tag_name }}
                   SHORT_VERSION=${FULL_VERSION:1}
-                  echo shortVersion=${SHORT_VERSION} >> $GITHUB_OUTPUT
+                  echo short_version=${SHORT_VERSION} >> $GITHUB_OUTPUT
 
             - name: Configure Git user
               run: |
@@ -64,7 +67,7 @@ jobs:
                   git config user.name "GitHub Actions"
 
             - name: Update release version
-              run: npm version --no-git-tag-version ${{ steps.release.outputs.shortVersion }}
+              run: npm version --no-git-tag-version ${{ steps.release.outputs.short_version }}
 
             - name: Install dependencies
               run: npm install
