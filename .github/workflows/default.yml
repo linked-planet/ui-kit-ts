@@ -25,11 +25,11 @@ jobs:
               run: npm run build:lib
 
             - name: npm build showcase
-              run: npm run build:sc
+              run: RELEASE_VERSION=${{ github.event.release.tag_name }} npm run build:sc
 
             - name: deploy Showcase to Github Pages
               # run deploy either on release or ...
-              if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+              if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'release')  }}
               uses: JamesIves/github-pages-deploy-action@v4.4.1
               with:
                   branch: docs
@@ -38,7 +38,7 @@ jobs:
 
     publish:
         needs: build
-        if: github.event_name == 'release'
+        if: ${{ github.event_name == 'release' }}
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
