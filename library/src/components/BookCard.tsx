@@ -39,26 +39,16 @@ function CardBase({
 	)
 
 	const onToggledCB = useCallback(() => {
-		if (detailsRef.current) {
-			setIsOpen(detailsRef.current.open)
-		}
+		setIsOpen((prev) => !prev)
 	}, [])
-
-	if (defaultClosed == undefined) {
-		return (
-			<div style={bookCardBaseStyle}>
-				{header}
-				{children}
-			</div>
-		)
-	}
 
 	return (
 		<details
 			ref={detailsRef}
 			style={bookCardBaseStyle}
-			{...(!defaultClosed && { open: true })}
-			onToggle={onToggledCB}
+			{...((defaultClosed == undefined || isOpen) && { open: true })}
+			//onToggle={onToggledCB}
+			onClick={(e) => e.preventDefault()}
 		>
 			<summary
 				style={{
@@ -76,16 +66,26 @@ function CardBase({
 			>
 				<div
 					style={{
+						width: "100%",
 						marginBottom: "-1px",
 						//userSelect: "none",
 					}}
 				>
 					{header}
 				</div>
-				{isOpen ? (
-					<ChevronUpIcon label="close" />
-				) : (
-					<ChevronDownIcon label="open" />
+				{defaultClosed != undefined && (
+					<div
+						style={{
+							marginLeft: "12px",
+						}}
+						onClick={onToggledCB}
+					>
+						{isOpen ? (
+							<ChevronUpIcon label="close" />
+						) : (
+							<ChevronDownIcon label="open" />
+						)}
+					</div>
 				)}
 			</summary>
 			{children}
@@ -100,6 +100,7 @@ const CardHeader = styled.div`
 	justify-content: space-between;
 	gap: 30px;
 	min-width: 0;
+	width: 100%;
 
 	padding: 12px 12px;
 
@@ -114,6 +115,7 @@ const CardHeaderMeta = styled.div`
 	display: flex;
 	flex-direction: column;
 	min-width: 0;
+	flex: 1;
 `
 
 const CardHeaderTitle = styled.h3`
@@ -226,8 +228,8 @@ const BookCardComponents = {
 export { BookCardComponents }
 
 type BookCardProps = {
-	title: string
-	subtitle?: string
+	title: React.ReactNode
+	subtitle?: React.ReactNode
 	defaultClosed?: boolean | undefined | null
 	bodyLayout: "row" | "grid" | "column"
 	bodyStyle?: CSSProperties

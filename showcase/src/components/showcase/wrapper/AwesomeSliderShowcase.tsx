@@ -7,7 +7,7 @@ import AwesomeSlider from "react-awesome-slider"
 import "react-awesome-slider/dist/styles.css"
 
 function AwesomeSliderShowcase(props: ShowcaseProps) {
-	// region: awesome-slider
+	//#region awesome-slider
 	const example = (
 		<div
 			style={{
@@ -38,12 +38,11 @@ function AwesomeSliderShowcase(props: ShowcaseProps) {
 			</AwesomeSlider>
 		</div>
 	)
-	// endregion: awesome-slider
+	//#endregion awesome-slider
 
 	return (
 		<ShowcaseWrapperItem
 			name="Awesome Slider"
-			sourceCodeExampleId="awesome-slider"
 			{...props}
 			packages={[
 				{
@@ -51,7 +50,13 @@ function AwesomeSliderShowcase(props: ShowcaseProps) {
 					url: "https://github.com/rcaferati/react-awesome-slider",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "awesome-slider",
+				},
+			]}
 		/>
 	)
 }

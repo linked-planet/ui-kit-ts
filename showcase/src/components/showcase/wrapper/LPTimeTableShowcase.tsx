@@ -396,7 +396,7 @@ const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
 const endDateInitial = dayjs().startOf("day").add(5, "days").add(16, "hours")
 
 function Example() {
-	// region: timetable
+	//#region timetable
 
 	const [timeSteps, setTimeSteps] = useState(110)
 	const [timeStepsInputValue, setTimeStepsInputValue] = useState(110)
@@ -853,11 +853,11 @@ function Example() {
 		</>
 	)
 
-	// endregion: timetable
+	//endregion timetable
 }
 
 function ExampleCalendar() {
-	// region: timetable
+	//#region timetabledays
 	const timeFrame = useMemo(
 		() => ({
 			startDate: startDateInitial.startOf("day"),
@@ -889,11 +889,11 @@ function ExampleCalendar() {
 		</>
 	)
 
-	// endregion: timetable
+	//#endregion timetabledays
 }
 
 function ExampleMonthCalendar() {
-	// region: timetable
+	//region timetablemonths
 	const timeFrame = useMemo(
 		() => ({
 			startDate: startDateInitial.startOf("month").subtract(1, "day"),
@@ -926,7 +926,7 @@ function ExampleMonthCalendar() {
 		</>
 	)
 
-	// endregion: timetable
+	//#endregion timetablemonths
 }
 
 export default function TimeTableShowcase(props: ShowcaseProps) {
@@ -934,7 +934,6 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 		<ShowcaseWrapperItem
 			name="Time Table"
 			{...props}
-			overallSourceCode={props.overallSourceCode}
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
@@ -942,9 +941,21 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 				},
 			]}
 			examples={[
-				<Example key="example0" />,
-				<ExampleCalendar key="exampleCalendar" />,
-				<ExampleMonthCalendar key="exampleMonthCalendar" />,
+				{
+					title: "Example",
+					example: <Example />,
+					sourceCodeExampleId: "timetable",
+				},
+				{
+					title: "Days",
+					example: <ExampleCalendar />,
+					sourceCodeExampleId: "timetabledays",
+				},
+				{
+					title: "Months",
+					example: <ExampleMonthCalendar />,
+					sourceCodeExampleId: "timetablemonths",
+				},
 			]}
 		/>
 	)

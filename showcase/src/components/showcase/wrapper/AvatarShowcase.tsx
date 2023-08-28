@@ -5,11 +5,13 @@ import ShowcaseWrapperItem, {
 import Avatar, { AvatarItem } from "@atlaskit/avatar"
 
 function AvatarShowcase(props: ShowcaseProps) {
-	// region: avatar
+	//#region avatar1
 	const example1 = (
 		<AvatarItem avatar={<Avatar size="large" presence="online" />} />
 	)
+	//#endregion avatar1
 
+	//#region avatar2
 	const example2 = (
 		<AvatarItem
 			primaryText="Carl Coder"
@@ -17,12 +19,11 @@ function AvatarShowcase(props: ShowcaseProps) {
 			avatar={<Avatar size="large" presence="online" />}
 		/>
 	)
-	// endregion: avatar
+	//#endregion avatar2
 
 	return (
 		<ShowcaseWrapperItem
 			name="Avatar"
-			sourceCodeExampleId="avatar"
 			{...props}
 			packages={[
 				{
@@ -30,7 +31,18 @@ function AvatarShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/avatar/examples",
 				},
 			]}
-			examples={[example1, example2]}
+			examples={[
+				{
+					title: "Example 1",
+					example: example1,
+					sourceCodeExampleId: "avatar1",
+				},
+				{
+					title: "Example 2",
+					example: example2,
+					sourceCodeExampleId: "avatar2",
+				},
+			]}
 		/>
 	)
 }

@@ -5,11 +5,13 @@ import ShowcaseWrapperItem, {
 import Avatar, { AvatarItem } from "@atlaskit/avatar"
 
 function AvatarShowcase(props: ShowcaseProps) {
-	// region: avatar
+	//#region avatar1
 	const example1 = (
 		<AvatarItem avatar={<Avatar size="large" presence="online" />} />
 	)
+	//#endregion avatar1
 
+	//#region avatar2
 	const example2 = (
 		<AvatarItem
 			primaryText="Carl Coder"
@@ -17,12 +19,11 @@ function AvatarShowcase(props: ShowcaseProps) {
 			avatar={<Avatar size="large" presence="online" />}
 		/>
 	)
-	// endregion: avatar
+	//#endregion avatar2
 
 	return (
 		<ShowcaseWrapperItem
 			name="Avatar"
-			sourceCodeExampleId="avatar"
 			{...props}
 			packages={[
 				{
@@ -30,7 +31,18 @@ function AvatarShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/avatar/examples",
 				},
 			]}
-			examples={[example1, example2]}
+			examples={[
+				{
+					title: "Example 1",
+					example: example1,
+					sourceCodeExampleId: "avatar1",
+				},
+				{
+					title: "Example 2",
+					example: example2,
+					sourceCodeExampleId: "avatar2",
+				},
+			]}
 		/>
 	)
 }
@@ -46,7 +58,7 @@ import AwesomeSlider from "react-awesome-slider"
 import "react-awesome-slider/dist/styles.css"
 
 function AwesomeSliderShowcase(props: ShowcaseProps) {
-	// region: awesome-slider
+	//#region awesome-slider
 	const example = (
 		<div
 			style={{
@@ -77,12 +89,11 @@ function AwesomeSliderShowcase(props: ShowcaseProps) {
 			</AwesomeSlider>
 		</div>
 	)
-	// endregion: awesome-slider
+	//#endregion awesome-slider
 
 	return (
 		<ShowcaseWrapperItem
 			name="Awesome Slider"
-			sourceCodeExampleId="awesome-slider"
 			{...props}
 			packages={[
 				{
@@ -90,7 +101,13 @@ function AwesomeSliderShowcase(props: ShowcaseProps) {
 					url: "https://github.com/rcaferati/react-awesome-slider",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "awesome-slider",
+				},
+			]}
 		/>
 	)
 }
@@ -104,18 +121,17 @@ import ShowcaseWrapperItem, {
 import Badge from "@atlaskit/badge"
 
 function BadgeShowcase(props: ShowcaseProps) {
-	// region: badge
+	//#region badge
 	const example = <Badge></Badge>
 
 	const example2 = <Badge appearance="added" />
 
 	const example3 = <Badge appearance="important" />
-	// endregion: badge
+	//#endregion badge
 
 	return (
 		<ShowcaseWrapperItem
 			name="Badge"
-			sourceCodeExampleId="badge"
 			{...props}
 			packages={[
 				{
@@ -123,7 +139,23 @@ function BadgeShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/badge/examples",
 				},
 			]}
-			examples={[example, example2, example3]}
+			examples={[
+				{
+					title: "Example 1",
+					example: example,
+					sourceCodeExampleId: "badge",
+				},
+				{
+					title: "Example 2",
+					example: example2,
+					sourceCodeExampleId: "badge",
+				},
+				{
+					title: "Example 3",
+					example: example3,
+					sourceCodeExampleId: "badge",
+				},
+			]}
 		/>
 	)
 }
@@ -139,19 +171,23 @@ import WarningIcon from "@atlaskit/icon/glyph/warning"
 import ErrorIcon from "@atlaskit/icon/glyph/error"
 
 function BannerShowcase(props: ShowcaseProps) {
-	// region: banner
+	//#region banner1
 	const example = (
 		<Banner appearance="announcement">
 			<span>Content of the banner...</span>
 		</Banner>
 	)
+	//#endregion banner1
 
+	//#region banner2
 	const example2 = (
 		<Banner appearance="warning" icon={<WarningIcon label="" />}>
 			<span>Content of the banner...</span>
 		</Banner>
 	)
+	//#endregion banner2
 
+	//#region banner3
 	const example3 = (
 		<Banner
 			appearance="error"
@@ -165,12 +201,11 @@ function BannerShowcase(props: ShowcaseProps) {
 			<span>Content of the banner...</span>
 		</Banner>
 	)
-	// endregion: banner
+	//#endregion banner3
 
 	return (
 		<ShowcaseWrapperItem
 			name="Banner"
-			sourceCodeExampleId="banner"
 			{...props}
 			packages={[
 				{
@@ -178,61 +213,233 @@ function BannerShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/banner/examples",
 				},
 			]}
-			examples={[example, example2, example3]}
+			examples={[
+				{
+					title: "Example 1",
+					example: example,
+					sourceCodeExampleId: "banner1",
+				},
+				{
+					title: "Example 2",
+					example: example2,
+					sourceCodeExampleId: "banner2",
+				},
+				{
+					title: "Example 3",
+					example: example3,
+					sourceCodeExampleId: "banner3",
+				},
+			]}
 		/>
 	)
 }
 
 export default BannerShowcase
 
-import { BookCardComponents } from "@linked-planet/ui-kit-ts/components/BookCard"
-import React from "react"
+import React, { CSSProperties, useMemo, useState } from "react"
+import {
+	BookCard,
+	BookCardComponents,
+} from "@linked-planet/ui-kit-ts/components/BookCard"
+
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-//#region bookcard
+import Button, { ButtonGroup } from "@atlaskit/button"
+import { Fieldset } from "@atlaskit/form"
+import { SimpleTag } from "@atlaskit/tag"
+
+//#region bookcardcomponents
 function BookCardComponentsExample() {
 	return (
+		<BookCardComponents.CardBase
+			header={
+				<BookCardComponents.CardHeader>
+					<BookCardComponents.CardHeaderMeta>
+						<BookCardComponents.CardHeaderTitle>
+							Book Title
+						</BookCardComponents.CardHeaderTitle>
+						<BookCardComponents.CardHeaderSubtitle>
+							Book Subtitle
+						</BookCardComponents.CardHeaderSubtitle>
+					</BookCardComponents.CardHeaderMeta>
+				</BookCardComponents.CardHeader>
+			}
+			defaultClosed={false}
+		>
+			<BookCardComponents.CardGridBody>
+				<BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntryTitle>
+						Book Entry Title
+					</BookCardComponents.CardBodyEntryTitle>
+					<div>Book Entry Content</div>
+				</BookCardComponents.CardBodyEntry>
+				<BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntryTitle>
+						Book Entry Title 2
+					</BookCardComponents.CardBodyEntryTitle>
+					<div>Book Entry Content 2</div>
+				</BookCardComponents.CardBodyEntry>
+			</BookCardComponents.CardGridBody>
+		</BookCardComponents.CardBase>
+	)
+}
+//#endregion bookcardcomponents
+
+function BookCardExample() {
+	const [bodyLayout, setBodyLayout] = useState<"row" | "grid" | "column">(
+		"grid",
+	)
+
+	const [defaultClosed, setDefaultClosed] = useState<
+		boolean | undefined | null
+	>(false)
+
+	const children = useMemo(() => {
+		const childCount = bodyLayout === "column" ? 10 : 100
+		const ret = Array(childCount)
+		for (let i = 0; i < childCount; i++) {
+			ret[i] = (
+				<BookCardComponents.CardBodyEntry key={i}>
+					<BookCardComponents.CardBodyEntryTitle>
+						Book Entry Title {i}
+					</BookCardComponents.CardBodyEntryTitle>
+					<div>Book Entry Content {i}</div>
+				</BookCardComponents.CardBodyEntry>
+			)
+		}
+		return ret
+	}, [bodyLayout])
+
+	const bodyStyle = useMemo(() => {
+		switch (bodyLayout) {
+			case "row":
+				break
+			case "grid":
+				return {
+					maxHeight: "400px",
+					overflowY: "auto",
+					overflowX: "hidden",
+				} satisfies CSSProperties
+			case "column":
+				return {
+					maxHeight: "400px",
+					overflowY: "auto",
+					overflowX: "hidden",
+				} satisfies CSSProperties
+			default:
+				break
+		}
+	}, [bodyLayout])
+
+	//#region bookcard
+	const bookCardExample = (
+		<BookCard
+			title="Book Title"
+			subtitle="Book Subtitle"
+			bodyLayout={bodyLayout}
+			bodyStyle={bodyStyle}
+			defaultClosed={defaultClosed}
+			actionsInfo={"Actions Informations:"}
+			actions={
+				<>
+					<SimpleTag key="action" text="action item" color="blue" />
+					<SimpleTag
+						key="action 1"
+						text="action item 1"
+						color="green"
+					/>
+				</>
+			}
+		>
+			<>
+				<BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntryTitle>
+						Book Entry Title
+					</BookCardComponents.CardBodyEntryTitle>
+					<div>Book Entry Content</div>
+				</BookCardComponents.CardBodyEntry>
+				{children}
+			</>
+		</BookCard>
+	)
+	//#endregion bookcard
+
+	return (
 		<div>
-			<BookCardComponents.BookCardBase>
-				<BookCardComponents.BookCardHeader>
-					<BookCardComponents.BookCardHeaderTitle>
-						Book Title
-					</BookCardComponents.BookCardHeaderTitle>
-					<BookCardComponents.BookCardHeaderSubtitle>
-						Book Subtitle
-					</BookCardComponents.BookCardHeaderSubtitle>
-				</BookCardComponents.BookCardHeader>
-				<BookCardComponents.BookCardBody>
-					<BookCardComponents.BookCardBodyEntry>
-						<BookCardComponents.BookCardBodyEntryTitle>
-							Book Entry Title
-						</BookCardComponents.BookCardBodyEntryTitle>
-						<div>Book Entry Content</div>
-					</BookCardComponents.BookCardBodyEntry>
-					<BookCardComponents.BookCardBodyEntry>
-						<BookCardComponents.BookCardBodyEntryTitle>
-							Book Entry Title
-						</BookCardComponents.BookCardBodyEntryTitle>
-						<div>Book Entry Content</div>
-					</BookCardComponents.BookCardBodyEntry>
-				</BookCardComponents.BookCardBody>
-			</BookCardComponents.BookCardBase>
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "row",
+					justifyContent: "space-between",
+					marginBottom: "8px",
+				}}
+			>
+				<Fieldset legend="Book Card Collapsible">
+					<ButtonGroup>
+						<Button
+							isSelected={defaultClosed === false}
+							onClick={() => setDefaultClosed(false)}
+						>
+							Default Closed False
+						</Button>
+						<Button
+							isSelected={defaultClosed === true}
+							onClick={() => setDefaultClosed(true)}
+						>
+							Default Closed True
+						</Button>
+						<Button
+							isSelected={defaultClosed === undefined}
+							onClick={() => setDefaultClosed(undefined)}
+						>
+							Default Closed Undefined
+						</Button>
+					</ButtonGroup>
+					<p
+						style={{
+							marginBottom: "1rem",
+						}}
+					>
+						<b>defaultClosed: </b>
+						<br></br>
+						<em>true/false</em> - card is collapsible<br></br>
+						<em>undefined/null</em> - card is not collapsible
+					</p>
+				</Fieldset>
+				<Fieldset legend="Book Card Body Layout">
+					<ButtonGroup>
+						<Button
+							isSelected={bodyLayout === "row"}
+							onClick={() => setBodyLayout("row")}
+						>
+							Row
+						</Button>
+						<Button
+							isSelected={bodyLayout === "grid"}
+							onClick={() => setBodyLayout("grid")}
+						>
+							Grid
+						</Button>
+						<Button
+							isSelected={bodyLayout === "column"}
+							onClick={() => setBodyLayout("column")}
+						>
+							Column
+						</Button>
+					</ButtonGroup>
+				</Fieldset>
+			</div>
+			{bookCardExample}
 		</div>
 	)
 }
-
-function BookCardExample() {
-	return <></>
-}
-//#endregion
 
 export default function BookCardShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Book Card (Components)"
-			sourceCodeExampleId="bookcard"
 			{...props}
 			packages={[
 				{
@@ -241,8 +448,18 @@ export default function BookCardShowcase(props: ShowcaseProps) {
 				},
 			]}
 			examples={[
-				<BookCardComponentsExample key="bookcardcomponentexample" />,
-				<BookCardExample key="bookcardexample" />,
+				{
+					title: "Components",
+					example: (
+						<BookCardComponentsExample key="bookcardcomponentexample" />
+					),
+					sourceCodeExampleId: "bookcardcomponents",
+				},
+				{
+					title: "Complete Bookcard",
+					example: <BookCardExample key="bookcardexample" />,
+					sourceCodeExampleId: "bookcard",
+				},
 			]}
 		/>
 	)
@@ -255,7 +472,7 @@ import ShowcaseWrapperItem, {
 import Button, { ButtonGroup, LoadingButton } from "@atlaskit/button"
 
 function ButtonShowcase(props: ShowcaseProps) {
-	// region: button
+	//#region button
 	const [isLoading, setIsLoading] = useState(false)
 
 	const example = (
@@ -278,12 +495,11 @@ function ButtonShowcase(props: ShowcaseProps) {
 			</LoadingButton>
 		</ButtonGroup>
 	)
-	// endregion: button
+	//#endregion button
 
 	return (
 		<ShowcaseWrapperItem
 			name="Button & Button-Group"
-			sourceCodeExampleId="button"
 			{...props}
 			packages={[
 				{
@@ -291,7 +507,9 @@ function ButtonShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/button/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "button" },
+			]}
 		/>
 	)
 }
@@ -305,18 +523,17 @@ import ShowcaseWrapperItem, {
 import Calendar from "@atlaskit/calendar"
 
 function CalendarShowcase(props: ShowcaseProps) {
-	// region: calendar
+	//#region calendar
 	const example = (
 		<div style={{ minWidth: 300 }}>
 			<Calendar locale="de-DE" weekStartDay={1} />
 		</div>
 	)
-	// endregion: calendar
+	//#endregion calendar
 
 	return (
 		<ShowcaseWrapperItem
 			name="Calendar"
-			sourceCodeExampleId="calendar"
 			{...props}
 			packages={[
 				{
@@ -324,7 +541,9 @@ function CalendarShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/calendar/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "calendar" },
+			]}
 		/>
 	)
 }
@@ -338,7 +557,7 @@ import ShowcaseWrapperItem, {
 import Checkbox from "@atlaskit/checkbox"
 
 function CheckboxShowcase(props: ShowcaseProps) {
-	// region: checkbox
+	//#region checkbox
 	const [isCheckboxActive, setIsCheckboxActive] = useState(false)
 	const example = (
 		<Checkbox
@@ -347,12 +566,11 @@ function CheckboxShowcase(props: ShowcaseProps) {
 			onChange={() => setIsCheckboxActive(!isCheckboxActive)}
 		/>
 	)
-	// endregion: checkbox
+	//#endregion checkbox
 
 	return (
 		<ShowcaseWrapperItem
 			name="Checkbox"
-			sourceCodeExampleId="checkbox"
 			{...props}
 			packages={[
 				{
@@ -360,7 +578,9 @@ function CheckboxShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/checkbox/example",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "checkbox" },
+			]}
 		/>
 	)
 }
@@ -374,19 +594,18 @@ import ShowcaseWrapperItem, {
 import { CodeBlock } from "@atlaskit/code"
 
 function CodeBlockShowcase(props: ShowcaseProps) {
-	// region: code-block
+	//#region code-block
 	const code = `class Hello {
     public static void main(String args...) {
         System.out.println('Hello world')
     }
 }`
 	const example = <CodeBlock language="java" text={code} />
-	// endregion: code-block
+	//#endregion code-block
 
 	return (
 		<ShowcaseWrapperItem
 			name="Code block"
-			sourceCodeExampleId="code-block"
 			{...props}
 			packages={[
 				{
@@ -394,7 +613,13 @@ function CodeBlockShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/code/code-block/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "code-block",
+				},
+			]}
 		/>
 	)
 }
@@ -408,8 +633,8 @@ import ShowcaseWrapperItem, {
 import { DateRangePicker } from "@linked-planet/ui-kit-ts"
 import dayjs from "dayjs"
 
+//#region date-range-picker
 function Example() {
-	// region: date-range-picker
 	const today = dayjs().format("YYYY-MM-DD")
 	const todayPlus2 = dayjs().add(2, "day").format("YYYY-MM-DD")
 	const todayPlus10 = dayjs().add(10, "day").format("YYYY-MM-DD")
@@ -476,9 +701,10 @@ function Example() {
 			/>
 		</div>
 	)
-	// region: date-range-picker
+	//#region date-range-picker
 }
 
+//#region date-range-picker-2
 function Example2() {
 	const selectedStartDate = dayjs()
 		.set("year", 1911)
@@ -504,9 +730,10 @@ function Example2() {
 			/>
 		</>
 	)
-	// region: date-range-picker-2
 }
+//#endregion date-range-picker-2
 
+//#region date-range-picker-3
 function Example3() {
 	const viewDefaultMonth = 8
 	const viewDefaultYear = 1985
@@ -526,14 +753,13 @@ function Example3() {
 			/>
 		</>
 	)
-	// region: date-range-picker-2
 }
+//#endregion date-range-picker-3
 
 function DateRangePickerShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Date Range Picker"
-			sourceCodeExampleId="date-range-picker"
 			{...props}
 			packages={[
 				{
@@ -542,9 +768,21 @@ function DateRangePickerShowcase(props: ShowcaseProps) {
 				},
 			]}
 			examples={[
-				<Example key={"example0"} />,
-				<Example2 key={"example1"} />,
-				<Example3 key={"example2"} />,
+				{
+					title: "Example 1",
+					example: <Example />,
+					sourceCodeExampleId: "date-range-picker",
+				},
+				{
+					title: "Example 2",
+					example: <Example2 />,
+					sourceCodeExampleId: "date-range-picker-2",
+				},
+				{
+					title: "Example 3",
+					example: <Example3 />,
+					sourceCodeExampleId: "date-range-picker-3",
+				},
 			]}
 		/>
 	)
@@ -559,18 +797,17 @@ import ShowcaseWrapperItem, {
 import { DateTimePicker } from "@atlaskit/datetime-picker"
 
 function DateTimePickerShowcase(props: ShowcaseProps) {
-	// region: datetime-picker
+	//#region datetime-picker
 	const example = (
 		<div style={{ minWidth: 300 }}>
 			<DateTimePicker />
 		</div>
 	)
-	// endregion: datetime-picker
+	//#endregion datetime-picker
 
 	return (
 		<ShowcaseWrapperItem
 			name="Date Time Picker"
-			sourceCodeExampleId="datetime-picker"
 			{...props}
 			packages={[
 				{
@@ -578,7 +815,13 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/datetime-picker/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "datetime-picker",
+				},
+			]}
 		/>
 	)
 }
@@ -596,7 +839,7 @@ import DropdownMenu, {
 } from "@atlaskit/dropdown-menu"
 
 function DropDownMenuShowcase(props: ShowcaseProps) {
-	// region: dropdown-menu
+	//#region dropdown-menu
 	const example = (
 		<DropdownMenu trigger="Dropdown">
 			<DropdownItemCheckbox id="dropdown-item-checkbox-it">
@@ -608,12 +851,11 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			</DropdownItemGroup>
 		</DropdownMenu>
 	)
-	// endregion: dropdown-menu
+	//#endregion dropdown-menu
 
 	return (
 		<ShowcaseWrapperItem
 			name="Dropdown menu"
-			sourceCodeExampleId="dropdown-menu"
 			{...props}
 			packages={[
 				{
@@ -621,7 +863,13 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/dropdown-menu/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "dropdown-menu",
+				},
+			]}
 		/>
 	)
 }
@@ -636,7 +884,7 @@ import DynamicTable from "@atlaskit/dynamic-table"
 import Button from "@atlaskit/button"
 
 function DynamicTableShowcase(props: ShowcaseProps) {
-	// region: table
+	//#region table
 	const example = (
 		<div style={{ minWidth: 300 }}>
 			<DynamicTable
@@ -738,12 +986,11 @@ function DynamicTableShowcase(props: ShowcaseProps) {
 			></DynamicTable>
 		</div>
 	)
-	// endregion: table
+	//#endregion table
 
 	return (
 		<ShowcaseWrapperItem
 			name="Dynamic table"
-			sourceCodeExampleId="table"
 			{...props}
 			packages={[
 				{
@@ -751,7 +998,9 @@ function DynamicTableShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/dynamic-table/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "table" },
+			]}
 		/>
 	)
 }
@@ -766,7 +1015,7 @@ import Button from "@atlaskit/button"
 import EmptyState from "@atlaskit/empty-state"
 
 function EmptyStateShowcase(props: ShowcaseProps) {
-	// region: empty-state
+	//#region empty-state
 	const example = (
 		<div style={{ minWidth: 300 }}>
 			<EmptyState
@@ -776,12 +1025,11 @@ function EmptyStateShowcase(props: ShowcaseProps) {
 			/>
 		</div>
 	)
-	// endregion: empty-state
+	//#endregion empty-state
 
 	return (
 		<ShowcaseWrapperItem
 			name="Empty state"
-			sourceCodeExampleId="empty-state"
 			{...props}
 			packages={[
 				{
@@ -789,7 +1037,13 @@ function EmptyStateShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/empty-state/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "empty-state",
+				},
+			]}
 		/>
 	)
 }
@@ -804,7 +1058,7 @@ import Flag from "@atlaskit/flag"
 import WarningIcon from "@atlaskit/icon/glyph/warning"
 
 function FlagShowcase(props: ShowcaseProps) {
-	// region: flag
+	//#region flag
 	const example = (
 		<Flag
 			id="flag-id"
@@ -813,12 +1067,11 @@ function FlagShowcase(props: ShowcaseProps) {
 			description="Description of flag"
 		/>
 	)
-	// endregion: flag
+	//#endregion flag
 
 	return (
 		<ShowcaseWrapperItem
 			name="Flag"
-			sourceCodeExampleId="flag"
 			{...props}
 			packages={[
 				{
@@ -826,7 +1079,9 @@ function FlagShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/flag/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "flag" },
+			]}
 		/>
 	)
 }
@@ -856,7 +1111,7 @@ import Select, {
 } from "@atlaskit/select"
 
 function FormShowcase(props: ShowcaseProps) {
-	// region: form
+	//#region form
 	interface TestData {
 		name: string
 		readonlyField: string
@@ -1037,12 +1292,11 @@ function FormShowcase(props: ShowcaseProps) {
 			)}
 		</Form>
 	)
-	// endregion: form
+	//#endregion form
 
 	return (
 		<ShowcaseWrapperItem
 			name="Form"
-			sourceCodeExampleId="form"
 			{...props}
 			packages={[
 				{
@@ -1050,7 +1304,9 @@ function FormShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/form/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "form" },
+			]}
 		/>
 	)
 }
@@ -1070,7 +1326,7 @@ import SendIcon from "@atlaskit/icon/glyph/send"
 import TrashIcon from "@atlaskit/icon/glyph/trash"
 
 function IconShowcase(props: ShowcaseProps) {
-	// region: icon
+	//#region icon
 	const example = (
 		<div>
 			<ArrowDownIcon label="" />
@@ -1082,12 +1338,11 @@ function IconShowcase(props: ShowcaseProps) {
 			<TrashIcon label="" primaryColor="red" />
 		</div>
 	)
-	// endregion: icon
+	//#endregion icon
 
 	return (
 		<ShowcaseWrapperItem
 			name="Icon"
-			sourceCodeExampleId="icon"
 			{...props}
 			packages={[
 				{
@@ -1095,7 +1350,9 @@ function IconShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/icon/icon-explorer",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "icon" },
+			]}
 		/>
 	)
 }
@@ -1163,8 +1420,7 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 			/>
 			<InlineMessage
 				message={{
-					text: "This is an discovery message with a timeout and buttomup removal.",
-					timeOut: 5,
+					text: "This is an discovery message with a timeout and bottom up removal.",
 					urgency: "discovery",
 				}}
 				openingDirection="bottomup"
@@ -1172,19 +1428,17 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 			<InlineMessage
 				message={{
 					text: "This is a not removable message.",
-					timeOut: 5,
 					urgency: "information",
 				}}
 				removable={false}
 			/>
 		</>
 	)
-	//#endregion
+	//#endregion inlinemessage
 
 	return (
 		<ShowcaseWrapperItem
 			name="Inline Message"
-			sourceCodeExampleId="inlinemessage"
 			{...props}
 			packages={[
 				{
@@ -1192,7 +1446,13 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 					url: "https://www.github.com/linked-planet/ui-kit-ts",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "inlinemessage",
+				},
+			]}
 		/>
 	)
 }
@@ -1203,35 +1463,31 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import ReactJoyride from "react-joyride"
 import Button, { ButtonGroup } from "@atlaskit/button"
-import { InlineMessage } from "@linked-planet/ui-kit-ts"
+import { token } from "@atlaskit/tokens"
 
 function JoyrideShowcase(props: ShowcaseProps) {
+	//#region joyride
 	// fix missing global
 	// @ts-expect-error global is not defined
 	if (!window.global) window.global = window
 
-	// region: joyride
 	const [isJoyrideActive, setIsJoyrideActive] = useState(false)
 	const example = (
 		<>
-			<InlineMessage
-				removable={true}
-				message={{
-					text: (
-						<div>
-							If you get the error &apos;global is not
-							defined&apos; you have to add the following:
-							<br></br>
-							<div>
-								<pre>
-									if (!window.global) window.global = window
-								</pre>
-							</div>
-						</div>
-					),
-					urgency: "warning",
+			<div
+				style={{
+					color: token("color.text.warning", "#990"),
+					backgroundColor: token("color.background.neutral", "#fff"),
+					padding: "1rem",
 				}}
-			/>
+			>
+				If you get the error &apos;global is not defined&apos; you have
+				to add the following:
+				<br></br>
+				<div>
+					<pre>if (!window.global) window.global = window</pre>
+				</div>
+			</div>
 			<div>
 				<ButtonGroup>
 					<Button
@@ -1297,12 +1553,11 @@ function JoyrideShowcase(props: ShowcaseProps) {
 			</div>
 		</>
 	)
-	// endregion: joyride
+	//#endregion joyride
 
 	return (
 		<ShowcaseWrapperItem
 			name="Joyride"
-			sourceCodeExampleId="joyride"
 			{...props}
 			packages={[
 				{
@@ -1310,7 +1565,9 @@ function JoyrideShowcase(props: ShowcaseProps) {
 					url: "https://docs.react-joyride.com/",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "joyride" },
+			]}
 		/>
 	)
 }
@@ -1715,7 +1972,7 @@ const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
 const endDateInitial = dayjs().startOf("day").add(5, "days").add(16, "hours")
 
 function Example() {
-	// region: timetable
+	//#region timetable
 
 	const [timeSteps, setTimeSteps] = useState(110)
 	const [timeStepsInputValue, setTimeStepsInputValue] = useState(110)
@@ -2172,11 +2429,11 @@ function Example() {
 		</>
 	)
 
-	// endregion: timetable
+	//endregion timetable
 }
 
 function ExampleCalendar() {
-	// region: timetable
+	//#region timetabledays
 	const timeFrame = useMemo(
 		() => ({
 			startDate: startDateInitial.startOf("day"),
@@ -2208,11 +2465,11 @@ function ExampleCalendar() {
 		</>
 	)
 
-	// endregion: timetable
+	//#endregion timetabledays
 }
 
 function ExampleMonthCalendar() {
-	// region: timetable
+	//region timetablemonths
 	const timeFrame = useMemo(
 		() => ({
 			startDate: startDateInitial.startOf("month").subtract(1, "day"),
@@ -2245,7 +2502,7 @@ function ExampleMonthCalendar() {
 		</>
 	)
 
-	// endregion: timetable
+	//#endregion timetablemonths
 }
 
 export default function TimeTableShowcase(props: ShowcaseProps) {
@@ -2253,7 +2510,6 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 		<ShowcaseWrapperItem
 			name="Time Table"
 			{...props}
-			overallSourceCode={props.overallSourceCode}
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
@@ -2261,9 +2517,21 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 				},
 			]}
 			examples={[
-				<Example key="example0" />,
-				<ExampleCalendar key="exampleCalendar" />,
-				<ExampleMonthCalendar key="exampleMonthCalendar" />,
+				{
+					title: "Example",
+					example: <Example />,
+					sourceCodeExampleId: "timetable",
+				},
+				{
+					title: "Days",
+					example: <ExampleCalendar />,
+					sourceCodeExampleId: "timetabledays",
+				},
+				{
+					title: "Months",
+					example: <ExampleMonthCalendar />,
+					sourceCodeExampleId: "timetablemonths",
+				},
 			]}
 		/>
 	)
@@ -2277,16 +2545,17 @@ import ShowcaseWrapperItem, {
 import { LoadingSpinner } from "@linked-planet/ui-kit-ts"
 
 export default function LoadingSpinnerShowcase(props: ShowcaseProps) {
+	//#region loadingspinner
 	const example = (
 		<div>
 			<LoadingSpinner height="2rem" />
 		</div>
 	)
+	//#endregion loadingspinner
 
 	return (
 		<ShowcaseWrapperItem
 			name="Loading Spinner"
-			sourceCodeExampleId="loadingspinner"
 			{...props}
 			packages={[
 				{
@@ -2294,7 +2563,13 @@ export default function LoadingSpinnerShowcase(props: ShowcaseProps) {
 					url: "https://www.github.com/linked-planet/ui-kit-ts",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "loadingspinner",
+				},
+			]}
 		/>
 	)
 }
@@ -2306,25 +2581,24 @@ import ShowcaseWrapperItem, {
 import Lozenge from "@atlaskit/lozenge"
 
 function LozengeShowcase(props: ShowcaseProps) {
-	// region: lozenge
-	const example1 = <Lozenge>First lozenge</Lozenge>
-	const example2 = <Lozenge appearance="new">Colored lozenge</Lozenge>
-	const example3 = (
-		<Lozenge appearance="success" isBold>
-			Colored bold lozenge
-		</Lozenge>
+	//#region lozenge
+	const example = (
+		<>
+			<Lozenge>First lozenge</Lozenge>
+			<Lozenge appearance="new">Colored lozenge</Lozenge>
+			<Lozenge appearance="success" isBold>
+				Colored bold lozenge
+			</Lozenge>
+			<Lozenge appearance="success" isBold={false}>
+				Colored non-bold lozenge
+			</Lozenge>
+		</>
 	)
-	const example4 = (
-		<Lozenge appearance="success" isBold={false}>
-			Colored non-bold lozenge
-		</Lozenge>
-	)
-	// endregion: lozenge
+	//#endregion lozenge
 
 	return (
 		<ShowcaseWrapperItem
 			name="Lozenge"
-			sourceCodeExampleId="lozenge"
 			{...props}
 			packages={[
 				{
@@ -2332,7 +2606,13 @@ function LozengeShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/lozenge/examples",
 				},
 			]}
-			examples={[example1, example2, example3, example4]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "lozenge",
+				},
+			]}
 		/>
 	)
 }
@@ -2348,7 +2628,7 @@ import { SimpleTag } from "@atlaskit/tag"
 import Badge from "@atlaskit/badge"
 
 function MenuShowcase(props: ShowcaseProps) {
-	// region: menu
+	//#region menu
 	const [items] = useState(["Menu A", "Menu B", "Menu C"])
 	const [selectedItems, setSelectedItems] = useState(["Menu A"])
 	const example = (
@@ -2389,12 +2669,11 @@ function MenuShowcase(props: ShowcaseProps) {
 			</MenuGroup>
 		</div>
 	)
-	// endregion: menu
+	//#endregion menu
 
 	return (
 		<ShowcaseWrapperItem
 			name="Menu"
-			sourceCodeExampleId="menu"
 			{...props}
 			packages={[
 				{
@@ -2402,7 +2681,9 @@ function MenuShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/menu/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "menu" },
+			]}
 		/>
 	)
 }
@@ -2424,7 +2705,7 @@ import Modal, {
 } from "@atlaskit/modal-dialog"
 
 function ModalShowcase(props: ShowcaseProps) {
-	// region: modal
+	//#region modal
 	const [isModalActive, setIsModalActive] = useState(false)
 	const example = (
 		<div>
@@ -2466,12 +2747,11 @@ function ModalShowcase(props: ShowcaseProps) {
 			)}
 		</div>
 	)
-	// endregion: modal
+	//#endregion modal
 
 	return (
 		<ShowcaseWrapperItem
 			name="Modal"
-			sourceCodeExampleId="modal"
 			{...props}
 			packages={[
 				{
@@ -2479,7 +2759,9 @@ function ModalShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/modal-dialog/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "modal" },
+			]}
 		/>
 	)
 }
@@ -2493,7 +2775,7 @@ import ShowcaseWrapperItem, {
 import Pagination from "@atlaskit/pagination"
 
 function PaginationShowcase(props: ShowcaseProps) {
-	// region: pagination
+	//#region pagination
 	const [selectedPage, setSelectedPage] = useState(0)
 	const example = (
 		<Pagination
@@ -2506,12 +2788,11 @@ function PaginationShowcase(props: ShowcaseProps) {
 			onChange={(event, page) => setSelectedPage(page - 1)}
 		/>
 	)
-	// endregion: pagination
+	//#endregion pagination
 
 	return (
 		<ShowcaseWrapperItem
 			name="Pagination"
-			sourceCodeExampleId="pagination"
 			{...props}
 			packages={[
 				{
@@ -2519,7 +2800,13 @@ function PaginationShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/pagination/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "pagination",
+				},
+			]}
 		/>
 	)
 }
@@ -2534,7 +2821,7 @@ import { Popup } from "@atlaskit/popup"
 import Button from "@atlaskit/button"
 
 function PopupShowcase(props: ShowcaseProps) {
-	// region: popup
+	//#region popup
 	const [isPopupActive, setIsPopupActive] = useState(false)
 	const example = (
 		<Popup
@@ -2556,12 +2843,11 @@ function PopupShowcase(props: ShowcaseProps) {
 			)}
 		/>
 	)
-	// endregion: popup
+	//#endregion popup
 
 	return (
 		<ShowcaseWrapperItem
 			name="Popup"
-			sourceCodeExampleId="popup"
 			{...props}
 			packages={[
 				{
@@ -2569,7 +2855,9 @@ function PopupShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/popup/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "popup" },
+			]}
 		/>
 	)
 }
@@ -2583,7 +2871,7 @@ import ShowcaseWrapperItem, {
 import Select from "@atlaskit/select"
 
 function SelectShowcase(props: ShowcaseProps) {
-	// region: select
+	//#region select
 	const example1 = (
 		<div style={{ minWidth: 300 }}>
 			<Select
@@ -2595,6 +2883,8 @@ function SelectShowcase(props: ShowcaseProps) {
 			/>
 		</div>
 	)
+	//#endregion select
+	//#region select2
 	const example2 = (
 		<div style={{ minWidth: 300 }}>
 			<Select
@@ -2612,12 +2902,11 @@ function SelectShowcase(props: ShowcaseProps) {
 			/>
 		</div>
 	)
-	// endregion: select
+	//#endregion select2
 
 	return (
 		<ShowcaseWrapperItem
 			name="Select"
-			sourceCodeExampleId="select"
 			{...props}
 			packages={[
 				{
@@ -2625,7 +2914,18 @@ function SelectShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/select/examples",
 				},
 			]}
-			examples={[example1, example2]}
+			examples={[
+				{
+					title: "Example 1",
+					example: example1,
+					sourceCodeExampleId: "select",
+				},
+				{
+					title: "Example 2",
+					example: example2,
+					sourceCodeExampleId: "select2",
+				},
+			]}
 		/>
 	)
 }
@@ -2645,7 +2945,7 @@ import TableTree, {
 } from "@atlaskit/table-tree"
 
 function TableTreeShowcase(props: ShowcaseProps) {
-	// region: table_tree
+	//#region tabletree
 	interface BookData {
 		title: string
 		description: string
@@ -2728,6 +3028,9 @@ function TableTreeShowcase(props: ShowcaseProps) {
 			items={bookDataTree}
 		/>
 	)
+	//#endregion tabletree
+
+	//#region tabletree2
 	const example2 = (
 		<TableTree>
 			<Headers>
@@ -2774,12 +3077,11 @@ function TableTreeShowcase(props: ShowcaseProps) {
 			/>
 		</TableTree>
 	)
-	// endregion: table_tree
+	//#endregion tabletree2
 
 	return (
 		<ShowcaseWrapperItem
 			name="TableTree"
-			sourceCodeExampleId="table_tree"
 			{...props}
 			packages={[
 				{
@@ -2787,7 +3089,18 @@ function TableTreeShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/table-tree",
 				},
 			]}
-			examples={[example1, example2]}
+			examples={[
+				{
+					title: "Example 1",
+					example: example1,
+					sourceCodeExampleId: "tabletree",
+				},
+				{
+					title: "Example 2",
+					example: example2,
+					sourceCodeExampleId: "tabletree2",
+				},
+			]}
 		/>
 	)
 }
@@ -2801,7 +3114,7 @@ import ShowcaseWrapperItem, {
 import Tabs, { Tab, TabList, TabPanel } from "@atlaskit/tabs"
 
 function TabsShowcase(props: ShowcaseProps) {
-	// region: tabs
+	//#region tabs
 	const example = (
 		<div style={{ minWidth: 300 }}>
 			<Tabs id="tab-example">
@@ -2818,12 +3131,11 @@ function TabsShowcase(props: ShowcaseProps) {
 			</Tabs>
 		</div>
 	)
-	// endregion: tabs
+	//#endregion tabs
 
 	return (
 		<ShowcaseWrapperItem
 			name="Tabs"
-			sourceCodeExampleId="tabs"
 			{...props}
 			packages={[
 				{
@@ -2831,7 +3143,9 @@ function TabsShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/tabs/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "tabs" },
+			]}
 		/>
 	)
 }
@@ -2846,19 +3160,18 @@ import { SimpleTag } from "@atlaskit/tag"
 import TagGroup from "@atlaskit/tag-group"
 
 function TagShowcase(props: ShowcaseProps) {
-	// region: tags
+	//#region tags
 	const example = (
 		<TagGroup>
 			<SimpleTag text="Simple Tag" />
 			<SimpleTag text="Colored simple Tag" color="purple" />
 		</TagGroup>
 	)
-	// endregion: tags
+	//#endregion tags
 
 	return (
 		<ShowcaseWrapperItem
 			name="Tag & Tag-Group"
-			sourceCodeExampleId="tags"
 			{...props}
 			packages={[
 				{
@@ -2870,7 +3183,9 @@ function TagShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/tag-group/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "tags" },
+			]}
 		/>
 	)
 }
@@ -2884,18 +3199,17 @@ import ShowcaseWrapperItem, {
 import TextArea from "@atlaskit/textarea"
 
 function TextAreaShowcase(props: ShowcaseProps) {
-	// region: textarea
+	//#region textarea
 	const example = (
 		<div style={{ minWidth: 300 }}>
 			<TextArea defaultValue="Content of text area..." />
 		</div>
 	)
-	// endregion: textarea
+	//#endregion textarea
 
 	return (
 		<ShowcaseWrapperItem
 			name="Text area"
-			sourceCodeExampleId="textarea"
 			{...props}
 			packages={[
 				{
@@ -2903,7 +3217,9 @@ function TextAreaShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/textarea/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "textarea" },
+			]}
 		/>
 	)
 }
@@ -2917,23 +3233,24 @@ import ShowcaseWrapperItem, {
 import TextField from "@atlaskit/textfield"
 
 function TextFieldShowcase(props: ShowcaseProps) {
-	// region: textfield
+	//#region textfield
 	const example1 = (
 		<div style={{ minWidth: 300 }}>
 			<TextField defaultValue="Content of text field..." />
 		</div>
 	)
+	//#endregion textfield
+	//#region textfield2
 	const example2 = (
 		<div style={{ minWidth: 300 }}>
 			<TextField defaultValue="Password" type="password" />
 		</div>
 	)
-	// endregion: textfield
+	//#endregion textfield2
 
 	return (
 		<ShowcaseWrapperItem
 			name="Text field"
-			sourceCodeExampleId="textfield"
 			{...props}
 			packages={[
 				{
@@ -2941,7 +3258,18 @@ function TextFieldShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/textfield/examples",
 				},
 			]}
-			examples={[example1, example2]}
+			examples={[
+				{
+					title: "Example",
+					example: example1,
+					sourceCodeExampleId: "textfield",
+				},
+				{
+					title: "Example 2",
+					example: example2,
+					sourceCodeExampleId: "textfield2",
+				},
+			]}
 		/>
 	)
 }
@@ -2955,7 +3283,7 @@ import ShowcaseWrapperItem, {
 import Toggle from "@atlaskit/toggle"
 
 function ToggleShowcase(props: ShowcaseProps) {
-	// region: toggle
+	//#region toggle
 	const [isToggleActive, setIsToggleActive] = useState(false)
 	const example = (
 		<Toggle
@@ -2963,12 +3291,11 @@ function ToggleShowcase(props: ShowcaseProps) {
 			onChange={() => setIsToggleActive(!isToggleActive)}
 		/>
 	)
-	// endregion: toggle
+	//#endregion toggle
 
 	return (
 		<ShowcaseWrapperItem
 			name="Toggle"
-			sourceCodeExampleId="toggle"
 			{...props}
 			packages={[
 				{
@@ -2976,7 +3303,9 @@ function ToggleShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/toggle/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "toggle" },
+			]}
 		/>
 	)
 }
@@ -2993,7 +3322,7 @@ import { Tooltip } from "react-tooltip"
 import "react-tooltip/dist/react-tooltip.css"
 
 function TooltipShowcase(props: ShowcaseProps) {
-	// region: tooltip
+	//#region tooltip
 	// import 'react-tooltip/dist/react-tooltip.css'
 	const example = (
 		<div>
@@ -3005,12 +3334,11 @@ function TooltipShowcase(props: ShowcaseProps) {
 			</Tooltip>
 		</div>
 	)
-	// endregion: tooltip
+	//#endregion tooltip
 
 	return (
 		<ShowcaseWrapperItem
 			name="Tooltip"
-			sourceCodeExampleId="tooltip"
 			{...props}
 			packages={[
 				{
@@ -3018,7 +3346,9 @@ function TooltipShowcase(props: ShowcaseProps) {
 					url: "https://github.com/wwayne/react-tooltip",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "tooltip" },
+			]}
 		/>
 	)
 }
@@ -3036,8 +3366,10 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
+//#region debounceHelper
 // export this outside of a component, or this will be recreated on every render
 const debounced = debounceHelper()
+
 function DebounceHelperExample() {
 	const [value, setValue] = useState("test")
 	const [debouncedValue, setDebouncedValue] = useState("test")
@@ -3059,7 +3391,9 @@ function DebounceHelperExample() {
 		</div>
 	)
 }
+//#endregion debounceHelper
 
+//#region useDebounceHelperHook
 function UseDebounceHelperExample() {
 	const [value, setValue] = useState("test")
 	const [debouncedValue, setDebouncedValue] = useState("test")
@@ -3080,7 +3414,10 @@ function UseDebounceHelperExample() {
 		</div>
 	)
 }
+//#endregion useDebounceHelperHook
 
+//#region rateLimitHelper
+// export this outside of a component, or this will be recreated on every render
 const rateLimited = rateLimitHelper(500)
 function RateLimitHelperExample() {
 	const [value, setValue] = useState("test")
@@ -3103,7 +3440,9 @@ function RateLimitHelperExample() {
 		</div>
 	)
 }
+//#endregion rateLimitHelper
 
+//#region useRateLimitHelper
 function UseRateLimitHelperExample() {
 	const [value, setValue] = useState("test")
 	const [rateLimitedValue, setRateLimitedValue] = useState("test")
@@ -3126,19 +3465,12 @@ function UseRateLimitHelperExample() {
 		</div>
 	)
 }
+//#endregion useRateLimitHelper
 
 export default function UtilsShowCase(props: ShowcaseProps) {
-	const examples = [
-		<DebounceHelperExample key={"debounceHelperExample"} />,
-		<UseDebounceHelperExample key={"useDebounceHelperExample"} />,
-		<RateLimitHelperExample key={"rateLimitHelperExample"} />,
-		<UseRateLimitHelperExample key={"useRateLimitHelperExample"} />,
-	]
-
 	return (
 		<ShowcaseWrapperItem
 			name="Utilities"
-			sourceCodeExampleId="utils"
 			{...props}
 			packages={[
 				{
@@ -3146,7 +3478,28 @@ export default function UtilsShowCase(props: ShowcaseProps) {
 					url: "https://github.com/linked-planet/ui-kit-ts",
 				},
 			]}
-			examples={examples}
+			examples={[
+				{
+					title: "Debounce Helper",
+					example: <DebounceHelperExample />,
+					sourceCodeExampleId: "debounceHelper",
+				},
+				{
+					title: "useDebounce",
+					example: <UseDebounceHelperExample />,
+					sourceCodeExampleId: "useDebounceHelperHook",
+				},
+				{
+					title: "Rate Limit Helper",
+					example: <RateLimitHelperExample />,
+					sourceCodeExampleId: "rateLimitHelper",
+				},
+				{
+					title: "useRateLimit",
+					example: <UseRateLimitHelperExample />,
+					sourceCodeExampleId: "useRateLimitHelper",
+				},
+			]}
 		/>
 	)
 }

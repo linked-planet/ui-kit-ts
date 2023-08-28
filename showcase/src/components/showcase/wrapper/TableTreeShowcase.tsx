@@ -11,7 +11,7 @@ import TableTree, {
 } from "@atlaskit/table-tree"
 
 function TableTreeShowcase(props: ShowcaseProps) {
-	// region: table_tree
+	//#region tabletree
 	interface BookData {
 		title: string
 		description: string
@@ -94,6 +94,9 @@ function TableTreeShowcase(props: ShowcaseProps) {
 			items={bookDataTree}
 		/>
 	)
+	//#endregion tabletree
+
+	//#region tabletree2
 	const example2 = (
 		<TableTree>
 			<Headers>
@@ -140,12 +143,11 @@ function TableTreeShowcase(props: ShowcaseProps) {
 			/>
 		</TableTree>
 	)
-	// endregion: table_tree
+	//#endregion tabletree2
 
 	return (
 		<ShowcaseWrapperItem
 			name="TableTree"
-			sourceCodeExampleId="table_tree"
 			{...props}
 			packages={[
 				{
@@ -153,7 +155,18 @@ function TableTreeShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/table-tree",
 				},
 			]}
-			examples={[example1, example2]}
+			examples={[
+				{
+					title: "Example 1",
+					example: example1,
+					sourceCodeExampleId: "tabletree",
+				},
+				{
+					title: "Example 2",
+					example: example2,
+					sourceCodeExampleId: "tabletree2",
+				},
+			]}
 		/>
 	)
 }

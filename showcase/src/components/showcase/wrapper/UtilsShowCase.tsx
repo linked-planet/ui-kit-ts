@@ -9,8 +9,10 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
+//#region debounceHelper
 // export this outside of a component, or this will be recreated on every render
 const debounced = debounceHelper()
+
 function DebounceHelperExample() {
 	const [value, setValue] = useState("test")
 	const [debouncedValue, setDebouncedValue] = useState("test")
@@ -32,7 +34,9 @@ function DebounceHelperExample() {
 		</div>
 	)
 }
+//#endregion debounceHelper
 
+//#region useDebounceHelperHook
 function UseDebounceHelperExample() {
 	const [value, setValue] = useState("test")
 	const [debouncedValue, setDebouncedValue] = useState("test")
@@ -53,7 +57,10 @@ function UseDebounceHelperExample() {
 		</div>
 	)
 }
+//#endregion useDebounceHelperHook
 
+//#region rateLimitHelper
+// export this outside of a component, or this will be recreated on every render
 const rateLimited = rateLimitHelper(500)
 function RateLimitHelperExample() {
 	const [value, setValue] = useState("test")
@@ -76,7 +83,9 @@ function RateLimitHelperExample() {
 		</div>
 	)
 }
+//#endregion rateLimitHelper
 
+//#region useRateLimitHelper
 function UseRateLimitHelperExample() {
 	const [value, setValue] = useState("test")
 	const [rateLimitedValue, setRateLimitedValue] = useState("test")
@@ -99,19 +108,12 @@ function UseRateLimitHelperExample() {
 		</div>
 	)
 }
+//#endregion useRateLimitHelper
 
 export default function UtilsShowCase(props: ShowcaseProps) {
-	const examples = [
-		<DebounceHelperExample key={"debounceHelperExample"} />,
-		<UseDebounceHelperExample key={"useDebounceHelperExample"} />,
-		<RateLimitHelperExample key={"rateLimitHelperExample"} />,
-		<UseRateLimitHelperExample key={"useRateLimitHelperExample"} />,
-	]
-
 	return (
 		<ShowcaseWrapperItem
 			name="Utilities"
-			sourceCodeExampleId="utils"
 			{...props}
 			packages={[
 				{
@@ -119,7 +121,28 @@ export default function UtilsShowCase(props: ShowcaseProps) {
 					url: "https://github.com/linked-planet/ui-kit-ts",
 				},
 			]}
-			examples={examples}
+			examples={[
+				{
+					title: "Debounce Helper",
+					example: <DebounceHelperExample />,
+					sourceCodeExampleId: "debounceHelper",
+				},
+				{
+					title: "useDebounce",
+					example: <UseDebounceHelperExample />,
+					sourceCodeExampleId: "useDebounceHelperHook",
+				},
+				{
+					title: "Rate Limit Helper",
+					example: <RateLimitHelperExample />,
+					sourceCodeExampleId: "rateLimitHelper",
+				},
+				{
+					title: "useRateLimit",
+					example: <UseRateLimitHelperExample />,
+					sourceCodeExampleId: "useRateLimitHelper",
+				},
+			]}
 		/>
 	)
 }

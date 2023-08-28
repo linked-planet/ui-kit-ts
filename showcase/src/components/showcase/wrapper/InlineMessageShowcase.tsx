@@ -59,8 +59,7 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 			/>
 			<InlineMessage
 				message={{
-					text: "This is an discovery message with a timeout and buttomup removal.",
-					timeOut: 5,
+					text: "This is an discovery message with a timeout and bottom up removal.",
 					urgency: "discovery",
 				}}
 				openingDirection="bottomup"
@@ -68,19 +67,17 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 			<InlineMessage
 				message={{
 					text: "This is a not removable message.",
-					timeOut: 5,
 					urgency: "information",
 				}}
 				removable={false}
 			/>
 		</>
 	)
-	//#endregion
+	//#endregion inlinemessage
 
 	return (
 		<ShowcaseWrapperItem
 			name="Inline Message"
-			sourceCodeExampleId="inlinemessage"
 			{...props}
 			packages={[
 				{
@@ -88,7 +85,13 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 					url: "https://www.github.com/linked-planet/ui-kit-ts",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "inlinemessage",
+				},
+			]}
 		/>
 	)
 }

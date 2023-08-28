@@ -5,18 +5,17 @@ import ShowcaseWrapperItem, {
 import Calendar from "@atlaskit/calendar"
 
 function CalendarShowcase(props: ShowcaseProps) {
-	// region: calendar
+	//#region calendar
 	const example = (
 		<div style={{ minWidth: 300 }}>
 			<Calendar locale="de-DE" weekStartDay={1} />
 		</div>
 	)
-	// endregion: calendar
+	//#endregion calendar
 
 	return (
 		<ShowcaseWrapperItem
 			name="Calendar"
-			sourceCodeExampleId="calendar"
 			{...props}
 			packages={[
 				{
@@ -24,7 +23,9 @@ function CalendarShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/calendar/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "calendar" },
+			]}
 		/>
 	)
 }

@@ -6,19 +6,18 @@ import { SimpleTag } from "@atlaskit/tag"
 import TagGroup from "@atlaskit/tag-group"
 
 function TagShowcase(props: ShowcaseProps) {
-	// region: tags
+	//#region tags
 	const example = (
 		<TagGroup>
 			<SimpleTag text="Simple Tag" />
 			<SimpleTag text="Colored simple Tag" color="purple" />
 		</TagGroup>
 	)
-	// endregion: tags
+	//#endregion tags
 
 	return (
 		<ShowcaseWrapperItem
 			name="Tag & Tag-Group"
-			sourceCodeExampleId="tags"
 			{...props}
 			packages={[
 				{
@@ -30,7 +29,9 @@ function TagShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/tag-group/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "tags" },
+			]}
 		/>
 	)
 }

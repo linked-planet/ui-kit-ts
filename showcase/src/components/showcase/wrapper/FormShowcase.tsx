@@ -21,7 +21,7 @@ import Select, {
 } from "@atlaskit/select"
 
 function FormShowcase(props: ShowcaseProps) {
-	// region: form
+	//#region form
 	interface TestData {
 		name: string
 		readonlyField: string
@@ -202,12 +202,11 @@ function FormShowcase(props: ShowcaseProps) {
 			)}
 		</Form>
 	)
-	// endregion: form
+	//#endregion form
 
 	return (
 		<ShowcaseWrapperItem
 			name="Form"
-			sourceCodeExampleId="form"
 			{...props}
 			packages={[
 				{
@@ -215,7 +214,9 @@ function FormShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/form/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "form" },
+			]}
 		/>
 	)
 }

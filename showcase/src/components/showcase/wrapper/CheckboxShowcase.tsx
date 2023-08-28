@@ -5,7 +5,7 @@ import ShowcaseWrapperItem, {
 import Checkbox from "@atlaskit/checkbox"
 
 function CheckboxShowcase(props: ShowcaseProps) {
-	// region: checkbox
+	//#region checkbox
 	const [isCheckboxActive, setIsCheckboxActive] = useState(false)
 	const example = (
 		<Checkbox
@@ -14,12 +14,11 @@ function CheckboxShowcase(props: ShowcaseProps) {
 			onChange={() => setIsCheckboxActive(!isCheckboxActive)}
 		/>
 	)
-	// endregion: checkbox
+	//#endregion checkbox
 
 	return (
 		<ShowcaseWrapperItem
 			name="Checkbox"
-			sourceCodeExampleId="checkbox"
 			{...props}
 			packages={[
 				{
@@ -27,7 +26,9 @@ function CheckboxShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/checkbox/example",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "checkbox" },
+			]}
 		/>
 	)
 }

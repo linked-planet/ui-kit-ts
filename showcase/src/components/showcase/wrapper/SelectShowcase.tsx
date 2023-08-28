@@ -5,7 +5,7 @@ import ShowcaseWrapperItem, {
 import Select from "@atlaskit/select"
 
 function SelectShowcase(props: ShowcaseProps) {
-	// region: select
+	//#region select
 	const example1 = (
 		<div style={{ minWidth: 300 }}>
 			<Select
@@ -17,6 +17,8 @@ function SelectShowcase(props: ShowcaseProps) {
 			/>
 		</div>
 	)
+	//#endregion select
+	//#region select2
 	const example2 = (
 		<div style={{ minWidth: 300 }}>
 			<Select
@@ -34,12 +36,11 @@ function SelectShowcase(props: ShowcaseProps) {
 			/>
 		</div>
 	)
-	// endregion: select
+	//#endregion select2
 
 	return (
 		<ShowcaseWrapperItem
 			name="Select"
-			sourceCodeExampleId="select"
 			{...props}
 			packages={[
 				{
@@ -47,7 +48,18 @@ function SelectShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/select/examples",
 				},
 			]}
-			examples={[example1, example2]}
+			examples={[
+				{
+					title: "Example 1",
+					example: example1,
+					sourceCodeExampleId: "select",
+				},
+				{
+					title: "Example 2",
+					example: example2,
+					sourceCodeExampleId: "select2",
+				},
+			]}
 		/>
 	)
 }

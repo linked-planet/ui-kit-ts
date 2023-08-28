@@ -5,7 +5,7 @@ import ShowcaseWrapperItem, {
 import Toggle from "@atlaskit/toggle"
 
 function ToggleShowcase(props: ShowcaseProps) {
-	// region: toggle
+	//#region toggle
 	const [isToggleActive, setIsToggleActive] = useState(false)
 	const example = (
 		<Toggle
@@ -13,12 +13,11 @@ function ToggleShowcase(props: ShowcaseProps) {
 			onChange={() => setIsToggleActive(!isToggleActive)}
 		/>
 	)
-	// endregion: toggle
+	//#endregion toggle
 
 	return (
 		<ShowcaseWrapperItem
 			name="Toggle"
-			sourceCodeExampleId="toggle"
 			{...props}
 			packages={[
 				{
@@ -26,7 +25,9 @@ function ToggleShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/toggle/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "toggle" },
+			]}
 		/>
 	)
 }

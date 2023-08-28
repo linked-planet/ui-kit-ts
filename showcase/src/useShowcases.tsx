@@ -36,88 +36,88 @@ import ToggleShowcase from "./components/showcase/wrapper/ToggleShowcase"
 import TooltipShowcase from "./components/showcase/wrapper/TooltipShowcase"
 import UtilsShowCase from "./components/showcase/wrapper/UtilsShowCase"
 
-export default function useShowCases({
+export default function useShowcases({
 	overallSourceCode,
 }: {
 	overallSourceCode: string
 }) {
 	return useMemo(
 		() => ({
-			avatars: <AvatarShowcase overallSourceCode={overallSourceCode} />,
-			awesomeslider: (
+			Avatars: <AvatarShowcase overallSourceCode={overallSourceCode} />,
+			"Awesome Slider": (
 				<AwesomeSliderShowcase overallSourceCode={overallSourceCode} />
 			),
-			badge: <BadgeShowcase overallSourceCode={overallSourceCode} />,
-			banner: <BannerShowcase overallSourceCode={overallSourceCode} />,
-			bookcard: (
+			Badge: <BadgeShowcase overallSourceCode={overallSourceCode} />,
+			Banner: <BannerShowcase overallSourceCode={overallSourceCode} />,
+			"Book Card": (
 				<BookCardShowcase overallSourceCode={overallSourceCode} />
 			),
-			button: <ButtonShowcase overallSourceCode={overallSourceCode} />,
-			calendar: (
+			Button: <ButtonShowcase overallSourceCode={overallSourceCode} />,
+			Calendar: (
 				<CalendarShowcase overallSourceCode={overallSourceCode} />
 			),
-			checkbox: (
+			Checkbox: (
 				<CheckboxShowcase overallSourceCode={overallSourceCode} />
 			),
-			codeblock: (
+			"Code Block": (
 				<CodeBlockShowcase overallSourceCode={overallSourceCode} />
 			),
-			datetimepicker: (
+			"Date Time Picker": (
 				<DateTimePickerShowcase overallSourceCode={overallSourceCode} />
 			),
-			daterangepicker: (
+			"Date Range Picker": (
 				<DateRangePickerShowcase
 					overallSourceCode={overallSourceCode}
 				/>
 			),
-			dropdown: (
+			Dropdown: (
 				<DropDownMenuShowcase overallSourceCode={overallSourceCode} />
 			),
-			emptystate: (
+			"Empty State": (
 				<EmptyStateShowcase overallSourceCode={overallSourceCode} />
 			),
-			flag: <FlagShowcase overallSourceCode={overallSourceCode} />,
-			form: <FormShowcase overallSourceCode={overallSourceCode} />,
-			icon: <IconShowcase overallSourceCode={overallSourceCode} />,
-			joyride: <JoyrideShowcase overallSourceCode={overallSourceCode} />,
-			inlinemessage: (
+			Flag: <FlagShowcase overallSourceCode={overallSourceCode} />,
+			Form: <FormShowcase overallSourceCode={overallSourceCode} />,
+			Icon: <IconShowcase overallSourceCode={overallSourceCode} />,
+			Joyride: <JoyrideShowcase overallSourceCode={overallSourceCode} />,
+			"Inline Message": (
 				<InlineMessageShowcase overallSourceCode={overallSourceCode} />
 			),
-			loadingspinner: (
+			"Loading Spinner": (
 				<LoadingSpinnerShowcase overallSourceCode={overallSourceCode} />
 			),
-			menu2: <MenuShowcase overallSourceCode={overallSourceCode} />,
-			pagelayout: (
+			Menu: <MenuShowcase overallSourceCode={overallSourceCode} />,
+			"Page Layout": (
 				<PageLayoutShowcase overallSourceCode={overallSourceCode} />
 			),
 
-			lozenge: <LozengeShowcase overallSourceCode={overallSourceCode} />,
-			modal: <ModalShowcase overallSourceCode={overallSourceCode} />,
-			pagination: (
+			Lozenge: <LozengeShowcase overallSourceCode={overallSourceCode} />,
+			Modal: <ModalShowcase overallSourceCode={overallSourceCode} />,
+			Pagination: (
 				<PaginationShowcase overallSourceCode={overallSourceCode} />
 			),
-			popup: <PopupShowcase overallSourceCode={overallSourceCode} />,
-			select: <SelectShowcase overallSourceCode={overallSourceCode} />,
-			tabs: <TabsShowcase overallSourceCode={overallSourceCode} />,
-			tag: <TagShowcase overallSourceCode={overallSourceCode} />,
-			dynamictable: (
+			Popup: <PopupShowcase overallSourceCode={overallSourceCode} />,
+			Select: <SelectShowcase overallSourceCode={overallSourceCode} />,
+			Tabs: <TabsShowcase overallSourceCode={overallSourceCode} />,
+			Tag: <TagShowcase overallSourceCode={overallSourceCode} />,
+			"Dynamic Table": (
 				<DynamicTableShowcase overallSourceCode={overallSourceCode} />
 			),
-			tabletree: (
+			"Table Tree": (
 				<TableTreeShowcase overallSourceCode={overallSourceCode} />
 			),
-			textarea: (
+			"Text Area": (
 				<TextAreaShowcase overallSourceCode={overallSourceCode} />
 			),
-			textfield: (
+			"Text Field": (
 				<TextFieldShowcase overallSourceCode={overallSourceCode} />
 			),
-			timetable: (
+			Timetable: (
 				<TimeTableShowcase overallSourceCode={overallSourceCode} />
 			),
-			toggle: <ToggleShowcase overallSourceCode={overallSourceCode} />,
-			tooltip: <TooltipShowcase overallSourceCode={overallSourceCode} />,
-			utils: <UtilsShowCase overallSourceCode={overallSourceCode} />,
+			Toggle: <ToggleShowcase overallSourceCode={overallSourceCode} />,
+			Tooltip: <TooltipShowcase overallSourceCode={overallSourceCode} />,
+			Utils: <UtilsShowCase overallSourceCode={overallSourceCode} />,
 		}),
 		[overallSourceCode],
 	)

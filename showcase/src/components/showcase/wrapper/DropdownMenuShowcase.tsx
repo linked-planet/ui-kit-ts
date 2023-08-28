@@ -9,7 +9,7 @@ import DropdownMenu, {
 } from "@atlaskit/dropdown-menu"
 
 function DropDownMenuShowcase(props: ShowcaseProps) {
-	// region: dropdown-menu
+	//#region dropdown-menu
 	const example = (
 		<DropdownMenu trigger="Dropdown">
 			<DropdownItemCheckbox id="dropdown-item-checkbox-it">
@@ -21,12 +21,11 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			</DropdownItemGroup>
 		</DropdownMenu>
 	)
-	// endregion: dropdown-menu
+	//#endregion dropdown-menu
 
 	return (
 		<ShowcaseWrapperItem
 			name="Dropdown menu"
-			sourceCodeExampleId="dropdown-menu"
 			{...props}
 			packages={[
 				{
@@ -34,7 +33,13 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/dropdown-menu/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "dropdown-menu",
+				},
+			]}
 		/>
 	)
 }

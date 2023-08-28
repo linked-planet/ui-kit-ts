@@ -4,35 +4,31 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import ReactJoyride from "react-joyride"
 import Button, { ButtonGroup } from "@atlaskit/button"
-import { InlineMessage } from "@linked-planet/ui-kit-ts"
+import { token } from "@atlaskit/tokens"
 
 function JoyrideShowcase(props: ShowcaseProps) {
+	//#region joyride
 	// fix missing global
 	// @ts-expect-error global is not defined
 	if (!window.global) window.global = window
 
-	// region: joyride
 	const [isJoyrideActive, setIsJoyrideActive] = useState(false)
 	const example = (
 		<>
-			<InlineMessage
-				removable={true}
-				message={{
-					text: (
-						<div>
-							If you get the error &apos;global is not
-							defined&apos; you have to add the following:
-							<br></br>
-							<div>
-								<pre>
-									if (!window.global) window.global = window
-								</pre>
-							</div>
-						</div>
-					),
-					urgency: "warning",
+			<div
+				style={{
+					color: token("color.text.warning", "#990"),
+					backgroundColor: token("color.background.neutral", "#fff"),
+					padding: "1rem",
 				}}
-			/>
+			>
+				If you get the error &apos;global is not defined&apos; you have
+				to add the following:
+				<br></br>
+				<div>
+					<pre>if (!window.global) window.global = window</pre>
+				</div>
+			</div>
 			<div>
 				<ButtonGroup>
 					<Button
@@ -98,12 +94,11 @@ function JoyrideShowcase(props: ShowcaseProps) {
 			</div>
 		</>
 	)
-	// endregion: joyride
+	//#endregion joyride
 
 	return (
 		<ShowcaseWrapperItem
 			name="Joyride"
-			sourceCodeExampleId="joyride"
 			{...props}
 			packages={[
 				{
@@ -111,7 +106,9 @@ function JoyrideShowcase(props: ShowcaseProps) {
 					url: "https://docs.react-joyride.com/",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "joyride" },
+			]}
 		/>
 	)
 }

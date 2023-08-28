@@ -5,8 +5,8 @@ import ShowcaseWrapperItem, {
 import { DateRangePicker } from "@linked-planet/ui-kit-ts"
 import dayjs from "dayjs"
 
+//#region date-range-picker
 function Example() {
-	// region: date-range-picker
 	const today = dayjs().format("YYYY-MM-DD")
 	const todayPlus2 = dayjs().add(2, "day").format("YYYY-MM-DD")
 	const todayPlus10 = dayjs().add(10, "day").format("YYYY-MM-DD")
@@ -73,9 +73,10 @@ function Example() {
 			/>
 		</div>
 	)
-	// region: date-range-picker
+	//#region date-range-picker
 }
 
+//#region date-range-picker-2
 function Example2() {
 	const selectedStartDate = dayjs()
 		.set("year", 1911)
@@ -101,9 +102,10 @@ function Example2() {
 			/>
 		</>
 	)
-	// region: date-range-picker-2
 }
+//#endregion date-range-picker-2
 
+//#region date-range-picker-3
 function Example3() {
 	const viewDefaultMonth = 8
 	const viewDefaultYear = 1985
@@ -123,14 +125,13 @@ function Example3() {
 			/>
 		</>
 	)
-	// region: date-range-picker-2
 }
+//#endregion date-range-picker-3
 
 function DateRangePickerShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Date Range Picker"
-			sourceCodeExampleId="date-range-picker"
 			{...props}
 			packages={[
 				{
@@ -139,9 +140,21 @@ function DateRangePickerShowcase(props: ShowcaseProps) {
 				},
 			]}
 			examples={[
-				<Example key={"example0"} />,
-				<Example2 key={"example1"} />,
-				<Example3 key={"example2"} />,
+				{
+					title: "Example 1",
+					example: <Example />,
+					sourceCodeExampleId: "date-range-picker",
+				},
+				{
+					title: "Example 2",
+					example: <Example2 />,
+					sourceCodeExampleId: "date-range-picker-2",
+				},
+				{
+					title: "Example 3",
+					example: <Example3 />,
+					sourceCodeExampleId: "date-range-picker-3",
+				},
 			]}
 		/>
 	)

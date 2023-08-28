@@ -1,8 +1,17 @@
-import React, { ElementRef, ReactNode, useEffect, useRef } from "react"
+import React, {
+	ElementRef,
+	ReactNode,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react"
 import Tabs, { Tab, TabList, TabPanel } from "@atlaskit/tabs"
 import { CodeBlock } from "@atlaskit/code"
 
 import styles from "./ShowCaseWrapperItem.module.css"
+import { token } from "@atlaskit/tokens"
+import Button, { ButtonGroup } from "@atlaskit/button"
 
 export interface Package {
 	name: string
@@ -18,17 +27,20 @@ export interface ShowcaseWrapperItemProps {
 	id?: string
 	name: string
 	packages: Array<Package>
-	sourceCodeExampleId?: string
-	overallSourceCode?: string
-	examples: Array<ReactNode>
+	overallSourceCode: string
+	examples: {
+		title: string
+		example: ReactNode
+		sourceCodeExampleId: string
+	}[]
 }
 
 function extractSourceCodeExample(
 	overallSourceCode: string,
 	sourceCodeExampleId: string,
 ) {
-	const exampleCodeStartMarker = "// region: " + sourceCodeExampleId
-	const exampleCodeEndMarker = "// endregion: " + sourceCodeExampleId
+	const exampleCodeStartMarker = "//#region " + sourceCodeExampleId
+	const exampleCodeEndMarker = "//#endregion " + sourceCodeExampleId
 	if (
 		overallSourceCode.indexOf(exampleCodeStartMarker) &&
 		overallSourceCode.indexOf(exampleCodeEndMarker)
@@ -43,25 +55,18 @@ function extractSourceCodeExample(
 	return ""
 }
 
-export default function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
+export default function ShowcaseWrapperItem({
+	overallSourceCode,
+	id,
+	name,
+	packages,
+	examples,
+}: ShowcaseWrapperItemProps) {
 	const ref = useRef<ElementRef<"div">>(null)
-	let code = ""
 	//console.info("OverallSourceCode, SourceCodeExampleId", props.overallSourceCode, props.sourceCodeExampleId)
-	if (
-		props.overallSourceCode != null &&
-		props.overallSourceCode != "" &&
-		props.sourceCodeExampleId != null &&
-		props.sourceCodeExampleId != ""
-	) {
-		code = extractSourceCodeExample(
-			props.overallSourceCode,
-			props.sourceCodeExampleId,
-		)
-	}
 
 	useEffect(() => {
 		const handleIntersection = (entries: IntersectionObserverEntry[]) => {
-			console.log("INTERSECTION", ref?.current?.id)
 			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
 					if (ref.current) {
@@ -81,12 +86,12 @@ export default function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
 	}, [])
 
 	useEffect(() => {
-		if (window.location.hash === "#" + props.id) {
+		if (window.location.hash === "#" + id) {
 			if (ref.current) {
 				ref.current.scrollIntoView()
 			}
 		}
-	}, [props.id])
+	}, [id])
 
 	/*console.info( "ShowCaseWrapperItem overallSourceCode", props.overallSourceCode )
 	console.info( "ShowCaseWrapperItem sourceCodeExampleId", props.sourceCodeExampleId )
@@ -94,19 +99,26 @@ export default function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
 
 	return (
 		<div
-			id={props.id}
-			data-menu-name={props.name}
-			className="menu"
+			id={id}
+			data-menu-name={name}
 			style={{
-				padding: "20px",
-				width: "100%",
+				marginTop: "40px",
+				marginBottom: "40px",
 			}}
 			ref={ref}
 		>
-			<h3>{props.name}</h3>
-			<div style={{ fontWeight: "lighter", fontSize: "0.8rem" }}>
+			<h3>{name}</h3>
+
+			<div
+				style={{
+					fontWeight: "lighter",
+					fontSize: "0.8rem",
+					paddingTop: "0.2rem",
+					paddingBottom: "0.5rem",
+				}}
+			>
 				<span>Packages: </span>
-				{props.packages.map((pack, i) => {
+				{packages.map((pack, i) => {
 					return (
 						<a
 							href={pack.url}
@@ -120,43 +132,86 @@ export default function ShowcaseWrapperItem(props: ShowcaseWrapperItemProps) {
 				})}
 			</div>
 
-			<div
-				style={{
-					marginLeft: "-8px",
-					width: "100%",
-				}}
-			>
-				<Tabs id={props.name + "-tabs"}>
-					<TabList>
-						<Tab>Example</Tab>
-						<Tab>Example Source</Tab>
-					</TabList>
-					<TabPanel>
-						<div style={{ overflow: "hidden", width: "100%" }}>
-							{props.examples.map((example, i) => {
-								return (
-									<div key={i} className={styles.example}>
-										{example}
-									</div>
-								)
-							})}
+			<Tabs id={name + "-tabs"}>
+				<TabList>
+					{examples.map((example) => {
+						return <Tab key={example.title}>{example.title}</Tab>
+					})}
+				</TabList>
+				{examples.map((example, i) => {
+					return (
+						<TabPanel key={i}>
+							<ShowCaseExample
+								example={example.example}
+								overallSourceCode={overallSourceCode}
+								sourceCodeExampleId={
+									example.sourceCodeExampleId
+								}
+							/>
+						</TabPanel>
+					)
+				})}
+			</Tabs>
+		</div>
+	)
+}
+
+function ShowCaseExample({
+	example,
+	sourceCodeExampleId,
+	overallSourceCode,
+}: {
+	example: ReactNode
+	sourceCodeExampleId: string
+	overallSourceCode: string
+}) {
+	const [content, setContent] = useState<"example" | "source">("example")
+
+	const code = useMemo(
+		() => extractSourceCodeExample(overallSourceCode, sourceCodeExampleId),
+		[overallSourceCode, sourceCodeExampleId],
+	)
+
+	return (
+		<div
+			style={{
+				width: "100%",
+				backgroundColor: token("elevation.surface", "#fff"),
+				paddingTop: "12px",
+				paddingBottom: "12px",
+			}}
+		>
+			<ButtonGroup>
+				<Button
+					isSelected={content === "example"}
+					onClick={() => setContent("example")}
+				>
+					Example
+				</Button>
+				<Button
+					isSelected={content === "source"}
+					onClick={() => setContent("source")}
+				>
+					Source
+				</Button>
+			</ButtonGroup>
+			{content === "example" && (
+				<div className={styles.example}>{example}</div>
+			)}
+			{content === "source" && (
+				<div
+					style={{
+						padding: "0px",
+					}}
+				>
+					{!code && <span>No sources found...</span>}
+					{code && (
+						<div>
+							<CodeBlock text={code} language="typescript" />
 						</div>
-					</TabPanel>
-					<TabPanel>
-						<div style={{ overflow: "hidden" }}>
-							{code == "" && <span>No sources found...</span>}
-							{code != "" && (
-								<div>
-									<CodeBlock
-										text={code}
-										language="typescript"
-									/>
-								</div>
-							)}
-						</div>
-					</TabPanel>
-				</Tabs>
-			</div>
+					)}
+				</div>
+			)}
 		</div>
 	)
 }

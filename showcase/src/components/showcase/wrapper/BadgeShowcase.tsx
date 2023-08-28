@@ -5,18 +5,17 @@ import ShowcaseWrapperItem, {
 import Badge from "@atlaskit/badge"
 
 function BadgeShowcase(props: ShowcaseProps) {
-	// region: badge
+	//#region badge
 	const example = <Badge></Badge>
 
 	const example2 = <Badge appearance="added" />
 
 	const example3 = <Badge appearance="important" />
-	// endregion: badge
+	//#endregion badge
 
 	return (
 		<ShowcaseWrapperItem
 			name="Badge"
-			sourceCodeExampleId="badge"
 			{...props}
 			packages={[
 				{
@@ -24,7 +23,23 @@ function BadgeShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/badge/examples",
 				},
 			]}
-			examples={[example, example2, example3]}
+			examples={[
+				{
+					title: "Example 1",
+					example: example,
+					sourceCodeExampleId: "badge",
+				},
+				{
+					title: "Example 2",
+					example: example2,
+					sourceCodeExampleId: "badge",
+				},
+				{
+					title: "Example 3",
+					example: example3,
+					sourceCodeExampleId: "badge",
+				},
+			]}
 		/>
 	)
 }

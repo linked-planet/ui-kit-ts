@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useCallback } from "react"
 import { LeftSidebar } from "@atlaskit/page-layout"
 import {
 	ButtonItem,
@@ -7,28 +7,41 @@ import {
 	NavigationFooter,
 	NavigationHeader,
 	NestableNavigationContent,
-	SideNavigation
+	SideNavigation,
 } from "@atlaskit/side-navigation"
-import { State } from "../state/appStore"
-import { useSelector } from "react-redux"
+import useShowcases from "../useShowcases"
+import { useLocation, useNavigate } from "react-router-dom"
 
-function scrollAndHighlightElement ( id: string ) {
-	const element = document.getElementById( id )
-	if ( element ) {
-		element.scrollIntoView( {
+function scrollAndHighlightElement(id: string) {
+	const element = document.getElementById(id)
+	if (element) {
+		element.scrollIntoView({
 			behavior: "smooth",
-			block: "center"
-		} as ScrollIntoViewOptions )
-		element.classList.add( "focus" )
-		setTimeout( () => {
-			element.classList.remove( "focus" )
-		}, 1500 )
+			block: "center",
+		} as ScrollIntoViewOptions)
+		element.classList.add("focus")
+		setTimeout(() => {
+			element.classList.remove("focus")
+		}, 1500)
 	}
 }
 
-function ShowcaseLeftSidebar () {
+function ShowcaseLeftSidebar() {
+	const showcases = useShowcases({ overallSourceCode: "" })
+	const location = useLocation()
+	const navigate = useNavigate()
 
-	const menuIds = useSelector( ( state: State ) => state.menu )
+	const clickCB = useCallback(
+		(showcaseName: string) => {
+			console.log("LOCATION", location)
+			if (location.pathname === "/wrappers") {
+				scrollAndHighlightElement(showcaseName)
+				return
+			}
+			navigate("/single#" + showcaseName)
+		},
+		[location, navigate],
+	)
 
 	return (
 		<LeftSidebar>
@@ -38,28 +51,32 @@ function ShowcaseLeftSidebar () {
 				</NavigationHeader>
 
 				<NestableNavigationContent>
-					{
-						menuIds.map( ( item ) => {
-							return (
-								<ButtonItem
-									key={ item.id }
-									onClick={ () => scrollAndHighlightElement( item.id ) }
-								>
-									{ item.menuName }
-								</ButtonItem>
-							)
-						} )
-					}
+					{Object.keys(showcases).map((showcaseName) => {
+						return (
+							<ButtonItem
+								key={showcaseName}
+								onClick={() => clickCB(showcaseName)}
+							>
+								{showcaseName}
+							</ButtonItem>
+						)
+					})}
 				</NestableNavigationContent>
 
 				<NavigationFooter>
 					<Footer>
 						Made with ❤ by
-						<a href="https://www.linked-planet.com/"> linked-planet</a>
+						<a href="https://www.linked-planet.com/">
+							{" "}
+							linked-planet
+						</a>
 					</Footer>
 					<Footer>
 						Licensed under
-						<a href="http://www.apache.org/licenses/LICENSE-2.0"> Apache License, Version 2.0</a>
+						<a href="http://www.apache.org/licenses/LICENSE-2.0">
+							{" "}
+							Apache License, Version 2.0
+						</a>
 					</Footer>
 				</NavigationFooter>
 			</SideNavigation>
@@ -67,4 +84,4 @@ function ShowcaseLeftSidebar () {
 	)
 }
 
-export default ShowcaseLeftSidebar;
+export default ShowcaseLeftSidebar

@@ -8,7 +8,7 @@ import { Tooltip } from "react-tooltip"
 import "react-tooltip/dist/react-tooltip.css"
 
 function TooltipShowcase(props: ShowcaseProps) {
-	// region: tooltip
+	//#region tooltip
 	// import 'react-tooltip/dist/react-tooltip.css'
 	const example = (
 		<div>
@@ -20,12 +20,11 @@ function TooltipShowcase(props: ShowcaseProps) {
 			</Tooltip>
 		</div>
 	)
-	// endregion: tooltip
+	//#endregion tooltip
 
 	return (
 		<ShowcaseWrapperItem
 			name="Tooltip"
-			sourceCodeExampleId="tooltip"
 			{...props}
 			packages={[
 				{
@@ -33,7 +32,9 @@ function TooltipShowcase(props: ShowcaseProps) {
 					url: "https://github.com/wwayne/react-tooltip",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "tooltip" },
+			]}
 		/>
 	)
 }

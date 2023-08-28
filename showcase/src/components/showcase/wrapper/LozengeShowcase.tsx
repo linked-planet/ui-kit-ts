@@ -5,25 +5,24 @@ import ShowcaseWrapperItem, {
 import Lozenge from "@atlaskit/lozenge"
 
 function LozengeShowcase(props: ShowcaseProps) {
-	// region: lozenge
-	const example1 = <Lozenge>First lozenge</Lozenge>
-	const example2 = <Lozenge appearance="new">Colored lozenge</Lozenge>
-	const example3 = (
-		<Lozenge appearance="success" isBold>
-			Colored bold lozenge
-		</Lozenge>
+	//#region lozenge
+	const example = (
+		<>
+			<Lozenge>First lozenge</Lozenge>
+			<Lozenge appearance="new">Colored lozenge</Lozenge>
+			<Lozenge appearance="success" isBold>
+				Colored bold lozenge
+			</Lozenge>
+			<Lozenge appearance="success" isBold={false}>
+				Colored non-bold lozenge
+			</Lozenge>
+		</>
 	)
-	const example4 = (
-		<Lozenge appearance="success" isBold={false}>
-			Colored non-bold lozenge
-		</Lozenge>
-	)
-	// endregion: lozenge
+	//#endregion lozenge
 
 	return (
 		<ShowcaseWrapperItem
 			name="Lozenge"
-			sourceCodeExampleId="lozenge"
 			{...props}
 			packages={[
 				{
@@ -31,7 +30,13 @@ function LozengeShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/lozenge/examples",
 				},
 			]}
-			examples={[example1, example2, example3, example4]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "lozenge",
+				},
+			]}
 		/>
 	)
 }

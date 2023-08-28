@@ -7,7 +7,7 @@ import { SimpleTag } from "@atlaskit/tag"
 import Badge from "@atlaskit/badge"
 
 function MenuShowcase(props: ShowcaseProps) {
-	// region: menu
+	//#region menu
 	const [items] = useState(["Menu A", "Menu B", "Menu C"])
 	const [selectedItems, setSelectedItems] = useState(["Menu A"])
 	const example = (
@@ -48,12 +48,11 @@ function MenuShowcase(props: ShowcaseProps) {
 			</MenuGroup>
 		</div>
 	)
-	// endregion: menu
+	//#endregion menu
 
 	return (
 		<ShowcaseWrapperItem
 			name="Menu"
-			sourceCodeExampleId="menu"
 			{...props}
 			packages={[
 				{
@@ -61,7 +60,9 @@ function MenuShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/menu/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "menu" },
+			]}
 		/>
 	)
 }

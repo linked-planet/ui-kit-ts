@@ -9,8 +9,10 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import Button, { ButtonGroup } from "@atlaskit/button"
+import { Fieldset } from "@atlaskit/form"
+import { SimpleTag } from "@atlaskit/tag"
 
-//#region bookcard
+//#region bookcardcomponents
 function BookCardComponentsExample() {
 	return (
 		<BookCardComponents.CardBase
@@ -45,10 +47,11 @@ function BookCardComponentsExample() {
 		</BookCardComponents.CardBase>
 	)
 }
+//#endregion bookcardcomponents
 
 function BookCardExample() {
 	const [bodyLayout, setBodyLayout] = useState<"row" | "grid" | "column">(
-		"row",
+		"grid",
 	)
 
 	const [defaultClosed, setDefaultClosed] = useState<
@@ -92,6 +95,39 @@ function BookCardExample() {
 		}
 	}, [bodyLayout])
 
+	//#region bookcard
+	const bookCardExample = (
+		<BookCard
+			title="Book Title"
+			subtitle="Book Subtitle"
+			bodyLayout={bodyLayout}
+			bodyStyle={bodyStyle}
+			defaultClosed={defaultClosed}
+			actionsInfo={"Actions Informations:"}
+			actions={
+				<>
+					<SimpleTag key="action" text="action item" color="blue" />
+					<SimpleTag
+						key="action 1"
+						text="action item 1"
+						color="green"
+					/>
+				</>
+			}
+		>
+			<>
+				<BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntryTitle>
+						Book Entry Title
+					</BookCardComponents.CardBodyEntryTitle>
+					<div>Book Entry Content</div>
+				</BookCardComponents.CardBodyEntry>
+				{children}
+			</>
+		</BookCard>
+	)
+	//#endregion bookcard
+
 	return (
 		<div>
 			<div
@@ -102,66 +138,70 @@ function BookCardExample() {
 					marginBottom: "8px",
 				}}
 			>
-				<ButtonGroup>
-					<Button
-						isSelected={defaultClosed === false}
-						onClick={() => setDefaultClosed(false)}
+				<Fieldset legend="Book Card Collapsible">
+					<ButtonGroup>
+						<Button
+							isSelected={defaultClosed === false}
+							onClick={() => setDefaultClosed(false)}
+						>
+							Default Closed False
+						</Button>
+						<Button
+							isSelected={defaultClosed === true}
+							onClick={() => setDefaultClosed(true)}
+						>
+							Default Closed True
+						</Button>
+						<Button
+							isSelected={defaultClosed === undefined}
+							onClick={() => setDefaultClosed(undefined)}
+						>
+							Default Closed Undefined
+						</Button>
+					</ButtonGroup>
+					<p
+						style={{
+							marginBottom: "1rem",
+						}}
 					>
-						Default Closed False
-					</Button>
-					<Button
-						isSelected={defaultClosed === true}
-						onClick={() => setDefaultClosed(true)}
-					>
-						Default Closed True
-					</Button>
-					<Button
-						isSelected={defaultClosed === undefined}
-						onClick={() => setDefaultClosed(undefined)}
-					>
-						Default Closed Undefined
-					</Button>
-				</ButtonGroup>
-				<ButtonGroup>
-					<Button
-						isSelected={bodyLayout === "row"}
-						onClick={() => setBodyLayout("row")}
-					>
-						Row
-					</Button>
-					<Button
-						isSelected={bodyLayout === "grid"}
-						onClick={() => setBodyLayout("grid")}
-					>
-						Grid
-					</Button>
-					<Button
-						isSelected={bodyLayout === "column"}
-						onClick={() => setBodyLayout("column")}
-					>
-						Column
-					</Button>
-				</ButtonGroup>
+						<b>defaultClosed: </b>
+						<br></br>
+						<em>true/false</em> - card is collapsible<br></br>
+						<em>undefined/null</em> - card is not collapsible
+					</p>
+				</Fieldset>
+				<Fieldset legend="Book Card Body Layout">
+					<ButtonGroup>
+						<Button
+							isSelected={bodyLayout === "row"}
+							onClick={() => setBodyLayout("row")}
+						>
+							Row
+						</Button>
+						<Button
+							isSelected={bodyLayout === "grid"}
+							onClick={() => setBodyLayout("grid")}
+						>
+							Grid
+						</Button>
+						<Button
+							isSelected={bodyLayout === "column"}
+							onClick={() => setBodyLayout("column")}
+						>
+							Column
+						</Button>
+					</ButtonGroup>
+				</Fieldset>
 			</div>
-			<BookCard
-				title="Book Title"
-				subtitle="Book Subtitle"
-				bodyLayout={bodyLayout}
-				bodyStyle={bodyStyle}
-				defaultClosed={defaultClosed}
-			>
-				{children}
-			</BookCard>
+			{bookCardExample}
 		</div>
 	)
 }
-//#endregion
 
 export default function BookCardShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Book Card (Components)"
-			sourceCodeExampleId="bookcard"
 			{...props}
 			packages={[
 				{
@@ -170,8 +210,18 @@ export default function BookCardShowcase(props: ShowcaseProps) {
 				},
 			]}
 			examples={[
-				<BookCardComponentsExample key="bookcardcomponentexample" />,
-				<BookCardExample key="bookcardexample" />,
+				{
+					title: "Components",
+					example: (
+						<BookCardComponentsExample key="bookcardcomponentexample" />
+					),
+					sourceCodeExampleId: "bookcardcomponents",
+				},
+				{
+					title: "Complete Bookcard",
+					example: <BookCardExample key="bookcardexample" />,
+					sourceCodeExampleId: "bookcard",
+				},
 			]}
 		/>
 	)

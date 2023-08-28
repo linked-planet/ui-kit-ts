@@ -5,7 +5,7 @@ import ShowcaseWrapperItem, {
 import Pagination from "@atlaskit/pagination"
 
 function PaginationShowcase(props: ShowcaseProps) {
-	// region: pagination
+	//#region pagination
 	const [selectedPage, setSelectedPage] = useState(0)
 	const example = (
 		<Pagination
@@ -18,12 +18,11 @@ function PaginationShowcase(props: ShowcaseProps) {
 			onChange={(event, page) => setSelectedPage(page - 1)}
 		/>
 	)
-	// endregion: pagination
+	//#endregion pagination
 
 	return (
 		<ShowcaseWrapperItem
 			name="Pagination"
-			sourceCodeExampleId="pagination"
 			{...props}
 			packages={[
 				{
@@ -31,7 +30,13 @@ function PaginationShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/pagination/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "pagination",
+				},
+			]}
 		/>
 	)
 }

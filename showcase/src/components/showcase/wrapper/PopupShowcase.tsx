@@ -6,7 +6,7 @@ import { Popup } from "@atlaskit/popup"
 import Button from "@atlaskit/button"
 
 function PopupShowcase(props: ShowcaseProps) {
-	// region: popup
+	//#region popup
 	const [isPopupActive, setIsPopupActive] = useState(false)
 	const example = (
 		<Popup
@@ -28,12 +28,11 @@ function PopupShowcase(props: ShowcaseProps) {
 			)}
 		/>
 	)
-	// endregion: popup
+	//#endregion popup
 
 	return (
 		<ShowcaseWrapperItem
 			name="Popup"
-			sourceCodeExampleId="popup"
 			{...props}
 			packages={[
 				{
@@ -41,7 +40,9 @@ function PopupShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/popup/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "popup" },
+			]}
 		/>
 	)
 }

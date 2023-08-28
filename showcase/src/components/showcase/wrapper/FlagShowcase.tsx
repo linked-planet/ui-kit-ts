@@ -6,7 +6,7 @@ import Flag from "@atlaskit/flag"
 import WarningIcon from "@atlaskit/icon/glyph/warning"
 
 function FlagShowcase(props: ShowcaseProps) {
-	// region: flag
+	//#region flag
 	const example = (
 		<Flag
 			id="flag-id"
@@ -15,12 +15,11 @@ function FlagShowcase(props: ShowcaseProps) {
 			description="Description of flag"
 		/>
 	)
-	// endregion: flag
+	//#endregion flag
 
 	return (
 		<ShowcaseWrapperItem
 			name="Flag"
-			sourceCodeExampleId="flag"
 			{...props}
 			packages={[
 				{
@@ -28,7 +27,9 @@ function FlagShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/flag/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "flag" },
+			]}
 		/>
 	)
 }

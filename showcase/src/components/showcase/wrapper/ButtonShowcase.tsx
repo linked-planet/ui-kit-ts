@@ -5,7 +5,7 @@ import ShowcaseWrapperItem, {
 import Button, { ButtonGroup, LoadingButton } from "@atlaskit/button"
 
 function ButtonShowcase(props: ShowcaseProps) {
-	// region: button
+	//#region button
 	const [isLoading, setIsLoading] = useState(false)
 
 	const example = (
@@ -28,12 +28,11 @@ function ButtonShowcase(props: ShowcaseProps) {
 			</LoadingButton>
 		</ButtonGroup>
 	)
-	// endregion: button
+	//#endregion button
 
 	return (
 		<ShowcaseWrapperItem
 			name="Button & Button-Group"
-			sourceCodeExampleId="button"
 			{...props}
 			packages={[
 				{
@@ -41,7 +40,9 @@ function ButtonShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/button/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "button" },
+			]}
 		/>
 	)
 }

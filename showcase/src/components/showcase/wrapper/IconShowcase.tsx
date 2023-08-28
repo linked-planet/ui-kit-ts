@@ -11,7 +11,7 @@ import SendIcon from "@atlaskit/icon/glyph/send"
 import TrashIcon from "@atlaskit/icon/glyph/trash"
 
 function IconShowcase(props: ShowcaseProps) {
-	// region: icon
+	//#region icon
 	const example = (
 		<div>
 			<ArrowDownIcon label="" />
@@ -23,12 +23,11 @@ function IconShowcase(props: ShowcaseProps) {
 			<TrashIcon label="" primaryColor="red" />
 		</div>
 	)
-	// endregion: icon
+	//#endregion icon
 
 	return (
 		<ShowcaseWrapperItem
 			name="Icon"
-			sourceCodeExampleId="icon"
 			{...props}
 			packages={[
 				{
@@ -36,7 +35,9 @@ function IconShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/icon/icon-explorer",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "icon" },
+			]}
 		/>
 	)
 }

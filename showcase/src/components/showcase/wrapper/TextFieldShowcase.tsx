@@ -5,23 +5,24 @@ import ShowcaseWrapperItem, {
 import TextField from "@atlaskit/textfield"
 
 function TextFieldShowcase(props: ShowcaseProps) {
-	// region: textfield
+	//#region textfield
 	const example1 = (
 		<div style={{ minWidth: 300 }}>
 			<TextField defaultValue="Content of text field..." />
 		</div>
 	)
+	//#endregion textfield
+	//#region textfield2
 	const example2 = (
 		<div style={{ minWidth: 300 }}>
 			<TextField defaultValue="Password" type="password" />
 		</div>
 	)
-	// endregion: textfield
+	//#endregion textfield2
 
 	return (
 		<ShowcaseWrapperItem
 			name="Text field"
-			sourceCodeExampleId="textfield"
 			{...props}
 			packages={[
 				{
@@ -29,7 +30,18 @@ function TextFieldShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/textfield/examples",
 				},
 			]}
-			examples={[example1, example2]}
+			examples={[
+				{
+					title: "Example",
+					example: example1,
+					sourceCodeExampleId: "textfield",
+				},
+				{
+					title: "Example 2",
+					example: example2,
+					sourceCodeExampleId: "textfield2",
+				},
+			]}
 		/>
 	)
 }

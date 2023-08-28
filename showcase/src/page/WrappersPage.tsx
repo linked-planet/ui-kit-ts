@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
 import useShowCases from "../useShowcases"
 
 function WrappersPage() {
-	const dispatch = useDispatch()
 	const [overallSourceCode, setOverallSourceCode] = useState("")
 	// retrieve source code
 
@@ -16,10 +14,7 @@ function WrappersPage() {
 				//console.info( "Loaded SourceCode:", sourceCode );
 				setOverallSourceCode(sourceCode)
 			})
-		dispatch({
-			type: "SET_MENU",
-		})
-	}, [dispatch])
+	}, [])
 
 	return (
 		<div>

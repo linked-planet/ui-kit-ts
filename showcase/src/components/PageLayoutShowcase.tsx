@@ -5,6 +5,7 @@ import ShowcaseWrapperItem, {
 } from "./ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function PageLayoutExample() {
+	//#region pagelayout
 	return (
 		<div
 			style={{
@@ -44,21 +45,27 @@ function PageLayoutExample() {
 			</PageLayout.Page>
 		</div>
 	)
+	//#endregion pagelayout
 }
 
 export default function PageLayoutShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="PageLayout"
-			sourceCodeExampleId="pagelayout"
-			overallSourceCode={props.overallSourceCode}
+			{...props}
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
 					url: "https://github.com/linked-planet/ui-kit-ts",
 				},
 			]}
-			examples={[<PageLayoutExample key={"emaple1"} />]}
+			examples={[
+				{
+					title: "Page Layout",
+					example: <PageLayoutExample />,
+					sourceCodeExampleId: "pagelayout",
+				},
+			]}
 		/>
 	)
 }

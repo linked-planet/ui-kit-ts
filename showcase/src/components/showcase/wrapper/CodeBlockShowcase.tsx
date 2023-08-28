@@ -5,19 +5,18 @@ import ShowcaseWrapperItem, {
 import { CodeBlock } from "@atlaskit/code"
 
 function CodeBlockShowcase(props: ShowcaseProps) {
-	// region: code-block
+	//#region code-block
 	const code = `class Hello {
     public static void main(String args...) {
         System.out.println('Hello world')
     }
 }`
 	const example = <CodeBlock language="java" text={code} />
-	// endregion: code-block
+	//#endregion code-block
 
 	return (
 		<ShowcaseWrapperItem
 			name="Code block"
-			sourceCodeExampleId="code-block"
 			{...props}
 			packages={[
 				{
@@ -25,7 +24,13 @@ function CodeBlockShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/code/code-block/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "code-block",
+				},
+			]}
 		/>
 	)
 }

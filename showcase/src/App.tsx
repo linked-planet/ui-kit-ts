@@ -32,9 +32,9 @@ export default function App() {
 									<ShowcaseLeftSidebar />
 
 									<Main>
-										<div
+										<main
 											style={{
-												margin: "50px 50px",
+												margin: "12px 12px",
 												display: "flex",
 												flexDirection: "column",
 											}}
@@ -71,7 +71,7 @@ export default function App() {
 													element={<NotFoundPage />}
 												/>
 											</Routes>
-										</div>
+										</main>
 									</Main>
 								</Content>
 							</PageLayout>

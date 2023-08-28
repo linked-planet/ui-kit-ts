@@ -13,7 +13,7 @@ import Modal, {
 } from "@atlaskit/modal-dialog"
 
 function ModalShowcase(props: ShowcaseProps) {
-	// region: modal
+	//#region modal
 	const [isModalActive, setIsModalActive] = useState(false)
 	const example = (
 		<div>
@@ -55,12 +55,11 @@ function ModalShowcase(props: ShowcaseProps) {
 			)}
 		</div>
 	)
-	// endregion: modal
+	//#endregion modal
 
 	return (
 		<ShowcaseWrapperItem
 			name="Modal"
-			sourceCodeExampleId="modal"
 			{...props}
 			packages={[
 				{
@@ -68,7 +67,9 @@ function ModalShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/modal-dialog/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "modal" },
+			]}
 		/>
 	)
 }

@@ -6,7 +6,7 @@ import DynamicTable from "@atlaskit/dynamic-table"
 import Button from "@atlaskit/button"
 
 function DynamicTableShowcase(props: ShowcaseProps) {
-	// region: table
+	//#region table
 	const example = (
 		<div style={{ minWidth: 300 }}>
 			<DynamicTable
@@ -108,12 +108,11 @@ function DynamicTableShowcase(props: ShowcaseProps) {
 			></DynamicTable>
 		</div>
 	)
-	// endregion: table
+	//#endregion table
 
 	return (
 		<ShowcaseWrapperItem
 			name="Dynamic table"
-			sourceCodeExampleId="table"
 			{...props}
 			packages={[
 				{
@@ -121,7 +120,9 @@ function DynamicTableShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/dynamic-table/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "table" },
+			]}
 		/>
 	)
 }

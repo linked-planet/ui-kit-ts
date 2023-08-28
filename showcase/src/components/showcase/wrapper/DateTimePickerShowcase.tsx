@@ -5,18 +5,17 @@ import ShowcaseWrapperItem, {
 import { DateTimePicker } from "@atlaskit/datetime-picker"
 
 function DateTimePickerShowcase(props: ShowcaseProps) {
-	// region: datetime-picker
+	//#region datetime-picker
 	const example = (
 		<div style={{ minWidth: 300 }}>
 			<DateTimePicker />
 		</div>
 	)
-	// endregion: datetime-picker
+	//#endregion datetime-picker
 
 	return (
 		<ShowcaseWrapperItem
 			name="Date Time Picker"
-			sourceCodeExampleId="datetime-picker"
 			{...props}
 			packages={[
 				{
@@ -24,7 +23,13 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/datetime-picker/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "datetime-picker",
+				},
+			]}
 		/>
 	)
 }

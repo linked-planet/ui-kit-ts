@@ -6,7 +6,7 @@ import Button from "@atlaskit/button"
 import EmptyState from "@atlaskit/empty-state"
 
 function EmptyStateShowcase(props: ShowcaseProps) {
-	// region: empty-state
+	//#region empty-state
 	const example = (
 		<div style={{ minWidth: 300 }}>
 			<EmptyState
@@ -16,12 +16,11 @@ function EmptyStateShowcase(props: ShowcaseProps) {
 			/>
 		</div>
 	)
-	// endregion: empty-state
+	//#endregion empty-state
 
 	return (
 		<ShowcaseWrapperItem
 			name="Empty state"
-			sourceCodeExampleId="empty-state"
 			{...props}
 			packages={[
 				{
@@ -29,7 +28,13 @@ function EmptyStateShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/empty-state/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "empty-state",
+				},
+			]}
 		/>
 	)
 }

@@ -5,7 +5,7 @@ import ShowcaseWrapperItem, {
 import Tabs, { Tab, TabList, TabPanel } from "@atlaskit/tabs"
 
 function TabsShowcase(props: ShowcaseProps) {
-	// region: tabs
+	//#region tabs
 	const example = (
 		<div style={{ minWidth: 300 }}>
 			<Tabs id="tab-example">
@@ -22,12 +22,11 @@ function TabsShowcase(props: ShowcaseProps) {
 			</Tabs>
 		</div>
 	)
-	// endregion: tabs
+	//#endregion tabs
 
 	return (
 		<ShowcaseWrapperItem
 			name="Tabs"
-			sourceCodeExampleId="tabs"
 			{...props}
 			packages={[
 				{
@@ -35,7 +34,9 @@ function TabsShowcase(props: ShowcaseProps) {
 					url: "https://atlassian.design/components/tabs/examples",
 				},
 			]}
-			examples={[example]}
+			examples={[
+				{ title: "Example", example, sourceCodeExampleId: "tabs" },
+			]}
 		/>
 	)
 }
