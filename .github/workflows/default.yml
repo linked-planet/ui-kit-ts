@@ -10,6 +10,9 @@ on:
         - cron: "0 6 * * 1" # At 06:00 on Monday
     workflow_dispatch: # to run from the Actions tab on GitHub
 
+env:
+    VITE_GH_RELEASE_TAG: ${{ github.ref }} # vite uses this in the build to replace the version in the index.html
+
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -25,7 +28,7 @@ jobs:
               run: npm run build:lib
 
             - name: npm build showcase
-              run: VITE_GH_RELEASE_TAG=${{ github.event.release.tag_name }} npm run build:sc
+              run: npm run build:sc
 
             - name: deploy Showcase to Github Pages
               # run deploy either on release or ...
