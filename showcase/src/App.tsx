@@ -6,16 +6,19 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import IntroPage from "./page/IntroPage"
 import NotFoundPage from "./page/NotFoundPage"
 import ReduxPage from "./page/ReduxPage"
-import "@atlaskit/css-reset"
+
 import { appStore } from "./state/appStore"
 import { Provider } from "react-redux"
 import { QueryClient, QueryClientProvider } from "react-query"
 import ReactQueryPage from "./page/ReactQueryPage"
 
-import "./custom.css"
 import { LocaleProvider } from "@linked-planet/ui-kit-ts"
 import SinglePage from "./page/SinglePage"
 import WrappersPage from "./page/WrappersPage"
+
+import "./custom.css"
+import "./styles.css"
+import "@atlaskit/css-reset" // sets base styles ot AK
 
 const queryClient = new QueryClient()
 

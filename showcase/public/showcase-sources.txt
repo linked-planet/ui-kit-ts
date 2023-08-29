@@ -288,6 +288,7 @@ function BookCardComponentsExample() {
 //#endregion bookcardcomponents
 
 function BookCardExample() {
+	//#region bookcard
 	const [bodyLayout, setBodyLayout] = useState<"row" | "grid" | "column">(
 		"grid",
 	)
@@ -331,36 +332,41 @@ function BookCardExample() {
 		}
 	}, [bodyLayout])
 
-	//#region bookcard
 	const bookCardExample = (
-		<BookCard
-			title="Book Title"
-			subtitle="Book Subtitle"
-			bodyLayout={bodyLayout}
-			bodyStyle={bodyStyle}
-			closed={isClosed}
-			actionsInfo={"Action:"}
-			actions={
+		<>
+			<BookCard
+				title="Book Title"
+				subtitle="Book Subtitle"
+				bodyLayout={bodyLayout}
+				bodyStyle={bodyStyle}
+				closed={isClosed}
+				actionsInfo={"Action:"}
+				actions={
+					<>
+						<SimpleTag
+							key="action"
+							text="action item"
+							color="blue"
+						/>
+						<SimpleTag
+							key="action 1"
+							text="action item 1"
+							color="green"
+						/>
+					</>
+				}
+			>
 				<>
-					<SimpleTag key="action" text="action item" color="blue" />
-					<SimpleTag
-						key="action 1"
-						text="action item 1"
-						color="green"
-					/>
+					<BookCardComponents.CardBodyEntry>
+						<BookCardComponents.CardBodyEntryTitle>
+							Book Entry Title
+						</BookCardComponents.CardBodyEntryTitle>
+						<div>Book Entry Content</div>
+					</BookCardComponents.CardBodyEntry>
+					{children}
 				</>
-			}
-		>
-			<>
-				<BookCardComponents.CardBodyEntry>
-					<BookCardComponents.CardBodyEntryTitle>
-						Book Entry Title
-					</BookCardComponents.CardBodyEntryTitle>
-					<div>Book Entry Content</div>
-				</BookCardComponents.CardBodyEntry>
-				{children}
-			</>
-		</BookCard>
+			</BookCard>
+		</>
 	)
 	//#endregion bookcard
 
@@ -623,6 +629,70 @@ function CodeBlockShowcase(props: ShowcaseProps) {
 }
 
 export default CodeBlockShowcase
+
+import { Collapsible } from "@linked-planet/ui-kit-ts/components/Collapsible"
+import React from "react"
+import type { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import ShowcaseWrapperItem from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
+export default function CollapsibleShowcase(props: ShowcaseProps) {
+	//#region collapsible
+	const example = (
+		<Collapsible
+			header={
+				<div className="p-2">
+					<h4>Collapsible Title</h4>
+				</div>
+			}
+			openButtonPosition="left"
+			opened={false}
+		>
+			<div className="p-4">collapsible content</div>
+		</Collapsible>
+	)
+	//#endregion collapsible
+
+	//#region collapsible1
+	const example1 = (
+		<Collapsible
+			header={
+				<div className="p-2 m-auto">
+					<h2>Collapsible Title</h2>
+				</div>
+			}
+			openButtonPosition="right"
+			opened={false}
+		>
+			<div className="p-4">collapsible content</div>
+		</Collapsible>
+	)
+	//#endregion collapsible1
+
+	return (
+		<ShowcaseWrapperItem
+			name="Collapsible"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts",
+				},
+			]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "collapsible",
+				},
+				{
+					title: "Example 1",
+					example: example1,
+					sourceCodeExampleId: "collapsible1",
+				},
+			]}
+		/>
+	)
+}
 
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {

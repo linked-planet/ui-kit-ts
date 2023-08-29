@@ -3,7 +3,17 @@ import react from "@vitejs/plugin-react-swc"
 import tsconfigPaths from "vite-tsconfig-paths"
 //import nodePolyfills from "rollup-plugin-polyfill-node"
 
+// postcss:
+import tailwindcss from "tailwindcss"
+import autoprefixer from "autoprefixer"
+//
+
 export default defineConfig({
+	css: {
+		postcss: {
+			plugins: [tailwindcss("./tailwind.config.sc.js"), autoprefixer],
+		},
+	},
 	build: {
 		outDir: "dist-showcase",
 		target: "es2022",

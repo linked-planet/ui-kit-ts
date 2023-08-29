@@ -4,7 +4,17 @@ import react from "@vitejs/plugin-react-swc"
 import dts from "vite-plugin-dts"
 //import nodePolyfills from "rollup-plugin-polyfill-node"
 
+// postcss:
+import tailwindcss from "tailwindcss"
+import autoprefixer from "autoprefixer"
+//
+
 export default defineConfig({
+	css: {
+		postcss: {
+			plugins: [tailwindcss("./tailwind.config.lib.js"), autoprefixer],
+		},
+	},
 	build: {
 		//minify: false,
 		outDir: "dist",
@@ -17,7 +27,6 @@ export default defineConfig({
 			fileName: (format) => `ui-kit.${format}.js`,
 			formats: ["es"],
 		},
-
 		rollupOptions: {
 			//plugins: [nodePolyfills()],
 			external: [

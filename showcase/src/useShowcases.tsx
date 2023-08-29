@@ -9,6 +9,7 @@ import ButtonShowcase from "./components/showcase/wrapper/ButtonShowcase"
 import CalendarShowcase from "./components/showcase/wrapper/CalendarShowcase"
 import CheckboxShowcase from "./components/showcase/wrapper/CheckboxShowcase"
 import CodeBlockShowcase from "./components/showcase/wrapper/CodeBlockShowcase"
+import CollapsibleShowcase from "./components/showcase/wrapper/CollapsibleShowcase"
 import DateRangePickerShowcase from "./components/showcase/wrapper/DateRangePickerShowcase"
 import DateTimePickerShowcase from "./components/showcase/wrapper/DateTimePickerShowcase"
 import DropDownMenuShowcase from "./components/showcase/wrapper/DropdownMenuShowcase"
@@ -61,6 +62,9 @@ export default function useShowcases({
 			),
 			"Code Block": (
 				<CodeBlockShowcase overallSourceCode={overallSourceCode} />
+			),
+			Collapsible: (
+				<CollapsibleShowcase overallSourceCode={overallSourceCode} />
 			),
 			"Date Time Picker": (
 				<DateTimePickerShowcase overallSourceCode={overallSourceCode} />

@@ -1,224 +1,131 @@
-import React, {
-	CSSProperties,
-	useCallback,
-	useEffect,
-	useRef,
-	useState,
-} from "react"
+import React from "react"
+import type { CSSProperties } from "react"
 
 import { token } from "@atlaskit/tokens"
-import styled from "@emotion/styled"
+import { css } from "@emotion/css"
 
-import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
+import { Collapsible } from "./Collapsible"
 
 const borderColor = token("color.border", "#091e4224")
-const headerBackgroundColor = token("elevation.surface.sunken", "#f4f5f7")
-const bodyBackgroundColor = token("elevation.surface", "#fff")
+const headerBackgroundColor = token("elevation.surface.sunken", "#f7f8f9")
 
 const headerTitleColor = token("color.text", "#172B4D")
 const headerSubtitleTextColor = token("color.text.subtlest", "#6b778c")
 
-const bookCardBaseStyle: CSSProperties = {
-	display: "flex",
-	flexDirection: "column",
-	minWidth: 0,
-	flex: "1 1 0",
-	marginTop: "14px",
-	borderRadius: "4px",
-	border: `1px solid ${borderColor}`,
-	overflow: "hidden",
-}
+const bodyBackgroundColor = token("elevation.surface", "#fff")
 
-function CardBase({
-	children,
+const CardBase = ({
 	header,
 	closed,
+	children,
 }: {
-	children?: React.ReactNode
 	header: React.ReactNode
 	closed?: boolean | undefined | null
-}) {
-	const detailsRef = useRef<HTMLDetailsElement>(null)
-	const [isClosed, setIsClosed] = useState<boolean | undefined | null>(closed)
-
-	useEffect(() => {
-		setIsClosed(closed)
-	}, [closed])
-
-	const onToggledCB = useCallback(() => {
-		if (closed) {
-			return
-		}
-		setIsClosed((prev) => !prev)
-	}, [closed])
-
-	return (
-		<details
-			ref={detailsRef}
-			style={bookCardBaseStyle}
-			{...((closed == undefined || !closed) && { open: true })}
-			//onToggle={onToggledCB}
-			onClick={(e) => e.preventDefault()}
+	children?: React.ReactNode
+}) => (
+	<Collapsible
+		openButtonPosition={closed != null ? "right" : "hidden"}
+		header={header}
+		opened={!closed}
+		headerContainerStyle={{
+			backgroundColor: headerBackgroundColor,
+			border: `1px solid ${borderColor}`,
+		}}
+	>
+		<div
+			className="border-b border-x rounded-b"
+			style={{
+				backgroundColor: bodyBackgroundColor,
+				borderColor: borderColor,
+			}}
 		>
-			<summary
-				style={{
-					listStyle: "none",
-					margin: 0,
-					padding: 0,
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "space-between",
-					backgroundColor: headerBackgroundColor,
-					borderBottom: `1px solid ${borderColor}`,
-					borderTopRightRadius: "4px",
-				}}
-			>
-				<div
-					style={{
-						width: "100%",
-						marginBottom: "-1px",
-						//userSelect: "none",
-					}}
-				>
-					{header}
-				</div>
-				{closed != undefined && (
-					<div
-						style={{
-							marginLeft: "-8px",
-							marginRight: "4px",
-						}}
-						onClick={onToggledCB}
-					>
-						{!isClosed ? (
-							<ChevronUpIcon label="close" />
-						) : (
-							<ChevronDownIcon label="open" />
-						)}
-					</div>
-				)}
-			</summary>
 			{children}
-		</details>
-	)
-}
+		</div>
+	</Collapsible>
+)
 
-const CardHeader = styled.div`
-	// book-card-header
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	gap: 30px;
-	min-width: 0;
+const CardHeader = ({ children }: { children: React.ReactNode }) => (
+	<div className="flex flex-1 justify-between p-3 align-baseline">
+		{children}
+	</div>
+)
 
-	padding: 12px;
+const CardHeaderMeta = ({ children }: { children: React.ReactNode }) => (
+	<div className="flex flex-1 flex-col items-baseline">{children}</div>
+)
 
-	border-top-left-radius: 4px;
-	border-top-right-radius: 4px;
-	background: ${headerBackgroundColor};
-	border-bottom: 1px solid ${borderColor};
-`
+const CardHeaderTitle = ({ children }: { children: React.ReactNode }) => (
+	<h3
+		className="no-wrap text-ellipsis overflow-hidden"
+		style={{ color: headerTitleColor }}
+	>
+		{children}
+	</h3>
+)
 
-const CardHeaderMeta = styled.div`
-	// book-card-header-meta
-	display: flex;
-	flex-direction: column;
-	min-width: 0;
-	flex: 1;
-`
+const CardHeaderSubtitle = ({ children }: { children: React.ReactNode }) => (
+	<h6
+		className="no-wrap mt-1 text-ellipsis overflow-hidden"
+		style={{ color: headerSubtitleTextColor }}
+	>
+		{children}
+	</h6>
+)
 
-const CardHeaderTitle = styled.h3`
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-	color: ${headerTitleColor};
-`
+const CardHeaderActions = ({ children }: { children: React.ReactNode }) => (
+	<div className="flex content-end items-center">{children}</div>
+)
 
-const CardHeaderSubtitle = styled.h6`
-	margin-top: 5px;
+const CardHeaderActionsInfo = ({ children }: { children: React.ReactNode }) => (
+	<div className="mr-2 text-sm items-center">{children}</div>
+)
 
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
-	color: ${headerSubtitleTextColor};
-`
-
-const CardHeaderActions = styled.div`
-	// book-card-header-actions
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-`
-
-const CardHeaderActionsInfo = styled.div`
-	// book-card-header-actions-info
-	margin-right: 10px;
-	align-items: center;
-
-	& > span:not([role="presentation"]) {
-		vertical-align: super;
-	}
-`
-
-const CardGridBody = styled.div`
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-	overflow: auto;
-	border-collapse: collapse;
-	margin-right: -1px;
-	margin-bottom: -1px;
+const cardBodyEntryBaseStyle = css`
 	> * {
 		padding: 8px 12px;
 		border-bottom: 1px solid ${borderColor};
 		border-right: 1px solid ${borderColor};
 	}
 `
+const CardGridBody = ({ children }: { children: React.ReactNode }) => (
+	<div
+		className={`grid border-collapse overflow-auto ${cardBodyEntryBaseStyle} ${css`
+			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		`}`}
+	>
+		{children}
+	</div>
+)
 
-const CardRowBody = styled.div`
-	display: grid;
-	overflow-x: auto;
-	overflow-y: hidden;
-	grid-auto-flow: column;
-	grid-auto-columns: minmax(150px, 1fr);
-	border-collapse: collapse;
-	margin-right: -1px;
-	margin-bottom: -1px;
-	> * {
-		padding: 8px 12px;
-		border-bottom: 1px solid ${borderColor};
-		border-right: 1px solid ${borderColor};
-	}
-`
+const CardRowBody = ({ children }: { children: React.ReactNode }) => (
+	<div
+		className={`grid overflow-x-auto overflow-y-hidden border-collapse grid-flow-col ${cardBodyEntryBaseStyle} ${css`
+			grid-auto-columns: minmax(150px, 1fr);
+		`}`}
+	>
+		{children}
+	</div>
+)
 
-const CardColumnBody = styled.div`
-	display: grid;
-	grid-auto-flow: row;
-	overflow: auto;
-	border-collapse: collapse;
-	margin-right: -1px;
-	margin-bottom: -1px;
-	> * {
-		padding: 8px 12px;
-		border-bottom: 1px solid ${borderColor};
-		border-right: 1px solid ${borderColor};
-	}
-`
+const CardColumnBody = ({ children }: { children: React.ReactNode }) => (
+	<div
+		className={`grid overflow-auto border-collapse grid-flow-row ${cardBodyEntryBaseStyle} ${css`
+			grid-auto-rows: minmax(150px, 1fr);
+		`}`}
+	>
+		{children}
+	</div>
+)
 
-const CardBodyEntry = styled.div`
-	display: flex;
-	flex: 1 1 0;
-	align-items: baseline;
-	flex-direction: column;
-	background-color: ${bodyBackgroundColor};
+const CardBodyEntry = ({ children }: { children: React.ReactNode }) => (
+	<div className="flex flex-1 flex-col items-baseline text-xs">
+		{children}
+	</div>
+)
 
-	font-size: smaller;
-`
-
-const CardBodyEntryTitle = styled.span`
-	font-size: ${token("font.heading.sm", "13px")};
-	font-weight: ${token("font.weight.bold", "600")};
-`
+const CardBodyEntryTitle = ({ children }: { children: React.ReactNode }) => (
+	<span className="text-sm font-bold">{children}</span>
+)
 
 const BookCardComponents = {
 	CardBase,
@@ -243,7 +150,6 @@ type BookCardProps = {
 	closed?: boolean | undefined | null
 	bodyLayout: "row" | "grid" | "column"
 	bodyStyle?: CSSProperties
-	maxBodyHeight?: string
 	actions?: React.ReactNode
 	actionsInfo?: React.ReactNode
 	children?: React.ReactNode
@@ -294,7 +200,9 @@ export function BookCard({
 				</CardHeader>
 			}
 		>
-			<div style={bodyStyle}>{body}</div>
+			<div className="-mb-[1px] -mx-[1px]">
+				<div style={bodyStyle}>{body}</div>
+			</div>
 		</CardBase>
 	)
 }

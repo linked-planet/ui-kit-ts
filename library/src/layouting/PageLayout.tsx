@@ -1,80 +1,84 @@
+import React from "react"
 import { token } from "@atlaskit/tokens"
-import styled from "@emotion/styled"
 
-const Page = styled.div`
-	width: 100%;
-	height: 100%;
-	min-height: 0;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-	background-color: ${token("elevation.surface", "#fff")};
-`
+const pageContentBackgroundColor = token("elevation.surface", "#fff")
+const subtitleColor = token("color.text.subtlest", "#172B4D")
+const borderColor = token("color.border", "#091e4224")
+const menuColor = token("color.background.neutral.subtle", "#f7f8f9")
 
-const PageHeader = styled.div`
-	background: ${token("elevation.surface.raised", "#fafbfc")};
-	padding-top: 20px;
-	padding-left: 20px;
-	padding-right: 14px;
-	border-bottom: 1px solid ${token("color.border", "#091e4224")};
-`
+const Page = ({ children }: { children: React.ReactNode }) => (
+	<div className="flex flex-col w-full h-full min-h-0 overflow-hidden">
+		{children}
+	</div>
+)
 
-const PageHeaderTitle = styled.div`
-	margin-bottom: 8px;
-`
+const PageHeader = ({ children }: { children: React.ReactNode }) => (
+	<div
+		className="flex flex-col w-full pt-5 pl-5 pr-3 border-b"
+		style={{
+			borderColor,
+			backgroundColor: menuColor,
+		}}
+	>
+		{children}
+	</div>
+)
 
-const PageHeaderSubTitle = styled.div`
-	color: ${token("color.text.subtlest", "#172B4D")};
-	margin-top: 10px;
-	margin-bottom: 10px;
-`
+const PageHeaderTitle = ({ children }: { children: React.ReactNode }) => (
+	<div className="mb-2">{children}</div>
+)
 
-const PageHeaderLine = styled.div`
-	display: flex;
-	width: 100%;
-	gap: 4px;
-	margin-bottom: 8px;
-	align-items: center;
-`
+const PageHeaderSubTitle = ({ children }: { children: React.ReactNode }) => (
+	<div className="mt-3 mb-3" style={{ color: subtitleColor }}>
+		{children}
+	</div>
+)
 
-const PageBody = styled.div`
-	display: flex;
-	flex-direction: column;
-	min-height: 0;
-	flex: 1;
-	min-width: 0;
-	margin-bottom: 4px;
-`
+const PageHeaderLine = ({ children }: { children: React.ReactNode }) => (
+	<div className="flex w-full gap-1 mb-2 items-center">{children}</div>
+)
 
-const PageBodyHeader = styled.div`
-	z-index: 0;
-	background-color: ${token("elevation.surface.raised", "#fafbfc")};
-	padding-top: 14px;
-	padding-bottom: 10px;
-	padding-left: 20px;
-	padding-right: 14px;
-	box-shadow: 0 4px 4px ${token("color.border", "#091e4224")};
-`
+const PageBody = ({ children }: { children: React.ReactNode }) => (
+	<div className="flex flex-col flex-1 min-h-0 min-w-0 overflow-hidden">
+		{children}
+	</div>
+)
 
-const PageBodyContent = styled.div`
-	flex: 1;
-	overflow-y: auto;
-	min-height: 0;
-	padding-left: 20px;
-	padding-right: 14px;
-	padding-bottom: 20px;
-	padding-top: 10px;
-`
+const PageBodyHeader = ({ children }: { children: React.ReactNode }) => (
+	<div
+		className="pt-3 pb-2 pl-4 pr-3 z-0"
+		style={{
+			boxShadow: `0 4px 4px ${token("color.border", "#091e4224")}`,
+			backgroundColor: menuColor,
+		}}
+	>
+		{children}
+	</div>
+)
 
-const PageBodyFooter = styled.div`
-	display: flex;
-	min-height: 0;
-	justify-content: center;
-	background-color: ${token("elevation.surface.raised", "#fafbfc")};
-	padding-top: 4px;
-	border-top: 1px solid ${token("color.border", "#091e4224")};
-	box-shadow: 0 -4px 4px ${token("color.border", "#091e4224")};
-`
+const PageBodyContent = ({ children }: { children: React.ReactNode }) => (
+	<div
+		className="flex-1 min-h-0 overflow-y-auto pl-5 pb-5 pr-3 pt-3"
+		style={{
+			backgroundColor: pageContentBackgroundColor,
+		}}
+	>
+		{children}
+	</div>
+)
+
+const PageBodyFooter = ({ children }: { children: React.ReactNode }) => (
+	<div
+		className="flex justify-center pt-1 border-t"
+		style={{
+			borderColor,
+			boxShadow: `0 -4px 4px ${token("color.border", "#091e4224")}`,
+			backgroundColor: menuColor,
+		}}
+	>
+		{children}
+	</div>
+)
 
 const PageLayout = {
 	Page,

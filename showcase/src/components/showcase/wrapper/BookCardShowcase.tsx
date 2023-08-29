@@ -50,6 +50,7 @@ function BookCardComponentsExample() {
 //#endregion bookcardcomponents
 
 function BookCardExample() {
+	//#region bookcard
 	const [bodyLayout, setBodyLayout] = useState<"row" | "grid" | "column">(
 		"grid",
 	)
@@ -93,36 +94,41 @@ function BookCardExample() {
 		}
 	}, [bodyLayout])
 
-	//#region bookcard
 	const bookCardExample = (
-		<BookCard
-			title="Book Title"
-			subtitle="Book Subtitle"
-			bodyLayout={bodyLayout}
-			bodyStyle={bodyStyle}
-			closed={isClosed}
-			actionsInfo={"Action:"}
-			actions={
+		<>
+			<BookCard
+				title="Book Title"
+				subtitle="Book Subtitle"
+				bodyLayout={bodyLayout}
+				bodyStyle={bodyStyle}
+				closed={isClosed}
+				actionsInfo={"Action:"}
+				actions={
+					<>
+						<SimpleTag
+							key="action"
+							text="action item"
+							color="blue"
+						/>
+						<SimpleTag
+							key="action 1"
+							text="action item 1"
+							color="green"
+						/>
+					</>
+				}
+			>
 				<>
-					<SimpleTag key="action" text="action item" color="blue" />
-					<SimpleTag
-						key="action 1"
-						text="action item 1"
-						color="green"
-					/>
+					<BookCardComponents.CardBodyEntry>
+						<BookCardComponents.CardBodyEntryTitle>
+							Book Entry Title
+						</BookCardComponents.CardBodyEntryTitle>
+						<div>Book Entry Content</div>
+					</BookCardComponents.CardBodyEntry>
+					{children}
 				</>
-			}
-		>
-			<>
-				<BookCardComponents.CardBodyEntry>
-					<BookCardComponents.CardBodyEntryTitle>
-						Book Entry Title
-					</BookCardComponents.CardBodyEntryTitle>
-					<div>Book Entry Content</div>
-				</BookCardComponents.CardBodyEntry>
-				{children}
-			</>
-		</BookCard>
+			</BookCard>
+		</>
 	)
 	//#endregion bookcard
 
