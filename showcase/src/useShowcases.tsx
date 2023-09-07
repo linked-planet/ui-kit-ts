@@ -33,6 +33,7 @@ import TabsShowcase from "./components/showcase/wrapper/TabsShowcase"
 import TagShowcase from "./components/showcase/wrapper/TagShowcase"
 import TextAreaShowcase from "./components/showcase/wrapper/TextAreaShowcase"
 import TextFieldShowcase from "./components/showcase/wrapper/TextFieldShowcase"
+import ToastFlagShowcase from "./components/showcase/wrapper/ToastFlagShowcase"
 import ToggleShowcase from "./components/showcase/wrapper/ToggleShowcase"
 import TooltipShowcase from "./components/showcase/wrapper/TooltipShowcase"
 import UtilsShowCase from "./components/showcase/wrapper/UtilsShowCase"
@@ -118,6 +119,9 @@ export default function useShowcases({
 			),
 			Timetable: (
 				<TimeTableShowcase overallSourceCode={overallSourceCode} />
+			),
+			"Toast Flag": (
+				<ToastFlagShowcase overallSourceCode={overallSourceCode} />
 			),
 			Toggle: <ToggleShowcase overallSourceCode={overallSourceCode} />,
 			Tooltip: <TooltipShowcase overallSourceCode={overallSourceCode} />,

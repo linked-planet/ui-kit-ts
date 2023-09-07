@@ -6,6 +6,7 @@ import type {
 	TimeSlotBooking,
 	TimeTableGroup,
 	SelectedTimeSlot,
+	TimeTableViewType,
 } from "./LPTimeTable"
 
 import type { PlaceholderItemProps } from "./PlaceholderItem"
@@ -21,4 +22,5 @@ export type {
 	SelectedTimeSlot,
 	PlaceholderItemProps,
 	RenderItemProps,
+	TimeTableViewType,
 }

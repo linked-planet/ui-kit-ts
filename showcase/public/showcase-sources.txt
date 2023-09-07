@@ -3344,6 +3344,95 @@ function TextFieldShowcase(props: ShowcaseProps) {
 
 export default TextFieldShowcase
 
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
+import { showFlag } from "@linked-planet/ui-kit-ts"
+import { ToastContainer } from "react-toastify"
+import Button from "@atlaskit/button"
+
+//#region toastflag
+function Example() {
+	return (
+		<div className="flex flex-col gap-3">
+			<Button
+				onClick={() =>
+					showFlag({
+						title: "standard flag",
+						content: "This is a standard toast flag.",
+						urgency: undefined,
+					})
+				}
+			>
+				Standard
+			</Button>
+			<Button
+				appearance="subtle"
+				onClick={() =>
+					showFlag({
+						title: "success flag",
+						content: "This is a success toast flag.",
+						urgency: "success",
+					})
+				}
+			>
+				Info
+			</Button>
+			<Button
+				appearance="danger"
+				onClick={() =>
+					showFlag({
+						title: "danger flag",
+						content: "This is a danger toast flag.",
+						urgency: "danger",
+					})
+				}
+			>
+				Danger
+			</Button>
+			<Button
+				appearance="primary"
+				onClick={() =>
+					showFlag({
+						title: "information flag",
+						content: "This is an information toast flag.",
+						urgency: "information",
+					})
+				}
+			>
+				Info
+			</Button>
+			<ToastContainer />
+		</div>
+	)
+}
+//#endregion toastflag
+
+export default function ToastFlagShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="Toast Flag Notification"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://www.github.com/linked-planet/ui-kit-ts",
+				},
+			]}
+			description="A toast flag notification is a small notification that appears at the bottom of the screen. It is based on the react-toastify library, and you need to add the ToastContainer component to your app."
+			examples={[
+				{
+					title: "Example",
+					example: <Example />,
+					sourceCodeExampleId: "toastflag",
+				},
+			]}
+		/>
+	)
+}
+
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,

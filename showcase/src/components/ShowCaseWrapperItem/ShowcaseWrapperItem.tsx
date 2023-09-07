@@ -26,6 +26,7 @@ export interface ShowcaseProps {
 export interface ShowcaseWrapperItemProps {
 	id?: string
 	name: string
+	description?: React.ReactNode
 	packages: Array<Package>
 	overallSourceCode: string
 	examples: {
@@ -59,6 +60,7 @@ export default function ShowcaseWrapperItem({
 	overallSourceCode,
 	id,
 	name,
+	description,
 	packages,
 	examples,
 }: ShowcaseWrapperItemProps) {
@@ -130,6 +132,13 @@ export default function ShowcaseWrapperItem({
 						</a>
 					)
 				})}
+			</div>
+			<div>
+				{description && (
+					<div className="font-light pt-1 pb-2 text-sm">
+						{description}
+					</div>
+				)}
 			</div>
 
 			<Tabs id={name + "-tabs"}>

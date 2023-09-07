@@ -497,7 +497,7 @@ function moveNowBar(
 	const headerTimeslotRow = tableHeader.children[1]
 	if (!headerTimeslotRow) {
 		setMessage({
-			urgency: "error",
+			urgency: "danger",
 			messageKey: "timetable.noHeaderTimeSlotRow",
 		})
 		console.log("LPTimeTable - no header time slot row found")

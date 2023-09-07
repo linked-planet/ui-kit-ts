@@ -4,7 +4,6 @@ import { token } from "@atlaskit/tokens"
 
 export type MessageUrgency =
 	| "success"
-	| "error"
 	| "warning"
 	| "information"
 	| "danger"
@@ -58,12 +57,6 @@ export default function InlineMessage({
 			bgColor = token("color.background.success", "#DFFCF0")
 			textColor = token("color.text.success", "#216E4E")
 			borderColor = token("color.border.success", "#22A06B")
-			break
-		case "error":
-			bgColor = token("color.background.danger", "#FFEDEB")
-			textColor = token("color.text.danger", "#AE2A19")
-			borderColor = token("color.border.danger", "#E34935")
-			closeBtnAppearance = "danger"
 			break
 		case "warning":
 			bgColor = token("color.background.warning", "#FFF7D6")
