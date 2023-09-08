@@ -249,7 +249,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			!itemsWithSameStartAndEndCount
 		) {
 			setMessage({
-				urgency: "warning",
+				appearance: "warning",
 				messageKey: "timetable.bookingsOutsideOfDayRange",
 				messageValues: { itemCount: foundItemsOutsideOfDayRangeCount },
 			})
@@ -258,7 +258,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			!foundItemsOutsideOfDayRangeCount
 		) {
 			setMessage({
-				urgency: "warning",
+				appearance: "warning",
 				messageKey: "timetable.sameStartAndEndTimeDate",
 				messageValues: { itemCount: itemsWithSameStartAndEndCount },
 			})
@@ -267,7 +267,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			foundItemsOutsideOfDayRangeCount
 		) {
 			setMessage({
-				urgency: "warning",
+				appearance: "warning",
 				messageKey: "timetable.sameStartAndEndAndOutsideOfDayRange",
 				messageValues: {
 					outsideCount: foundItemsOutsideOfDayRangeCount,
@@ -497,7 +497,7 @@ function moveNowBar(
 	const headerTimeslotRow = tableHeader.children[1]
 	if (!headerTimeslotRow) {
 		setMessage({
-			urgency: "danger",
+			appearance: "danger",
 			messageKey: "timetable.noHeaderTimeSlotRow",
 		})
 		console.log("LPTimeTable - no header time slot row found")

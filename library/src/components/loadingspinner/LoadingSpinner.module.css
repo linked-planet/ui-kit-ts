@@ -1,5 +1,3 @@
-@import url("../../variables.css");
-
 .loader {
 	border: 6px solid var(--ds-border);
 	border-radius: 50%;

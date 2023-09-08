@@ -1123,17 +1123,107 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Flag from "@atlaskit/flag"
+import { Flag as FlagLP } from "@linked-planet/ui-kit-ts"
 import WarningIcon from "@atlaskit/icon/glyph/warning"
 
 function FlagShowcase(props: ShowcaseProps) {
 	//#region flag
 	const example = (
-		<Flag
-			id="flag-id"
-			title="Flag"
-			icon={<WarningIcon label="" />}
-			description="Description of flag"
-		/>
+		<div
+			style={{
+				display: "flex",
+				flexDirection: "column",
+				gap: "1rem",
+			}}
+		>
+			<Flag
+				id="flag-id"
+				title="Flag"
+				icon={<WarningIcon label="" />}
+				description="Description of flag"
+				actions={[{ content: "Action", onClick: () => {} }]}
+			/>
+
+			<FlagLP
+				title="Flag"
+				icon={<WarningIcon label="" />}
+				description="Action Flag"
+				actions={[{ content: "Action", onClick: () => {} }]}
+			/>
+			<FlagLP
+				title="Flag"
+				icon={<WarningIcon label="" />}
+				description="Action Flag"
+				invert={false}
+				actions={[{ content: "Action", onClick: () => {} }]}
+			/>
+
+			<FlagLP
+				title="Flag"
+				icon={<WarningIcon label="" />}
+				description="Success Flag"
+				appearance="success"
+				invert={false}
+			/>
+
+			<FlagLP
+				title="Flag"
+				description="Success Flag"
+				appearance="success"
+			/>
+
+			<FlagLP
+				title="Flag"
+				description="Warning Flag"
+				appearance="warning"
+				invert={false}
+			/>
+
+			<FlagLP
+				title="Flag"
+				description="Warning Flag"
+				appearance="warning"
+			/>
+
+			<FlagLP
+				title="Flag"
+				description="Danger Flag"
+				appearance="danger"
+				invert={false}
+			/>
+
+			<FlagLP
+				title="Flag"
+				description="Danger Flag"
+				appearance="danger"
+			/>
+
+			<FlagLP
+				title="Flag"
+				description="Information Flag"
+				appearance="information"
+				invert={false}
+			/>
+
+			<FlagLP
+				title="Flag"
+				description="Information Flag"
+				appearance="information"
+			/>
+
+			<FlagLP
+				title="Flag"
+				description="Discovery Flag"
+				appearance="discovery"
+				invert={false}
+			/>
+			<FlagLP
+				title="Flag"
+				description="Discovery Flag"
+				appearance="discovery"
+				invert={true}
+			/>
+		</div>
 	)
 	//#endregion flag
 
@@ -1143,10 +1233,11 @@ function FlagShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/flag",
+					name: "@linked-planet/ui-kit-ts",
 					url: "https://atlassian.design/components/flag/examples",
 				},
 			]}
+			description="Drop in replacement for the @atlaskit/flag component."
 			examples={[
 				{ title: "Example", example, sourceCodeExampleId: "flag" },
 			]}
@@ -3349,66 +3440,217 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { showFlag } from "@linked-planet/ui-kit-ts"
+import {
+	showDangerFlag,
+	showFlag,
+	showFlagExtended,
+	showInformationFlag,
+	showSuccessFlag,
+	showWarningFlag,
+} from "@linked-planet/ui-kit-ts"
 import { ToastContainer } from "react-toastify"
 import Button from "@atlaskit/button"
 
-//#region toastflag
-function Example() {
+//#region toastflagShowExtendedFlag
+function ExampleShowExtendedFlag() {
 	return (
 		<div className="flex flex-col gap-3">
 			<Button
 				onClick={() =>
-					showFlag({
-						title: "standard flag",
+					showFlagExtended({
+						title: "1: Whoa a new flag!",
 						content: "This is a standard toast flag.",
-						urgency: undefined,
+						appearance: undefined,
 					})
 				}
 			>
 				Standard
 			</Button>
 			<Button
-				appearance="subtle"
 				onClick={() =>
-					showFlag({
-						title: "success flag",
-						content: "This is a success toast flag.",
-						urgency: "success",
+					showFlagExtended({
+						title: "1: This flag does not disappear!",
+						content:
+							"This is a standard not disappearing toast flag.",
+						appearance: undefined,
+						autoClose: false,
 					})
 				}
 			>
-				Info
+				Standard Not Dissapearing
 			</Button>
 			<Button
-				appearance="danger"
 				onClick={() =>
-					showFlag({
+					showFlagExtended({
+						title: "1: Whoa a new flag!",
+						content:
+							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
+						appearance: "success",
+					})
+				}
+			>
+				Success
+			</Button>
+			<Button
+				onClick={() =>
+					showFlagExtended({
+						title: "1: Whoa a new flag!",
+						content:
+							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
+						appearance: "information",
+					})
+				}
+			>
+				Information
+			</Button>
+			<Button
+				onClick={() =>
+					showFlagExtended({
 						title: "danger flag",
 						content: "This is a danger toast flag.",
-						urgency: "danger",
+						appearance: "danger",
 					})
 				}
 			>
 				Danger
 			</Button>
 			<Button
-				appearance="primary"
 				onClick={() =>
-					showFlag({
-						title: "information flag",
-						content: "This is an information toast flag.",
-						urgency: "information",
+					showFlagExtended({
+						title: "warning flag",
+						content: "This is a warning toast flag.",
+						appearance: "warning",
 					})
 				}
 			>
-				Info
+				Warning
+			</Button>
+			<Button
+				onClick={() =>
+					showFlagExtended({
+						title: "discovery flag",
+						content: (
+							<div>
+								<h2>This is a discovery!</h2>
+								<p>
+									Lorem ipsum, dolor sit amet consectetur
+									adipisicing elit. Maxime doloribus unde
+									laboriosam, beatae accusantium quasi itaque,
+									illum necessitatibus amet aspernatur,
+									nostrum velit quo earum error nihil.
+									Obcaecati totam harum quibusdam!
+								</p>
+							</div>
+						),
+						appearance: "discovery",
+					})
+				}
+			>
+				Discovery
 			</Button>
 			<ToastContainer />
 		</div>
 	)
 }
-//#endregion toastflag
+//#endregion toastflagShowExtendedFlag
+
+//#region toastflagShowEFlag
+function ExampleShowFlags() {
+	return (
+		<div className="flex flex-col gap-3">
+			<Button
+				onClick={() =>
+					showFlag({
+						title: "1: Whoa a new flag!",
+						content: "This is a standard toast flag.",
+					})
+				}
+			>
+				Standard
+			</Button>
+			<Button
+				onClick={() =>
+					showFlag({
+						title: "1: This flag does not disappear!",
+						content: "...and is at the bottom left",
+						autoClose: false,
+						position: "bottom-left",
+					})
+				}
+			>
+				Standard Not Dissapearing Bottom Left
+			</Button>
+			<Button
+				onClick={() =>
+					showSuccessFlag({
+						title: "1: Whoa a new flag!",
+						content:
+							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
+						autoClose: false,
+					})
+				}
+			>
+				Success
+			</Button>
+			<Button
+				onClick={() =>
+					showInformationFlag({
+						title: "1: Whoa a new information flag!",
+						content:
+							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
+					})
+				}
+			>
+				Information
+			</Button>
+			<Button
+				onClick={() =>
+					showDangerFlag({
+						title: "danger flag",
+						content: "This is a danger toast flag.",
+					})
+				}
+			>
+				Danger
+			</Button>
+			<Button
+				onClick={() =>
+					showWarningFlag({
+						title: "warning flag",
+						content: "This is a warning toast flag.",
+					})
+				}
+			>
+				Warning
+			</Button>
+			<Button
+				onClick={() =>
+					showFlag({
+						title: "discovery flag",
+						content: (
+							<div>
+								<h2>This is a discovery!</h2>
+								<p>
+									Lorem ipsum, dolor sit amet consectetur
+									adipisicing elit. Maxime doloribus unde
+									laboriosam, beatae accusantium quasi itaque,
+									illum necessitatibus amet aspernatur,
+									nostrum velit quo earum error nihil.
+									Obcaecati totam harum quibusdam!
+								</p>
+							</div>
+						),
+						appearance: "discovery",
+					})
+				}
+			>
+				Discovery
+			</Button>
+			<ToastContainer />
+		</div>
+	)
+}
+//#endregion toastflagShowFlag
 
 export default function ToastFlagShowcase(props: ShowcaseProps) {
 	return (
@@ -3424,9 +3666,14 @@ export default function ToastFlagShowcase(props: ShowcaseProps) {
 			description="A toast flag notification is a small notification that appears at the bottom of the screen. It is based on the react-toastify library, and you need to add the ToastContainer component to your app."
 			examples={[
 				{
-					title: "Example",
-					example: <Example />,
-					sourceCodeExampleId: "toastflag",
+					title: "Example Show Flags",
+					example: <ExampleShowFlags />,
+					sourceCodeExampleId: "toastflagShowFlag",
+				},
+				{
+					title: "Example Show Exended Flag",
+					example: <ExampleShowExtendedFlag />,
+					sourceCodeExampleId: "toastflagShowExtendedFlag",
 				},
 			]}
 		/>

@@ -1,20 +1,14 @@
 import React, { useEffect, useRef, useState } from "react"
-import Button, { Appearance } from "@atlaskit/button"
+import Button from "@atlaskit/button"
 import { token } from "@atlaskit/tokens"
-
-export type MessageUrgency =
-	| "success"
-	| "warning"
-	| "information"
-	| "danger"
-	| "discovery"
-	| undefined
+import type { Appearance } from "../../utils/colors"
+import type { Appearance as AKAppearance } from "@atlaskit/button"
 
 export type OpeningDirection = "topdown" | "bottomup"
 
 export type Message = {
 	text: string | JSX.Element
-	urgency?: MessageUrgency
+	appearance?: Appearance
 	timeOut?: number // in seconds
 }
 
@@ -51,8 +45,8 @@ export default function InlineMessage({
 	let bgColor = undefined
 	let textColor = undefined
 	let borderColor = undefined
-	let closeBtnAppearance: Appearance = "default"
-	switch (message.urgency) {
+	let closeBtnAppearance: AKAppearance = "default"
+	switch (message.appearance) {
 		case "success":
 			bgColor = token("color.background.success", "#DFFCF0")
 			textColor = token("color.text.success", "#216E4E")

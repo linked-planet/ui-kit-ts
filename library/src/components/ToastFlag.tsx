@@ -1,190 +1,136 @@
 import React, { CSSProperties } from "react"
-import type { MessageUrgency } from "./inlinemessage/InlineMessage"
 
 import { CloseButtonProps, toast } from "react-toastify"
 import type { ToastOptions } from "react-toastify"
 
-import { G300, P300, R300, Y300, N0, N700, N900 } from "@atlaskit/theme/colors"
+import { N0 } from "@atlaskit/theme/colors"
 
 import "react-toastify/dist/ReactToastify.css"
-import Tick from "@atlaskit/icon/glyph/check-circle"
-import Error from "@atlaskit/icon/glyph/error"
-import Info from "@atlaskit/icon/glyph/info"
-import Warning from "@atlaskit/icon/glyph/warning"
-import DiscoverFilledIcon from "@atlaskit/icon/glyph/discover-filled"
 import CrossIcon from "@atlaskit/icon/glyph/cross"
 
 import { token } from "@atlaskit/tokens"
+import { Flag, FlagActionType, FlagProps } from "./Flag"
+import { getAppearanceColors } from "../utils/colors"
+import type { Appearance } from "../utils/colors"
 
-type FlagLikeProps = {
-	title: string
-	content: string | JSX.Element
-	urgency: MessageUrgency
-	options?: ToastOptions
-}
+type ToastFlagProps = FlagProps & ToastOptions
 
-type ToastFlagProps = FlagLikeProps & ToastOptions
-
-const defaultStyles: CSSProperties = {
-	backgroundColor: token("elevation.surface.overlay", N0),
-	color: token("color.text", N900),
-	boxShadow: `${token(
-		"elevation.shadow.overlay",
-		"0px 8px 12px #091e423f, 0px 0px 1px #091e424f",
-	)}`,
-	borderRadius: token("border.radius.100", "3px"),
-	paddingTop: token("space.200", "1rem"),
-	paddingLeft: token("space.200", "1rem"),
-	paddingBottom: token("space.200", "1rem"),
-	paddingRight: token("space.150", "0.75rem"),
-}
-
-function CloseButton({ closeToast }: CloseButtonProps) {
+function CloseButton({
+	closeToast,
+	color,
+}: CloseButtonProps & { color: string }) {
 	return (
-		<div
-			style={{
-				//position: "absolute",
-				//top: token("space.200", "2rem"),
-				//right: token("space.200", "2rem"),
-				cursor: "pointer",
-			}}
-			onClick={closeToast}
-		>
-			<CrossIcon
-				label="Close"
-				primaryColor={token("color.icon", N700)}
-				size="small"
-			/>
+		<div className="cursor-pointer" onClick={closeToast}>
+			<CrossIcon label="Close" primaryColor={color} size="small" />
 		</div>
 	)
 }
 
 const defaultSettings: ToastOptions = {
 	position: "bottom-right",
-	autoClose: false,
+	autoClose: 5000,
 	hideProgressBar: false,
 	closeOnClick: false,
-	closeButton: CloseButton,
 	pauseOnFocusLoss: true,
 	pauseOnHover: true,
 	draggable: true,
 }
 
-function FlagLike({ title, content, urgency }: ToastFlagProps) {
-	let icon = undefined
-	switch (urgency) {
-		case "success":
-			icon = (
-				<Tick
-					label="Success"
-					primaryColor={token("color.icon.success", G300)}
-				/>
-			)
-			break
-		case "warning":
-			icon = (
-				<Warning
-					label="Warning"
-					primaryColor={token("color.icon.warning", Y300)}
-				/>
-			)
-			break
-		case "information":
-			icon = (
-				<Info
-					label="Info"
-					primaryColor={token("color.icon.information", P300)}
-				/>
-			)
-			break
-		case "danger":
-			icon = (
-				<Error
-					label="Danger"
-					primaryColor={token("color.icon.danger", R300)}
-				/>
-			)
-			break
-		case "discovery":
-			icon = (
-				<DiscoverFilledIcon
-					label="Discovery"
-					primaryColor={token("color.icon.discovery", P300)}
-				/>
-			)
-			break
-	}
-	return (
-		<div
-			style={{
-				display: "grid",
-				gridTemplateColumns: "auto 1fr",
-				gap: "1rem",
-			}}
-		>
-			{icon && (
-				<div>
-					<p
-						style={{
-							display: "flex",
-							justifyItems: "center",
-							alignItems: "center",
-						}}
-					>
-						{icon}
-					</p>
-				</div>
-			)}
-			<div>
-				<div
-					className="font-bold mb-3"
-					style={{
-						color: token("color.text.subtle", N700),
-					}}
-				>
-					{title}
-				</div>
-				<div>{content}</div>
-			</div>
-		</div>
-	)
-}
-
-export function showFlag({
-	options,
+export function showFlagExtended({
 	style,
 	progressStyle,
+	appearance,
+	invert = false,
 	...props
 }: ToastFlagProps) {
-	let background: string = token("color.background.brand.bold", P300)
-
-	switch (props.urgency) {
-		case "success":
-			background = token("color.background.success.bold", G300)
-			break
-		case "warning":
-			background = token("color.background.warning.bold", Y300)
-			break
-		case "information":
-			background = token("color.background.information.bold", P300)
-			break
-		case "danger":
-			background = token("color.background.danger.bold", R300)
-			break
-		case "discovery":
-			background = token("color.background.discovery.bold", P300)
-			break
-	}
+	const { secondaryColor, primaryColor, textColor } = getAppearanceColors(
+		invert,
+		appearance,
+	)
 
 	const progressStyleUsed = {
-		background,
+		background: secondaryColor,
 		...progressStyle,
 	}
 
-	toast(<FlagLike {...props} />, {
-		...defaultSettings,
-		...options,
-		style: { ...defaultStyles, ...style },
-		progressStyle: progressStyleUsed,
+	const flagStyle: CSSProperties = {
+		boxShadow: "unset",
+		padding: "unset",
+		border: 0,
+	}
+
+	const backgroundColor = invert
+		? token("elevation.surface.overlay", N0)
+		: primaryColor
+
+	const toastStyle: CSSProperties = {
+		backgroundColor,
+		color: textColor,
+		border: `1px solid ${secondaryColor}`,
+		...style,
+	}
+
+	toast(
+		<Flag
+			icon={props.icon}
+			appearance={appearance}
+			invert={invert}
+			style={flagStyle}
+			{...props}
+		/>,
+		{
+			...defaultSettings,
+			closeButton: (p: CloseButtonProps) => (
+				<CloseButton color={textColor} {...p} />
+			),
+			...props,
+			style: toastStyle,
+			progressStyle: progressStyleUsed,
+		},
+	)
+}
+
+/**
+ * Simeple flag is a version of FlagExtended without forwarding all the ToastOptions
+ */
+type SimpleFlagProps = {
+	title: string
+	description: string | JSX.Element
+	appearance?: Appearance
+	autoClose?: false | number
+	position?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
+	actions?: FlagActionType[]
+}
+
+export function showFlag(props: SimpleFlagProps) {
+	showFlagExtended({
+		...props,
+		invert: true,
 	})
+}
+
+export function showErrorFlag(props: Omit<SimpleFlagProps, "appearance">) {
+	showFlag({ ...props, appearance: "danger" })
+}
+
+export function showDangerFlag(props: Omit<SimpleFlagProps, "appearance">) {
+	showFlag({ ...props, appearance: "danger" })
+}
+
+export function showSuccessFlag(props: Omit<SimpleFlagProps, "appearance">) {
+	showFlag({ ...props, appearance: "success" })
+}
+
+export function showInformationFlag(
+	props: Omit<SimpleFlagProps, "appearance">,
+) {
+	showFlag({ ...props, appearance: "information" })
+}
+
+export function showWarningFlag(props: Omit<SimpleFlagProps, "appearance">) {
+	showFlag({ ...props, appearance: "warning" })
+}
+
+export function showDiscoveryFlag(props: Omit<SimpleFlagProps, "appearance">) {
+	showFlag({ ...props, appearance: "discovery" })
 }
