@@ -1,6 +1,6 @@
-import React, { FC, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
-import Calendar from "@atlaskit/calendar"
+import Calendar, { ChangeEvent } from "@atlaskit/calendar"
 import { WeekDay } from "@atlaskit/calendar/types"
 
 export class EndDateBeforeStartDateError extends Error {}
@@ -34,7 +34,8 @@ export interface DateRangeProps {
 
 	disabled?: boolean
 
-	onChange?: (start: string, end: string) => void
+	onDateRangeSelected: (start: string, end: string) => void
+	onViewChanged?: (e: ChangeEvent) => void
 	onCollision?: (dateString: string) => void
 }
 
@@ -115,10 +116,6 @@ export function DateRangePicker(props: DateRangeProps) {
 		: []
 
 	function onDateSelect(value: string) {
-		if (!props.onChange) {
-			console.log("DateRangePicker: onChange is not defined")
-			return
-		}
 		const pickedDate = dayjs(value)
 		const collision = checkCollisions(pickedDate, disabledDates)
 		if (collision) {
@@ -137,7 +134,7 @@ export function DateRangePicker(props: DateRangeProps) {
 				setEndDate(undefined)
 			} else {
 				setEndDate(pickedDate)
-				props.onChange(
+				props.onDateRangeSelected(
 					toDateString(startDate),
 					toDateString(pickedDate),
 				)
@@ -189,6 +186,7 @@ export function DateRangePicker(props: DateRangeProps) {
 				const selectedDate = event.iso
 				onDateSelect(selectedDate)
 			}}
+			onChange={props.onViewChanged}
 			locale={props.locale}
 			weekStartDay={props.weekStartDate}
 		/>

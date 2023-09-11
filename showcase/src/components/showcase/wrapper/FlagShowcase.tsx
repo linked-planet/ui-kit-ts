@@ -2,7 +2,6 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Flag from "@atlaskit/flag"
 import { Flag as FlagLP } from "@linked-planet/ui-kit-ts"
 import WarningIcon from "@atlaskit/icon/glyph/warning"
 
@@ -16,14 +15,6 @@ function FlagShowcase(props: ShowcaseProps) {
 				gap: "1rem",
 			}}
 		>
-			<Flag
-				id="flag-id"
-				title="Flag"
-				icon={<WarningIcon label="" />}
-				description="Description of flag"
-				actions={[{ content: "Action", onClick: () => {} }]}
-			/>
-
 			<FlagLP
 				title="Flag"
 				icon={<WarningIcon label="" />}

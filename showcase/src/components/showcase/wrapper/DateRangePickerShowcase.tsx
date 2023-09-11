@@ -61,7 +61,7 @@ function Example() {
 				disabledDates={[todayPlus2]}
 				locale="de-DE"
 				onCollision={() => console.info("Collision detected")}
-				onChange={(start: string, end: string) => {
+				onDateRangeSelected={(start: string, end: string) => {
 					setStartDate(start)
 					setEndDate(end)
 				}}
@@ -99,6 +99,9 @@ function Example2() {
 				selectedStartDate={selectedStartDate}
 				selectedEndDate={selectedEndDate}
 				weekStartDate={1}
+				onDateRangeSelected={(start: string, end: string) => {
+					console.info("Date range selected", start, end)
+				}}
 			/>
 		</>
 	)
@@ -122,6 +125,9 @@ function Example3() {
 				viewDefaultYear={viewDefaultYear}
 				viewDefaultDay={viewDefaultDay}
 				weekStartDate={1}
+				onDateRangeSelected={(start: string, end: string) => {
+					console.info("Date range selected", start, end)
+				}}
 			/>
 		</>
 	)

@@ -757,7 +757,7 @@ function Example() {
 				disabledDates={[todayPlus2]}
 				locale="de-DE"
 				onCollision={() => console.info("Collision detected")}
-				onChange={(start: string, end: string) => {
+				onDateRangeSelected={(start: string, end: string) => {
 					setStartDate(start)
 					setEndDate(end)
 				}}
@@ -795,6 +795,9 @@ function Example2() {
 				selectedStartDate={selectedStartDate}
 				selectedEndDate={selectedEndDate}
 				weekStartDate={1}
+				onDateRangeSelected={(start: string, end: string) => {
+					console.info("Date range selected", start, end)
+				}}
 			/>
 		</>
 	)
@@ -818,6 +821,9 @@ function Example3() {
 				viewDefaultYear={viewDefaultYear}
 				viewDefaultDay={viewDefaultDay}
 				weekStartDate={1}
+				onDateRangeSelected={(start: string, end: string) => {
+					console.info("Date range selected", start, end)
+				}}
 			/>
 		</>
 	)
@@ -1122,7 +1128,6 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Flag from "@atlaskit/flag"
 import { Flag as FlagLP } from "@linked-planet/ui-kit-ts"
 import WarningIcon from "@atlaskit/icon/glyph/warning"
 
@@ -1136,14 +1141,6 @@ function FlagShowcase(props: ShowcaseProps) {
 				gap: "1rem",
 			}}
 		>
-			<Flag
-				id="flag-id"
-				title="Flag"
-				icon={<WarningIcon label="" />}
-				description="Description of flag"
-				actions={[{ content: "Action", onClick: () => {} }]}
-			/>
-
 			<FlagLP
 				title="Flag"
 				icon={<WarningIcon label="" />}
@@ -3459,7 +3456,7 @@ function ExampleShowExtendedFlag() {
 				onClick={() =>
 					showFlagExtended({
 						title: "1: Whoa a new flag!",
-						content: "This is a standard toast flag.",
+						description: "This is a standard toast flag.",
 						appearance: undefined,
 					})
 				}
@@ -3470,7 +3467,7 @@ function ExampleShowExtendedFlag() {
 				onClick={() =>
 					showFlagExtended({
 						title: "1: This flag does not disappear!",
-						content:
+						description:
 							"This is a standard not disappearing toast flag.",
 						appearance: undefined,
 						autoClose: false,
@@ -3483,7 +3480,7 @@ function ExampleShowExtendedFlag() {
 				onClick={() =>
 					showFlagExtended({
 						title: "1: Whoa a new flag!",
-						content:
+						description:
 							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
 						appearance: "success",
 					})
@@ -3495,7 +3492,7 @@ function ExampleShowExtendedFlag() {
 				onClick={() =>
 					showFlagExtended({
 						title: "1: Whoa a new flag!",
-						content:
+						description:
 							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
 						appearance: "information",
 					})
@@ -3507,7 +3504,7 @@ function ExampleShowExtendedFlag() {
 				onClick={() =>
 					showFlagExtended({
 						title: "danger flag",
-						content: "This is a danger toast flag.",
+						description: "This is a danger toast flag.",
 						appearance: "danger",
 					})
 				}
@@ -3518,7 +3515,7 @@ function ExampleShowExtendedFlag() {
 				onClick={() =>
 					showFlagExtended({
 						title: "warning flag",
-						content: "This is a warning toast flag.",
+						description: "This is a warning toast flag.",
 						appearance: "warning",
 					})
 				}
@@ -3529,7 +3526,7 @@ function ExampleShowExtendedFlag() {
 				onClick={() =>
 					showFlagExtended({
 						title: "discovery flag",
-						content: (
+						description: (
 							<div>
 								<h2>This is a discovery!</h2>
 								<p>
@@ -3562,7 +3559,7 @@ function ExampleShowFlags() {
 				onClick={() =>
 					showFlag({
 						title: "1: Whoa a new flag!",
-						content: "This is a standard toast flag.",
+						description: "This is a standard toast flag.",
 					})
 				}
 			>
@@ -3572,7 +3569,7 @@ function ExampleShowFlags() {
 				onClick={() =>
 					showFlag({
 						title: "1: This flag does not disappear!",
-						content: "...and is at the bottom left",
+						description: "...and is at the bottom left",
 						autoClose: false,
 						position: "bottom-left",
 					})
@@ -3584,7 +3581,7 @@ function ExampleShowFlags() {
 				onClick={() =>
 					showSuccessFlag({
 						title: "1: Whoa a new flag!",
-						content:
+						description:
 							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
 						autoClose: false,
 					})
@@ -3596,7 +3593,7 @@ function ExampleShowFlags() {
 				onClick={() =>
 					showInformationFlag({
 						title: "1: Whoa a new information flag!",
-						content:
+						description:
 							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
 					})
 				}
@@ -3607,7 +3604,7 @@ function ExampleShowFlags() {
 				onClick={() =>
 					showDangerFlag({
 						title: "danger flag",
-						content: "This is a danger toast flag.",
+						description: "This is a danger toast flag.",
 					})
 				}
 			>
@@ -3617,7 +3614,7 @@ function ExampleShowFlags() {
 				onClick={() =>
 					showWarningFlag({
 						title: "warning flag",
-						content: "This is a warning toast flag.",
+						description: "This is a warning toast flag.",
 					})
 				}
 			>
@@ -3627,7 +3624,7 @@ function ExampleShowFlags() {
 				onClick={() =>
 					showFlag({
 						title: "discovery flag",
-						content: (
+						description: (
 							<div>
 								<h2>This is a discovery!</h2>
 								<p>
