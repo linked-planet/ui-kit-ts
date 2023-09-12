@@ -107,7 +107,9 @@ export function getStartAndEndSlot(
 		startSlot--
 		if (viewType === "hours") {
 			// if the previous timeslot is on a different day, we know item starts before the first time slot of a day
-			if (slotsArray[startSlot].diff(slotsArray[startSlot + 1], "day")) {
+			if (
+				slotsArray[startSlot].day() != slotsArray[startSlot + 1].day()
+			) {
 				startSlot++
 			}
 		}

@@ -45,7 +45,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 		},
 		items: [],
 	},
-	{
+	/*{
 		group: {
 			title: "Group 1",
 			subtitle: "Group 1 description",
@@ -321,6 +321,20 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				startDate: dayjs().startOf("day").add(2, "day"),
 				endDate: dayjs().startOf("day").add(3, "day"),
 				title: "Item 6-2-2",
+			},
+		],
+	},*/
+	{
+		group: {
+			title: "Group 7 (Full Day)",
+			subtitle: "Whole Time Frame",
+		},
+		items: [
+			{
+				// this case ends after the end of the day and starts before
+				startDate: dayjs().startOf("day"),
+				endDate: dayjs().endOf("day"),
+				title: "Item 7-1",
 			},
 		],
 	},
