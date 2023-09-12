@@ -6,7 +6,7 @@ import { token } from "@atlaskit/tokens"
 
 const releaseTag = import.meta.env.VITE_GH_RELEASE_TAG
 
-console.log("RELEASE TAG", releaseTag)
+console.log("ui-kit-ts release:", releaseTag)
 
 const Code = styled.div`
 	overflow: auto;

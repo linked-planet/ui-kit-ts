@@ -209,7 +209,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	//#region calculate time slots, dates array and the final time steps size in minutes
 	const { slotsArray, timeFrameDay, timeSlotMinutes } = useMemo(() => {
 		// to avoid overflow onto the next day if the time steps are too large
-		console.log("TIME STEPS MINUTES", startDate, viewType, endDate)
 		const { timeFrameDay, slotsArray, timeSlotMinutes } =
 			calculateTimeSlotPropertiesForView(
 				startDate,
@@ -218,8 +217,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				viewType,
 				setMessage,
 			)
-
-		console.log("SLOTS ARRAY", slotsArray.length)
 
 		return { slotsArray, timeFrameDay, timeSlotMinutes }
 	}, [viewType, startDate, endDate, timeStepsMinutes, setMessage])

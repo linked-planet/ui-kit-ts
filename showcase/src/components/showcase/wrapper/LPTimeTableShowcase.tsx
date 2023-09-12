@@ -45,7 +45,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 		},
 		items: [],
 	},
-	/*{
+	{
 		group: {
 			title: "Group 1",
 			subtitle: "Group 1 description",
@@ -323,7 +323,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 6-2-2",
 			},
 		],
-	},*/
+	},
 	{
 		group: {
 			title: "Group 7 (Full Day)",
