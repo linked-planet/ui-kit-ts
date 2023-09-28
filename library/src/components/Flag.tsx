@@ -105,8 +105,6 @@ export function Flag({
 		appearance,
 	)
 
-	console.log("APPERANCE", appearance)
-
 	if (!icon) {
 		icon = <FlagIcon appearance={appearance} invert={!invert} />
 	}

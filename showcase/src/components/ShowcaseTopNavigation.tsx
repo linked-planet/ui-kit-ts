@@ -47,9 +47,6 @@ function ShowcaseTopNavigation() {
 					<PrimaryButton key={2} onClick={() => navigation("/redux")}>
 						<span>Redux</span>
 					</PrimaryButton>,
-					<PrimaryButton key={3} onClick={() => navigation("/query")}>
-						<span>React-Query</span>
-					</PrimaryButton>,
 					<div
 						key={4}
 						style={{

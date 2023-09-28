@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback, useEffect, useMemo } from "react"
 import { useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -498,6 +498,10 @@ function Example() {
 		useState<() => void>()
 	const [disableTimeRangeSelection, setDisableTimeRangeSelection] =
 		useState(false)
+
+	useEffect(() => {
+		console.log("SELECTED TIME RANGE", selectedTimeRange)
+	}, [selectedTimeRange])
 
 	const onCreateNewItemConfirmCB = useCallback(
 		(group: TimeTableGroup, item: TimeSlotBooking) => {

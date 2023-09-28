@@ -9,8 +9,6 @@ import ReduxPage from "./page/ReduxPage"
 
 import { appStore } from "./state/appStore"
 import { Provider } from "react-redux"
-import { QueryClient, QueryClientProvider } from "react-query"
-import ReactQueryPage from "./page/ReactQueryPage"
 
 import { LocaleProvider } from "@linked-planet/ui-kit-ts"
 import SinglePage from "./page/SinglePage"
@@ -20,67 +18,59 @@ import "./custom.css"
 import "./styles.css"
 import "@atlaskit/css-reset" // sets base styles ot AK
 
-const queryClient = new QueryClient()
-
 export default function App() {
 	return (
 		<BrowserRouter basename="ui-kit-ts">
 			<Provider store={appStore}>
-				<QueryClientProvider client={queryClient}>
-					<LocaleProvider>
-						<div className="App">
-							<PageLayout>
-								<ShowcaseTopNavigation />
-								<Content>
-									<ShowcaseLeftSidebar />
+				<LocaleProvider>
+					<div className="App">
+						<PageLayout>
+							<ShowcaseTopNavigation />
+							<Content>
+								<ShowcaseLeftSidebar />
 
-									<Main>
-										<main
-											style={{
-												margin: "12px 12px",
-												display: "flex",
-												flexDirection: "column",
-											}}
-										>
-											<Routes>
-												<Route
-													path="/"
-													element={
-														<Navigate to="/intro" />
-													}
-												/>
-												<Route
-													path="/intro"
-													element={<IntroPage />}
-												/>
-												<Route
-													path="/wrappers"
-													element={<WrappersPage />}
-												/>
-												<Route
-													path="/single"
-													element={<SinglePage />}
-												/>
-												<Route
-													path="/redux"
-													element={<ReduxPage />}
-												/>
-												<Route
-													path="/query"
-													element={<ReactQueryPage />}
-												/>
-												<Route
-													path="*"
-													element={<NotFoundPage />}
-												/>
-											</Routes>
-										</main>
-									</Main>
-								</Content>
-							</PageLayout>
-						</div>
-					</LocaleProvider>
-				</QueryClientProvider>
+								<Main>
+									<main
+										style={{
+											margin: "12px 12px",
+											display: "flex",
+											flexDirection: "column",
+										}}
+									>
+										<Routes>
+											<Route
+												path="/"
+												element={
+													<Navigate to="/intro" />
+												}
+											/>
+											<Route
+												path="/intro"
+												element={<IntroPage />}
+											/>
+											<Route
+												path="/wrappers"
+												element={<WrappersPage />}
+											/>
+											<Route
+												path="/single"
+												element={<SinglePage />}
+											/>
+											<Route
+												path="/redux"
+												element={<ReduxPage />}
+											/>
+											<Route
+												path="*"
+												element={<NotFoundPage />}
+											/>
+										</Routes>
+									</main>
+								</Main>
+							</Content>
+						</PageLayout>
+					</div>
+				</LocaleProvider>
 			</Provider>
 		</BrowserRouter>
 	)
