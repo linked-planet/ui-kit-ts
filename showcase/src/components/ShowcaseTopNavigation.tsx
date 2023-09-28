@@ -44,9 +44,6 @@ function ShowcaseTopNavigation() {
 					>
 						<span>Single Components</span>
 					</PrimaryButton>,
-					<PrimaryButton key={2} onClick={() => navigation("/redux")}>
-						<span>Redux</span>
-					</PrimaryButton>,
 					<div
 						key={4}
 						style={{

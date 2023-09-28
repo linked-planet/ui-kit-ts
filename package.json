@@ -62,7 +62,6 @@
 		"dayjs": "^1.11.7",
 		"intl-messageformat": "^10.5.0",
 		"mime-types": "^2.1.35",
-		"outdated": "^0.1.1",
 		"react-awesome-slider": "^4.1.0",
 		"react-intl": "^6.4.4",
 		"react-joyride": "^2.5.3",
@@ -142,7 +141,6 @@
 		"@atlaskit/tokens": "^1.2.18",
 		"@emotion/styled": "^11.11.0",
 		"@monaco-editor/react": "^4.4.6",
-		"@reduxjs/toolkit": "^1.9.5",
 		"react": "^16.8.0",
 		"react-dom": "^16.8.0"
 	}

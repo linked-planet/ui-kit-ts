@@ -1,6 +1,4 @@
 import React from "react"
-import { useDispatch } from "react-redux"
-import { useEffect } from "react"
 import styled from "@emotion/styled"
 import { token } from "@atlaskit/tokens"
 
@@ -19,13 +17,6 @@ const Code = styled.div`
 `
 
 function IntroPage() {
-	const dispatch = useDispatch()
-	useEffect(() => {
-		dispatch({
-			type: "SET_MENU",
-		})
-	}, [dispatch])
-
 	return (
 		<div
 			style={{
