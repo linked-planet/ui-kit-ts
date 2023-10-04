@@ -3,12 +3,9 @@ import React, { CSSProperties } from "react"
 import { CloseButtonProps, toast } from "react-toastify"
 import type { ToastOptions } from "react-toastify"
 
-import { N0 } from "@atlaskit/theme/colors"
-
-import "react-toastify/dist/ReactToastify.css"
+//import "react-toastify/dist/ReactToastify.css"  -> needs to be imported in your app, probably before tailwindcss to make overrides work
 import CrossIcon from "@atlaskit/icon/glyph/cross"
 
-import { token } from "@atlaskit/tokens"
 import { Flag, FlagActionType, FlagProps } from "./Flag"
 import {
 	getAppearanceColors,
@@ -48,7 +45,7 @@ export function showFlagExtended({
 	invert = false,
 	...props
 }: ToastFlagProps) {
-	const { secondaryColor, primaryColor, textColor } = getAppearanceColors(
+	const { secondaryColor, textColor } = getAppearanceColors(
 		invert,
 		appearance,
 	)
