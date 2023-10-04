@@ -15,37 +15,31 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 			<InlineMessage
 				message={{
 					text: "This is a success inline message.",
-					urgency: "success",
-				}}
-			/>
-			<InlineMessage
-				message={{
-					text: "This is an error inline message.",
-					urgency: "error",
+					appearance: "success",
 				}}
 			/>
 			<InlineMessage
 				message={{
 					text: "This is a danger inline message.",
-					urgency: "danger",
+					appearance: "danger",
 				}}
 			/>
 			<InlineMessage
 				message={{
 					text: "This is a warning inline message.",
-					urgency: "warning",
+					appearance: "warning",
 				}}
 			/>
 			<InlineMessage
 				message={{
 					text: "This is an information inline message.",
-					urgency: "information",
+					appearance: "information",
 				}}
 			/>
 			<InlineMessage
 				message={{
 					text: "This is a discovery inline message.",
-					urgency: "discovery",
+					appearance: "discovery",
 				}}
 			/>
 			<hr />
@@ -53,21 +47,21 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 				message={{
 					text: "This is an information message with a timeout.",
 					timeOut: 5,
-					urgency: "information",
+					appearance: "information",
 				}}
 				openingDirection="topdown"
 			/>
 			<InlineMessage
 				message={{
 					text: "This is an discovery message with a timeout and bottom up removal.",
-					urgency: "discovery",
+					appearance: "discovery",
 				}}
 				openingDirection="bottomup"
 			/>
 			<InlineMessage
 				message={{
 					text: "This is a not removable message.",
-					urgency: "information",
+					appearance: "information",
 				}}
 				removable={false}
 			/>

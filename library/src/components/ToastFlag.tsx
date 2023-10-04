@@ -10,8 +10,13 @@ import CrossIcon from "@atlaskit/icon/glyph/cross"
 
 import { token } from "@atlaskit/tokens"
 import { Flag, FlagActionType, FlagProps } from "./Flag"
-import { getAppearanceColors } from "../utils/colors"
-import type { Appearance } from "../utils/colors"
+import {
+	getAppearanceColors,
+	InteractiveAppearance,
+	InteractiveInvertedStyles,
+	InteractiveStyles,
+} from "../utils/colors"
+import { twMerge } from "tailwind-merge"
 
 type ToastFlagProps = FlagProps & ToastOptions
 
@@ -39,7 +44,7 @@ const defaultSettings: ToastOptions = {
 export function showFlagExtended({
 	style,
 	progressStyle,
-	appearance,
+	appearance = "default",
 	invert = false,
 	...props
 }: ToastFlagProps) {
@@ -57,18 +62,20 @@ export function showFlagExtended({
 		boxShadow: "unset",
 		padding: "unset",
 		border: 0,
+		background: "unset",
 	}
 
-	const backgroundColor = invert
-		? token("elevation.surface.overlay", N0)
-		: primaryColor
+	const className = invert
+		? InteractiveInvertedStyles[appearance]
+		: InteractiveStyles[appearance]
 
-	const toastStyle: CSSProperties = {
-		backgroundColor,
-		color: textColor,
-		border: `1px solid ${secondaryColor}`,
-		...style,
+	// this is a hack, since the default UI element color have transparency, we reset it to "neutral"
+	let additionalClassName: string = ""
+	if (appearance === "default") {
+		additionalClassName =
+			"bg-surface hover:bg-surface-hovered active:bg-surface-pressed"
 	}
+	//
 
 	toast(
 		<Flag
@@ -84,19 +91,20 @@ export function showFlagExtended({
 				<CloseButton color={textColor} {...p} />
 			),
 			...props,
-			style: toastStyle,
+			style,
 			progressStyle: progressStyleUsed,
+			className: twMerge(className, "border-[1px]", additionalClassName),
 		},
 	)
 }
 
 /**
- * Simeple flag is a version of FlagExtended without forwarding all the ToastOptions
+ * Simple flag is a version of FlagExtended without forwarding all the ToastOptions
  */
 type SimpleFlagProps = {
 	title: string
 	description: string | JSX.Element
-	appearance?: Appearance
+	appearance?: InteractiveAppearance
 	autoClose?: false | number
 	position?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
 	actions?: FlagActionType[]
@@ -129,8 +137,4 @@ export function showInformationFlag(
 
 export function showWarningFlag(props: Omit<SimpleFlagProps, "appearance">) {
 	showFlag({ ...props, appearance: "warning" })
-}
-
-export function showDiscoveryFlag(props: Omit<SimpleFlagProps, "appearance">) {
-	showFlag({ ...props, appearance: "discovery" })
 }

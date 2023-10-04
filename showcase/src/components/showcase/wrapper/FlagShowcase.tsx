@@ -2,7 +2,7 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Flag as FlagLP } from "@linked-planet/ui-kit-ts"
+import { Flag } from "@linked-planet/ui-kit-ts"
 import WarningIcon from "@atlaskit/icon/glyph/warning"
 
 function FlagShowcase(props: ShowcaseProps) {
@@ -15,21 +15,14 @@ function FlagShowcase(props: ShowcaseProps) {
 				gap: "1rem",
 			}}
 		>
-			<FlagLP
+			<Flag
 				title="Flag"
 				icon={<WarningIcon label="" />}
 				description="Action Flag"
 				actions={[{ content: "Action", onClick: () => {} }]}
 			/>
-			<FlagLP
-				title="Flag"
-				icon={<WarningIcon label="" />}
-				description="Action Flag"
-				invert={false}
-				actions={[{ content: "Action", onClick: () => {} }]}
-			/>
-
-			<FlagLP
+			
+			<Flag
 				title="Flag"
 				icon={<WarningIcon label="" />}
 				description="Success Flag"
@@ -37,63 +30,51 @@ function FlagShowcase(props: ShowcaseProps) {
 				invert={false}
 			/>
 
-			<FlagLP
+			<Flag
 				title="Flag"
 				description="Success Flag"
 				appearance="success"
 			/>
 
-			<FlagLP
+			<Flag
 				title="Flag"
 				description="Warning Flag"
 				appearance="warning"
 				invert={false}
 			/>
-
-			<FlagLP
+			
+			<Flag
 				title="Flag"
 				description="Warning Flag"
 				appearance="warning"
 			/>
 
-			<FlagLP
+			<Flag
 				title="Flag"
 				description="Danger Flag"
 				appearance="danger"
 				invert={false}
 			/>
 
-			<FlagLP
+			<Flag
 				title="Flag"
 				description="Danger Flag"
 				appearance="danger"
 			/>
 
-			<FlagLP
+			<Flag
 				title="Flag"
 				description="Information Flag"
 				appearance="information"
 				invert={false}
 			/>
 
-			<FlagLP
+			<Flag
 				title="Flag"
 				description="Information Flag"
 				appearance="information"
 			/>
 
-			<FlagLP
-				title="Flag"
-				description="Discovery Flag"
-				appearance="discovery"
-				invert={false}
-			/>
-			<FlagLP
-				title="Flag"
-				description="Discovery Flag"
-				appearance="discovery"
-				invert={true}
-			/>
 		</div>
 	)
 	//#endregion flag

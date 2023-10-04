@@ -4,6 +4,7 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import {
+	Button,
 	showDangerFlag,
 	showFlag,
 	showFlagExtended,
@@ -12,7 +13,6 @@ import {
 	showWarningFlag,
 } from "@linked-planet/ui-kit-ts"
 import { ToastContainer } from "react-toastify"
-import Button from "@atlaskit/button"
 
 //#region toastflagShowExtendedFlag
 function ExampleShowExtendedFlag() {
@@ -81,17 +81,6 @@ function ExampleShowExtendedFlag() {
 				onClick={() =>
 					showFlagExtended({
 						title: "warning flag",
-						description: "This is a warning toast flag.",
-						appearance: "warning",
-					})
-				}
-			>
-				Warning
-			</Button>
-			<Button
-				onClick={() =>
-					showFlagExtended({
-						title: "discovery flag",
 						description: (
 							<div>
 								<h2>This is a discovery!</h2>
@@ -105,11 +94,11 @@ function ExampleShowExtendedFlag() {
 								</p>
 							</div>
 						),
-						appearance: "discovery",
+						appearance: "warning",
 					})
 				}
 			>
-				Discovery
+				Warning
 			</Button>
 			<ToastContainer />
 		</div>
@@ -180,19 +169,9 @@ function ExampleShowFlags() {
 				onClick={() =>
 					showWarningFlag({
 						title: "warning flag",
-						description: "This is a warning toast flag.",
-					})
-				}
-			>
-				Warning
-			</Button>
-			<Button
-				onClick={() =>
-					showFlag({
-						title: "discovery flag",
 						description: (
 							<div>
-								<h2>This is a discovery!</h2>
+								<h2>This is a warning flag!</h2>
 								<p>
 									Lorem ipsum, dolor sit amet consectetur
 									adipisicing elit. Maxime doloribus unde
@@ -203,11 +182,10 @@ function ExampleShowFlags() {
 								</p>
 							</div>
 						),
-						appearance: "discovery",
 					})
 				}
 			>
-				Discovery
+				Warning
 			</Button>
 			<ToastContainer />
 		</div>
