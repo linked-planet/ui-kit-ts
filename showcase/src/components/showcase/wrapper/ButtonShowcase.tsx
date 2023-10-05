@@ -3,13 +3,18 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Button, { ButtonGroup, LoadingButton } from "@atlaskit/button"
-import { Button as LPButton, LoadingButton as LPLoadingButton, ButtonGroup as LPButtonGroup } from "@linked-planet/ui-kit-ts"
-
-
+import {
+	Button as LPButton,
+	LoadingButton as LPLoadingButton,
+	ButtonGroup as LPButtonGroup,
+} from "@linked-planet/ui-kit-ts"
+import { token } from "@atlaskit/tokens"
 
 function ButtonShowcase(props: ShowcaseProps) {
 	//#region button
 	const [isLoading, setIsLoading] = useState(false)
+
+	token("color.b")
 
 	const example = (
 		<div
@@ -27,12 +32,36 @@ function ButtonShowcase(props: ShowcaseProps) {
 					appearance="default"
 					onClick={() => console.log("Button pressed")}
 				>
-					Default button
+					Default Button
+				</Button>
+
+				<Button
+					appearance="default"
+					onClick={() => console.log("Button pressed")}
+					isSelected={true}
+				>
+					Selected Default Button
+				</Button>
+
+				<Button
+					appearance="default"
+					onClick={() => console.log("Button pressed")}
+					isDisabled={true}
+				>
+					Disabled Default button
 				</Button>
 
 				<Button
 					appearance="primary"
 					onClick={() => console.log("Button pressed")}
+				>
+					Primary button
+				</Button>
+
+				<Button
+					appearance="primary"
+					onClick={() => console.log("Button pressed")}
+					isDisabled={true}
 				>
 					Primary button
 				</Button>
@@ -82,14 +111,30 @@ function ButtonShowcase(props: ShowcaseProps) {
 				>
 					Default Button
 				</LPButton>
-				
+
+				<LPButton
+					appearance="default"
+					onClick={() => console.log("Button pressed")}
+					isDisabled={true}
+				>
+					Default Button
+				</LPButton>
+
 				<LPButton
 					appearance="primary"
 					onClick={() => console.log("Button pressed")}
 				>
 					Primary Button
 				</LPButton>
-				
+
+				<LPButton
+					appearance="primary"
+					onClick={() => console.log("Button pressed")}
+					isDisabled={true}
+				>
+					Primary Button
+				</LPButton>
+
 				<LPButton
 					appearance="subtle"
 					onClick={() => console.log("Button pressed")}
@@ -103,7 +148,6 @@ function ButtonShowcase(props: ShowcaseProps) {
 				>
 					Link Button
 				</LPButton>
-
 
 				<LPButton
 					appearance="warning"

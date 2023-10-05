@@ -2,6 +2,7 @@ import React from "react"
 import type { CSSProperties } from "react"
 
 import { token } from "@atlaskit/tokens"
+
 import { css } from "@emotion/css"
 
 import { Collapsible } from "./Collapsible"
@@ -33,7 +34,7 @@ const CardBase = ({
 		}}
 	>
 		<div
-			className="border-b border-x rounded-b"
+			className="rounded-b border-x border-b"
 			style={{
 				backgroundColor: bodyBackgroundColor,
 				borderColor: borderColor,
@@ -55,19 +56,13 @@ const CardHeaderMeta = ({ children }: { children: React.ReactNode }) => (
 )
 
 const CardHeaderTitle = ({ children }: { children: React.ReactNode }) => (
-	<h3
-		className="no-wrap text-ellipsis overflow-hidden"
-		style={{ color: headerTitleColor }}
-	>
+	<h3 className="truncate" style={{ color: headerTitleColor }}>
 		{children}
 	</h3>
 )
 
 const CardHeaderSubtitle = ({ children }: { children: React.ReactNode }) => (
-	<h6
-		className="no-wrap mt-1 text-ellipsis overflow-hidden"
-		style={{ color: headerSubtitleTextColor }}
-	>
+	<h6 className="mt-1 truncate" style={{ color: headerSubtitleTextColor }}>
 		{children}
 	</h6>
 )
@@ -77,7 +72,7 @@ const CardHeaderActions = ({ children }: { children: React.ReactNode }) => (
 )
 
 const CardHeaderActionsInfo = ({ children }: { children: React.ReactNode }) => (
-	<div className="mr-2 text-sm items-center">{children}</div>
+	<div className="mr-2 items-center text-sm">{children}</div>
 )
 
 const cardBodyEntryBaseStyle = css`
@@ -99,7 +94,7 @@ const CardGridBody = ({ children }: { children: React.ReactNode }) => (
 
 const CardRowBody = ({ children }: { children: React.ReactNode }) => (
 	<div
-		className={`grid overflow-x-auto overflow-y-hidden border-collapse grid-flow-col ${cardBodyEntryBaseStyle} ${css`
+		className={`grid border-collapse grid-flow-col overflow-x-auto overflow-y-hidden ${cardBodyEntryBaseStyle} ${css`
 			grid-auto-columns: minmax(150px, 1fr);
 		`}`}
 	>
@@ -109,7 +104,7 @@ const CardRowBody = ({ children }: { children: React.ReactNode }) => (
 
 const CardColumnBody = ({ children }: { children: React.ReactNode }) => (
 	<div
-		className={`grid overflow-auto border-collapse grid-flow-row ${cardBodyEntryBaseStyle} ${css`
+		className={`grid border-collapse grid-flow-row overflow-auto ${cardBodyEntryBaseStyle} ${css`
 			grid-auto-rows: minmax(150px, 1fr);
 		`}`}
 	>
@@ -200,7 +195,7 @@ export function BookCard({
 				</CardHeader>
 			}
 		>
-			<div className="-mb-[1px] -mx-[1px]">
+			<div className="-mx-[1px] -mb-[1px]">
 				<div style={bodyStyle}>{body}</div>
 			</div>
 		</CardBase>

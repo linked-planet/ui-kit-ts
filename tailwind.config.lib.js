@@ -16,13 +16,22 @@ import {
 	G500,
 	G400,
 	G100,
-	G200,
 	B50,
 	B75,
 	G50,
 	R50,
 	Y50,
 	N40,
+	N50,
+	N60,
+	N70,
+	N70A,
+	N30A,
+	N20A,
+	N50A,
+	N40A,
+	N10A,
+	N0,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -67,19 +76,24 @@ export const theme = {
 
 		link: `var(--ds-link, ${B400})`,
 
+		disabled: {
+			DEFAULT: `var(--ds-background-disabled, ${N20A})`,
+			text: `var(--ds-text-disabled, ${N70})`,
+		},
+
 		neutral: {
-			DEFAULT: `var(--ds-background-neutral, ${N900})`,
-			hovered: `var(--ds-background-neutral-hovered, ${N900})`,
-			pressed: `var(--ds-background-neutral-pressed, ${N900})`,
+			DEFAULT: `var(--ds-background-neutral, ${N20A})`,
+			hovered: `var(--ds-background-neutral-hovered, ${N30A})`,
+			pressed: `var(--ds-background-neutral-pressed, ${N40A})`,
 			bold: {
-				DEFAULT: `var(--ds-neutral-bold, ${N900})`,
-				hovered: `var(--ds-neutral-bold-hovered, ${N900})`,
-				pressed: `var(--ds-neutral-bold-pressed, ${N900})`,
+				DEFAULT: `var(--ds-neutral-bold, ${N50})`,
+				hovered: `var(--ds-neutral-bold-hovered, ${N60})`,
+				pressed: `var(--ds-neutral-bold-pressed, ${N70})`,
 			},
 			subtle: {
-				DEFAULT: `var(--ds-background-neutral-subtle, ${N900})`,
-				hovered: `var(--ds-background-neutral-subtle-hovered, ${N900})`,
-				pressed: `var(--ds-background-neutral-subtle-pressed, ${N900})`,
+				DEFAULT: `var(--ds-background-neutral-subtle, ${N0})`,
+				hovered: `var(--ds-background-neutral-subtle-hovered, ${N30A})`,
+				pressed: `var(--ds-background-neutral-subtle-pressed, ${N40A})`,
 			},
 		},
 
@@ -148,6 +162,8 @@ export const theme = {
 				pressed: `var(--ds-background-information-bold-pressed, ${B400})`,
 			},
 		},
+
+		border: `var(--ds-border, ${N30A})`,
 	},
 	//},
 }

@@ -40,7 +40,7 @@ export const InteractiveStyles = {
 		"bg-brand-bold hover:bg-brand-bold-hovered active:bg-brand-bold-pressed text-text-inverse",
 	default:
 		"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",
-	subtle: "bg-transparent hover:bg-neutral text-text",
+	subtle: "bg-neutral-subtle hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed text-text",
 	link: "bg-transparent text-link hover:underline",
 	warning:
 		"bg-warning-bold hover:bg-warning-bold-hovered active:bg-warning-bold-pressed text-text-inverse",
@@ -50,6 +50,9 @@ export const InteractiveStyles = {
 	information:
 		"bg-information-bold hover:bg-information-bold-hovered active:bg-information-bold-pressed text-text-inverse",
 } as const
+
+export const InteractiveDisabledStyles =
+	"disabled:bg-disabled disabled:text-disabled-text disabled:cursor-not-allowed" as const
 
 export const InteractiveInvertedStyles = {
 	primary:

@@ -1,20 +1,11 @@
 import React from "react"
-import styled from "@emotion/styled"
-import { token } from "@atlaskit/tokens"
 
 const releaseTag = import.meta.env.VITE_GH_RELEASE_TAG
 
 console.log("ui-kit-ts release:", releaseTag)
 
-const Code = styled.div`
-	overflow: auto;
-	margin-top: 0.5rem;
-	margin-bottom: 0.5rem;
-	background-color: ${token("color.background.neutral", "#f4f5f7")};
-	border-radius: 3px;
-	font-family: monospace;
-	padding: 0.5rem;
-`
+const codeClassNames =
+	"bg-neutral my-2 overflow-auto rounded p-2 font-mono" as const
 
 function IntroPage() {
 	return (
@@ -37,13 +28,17 @@ function IntroPage() {
 				directly to include them correctly in your project&apos;s
 				package.json.
 				<br></br>
-				<Code>npm install @atlaskit/badge</Code>
+				<div className={codeClassNames}>
+					npm install @atlaskit/badge
+				</div>
 				<br></br>
 				<br></br>
 				For the <b>@linked-planet/ui-kit-ts</b> components you can
 				install this package.
 				<br></br>
-				<Code>npm install @linked-planet/ui-kit-ts</Code>
+				<div className={codeClassNames}>
+					npm install @linked-planet/ui-kit-ts
+				</div>
 			</p>
 			<br></br>
 			<hr />
@@ -66,7 +61,9 @@ function IntroPage() {
 				your build.gradle:
 			</p>
 			<div>
-				<Code>npm install -s @linked-planet/ui-kit-ts</Code>
+				<div className="bg-neutral my-2 overflow-auto rounded p-2 font-mono">
+					npm install -s @linked-planet/ui-kit-ts
+				</div>
 			</div>
 		</div>
 	)

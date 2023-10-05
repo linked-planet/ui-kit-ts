@@ -7,14 +7,14 @@ const borderColor = token("color.border", "#091e4224")
 const menuColor = token("color.background.neutral.subtle", "#f7f8f9")
 
 const Page = ({ children }: { children: React.ReactNode }) => (
-	<div className="flex flex-col w-full h-full min-h-0 overflow-hidden">
+	<div className="flex h-full min-h-0 w-full flex-col overflow-hidden">
 		{children}
 	</div>
 )
 
 const PageHeader = ({ children }: { children: React.ReactNode }) => (
 	<div
-		className="flex flex-col w-full pt-5 pl-5 pr-3 border-b"
+		className="flex w-full flex-col border-b pl-5 pr-3 pt-5"
 		style={{
 			borderColor,
 			backgroundColor: menuColor,
@@ -29,24 +29,24 @@ const PageHeaderTitle = ({ children }: { children: React.ReactNode }) => (
 )
 
 const PageHeaderSubTitle = ({ children }: { children: React.ReactNode }) => (
-	<div className="mt-3 mb-3" style={{ color: subtitleColor }}>
+	<div className="mb-3 mt-3" style={{ color: subtitleColor }}>
 		{children}
 	</div>
 )
 
 const PageHeaderLine = ({ children }: { children: React.ReactNode }) => (
-	<div className="flex w-full gap-1 mb-2 items-center">{children}</div>
+	<div className="mb-2 flex w-full items-center gap-1">{children}</div>
 )
 
 const PageBody = ({ children }: { children: React.ReactNode }) => (
-	<div className="flex flex-col flex-1 min-h-0 min-w-0 overflow-hidden">
+	<div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
 		{children}
 	</div>
 )
 
 const PageBodyHeader = ({ children }: { children: React.ReactNode }) => (
 	<div
-		className="pt-3 pb-2 pl-4 pr-3 z-0"
+		className="z-0 pb-2 pl-4 pr-3 pt-3"
 		style={{
 			boxShadow: `0 4px 4px ${token("color.border", "#091e4224")}`,
 			backgroundColor: menuColor,
@@ -58,7 +58,7 @@ const PageBodyHeader = ({ children }: { children: React.ReactNode }) => (
 
 const PageBodyContent = ({ children }: { children: React.ReactNode }) => (
 	<div
-		className="flex-1 min-h-0 overflow-y-auto pl-5 pb-5 pr-3 pt-3"
+		className="min-h-0 flex-1 overflow-y-auto pb-5 pl-5 pr-3 pt-3"
 		style={{
 			backgroundColor: pageContentBackgroundColor,
 		}}
@@ -69,7 +69,7 @@ const PageBodyContent = ({ children }: { children: React.ReactNode }) => (
 
 const PageBodyFooter = ({ children }: { children: React.ReactNode }) => (
 	<div
-		className="flex justify-center pt-1 border-t"
+		className="flex justify-center border-t pt-1"
 		style={{
 			borderColor,
 			boxShadow: `0 -4px 4px ${token("color.border", "#091e4224")}`,
