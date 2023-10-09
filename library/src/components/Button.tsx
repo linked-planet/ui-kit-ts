@@ -14,14 +14,19 @@ export type ButtonProps = {
 	iconBefore?: React.ReactNode
 	iconAfter?: React.ReactNode
 	isDisabled?: boolean
-	onClick: () => void
-	onDoubleClick?: () => void
-	onMouseDown?: () => void
-	onMouseUp?: () => void
 	children?: React.ReactNode
 	style?: CSSProperties
 	className?: string
-}
+} & Pick<
+	React.ButtonHTMLAttributes<HTMLButtonElement>,
+	| "type"
+	| "onClick"
+	| "onDoubleClick"
+	| "onMouseDown"
+	| "onMouseUp"
+	| "title"
+	| "aria-label"
+>
 
 export const Button = ({
 	label = "",
@@ -31,21 +36,14 @@ export const Button = ({
 	iconAfter,
 	isDisabled = false,
 	style,
-	onClick,
-	onDoubleClick,
-	onMouseDown,
-	onMouseUp,
 	children,
 	className,
+	...props
 }: ButtonProps) => {
 	return (
 		<button
 			title={title}
 			aria-label={label}
-			onClick={onClick}
-			onDoubleClick={onDoubleClick}
-			onMouseDown={onMouseDown}
-			onMouseUp={onMouseUp}
 			style={style}
 			className={twMerge(
 				InteractiveStyles[appearance],
@@ -54,6 +52,7 @@ export const Button = ({
 				className,
 			)}
 			disabled={isDisabled}
+			{...props}
 		>
 			{iconBefore}
 			{children}

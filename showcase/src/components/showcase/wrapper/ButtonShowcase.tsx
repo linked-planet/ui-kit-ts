@@ -14,8 +14,6 @@ function ButtonShowcase(props: ShowcaseProps) {
 	//#region button
 	const [isLoading, setIsLoading] = useState(false)
 
-	token("color.b")
-
 	const example = (
 		<div
 			style={{

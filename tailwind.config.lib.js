@@ -25,12 +25,9 @@ import {
 	N50,
 	N60,
 	N70,
-	N70A,
 	N30A,
 	N20A,
-	N50A,
 	N40A,
-	N10A,
 	N0,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
