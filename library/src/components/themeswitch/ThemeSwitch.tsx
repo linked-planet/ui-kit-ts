@@ -1,12 +1,6 @@
-import React, { useEffect, useState } from "react"
-import { Button } from "@linked-planet/ui-kit-ts"
-import {
-	Theme,
-	isTheme,
-	getCurrentTheme,
-	initTheming,
-	switchTheme,
-} from "../../theming"
+import React from "react"
+import { switchTheme } from "../../theming"
+import { Button } from "../Button"
 
 export default function ThemeSwitch() {
 	return (
