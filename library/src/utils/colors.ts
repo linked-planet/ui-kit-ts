@@ -54,6 +54,9 @@ export const InteractiveStyles = {
 export const InteractiveDisabledStyles =
 	"disabled:bg-disabled disabled:text-disabled-text disabled:cursor-not-allowed" as const
 
+export const InteractiveSelectedStyles =
+	"bg-selected text-selected-text active:bg-selected active:text-selected-text hover:bg-selected hover:text-selected-text cursor-pointer" as const
+
 export const InteractiveInvertedStyles = {
 	primary:
 		"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed border-brand-bold text-text",

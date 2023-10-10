@@ -29,6 +29,8 @@ import {
 	N20A,
 	N40A,
 	N0,
+	N700,
+	N10A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -88,14 +90,14 @@ export const theme = {
 				pressed: `var(--ds-neutral-bold-pressed, ${N70})`,
 			},
 			subtle: {
-				DEFAULT: `var(--ds-background-neutral-subtle, ${N0})`,
+				DEFAULT: `var(--ds-background-neutral-subtle, none)`,
 				hovered: `var(--ds-background-neutral-subtle-hovered, ${N30A})`,
 				pressed: `var(--ds-background-neutral-subtle-pressed, ${N40A})`,
 			},
 		},
 
 		selected: {
-			DEFAULT: `var(--ds-background-selected, ${B400})`,
+			DEFAULT: `var(--ds-background-selected, ${N700})`,
 			hovered: `var(--ds-background-selected-hovered, ${B500})`,
 			pressed: `var(--ds-background-selected-pressed, ${B400})`,
 			bold: {
@@ -103,6 +105,7 @@ export const theme = {
 				hovered: `var(--ds-background-selected-bold-hovered, ${B500})`,
 				pressed: `var(--ds-background-selected-bold-pressed, ${B400})`,
 			},
+			text: `var(--ds-text-selected, ${N0})`,
 		},
 
 		brand: {

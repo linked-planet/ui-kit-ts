@@ -23,6 +23,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 				justifyContent: "space-evenly",
 				height: "100%",
 				gap: "1rem",
+				overflow: "auto",
 			}}
 		>
 			<ButtonGroup>
@@ -38,7 +39,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 					onClick={() => console.log("Button pressed")}
 					isSelected={true}
 				>
-					Selected Default Button
+					Selected Button
 				</Button>
 
 				<Button
@@ -113,9 +114,17 @@ function ButtonShowcase(props: ShowcaseProps) {
 				<LPButton
 					appearance="default"
 					onClick={() => console.log("Button pressed")}
+					isSelected={true}
+				>
+					Selected Button
+				</LPButton>
+
+				<LPButton
+					appearance="default"
+					onClick={() => console.log("Button pressed")}
 					isDisabled={true}
 				>
-					Default Button
+					Disabled Button
 				</LPButton>
 
 				<LPButton

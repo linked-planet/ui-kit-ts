@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge"
 import {
 	InteractiveAppearance,
 	InteractiveDisabledStyles,
+	InteractiveSelectedStyles,
 	InteractiveStyles,
 } from "../utils/colors"
 import Spinner from "@atlaskit/spinner"
@@ -14,6 +15,7 @@ export type ButtonProps = {
 	iconBefore?: React.ReactNode
 	iconAfter?: React.ReactNode
 	isDisabled?: boolean
+	isSelected?: boolean
 	children?: React.ReactNode
 	style?: CSSProperties
 	className?: string
@@ -35,6 +37,7 @@ export const Button = ({
 	iconBefore,
 	iconAfter,
 	isDisabled = false,
+	isSelected = false,
 	style,
 	children,
 	className,
@@ -47,8 +50,9 @@ export const Button = ({
 			style={style}
 			className={twMerge(
 				InteractiveStyles[appearance],
-				"relative flex items-center justify-center gap-1 rounded px-3 py-1",
-				InteractiveDisabledStyles,
+				"relative flex items-center justify-center gap-1 rounded px-3 py-1.5",
+				isDisabled ? InteractiveDisabledStyles : undefined,
+				isSelected ? InteractiveSelectedStyles : undefined,
 				className,
 			)}
 			disabled={isDisabled}

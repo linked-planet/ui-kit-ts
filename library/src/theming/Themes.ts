@@ -8,16 +8,17 @@ export function isTheme(theme: string): theme is Theme {
 	return themesAvailable.includes(theme as Theme)
 }
 
-const LocalStorageThemeVar = "atlassian-theme"
+export const LocalStorageThemeVar = "atlassian-theme"
 
 export function applyTheme(theme: Theme | "auto") {
+	console.log("APPLY THEME", theme)
 	localStorage.setItem(LocalStorageThemeVar, theme)
 	// get the html element
 	const html = document.querySelector("html")
 	if (!html) {
 		return
 	}
-	// set the theme attribute
+	// set the theme attribute -> see comment above
 	/*setGlobalTheme({
 		colorMode: theme,
 	})*/
@@ -28,13 +29,13 @@ export function switchTheme() {
 	if (html) {
 		const currentTheme = html.getAttribute("data-color-mode")
 		let currentThemeIdx = themesAvailable.indexOf(currentTheme as Theme)
-		if (currentThemeIdx > -1) {
-			const next =
-				themesAvailable[++currentThemeIdx % themesAvailable.length]
-			console.log("apply theme", next)
-			applyTheme(next)
-			return
+		if (currentThemeIdx === -1) {
+			currentThemeIdx = 0
 		}
+		const next = themesAvailable[++currentThemeIdx % themesAvailable.length]
+		console.log("apply theme", next)
+		applyTheme(next)
+		return
 	}
 	applyTheme("auto")
 }
@@ -58,10 +59,9 @@ export function initTheming() {
 	const prefersDark = window.matchMedia(
 		"(prefers-color-scheme: dark)",
 	).matches
-	const initialTheme =
-		(localTheme as Theme) || (prefersDark ? "dark" : "light")
-	//const initialTheme: Theme = "light"
 
+	const initialTheme =
+		(localTheme as Theme) ?? (prefersDark ? "dark" : "light")
 	const html = document.querySelector("html")
 	if (html) {
 		if (

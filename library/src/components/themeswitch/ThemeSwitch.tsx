@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import Button from "@atlaskit/button"
+import { Button } from "@linked-planet/ui-kit-ts"
 import {
 	Theme,
 	isTheme,
@@ -9,21 +9,6 @@ import {
 } from "../../theming"
 
 export default function ThemeSwitch() {
-	const [theme, setTheme] = useState<Theme>("light")
-
-	useEffect(() => {
-		let currTheme = getCurrentTheme()
-		if (!currTheme) {
-			initTheming()
-		}
-		currTheme = getCurrentTheme()
-		if (!currTheme) {
-			console.log("ThemeSwitch - failed to get current theme")
-			return
-		}
-		setTheme(currTheme)
-	}, [])
-
 	return (
 		<Button
 			style={{
@@ -32,8 +17,7 @@ export default function ThemeSwitch() {
 				justifyContent: "center",
 			}}
 			appearance="subtle"
-			about="Switch theme"
-			isDisabled={!isTheme(theme)}
+			label="Switch theme"
 			onClick={switchTheme}
 		>
 			Switch Theme
