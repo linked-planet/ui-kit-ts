@@ -30,7 +30,6 @@ import {
 	N40A,
 	N0,
 	N700,
-	N10A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 

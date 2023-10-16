@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Button, { ButtonGroup, LoadingButton } from "@atlaskit/button"
+//import Button, { ButtonGroup, LoadingButton } from "@atlaskit/button"
 import {
 	Button as LPButton,
 	LoadingButton as LPLoadingButton,
@@ -26,7 +26,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 				overflow: "auto",
 			}}
 		>
-			<ButtonGroup>
+			{/*<ButtonGroup>
 				<Button
 					appearance="default"
 					onClick={() => console.log("Button pressed")}
@@ -102,7 +102,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 				>
 					Loading Button
 				</LoadingButton>
-			</ButtonGroup>
+				</ButtonGroup>*/}
 			<LPButtonGroup>
 				<LPButton
 					appearance="default"

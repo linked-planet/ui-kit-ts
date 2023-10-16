@@ -11,7 +11,7 @@ import { LocaleDropDown, ThemeSwitch } from "@linked-planet/ui-kit-ts"
 export const ProfileIcon = () => {
 	return (
 		<img
-			src="/images/github-logo.png"
+			src="images/github-logo.png"
 			style={{
 				borderRadius: "50%",
 				width: 32,
