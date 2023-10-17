@@ -38,7 +38,7 @@ export interface DateRangeProps {
 
 	disabled?: boolean
 
-	onDateRangeSelected: (start: DateType, end: DateType) => void
+	onDateRangeSelected?: (start: DateType, end: DateType) => void
 
 	onStartDateSelected?: (dateString: DateType) => void
 
@@ -150,10 +150,12 @@ export function DateRangePicker(props: DateRangeProps) {
 				}
 			} else {
 				setEndDate(pickedDate)
-				props.onDateRangeSelected(
-					toDateString(startDate),
-					toDateString(pickedDate),
-				)
+				if (props.onDateRangeSelected) {
+					props.onDateRangeSelected(
+						toDateString(startDate),
+						toDateString(pickedDate),
+					)
+				}
 				if (props.onEndDateSelected) {
 					props.onEndDateSelected(toDateString(pickedDate))
 				}
