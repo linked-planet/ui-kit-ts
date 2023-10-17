@@ -5,12 +5,16 @@ import { WeekDay } from "@atlaskit/calendar/types"
 
 export class EndDateBeforeStartDateError extends Error {}
 
+// i.g. "2023-12-31"
+export type DateType = `${number}-${number}-${number}`
+export const DateTypeFormatString = "YYYY-MM-DD" as const
+
 export interface DateRangeProps {
-	minDate?: string
-	maxDate?: string
-	disabledDates?: string[]
-	selectedStartDate?: string
-	selectedEndDate?: string
+	minDate?: DateType
+	maxDate?: DateType
+	disabledDates?: DateType[]
+	selectedStartDate?: DateType
+	selectedEndDate?: DateType
 
 	/** this sets the viewed month before the user changes it.
 	 * starts with 1 for January, 2 for February, etc.
@@ -34,13 +38,17 @@ export interface DateRangeProps {
 
 	disabled?: boolean
 
-	onDateRangeSelected: (start: string, end: string) => void
+	onDateRangeSelected: (start: DateType, end: DateType) => void
+
+	onStartDateSelected?: (dateString: DateType) => void
+
+	onEndDateSelected?: (dateString: DateType | undefined) => void
 	onViewChanged?: (e: ChangeEvent) => void
 	onCollision?: (dateString: string) => void
 }
 
 function toDateString(date: Dayjs) {
-	return date.format("YYYY-MM-DD")
+	return date.format("YYYY-MM-DD") as `${number}-${number}-${number}`
 }
 
 function getDatesBetweenStartEnd(startDate: Dayjs, endDate: Dayjs) {
@@ -127,17 +135,28 @@ export function DateRangePicker(props: DateRangeProps) {
 
 		if (startDate && endDate) {
 			setStartDate(pickedDate)
+			if (props.onStartDateSelected) {
+				props.onStartDateSelected(toDateString(pickedDate))
+			}
 			setEndDate(undefined)
+			if (props.onEndDateSelected) {
+				props.onEndDateSelected(undefined)
+			}
 		} else if (startDate && !endDate) {
 			if (pickedDate.isBefore(startDate)) {
 				setStartDate(pickedDate)
-				setEndDate(undefined)
+				if (props.onStartDateSelected) {
+					props.onStartDateSelected(toDateString(pickedDate))
+				}
 			} else {
 				setEndDate(pickedDate)
 				props.onDateRangeSelected(
 					toDateString(startDate),
 					toDateString(pickedDate),
 				)
+				if (props.onEndDateSelected) {
+					props.onEndDateSelected(toDateString(pickedDate))
+				}
 			}
 		} else {
 			setStartDate(pickedDate)

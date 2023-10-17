@@ -2,17 +2,25 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { DateRangePicker } from "@linked-planet/ui-kit-ts"
+import {
+	DateRangePicker,
+	DateType,
+	DateTypeFormatString,
+} from "@linked-planet/ui-kit-ts"
 import dayjs from "dayjs"
 
 //#region date-range-picker
 function Example() {
-	const today = dayjs().format("YYYY-MM-DD")
-	const todayPlus2 = dayjs().add(2, "day").format("YYYY-MM-DD")
-	const todayPlus10 = dayjs().add(10, "day").format("YYYY-MM-DD")
+	const today = dayjs().format(DateTypeFormatString) as DateType
+	const todayPlus2 = dayjs()
+		.add(2, "day")
+		.format(DateTypeFormatString) as DateType
+	const todayPlus10 = dayjs()
+		.add(10, "day")
+		.format(DateTypeFormatString) as DateType
 
-	const [startDate, setStartDate] = useState<string>()
-	const [endDate, setEndDate] = useState<string>()
+	const [startDate, setStartDate] = useState<DateType>()
+	const [endDate, setEndDate] = useState<DateType>()
 	const [weekendDisabled, setWeekendDisabled] = useState(false)
 	const [disabled, setDisabled] = useState(false)
 
@@ -61,9 +69,22 @@ function Example() {
 				disabledDates={[todayPlus2]}
 				locale="de-DE"
 				onCollision={() => console.info("Collision detected")}
-				onDateRangeSelected={(start: string, end: string) => {
-					setStartDate(start)
-					setEndDate(end)
+				onDateRangeSelected={(start: DateType, end: DateType) => {
+					//setStartDate(start)
+					//setEndDate(end)
+					console.info("Date range selected", start, end)
+				}}
+				onStartDateSelected={(date: DateType) => {
+					console.info("Start date selected", date)
+					setStartDate(date)
+				}}
+				onEndDateSelected={(date: DateType | undefined) => {
+					if (date) {
+						console.info("End date selected", date)
+					} else {
+						console.info("End date cleared")
+					}
+					setEndDate(date)
 				}}
 				selectedStartDate={startDate}
 				selectedEndDate={endDate}
@@ -82,12 +103,12 @@ function Example2() {
 		.set("year", 1911)
 		.set("month", 1) //month are 0-indexed in dayjs!
 		.set("date", 11)
-		.format("YYYY-MM-DD")
+		.format(DateTypeFormatString) as DateType
 	const selectedEndDate = dayjs()
 		.set("year", 1911)
 		.set("month", 1)
 		.set("date", 16)
-		.format("YYYY-MM-DD")
+		.format(DateTypeFormatString) as DateType
 
 	return (
 		<>
@@ -101,6 +122,16 @@ function Example2() {
 				weekStartDate={1}
 				onDateRangeSelected={(start: string, end: string) => {
 					console.info("Date range selected", start, end)
+				}}
+				onStartDateSelected={(date: DateType) => {
+					console.info("Start date selected", date)
+				}}
+				onEndDateSelected={(date: DateType | undefined) => {
+					if (date) {
+						console.info("End date selected", date)
+					} else {
+						console.info("End date cleared")
+					}
 				}}
 			/>
 		</>
@@ -127,6 +158,16 @@ function Example3() {
 				weekStartDate={1}
 				onDateRangeSelected={(start: string, end: string) => {
 					console.info("Date range selected", start, end)
+				}}
+				onStartDateSelected={(date: DateType) => {
+					console.info("Start date selected", date)
+				}}
+				onEndDateSelected={(date: DateType | undefined) => {
+					if (date) {
+						console.info("End date selected", date)
+					} else {
+						console.info("End date cleared")
+					}
 				}}
 			/>
 		</>

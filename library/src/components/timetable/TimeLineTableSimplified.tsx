@@ -654,7 +654,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
 
 	const handleWeekendError = () => {
 		setMessage({
-			urgency: "information",
+			appearance: "information",
 			messageKey: "timetable.weekendsDeactivated",
 			timeOut: 3,
 		})

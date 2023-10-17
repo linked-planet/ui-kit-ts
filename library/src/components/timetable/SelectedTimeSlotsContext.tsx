@@ -154,7 +154,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 					timeSlotAfter !== undefined
 				) {
 					setMessage({
-						urgency: "information",
+						appearance: "information",
 						messageKey: "timetable.deselectFromOuterBorder",
 						timeOut: 3,
 					})

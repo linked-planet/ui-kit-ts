@@ -218,7 +218,7 @@ function calculateTimeSlotPropertiesForHoursView(
 			startDate.startOf("day").add(1, "day").diff(startDate, "minutes") -
 			1 // -1 to end at the same day if the time steps are from someplace during the day until
 		setMessage({
-			urgency: "warning",
+			appearance: "warning",
 			messageKey: "timetable.unfittingTimeSlotMessage",
 			messageValues: {
 				timeSteps: timeStepsMinute,
@@ -237,7 +237,7 @@ function calculateTimeSlotPropertiesForHoursView(
 	let daysDifference = endDate.diff(startDate, "days")
 	if (daysDifference < 0) {
 		setMessage({
-			urgency: "error",
+			appearance: "danger",
 			messageKey: "timetable.endDateAfterStartDate",
 		})
 		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
@@ -248,7 +248,7 @@ function calculateTimeSlotPropertiesForHoursView(
 
 	if (timeStepsMinute === 0) {
 		setMessage({
-			urgency: "error",
+			appearance: "danger",
 			messageKey: "timetable.timeSlotSizeGreaterZero",
 		})
 		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
@@ -322,7 +322,7 @@ export function calculateTimeSlotPropertiesForView(
 
 	if (endDate.isBefore(startDate)) {
 		setMessage({
-			urgency: "error",
+			appearance: "danger",
 			messageKey: "timetable.endDateAfterStartDate",
 		})
 		return {
