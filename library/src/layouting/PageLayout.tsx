@@ -10,16 +10,16 @@ const menuColor = token("color.background.neutral.subtle", "#f7f8f9")
 const Page = ({
 	children,
 	id,
-	classNames,
+	className,
 }: {
 	children: React.ReactNode
 	id?: string
-	classNames?: string
+	className?: string
 }) => (
 	<div
 		className={twMerge(
 			"flex h-full min-h-0 w-full flex-col overflow-hidden",
-			classNames,
+			className,
 		)}
 		id={id}
 	>
@@ -30,16 +30,16 @@ const Page = ({
 const PageHeader = ({
 	children,
 	id,
-	classNames,
+	className,
 }: {
 	children: React.ReactNode
 	id?: string
-	classNames?: string
+	className?: string
 }) => (
 	<div
 		className={twMerge(
 			"flex w-full flex-col border-b pl-5 pr-3 pt-5",
-			classNames,
+			className,
 		)}
 		id={id}
 		style={{
@@ -54,13 +54,13 @@ const PageHeader = ({
 const PageHeaderTitle = ({
 	children,
 	id,
-	classNames,
+	className,
 }: {
 	children: React.ReactNode
 	id?: string
-	classNames?: string
+	className?: string
 }) => (
-	<div className={twMerge("mb-2", classNames)} id={id}>
+	<div className={twMerge("mb-2", className)} id={id}>
 		{children}
 	</div>
 )
@@ -68,14 +68,14 @@ const PageHeaderTitle = ({
 const PageHeaderSubTitle = ({
 	children,
 	id,
-	classNames,
+	className,
 }: {
 	children: React.ReactNode
 	id?: string
-	classNames?: string
+	className?: string
 }) => (
 	<div
-		className={twMerge("mb-3 mt-3", classNames)}
+		className={twMerge("mb-3 mt-3", className)}
 		id={id}
 		style={{ color: subtitleColor }}
 	>
@@ -86,14 +86,14 @@ const PageHeaderSubTitle = ({
 const PageHeaderLine = ({
 	children,
 	id,
-	classNames,
+	className,
 }: {
 	children: React.ReactNode
 	id?: string
-	classNames?: string
+	className?: string
 }) => (
 	<div
-		className={twMerge("mb-2 flex w-full items-center gap-1", classNames)}
+		className={twMerge("mb-2 flex w-full items-center gap-1", className)}
 		id={id}
 	>
 		{children}
@@ -103,16 +103,16 @@ const PageHeaderLine = ({
 const PageBody = ({
 	children,
 	id,
-	classNames,
+	className,
 }: {
 	children: React.ReactNode
 	id?: string
-	classNames?: string
+	className?: string
 }) => (
 	<div
 		className={twMerge(
 			"flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
-			classNames,
+			className,
 		)}
 		id={id}
 	>
@@ -123,14 +123,14 @@ const PageBody = ({
 const PageBodyHeader = ({
 	children,
 	id,
-	classNames,
+	className,
 }: {
 	children: React.ReactNode
 	id?: string
-	classNames?: string
+	className?: string
 }) => (
 	<div
-		className={twMerge("z-0 pb-2 pl-4 pr-3 pt-3", classNames)}
+		className={twMerge("z-0 pb-2 pl-4 pr-3 pt-3", className)}
 		id={id}
 		style={{
 			boxShadow: `0 4px 4px ${token("color.border", "#091e4224")}`,
@@ -144,16 +144,16 @@ const PageBodyHeader = ({
 const PageBodyContent = ({
 	children,
 	id,
-	classNames,
+	className,
 }: {
 	children: React.ReactNode
 	id?: string
-	classNames?: string
+	className?: string
 }) => (
 	<div
 		className={twMerge(
 			"min-h-0 flex-1 overflow-y-auto pb-5 pl-5 pr-3 pt-3",
-			classNames,
+			className,
 		)}
 		id={id}
 		style={{
@@ -167,14 +167,14 @@ const PageBodyContent = ({
 const PageBodyFooter = ({
 	children,
 	id,
-	classNames,
+	className,
 }: {
 	children: React.ReactNode
 	id?: string
-	classNames?: string
+	className?: string
 }) => (
 	<div
-		className={twMerge("flex justify-center border-t pt-1", classNames)}
+		className={twMerge("flex justify-center border-t pt-1", className)}
 		id={id}
 		style={{
 			borderColor,
