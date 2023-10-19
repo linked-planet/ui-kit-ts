@@ -2,7 +2,7 @@ import React from "react"
 import { PageLayout } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
-} from "./ShowCaseWrapperItem/ShowcaseWrapperItem"
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function PageLayoutExample() {
 	//#region pagelayout

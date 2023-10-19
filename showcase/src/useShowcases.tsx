@@ -1,5 +1,5 @@
 import React, { useMemo } from "react"
-import PageLayoutShowcase from "./components/PageLayoutShowcase"
+import PageLayoutShowcase from "./components/showcase/wrapper/PageLayoutShowcase"
 import AvatarShowcase from "./components/showcase/wrapper/AvatarShowcase"
 import AwesomeSliderShowcase from "./components/showcase/wrapper/AwesomeSliderShowcase"
 import BadgeShowcase from "./components/showcase/wrapper/BadgeShowcase"

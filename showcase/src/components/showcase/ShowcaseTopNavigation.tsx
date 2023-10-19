@@ -22,8 +22,8 @@ export const ProfileIcon = () => {
 }
 
 function ShowcaseTopNavigation() {
+	//#region topnavigation
 	const navigation = useNavigate()
-
 	return (
 		<TopNavigation isFixed>
 			<AtlassianNavigation
@@ -80,6 +80,7 @@ function ShowcaseTopNavigation() {
 			/>
 		</TopNavigation>
 	)
+	//#endregion topnavigation
 }
 
 export default ShowcaseTopNavigation

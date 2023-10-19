@@ -8,7 +8,6 @@ import {
 	LoadingButton as LPLoadingButton,
 	ButtonGroup as LPButtonGroup,
 } from "@linked-planet/ui-kit-ts"
-import { token } from "@atlaskit/tokens"
 
 function ButtonShowcase(props: ShowcaseProps) {
 	//#region button

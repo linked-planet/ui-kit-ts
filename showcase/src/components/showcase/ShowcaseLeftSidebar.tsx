@@ -9,7 +9,7 @@ import {
 	NestableNavigationContent,
 	SideNavigation,
 } from "@atlaskit/side-navigation"
-import useShowcases from "../useShowcases"
+import useShowcases from "../../useShowcases"
 import { useLocation, useNavigate } from "react-router-dom"
 
 function scrollAndHighlightElement(id: string) {
@@ -27,6 +27,7 @@ function scrollAndHighlightElement(id: string) {
 }
 
 function ShowcaseLeftSidebar() {
+	//#region leftsidebar
 	const showcases = useShowcases({ overallSourceCode: "" })
 	const location = useLocation()
 	const navigate = useNavigate()
@@ -82,6 +83,7 @@ function ShowcaseLeftSidebar() {
 			</SideNavigation>
 		</LeftSidebar>
 	)
+	//#endregion leftsidebar
 }
 
 export default ShowcaseLeftSidebar
