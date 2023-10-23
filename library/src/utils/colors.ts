@@ -35,7 +35,7 @@ export type InteractiveAppearance =
 	`,
 } as const*/
 
-export const InteractiveStyles = {
+export const InteractiveStyles: { [style in InteractiveAppearance]: string } = {
 	primary:
 		"bg-brand-bold hover:bg-brand-bold-hovered active:bg-brand-bold-pressed text-text-inverse",
 	default:
@@ -57,7 +57,9 @@ export const InteractiveDisabledStyles =
 export const InteractiveSelectedStyles =
 	"bg-selected text-selected-text active:bg-selected active:text-selected-text hover:bg-selected hover:text-selected-text cursor-pointer" as const
 
-export const InteractiveInvertedStyles = {
+export const InteractiveInvertedStyles: {
+	[style in InteractiveAppearance]: string
+} = {
 	primary:
 		"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed border-brand-bold text-text",
 	default:
@@ -74,6 +76,7 @@ export const InteractiveInvertedStyles = {
 } as const
 
 export type Appearance =
+	| "default"
 	| "brand"
 	| "success"
 	| "warning"
@@ -81,7 +84,7 @@ export type Appearance =
 	| "danger"
 	| "discovery"
 
-export const AppearanceColors = {
+export const AppearanceColors: { [style in Appearance]: string } = {
 	brand: InteractiveStyles.primary,
 	default: InteractiveStyles.default,
 	success: "bg-success hover:bg-success-hovered text-text",

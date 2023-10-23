@@ -30,6 +30,9 @@ import {
 	N40A,
 	N0,
 	N700,
+	N90,
+	N200,
+	B300,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -72,7 +75,10 @@ export const theme = {
 
 		transparent: colors.transparent,
 
-		link: `var(--ds-link, ${B400})`,
+		link: {
+			DEFAULT: `var(--ds-link, ${B400})`,
+			pressed: `var(--ds-link-pressed, ${B300})`,
+		},
 
 		disabled: {
 			DEFAULT: `var(--ds-background-disabled, ${N20A})`,
@@ -163,6 +169,12 @@ export const theme = {
 		},
 
 		border: `var(--ds-border, ${N30A})`,
+		icon: {
+			DEFAULT: `var(--ds-icon, ${N200})`,
+			inverse: `var(--ds-icon-inverse, ${N10})`,
+			disabled: `var(--ds-icon-disabled, ${N40})`,
+			subtle: `var(--ds-icon-subtle, ${N90})`,
+		},
 	},
 	//},
 }

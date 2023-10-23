@@ -3,11 +3,16 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import Avatar, { AvatarItem } from "@atlaskit/avatar"
+import { LPAvatar } from "@linked-planet/ui-kit-ts/components/Avatar"
 
 function AvatarShowcase(props: ShowcaseProps) {
 	//#region avatar1
 	const example1 = (
-		<AvatarItem avatar={<Avatar size="large" presence="online" />} />
+		<div>
+			<AvatarItem avatar={<Avatar size="large" presence="online" />} />
+			<AvatarItem avatar={<LPAvatar size="large" />} />
+			<AvatarItem avatar={<LPAvatar name="Max Tpa" />} />
+		</div>
 	)
 	//#endregion avatar1
 
