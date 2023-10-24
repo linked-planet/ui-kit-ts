@@ -87,11 +87,15 @@ export type Appearance =
 export const AppearanceColors: { [style in Appearance]: string } = {
 	brand: InteractiveStyles.primary,
 	default: InteractiveStyles.default,
-	success: "bg-success hover:bg-success-hovered text-text",
-	information: "bg-information hover:bg-information-hovered text-text",
-	discovery: "bg-information hover:bg-information-hovered text-text",
-	danger: "bg-danger hover:bg-danger-hovered text-text",
-	warning: "bg-warning hover:bg-warning-hovered text-text",
+	success:
+		"bg-success text-success-text border-success-border hover:bg-success-hovered",
+	information:
+		"bg-information text-information-text border-information-border hover:bg-information-hovered",
+	discovery:
+		"bg-information text-information-text border-information-border hover:bg-information-hovered",
+	danger: "bg-danger text-danger-text border-danger-border hover:bg-danger-hovered",
+	warning:
+		"bg-warning text-warning-text border-warning-border hover:bg-warning-hovered",
 } as const
 
 export function getAppearanceColors(

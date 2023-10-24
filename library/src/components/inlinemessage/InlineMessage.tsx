@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { Appearance, AppearanceColors } from "../../utils/colors"
 import { twMerge } from "tailwind-merge"
 import { Button } from "../Button"
-import CrossIcon from '@atlaskit/icon/glyph/cross'
+import CrossIcon from "@atlaskit/icon/glyph/cross"
 
 export type OpeningDirection = "topdown" | "bottomup"
 
@@ -42,14 +42,12 @@ export default function InlineMessage({
 		}
 	}, [message])
 
-	const appearanceClassName = AppearanceColors[message.appearance ?? "default"]
-	
+	const appearanceClassName =
+		AppearanceColors[message.appearance ?? "default"]
+
 	return (
 		<div
-			style={{
-				width: "100%",
-				boxSizing: "border-box",
-			}}
+			className="box-border w-full"
 			onMouseEnter={() => {
 				if (!message.text) return
 				setOpen(true)
@@ -72,16 +70,21 @@ export default function InlineMessage({
 					transformOrigin:
 						openingDirection === "topdown" ? "top" : "bottom",
 				}}
-				className={twMerge(appearanceClassName,  `rounded py-1 box-border overflow-hidden transition-all duration-75 ease-in-out ${removable ? "pl-2" : "px-2"}`)}
+				className={twMerge(
+					appearanceClassName,
+					`box-border overflow-hidden rounded border-2 py-1 transition-all duration-75 ease-in-out ${
+						removable ? "pl-2" : "px-2"
+					}`,
+				)}
 			>
-				<div
-					className="flex items-start justify-between"
-				>
+				<div className="flex items-center justify-between">
 					{msg?.text ?? ""}
 					{removable && (
 						<Button
 							appearance={"subtle"}
-							className={"ml-2 flex items-center justify-center"}
+							className={twMerge(
+								"ml-2 flex items-center justify-center",
+							)}
 							onClick={() => setOpen(false)}
 						>
 							<CrossIcon label="Close" size="small" />

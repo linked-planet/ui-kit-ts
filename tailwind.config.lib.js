@@ -117,6 +117,7 @@ export const theme = {
 				pressed: `var(--ds-background-selected-bold-pressed, ${B400})`,
 			},
 			text: `var(--ds-text-selected, ${N0})`,
+			border: `var(--ds-border-selected, ${B400})`,
 		},
 
 		brand: {
@@ -128,6 +129,8 @@ export const theme = {
 				hovered: `var(--ds-background-brand-bold-hovered, ${B500})`,
 				pressed: `var(--ds-background-brand-bold-pressed, ${B400})`,
 			},
+			text: `var(--ds-text-brand, ${N0})`,
+			border: `var(--ds-border-brand, ${B400})`,
 		},
 
 		warning: {
@@ -139,6 +142,8 @@ export const theme = {
 				hovered: `var(--ds-background-warning-bold-hovered, ${Y500})`,
 				pressed: `var(--ds-background-warning-bold-pressed, ${Y400})`,
 			},
+			text: `var(--ds-text-warning, ${Y500})`,
+			border: `var(--ds-border-warning, ${Y400})`,
 		},
 
 		danger: {
@@ -150,6 +155,8 @@ export const theme = {
 				hovered: `var(--ds-background-danger-bold-hovered, ${R500})`,
 				pressed: `var(--ds-background-danger-bold-pressed, ${R400})`,
 			},
+			text: `var(--ds-text-danger, ${R400})`,
+			border: `var(--ds-border-danger, ${R400})`,
 		},
 
 		success: {
@@ -161,6 +168,8 @@ export const theme = {
 				hovered: `var(--ds-background-success-bold-hovered, ${G500})`,
 				pressed: `var(--ds-background-success-bold-pressed, ${G400})`,
 			},
+			text: `var(--ds-text-success, ${G400})`,
+			border: `var(--ds-border-success, ${G400})`,
 		},
 
 		information: {
@@ -172,6 +181,8 @@ export const theme = {
 				hovered: `var(--ds-background-information-bold-hovered, ${B500})`,
 				pressed: `var(--ds-background-information-bold-pressed, ${B400})`,
 			},
+			text: `var(--ds-text-information, ${B400})`,
+			border: `var(--ds-border-information, ${B400})`,
 		},
 
 		border: `var(--ds-border, ${N30A})`,
@@ -188,6 +199,8 @@ export const theme = {
 		},
 
 		white: colors.white,
+		black: colors.black,
+
 		interaction: {
 			hovered: `var(--ds-interaction-hovered, ${N70A})`,
 			pressed: `var(--ds-interaction-pressed, ${N90A})`,
