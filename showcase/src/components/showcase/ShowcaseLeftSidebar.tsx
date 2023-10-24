@@ -34,7 +34,6 @@ function ShowcaseLeftSidebar() {
 
 	const clickCB = useCallback(
 		(showcaseName: string) => {
-			console.log("LOCATION", location)
 			if (location.pathname === "/wrappers") {
 				scrollAndHighlightElement(showcaseName)
 				return

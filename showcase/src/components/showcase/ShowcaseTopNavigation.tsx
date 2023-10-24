@@ -8,6 +8,7 @@ import {
 } from "@atlaskit/atlassian-navigation"
 import { useNavigate } from "react-router"
 import { LocaleDropDown, ThemeSwitch } from "@linked-planet/ui-kit-ts"
+import { Avatar } from "@linked-planet/ui-kit-ts/components/Avatar"
 export const ProfileIcon = () => {
 	return (
 		<img
@@ -69,11 +70,15 @@ function ShowcaseTopNavigation() {
 				renderProfile={() => (
 					<>
 						<ThemeSwitch />
-						<Profile
-							tooltip=""
+						<Avatar
 							href="https://github.com/linked-planet/ui-kit-ts"
 							target="_blank"
-							icon={<ProfileIcon />}
+							src={"images/github-logo.png"}
+						/>
+						<Avatar
+							href="https://www.linked-planet.com"
+							target="_blank"
+							src={"images/logo.png"}
 						/>
 					</>
 				)}

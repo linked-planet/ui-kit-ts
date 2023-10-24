@@ -33,6 +33,10 @@ import {
 	N90,
 	N200,
 	B300,
+	G300,
+	P400,
+	N90A,
+	N70A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -44,6 +48,8 @@ export const theme = {
 		text: {
 			DEFAULT: `var(--ds-text, ${N900})`,
 			inverse: `var(--ds-text-inverse, ${N10})`,
+			subtle: `var(--ds-text-subtle, ${N90})`,
+			subtlest: `var(--ds-text-subtlest, ${N200})`,
 
 			warning: {
 				DEFAULT: `var(--ds-text-warning, ${Y400})`,
@@ -174,6 +180,17 @@ export const theme = {
 			inverse: `var(--ds-icon-inverse, ${N10})`,
 			disabled: `var(--ds-icon-disabled, ${N40})`,
 			subtle: `var(--ds-icon-subtle, ${N90})`,
+			success: `var(--ds-icon-success, ${G300})`,
+			discovery: `var(--ds-icon-discovery, ${P400})`,
+			information: `var(--ds-icon-information, ${B400})`,
+			warning: `var(--ds-icon-warning, ${Y400})`,
+			danger: `var(--ds-icon-danger, ${R400})`,
+		},
+
+		white: colors.white,
+		interaction: {
+			hovered: `var(--ds-interaction-hovered, ${N70A})`,
+			pressed: `var(--ds-interaction-pressed, ${N90A})`,
 		},
 	},
 	//},

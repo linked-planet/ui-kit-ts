@@ -6,7 +6,6 @@ import { useLocation } from "react-router-dom"
 export default function SinglePage() {
 	const [overallSourceCode, setOverallSourceCode] = useState("")
 	const location = useLocation()
-	console.log("LOCATION", location.hash)
 
 	// retrieve source code
 	useEffect(() => {

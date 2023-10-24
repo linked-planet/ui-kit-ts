@@ -135,7 +135,7 @@ export default function ShowcaseWrapperItem({
 			</div>
 			<div>
 				{description && (
-					<div className="font-light pt-1 pb-2 text-sm">
+					<div className="pb-2 pt-1 text-sm font-light">
 						{description}
 					</div>
 				)}
@@ -205,7 +205,9 @@ function ShowCaseExample({
 				</Button>
 			</ButtonGroup>
 			{content === "example" && (
-				<div className={styles.example}>{example}</div>
+				<div className={styles.example} style={{ overflow: "auto" }}>
+					{example}
+				</div>
 			)}
 			{content === "source" && (
 				<div
