@@ -11,11 +11,11 @@ function TooltipShowcase(props: ShowcaseProps) {
 	//#region tooltip
 	// import 'react-tooltip/dist/react-tooltip.css'
 	const example = (
-		<div>
-			<div id="tooltip-1">
+		<div className="flex h-48 w-full items-center justify-center">
+			<div data-tooltip-id="tooltip-1">
 				<SearchIcon label="" />
 			</div>
-			<Tooltip data-tooltip-id="tooltip-1" place="right">
+			<Tooltip id="tooltip-1" place="right">
 				<span>I&apos;m a tooltip...</span>
 			</Tooltip>
 		</div>
