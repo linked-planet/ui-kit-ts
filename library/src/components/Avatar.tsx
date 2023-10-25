@@ -277,18 +277,18 @@ export function AvatarItem({
 	className,
 }: {
 	avatar: React.ReactNode
-	primaryText?: string
-	secondaryText?: string
+	primaryText?: React.ReactNode
+	secondaryText?: React.ReactNode
 	className?: string
 }) {
 	return (
 		<div className={twMerge("flex gap-2", className)}>
 			{avatar}
 			<div className="flex flex-col justify-center">
-				<span>{primaryText}</span>
-				<span className="text-text-subtlest text-xs">
+				<div>{primaryText}</div>
+				<div className="text-text-subtlest text-xs">
 					{secondaryText}
-				</span>
+				</div>
 			</div>
 		</div>
 	)
