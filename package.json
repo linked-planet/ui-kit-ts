@@ -112,7 +112,6 @@
 	},
 	"peerDependencies": {
 		"@atlaskit/atlassian-navigation": "^2.9.0",
-		"@atlaskit/avatar": "^21.4.1",
 		"@atlaskit/badge": "^15.1.15",
 		"@atlaskit/banner": "^12.1.18",
 		"@atlaskit/calendar": "^13.3.2",

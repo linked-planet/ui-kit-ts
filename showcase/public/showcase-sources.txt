@@ -2,7 +2,7 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Avatar, { AvatarItem } from "@atlaskit/avatar"
+//import Avatar, { AvatarItem } from "@atlaskit/avatar"
 import {
 	Avatar as LPAvatar,
 	AvatarItem as LPAvatarItem,
@@ -12,7 +12,7 @@ function AvatarShowcase(props: ShowcaseProps) {
 	//#region avatar1
 	const example1 = (
 		<div>
-			<div className="flex gap-4">
+			{/*<div className="flex gap-4">
 				<AvatarItem
 					avatar={
 						<Avatar
@@ -82,7 +82,7 @@ function AvatarShowcase(props: ShowcaseProps) {
 					size="xlarge"
 				/>
 				<Avatar href="#" src={"images/github-logo.png"} size="xlarge" />
-			</div>
+				</div>*/}
 			<div className="flex gap-4">
 				<LPAvatar
 					size="xsmall"
@@ -135,18 +135,28 @@ function AvatarShowcase(props: ShowcaseProps) {
 
 	//#region avatar2
 	const example2 = (
-		<>
-			<AvatarItem
-				primaryText="Carl Coder"
-				secondaryText="Software Engineer"
-				avatar={<Avatar size="large" presence="online" />}
-			/>
+		<div className="flex flex-col">
 			<LPAvatarItem
 				primaryText="Carl Coder"
 				secondaryText="Software Engineer"
-				avatar={<Avatar size="large" presence="online" />}
+				avatar={<LPAvatar size="large" presence="online" />}
 			/>
-		</>
+			<LPAvatarItem
+				primaryText={
+					<div>
+						<h1>TEST H1</h1>
+					</div>
+				}
+				secondaryText={
+					<div>
+						<div className="bg-brand text-danger-bold h-4 w-12 flex-none">
+							UUU
+						</div>
+					</div>
+				}
+				avatar={<LPAvatar size="large" presence="online" />}
+			/>
+		</div>
 	)
 	//#endregion avatar2
 
