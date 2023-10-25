@@ -7,6 +7,7 @@ import {
 	Avatar as LPAvatar,
 	AvatarItem as LPAvatarItem,
 } from "@linked-planet/ui-kit-ts"
+import Avatar, { AvatarItem } from "@atlaskit/avatar"
 
 function AvatarShowcase(props: ShowcaseProps) {
 	//#region avatar1
@@ -136,10 +137,22 @@ function AvatarShowcase(props: ShowcaseProps) {
 	//#region avatar2
 	const example2 = (
 		<div className="flex flex-col">
+			<AvatarItem
+				primaryText="Carl Coder"
+				secondaryText="Software Engineer"
+				avatar={<Avatar size="medium" borderColor="red" />}
+			/>
+			<Avatar size="medium" />
 			<LPAvatarItem
 				primaryText="Carl Coder"
 				secondaryText="Software Engineer"
-				avatar={<LPAvatar size="large" presence="online" />}
+				avatar={
+					<LPAvatar
+						size="large"
+						presence="online"
+						borderColor="red"
+					/>
+				}
 			/>
 			<LPAvatarItem
 				primaryText={
@@ -160,6 +173,39 @@ function AvatarShowcase(props: ShowcaseProps) {
 	)
 	//#endregion avatar2
 
+	//#region avatar3
+	const example3 = (
+		<div>
+			<div className="flex flex-1 justify-center border-2">
+				<AvatarItem
+					primaryText={"Unbekannt"}
+					secondaryText={
+						<div>
+							<div>{"Unbekannt"}</div>
+							<div>Summary</div>
+							<div>description</div>
+						</div>
+					}
+					avatar={<Avatar size="medium" />}
+				/>
+			</div>
+			<div className="flex flex-1 justify-center border-2">
+				<LPAvatarItem
+					primaryText={"Unbekannt"}
+					secondaryText={
+						<div>
+							<div>{"Unbekannt"}</div>
+							<div>Summary</div>
+							<div>description</div>
+						</div>
+					}
+					avatar={<LPAvatar size="medium" />}
+				/>
+			</div>
+		</div>
+	)
+	//#endregion avatar3
+
 	return (
 		<ShowcaseWrapperItem
 			name="Avatar"
@@ -177,9 +223,14 @@ function AvatarShowcase(props: ShowcaseProps) {
 					sourceCodeExampleId: "avatar1",
 				},
 				{
-					title: "AvatarItem",
+					title: "Avatar Item",
 					example: example2,
 					sourceCodeExampleId: "avatar2",
+				},
+				{
+					title: "Avatar Item 2",
+					example: example3,
+					sourceCodeExampleId: "avatar3",
 				},
 			]}
 		/>

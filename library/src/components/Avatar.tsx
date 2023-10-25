@@ -206,7 +206,7 @@ export function Avatar({
 		<RAvatar.Root
 			aria-disabled={isDisabled}
 			className={twMerge(
-				"text-icon-inverse bg-surface-overlay relative box-content inline-flex flex-none select-none items-center justify-center align-middle",
+				"text-icon-inverse bg-surface-overlay border-surface-overlay relative box-content inline-flex flex-none select-none items-center justify-center border-2 align-middle",
 				shapeStyles,
 				colorStyles,
 				!isDisabled && href ? hrefStyles : "",
@@ -282,11 +282,18 @@ export function AvatarItem({
 	className?: string
 }) {
 	return (
-		<div className={twMerge("flex gap-2", className)}>
-			{avatar}
-			<div className="flex flex-col justify-center">
-				<div>{primaryText}</div>
-				<div className="text-text-subtlest text-xs">
+		<div
+			className={twMerge(
+				"m-1 flex w-full items-center justify-start gap-1",
+				className,
+			)}
+		>
+			<div className="m-1 flex-none">{avatar}</div>
+			<div className="flex flex-col justify-center overflow-hidden">
+				<div className="overflow-hidden text-ellipsis">
+					{primaryText}
+				</div>
+				<div className="text-text-subtlest overflow-hidden text-ellipsis text-xs">
 					{secondaryText}
 				</div>
 			</div>
