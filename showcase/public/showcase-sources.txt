@@ -6,7 +6,7 @@ import Avatar, { AvatarItem } from "@atlaskit/avatar"
 import {
 	Avatar as LPAvatar,
 	AvatarItem as LPAvatarItem,
-} from "@linked-planet/ui-kit-ts/components/Avatar"
+} from "@linked-planet/ui-kit-ts"
 
 function AvatarShowcase(props: ShowcaseProps) {
 	//#region avatar1
@@ -156,18 +156,18 @@ function AvatarShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/avatar",
-					url: "https://atlassian.design/components/avatar/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single#Avatars",
 				},
 			]}
 			examples={[
 				{
-					title: "Example 1",
+					title: "Avatar",
 					example: example1,
 					sourceCodeExampleId: "avatar1",
 				},
 				{
-					title: "Example 2",
+					title: "AvatarItem",
 					example: example2,
 					sourceCodeExampleId: "avatar2",
 				},
@@ -1832,6 +1832,56 @@ function IconShowcase(props: ShowcaseProps) {
 }
 
 export default IconShowcase
+
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
+import { IconSizeHelper } from "@linked-planet/ui-kit-ts"
+
+import AddItemIcon from "@atlaskit/icon/glyph/add-item"
+
+export default function IconSizeHelperShowcase(props: ShowcaseProps) {
+	//#region iconsizehelper
+	const example = (
+		<>
+			<IconSizeHelper size={67}>
+				<AddItemIcon label="" />
+			</IconSizeHelper>
+			<IconSizeHelper
+				size={"2.3rem"}
+				className="text-brand bg-warning-bold"
+				style={{
+					borderRadius: "50%",
+				}}
+			>
+				<AddItemIcon label="" />
+			</IconSizeHelper>
+		</>
+	)
+	//#endregion iconsizehelper
+
+	return (
+		<ShowcaseWrapperItem
+			name="Icon Size Helper"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single#IconSizeHelper",
+				},
+			]}
+			examples={[
+				{
+					title: "Icon Size Helper",
+					example: example,
+					sourceCodeExampleId: "iconsizehelper",
+				},
+			]}
+		/>
+	)
+}
 
 import React from "react"
 import ShowcaseWrapperItem, {
@@ -4106,11 +4156,11 @@ function TooltipShowcase(props: ShowcaseProps) {
 	//#region tooltip
 	// import 'react-tooltip/dist/react-tooltip.css'
 	const example = (
-		<div>
-			<div id="tooltip-1">
+		<div className="flex h-48 w-full items-center justify-center">
+			<div data-tooltip-id="tooltip-1">
 				<SearchIcon label="" />
 			</div>
-			<Tooltip data-tooltip-id="tooltip-1" place="right">
+			<Tooltip id="tooltip-1" place="right">
 				<span>I&apos;m a tooltip...</span>
 			</Tooltip>
 		</div>

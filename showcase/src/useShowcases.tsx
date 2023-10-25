@@ -36,7 +36,8 @@ import TextFieldShowcase from "./components/showcase/wrapper/TextFieldShowcase"
 import ToastFlagShowcase from "./components/showcase/wrapper/ToastFlagShowcase"
 import ToggleShowcase from "./components/showcase/wrapper/ToggleShowcase"
 import TooltipShowcase from "./components/showcase/wrapper/TooltipShowcase"
-import UtilsShowCase from "./components/showcase/wrapper/UtilsShowCase"
+import UtilsShowcase from "./components/showcase/wrapper/UtilsShowcase"
+import IconSizeHelperShowcase from "./components/showcase/wrapper/IconSizeHelperShowcase"
 
 export default function useShowcases({
 	overallSourceCode,
@@ -84,6 +85,9 @@ export default function useShowcases({
 			Flag: <FlagShowcase overallSourceCode={overallSourceCode} />,
 			Form: <FormShowcase overallSourceCode={overallSourceCode} />,
 			Icon: <IconShowcase overallSourceCode={overallSourceCode} />,
+			"Icon Size Helper": (
+				<IconSizeHelperShowcase overallSourceCode={overallSourceCode} />
+			),
 			Joyride: <JoyrideShowcase overallSourceCode={overallSourceCode} />,
 			"Inline Message": (
 				<InlineMessageShowcase overallSourceCode={overallSourceCode} />
@@ -125,7 +129,7 @@ export default function useShowcases({
 			),
 			Toggle: <ToggleShowcase overallSourceCode={overallSourceCode} />,
 			Tooltip: <TooltipShowcase overallSourceCode={overallSourceCode} />,
-			Utils: <UtilsShowCase overallSourceCode={overallSourceCode} />,
+			Utils: <UtilsShowcase overallSourceCode={overallSourceCode} />,
 		}),
 		[overallSourceCode],
 	)

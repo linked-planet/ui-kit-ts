@@ -6,7 +6,7 @@ import Avatar, { AvatarItem } from "@atlaskit/avatar"
 import {
 	Avatar as LPAvatar,
 	AvatarItem as LPAvatarItem,
-} from "@linked-planet/ui-kit-ts/components/Avatar"
+} from "@linked-planet/ui-kit-ts"
 
 function AvatarShowcase(props: ShowcaseProps) {
 	//#region avatar1
@@ -156,18 +156,18 @@ function AvatarShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/avatar",
-					url: "https://atlassian.design/components/avatar/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single#Avatars",
 				},
 			]}
 			examples={[
 				{
-					title: "Example 1",
+					title: "Avatar",
 					example: example1,
 					sourceCodeExampleId: "avatar1",
 				},
 				{
-					title: "Example 2",
+					title: "AvatarItem",
 					example: example2,
 					sourceCodeExampleId: "avatar2",
 				},
