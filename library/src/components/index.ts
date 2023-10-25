@@ -1,6 +1,6 @@
 export * from "./DateRangePicker"
 export * from "./timetable"
-export * from "./loadingspinner"
+export * from "./LoadingSpinner"
 export * from "./themeswitch"
 export * from "./inlinemessage"
 export * from "./Collapsible"

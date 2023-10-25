@@ -37,6 +37,7 @@ import {
 	P400,
 	N90A,
 	N70A,
+	N500A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -185,7 +186,10 @@ export const theme = {
 			border: `var(--ds-border-information, ${B400})`,
 		},
 
-		border: `var(--ds-border, ${N30A})`,
+		border: {
+			DEFAULT: `var(--ds-border, ${N30A})`,
+			bold: `var(--ds-border-bold, ${N500A})`,
+		},
 		icon: {
 			DEFAULT: `var(--ds-icon, ${N200})`,
 			inverse: `var(--ds-icon-inverse, ${N10})`,

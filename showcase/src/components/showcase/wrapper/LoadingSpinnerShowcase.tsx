@@ -8,8 +8,13 @@ import { LoadingSpinner } from "@linked-planet/ui-kit-ts"
 export default function LoadingSpinnerShowcase(props: ShowcaseProps) {
 	//#region loadingspinner
 	const example = (
-		<div>
-			<LoadingSpinner height="2rem" />
+		<div className="flex gap-4">
+			<LoadingSpinner />
+			<LoadingSpinner size="xsmall" />
+			<LoadingSpinner size="small" />
+			<LoadingSpinner size="medium" />
+			<LoadingSpinner size="large" />
+			<LoadingSpinner size="xlarge" />
 		</div>
 	)
 	//#endregion loadingspinner

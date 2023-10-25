@@ -9,11 +9,15 @@ import PersonIcon from "@atlaskit/icon/glyph/person"
 
 import { IconSizeHelper } from "./IconSizeHelper"
 
+type PresenceStatus = "busy" | "focus" | "online" | "offline"
+type Status = "approved" | "declined" | "locked"
+type Sizes = "xsmall" | "small" | "medium" | "large" | "xlarge" | "xxlarge"
+
 type AvatarProps = {
 	src?: string
 	name?: string
 	appearance?: "circle" | "square"
-	size?: keyof typeof sizes
+	size?: Sizes
 	isDisabled?: boolean
 	label?: string
 	onClick?: () => void
@@ -21,11 +25,11 @@ type AvatarProps = {
 	target?: "_blank" | "_self" | "_parent" | "_top"
 	className?: string
 	borderColor?: string
-	presence?: "busy" | "focus" | "online" | "offline"
-	status?: "approved" | "declined" | "locked"
+	presence?: PresenceStatus
+	status?: Status
 }
 
-const sizes = {
+const sizes: { [size in Sizes]: number } = {
 	xsmall: 16,
 	small: 24,
 	medium: 32,
@@ -34,7 +38,7 @@ const sizes = {
 	xxlarge: 128,
 } as const
 
-const presenceStatusSizes = {
+const presenceStatusSizes: { [size in Sizes]: number } = {
 	xsmall: 10,
 	small: 14,
 	medium: 16,
@@ -43,20 +47,20 @@ const presenceStatusSizes = {
 	xxlarge: 20,
 } as const
 
-const presenceStyles = {
+const presenceStyles: { [presence in PresenceStatus]: string } = {
 	busy: "bg-icon-danger",
 	focus: "bg-icon-discovery",
 	online: "bg-icon-success",
 	offline: "bg-icon",
 } as const
 
-const statusStyles = {
+const statusStyles: { [status in Status]: string } = {
 	approved: "bg-icon-success",
 	declined: "bg-icon-danger",
 	locked: "bg-icon",
 } as const
 
-const statusSVGs = {
+const statusSVGs: { [status in Status]: JSX.Element } = {
 	approved: <CheckIcon label="approved" size="small" />,
 	declined: <CrossIcon label="declined" size="small" />,
 	locked: <LockFilledIcon label="locked" size="small" />,
@@ -68,7 +72,7 @@ function PresenceIcon({
 	className,
 	appearance,
 }: {
-	presence: keyof typeof presenceStyles
+	presence: PresenceStatus
 	size: keyof typeof sizes
 	appearance: "circle" | "square"
 	className?: string
