@@ -22,7 +22,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 				justifyContent: "space-evenly",
 				height: "100%",
 				gap: "1rem",
-				overflow: "auto",
+				paddingLeft: "10rem",
+				paddingRight: "10rem",
 			}}
 		>
 			{/*<ButtonGroup>

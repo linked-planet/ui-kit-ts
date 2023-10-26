@@ -11,7 +11,6 @@ export function isTheme(theme: string): theme is Theme {
 export const LocalStorageThemeVar = "atlassian-theme"
 
 export function applyTheme(theme: Theme | "auto") {
-	console.log("APPLY THEME", theme)
 	localStorage.setItem(LocalStorageThemeVar, theme)
 	// get the html element
 	const html = document.querySelector("html")
@@ -33,7 +32,7 @@ export function switchTheme() {
 			currentThemeIdx = 0
 		}
 		const next = themesAvailable[++currentThemeIdx % themesAvailable.length]
-		console.log("apply theme", next)
+		console.info("apply theme", next)
 		applyTheme(next)
 		return
 	}

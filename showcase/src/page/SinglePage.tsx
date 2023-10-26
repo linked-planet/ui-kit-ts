@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react"
 import Select from "@atlaskit/select"
 import useShowCases from "../useShowcases"
-import { useLocation } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 
 export default function SinglePage() {
 	const [overallSourceCode, setOverallSourceCode] = useState("")
-	const location = useLocation()
 
 	// retrieve source code
 	useEffect(() => {
@@ -19,7 +18,8 @@ export default function SinglePage() {
 
 	const scs = useShowCases({ overallSourceCode })
 
-	const idFromUrl = decodeURIComponent(location.hash.substring(1))
+	const [params, setParams] = useSearchParams()
+	const idFromParam = params.get("component") ?? ""
 
 	const { options, defaultOption } = useMemo(() => {
 		const options = Object.entries(scs).map(([id, component]) => ({
@@ -28,10 +28,11 @@ export default function SinglePage() {
 		}))
 		const defaultOption = options.find(
 			(it) =>
-				it.label.toLocaleLowerCase() === idFromUrl.toLocaleLowerCase(),
+				it.label.toLocaleLowerCase() ===
+				idFromParam.toLocaleLowerCase(),
 		)
 		return { options, defaultOption }
-	}, [scs, idFromUrl])
+	}, [scs, idFromParam])
 
 	const [sc, setSC] = useState(defaultOption ?? options?.[0])
 	useEffect(() => {
@@ -39,16 +40,15 @@ export default function SinglePage() {
 	}, [options, defaultOption])
 
 	return (
-		<div
-			style={{
-				marginTop: "3rem",
-			}}
-		>
+		<div className="mt-12">
 			<Select
 				options={options}
 				onChange={(e) => {
 					if (e?.value) {
 						setSC(e)
+						params.set("component", e.label)
+						params.delete("example")
+						setParams(params)
 					}
 				}}
 				value={sc}

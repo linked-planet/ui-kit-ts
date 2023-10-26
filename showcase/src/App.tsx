@@ -11,7 +11,6 @@ import SinglePage from "./page/SinglePage"
 import WrappersPage from "./page/WrappersPage"
 
 import "./custom.css"
-//import "./styles.css"
 import "@atlaskit/css-reset" // sets base styles of AK
 
 export default function App() {

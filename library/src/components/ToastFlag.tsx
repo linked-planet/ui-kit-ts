@@ -2,7 +2,6 @@ import React, { CSSProperties } from "react"
 
 import { CloseButtonProps, toast } from "react-toastify"
 import type { ToastOptions } from "react-toastify"
-import { css } from "@emotion/react"
 
 //import "react-toastify/dist/ReactToastify.css"  -> needs to be imported in your app, probably before tailwindcss to make overrides work
 import CrossIcon from "@atlaskit/icon/glyph/cross"
@@ -29,16 +28,11 @@ const defaultSettings: ToastOptions = {
 	draggable: true,
 }
 
-const defaultProgressStyles = "bg-white"
-const defaultProgressInvertedStyles = "bg-white"
-const warningProgressStyles = "bg-warning-bold"
-const warningProgressInvertedStyles = "bg-warning"
-const errorProgressStyles = "bg-danger-bold"
-const errorProgressInvertedStyles = "bg-danger"
-const successProgressStyles = "bg-success-bold"
-const successProgressInvertedStyles = "bg-success"
-const informationProgressStyles = "bg-information-bold"
-const informationProgressInvertedStyles = "bg-information"
+const defaultProgressStyles = "bg-text-inverse"
+const warningProgressStyles = "bg-warning"
+const errorProgressStyles = "bg-danger"
+const successProgressStyles = "bg-success"
+const informationProgressStyles = "bg-information"
 
 const progressStyles: { [style in FlagAppearance]: string } = {
 	default: defaultProgressStyles,
@@ -48,6 +42,12 @@ const progressStyles: { [style in FlagAppearance]: string } = {
 	information: informationProgressStyles,
 }
 
+const defaultProgressInvertedStyles = "bg-text"
+const warningProgressInvertedStyles = "bg-warning-bold"
+const errorProgressInvertedStyles = "bg-danger-bold"
+const successProgressInvertedStyles = "bg-success-bold"
+const informationProgressInvertedStyles = "bg-information-bold"
+
 const progressInvertedStyles: { [style in FlagAppearance]: string } = {
 	default: defaultProgressInvertedStyles,
 	warning: warningProgressInvertedStyles,
@@ -55,11 +55,6 @@ const progressInvertedStyles: { [style in FlagAppearance]: string } = {
 	success: successProgressInvertedStyles,
 	information: informationProgressInvertedStyles,
 }
-
-/*const progressStyles: { [style in FlagAppearance]: CSSProperties } = {
-	default: {
-		background: 
-	}*/
 
 function CloseButton({
 	closeToast,

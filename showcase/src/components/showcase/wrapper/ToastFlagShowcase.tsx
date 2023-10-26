@@ -25,7 +25,7 @@ function ExampleShowExtendedFlag() {
 					showFlagExtended({
 						title: "1: Whoa a new flag!",
 						description: "This is a standard toast flag.",
-						autoClose: 1000000,
+						autoClose: 2000,
 					})
 				}
 			>
@@ -48,7 +48,6 @@ function ExampleShowExtendedFlag() {
 						title: "1: This flag does not disappear!",
 						description:
 							"This is a standard not disappearing toast flag.",
-						autoClose: false,
 					})
 				}
 			>
@@ -140,6 +139,7 @@ function ExampleShowFlags() {
 					showFlag({
 						title: "1: Whoa a new flag!",
 						description: "This is a standard toast flag.",
+						autoClose: 2000,
 					})
 				}
 			>
@@ -163,7 +163,6 @@ function ExampleShowFlags() {
 						title: "1: Whoa a new flag!",
 						description:
 							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
-						autoClose: false,
 					})
 				}
 			>

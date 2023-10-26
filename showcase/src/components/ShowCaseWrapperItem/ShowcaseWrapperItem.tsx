@@ -10,8 +10,8 @@ import Tabs, { Tab, TabList, TabPanel } from "@atlaskit/tabs"
 import { CodeBlock } from "@atlaskit/code"
 
 import styles from "./ShowCaseWrapperItem.module.css"
-import { token } from "@atlaskit/tokens"
 import Button, { ButtonGroup } from "@atlaskit/button"
+import { useLocation, useSearchParams } from "react-router-dom"
 
 export interface Package {
 	name: string
@@ -67,7 +67,20 @@ export default function ShowcaseWrapperItem({
 	const ref = useRef<ElementRef<"div">>(null)
 	//console.info("OverallSourceCode, SourceCodeExampleId", props.overallSourceCode, props.sourceCodeExampleId)
 
+	const location = useLocation()
+	const [params, setParams] = useSearchParams()
+	const exampleFromParam = params.get("example") ?? ""
+
+	const [example, setExample] = useState(exampleFromParam)
+	let exampleIdx = examples.findIndex((it) => it.title === example)
+	if (exampleIdx === -1) {
+		exampleIdx = 0
+	}
+
 	useEffect(() => {
+		if (location.pathname !== "/wrappers") {
+			return
+		}
 		const handleIntersection = (entries: IntersectionObserverEntry[]) => {
 			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
@@ -85,7 +98,7 @@ export default function ShowcaseWrapperItem({
 		}
 
 		return () => observer.disconnect()
-	}, [])
+	}, [location.pathname])
 
 	useEffect(() => {
 		if (window.location.hash === "#" + id) {
@@ -100,25 +113,10 @@ export default function ShowcaseWrapperItem({
 	console.info( "ShowCaseWrapperItem Code", code )*/
 
 	return (
-		<div
-			id={id}
-			data-menu-name={name}
-			style={{
-				marginTop: "40px",
-				marginBottom: "40px",
-			}}
-			ref={ref}
-		>
+		<div id={id} data-menu-name={name} className="my-12" ref={ref}>
 			<h3>{name}</h3>
 
-			<div
-				style={{
-					fontWeight: "lighter",
-					fontSize: "0.8rem",
-					paddingTop: "0.2rem",
-					paddingBottom: "0.5rem",
-				}}
-			>
+			<small>
 				<span>Packages: </span>
 				{packages.map((pack, i) => {
 					return (
@@ -132,7 +130,7 @@ export default function ShowcaseWrapperItem({
 						</a>
 					)
 				})}
-			</div>
+			</small>
 			<div>
 				{description && (
 					<div className="pb-2 pt-1 text-sm font-light">
@@ -141,7 +139,15 @@ export default function ShowcaseWrapperItem({
 				)}
 			</div>
 
-			<Tabs id={name + "-tabs"}>
+			<Tabs
+				id={name + "-tabs"}
+				selected={exampleIdx}
+				onChange={(idx) => {
+					setExample(examples[idx].title)
+					params.set("example", examples[idx].title)
+					setParams(params)
+				}}
+			>
 				<TabList>
 					{examples.map((example) => {
 						return <Tab key={example.title}>{example.title}</Tab>
@@ -182,14 +188,7 @@ function ShowCaseExample({
 	)
 
 	return (
-		<div
-			style={{
-				width: "100%",
-				backgroundColor: token("elevation.surface", "#fff"),
-				paddingTop: "12px",
-				paddingBottom: "12px",
-			}}
-		>
+		<div className="bg-surface w-full py-4">
 			<ButtonGroup>
 				<Button
 					isSelected={content === "example"}
@@ -205,9 +204,7 @@ function ShowCaseExample({
 				</Button>
 			</ButtonGroup>
 			{content === "example" && (
-				<div className={styles.example} style={{ overflow: "auto" }}>
-					{example}
-				</div>
+				<div className={styles.example}>{example}</div>
 			)}
 			{content === "source" && (
 				<div

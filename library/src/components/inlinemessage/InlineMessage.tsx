@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
-import { Appearance } from "../../utils/colors"
+import { Appearance } from "../../utils/appearanceTypes"
 import { twMerge } from "tailwind-merge"
 import { Button } from "../Button"
 import CrossIcon from "@atlaskit/icon/glyph/cross"

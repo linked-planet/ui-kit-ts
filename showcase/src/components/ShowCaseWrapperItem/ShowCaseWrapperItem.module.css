@@ -1,25 +1,27 @@
 .example {
 	border: 1px solid var(--ds-border, #e5e5e5);
 	padding: 8px;
+	padding-top: 16px;
+	padding-bottom: 16px;
 	background-image: linear-gradient(
 			45deg,
-			var(--ds-background-disabled, #f7f7f7) 25%,
+			var(--ds-background-disabled, #eee) 25%,
 			transparent 25%
 		),
 		linear-gradient(
 			135deg,
-			var(--ds-background-disabled, #f7f7f7) 25%,
+			var(--ds-background-disabled, #eee) 25%,
 			transparent 25%
 		),
 		linear-gradient(
 			45deg,
 			transparent 75%,
-			var(--ds-background-disabled, #f7f7f7) 75%
+			var(--ds-background-disabled, #eee) 75%
 		),
 		linear-gradient(
 			135deg,
 			transparent 75%,
-			var(--ds-background-disabled, #f7f7f7) 75%
+			var(--ds-background-disabled, #eee) 75%
 		);
 	background-position:
 		0 0,
@@ -27,5 +29,5 @@
 		10px -10px,
 		0 10px;
 	background-size: 20px 20px;
-	overflow: hidden;
+	overflow: auto;
 }

@@ -1,6 +1,6 @@
 import React, { CSSProperties } from "react"
 import { twMerge } from "tailwind-merge"
-import { InteractiveAppearance } from "../utils/colors"
+import { InteractiveAppearance } from "../utils/appearanceTypes"
 import Spinner from "@atlaskit/spinner"
 
 export type ButtonProps = {
