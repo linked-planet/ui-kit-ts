@@ -1,7 +1,7 @@
 import React, { CSSProperties } from "react"
 
-import { CloseButtonProps, toast } from "react-toastify"
-import type { ToastOptions } from "react-toastify"
+import { toast, ToastContainer } from "react-toastify"
+import type { ToastOptions, CloseButtonProps } from "react-toastify"
 
 //import "react-toastify/dist/ReactToastify.css"  -> needs to be imported in your app, probably before tailwindcss to make overrides work
 import CrossIcon from "@atlaskit/icon/glyph/cross"
@@ -71,6 +71,8 @@ function CloseButton({
 		</div>
 	)
 }
+
+export { ToastContainer as ToastFlagContainer }
 
 export function showFlagExtended({
 	style,

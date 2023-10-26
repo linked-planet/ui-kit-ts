@@ -68,7 +68,6 @@ export default defineConfig({
 				"@atlaskit/theme",
 				"@emotion/styled",
 				"@monaco-editor/react",
-				"@reduxjs/toolkit",
 			],
 			output: {
 				globals: {

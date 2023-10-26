@@ -118,30 +118,30 @@ function FlagIcon({
 		}
 		case "success": {
 			return (
-				<div className={iconStyle}>
+				<span className={iconStyle}>
 					<Tick label="Success" />
-				</div>
+				</span>
 			)
 		}
 		case "warning": {
 			return (
-				<div className={iconStyle}>
+				<span className={iconStyle}>
 					<Warning label="Warning" />
-				</div>
+				</span>
 			)
 		}
 		case "information": {
 			return (
-				<div className={iconStyle}>
+				<span className={iconStyle}>
 					<Info label="Info" />
-				</div>
+				</span>
 			)
 		}
 		case "error": {
 			return (
-				<div className={iconStyle}>
+				<span className={iconStyle}>
 					<Error label="Error" />
-				</div>
+				</span>
 			)
 		}
 		default:
