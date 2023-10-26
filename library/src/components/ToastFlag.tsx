@@ -2,31 +2,22 @@ import React, { CSSProperties } from "react"
 
 import { CloseButtonProps, toast } from "react-toastify"
 import type { ToastOptions } from "react-toastify"
+import { css } from "@emotion/react"
 
 //import "react-toastify/dist/ReactToastify.css"  -> needs to be imported in your app, probably before tailwindcss to make overrides work
 import CrossIcon from "@atlaskit/icon/glyph/cross"
 
-import { Flag, FlagActionType, FlagProps } from "./Flag"
 import {
-	getAppearanceColors,
-	InteractiveAppearance,
-	InteractiveInvertedStyles,
-	InteractiveStyles,
-} from "../utils/colors"
+	Flag,
+	FlagActionType,
+	FlagProps,
+	FlagStyles,
+	FlagInvertedStyles,
+	FlagAppearance,
+} from "./Flag"
 import { twMerge } from "tailwind-merge"
 
 type ToastFlagProps = FlagProps & ToastOptions
-
-function CloseButton({
-	closeToast,
-	color,
-}: CloseButtonProps & { color: string }) {
-	return (
-		<div className="cursor-pointer" onClick={closeToast}>
-			<CrossIcon label="Close" primaryColor={color} size="small" />
-		</div>
-	)
-}
 
 const defaultSettings: ToastOptions = {
 	position: "bottom-right",
@@ -38,22 +29,63 @@ const defaultSettings: ToastOptions = {
 	draggable: true,
 }
 
+const defaultProgressStyles = "bg-white"
+const defaultProgressInvertedStyles = "bg-white"
+const warningProgressStyles = "bg-warning-bold"
+const warningProgressInvertedStyles = "bg-warning"
+const errorProgressStyles = "bg-danger-bold"
+const errorProgressInvertedStyles = "bg-danger"
+const successProgressStyles = "bg-success-bold"
+const successProgressInvertedStyles = "bg-success"
+const informationProgressStyles = "bg-information-bold"
+const informationProgressInvertedStyles = "bg-information"
+
+const progressStyles: { [style in FlagAppearance]: string } = {
+	default: defaultProgressStyles,
+	warning: warningProgressStyles,
+	error: errorProgressStyles,
+	success: successProgressStyles,
+	information: informationProgressStyles,
+}
+
+const progressInvertedStyles: { [style in FlagAppearance]: string } = {
+	default: defaultProgressInvertedStyles,
+	warning: warningProgressInvertedStyles,
+	error: errorProgressInvertedStyles,
+	success: successProgressInvertedStyles,
+	information: informationProgressInvertedStyles,
+}
+
+/*const progressStyles: { [style in FlagAppearance]: CSSProperties } = {
+	default: {
+		background: 
+	}*/
+
+function CloseButton({
+	closeToast,
+	invert,
+}: CloseButtonProps & { invert: boolean }) {
+	return (
+		<div
+			className={`cursor-pointer ${
+				invert ? "text-text" : "text-text-inverse"
+			}`}
+			onClick={closeToast}
+		>
+			<CrossIcon label="Close" size="small" />
+		</div>
+	)
+}
+
 export function showFlagExtended({
 	style,
-	progressStyle,
 	appearance = "default",
 	invert = false,
 	...props
 }: ToastFlagProps) {
-	const { secondaryColor, textColor } = getAppearanceColors(
-		invert,
-		appearance,
-	)
-
-	const progressStyleUsed = {
-		background: secondaryColor,
-		...progressStyle,
-	}
+	const progressClassName = invert
+		? progressInvertedStyles[appearance]
+		: progressStyles[appearance]
 
 	const flagStyle: CSSProperties = {
 		boxShadow: "unset",
@@ -63,16 +95,8 @@ export function showFlagExtended({
 	}
 
 	const className = invert
-		? InteractiveInvertedStyles[appearance]
-		: InteractiveStyles[appearance]
-
-	// this is a hack, since the default UI element color have transparency, we reset it to "neutral"
-	let additionalClassName: string = ""
-	if (appearance === "default") {
-		additionalClassName =
-			"bg-surface hover:bg-surface-hovered active:bg-surface-pressed"
-	}
-	//
+		? FlagInvertedStyles[appearance]
+		: FlagStyles[appearance]
 
 	toast(
 		<Flag
@@ -85,12 +109,16 @@ export function showFlagExtended({
 		{
 			...defaultSettings,
 			closeButton: (p: CloseButtonProps) => (
-				<CloseButton color={textColor} {...p} />
+				<CloseButton invert={invert} {...p} />
 			),
 			...props,
 			style,
-			progressStyle: progressStyleUsed,
-			className: twMerge(className, "border-[1px]", additionalClassName),
+			progressStyle: {
+				// this is a hack, but it works: https://github.com/fkhadra/react-toastify/issues/915
+				"--toastify-color-progress-light": "invalid",
+			} as CSSProperties,
+			progressClassName: progressClassName,
+			className: twMerge(className, invert ? "border" : undefined),
 		},
 	)
 }
@@ -101,7 +129,7 @@ export function showFlagExtended({
 type SimpleFlagProps = {
 	title: string
 	description: string | JSX.Element
-	appearance?: InteractiveAppearance
+	appearance?: FlagAppearance
 	autoClose?: false | number
 	position?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
 	actions?: FlagActionType[]
@@ -115,11 +143,7 @@ export function showFlag(props: SimpleFlagProps) {
 }
 
 export function showErrorFlag(props: Omit<SimpleFlagProps, "appearance">) {
-	showFlag({ ...props, appearance: "danger" })
-}
-
-export function showDangerFlag(props: Omit<SimpleFlagProps, "appearance">) {
-	showFlag({ ...props, appearance: "danger" })
+	showFlag({ ...props, appearance: "error" })
 }
 
 export function showSuccessFlag(props: Omit<SimpleFlagProps, "appearance">) {

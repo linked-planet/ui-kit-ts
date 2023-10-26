@@ -1,11 +1,6 @@
 import React, { CSSProperties } from "react"
 import { twMerge } from "tailwind-merge"
-import {
-	InteractiveAppearance,
-	InteractiveDisabledStyles,
-	InteractiveSelectedStyles,
-	InteractiveStyles,
-} from "../utils/colors"
+import { InteractiveAppearance } from "../utils/colors"
 import Spinner from "@atlaskit/spinner"
 
 export type ButtonProps = {
@@ -30,6 +25,25 @@ export type ButtonProps = {
 	| "aria-label"
 >
 
+const ButtonStyles: { [style in InteractiveAppearance]: string } = {
+	primary:
+		"bg-brand-bold hover:bg-brand-bold-hovered active:bg-brand-bold-pressed text-text-inverse",
+	default:
+		"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",
+	subtle: "bg-neutral-subtle hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed text-text",
+	link: "bg-transparent text-link hover:underline",
+	warning:
+		"bg-warning-bold hover:bg-warning-bold-hovered active:bg-warning-bold-pressed text-text-inverse",
+	danger: "bg-danger-bold hover:bg-danger-bold-hovered active:bg-danger-bold-pressed text-text-inverse",
+	success:
+		"bg-success-bold hover:bg-success-bold-hovered active:bg-success-bold-pressed text-text-inverse",
+	information:
+		"bg-information-bold hover:bg-information-bold-hovered active:bg-information-bold-pressed text-text-inverse",
+} as const
+
+export const ButtonSelectedStyles =
+	"bg-selected text-selected-text active:bg-selected active:text-selected-text hover:bg-selected hover:text-selected-text cursor-pointer" as const
+
 export const Button = ({
 	label = "",
 	title = "",
@@ -49,10 +63,9 @@ export const Button = ({
 			aria-label={label}
 			style={style}
 			className={twMerge(
-				InteractiveStyles[appearance],
-				"relative flex items-center justify-center gap-1 rounded px-3 py-1.5",
-				isDisabled ? InteractiveDisabledStyles : undefined,
-				isSelected ? InteractiveSelectedStyles : undefined,
+				ButtonStyles[appearance],
+				"disabled:bg-disabled disabled:text-disabled-text relative flex items-center justify-center gap-1 rounded px-3 py-1.5 disabled:cursor-not-allowed",
+				isSelected ? ButtonSelectedStyles : undefined,
 				className,
 			)}
 			disabled={isDisabled}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
-import { Appearance, AppearanceColors } from "../../utils/colors"
+import { Appearance } from "../../utils/colors"
 import { twMerge } from "tailwind-merge"
 import { Button } from "../Button"
 import CrossIcon from "@atlaskit/icon/glyph/cross"
@@ -11,6 +11,21 @@ export type Message = {
 	appearance?: Appearance
 	timeOut?: number // in seconds
 }
+
+const InlineMessageAppearanceColors: { [style in Appearance]: string } = {
+	brand: "bg-brand-bold hover:bg-brand-bold-hovered active:bg-brand-bold-pressed text-text-inverse",
+	default:
+		"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",
+	success:
+		"bg-success text-success-text border-success-border hover:bg-success-hovered",
+	information:
+		"bg-information text-information-text border-information-border hover:bg-information-hovered",
+	discovery:
+		"bg-information text-information-text border-information-border hover:bg-information-hovered",
+	danger: "bg-danger text-danger-text border-danger-border hover:bg-danger-hovered",
+	warning:
+		"bg-warning text-warning-text border-warning-border hover:bg-warning-hovered",
+} as const
 
 export default function InlineMessage({
 	message,
@@ -43,7 +58,7 @@ export default function InlineMessage({
 	}, [message])
 
 	const appearanceClassName =
-		AppearanceColors[message.appearance ?? "default"]
+		InlineMessageAppearanceColors[message.appearance ?? "default"]
 
 	return (
 		<div

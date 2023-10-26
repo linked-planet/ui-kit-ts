@@ -69,7 +69,6 @@ export default defineConfig({
 				"@emotion/styled",
 				"@monaco-editor/react",
 				"@reduxjs/toolkit",
-				"react-toastify",
 			],
 			output: {
 				globals: {

@@ -23,19 +23,16 @@ export type InteractiveAppearance =
 	| "success"
 	| "information"
 
-// example of a solution with emotion
-/*export const InteractiveStylesEmotion = {
-	default: css`
-			background-color: ${token("elevation.surface", N10)};
-			color: ${token("color.text.inverse", N10)};
-	`,
-	primary: css`
-			background-color: ${token("color.background.brand.bold", B200)};
-			color: ${token("color.text.inverse", N10)};
-	`,
-} as const*/
+export type Appearance =
+	| "default"
+	| "brand"
+	| "success"
+	| "warning"
+	| "information"
+	| "danger"
+	| "discovery"
 
-export const InteractiveStyles: { [style in InteractiveAppearance]: string } = {
+/*export const InteractiveStyles: { [style in InteractiveAppearance]: string } = {
 	primary:
 		"bg-brand-bold hover:bg-brand-bold-hovered active:bg-brand-bold-pressed text-text-inverse",
 	default:
@@ -49,9 +46,9 @@ export const InteractiveStyles: { [style in InteractiveAppearance]: string } = {
 		"bg-success-bold hover:bg-success-bold-hovered active:bg-success-bold-pressed text-text-inverse",
 	information:
 		"bg-information-bold hover:bg-information-bold-hovered active:bg-information-bold-pressed text-text-inverse",
-} as const
+} as const*/
 
-export const InteractiveDisabledStyles =
+/*export const InteractiveDisabledStyles =
 	"disabled:bg-disabled disabled:text-disabled-text disabled:cursor-not-allowed" as const
 
 export const InteractiveSelectedStyles =
@@ -73,29 +70,6 @@ export const InteractiveInvertedStyles: {
 		"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed border-success-bold text-text",
 	information:
 		"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed border-information-bold text-text",
-} as const
-
-export type Appearance =
-	| "default"
-	| "brand"
-	| "success"
-	| "warning"
-	| "information"
-	| "danger"
-	| "discovery"
-
-export const AppearanceColors: { [style in Appearance]: string } = {
-	brand: InteractiveStyles.primary,
-	default: InteractiveStyles.default,
-	success:
-		"bg-success text-success-text border-success-border hover:bg-success-hovered",
-	information:
-		"bg-information text-information-text border-information-border hover:bg-information-hovered",
-	discovery:
-		"bg-information text-information-text border-information-border hover:bg-information-hovered",
-	danger: "bg-danger text-danger-text border-danger-border hover:bg-danger-hovered",
-	warning:
-		"bg-warning text-warning-text border-warning-border hover:bg-warning-hovered",
 } as const
 
 export function getAppearanceColors(
@@ -141,4 +115,4 @@ export function getAppearanceColors(
 	}
 
 	return { primaryColor, textColor, secondaryColor }
-}
+}*/

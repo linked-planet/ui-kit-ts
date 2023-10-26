@@ -21,10 +21,15 @@ function FlagShowcase(props: ShowcaseProps) {
 				description="Action Flag"
 				actions={[{ content: "Action", onClick: () => {} }]}
 			/>
-			
 			<Flag
 				title="Flag"
-				icon={<WarningIcon label="" />}
+				description="Action Flag"
+				actions={[{ content: "Action", onClick: () => {} }]}
+				invert={false}
+			/>
+
+			<Flag
+				title="Flag"
 				description="Success Flag"
 				appearance="success"
 				invert={false}
@@ -42,7 +47,7 @@ function FlagShowcase(props: ShowcaseProps) {
 				appearance="warning"
 				invert={false}
 			/>
-			
+
 			<Flag
 				title="Flag"
 				description="Warning Flag"
@@ -51,22 +56,19 @@ function FlagShowcase(props: ShowcaseProps) {
 
 			<Flag
 				title="Flag"
-				description="Danger Flag"
-				appearance="danger"
+				description="Error Flag"
+				appearance="error"
 				invert={false}
 			/>
 
-			<Flag
-				title="Flag"
-				description="Danger Flag"
-				appearance="danger"
-			/>
+			<Flag title="Flag" description="Error Flag" appearance="error" />
 
 			<Flag
 				title="Flag"
 				description="Information Flag"
 				appearance="information"
 				invert={false}
+				actions={[{ content: "Action", onClick: () => {} }]}
 			/>
 
 			<Flag
@@ -74,7 +76,6 @@ function FlagShowcase(props: ShowcaseProps) {
 				description="Information Flag"
 				appearance="information"
 			/>
-
 		</div>
 	)
 	//#endregion flag

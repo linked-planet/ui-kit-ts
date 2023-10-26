@@ -75,7 +75,7 @@
 		"use-resize-observer": "^9.1.0"
 	},
 	"devDependencies": {
-		"@atlaskit/eslint-plugin-design-system": "^8.13.1",
+		"@atlaskit/eslint-plugin-design-system": "^8.14.0",
 		"@formatjs/cli": "^6.2.1",
 		"@total-typescript/ts-reset": "^0.5.1",
 		"@types/react": "^16.14.50",
@@ -124,7 +124,7 @@
 		"@atlaskit/dynamic-table": "^14.11.7",
 		"@atlaskit/empty-state": "^7.6.3",
 		"@atlaskit/form": "^8.11.13",
-		"@atlaskit/icon": "^21.12.7",
+		"@atlaskit/icon": "^21.12.8",
 		"@atlaskit/lozenge": "^11.4.5",
 		"@atlaskit/menu": "^2.1.1",
 		"@atlaskit/modal-dialog": "^12.8.3",

@@ -3,21 +3,64 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import SearchIcon from "@atlaskit/icon/glyph/search"
-import { Tooltip } from "react-tooltip"
+import { Tooltip } from "@linked-planet/ui-kit-ts"
 
-import "react-tooltip/dist/react-tooltip.css"
+//import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
 
 function TooltipShowcase(props: ShowcaseProps) {
 	//#region tooltip
-	// import 'react-tooltip/dist/react-tooltip.css'
 	const example = (
-		<div className="flex h-48 w-full items-center justify-center">
-			<div data-tooltip-id="tooltip-1">
-				<SearchIcon label="" />
+		<div className="flex w-full flex-col items-center">
+			<div className="flex gap-4">
+				<Tooltip
+					place="left"
+					tooltipContent={<span>I&apos;m a tooltip</span>}
+				>
+					<SearchIcon label="" />
+				</Tooltip>
+				<Tooltip
+					place="top"
+					tooltipHTMLContent={`<span>I&apos;m a <b>top</b> tooltip with stringified HTML</span>`}
+				>
+					<SearchIcon label="" />
+				</Tooltip>
+				<Tooltip place="bottom" tooltipContent={"I'm a bottom tooltip"}>
+					<SearchIcon label="" />
+				</Tooltip>
+				<Tooltip
+					id="unique-id"
+					place="bottom-end"
+					tooltipContent={
+						<p>
+							I'm a bottom-end tooltip <br />
+							with a unique id.
+						</p>
+					}
+				>
+					<SearchIcon label="" />
+				</Tooltip>
 			</div>
-			<Tooltip id="tooltip-1" place="right">
-				<span>I&apos;m a tooltip...</span>
-			</Tooltip>
+			<div className="flex gap-4">
+				Variants:
+				<Tooltip
+					tooltipContent={<p>I'm a light tooltip.</p>}
+					variant="light"
+				>
+					<SearchIcon label="" />
+				</Tooltip>
+				<Tooltip
+					tooltipContent={<p>I'm a error tooltip.</p>}
+					variant="error"
+				>
+					<SearchIcon label="" />
+				</Tooltip>
+				<Tooltip
+					tooltipContent={<p>I'm a dark tooltip.</p>}
+					variant="dark"
+				>
+					<SearchIcon label="" />
+				</Tooltip>
+			</div>
 		</div>
 	)
 	//#endregion tooltip
@@ -25,11 +68,22 @@ function TooltipShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Tooltip"
+			description={
+				<p>
+					A tooltip component that wraps the children in a div and
+					adds a tooltip to it. <br />
+					Use tooltipContent for the tooltip content and
+					tooltipHTMLContent in case you have stringified HTML as
+					tooltip content. <br />
+					<br />
+					Based on react-tooltip.
+				</p>
+			}
 			{...props}
 			packages={[
 				{
-					name: "react-tooltip",
-					url: "https://github.com/wwayne/react-tooltip",
+					name: "tooltip",
+					url: "http://localhost:3000/ui-kit-ts/single#Tooltip",
 				},
 			]}
 			examples={[

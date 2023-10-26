@@ -5,7 +5,7 @@ import ShowcaseWrapperItem, {
 
 import {
 	Button,
-	showDangerFlag,
+	showErrorFlag,
 	showFlag,
 	showFlagExtended,
 	showInformationFlag,
@@ -15,6 +15,8 @@ import {
 import { ToastContainer } from "react-toastify"
 
 //#region toastflagShowExtendedFlag
+//import { ToastContainer } from "react-toastify"
+// add the ToastContainer to your app
 function ExampleShowExtendedFlag() {
 	return (
 		<div className="flex flex-col gap-3">
@@ -23,7 +25,7 @@ function ExampleShowExtendedFlag() {
 					showFlagExtended({
 						title: "1: Whoa a new flag!",
 						description: "This is a standard toast flag.",
-						appearance: undefined,
+						autoClose: 1000000,
 					})
 				}
 			>
@@ -32,10 +34,20 @@ function ExampleShowExtendedFlag() {
 			<Button
 				onClick={() =>
 					showFlagExtended({
+						title: "1: Whoa a new flag!",
+						description: "This is a standard toast flag.",
+						invert: true,
+					})
+				}
+			>
+				Standard Inverted
+			</Button>
+			<Button
+				onClick={() =>
+					showFlagExtended({
 						title: "1: This flag does not disappear!",
 						description:
 							"This is a standard not disappearing toast flag.",
-						appearance: undefined,
 						autoClose: false,
 					})
 				}
@@ -69,13 +81,26 @@ function ExampleShowExtendedFlag() {
 			<Button
 				onClick={() =>
 					showFlagExtended({
-						title: "danger flag",
-						description: "This is a danger toast flag.",
-						appearance: "danger",
+						title: "1: Whoa a new flag!",
+						description:
+							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
+						appearance: "information",
+						invert: true,
 					})
 				}
 			>
-				Danger
+				Information Inverted
+			</Button>
+			<Button
+				onClick={() =>
+					showFlagExtended({
+						title: "error flag",
+						description: "This is a error toast flag.",
+						appearance: "error",
+					})
+				}
+			>
+				Error
 			</Button>
 			<Button
 				onClick={() =>
@@ -157,13 +182,13 @@ function ExampleShowFlags() {
 			</Button>
 			<Button
 				onClick={() =>
-					showDangerFlag({
-						title: "danger flag",
-						description: "This is a danger toast flag.",
+					showErrorFlag({
+						title: "error flag",
+						description: "This is a error toast flag.",
 					})
 				}
 			>
-				Danger
+				Error
 			</Button>
 			<Button
 				onClick={() =>

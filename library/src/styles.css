@@ -1,3 +1,6 @@
+/*@import "node_modules/react-tooltip/dist/react-tooltip.css";
+@import "node_modules/react-toastify/dist/ReactToastify.css";*/
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

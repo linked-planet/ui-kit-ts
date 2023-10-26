@@ -38,6 +38,12 @@ import {
 	N90A,
 	N70A,
 	N500A,
+	Y200,
+	B200,
+	B100,
+	G200,
+	R200,
+	R300,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -122,13 +128,13 @@ export const theme = {
 		},
 
 		brand: {
-			DEFAULT: `var(--ds-background-brand, ${B400})`,
-			hovered: `var(--ds-background-brand-hovered, ${B500})`,
-			pressed: `var(--ds-background-brand-pressed, ${B400})`,
+			DEFAULT: `var(--ds-background-brand, ${B50})`,
+			hovered: `var(--ds-background-brand-hovered, ${B100})`,
+			pressed: `var(--ds-background-brand-pressed, ${B200})`,
 			bold: {
-				DEFAULT: `var(--ds-background-brand-bold, ${B400})`,
-				hovered: `var(--ds-background-brand-bold-hovered, ${B500})`,
-				pressed: `var(--ds-background-brand-bold-pressed, ${B400})`,
+				DEFAULT: `var(--ds-background-brand-bold, ${B200})`,
+				hovered: `var(--ds-background-brand-bold-hovered, ${B300})`,
+				pressed: `var(--ds-background-brand-bold-pressed, ${B500})`,
 			},
 			text: `var(--ds-text-brand, ${N0})`,
 			border: `var(--ds-border-brand, ${B400})`,
@@ -139,9 +145,9 @@ export const theme = {
 			hovered: `var(--ds-background-warning-hovered, ${Y100})`,
 			pressed: `var(--ds-background-warning-pressed, ${Y300})`,
 			bold: {
-				DEFAULT: `var(--ds-background-warning-bold, ${Y400})`,
-				hovered: `var(--ds-background-warning-bold-hovered, ${Y500})`,
-				pressed: `var(--ds-background-warning-bold-pressed, ${Y400})`,
+				DEFAULT: `var(--ds-background-warning-bold, ${Y300})`,
+				hovered: `var(--ds-background-warning-bold-hovered, ${Y400})`,
+				pressed: `var(--ds-background-warning-bold-pressed, ${Y500})`,
 			},
 			text: `var(--ds-text-warning, ${Y500})`,
 			border: `var(--ds-border-warning, ${Y400})`,
@@ -150,11 +156,11 @@ export const theme = {
 		danger: {
 			DEFAULT: `var(--ds-background-danger, ${R50})`,
 			hovered: `var(--ds-background-danger-hovered, ${R100})`,
-			pressed: `var(--ds-background-danger-pressed, ${R50})`,
+			pressed: `var(--ds-background-danger-pressed, ${R200})`,
 			bold: {
-				DEFAULT: `var(--ds-background-danger-bold, ${R400})`,
-				hovered: `var(--ds-background-danger-bold-hovered, ${R500})`,
-				pressed: `var(--ds-background-danger-bold-pressed, ${R400})`,
+				DEFAULT: `var(--ds-background-danger-bold, ${R200})`,
+				hovered: `var(--ds-background-danger-bold-hovered, ${R400})`,
+				pressed: `var(--ds-background-danger-bold-pressed, ${R500})`,
 			},
 			text: `var(--ds-text-danger, ${R400})`,
 			border: `var(--ds-border-danger, ${R400})`,
@@ -163,26 +169,26 @@ export const theme = {
 		success: {
 			DEFAULT: `var(--ds-background-success, ${G50})`,
 			hovered: `var(--ds-background-success-hovered, ${G100})`,
-			pressed: `var(--ds-background-success-pressed, ${G100})`,
+			pressed: `var(--ds-background-success-pressed, ${G200})`,
 			bold: {
-				DEFAULT: `var(--ds-background-success-bold, ${G400})`,
-				hovered: `var(--ds-background-success-bold-hovered, ${G500})`,
-				pressed: `var(--ds-background-success-bold-pressed, ${G400})`,
+				DEFAULT: `var(--ds-background-success-bold, ${G300})`,
+				hovered: `var(--ds-background-success-bold-hovered, ${G400})`,
+				pressed: `var(--ds-background-success-bold-pressed, ${G500})`,
 			},
-			text: `var(--ds-text-success, ${G400})`,
+			text: `var(--ds-text-success, ${G500})`,
 			border: `var(--ds-border-success, ${G400})`,
 		},
 
 		information: {
 			DEFAULT: `var(--ds-background-information, ${B50})`,
 			hovered: `var(--ds-background-information-hovered, ${B75})`,
-			pressed: `var(--ds-background-information-pressed, ${B75})`,
+			pressed: `var(--ds-background-information-pressed, ${B100})`,
 			bold: {
-				DEFAULT: `var(--ds-background-information-bold, ${B400})`,
-				hovered: `var(--ds-background-information-bold-hovered, ${B500})`,
-				pressed: `var(--ds-background-information-bold-pressed, ${B400})`,
+				DEFAULT: `var(--ds-background-information-bold, ${B200})`,
+				hovered: `var(--ds-background-information-bold-hovered, ${B300})`,
+				pressed: `var(--ds-background-information-bold-pressed, ${B500})`,
 			},
-			text: `var(--ds-text-information, ${B400})`,
+			text: `var(--ds-text-information, ${B500})`,
 			border: `var(--ds-border-information, ${B400})`,
 		},
 
