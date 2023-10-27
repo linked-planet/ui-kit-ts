@@ -45,6 +45,45 @@ function PageLayoutExample() {
 	//#endregion pagelayout
 }
 
+function PageLayoutExampleWithBodyHeader() {
+	//#region pagelayoutwithbodyheader
+	return (
+		<div
+			style={{
+				height: "40vh",
+			}}
+		>
+			<PageLayout.Page>
+				<PageLayout.PageHeader shadow={false}>
+					<PageLayout.PageHeaderTitle>
+						<h1>Page Header Title</h1>
+					</PageLayout.PageHeaderTitle>
+					<PageLayout.PageHeaderSubTitle>
+						<h2>Page Header Sub Title</h2>
+					</PageLayout.PageHeaderSubTitle>
+					<PageLayout.PageHeaderLine>
+						<div>Page Header Line</div>
+						<div>Page Header Line</div>
+						<div>Page Header Line</div>
+					</PageLayout.PageHeaderLine>
+				</PageLayout.PageHeader>
+				<PageLayout.PageBody>
+					<PageLayout.PageBodyHeader>
+						Body Header
+					</PageLayout.PageBodyHeader>
+					<PageLayout.PageBodyContent>
+						Body Content
+					</PageLayout.PageBodyContent>
+					<PageLayout.PageBodyFooter>
+						Page Body Footer
+					</PageLayout.PageBodyFooter>
+				</PageLayout.PageBody>
+			</PageLayout.Page>
+		</div>
+	)
+	//#endregion pagelayoutwithbodyheader
+}
+
 export default function PageLayoutShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -61,6 +100,11 @@ export default function PageLayoutShowcase(props: ShowcaseProps) {
 					title: "Page Layout",
 					example: <PageLayoutExample />,
 					sourceCodeExampleId: "pagelayout",
+				},
+				{
+					title: "Page Layout With Body Header",
+					example: <PageLayoutExampleWithBodyHeader />,
+					sourceCodeExampleId: "pagelayoutwithbodyheader",
 				},
 			]}
 		/>

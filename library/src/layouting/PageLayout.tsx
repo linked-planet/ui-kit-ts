@@ -22,11 +22,13 @@ const Page = ({
 )
 
 const PageHeader = ({
+	shadow = true,
 	children,
 	id,
 	className,
 	style,
 }: {
+	shadow?: boolean
 	children: React.ReactNode
 	id?: string
 	className?: string
@@ -34,7 +36,9 @@ const PageHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			"border-border bg-neutral-subtle z-0 flex w-full flex-col border-b pl-5 pr-3 pt-5 shadow-md",
+			`border-border bg-neutral-subtle z-0 flex w-full flex-col border-b pl-5 pr-3 pt-5 ${
+				shadow ? "shadow-md" : ""
+			}`,
 			className,
 		)}
 		id={id}
@@ -146,6 +150,29 @@ const PageBodyContent = ({
 	</div>
 )
 
+const PageBodyHeader = ({
+	children,
+	id,
+	className,
+	style,
+}: {
+	children: React.ReactNode
+	id?: string
+	className?: string
+	style?: React.CSSProperties
+}) => (
+	<div
+		className={twMerge(
+			"bg-neutral-subtle z-0 pb-2 pl-4 pr-3 pt-3 shadow-md",
+			className,
+		)}
+		id={id}
+		style={style}
+	>
+		{children}
+	</div>
+)
+
 const PageBodyFooter = ({
 	children,
 	id,
@@ -176,6 +203,7 @@ const PageLayout = {
 	PageHeaderSubTitle,
 	PageBody,
 	PageBodyContent,
+	PageBodyHeader,
 	PageBodyFooter,
 	PageHeaderLine,
 }
