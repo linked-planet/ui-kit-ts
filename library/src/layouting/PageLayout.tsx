@@ -1,11 +1,5 @@
 import React from "react"
-import { token } from "@atlaskit/tokens"
 import { twMerge } from "tailwind-merge"
-
-const pageContentBackgroundColor = token("elevation.surface", "#fff")
-const subtitleColor = token("color.text.subtlest", "#172B4D")
-const borderColor = token("color.border", "#091e4224")
-const menuColor = token("color.background.neutral.subtle", "#f7f8f9")
 
 const Page = ({
 	children,
@@ -31,21 +25,20 @@ const PageHeader = ({
 	children,
 	id,
 	className,
+	style,
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
+	style?: React.CSSProperties
 }) => (
 	<div
 		className={twMerge(
-			"flex w-full flex-col border-b pl-5 pr-3 pt-5",
+			"border-border bg-neutral-subtle z-0 flex w-full flex-col border-b pl-5 pr-3 pt-5 shadow-md",
 			className,
 		)}
 		id={id}
-		style={{
-			borderColor,
-			backgroundColor: menuColor,
-		}}
+		style={style}
 	>
 		{children}
 	</div>
@@ -55,12 +48,14 @@ const PageHeaderTitle = ({
 	children,
 	id,
 	className,
+	style,
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
+	style?: React.CSSProperties
 }) => (
-	<div className={twMerge("mb-2", className)} id={id}>
+	<div className={twMerge("mb-2", className)} id={id} style={style}>
 		{children}
 	</div>
 )
@@ -69,15 +64,17 @@ const PageHeaderSubTitle = ({
 	children,
 	id,
 	className,
+	style,
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
+	style?: React.CSSProperties
 }) => (
 	<div
-		className={twMerge("mb-3 mt-3", className)}
+		className={twMerge("text-text-subtlest mb-3 mt-3", className)}
 		id={id}
-		style={{ color: subtitleColor }}
+		style={style}
 	>
 		{children}
 	</div>
@@ -87,13 +84,16 @@ const PageHeaderLine = ({
 	children,
 	id,
 	className,
+	style,
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
+	style?: React.CSSProperties
 }) => (
 	<div
 		className={twMerge("mb-2 flex w-full items-center gap-1", className)}
+		style={style}
 		id={id}
 	>
 		{children}
@@ -104,38 +104,20 @@ const PageBody = ({
 	children,
 	id,
 	className,
+	style,
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
+	style?: React.CSSProperties
 }) => (
 	<div
 		className={twMerge(
 			"flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
 			className,
 		)}
+		style={style}
 		id={id}
-	>
-		{children}
-	</div>
-)
-
-const PageBodyHeader = ({
-	children,
-	id,
-	className,
-}: {
-	children: React.ReactNode
-	id?: string
-	className?: string
-}) => (
-	<div
-		className={twMerge("z-0 pb-2 pl-4 pr-3 pt-3", className)}
-		id={id}
-		style={{
-			boxShadow: `0 4px 4px ${token("color.border", "#091e4224")}`,
-			backgroundColor: menuColor,
-		}}
 	>
 		{children}
 	</div>
@@ -145,20 +127,20 @@ const PageBodyContent = ({
 	children,
 	id,
 	className,
+	style,
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
+	style?: React.CSSProperties
 }) => (
 	<div
 		className={twMerge(
-			"min-h-0 flex-1 overflow-y-auto pb-5 pl-5 pr-3 pt-3",
+			"bg-surface min-h-0 flex-1 overflow-y-auto pb-5 pl-5 pr-3 pt-3",
 			className,
 		)}
 		id={id}
-		style={{
-			backgroundColor: pageContentBackgroundColor,
-		}}
+		style={style}
 	>
 		{children}
 	</div>
@@ -168,19 +150,20 @@ const PageBodyFooter = ({
 	children,
 	id,
 	className,
+	style,
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
+	style?: React.CSSProperties
 }) => (
 	<div
-		className={twMerge("flex justify-center border-t pt-1", className)}
+		className={twMerge(
+			"bg-neutral-subtle border-border shadow-md-up flex justify-center border-t pt-1",
+			className,
+		)}
 		id={id}
-		style={{
-			borderColor,
-			boxShadow: `0 -4px 4px ${token("color.border", "#091e4224")}`,
-			backgroundColor: menuColor,
-		}}
+		style={style}
 	>
 		{children}
 	</div>
@@ -192,7 +175,6 @@ const PageLayout = {
 	PageHeaderTitle,
 	PageHeaderSubTitle,
 	PageBody,
-	PageBodyHeader,
 	PageBodyContent,
 	PageBodyFooter,
 	PageHeaderLine,

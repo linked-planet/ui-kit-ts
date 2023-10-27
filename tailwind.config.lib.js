@@ -38,12 +38,10 @@ import {
 	N90A,
 	N70A,
 	N500A,
-	Y200,
 	B200,
 	B100,
 	G200,
 	R200,
-	R300,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -216,7 +214,24 @@ export const theme = {
 			pressed: `var(--ds-interaction-pressed, ${N90A})`,
 		},
 	},
-	//},
+	boxShadow: {
+		"2xl": "0 25px 50px -12px var(--ds-border, rgb(0 0 0 / 0.25))",
+		xl: "0 20px 25px -5px var(--ds-border, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--ds-border, rgb(0 0 0 / 0.1))",
+		lg: "0 10px 15px -3px var(--ds-border, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--ds-border, rgb(0 0 0 / 0.1))",
+		md: "0 4px 6px -1px var(--ds-border, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--ds-border, rgb(0 0 0 / 0.1))",
+		DEFAULT:
+			"0 1px 3px 0 var(--ds-border, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--ds-border, rgb(0 0 0 / 0.1))",
+		sm: "0 1px 2px 0 var(--ds-border, rgb(0 0 0 / 0.05)",
+		"2xl-up": "0 -25px 50px 12px var(--ds-border, rgb(0 0 0 / 0.25))",
+		"xl-up":
+			"0 -20px 25px -5px var(--ds-border, rgb(0 0 0 / 0.1)), 0 -8px 10px -6px var(--ds-border, rgb(0 0 0 / 0.1))",
+		"lg-up":
+			"0 -10px 15px -3px var(--ds-border, rgb(0 0 0 / 0.1)), 0 -4px 6px -4px var(--ds-border, rgb(0 0 0 / 0.1))",
+		"md-up":
+			"0 -4px 6px -1px var(--ds-border, rgb(0 0 0 / 0.1)), 0 -2px 4px -2px var(--ds-border, rgb(0 0 0 / 0.1))",
+		up: "0 -1px 3px 0 var(--ds-border, rgb(0 0 0 / 0.1)), 0 -1px 2px -1px var(--ds-border, rgb(0 0 0 / 0.1))",
+		"sm-up": "0 -1px 2px 0 var(--ds-border, rgb(0 0 0 / 0.05)",
+	},
 }
 
 export default {

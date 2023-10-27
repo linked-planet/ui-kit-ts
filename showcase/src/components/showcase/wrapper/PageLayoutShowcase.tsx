@@ -27,9 +27,6 @@ function PageLayoutExample() {
 					</PageLayout.PageHeaderLine>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
-					<PageLayout.PageBodyHeader>
-						Page Body Header
-					</PageLayout.PageBodyHeader>
 					<PageLayout.PageBodyContent>
 						<div>TEST</div>
 						{Array(100)
