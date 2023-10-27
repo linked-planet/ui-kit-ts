@@ -5,6 +5,7 @@ import ShowcaseWrapperItem, {
 
 import {
 	Button,
+	ToastFlagContainer,
 	showErrorFlag,
 	showFlag,
 	showFlagExtended,
@@ -12,11 +13,9 @@ import {
 	showSuccessFlag,
 	showWarningFlag,
 } from "@linked-planet/ui-kit-ts"
-import { ToastContainer } from "react-toastify"
 
 //#region toastflagShowExtendedFlag
-//import { ToastContainer } from "react-toastify"
-// add the ToastContainer to your app
+// add the ToastFlagContainer to the root of your app
 function ExampleShowExtendedFlag() {
 	return (
 		<div className="flex flex-col gap-3">
@@ -124,13 +123,13 @@ function ExampleShowExtendedFlag() {
 			>
 				Warning
 			</Button>
-			<ToastContainer />
+			<ToastFlagContainer />
 		</div>
 	)
 }
 //#endregion toastflagShowExtendedFlag
 
-//#region toastflagShowEFlag
+//#region toastflagShowFlag
 function ExampleShowFlags() {
 	return (
 		<div className="flex flex-col gap-3">
@@ -211,7 +210,7 @@ function ExampleShowFlags() {
 			>
 				Warning
 			</Button>
-			<ToastContainer />
+			<ToastFlagContainer />
 		</div>
 	)
 }
