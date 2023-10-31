@@ -11,6 +11,7 @@ export type ButtonProps = {
 	iconAfter?: React.ReactNode
 	isDisabled?: boolean
 	isSelected?: boolean
+	autoFocus?: boolean
 	children?: React.ReactNode
 	style?: CSSProperties
 	className?: string
@@ -52,6 +53,7 @@ export const Button = ({
 	iconAfter,
 	isDisabled = false,
 	isSelected = false,
+	autoFocus = false,
 	style,
 	children,
 	className,
@@ -60,11 +62,12 @@ export const Button = ({
 	return (
 		<button
 			title={title}
+			autoFocus={autoFocus}
 			aria-label={label}
 			style={style}
 			className={twMerge(
 				ButtonStyles[appearance],
-				"disabled:bg-disabled disabled:text-disabled-text relative flex items-center justify-center gap-1 rounded px-3 py-1.5 disabled:cursor-not-allowed",
+				"disabled:bg-disabled disabled:text-disabled-text outline-brand-hovered relative flex items-center justify-center gap-1 rounded px-3 py-1.5 outline-1 outline-offset-2 focus:outline disabled:cursor-not-allowed",
 				isSelected ? ButtonSelectedStyles : undefined,
 				className,
 			)}

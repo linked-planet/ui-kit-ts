@@ -10,23 +10,12 @@ import {
 } from "@linked-planet/ui-kit-ts"
 
 function ButtonShowcase(props: ShowcaseProps) {
-	//#region button
 	const [isLoading, setIsLoading] = useState(false)
 
-	const example = (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
-				justifyContent: "space-evenly",
-				height: "100%",
-				gap: "1rem",
-				paddingLeft: "10rem",
-				paddingRight: "10rem",
-			}}
-		>
-			{/*<ButtonGroup>
+	const akExample = (
+		<>
+			{/*
+			<ButtonGroup>
 				<Button
 					appearance="default"
 					onClick={() => console.log("Button pressed")}
@@ -102,101 +91,125 @@ function ButtonShowcase(props: ShowcaseProps) {
 				>
 					Loading Button
 				</LoadingButton>
-				</ButtonGroup>*/}
-			<LPButtonGroup>
-				<LPButton
-					appearance="default"
-					onClick={() => console.log("Button pressed")}
-				>
-					Default Button
-				</LPButton>
+			</ButtonGroup>
+				*/}
+		</>
+	)
 
-				<LPButton
-					appearance="default"
-					onClick={() => console.log("Button pressed")}
-					isSelected={true}
-				>
-					Selected Button
-				</LPButton>
+	//#region button
+	const lpExample = (
+		<LPButtonGroup>
+			<LPButton
+				appearance="default"
+				onClick={() => console.log("Button pressed")}
+				autoFocus={true}
+			>
+				Default Button
+			</LPButton>
 
-				<LPButton
-					appearance="default"
-					onClick={() => console.log("Button pressed")}
-					isDisabled={true}
-				>
-					Disabled Button
-				</LPButton>
+			<LPButton
+				appearance="default"
+				onClick={() => console.log("Button pressed")}
+				isSelected={true}
+			>
+				Selected Button
+			</LPButton>
 
-				<LPButton
-					appearance="primary"
-					onClick={() => console.log("Button pressed")}
-				>
-					Primary Button
-				</LPButton>
+			<LPButton
+				appearance="default"
+				onClick={() => console.log("Button pressed")}
+				isDisabled={true}
+			>
+				Disabled Button
+			</LPButton>
 
-				<LPButton
-					appearance="primary"
-					onClick={() => console.log("Button pressed")}
-					isDisabled={true}
-				>
-					Primary Button
-				</LPButton>
+			<LPButton
+				appearance="primary"
+				onClick={() => console.log("Button pressed")}
+			>
+				Primary Button
+			</LPButton>
 
-				<LPButton
-					appearance="subtle"
-					onClick={() => console.log("Button pressed")}
-				>
-					Subtle Button
-				</LPButton>
+			<LPButton
+				appearance="primary"
+				onClick={() => console.log("Button pressed")}
+				isDisabled={true}
+			>
+				Primary Button
+			</LPButton>
 
-				<LPButton
-					appearance="link"
-					onClick={() => console.log("Button pressed")}
-				>
-					Link Button
-				</LPButton>
+			<LPButton
+				appearance="subtle"
+				onClick={() => console.log("Button pressed")}
+			>
+				Subtle Button
+			</LPButton>
 
-				<LPButton
-					appearance="warning"
-					onClick={() => console.log("Button pressed")}
-				>
-					Warning Button
-				</LPButton>
+			<LPButton
+				appearance="link"
+				onClick={() => console.log("Button pressed")}
+			>
+				Link Button
+			</LPButton>
 
-				<LPButton
-					appearance="danger"
-					onClick={() => console.log("Button pressed")}
-				>
-					Danger Button
-				</LPButton>
+			<LPButton
+				appearance="warning"
+				onClick={() => console.log("Button pressed")}
+			>
+				Warning Button
+			</LPButton>
 
-				<LPButton
-					appearance="success"
-					onClick={() => console.log("Button pressed")}
-				>
-					Success Button
-				</LPButton>
+			<LPButton
+				appearance="danger"
+				onClick={() => console.log("Button pressed")}
+			>
+				Danger Button
+			</LPButton>
 
-				<LPButton
-					appearance="information"
-					onClick={() => console.log("Button pressed")}
-				>
-					Information Button
-				</LPButton>
+			<LPButton
+				appearance="success"
+				onClick={() => console.log("Button pressed")}
+			>
+				Success Button
+			</LPButton>
 
-				<LPLoadingButton
-					onClick={() => {
-						setIsLoading(true)
-						window.setTimeout(() => setIsLoading(false), 3000)
-					}}
-					isLoading={isLoading}
-				>
-					Loading Button
-				</LPLoadingButton>
-			</LPButtonGroup>
-		</div>
+			<LPButton
+				appearance="information"
+				onClick={() => console.log("Button pressed")}
+			>
+				Information Button
+			</LPButton>
+
+			<LPLoadingButton
+				onClick={() => {
+					setIsLoading(true)
+					window.setTimeout(() => setIsLoading(false), 3000)
+				}}
+				isLoading={isLoading}
+			>
+				Loading Button
+			</LPLoadingButton>
+		</LPButtonGroup>
 	)
 	//#endregion button
+
+	const example = (
+		<div
+			style={{
+				display: "flex",
+				flexDirection: "column",
+				alignItems: "center",
+				justifyContent: "space-evenly",
+				height: "100%",
+				gap: "1rem",
+				paddingLeft: "10rem",
+				paddingRight: "10rem",
+			}}
+		>
+			{akExample}
+			{lpExample}
+		</div>
+	)
 
 	return (
 		<ShowcaseWrapperItem
@@ -204,8 +217,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/button",
-					url: "https://atlassian.design/components/button/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "http://linked-planet.github.io/ui-kit-ts/single?component=Button",
 				},
 			]}
 			examples={[

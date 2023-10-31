@@ -42,6 +42,7 @@ import {
 	B100,
 	G200,
 	R200,
+	N50A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -68,9 +69,9 @@ export const theme = {
 		},
 
 		surface: {
-			DEFAULT: `var(--ds-surface, ${N20})`,
-			hovered: `var(--ds-surface-hovered, ${N30})`,
-			pressed: `var(--ds-surface-pressed, ${N40})`,
+			DEFAULT: `var(--ds-surface, ${N0})`,
+			hovered: `var(--ds-surface-hovered, ${N10})`,
+			pressed: `var(--ds-surface-pressed, ${N20})`,
 			overlay: {
 				DEFAULT: `var(--ds-surface-overlay, ${N20})`,
 				hovered: `var(--ds-surface-overlay-hovered, ${N30})`,
@@ -97,9 +98,9 @@ export const theme = {
 		},
 
 		neutral: {
-			DEFAULT: `var(--ds-background-neutral, ${N20A})`,
-			hovered: `var(--ds-background-neutral-hovered, ${N30A})`,
-			pressed: `var(--ds-background-neutral-pressed, ${N40A})`,
+			DEFAULT: `var(--ds-background-neutral, ${N30A})`,
+			hovered: `var(--ds-background-neutral-hovered, ${N40A})`,
+			pressed: `var(--ds-background-neutral-pressed, ${N50A})`,
 			bold: {
 				DEFAULT: `var(--ds-neutral-bold, ${N50})`,
 				hovered: `var(--ds-neutral-bold-hovered, ${N60})`,
@@ -130,11 +131,11 @@ export const theme = {
 			hovered: `var(--ds-background-brand-hovered, ${B100})`,
 			pressed: `var(--ds-background-brand-pressed, ${B200})`,
 			bold: {
-				DEFAULT: `var(--ds-background-brand-bold, ${B200})`,
-				hovered: `var(--ds-background-brand-bold-hovered, ${B300})`,
+				DEFAULT: `var(--ds-background-brand-bold, ${B300})`,
+				hovered: `var(--ds-background-brand-bold-hovered, ${B400})`,
 				pressed: `var(--ds-background-brand-bold-pressed, ${B500})`,
 			},
-			text: `var(--ds-text-brand, ${N0})`,
+			text: `var(--ds-text-brand, ${B500}})`,
 			border: `var(--ds-border-brand, ${B400})`,
 		},
 

@@ -2,16 +2,52 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Badge from "@atlaskit/badge"
+//import AKBadge from "@atlaskit/badge"
+import { Badge } from "@linked-planet/ui-kit-ts"
 
 function BadgeShowcase(props: ShowcaseProps) {
+	const akExample = (
+		<>
+			{/*<div
+				style={{
+					display: "flex",
+					gap: "1rem",
+				}}
+			>
+				<AKBadge></AKBadge>
+				<AKBadge appearance="added" />
+				<AKBadge appearance="important" />
+				<AKBadge appearance="removed" />
+				<AKBadge appearance="primary" />
+				<AKBadge appearance="primaryInverted">test</AKBadge>
+			</div>*/}
+		</>
+	)
+
 	//#region badge
-	const example = <Badge></Badge>
-
-	const example2 = <Badge appearance="added" />
-
-	const example3 = <Badge appearance="important" />
+	const lpExample = (
+		<div
+			style={{
+				display: "flex",
+				gap: "1rem",
+			}}
+		>
+			<Badge>0</Badge>
+			<Badge appearance="added">1</Badge>
+			<Badge appearance="important">2</Badge>
+			<Badge appearance="removed">3</Badge>
+			<Badge appearance="primary">4</Badge>
+			<Badge appearance="primaryInverted">test</Badge>
+		</div>
+	)
 	//#endregion badge
+
+	const example = (
+		<div>
+			{akExample}
+			{lpExample}
+		</div>
+	)
 
 	return (
 		<ShowcaseWrapperItem
@@ -19,24 +55,14 @@ function BadgeShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/badge",
-					url: "https://atlassian.design/components/badge/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "http://linked-planet.github.io/ui-kit-ts/single?component=Badge",
 				},
 			]}
 			examples={[
 				{
 					title: "Example 1",
 					example: example,
-					sourceCodeExampleId: "badge",
-				},
-				{
-					title: "Example 2",
-					example: example2,
-					sourceCodeExampleId: "badge",
-				},
-				{
-					title: "Example 3",
-					example: example3,
 					sourceCodeExampleId: "badge",
 				},
 			]}

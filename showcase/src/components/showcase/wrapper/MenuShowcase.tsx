@@ -4,7 +4,7 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { HeadingItem, MenuGroup } from "@atlaskit/menu"
 import { SimpleTag } from "@atlaskit/tag"
-import Badge from "@atlaskit/badge"
+import { Badge } from "@linked-planet/ui-kit-ts"
 
 function MenuShowcase(props: ShowcaseProps) {
 	//#region menu
