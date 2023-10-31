@@ -36,7 +36,7 @@ const PageHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			`border-border bg-neutral-subtle z-0 flex w-full flex-col border-b pl-5 pr-3 pt-5 ${
+			`border-border bg-neutral-subtle z-0 flex w-full flex-col border-b pl-4 pr-4 pt-3 ${
 				shadow ? "shadow-md" : ""
 			}`,
 			className,
@@ -76,7 +76,7 @@ const PageHeaderSubTitle = ({
 	style?: React.CSSProperties
 }) => (
 	<div
-		className={twMerge("text-text-subtlest mb-3 mt-3", className)}
+		className={twMerge("text-text-subtlest mb-1", className)}
 		id={id}
 		style={style}
 	>
@@ -96,7 +96,7 @@ const PageHeaderLine = ({
 	style?: React.CSSProperties
 }) => (
 	<div
-		className={twMerge("mb-2 flex w-full items-center gap-1", className)}
+		className={twMerge("flex w-full items-center gap-1", className)}
 		style={style}
 		id={id}
 	>
@@ -163,7 +163,7 @@ const PageBodyHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-neutral-subtle z-0 pb-2 pl-4 pr-3 pt-3 shadow-md",
+			"bg-neutral-subtle z-0 pb-1 pl-4 pr-4 pt-1 shadow-md",
 			className,
 		)}
 		id={id}
