@@ -8,7 +8,7 @@ import ShowcaseWrapperItem, {
 	TabPanel as AKTabPanel,
 } from "@atlaskit/tabs"*/
 
-import { Tabs, TabList, TabPanel, Tab } from "@linked-planet/ui-kit-ts"
+import { Tabs, TabList, TabPanel, Tab, Button } from "@linked-planet/ui-kit-ts"
 
 function Example() {
 	const akExample = (
@@ -108,6 +108,13 @@ function ExampleControlled() {
 
 	return (
 		<>
+			<Button
+				onClick={() => {
+					setSelected(1)
+				}}
+			>
+				Select second tab
+			</Button>
 			{akExample}
 			{lpExample}
 		</>

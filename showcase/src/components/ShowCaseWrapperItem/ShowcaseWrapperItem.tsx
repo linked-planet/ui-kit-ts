@@ -6,7 +6,7 @@ import React, {
 	useRef,
 	useState,
 } from "react"
-import Tabs, { Tab, TabList, TabPanel } from "@atlaskit/tabs"
+import { Tabs, Tab, TabList, TabPanel } from "@linked-planet/ui-kit-ts"
 import { CodeBlock } from "@atlaskit/code"
 
 import styles from "./ShowCaseWrapperItem.module.css"
@@ -72,10 +72,6 @@ export default function ShowcaseWrapperItem({
 	const exampleFromParam = params.get("example") ?? ""
 
 	const [example, setExample] = useState(exampleFromParam)
-	let exampleIdx = examples.findIndex((it) => it.title === example)
-	if (exampleIdx === -1) {
-		exampleIdx = 0
-	}
 
 	useEffect(() => {
 		if (location.pathname !== "/wrappers") {
@@ -141,21 +137,25 @@ export default function ShowcaseWrapperItem({
 
 			<Tabs
 				id={name + "-tabs"}
-				selected={exampleIdx}
-				onChange={(idx) => {
-					setExample(examples[idx].title)
-					params.set("example", examples[idx].title)
+				selected={example}
+				onChange={(title) => {
+					setExample(title)
+					params.set("example", title)
 					setParams(params)
 				}}
 			>
 				<TabList>
 					{examples.map((example) => {
-						return <Tab key={example.title}>{example.title}</Tab>
+						return (
+							<Tab key={example.title} label={example.title}>
+								{example.title}
+							</Tab>
+						)
 					})}
 				</TabList>
 				{examples.map((example, i) => {
 					return (
-						<TabPanel key={i}>
+						<TabPanel key={i} label={example.title}>
 							<ShowCaseExample
 								example={example.example}
 								overallSourceCode={overallSourceCode}
