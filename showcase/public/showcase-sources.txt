@@ -3910,32 +3910,123 @@ function TableTreeShowcase(props: ShowcaseProps) {
 
 export default TableTreeShowcase
 
-import React from "react"
+import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Tabs, { Tab, TabList, TabPanel } from "@atlaskit/tabs"
+/*import AKTabs, {
+	Tab as AKTab,
+	TabList as AKTabList,
+	TabPanel as AKTabPanel,
+} from "@atlaskit/tabs"*/
 
-function TabsShowcase(props: ShowcaseProps) {
+import { Tabs, TabList, TabPanel, Tab } from "@linked-planet/ui-kit-ts"
+
+function Example() {
+	const akExample = (
+		<div style={{ minWidth: 300, border: "2px solid orange" }}>
+			{/*<AKTabs id="tab-example" defaultSelected={1}>
+				<AKTabList>
+					<AKTab>
+						<div>Tab 1</div>
+					</AKTab>
+					<AKTab>Tab 2</AKTab>
+				</AKTabList>
+				<AKTabPanel>
+					<span>First Content</span>
+				</AKTabPanel>
+				<AKTabPanel>
+					<span>Second Content</span>
+				</AKTabPanel>
+	</AKTabs>*/}
+		</div>
+	)
+
 	//#region tabs
-	const example = (
-		<div style={{ minWidth: 300 }}>
-			<Tabs id="tab-example">
+	const lpExample = (
+		<div style={{ minWidth: 300, border: "2px solid orange" }}>
+			<Tabs defaultSelected="tab2">
 				<TabList>
-					<Tab>First tab</Tab>
-					<Tab>Second tab</Tab>
+					<Tab label="tab1" />
+					<Tab label="tab2">Tab 2</Tab>
 				</TabList>
-				<TabPanel>
-					<span>First</span>
+				<TabPanel label="tab1">
+					<span>First Content</span>
 				</TabPanel>
-				<TabPanel>
-					<span>Second</span>
+				<TabPanel label="tab2">
+					<span>Second Content</span>
 				</TabPanel>
 			</Tabs>
 		</div>
 	)
 	//#endregion tabs
 
+	return (
+		<>
+			{akExample}
+			{lpExample}
+		</>
+	)
+}
+
+function ExampleControlled() {
+	//#region tabscontrolled
+	const [selected, setSelected] = useState(0)
+	const lpExample = (
+		<div style={{ minWidth: 300, border: "2px solid orange" }}>
+			<Tabs
+				selected={selected}
+				onChange={(t: string) => setSelected(parseInt(t))}
+			>
+				<TabList>
+					<Tab label={0}>
+						<div>Tab 1</div>
+					</Tab>
+					<Tab label={1}>Tab 2</Tab>
+				</TabList>
+				<TabPanel label={0}>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel label={1}>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+		</div>
+	)
+	//#endregion tabscontrolled
+
+	const akExample = (
+		<div style={{ minWidth: 300, border: "2px solid orange" }}>
+			{/*<AKTabs
+				id="tab-example-controlled"
+				selected={selected}
+				onChange={setSelected}
+			>
+				<AKTabList>
+					<AKTab>
+						<div>Tab 1</div>
+					</AKTab>
+					<AKTab>Tab 2</AKTab>
+				</AKTabList>
+				<AKTabPanel>
+					<span>First Content</span>
+				</AKTabPanel>
+				<AKTabPanel>
+					<span>Second Content</span>
+				</AKTabPanel>
+	</AKTabs>*/}
+		</div>
+	)
+
+	return (
+		<>
+			{akExample}
+			{lpExample}
+		</>
+	)
+}
+
+function TabsShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Tabs"
@@ -3947,7 +4038,16 @@ function TabsShowcase(props: ShowcaseProps) {
 				},
 			]}
 			examples={[
-				{ title: "Example", example, sourceCodeExampleId: "tabs" },
+				{
+					title: "Example",
+					example: <Example />,
+					sourceCodeExampleId: "tabs",
+				},
+				{
+					title: "Example Controlled",
+					example: <ExampleControlled />,
+					sourceCodeExampleId: "tabscontrolled",
+				},
 			]}
 		/>
 	)
