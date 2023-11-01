@@ -16,7 +16,7 @@
 	],
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build:lib": "tsc --noEmit && vite build -c vite.config.lib.ts && npm run messages:compile",
+		"build:lib": "tsc --noEmit && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist/twThemes",
 		"build:sc": "tsc --noEmit && vite build -c vite.config.showcase.ts && npm run messages:compile && node ./showcase/copySources.js && node ./showcase/copyIndexTo404.js",
 		"preview": "npm run build:sc && vite preview -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
@@ -29,17 +29,17 @@
 		"messages": "npm run messages:extract && npm run messages:compile",
 		"tsc": "tsc --noEmit"
 	},
-	"author": "Philip Karlsson",
+	"author": "Markus Toepfer",
 	"contributors": [
 		{
-			"name": "Markus Toepfer"
+			"name": "Philipp Karlsson"
 		}
 	],
 	"license": "Apache-2.0",
 	"bugs": {
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
-	"homepage": "https://github.com/linked-planet/ui-kit-ts#readme",
+	"homepage": "https://linked-planet.github.io/ui-kit-ts",
 	"supportedLocales": [
 		"en",
 		"de"
@@ -124,7 +124,7 @@
 		"@atlaskit/form": "^8.11.13",
 		"@atlaskit/icon": "^21.12.8",
 		"@atlaskit/lozenge": "^11.4.6",
-		"@atlaskit/menu": "^2.1.1",
+		"@atlaskit/menu": "^2.1.2",
 		"@atlaskit/modal-dialog": "^12.8.3",
 		"@atlaskit/page-layout": "^1.8.2",
 		"@atlaskit/pagination": "^14.4.14",

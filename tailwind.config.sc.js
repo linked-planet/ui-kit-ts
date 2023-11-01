@@ -1,4 +1,4 @@
-import  { theme } from "./tailwind.config.lib"
+import { theme } from "./twThemes/twThemeAK"
 
 /** @type {import('tailwindcss').Config} */
 export default {
