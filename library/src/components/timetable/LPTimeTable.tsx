@@ -4,7 +4,6 @@ import React, {
 	useEffect,
 	useMemo,
 	useRef,
-	useState,
 } from "react"
 import dayjs, { Dayjs } from "dayjs"
 
@@ -30,7 +29,6 @@ import { TimeTableConfigProvider } from "./TimeTableConfigContext"
 import { SelectedTimeSlotsProvider } from "./SelectedTimeSlotsContext"
 import { RenderItemProps } from "./ItemWrapper"
 import { PlaceholderItemProps } from "./PlaceholderItem"
-import { getCurrentTheme } from "../../theming"
 import useResizeObserver from "use-resize-observer"
 
 export interface TimeSlotBooking {
@@ -152,14 +150,6 @@ export default function LPTimeTable<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 >({ timeTableMessages, ...props }: LPTimeTableProps<G, I>) {
-	const [showedWarning, setShowedWarning] = useState(false)
-	if (!showedWarning && !getCurrentTheme()) {
-		console.warn(
-			"LPTimeTable - no theme set, LPTable required Atlassian.design token to have the color scheme set correctly, call setGlobalTheme({}) from @atlassian/tokens to set the theme.",
-		)
-		setShowedWarning(true)
-	}
-
 	return (
 		<TimeTableMessageProvider messagesTranslations={timeTableMessages}>
 			<LPTimeTableImpl {...props} />
