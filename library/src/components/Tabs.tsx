@@ -20,7 +20,7 @@ export function Tab({
 			value={label.toString()}
 			disabled={disabled}
 			className={twMerge(
-				"data-[state=active]:text-brand-bold data-[state=active]:border-b-brand-border -mb-[1px] data-[state=active]:border-b",
+				"data-[state=active]:text-brand-bold data-[state=active]:border-b-brand-border -mb-[0.5px] data-[state=active]:border-b",
 				className,
 			)}
 			style={style}

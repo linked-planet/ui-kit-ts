@@ -12,7 +12,7 @@ import { Tabs, TabList, TabPanel, Tab, Button } from "@linked-planet/ui-kit-ts"
 
 function Example() {
 	const akExample = (
-		<div style={{ minWidth: 300, border: "2px solid orange" }}>
+		<div>
 			{/*<AKTabs id="tab-example" defaultSelected={1}>
 				<AKTabList>
 					<AKTab>
@@ -32,7 +32,7 @@ function Example() {
 
 	//#region tabs
 	const lpExample = (
-		<div style={{ minWidth: 300, border: "2px solid orange" }}>
+		<div>
 			<Tabs defaultSelected="tab2">
 				<TabList>
 					<Tab label="tab1" />
