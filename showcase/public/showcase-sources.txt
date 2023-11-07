@@ -7,12 +7,11 @@ import {
 	Avatar as LPAvatar,
 	AvatarItem as LPAvatarItem,
 } from "@linked-planet/ui-kit-ts"
-import Avatar, { AvatarItem } from "@atlaskit/avatar"
+//import Avatar, { AvatarItem } from "@atlaskit/avatar"
 
 function AvatarShowcase(props: ShowcaseProps) {
-	//#region avatar1
-	const example1 = (
-		<div>
+	const example1AK = (
+		<>
 			{/*<div className="flex gap-4">
 				<AvatarItem
 					avatar={
@@ -84,6 +83,13 @@ function AvatarShowcase(props: ShowcaseProps) {
 				/>
 				<Avatar href="#" src={"images/github-logo.png"} size="xlarge" />
 				</div>*/}
+		</>
+	)
+
+	//#region avatar1
+	const example1 = (
+		<div>
+			{example1AK}
 			<div className="flex gap-4">
 				<LPAvatar
 					size="xsmall"
@@ -134,15 +140,21 @@ function AvatarShowcase(props: ShowcaseProps) {
 	)
 	//#endregion avatar1
 
-	//#region avatar2
-	const example2 = (
-		<div className="flex flex-col">
-			<AvatarItem
+	const example2AK = (
+		<>
+			{/*<AvatarItem
 				primaryText="Carl Coder"
 				secondaryText="Software Engineer"
 				avatar={<Avatar size="medium" borderColor="red" />}
 			/>
-			<Avatar size="medium" />
+	<Avatar size="medium" />*/}
+		</>
+	)
+
+	//#region avatar2
+	const example2 = (
+		<div className="flex flex-col">
+			{example2AK}
 			<LPAvatarItem
 				primaryText="Carl Coder"
 				secondaryText="Software Engineer"
@@ -173,11 +185,9 @@ function AvatarShowcase(props: ShowcaseProps) {
 	)
 	//#endregion avatar2
 
-	//#region avatar3
-	const example3 = (
-		<div>
-			<div className="flex flex-1 justify-center border-2">
-				<AvatarItem
+	const example3AK = (
+		<div className="flex flex-1 justify-center border-2">
+			{/*<AvatarItem
 					primaryText={"Unbekannt"}
 					secondaryText={
 						<div>
@@ -187,8 +197,14 @@ function AvatarShowcase(props: ShowcaseProps) {
 						</div>
 					}
 					avatar={<Avatar size="medium" />}
-				/>
-			</div>
+				/>*/}
+		</div>
+	)
+
+	//#region avatar3
+	const example3 = (
+		<div>
+			{example3AK}
 			<div className="flex flex-1 justify-center border-2">
 				<LPAvatarItem
 					primaryText={"Unbekannt"}
