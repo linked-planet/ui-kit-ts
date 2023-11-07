@@ -102,7 +102,6 @@ function Checkbox({
 				)} ${
 					checked ? checkBoxCheckedStyles : checkBoxUncheckedStyles
 				} `}
-				asChild
 			>
 				<RCheckbox.Indicator className="box-border flex h-4 w-4 flex-none items-center justify-center">
 					{typeof checked === "boolean" && checked === true && (
