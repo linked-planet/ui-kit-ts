@@ -151,6 +151,12 @@ function TabsShowcase(props: ShowcaseProps) {
 					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Tabs",
 				},
 			]}
+			description={
+				<p>
+					If labels are used, they must be consistent between the Tab
+					component and the corresponding TabPanel component.
+				</p>
+			}
 			examples={[
 				{
 					title: "Example",
