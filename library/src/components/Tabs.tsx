@@ -97,7 +97,6 @@ export function TabPanel({ label, children, className, style }: TabPanelProps) {
 	if (label == undefined) {
 		throw new Error("TabPanel must have a label prop")
 	}
-	console.log("TABPANEL", label)
 	return (
 		<RTabs.Content
 			className={className}
@@ -163,8 +162,6 @@ export function Tabs({
 			})
 		},
 	)
-
-	console.log("DEFAULT", defaultSelectedValue, selected, typeof selected)
 
 	return (
 		<RTabs.Root
