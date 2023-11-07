@@ -69,7 +69,7 @@ export default function ShowcaseWrapperItem({
 
 	const location = useLocation()
 	const [params, setParams] = useSearchParams()
-	const exampleFromParam = params.get("example") ?? ""
+	const exampleFromParam = params.get("example")
 
 	const [example, setExample] = useState(exampleFromParam)
 

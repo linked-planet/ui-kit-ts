@@ -5,7 +5,6 @@ import Error from "@atlaskit/icon/glyph/error"
 import Info from "@atlaskit/icon/glyph/info"
 import Warning from "@atlaskit/icon/glyph/warning"
 
-import { token } from "@atlaskit/tokens"
 import { twMerge } from "tailwind-merge"
 import { assertUnreachable } from "../utils/assertUnreachable"
 
@@ -34,16 +33,11 @@ export type FlagActionType = {
 	testId?: string | undefined
 }
 
-const defaultStyle =
-	"bg-text hover:bg-text-subtle active:bg-text-subtlest text-text-inverse"
-const warningStyle =
-	"bg-warning-bold hover:bg-warning-bold-hovered active:bg-warning-bold-pressed text-text-inverse"
-const errorStyle =
-	"bg-danger-bold hover:bg-danger-bold-hovered active:bg-danger-bold-pressed text-text-inverse"
-const successStyle =
-	"bg-success-bold hover:bg-success-bold-hovered active:bg-success-bold-pressed text-text-inverse"
-const informationStyle =
-	"bg-information-bold hover:bg-information-bold-hovered active:bg-information-bold-pressed text-text-inverse"
+const defaultStyle = "bg-text text-text-inverse"
+const warningStyle = "bg-warning-bold text-text-inverse"
+const errorStyle = "bg-danger-bold text-text-inverse"
+const successStyle = "bg-success-bold text-text-inverse"
+const informationStyle = "bg-information-bold text-text-inverse"
 
 export const FlagStyles: { [style in FlagAppearance]: string } = {
 	default: defaultStyle,
@@ -53,16 +47,11 @@ export const FlagStyles: { [style in FlagAppearance]: string } = {
 	information: informationStyle,
 } as const
 
-const defaultInvertedStyle =
-	"bg-surface hover:bg-surface-hovered active:bg-surface-pressed text-text"
-const warningInvertedStyle =
-	"bg-surface hover:bg-surface-hovered active:bg-surface-pressed border-warning-bold text-text"
-const errorInvertedStyle =
-	"bg-surface hover:bg-surface-hovered active:bg-surface-pressed border-danger-bold text-text"
-const successInvertedStyle =
-	"bg-surface hover:bg-surface-hovered active:bg-surface-pressed border-success-bold text-text"
-const informationInvertedStyle =
-	"bg-surface hover:bg-surface-hovered active:bg-surface-pressed border-information-bold text-text"
+const defaultInvertedStyle = "bg-surface text-text"
+const warningInvertedStyle = "bg-surface border-warning-bold text-text"
+const errorInvertedStyle = "bg-surface border-danger-bold text-text"
+const successInvertedStyle = "bg-surface border-success-bold text-text"
+const informationInvertedStyle = "bg-surface border-information-bold text-text"
 export const FlagInvertedStyles: {
 	[style in FlagAppearance]: string
 } = {
@@ -88,10 +77,10 @@ const IconStyles: { [style in FlagAppearance]: string } = {
 } as const
 
 const defaultIconInvertedStyle = "text-text"
-const warningIconInvertedStyle = "text-warning-bold-pressed"
-const errorIconInvertedStyle = "text-danger-bold-pressed"
-const successIconInvertedStyle = "text-success-bold-pressed"
-const informationIconInvertedStyle = "text-information-bold-pressed"
+const warningIconInvertedStyle = "text-warning-bold-hovered"
+const errorIconInvertedStyle = "text-danger-bold-hovered"
+const successIconInvertedStyle = "text-success-bold-hovered"
+const informationIconInvertedStyle = "text-information-bold-hovered"
 
 const IconInvertedStyles: { [style in FlagAppearance]: string } = {
 	default: defaultIconInvertedStyle,
@@ -170,15 +159,11 @@ export function Flag({
 		<div
 			style={{
 				gridTemplateColumns: "auto 1fr",
-				boxShadow: token(
-					"elevation.shadow.overlay",
-					"0px 8px 12px #091e423f, 0px 0px 1px #091e424f",
-				),
 				...style,
 			}}
 			className={twMerge(
 				appStyle,
-				`grid gap-4 rounded-sm p-4 ${invert ? "border" : ""}`,
+				`grid gap-4 rounded-sm p-4 shadow-md ${invert ? "border" : ""}`,
 			)}
 		>
 			{icon && (

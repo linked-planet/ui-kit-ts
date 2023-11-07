@@ -8,7 +8,7 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 	const example = (
 		<Collapsible
 			header={
-				<div className="p-2">
+				<div>
 					<h4>Collapsible Title</h4>
 				</div>
 			}
@@ -24,7 +24,7 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 	const example1 = (
 		<Collapsible
 			header={
-				<div className="p-2 m-auto">
+				<div className="m-auto p-2">
 					<h2>Collapsible Title</h2>
 				</div>
 			}
@@ -48,12 +48,12 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 			]}
 			examples={[
 				{
-					title: "Example",
+					title: "Chevron Left",
 					example,
 					sourceCodeExampleId: "collapsible",
 				},
 				{
-					title: "Example 1",
+					title: "Chevron Right",
 					example: example1,
 					sourceCodeExampleId: "collapsible1",
 				},

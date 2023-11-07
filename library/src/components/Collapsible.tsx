@@ -45,41 +45,49 @@ export function Collapsible({
 			style={style ?? { backgroundColor, borderRadius: "0.25rem" }}
 		>
 			<div
-				className={`flex align-center p-1 rounded
-				${
-					openButtonPosition === "left"
-						? "flex-row justify-start"
-						: "flex-row-reverse justify-between"
-				}
-				 
+				className={`flex rounded p-1
 				${open ? "rounded-b-none" : "rounded-b"}
 				`}
 				style={headerContainerStyle}
 			>
 				<CollapsibleRUI.Trigger asChild>
 					{openButtonPosition === "hidden" ? null : (
-						<button className="flex items-center justify-center">
+						<button className="flex w-full items-center">
 							{openButtonPosition === "left" ? (
 								open ? (
-									<ChevronDownIcon
-										//size="large"
-										label="close"
-									/>
+									<>
+										<ChevronDownIcon
+											//size="large"
+											label="close"
+										/>
+										<>{header}</>
+									</>
 								) : (
-									<ChevronRightIcon
-										//size="large"
-										label="open"
-									/>
+									<>
+										<ChevronRightIcon
+											//size="large"
+											label="open"
+										/>
+										<>{header}</>
+									</>
 								)
 							) : open ? (
-								<ChevronDownIcon size="large" label="open" />
+								<>
+									<>{header}</>
+									<ChevronDownIcon
+										size="large"
+										label="open"
+									/>
+								</>
 							) : (
-								<ChevronUpIcon size="large" label="close" />
+								<>
+									<>{header}</>
+									<ChevronUpIcon size="large" label="close" />
+								</>
 							)}
 						</button>
 					)}
 				</CollapsibleRUI.Trigger>
-				<div className="flex items-center flex-1">{header}</div>
 			</div>
 			<CollapsibleRUI.Content>{children}</CollapsibleRUI.Content>
 		</CollapsibleRUI.Root>

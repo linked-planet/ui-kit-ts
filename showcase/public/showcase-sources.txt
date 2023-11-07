@@ -1100,7 +1100,7 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 	const example = (
 		<Collapsible
 			header={
-				<div className="p-2">
+				<div>
 					<h4>Collapsible Title</h4>
 				</div>
 			}
@@ -1116,7 +1116,7 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 	const example1 = (
 		<Collapsible
 			header={
-				<div className="p-2 m-auto">
+				<div className="m-auto p-2">
 					<h2>Collapsible Title</h2>
 				</div>
 			}
@@ -1140,12 +1140,12 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 			]}
 			examples={[
 				{
-					title: "Example",
+					title: "Chevron Left",
 					example,
 					sourceCodeExampleId: "collapsible",
 				},
 				{
-					title: "Example 1",
+					title: "Chevron Right",
 					example: example1,
 					sourceCodeExampleId: "collapsible1",
 				},
@@ -3938,10 +3938,29 @@ import ShowcaseWrapperItem, {
 
 import { Tabs, TabList, TabPanel, Tab, Button } from "@linked-planet/ui-kit-ts"
 
-function Example() {
+function AutomaticTabsValue() {
+	//#region tabs_automatic_value
+	return (
+		<Tabs>
+			<TabList>
+				<Tab>Tab 1</Tab>
+				<Tab>Tab 2</Tab>
+			</TabList>
+			<TabPanel>
+				<span>First Content</span>
+			</TabPanel>
+			<TabPanel>
+				<span>Second Content</span>
+			</TabPanel>
+		</Tabs>
+	)
+	//#endregion tabs_automatic_value
+}
+
+function ExampleLabels() {
 	const akExample = (
 		<div style={{ minWidth: 300, border: "2px solid orange" }}>
-			{/*<AKTabs id="tab-example" defaultSelected={1}>
+			<AKTabs id="tab-example" defaultSelected={1}>
 				<AKTabList>
 					<AKTab>
 						<div>Tab 1</div>
@@ -3954,19 +3973,19 @@ function Example() {
 				<AKTabPanel>
 					<span>Second Content</span>
 				</AKTabPanel>
-	</AKTabs>*/}
+			</AKTabs>
 		</div>
 	)
 
-	//#region tabs
+	//#region tabs_labels
 	const lpExample = (
 		<div style={{ minWidth: 300, border: "2px solid orange" }}>
 			<Tabs defaultSelected="tab2">
 				<TabList>
-					<Tab label="tab1" />
+					<Tab label="Tab 1" />
 					<Tab label="tab2">Tab 2</Tab>
 				</TabList>
-				<TabPanel label="tab1">
+				<TabPanel label="Tab 1">
 					<span>First Content</span>
 				</TabPanel>
 				<TabPanel label="tab2">
@@ -3975,7 +3994,7 @@ function Example() {
 			</Tabs>
 		</div>
 	)
-	//#endregion tabs
+	//#endregion tabs_labels
 
 	return (
 		<>
@@ -4056,15 +4075,20 @@ function TabsShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/tabs",
-					url: "https://atlassian.design/components/tabs/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Tabs",
 				},
 			]}
 			examples={[
 				{
 					title: "Example",
-					example: <Example />,
-					sourceCodeExampleId: "tabs",
+					example: <AutomaticTabsValue />,
+					sourceCodeExampleId: "tabs_automatic_value",
+				},
+				{
+					title: "Example Labels",
+					example: <ExampleLabels />,
+					sourceCodeExampleId: "tabs_labels",
 				},
 				{
 					title: "Example Controlled",

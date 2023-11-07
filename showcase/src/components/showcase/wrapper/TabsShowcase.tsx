@@ -10,9 +10,28 @@ import ShowcaseWrapperItem, {
 
 import { Tabs, TabList, TabPanel, Tab, Button } from "@linked-planet/ui-kit-ts"
 
-function Example() {
+function AutomaticTabsValue() {
+	//#region tabs_automatic_value
+	return (
+		<Tabs>
+			<TabList>
+				<Tab>Tab 1</Tab>
+				<Tab>Tab 2</Tab>
+			</TabList>
+			<TabPanel>
+				<span>First Content</span>
+			</TabPanel>
+			<TabPanel>
+				<span>Second Content</span>
+			</TabPanel>
+		</Tabs>
+	)
+	//#endregion tabs_automatic_value
+}
+
+function ExampleLabels() {
 	const akExample = (
-		<div>
+		<div style={{ minWidth: 300, border: "2px solid orange" }}>
 			{/*<AKTabs id="tab-example" defaultSelected={1}>
 				<AKTabList>
 					<AKTab>
@@ -30,15 +49,15 @@ function Example() {
 		</div>
 	)
 
-	//#region tabs
+	//#region tabs_labels
 	const lpExample = (
-		<div>
+		<div style={{ minWidth: 300, border: "2px solid orange" }}>
 			<Tabs defaultSelected="tab2">
 				<TabList>
-					<Tab label="tab1" />
+					<Tab label="Tab 1" />
 					<Tab label="tab2">Tab 2</Tab>
 				</TabList>
-				<TabPanel label="tab1">
+				<TabPanel label="Tab 1">
 					<span>First Content</span>
 				</TabPanel>
 				<TabPanel label="tab2">
@@ -47,7 +66,7 @@ function Example() {
 			</Tabs>
 		</div>
 	)
-	//#endregion tabs
+	//#endregion tabs_labels
 
 	return (
 		<>
@@ -128,15 +147,20 @@ function TabsShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/tabs",
-					url: "https://atlassian.design/components/tabs/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Tabs",
 				},
 			]}
 			examples={[
 				{
 					title: "Example",
-					example: <Example />,
-					sourceCodeExampleId: "tabs",
+					example: <AutomaticTabsValue />,
+					sourceCodeExampleId: "tabs_automatic_value",
+				},
+				{
+					title: "Example Labels",
+					example: <ExampleLabels />,
+					sourceCodeExampleId: "tabs_labels",
 				},
 				{
 					title: "Example Controlled",
