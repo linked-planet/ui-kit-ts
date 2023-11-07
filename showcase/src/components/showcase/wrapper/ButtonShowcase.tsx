@@ -14,8 +14,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<>
-			{/*
-			<ButtonGroup>
+			{/*<ButtonGroup>
 				<Button
 					appearance="default"
 					onClick={() => console.log("Button pressed")}
@@ -91,8 +90,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 				>
 					Loading Button
 				</LoadingButton>
-			</ButtonGroup>
-				*/}
+				</ButtonGroup>*/}
 		</>
 	)
 

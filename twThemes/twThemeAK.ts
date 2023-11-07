@@ -41,7 +41,6 @@ import {
 	B100,
 	G200,
 	R200,
-	N50A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -72,9 +71,9 @@ export const theme = {
 			hovered: `var(--ds-surface-hovered, ${N10})`,
 			pressed: `var(--ds-surface-pressed, ${N20})`,
 			overlay: {
-				DEFAULT: `var(--ds-surface-overlay, ${N20})`,
-				hovered: `var(--ds-surface-overlay-hovered, ${N30})`,
-				pressed: `var(--ds-surface-overlay-pressed, ${N40})`,
+				DEFAULT: `var(--ds-surface-overlay, ${N0})`,
+				hovered: `var(--ds-surface-overlay-hovered, ${N20})`,
+				pressed: `var(--ds-surface-overlay-pressed, ${N30})`,
 			},
 			raised: {
 				DEFAULT: `var(--ds-surface-raised, ${N20})`,
@@ -97,9 +96,9 @@ export const theme = {
 		},
 
 		neutral: {
-			DEFAULT: `var(--ds-background-neutral, ${N30A})`,
-			hovered: `var(--ds-background-neutral-hovered, ${N40A})`,
-			pressed: `var(--ds-background-neutral-pressed, ${N50A})`,
+			DEFAULT: `var(--ds-background-neutral, ${N20A})`,
+			hovered: `var(--ds-background-neutral-hovered, ${N30A})`,
+			pressed: `var(--ds-background-neutral-pressed, ${N40A})`,
 			bold: {
 				DEFAULT: `var(--ds-neutral-bold, ${N50})`,
 				hovered: `var(--ds-neutral-bold-hovered, ${N60})`,
@@ -123,6 +122,13 @@ export const theme = {
 			},
 			text: `var(--ds-text-selected, ${N0})`,
 			border: `var(--ds-border-selected, ${B400})`,
+			/* subtle only exists as an escape hedge against the difference between theme/no theme, and it provides a light background for selections in unthemed mode */
+			subtle: {
+				DEFAULT: `var(--ds-background-selected, ${N20})`,
+				hovered: `var(--ds-background-selected-hovered, ${N30})`,
+				pressed: `var(--ds-background-selected-pressed, ${N40})`,
+				text: `var(--ds-text-selected, ${N900})`,
+			},
 		},
 
 		brand: {
@@ -215,21 +221,20 @@ export const theme = {
 		},
 	},
 	boxShadow: {
-		"2xl": "0 25px 50px -12px var(--ds-border, rgb(0 0 0 / 0.25))",
-		xl: "0 20px 25px -5px var(--ds-border, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--ds-border, rgb(0 0 0 / 0.1))",
-		lg: "0 10px 15px -3px var(--ds-border, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--ds-border, rgb(0 0 0 / 0.1))",
-		md: "0 4px 6px -1px var(--ds-border, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--ds-border, rgb(0 0 0 / 0.1))",
-		DEFAULT:
-			"0 1px 3px 0 var(--ds-border, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--ds-border, rgb(0 0 0 / 0.1))",
-		sm: "0 1px 2px 0 var(--ds-border, rgb(0 0 0 / 0.05)",
-		"2xl-up": "0 -25px 50px 12px var(--ds-border, rgb(0 0 0 / 0.25))",
-		"xl-up":
-			"0 -20px 25px -5px var(--ds-border, rgb(0 0 0 / 0.1)), 0 -8px 10px -6px var(--ds-border, rgb(0 0 0 / 0.1))",
-		"lg-up":
-			"0 -10px 15px -3px var(--ds-border, rgb(0 0 0 / 0.1)), 0 -4px 6px -4px var(--ds-border, rgb(0 0 0 / 0.1))",
-		"md-up":
-			"0 -4px 6px -1px var(--ds-border, rgb(0 0 0 / 0.1)), 0 -2px 4px -2px var(--ds-border, rgb(0 0 0 / 0.1))",
-		up: "0 -1px 3px 0 var(--ds-border, rgb(0 0 0 / 0.1)), 0 -1px 2px -1px var(--ds-border, rgb(0 0 0 / 0.1))",
-		"sm-up": "0 -1px 2px 0 var(--ds-border, rgb(0 0 0 / 0.05)",
+		/*"2xl": `0 25px 50px -12px var(--ds-border, rgb(0 0 0 / 0.25))`,
+		xl: `0 20px 25px -5px var(--ds-border, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--ds-border, rgb(0 0 0 / 0.1))`,
+		lg: `0 10px 15px -3px #03040480, 0 4px 6px -4px #0304048f`,
+		md: `0 4px 6px -1px #03040480, 0 2px 4px -2px #0304048f`,
+		DEFAULT: `0 1px 3px 0 var(--ds-border, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--ds-border, rgb(0 0 0 / 0.1))`,
+		sm: `0 1px 2px 0 var(--ds-border, rgb(0 0 0 / 0.05)`,*/
+		overflow: `var(--ds-shadow-overflow, 0px 0px 12px #0304048F, 0px 0px 1px #03040480))`,
+		overlay: `var(--ds-shadow-overlay, 0 4px 8px -2px rgba(9, 30, 66, 0.25), 0 0 1px rgba(9, 30, 66, 0.31))`,
+		raised: `var(--ds-shadow-raised, 0px 0px 0px 1px #00000000, 0px 1px 1px #03040480, 0px 0px 1px #03040480))`,
+		"2xl-up": `0 -25px 50px 12px var(--ds-border, rgb(0 0 0 / 0.25))`,
+		"xl-up": `0 -20px 25px -5px var(--ds-border, rgb(0 0 0 / 0.1)), 0 -8px 10px -6px var(--ds-border, rgb(0 0 0 / 0.1))`,
+		"lg-up": `0 -10px 15px -3px var(--ds-border, rgb(0 0 0 / 0.1)), 0 -4px 6px -4px var(--ds-border, rgb(0 0 0 / 0.1))`,
+		"md-up": `0 -4px 6px -1px var(--ds-border, rgb(0 0 0 / 0.1)), 0 -2px 4px -2px var(--ds-border, rgb(0 0 0 / 0.1))`,
+		up: `0 -1px 3px 0 var(--ds-border, rgb(0 0 0 / 0.1)), 0 -1px 2px -1px var(--ds-border, rgb(0 0 0 / 0.1))`,
+		"sm-up": `0 -1px 2px 0 var(--ds-border, rgb(0 0 0 / 0.05)`,
 	},
 }

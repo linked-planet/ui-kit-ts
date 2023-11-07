@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-//import AKCheckbox from "@atlaskit/checkbox"
+import AKCheckbox from "@atlaskit/checkbox"
 import { Checkbox } from "@linked-planet/ui-kit-ts"
 
 function CheckboxShowcase(props: ShowcaseProps) {
@@ -10,7 +10,7 @@ function CheckboxShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<div style={{ display: "flex", gap: "1rem" }}>
-			{/*<AKCheckbox
+			<AKCheckbox
 				label="controlled"
 				isChecked={isCheckboxActive}
 				onChange={(e) => {
@@ -29,7 +29,7 @@ function CheckboxShowcase(props: ShowcaseProps) {
 				}}
 			/>
 			<AKCheckbox label="indeterminate uncontrolled" isIndeterminate />
-			<AKCheckbox label="required" isIndeterminate isRequired />*/}
+			<AKCheckbox label="required" isIndeterminate isRequired />
 		</div>
 	)
 

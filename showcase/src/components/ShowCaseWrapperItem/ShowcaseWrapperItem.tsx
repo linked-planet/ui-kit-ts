@@ -6,11 +6,17 @@ import React, {
 	useRef,
 	useState,
 } from "react"
-import { Tabs, Tab, TabList, TabPanel } from "@linked-planet/ui-kit-ts"
+import {
+	Tabs,
+	Tab,
+	TabList,
+	TabPanel,
+	Button,
+	ButtonGroup,
+} from "@linked-planet/ui-kit-ts"
 import { CodeBlock } from "@atlaskit/code"
 
 import styles from "./ShowCaseWrapperItem.module.css"
-import Button, { ButtonGroup } from "@atlaskit/button"
 import { useLocation, useSearchParams } from "react-router-dom"
 
 export interface Package {
@@ -103,10 +109,6 @@ export default function ShowcaseWrapperItem({
 			}
 		}
 	}, [id])
-
-	/*console.info( "ShowCaseWrapperItem overallSourceCode", props.overallSourceCode )
-	console.info( "ShowCaseWrapperItem sourceCodeExampleId", props.sourceCodeExampleId )
-	console.info( "ShowCaseWrapperItem Code", code )*/
 
 	return (
 		<div id={id} data-menu-name={name} className="my-12" ref={ref}>
