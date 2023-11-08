@@ -4367,18 +4367,33 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { SimpleTag } from "@atlaskit/tag"
-import TagGroup from "@atlaskit/tag-group"
+import { SimpleTag as AKSimpleTag, SimpleTag } from "@atlaskit/tag"
+import AKTagGroup from "@atlaskit/tag-group"
+import { TagGroup } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
+	const akExample = (
+		<AKTagGroup>
+			<AKSimpleTag text="Simple Tag" />
+			<AKSimpleTag text="Colored simple Tag" color="purple" />
+		</AKTagGroup>
+	)
+
 	//#region tags
-	const example = (
+	const lpExample = (
 		<TagGroup>
 			<SimpleTag text="Simple Tag" />
 			<SimpleTag text="Colored simple Tag" color="purple" />
 		</TagGroup>
 	)
 	//#endregion tags
+
+	const example = (
+		<>
+			{akExample}
+			{lpExample}
+		</>
+	)
 
 	return (
 		<ShowcaseWrapperItem
