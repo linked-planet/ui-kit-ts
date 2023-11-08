@@ -32,7 +32,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 					place="bottom-end"
 					tooltipContent={
 						<p>
-							I'm a bottom-end tooltip <br />
+							I&apos;m a bottom-end tooltip <br />
 							with a unique id.
 						</p>
 					}
@@ -43,19 +43,19 @@ function TooltipShowcase(props: ShowcaseProps) {
 			<div className="flex gap-4">
 				Variants:
 				<Tooltip
-					tooltipContent={<p>I'm a light tooltip.</p>}
+					tooltipContent={<p>I&apos;m a light tooltip.</p>}
 					variant="light"
 				>
 					<SearchIcon label="" />
 				</Tooltip>
 				<Tooltip
-					tooltipContent={<p>I'm a error tooltip.</p>}
+					tooltipContent={<p>I&apos;m a error tooltip.</p>}
 					variant="error"
 				>
 					<SearchIcon label="" />
 				</Tooltip>
 				<Tooltip
-					tooltipContent={<p>I'm a dark tooltip.</p>}
+					tooltipContent={<p>I&apos;m a dark tooltip.</p>}
 					variant="dark"
 				>
 					<SearchIcon label="" />

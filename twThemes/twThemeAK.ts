@@ -41,6 +41,8 @@ import {
 	B100,
 	G200,
 	R200,
+	N400,
+	N300,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -97,6 +99,11 @@ export const theme = {
 
 		neutral: {
 			DEFAULT: `var(--ds-background-neutral, ${N20A})`,
+			full: {
+				DEFAULT: `var(--ds-background-neutral, ${N200})`,
+				hovered: `var(--ds-background-neutral-hovered, ${N300})`,
+				pressed: `var(--ds-background-neutral-pressed, ${N400})`,
+			},
 			hovered: `var(--ds-background-neutral-hovered, ${N30A})`,
 			pressed: `var(--ds-background-neutral-pressed, ${N40A})`,
 			bold: {
