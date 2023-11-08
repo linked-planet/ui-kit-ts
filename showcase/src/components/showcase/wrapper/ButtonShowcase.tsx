@@ -2,192 +2,199 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-//import Button, { ButtonGroup, LoadingButton } from "@atlaskit/button"
-import {
-	Button as LPButton,
-	LoadingButton as LPLoadingButton,
-	ButtonGroup as LPButtonGroup,
-} from "@linked-planet/ui-kit-ts"
+/*import AKButton, {
+	ButtonGroup as AKButtonGroup,
+	LoadingButton as AKLoadingButton,
+} from "@atlaskit/button"*/
+import { Button, LoadingButton, ButtonGroup } from "@linked-planet/ui-kit-ts"
+import SearchIcon from "@atlaskit/icon/glyph/search"
 
 function ButtonShowcase(props: ShowcaseProps) {
 	const [isLoading, setIsLoading] = useState(false)
 
 	const akExample = (
 		<>
-			{/*<ButtonGroup>
-				<Button
+			{/*<AKButtonGroup>
+				<AKButton
 					appearance="default"
 					onClick={() => console.log("Button pressed")}
 				>
 					Default Button
-				</Button>
+				</AKButton>
 
-				<Button
+				<AKButton
 					appearance="default"
 					onClick={() => console.log("Button pressed")}
 					isSelected={true}
 				>
 					Selected Button
-				</Button>
+				</AKButton>
 
-				<Button
+				<AKButton
 					appearance="default"
 					onClick={() => console.log("Button pressed")}
 					isDisabled={true}
 				>
 					Disabled Default button
-				</Button>
+				</AKButton>
 
-				<Button
+				<AKButton
 					appearance="primary"
 					onClick={() => console.log("Button pressed")}
 				>
 					Primary button
-				</Button>
+				</AKButton>
 
-				<Button
+				<AKButton
 					appearance="primary"
 					onClick={() => console.log("Button pressed")}
 					isDisabled={true}
 				>
 					Primary button
-				</Button>
+				</AKButton>
 
-				<Button
+				<AKButton
 					appearance="subtle"
 					onClick={() => console.log("Button pressed")}
 				>
 					Subtle button
-				</Button>
+				</AKButton>
 
-				<Button
+				<AKButton
 					appearance="link"
 					onClick={() => console.log("Button pressed")}
 				>
 					Link button
-				</Button>
+				</AKButton>
 
-				<Button
+				<AKButton
 					appearance="warning"
 					onClick={() => console.log("Button pressed")}
 				>
 					Warning button
-				</Button>
+				</AKButton>
 
-				<Button
+				<AKButton
 					appearance="danger"
 					onClick={() => console.log("Button pressed")}
+					iconAfter={<SearchIcon label="" />}
+					iconBefore={<SearchIcon label="" />}
 				>
 					Danger button
-				</Button>
-
-				<LoadingButton
+				</AKButton>
+				<AKLoadingButton
 					isLoading={isLoading}
 					onClick={() => {
 						setIsLoading(true)
 						window.setTimeout(() => setIsLoading(false), 3000)
 					}}
+					iconBefore={<SearchIcon label="" />}
+					iconAfter={<SearchIcon label="" />}
 				>
-					Loading Button
-				</LoadingButton>
-				</ButtonGroup>*/}
+					Icon Loading Button
+				</AKLoadingButton>
+				</AKButtonGroup>*/}
 		</>
 	)
 
 	//#region button
 	const lpExample = (
-		<LPButtonGroup>
-			<LPButton
+		<ButtonGroup>
+			<Button
 				appearance="default"
 				onClick={() => console.log("Button pressed")}
 				autoFocus={true}
 			>
 				Default Button
-			</LPButton>
+			</Button>
 
-			<LPButton
+			<Button
 				appearance="default"
 				onClick={() => console.log("Button pressed")}
 				isSelected={true}
 			>
 				Selected Button
-			</LPButton>
+			</Button>
 
-			<LPButton
+			<Button
 				appearance="default"
 				onClick={() => console.log("Button pressed")}
 				isDisabled={true}
 			>
 				Disabled Button
-			</LPButton>
+			</Button>
 
-			<LPButton
+			<Button
 				appearance="primary"
 				onClick={() => console.log("Button pressed")}
 			>
 				Primary Button
-			</LPButton>
+			</Button>
 
-			<LPButton
+			<Button
 				appearance="primary"
 				onClick={() => console.log("Button pressed")}
 				isDisabled={true}
 			>
 				Primary Button
-			</LPButton>
+			</Button>
 
-			<LPButton
+			<Button
 				appearance="subtle"
 				onClick={() => console.log("Button pressed")}
 			>
 				Subtle Button
-			</LPButton>
+			</Button>
 
-			<LPButton
+			<Button
 				appearance="link"
 				onClick={() => console.log("Button pressed")}
 			>
 				Link Button
-			</LPButton>
+			</Button>
 
-			<LPButton
+			<Button
 				appearance="warning"
 				onClick={() => console.log("Button pressed")}
 			>
 				Warning Button
-			</LPButton>
+			</Button>
 
-			<LPButton
+			<Button
 				appearance="danger"
 				onClick={() => console.log("Button pressed")}
 			>
 				Danger Button
-			</LPButton>
+			</Button>
 
-			<LPButton
+			<Button
 				appearance="success"
 				onClick={() => console.log("Button pressed")}
 			>
 				Success Button
-			</LPButton>
+			</Button>
 
-			<LPButton
+			<Button
 				appearance="information"
 				onClick={() => console.log("Button pressed")}
+				iconAfter={<SearchIcon label="" />}
+				iconBefore={<SearchIcon label="" />}
 			>
 				Information Button
-			</LPButton>
+			</Button>
 
-			<LPLoadingButton
+			<LoadingButton
 				onClick={() => {
 					setIsLoading(true)
 					window.setTimeout(() => setIsLoading(false), 3000)
 				}}
 				isLoading={isLoading}
+				iconBefore={<SearchIcon label="" />}
+				iconAfter={<SearchIcon label="" />}
 			>
-				Loading Button
-			</LPLoadingButton>
-		</LPButtonGroup>
+				Icon Loading Button
+			</LoadingButton>
+		</ButtonGroup>
 	)
 	//#endregion button
 
