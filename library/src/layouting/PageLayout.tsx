@@ -1,5 +1,7 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { twMerge } from "tailwind-merge"
+import MenuIcon from "@atlaskit/icon/glyph/menu"
+import { Dropdown } from "../components"
 
 const Page = ({
 	children,
@@ -53,16 +55,64 @@ const PageHeaderTitle = ({
 	id,
 	className,
 	style,
+	titleMenuTrigger,
+	titleMenu,
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
 	style?: React.CSSProperties
-}) => (
-	<div className={twMerge("mb-2", className)} id={id} style={style}>
-		{children}
-	</div>
-)
+	titleMenuTrigger?: React.ReactNode
+	titleMenu?: React.ReactNodeArray
+}) => {
+	const dropdownMenuItems = useMemo(() => {
+		return React.Children.map(titleMenu, (it) => {
+			if (React.isValidElement(it)) {
+				if (
+					it.type === Dropdown.Item ||
+					it.type === Dropdown.ItemGroup ||
+					it.type === Dropdown.ItemCheckbox ||
+					it.type === Dropdown.ItemRadio ||
+					it.type === Dropdown.ItemRadioGroup ||
+					it.type === Dropdown.SubMenu
+				) {
+					return it
+				}
+			}
+			return <Dropdown.Item>{it}</Dropdown.Item>
+		})
+	}, [titleMenu])
+
+	return (
+		<div
+			className={twMerge("mb-2 flex items-center", className)}
+			id={id}
+			style={style}
+		>
+			{children}
+			{titleMenu && (
+				<span className="ml-auto flex-none">
+					<Dropdown.Menu
+						align="end"
+						trigger={
+							<>
+								{titleMenuTrigger ? (
+									titleMenuTrigger
+								) : (
+									<div className="flex items-center">
+										<MenuIcon size="large" label="" />
+									</div>
+								)}
+							</>
+						}
+					>
+						{dropdownMenuItems}
+					</Dropdown.Menu>
+				</span>
+			)}
+		</div>
+	)
+}
 
 const PageHeaderSubTitle = ({
 	children,

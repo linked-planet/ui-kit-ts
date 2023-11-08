@@ -1,8 +1,10 @@
 import React from "react"
-import { PageLayout } from "@linked-planet/ui-kit-ts"
+import { Dropdown, PageLayout } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
+import SettingsIcon from "@atlaskit/icon/glyph/settings"
 
 function PageLayoutExample() {
 	//#region pagelayout
@@ -14,7 +16,35 @@ function PageLayoutExample() {
 		>
 			<PageLayout.Page>
 				<PageLayout.PageHeader>
-					<PageLayout.PageHeaderTitle>
+					<PageLayout.PageHeaderTitle
+						titleMenu={[
+							<div key="0">Menu Item 1</div>,
+							<div key="1">Menu Item 2</div>,
+							<Dropdown.SubMenu
+								key="sub"
+								trigger="submenu"
+								chevronSide="left"
+							>
+								<Dropdown.Item>Submenu Entry</Dropdown.Item>
+							</Dropdown.SubMenu>,
+							<Dropdown.ItemGroup key="4" hasSeparator>
+								<Dropdown.ItemCheckbox>
+									Check 1
+								</Dropdown.ItemCheckbox>
+								<Dropdown.ItemCheckbox>
+									Check 2
+								</Dropdown.ItemCheckbox>
+							</Dropdown.ItemGroup>,
+							<Dropdown.ItemRadioGroup key="5" hasSeparator>
+								<Dropdown.ItemRadio value="r1">
+									Radio 1
+								</Dropdown.ItemRadio>
+								<Dropdown.ItemRadio value="r2">
+									Radio 2
+								</Dropdown.ItemRadio>
+							</Dropdown.ItemRadioGroup>,
+						]}
+					>
 						<h1>Page Header Title</h1>
 					</PageLayout.PageHeaderTitle>
 					<PageLayout.PageHeaderSubTitle>
@@ -55,7 +85,38 @@ function PageLayoutExampleWithBodyHeader() {
 		>
 			<PageLayout.Page>
 				<PageLayout.PageHeader shadow={false}>
-					<PageLayout.PageHeaderTitle>
+					<PageLayout.PageHeaderTitle
+						titleMenuTrigger={
+							<SettingsIcon label="" size="large" />
+						}
+						titleMenu={[
+							<div key="0">Menu Item 1</div>,
+							<div key="1">Menu Item 2</div>,
+							<Dropdown.SubMenu
+								key="sub"
+								trigger="submenu"
+								chevronSide="left"
+							>
+								<Dropdown.Item>Submenu Entry</Dropdown.Item>
+							</Dropdown.SubMenu>,
+							<Dropdown.ItemGroup key="4" hasSeparator>
+								<Dropdown.ItemCheckbox>
+									Check 1
+								</Dropdown.ItemCheckbox>
+								<Dropdown.ItemCheckbox>
+									Check 2
+								</Dropdown.ItemCheckbox>
+							</Dropdown.ItemGroup>,
+							<Dropdown.ItemRadioGroup key="5" hasSeparator>
+								<Dropdown.ItemRadio value="r1">
+									Radio 1
+								</Dropdown.ItemRadio>
+								<Dropdown.ItemRadio value="r2">
+									Radio 2
+								</Dropdown.ItemRadio>
+							</Dropdown.ItemRadioGroup>,
+						]}
+					>
 						<h1>Page Header Title</h1>
 					</PageLayout.PageHeaderTitle>
 					<PageLayout.PageHeaderSubTitle>

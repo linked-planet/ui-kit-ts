@@ -2,13 +2,14 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKDropdownMenu, {
+/*import AKDropdownMenu, {
 	DropdownItemCheckbox as AKDropdownItemCheckbox,
 	DropdownItemGroup as AKDropdownItemGroup,
 	DropdownItem as AKDropdownItem,
 	DropdownItemRadioGroup as AKDropdownItemRadioGroup,
 	DropdownItemRadio as AKDropdownItemRadio,
-} from "@atlaskit/dropdown-menu"
+	DropdownItemCheckboxGroup as AKDropdownItemCheckboxGroup,
+} from "@atlaskit/dropdown-menu"*/
 
 import { Dropdown } from "@linked-planet/ui-kit-ts"
 
@@ -30,7 +31,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<>
-			<AKDropdownMenu trigger={"Trigger"}>
+			{/*<AKDropdownMenu trigger={"Trigger"}>
 				<AKDropdownItemCheckbox
 					id="item-1"
 					description={"test description"}
@@ -101,10 +102,18 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 						Radio Disabled
 					</AKDropdownItemRadio>
 				</AKDropdownItemRadioGroup>
+				<AKDropdownItemCheckboxGroup id="some-id">
+					<AKDropdownItemCheckbox id="checkbox-1">
+						Checkbox 1
+					</AKDropdownItemCheckbox>
+					<AKDropdownItemCheckbox id="checkbox-2">
+						Checkbox 2
+					</AKDropdownItemCheckbox>
+				</AKDropdownItemCheckboxGroup>
 				{Array.from(Array(100).keys()).map((i) => (
 					<AKDropdownItem key={i}>long test item {i}</AKDropdownItem>
 				))}
-			</AKDropdownMenu>
+				</AKDropdownMenu>*/}
 		</>
 	)
 
@@ -152,6 +161,9 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 					</Dropdown.Item>
 				</Dropdown.ItemGroup>
 				<Dropdown.Item>After group dropdown item</Dropdown.Item>
+				<Dropdown.SubMenu trigger="submenu">
+					<Dropdown.Item>Submenu Entry</Dropdown.Item>
+				</Dropdown.SubMenu>
 				<Dropdown.ItemRadioGroup hasSeparator title="test title">
 					<Dropdown.ItemRadio
 						value="radio-1"
@@ -206,8 +218,8 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/dropdown-menu",
-					url: "https://atlassian.design/components/dropdown-menu/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Dropdown",
 				},
 			]}
 			examples={[

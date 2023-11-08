@@ -1412,13 +1412,14 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKDropdownMenu, {
+/*import AKDropdownMenu, {
 	DropdownItemCheckbox as AKDropdownItemCheckbox,
 	DropdownItemGroup as AKDropdownItemGroup,
 	DropdownItem as AKDropdownItem,
 	DropdownItemRadioGroup as AKDropdownItemRadioGroup,
 	DropdownItemRadio as AKDropdownItemRadio,
-} from "@atlaskit/dropdown-menu"
+	DropdownItemCheckboxGroup as AKDropdownItemCheckboxGroup,
+} from "@atlaskit/dropdown-menu"*/
 
 import { Dropdown } from "@linked-planet/ui-kit-ts"
 
@@ -1440,7 +1441,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<>
-			<AKDropdownMenu trigger={"Trigger"}>
+			{/*<AKDropdownMenu trigger={"Trigger"}>
 				<AKDropdownItemCheckbox
 					id="item-1"
 					description={"test description"}
@@ -1511,7 +1512,18 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 						Radio Disabled
 					</AKDropdownItemRadio>
 				</AKDropdownItemRadioGroup>
-			</AKDropdownMenu>
+				<AKDropdownItemCheckboxGroup id="some-id">
+					<AKDropdownItemCheckbox id="checkbox-1">
+						Checkbox 1
+					</AKDropdownItemCheckbox>
+					<AKDropdownItemCheckbox id="checkbox-2">
+						Checkbox 2
+					</AKDropdownItemCheckbox>
+				</AKDropdownItemCheckboxGroup>
+				{Array.from(Array(100).keys()).map((i) => (
+					<AKDropdownItem key={i}>long test item {i}</AKDropdownItem>
+				))}
+				</AKDropdownMenu>*/}
 		</>
 	)
 
@@ -1559,6 +1571,9 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 					</Dropdown.Item>
 				</Dropdown.ItemGroup>
 				<Dropdown.Item>After group dropdown item</Dropdown.Item>
+				<Dropdown.SubMenu trigger="submenu">
+					<Dropdown.Item>Submenu Entry</Dropdown.Item>
+				</Dropdown.SubMenu>
 				<Dropdown.ItemRadioGroup hasSeparator title="test title">
 					<Dropdown.ItemRadio
 						value="radio-1"
@@ -1591,6 +1606,9 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 						Radio Disabled
 					</Dropdown.ItemRadio>
 				</Dropdown.ItemRadioGroup>
+				{Array.from(Array(100).keys()).map((i) => (
+					<Dropdown.Item key={i}>long test item {i}</Dropdown.Item>
+				))}
 			</Dropdown.Menu>
 		</>
 	)
@@ -1610,8 +1628,8 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/dropdown-menu",
-					url: "https://atlassian.design/components/dropdown-menu/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Dropdown",
 				},
 			]}
 			examples={[
@@ -3651,10 +3669,12 @@ function ModalShowcase(props: ShowcaseProps) {
 export default ModalShowcase
 
 import React from "react"
-import { PageLayout } from "@linked-planet/ui-kit-ts"
+import { Dropdown, PageLayout } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
+import SettingsIcon from "@atlaskit/icon/glyph/settings"
 
 function PageLayoutExample() {
 	//#region pagelayout
@@ -3666,7 +3686,35 @@ function PageLayoutExample() {
 		>
 			<PageLayout.Page>
 				<PageLayout.PageHeader>
-					<PageLayout.PageHeaderTitle>
+					<PageLayout.PageHeaderTitle
+						titleMenu={[
+							<div key="0">Menu Item 1</div>,
+							<div key="1">Menu Item 2</div>,
+							<Dropdown.SubMenu
+								key="sub"
+								trigger="submenu"
+								chevronSide="left"
+							>
+								<Dropdown.Item>Submenu Entry</Dropdown.Item>
+							</Dropdown.SubMenu>,
+							<Dropdown.ItemGroup key="4" hasSeparator>
+								<Dropdown.ItemCheckbox>
+									Check 1
+								</Dropdown.ItemCheckbox>
+								<Dropdown.ItemCheckbox>
+									Check 2
+								</Dropdown.ItemCheckbox>
+							</Dropdown.ItemGroup>,
+							<Dropdown.ItemRadioGroup key="5" hasSeparator>
+								<Dropdown.ItemRadio value="r1">
+									Radio 1
+								</Dropdown.ItemRadio>
+								<Dropdown.ItemRadio value="r2">
+									Radio 2
+								</Dropdown.ItemRadio>
+							</Dropdown.ItemRadioGroup>,
+						]}
+					>
 						<h1>Page Header Title</h1>
 					</PageLayout.PageHeaderTitle>
 					<PageLayout.PageHeaderSubTitle>
@@ -3707,7 +3755,38 @@ function PageLayoutExampleWithBodyHeader() {
 		>
 			<PageLayout.Page>
 				<PageLayout.PageHeader shadow={false}>
-					<PageLayout.PageHeaderTitle>
+					<PageLayout.PageHeaderTitle
+						titleMenuTrigger={
+							<SettingsIcon label="" size="large" />
+						}
+						titleMenu={[
+							<div key="0">Menu Item 1</div>,
+							<div key="1">Menu Item 2</div>,
+							<Dropdown.SubMenu
+								key="sub"
+								trigger="submenu"
+								chevronSide="left"
+							>
+								<Dropdown.Item>Submenu Entry</Dropdown.Item>
+							</Dropdown.SubMenu>,
+							<Dropdown.ItemGroup key="4" hasSeparator>
+								<Dropdown.ItemCheckbox>
+									Check 1
+								</Dropdown.ItemCheckbox>
+								<Dropdown.ItemCheckbox>
+									Check 2
+								</Dropdown.ItemCheckbox>
+							</Dropdown.ItemGroup>,
+							<Dropdown.ItemRadioGroup key="5" hasSeparator>
+								<Dropdown.ItemRadio value="r1">
+									Radio 1
+								</Dropdown.ItemRadio>
+								<Dropdown.ItemRadio value="r2">
+									Radio 2
+								</Dropdown.ItemRadio>
+							</Dropdown.ItemRadioGroup>,
+						]}
+					>
 						<h1>Page Header Title</h1>
 					</PageLayout.PageHeaderTitle>
 					<PageLayout.PageHeaderSubTitle>

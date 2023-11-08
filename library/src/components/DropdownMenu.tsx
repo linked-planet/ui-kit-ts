@@ -1,6 +1,8 @@
 import React, { useMemo, useRef, useState } from "react"
 import * as RDd from "@radix-ui/react-dropdown-menu"
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
+import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
+import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
 import { Button } from "./Button"
 import RadioIcon from "@atlaskit/icon/glyph/radio"
 import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
@@ -9,7 +11,7 @@ import { twMerge } from "tailwind-merge"
 const commonStyles = "px-3 py-1.5 flex items-center outline-none" as const
 const disabledStyles = "text-disabled-text cursor-not-allowed" as const
 const selectedStyles =
-	"bg-selected text-selected-text hover:bg-selected-hovered active:bg-selected-pressed" as const
+	"bg-selected-subtle hover:bg-selected-subtle-hovered active:bg-selected-subtle-pressed" as const
 const normalStyles =
 	"hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed cursor-pointer" as const
 
@@ -39,7 +41,7 @@ function Item({
 				commonStyles,
 				!isDisabled && !isSelected ? normalStyles : undefined,
 				isSelected
-					? `${selectedStyles} border-brand-bold border-l-2`
+					? `${selectedStyles} border-selected-bold border-l-2`
 					: undefined,
 				isDisabled ? disabledStyles : undefined,
 			)}
@@ -222,6 +224,49 @@ function ItemRadio({
 	)
 }
 
+function SubMenu({
+	trigger,
+	defaultOpen,
+	chevronSide = "right",
+	open,
+	children,
+}: {
+	trigger: React.ReactNode
+	open?: boolean
+	chevronSide?: "right" | "left" | "none"
+	defaultOpen?: boolean
+	children: React.ReactNode
+}) {
+	const triggerNode: React.ReactNode = useMemo(() => {
+		if (typeof trigger === "string") {
+			return (
+				<Button className="bg-surface-overlay flex flex-1 justify-between pl-4 outline-none">
+					{chevronSide === "left" && <ChevronLeftIcon label="" />}
+					{trigger}
+					{chevronSide === "right" && <ChevronRightIcon label="" />}
+				</Button>
+			)
+		}
+		return trigger
+	}, [trigger])
+
+	return (
+		<RDd.Sub defaultOpen={defaultOpen} open={open}>
+			<RDd.SubTrigger className="flex w-full">
+				{triggerNode}
+			</RDd.SubTrigger>
+			<RDd.Portal>
+				<RDd.SubContent className="bg-surface-overlay shadow-overlay z-50 overflow-auto rounded">
+					{children}
+				</RDd.SubContent>
+			</RDd.Portal>
+		</RDd.Sub>
+	)
+}
+
+/**
+ * Root of the dropdown menu, which contains the trigger and the content
+ */
 function Menu({
 	placement,
 	align = "start",
@@ -306,4 +351,5 @@ export const Dropdown = {
 	ItemGroup,
 	ItemRadio,
 	ItemRadioGroup,
+	SubMenu,
 }
