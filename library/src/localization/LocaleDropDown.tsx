@@ -1,29 +1,26 @@
 import React from "react"
 
-import DropdownMenu, { DropdownItem, DropdownItemGroup } from "@atlaskit/dropdown-menu"
+import { Dropdown } from "@linked-planet/ui-kit-ts"
 import { availableLocales, useLocale } from "./LocaleContext"
 
-
-
-export default function LocaleDropDown () {
-
+export default function LocaleDropDown() {
 	const { locale, setLocale } = useLocale()
 
 	return (
-		<DropdownMenu trigger={ locale } key={ locale }>
-			<DropdownItemGroup>
-				{ availableLocales.map( ( { locale: localeName, label } ) => (
-					<DropdownItem
-						key={ localeName }
-						isSelected={ localeName === locale }
-						onClick={ () => {
-							setLocale( localeName )
-						} }
+		<Dropdown.Menu trigger={locale} key={locale}>
+			<Dropdown.ItemGroup>
+				{availableLocales.map(({ locale: localeName, label }) => (
+					<Dropdown.Item
+						key={localeName}
+						isSelected={localeName === locale}
+						onClick={() => {
+							setLocale(localeName)
+						}}
 					>
-						{ label }
-					</DropdownItem>
-				) ) }
-			</DropdownItemGroup>
-		</DropdownMenu>
+						{label}
+					</Dropdown.Item>
+				))}
+			</Dropdown.ItemGroup>
+		</Dropdown.Menu>
 	)
 }

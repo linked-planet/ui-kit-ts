@@ -2,22 +2,15 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-/*import AKDropdownMenu, {
+import AKDropdownMenu, {
 	DropdownItemCheckbox as AKDropdownItemCheckbox,
 	DropdownItemGroup as AKDropdownItemGroup,
 	DropdownItem as AKDropdownItem,
 	DropdownItemRadioGroup as AKDropdownItemRadioGroup,
 	DropdownItemRadio as AKDropdownItemRadio,
-} from "@atlaskit/dropdown-menu"*/
+} from "@atlaskit/dropdown-menu"
 
-import {
-	DropdownMenu,
-	DropdownItem,
-	DropdownItemCheckbox,
-	DropdownItemGroup,
-	DropdownItemRadioGroup,
-	DropdownItemRadio,
-} from "@linked-planet/ui-kit-ts"
+import { Dropdown } from "@linked-planet/ui-kit-ts"
 
 function DropDownMenuShowcase(props: ShowcaseProps) {
 	const [radioValue, setRadioValue] = React.useState("testval1")
@@ -37,7 +30,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<>
-			{/*<AKDropdownMenu trigger={"Trigger"}>
+			<AKDropdownMenu trigger={"Trigger"}>
 				<AKDropdownItemCheckbox
 					id="item-1"
 					description={"test description"}
@@ -69,7 +62,12 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 					>
 						First dropdown item
 					</AKDropdownItem>
-					<AKDropdownItem>Second dropdown item</AKDropdownItem>
+					<AKDropdownItem isSelected>
+						Second dropdown item
+					</AKDropdownItem>
+					<AKDropdownItem isDisabled>
+						Disabled dropdown item
+					</AKDropdownItem>
 				</AKDropdownItemGroup>
 				<AKDropdownItem>After group dropdown item</AKDropdownItem>
 				<AKDropdownItemRadioGroup
@@ -103,78 +101,87 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 						Radio Disabled
 					</AKDropdownItemRadio>
 				</AKDropdownItemRadioGroup>
-	</AKDropdownMenu>*/}
+			</AKDropdownMenu>
 		</>
 	)
 
 	//#region dropdown-menu
 	const lpExample = (
 		<>
-			<DropdownMenu trigger="Dropdown">
-				<DropdownItemCheckbox
+			<Dropdown.Menu
+				trigger="Dropdown"
+				placement={"right"}
+				align="center"
+			>
+				<Dropdown.ItemCheckbox
 					isSelected={checkBoxes.includes("item-1")}
 					description={"test description"}
 					onClick={() => handleCheckboxChange("item-1")}
 				>
 					Dropdown Checkbox Item 1
-				</DropdownItemCheckbox>
-				<DropdownItemCheckbox
+				</Dropdown.ItemCheckbox>
+				<Dropdown.ItemCheckbox
 					isSelected={checkBoxes.includes("item-2")}
 					onClick={() => handleCheckboxChange("item-2")}
 				>
 					Dropdown Checkbox Item 2
-				</DropdownItemCheckbox>
-				<DropdownItemCheckbox
+				</Dropdown.ItemCheckbox>
+				<Dropdown.ItemCheckbox
 					isDisabled={true}
 					isSelected={checkBoxes.includes("item-3")}
 					onClick={() => handleCheckboxChange("item-3")}
 				>
 					Dropdown Checkbox Item 3
-				</DropdownItemCheckbox>
-				<DropdownItemGroup title="test group" hasSeparator>
-					<DropdownItem
+				</Dropdown.ItemCheckbox>
+				<Dropdown.ItemGroup title="test group" hasSeparator>
+					<Dropdown.Item
 						description={"group item test description"}
 						elemAfter={<div>A</div>}
 						elemBefore={<div>B</div>}
 					>
 						First dropdown item
-					</DropdownItem>
-					<DropdownItem>Second dropdown item</DropdownItem>
-				</DropdownItemGroup>
-				<DropdownItem>After group dropdown item</DropdownItem>
-				<DropdownItemRadioGroup hasSeparator title="test title">
-					<DropdownItemRadio
+					</Dropdown.Item>
+					<Dropdown.Item isSelected>
+						Second dropdown item
+					</Dropdown.Item>
+					<Dropdown.Item isDisabled>
+						Disabled dropdown item
+					</Dropdown.Item>
+				</Dropdown.ItemGroup>
+				<Dropdown.Item>After group dropdown item</Dropdown.Item>
+				<Dropdown.ItemRadioGroup hasSeparator title="test title">
+					<Dropdown.ItemRadio
 						value="radio-1"
 						description={"another description"}
 						isSelected={radioValue === "testval1"}
 						onClick={() => handleRadioChange("testval1")}
 					>
 						Radio 1
-					</DropdownItemRadio>
-					<DropdownItemRadio
+					</Dropdown.ItemRadio>
+					<Dropdown.ItemRadio
 						value="radio-2"
 						isSelected={radioValue === "radio-2"}
 						onClick={() => handleRadioChange("radio-2")}
 					>
 						Radio 2
-					</DropdownItemRadio>
-					<DropdownItemRadio
+					</Dropdown.ItemRadio>
+					<Dropdown.ItemRadio
 						value="radio-3"
 						isSelected={radioValue === "radio-3"}
 						onClick={() => handleRadioChange("radio-3")}
 					>
 						Radio 3
-					</DropdownItemRadio>
-					<DropdownItemRadio
+					</Dropdown.ItemRadio>
+					<Dropdown.ItemRadio
 						value="radio-4"
 						isDisabled
 						isSelected={radioValue === "radio-4"}
 						onClick={() => handleRadioChange("radio-4")}
 					>
 						Radio Disabled
-					</DropdownItemRadio>
-				</DropdownItemRadioGroup>
-			</DropdownMenu>
+					</Dropdown.ItemRadio>
+				</Dropdown.ItemRadioGroup>
+			</Dropdown.Menu>
 		</>
 	)
 

@@ -4,34 +4,53 @@ import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import { Button } from "./Button"
 import RadioIcon from "@atlaskit/icon/glyph/radio"
 import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
-import { twJoin, twMerge } from "tailwind-merge"
+import { twMerge } from "tailwind-merge"
 
-export function DropdownItem({
+const commonStyles = "px-3 py-1.5 flex items-center outline-none" as const
+const disabledStyles = "text-disabled-text cursor-not-allowed" as const
+const selectedStyles =
+	"bg-selected text-selected-text hover:bg-selected-hovered active:bg-selected-pressed" as const
+const normalStyles =
+	"hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed cursor-pointer" as const
+
+const descriptionStyle = "text-text-subtlest text-[12px] leading-4 h-4" as const
+
+function Item({
 	description,
 	elemBefore,
 	elemAfter,
 	isDisabled = false,
+	isSelected,
+	onClick,
 	children,
 }: {
 	elemBefore?: React.ReactNode
 	elemAfter?: React.ReactNode
 	description?: React.ReactNode
 	isDisabled?: boolean
+	isSelected?: boolean
+	onClick?: () => void
 	children: React.ReactNode
 }) {
 	return (
 		<RDd.Item
 			disabled={isDisabled}
-			className="hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed cursor-pointer px-4 py-3"
+			className={twMerge(
+				commonStyles,
+				!isDisabled && !isSelected ? normalStyles : undefined,
+				isSelected
+					? `${selectedStyles} border-brand-bold border-l-2`
+					: undefined,
+				isDisabled ? disabledStyles : undefined,
+			)}
+			onClick={onClick}
 		>
 			<div className="flex w-full items-center">
 				<div className="flex-none pr-3">{elemBefore}</div>
 				<div className="flex-1">
 					{children}
 					{description && (
-						<div className="text-text-subtlest text-[1rem]">
-							{description}
-						</div>
+						<div className={descriptionStyle}>{description}</div>
 					)}
 				</div>
 				<div className="flex-none">{elemAfter}</div>
@@ -40,7 +59,7 @@ export function DropdownItem({
 	)
 }
 
-export function DropdownItemCheckbox({
+function ItemCheckbox({
 	description,
 	isSelected,
 	onClick,
@@ -66,13 +85,10 @@ export function DropdownItemCheckbox({
 			checked={isSelected}
 			defaultChecked={defaultSelected}
 			className={twMerge(
-				"flex items-center px-4 py-3 pl-6",
-				isDisabled
-					? "text-disabled-text cursor-not-allowed"
-					: "hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed cursor-pointer",
-				isSelected
-					? "bg-selected text-selected-text hover:bg-selected-hovered active:bg-selected-pressed"
-					: "",
+				commonStyles,
+				!isDisabled && !isSelected ? normalStyles : undefined,
+				isSelected ? selectedStyles : undefined,
+				isDisabled ? disabledStyles : undefined,
 			)}
 		>
 			<div
@@ -90,16 +106,14 @@ export function DropdownItemCheckbox({
 			<div>
 				{children}
 				{description && (
-					<div className="text-text-subtlest text-[1rem]">
-						{description}
-					</div>
+					<div className={descriptionStyle}>{description}</div>
 				)}
 			</div>
 		</RDd.CheckboxItem>
 	)
 }
 
-export function DropdownItemGroup({
+function ItemGroup({
 	title,
 	hasSeparator,
 	children,
@@ -126,7 +140,7 @@ export function DropdownItemGroup({
 	)
 }
 
-export function DropdownItemRadioGroup({
+function ItemRadioGroup({
 	title,
 	hasSeparator,
 	children,
@@ -153,7 +167,7 @@ export function DropdownItemRadioGroup({
 	)
 }
 
-export function DropdownItemRadio({
+function ItemRadio({
 	onClick,
 	description,
 	isSelected,
@@ -177,14 +191,11 @@ export function DropdownItemRadio({
 			}}
 			disabled={isDisabled}
 			value={value}
-			className={twJoin(
-				" flex items-center p-3",
-				isSelected
-					? "bg-selected-subtle text-selected-subtle-text hover:bg-selected-subtle-hovered active:bg-selected-subtle-pressed"
-					: "hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed cursor-pointer",
-				isDisabled
-					? "text-disabled-text cursor-not-allowed"
-					: undefined,
+			className={twMerge(
+				commonStyles,
+				!isDisabled && !isSelected ? normalStyles : undefined,
+				isSelected ? selectedStyles : undefined,
+				isDisabled ? disabledStyles : undefined,
 			)}
 		>
 			<div
@@ -204,16 +215,14 @@ export function DropdownItemRadio({
 			<div>
 				{children}
 				{description && (
-					<div className="text-text-subtlest text-[1rem]">
-						{description}
-					</div>
+					<div className={descriptionStyle}>{description}</div>
 				)}
 			</div>
 		</RDd.RadioItem>
 	)
 }
 
-export function DropdownMenu({
+function Menu({
 	placement,
 	align = "start",
 	open,
@@ -279,4 +288,13 @@ export function DropdownMenu({
 			triggerNode,
 		],
 	)
+}
+
+export const Dropdown = {
+	Menu,
+	Item,
+	ItemCheckbox,
+	ItemGroup,
+	ItemRadio,
+	ItemRadioGroup,
 }

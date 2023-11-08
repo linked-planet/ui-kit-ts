@@ -59,6 +59,7 @@
 	},
 	"dependencies": {
 		"@atlaskit/checkbox": "^12.6.11",
+		"@atlaskit/dropdown-menu": "^12.1.5",
 		"@emotion/css": "^11.11.2",
 		"@radix-ui/react-avatar": "^1.0.4",
 		"@radix-ui/react-checkbox": "^1.0.4",
@@ -120,7 +121,7 @@
 		"@atlaskit/calendar": "^13.3.3",
 		"@atlaskit/code": "^14.6.8",
 		"@atlaskit/css-reset": "^6.6.1",
-		"@atlaskit/datetime-picker": "^12.10.4",
+		"@atlaskit/datetime-picker": "^12.10.5",
 		"@atlaskit/dynamic-table": "^14.11.7",
 		"@atlaskit/empty-state": "^7.6.3",
 		"@atlaskit/form": "^8.11.13",
