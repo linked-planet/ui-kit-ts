@@ -101,6 +101,9 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 						Radio Disabled
 					</AKDropdownItemRadio>
 				</AKDropdownItemRadioGroup>
+				{Array.from(Array(100).keys()).map((i) => (
+					<AKDropdownItem key={i}>long test item {i}</AKDropdownItem>
+				))}
 			</AKDropdownMenu>
 		</>
 	)
@@ -181,6 +184,9 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 						Radio Disabled
 					</Dropdown.ItemRadio>
 				</Dropdown.ItemRadioGroup>
+				{Array.from(Array(100).keys()).map((i) => (
+					<Dropdown.Item key={i}>long test item {i}</Dropdown.Item>
+				))}
 			</Dropdown.Menu>
 		</>
 	)

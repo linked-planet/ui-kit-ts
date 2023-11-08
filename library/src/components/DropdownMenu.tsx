@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useMemo, useRef, useState } from "react"
 import * as RDd from "@radix-ui/react-dropdown-menu"
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import { Button } from "./Button"
@@ -239,6 +239,8 @@ function Menu({
 	trigger: React.ReactNode
 	children: React.ReactNode
 }) {
+	const contentRef = useRef<HTMLDivElement>(null)
+
 	const [opened, setOpened] = useState(
 		open != null ? open : defaultOpen ?? false,
 	)
@@ -267,11 +269,18 @@ function Menu({
 			>
 				<RDd.Trigger>{triggerNode}</RDd.Trigger>
 				<RDd.Content
-					className="bg-surface-overlay shadow-overlay rounded"
+					ref={contentRef}
+					className="bg-surface-overlay shadow-overlay z-50 overflow-auto rounded"
 					side={placement}
 					align={align}
 					onFocusOutside={() => {
 						setOpened(false)
+					}}
+					style={{
+						maxHeight:
+							"var(--radix-dropdown-menu-content-available-height)",
+						transformOrigin:
+							"var(--radix-dropdown-menu-content-transform-origin)",
 					}}
 				>
 					{children}
