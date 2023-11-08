@@ -67,7 +67,7 @@ export const Button = ({
 			style={style}
 			className={twMerge(
 				ButtonStyles[appearance],
-				"disabled:bg-disabled disabled:text-disabled-text outline-brand-hovered relative flex items-center justify-center gap-1 rounded px-3 py-1.5 outline-1 outline-offset-2 disabled:cursor-not-allowed",
+				"disabled:bg-disabled disabled:text-disabled-text outline-brand-hovered relative flex flex-shrink-0 items-center justify-center gap-1 rounded px-3 py-1.5 outline-1 outline-offset-2 disabled:cursor-not-allowed",
 				isSelected ? ButtonSelectedStyles : undefined,
 				className,
 			)}
@@ -83,11 +83,17 @@ export const Button = ({
 
 export const LoadingButton = ({
 	isLoading = false,
+	iconAfter,
+	iconBefore,
 	children,
 	...props
 }: ButtonProps & { isLoading: boolean }) => {
 	return (
-		<Button {...props}>
+		<Button
+			iconAfter={!isLoading && iconAfter}
+			iconBefore={!isLoading && iconBefore}
+			{...props}
+		>
 			<div className={isLoading ? "opacity-0" : undefined}>
 				{children}
 			</div>
@@ -100,6 +106,18 @@ export const LoadingButton = ({
 	)
 }
 
-export const ButtonGroup = ({ children }: { children: React.ReactNode }) => {
-	return <div className="inline-flex gap-1">{children}</div>
+export const ButtonGroup = ({
+	children,
+	className,
+	style,
+}: {
+	children: React.ReactNode
+	className?: string
+	style?: CSSProperties
+}) => {
+	return (
+		<div className={twMerge("inline-flex gap-1", className)} style={style}>
+			{children}
+		</div>
+	)
 }
