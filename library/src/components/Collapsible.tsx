@@ -1,34 +1,39 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useState } from "react"
 import * as CollapsibleRUI from "@radix-ui/react-collapsible"
 import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
-import { token } from "@atlaskit/tokens"
+import { twMerge } from "tailwind-merge"
 
 type CollapsibleProps = {
-	opened?: boolean
+	open?: boolean
+	defaultOpen?: boolean
 	onChanged?: (opened: boolean) => void
 	header: React.ReactNode
 	headerContainerStyle?: React.CSSProperties
+	headerContainerClassName?: string
+	className?: string
 	style?: React.CSSProperties
 	children: React.ReactNode
 	openButtonPosition?: "left" | "right" | "hidden"
 }
 
-const backgroundColor = token("color.background.neutral", "#091E420A")
-
 export function Collapsible({
-	opened = true,
+	open: opened,
+	defaultOpen = true,
 	onChanged,
 	openButtonPosition = "left",
 	header,
-	style,
 	headerContainerStyle,
+	headerContainerClassName,
+	className,
 	children,
 }: CollapsibleProps) {
-	const [open, setOpen] = useState(opened)
+	const [open, setOpen] = useState(opened == undefined ? defaultOpen : opened)
 
-	useEffect(() => setOpen(opened), [opened])
+	if (opened != null && opened !== open) {
+		setOpen(opened)
+	}
 
 	const openCB = useCallback(
 		(opened: boolean) => {
@@ -38,58 +43,44 @@ export function Collapsible({
 		[onChanged],
 	)
 
+	const chevron = open ? (
+		<ChevronDownIcon label="close" />
+	) : (
+		<>
+			{openButtonPosition === "left" ? (
+				<ChevronRightIcon label="open" />
+			) : (
+				<ChevronUpIcon label="open" />
+			)}
+		</>
+	)
+
 	return (
 		<CollapsibleRUI.Root
 			open={open}
+			defaultOpen={defaultOpen}
 			onOpenChange={openCB}
-			style={style ?? { backgroundColor, borderRadius: "0.25rem" }}
+			className={twMerge(
+				"border-border overflow-hidden rounded border",
+				className,
+			)}
 		>
 			<div
-				className={`flex rounded p-1
-				${open ? "rounded-b-none" : "rounded-b"}
-				`}
+				className={twMerge(
+					"border-border bg-surface flex",
+					headerContainerClassName,
+				)}
 				style={headerContainerStyle}
 			>
-				<CollapsibleRUI.Trigger asChild>
-					{openButtonPosition === "hidden" ? null : (
-						<button className="flex w-full items-center">
-							{openButtonPosition === "left" ? (
-								open ? (
-									<>
-										<ChevronDownIcon
-											//size="large"
-											label="close"
-										/>
-										<>{header}</>
-									</>
-								) : (
-									<>
-										<ChevronRightIcon
-											//size="large"
-											label="open"
-										/>
-										<>{header}</>
-									</>
-								)
-							) : open ? (
-								<>
-									<>{header}</>
-									<ChevronDownIcon
-										size="large"
-										label="open"
-									/>
-								</>
-							) : (
-								<>
-									<>{header}</>
-									<ChevronUpIcon size="large" label="close" />
-								</>
-							)}
-						</button>
-					)}
+				<CollapsibleRUI.Trigger className="flex flex-1 items-center overflow-hidden">
+					{openButtonPosition === "left" && <>{chevron}</>}
+					{header}
+					{openButtonPosition === "right" && <>{chevron}</>}
 				</CollapsibleRUI.Trigger>
 			</div>
-			<CollapsibleRUI.Content>{children}</CollapsibleRUI.Content>
+			<CollapsibleRUI.Content className="bg-surface">
+				{children}
+			</CollapsibleRUI.Content>
 		</CollapsibleRUI.Root>
 	)
 }

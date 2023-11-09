@@ -13,7 +13,6 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 				</div>
 			}
 			openButtonPosition="left"
-			opened={false}
 		>
 			<div className="p-4">collapsible content</div>
 		</Collapsible>
@@ -29,7 +28,6 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 				</div>
 			}
 			openButtonPosition="right"
-			opened={false}
 		>
 			<div className="p-4">collapsible content</div>
 		</Collapsible>

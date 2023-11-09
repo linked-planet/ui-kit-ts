@@ -38,8 +38,8 @@ const PageHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			`border-border bg-neutral-subtle z-0 flex w-full flex-col border-b pl-4 pr-4 pt-3 ${
-				shadow ? "shadow-md" : ""
+			`border-border bg-neutral-subtle z-0 flex w-full flex-col border-b-2 pb-1 pl-4 pr-4 pt-3 ${
+				shadow ? "shadow-overflow" : ""
 			}`,
 			className,
 		)}

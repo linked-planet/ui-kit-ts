@@ -10,7 +10,7 @@ import ShowcaseWrapperItem, {
 
 import Button, { ButtonGroup } from "@atlaskit/button"
 import { Fieldset } from "@atlaskit/form"
-import { SimpleTag, TagGroup } from "@linked-planet/ui-kit-ts"
+import { Badge, SimpleTag, TagGroup } from "@linked-planet/ui-kit-ts"
 
 //#region bookcardcomponents
 function BookCardComponentsExample() {
@@ -20,20 +20,27 @@ function BookCardComponentsExample() {
 				<BookCardComponents.CardHeader>
 					<BookCardComponents.CardHeaderMeta>
 						<BookCardComponents.CardHeaderTitle>
-							Book Title
+							Book Title very very very very very very very very
+							very very very very very very very long
 						</BookCardComponents.CardHeaderTitle>
 						<BookCardComponents.CardHeaderSubtitle>
 							Book Subtitle
 						</BookCardComponents.CardHeaderSubtitle>
 					</BookCardComponents.CardHeaderMeta>
+					<BookCardComponents.CardHeaderActions>
+						<BookCardComponents.CardHeaderActionsInfo>
+							<Badge appearance="default">action</Badge>
+						</BookCardComponents.CardHeaderActionsInfo>
+					</BookCardComponents.CardHeaderActions>
 				</BookCardComponents.CardHeader>
 			}
-			closed={false}
+			defaultOpen={true}
 		>
 			<BookCardComponents.CardGridBody>
 				<BookCardComponents.CardBodyEntry>
 					<BookCardComponents.CardBodyEntryTitle>
-						Book Entry Title
+						Book Entry Title very very very very very very very very
+						very very very very very very very long
 					</BookCardComponents.CardBodyEntryTitle>
 					<div>Book Entry Content</div>
 				</BookCardComponents.CardBodyEntry>
@@ -55,7 +62,7 @@ function BookCardExample() {
 		"grid",
 	)
 
-	const [isClosed, setIsClosed] = useState<boolean | undefined | null>(false)
+	const [isClosed, setIsClosed] = useState<boolean | undefined>(undefined)
 
 	const children = useMemo(() => {
 		const childCount = bodyLayout === "column" ? 10 : 100
@@ -97,7 +104,8 @@ function BookCardExample() {
 	const bookCardExample = (
 		<>
 			<BookCard
-				title="Book Title"
+				title="Book Title very very very very very very very very very
+						very very very very very very long"
 				subtitle="Book Subtitle"
 				bodyLayout={bodyLayout}
 				bodyStyle={bodyStyle}
@@ -150,19 +158,19 @@ function BookCardExample() {
 							isSelected={isClosed === false}
 							onClick={() => setIsClosed(false)}
 						>
-							Default Closed False
+							Opened
 						</Button>
 						<Button
 							isSelected={isClosed === true}
 							onClick={() => setIsClosed(true)}
 						>
-							Default Closed True
+							Closed
 						</Button>
 						<Button
 							isSelected={isClosed === undefined}
 							onClick={() => setIsClosed(undefined)}
 						>
-							Default Closed Undefined
+							Closed Undefined
 						</Button>
 					</ButtonGroup>
 					<p

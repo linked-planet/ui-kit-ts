@@ -85,38 +85,7 @@ function PageLayoutExampleWithBodyHeader() {
 		>
 			<PageLayout.Page>
 				<PageLayout.PageHeader shadow={false}>
-					<PageLayout.PageHeaderTitle
-						titleMenuTrigger={
-							<SettingsIcon label="" size="large" />
-						}
-						titleMenu={[
-							<div key="0">Menu Item 1</div>,
-							<div key="1">Menu Item 2</div>,
-							<Dropdown.SubMenu
-								key="sub"
-								trigger="submenu"
-								chevronSide="left"
-							>
-								<Dropdown.Item>Submenu Entry</Dropdown.Item>
-							</Dropdown.SubMenu>,
-							<Dropdown.ItemGroup key="4" hasSeparator>
-								<Dropdown.ItemCheckbox>
-									Check 1
-								</Dropdown.ItemCheckbox>
-								<Dropdown.ItemCheckbox>
-									Check 2
-								</Dropdown.ItemCheckbox>
-							</Dropdown.ItemGroup>,
-							<Dropdown.ItemRadioGroup key="5" hasSeparator>
-								<Dropdown.ItemRadio value="r1">
-									Radio 1
-								</Dropdown.ItemRadio>
-								<Dropdown.ItemRadio value="r2">
-									Radio 2
-								</Dropdown.ItemRadio>
-							</Dropdown.ItemRadioGroup>,
-						]}
-					>
+					<PageLayout.PageHeaderTitle>
 						<h1>Page Header Title</h1>
 					</PageLayout.PageHeaderTitle>
 					<PageLayout.PageHeaderSubTitle>

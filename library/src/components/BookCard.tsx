@@ -6,69 +6,95 @@ import { token } from "@atlaskit/tokens"
 import { css } from "@emotion/css"
 
 import { Collapsible } from "./Collapsible"
+import { twMerge } from "tailwind-merge"
 
 const borderColor = token("color.border", "#091e4224")
-const headerBackgroundColor = token("elevation.surface.sunken", "#f7f8f9")
-
-const headerTitleColor = token("color.text", "#172B4D")
-const headerSubtitleTextColor = token("color.text.subtlest", "#6b778c")
-
-const bodyBackgroundColor = token("elevation.surface", "#fff")
 
 const CardBase = ({
 	header,
 	closed,
+	defaultOpen,
+	onOpenChanged,
 	children,
 }: {
 	header: React.ReactNode
-	closed?: boolean | undefined | null
+	closed?: boolean
+	defaultOpen?: boolean
+	onOpenChanged?: (opened: boolean) => void
 	children?: React.ReactNode
-}) => (
-	<Collapsible
-		openButtonPosition={closed != null ? "right" : "hidden"}
-		header={header}
-		opened={!closed}
-		headerContainerStyle={{
-			backgroundColor: headerBackgroundColor,
-			border: `1px solid ${borderColor}`,
-		}}
-	>
-		<div
-			className="rounded-b border-x border-b"
-			style={{
-				backgroundColor: bodyBackgroundColor,
-				borderColor: borderColor,
-			}}
-		>
-			{children}
-		</div>
-	</Collapsible>
-)
+}) => {
+	const openVal =
+		closed != null ? !closed : defaultOpen != null ? undefined : true
 
-const CardHeader = ({ children }: { children: React.ReactNode }) => (
-	<div className="flex flex-1 justify-between p-3 align-baseline">
+	const openButtonPos =
+		closed == undefined && defaultOpen == undefined ? "hidden" : "right"
+
+	return (
+		<Collapsible
+			openButtonPosition={openButtonPos}
+			header={header}
+			open={openVal}
+			defaultOpen={defaultOpen}
+			onChanged={onOpenChanged}
+			headerContainerClassName="border-border box-border border-b bg-surface-sunken"
+		>
+			<div className="border-border box-border flex rounded-b border-x border-b">
+				{children}
+			</div>
+		</Collapsible>
+	)
+}
+
+const CardHeader = ({
+	className,
+	children,
+}: {
+	className?: string
+	children: React.ReactNode
+}) => (
+	<div
+		className={twMerge(
+			"flex flex-1 justify-between overflow-hidden p-3",
+			className,
+		)}
+	>
 		{children}
 	</div>
 )
 
 const CardHeaderMeta = ({ children }: { children: React.ReactNode }) => (
-	<div className="flex flex-1 flex-col items-baseline">{children}</div>
+	<div className="flex flex-1 flex-col items-baseline overflow-hidden">
+		{children}
+	</div>
 )
 
-const CardHeaderTitle = ({ children }: { children: React.ReactNode }) => (
-	<h3 className="truncate" style={{ color: headerTitleColor }}>
-		{children}
-	</h3>
-)
+const CardHeaderTitle = ({ children }: { children: React.ReactNode }) => {
+	if (typeof children === "string") {
+		return <h3 className="w-full truncate text-start">{children}</h3>
+	}
 
-const CardHeaderSubtitle = ({ children }: { children: React.ReactNode }) => (
-	<h6 className="mt-1 truncate" style={{ color: headerSubtitleTextColor }}>
-		{children}
-	</h6>
-)
+	return <div className="w-full truncate text-start">{children}</div>
+}
+
+const CardHeaderSubtitle = ({ children }: { children: React.ReactNode }) => {
+	if (typeof children === "string") {
+		return (
+			<h6 className="text-text-subtlest mt-1 w-full justify-start truncate text-start">
+				{children}
+			</h6>
+		)
+	}
+	return (
+		<div className="text-text-subtlest ml-auto mt-1 w-full justify-start truncate text-start">
+			{children}
+		</div>
+	)
+}
 
 const CardHeaderActions = ({ children }: { children: React.ReactNode }) => (
-	<div className="flex content-end items-center">{children}</div>
+	<div className="flex flex-none content-end items-center pl-2">
+		{children}
+	</div>
 )
 
 const CardHeaderActionsInfo = ({ children }: { children: React.ReactNode }) => (
@@ -142,23 +168,27 @@ export { BookCardComponents }
 type BookCardProps = {
 	title: React.ReactNode
 	subtitle?: React.ReactNode
-	closed?: boolean | undefined | null
+	closed?: boolean
+	defaultOpen?: boolean
 	bodyLayout: "row" | "grid" | "column"
 	bodyStyle?: CSSProperties
 	actions?: React.ReactNode
 	actionsInfo?: React.ReactNode
 	children?: React.ReactNode
+	onOpenChanged?: (opened: boolean) => void
 }
 
 export function BookCard({
 	title,
 	subtitle,
 	closed,
+	defaultOpen,
 	actions,
 	actionsInfo,
 	bodyStyle,
 	bodyLayout,
 	children,
+	onOpenChanged,
 }: BookCardProps) {
 	const body = (() => {
 		switch (bodyLayout) {
@@ -176,6 +206,8 @@ export function BookCard({
 	return (
 		<CardBase
 			closed={closed}
+			onOpenChanged={onOpenChanged}
+			defaultOpen={defaultOpen}
 			header={
 				<CardHeader>
 					<CardHeaderMeta>
@@ -195,7 +227,13 @@ export function BookCard({
 				</CardHeader>
 			}
 		>
-			<div className="-mx-[1px] -mb-[1px]">
+			<div
+				className="m-[-1px] box-border rounded-b"
+				style={{
+					width: "calc(100% + 2px)",
+					height: "calc(100% + 2px)",
+				}}
+			>
 				<div style={bodyStyle}>{body}</div>
 			</div>
 		</CardBase>
