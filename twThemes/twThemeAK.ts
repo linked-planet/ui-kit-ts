@@ -43,6 +43,7 @@ import {
 	R200,
 	N400,
 	N300,
+	N50A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -82,7 +83,7 @@ export const theme = {
 				hovered: `var(--ds-surface-raised-hovered, ${N30})`,
 				pressed: `var(--ds-surface-raised-pressed, ${N40})`,
 			},
-			sunken: `var(--ds-surface-sunken, ${N20})`,
+			sunken: `var(--ds-surface-sunken, ${N10})`,
 		},
 
 		transparent: colors.transparent,
@@ -204,7 +205,7 @@ export const theme = {
 		},
 
 		border: {
-			DEFAULT: `var(--ds-border, ${N30A})`,
+			DEFAULT: `var(--ds-border, ${N50A})`,
 			bold: `var(--ds-border-bold, ${N500A})`,
 		},
 		icon: {
