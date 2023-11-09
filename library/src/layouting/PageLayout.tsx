@@ -213,7 +213,7 @@ const PageBodyHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-neutral-subtle z-0 pb-1 pl-4 pr-4 pt-1 shadow-md",
+			"bg-neutral-subtle shadow-overflow z-0 pb-1 pl-4 pr-4 pt-1",
 			className,
 		)}
 		id={id}
