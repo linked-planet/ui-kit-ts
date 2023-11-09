@@ -236,7 +236,7 @@ const PageBodyFooter = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-neutral-subtle border-border shadow-md-up flex justify-center border-t pt-1",
+			"bg-neutral-subtle border-border shadow-overflow flex justify-center border-t pt-1",
 			className,
 		)}
 		id={id}
