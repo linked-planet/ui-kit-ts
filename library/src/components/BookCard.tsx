@@ -36,7 +36,7 @@ const CardBase = ({
 			open={openVal}
 			defaultOpen={defaultOpen}
 			onChanged={onOpenChanged}
-			headerContainerClassName="border-border box-border border-b bg-surface-sunken"
+			headerContainerClassName={`border-border box-border border-b bg-surface-sunken`}
 		>
 			<div className="border-border box-border flex rounded-b border-x border-b">
 				{children}

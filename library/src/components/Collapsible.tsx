@@ -72,7 +72,11 @@ export function Collapsible({
 				)}
 				style={headerContainerStyle}
 			>
-				<CollapsibleRUI.Trigger className="flex flex-1 items-center overflow-hidden">
+				<CollapsibleRUI.Trigger
+					className={`flex flex-1 items-center overflow-hidden ${
+						openButtonPosition === "hidden" ? "cursor-default" : ""
+					}`}
+				>
 					{openButtonPosition === "left" && <>{chevron}</>}
 					{header}
 					{openButtonPosition === "right" && <>{chevron}</>}
