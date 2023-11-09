@@ -1,7 +1,7 @@
 import React from "react"
 
-import { Dropdown } from "@linked-planet/ui-kit-ts"
 import { availableLocales, useLocale } from "./LocaleContext"
+import { Dropdown } from "../components"
 
 export default function LocaleDropDown() {
 	const { locale, setLocale } = useLocale()
