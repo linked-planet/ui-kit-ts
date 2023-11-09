@@ -2,14 +2,14 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { SimpleTag as AKSimpleTag } from "@atlaskit/tag"
-import AKTagGroup from "@atlaskit/tag-group"
+//import { SimpleTag as AKSimpleTag } from "@atlaskit/tag"
+//import AKTagGroup from "@atlaskit/tag-group"
 import { TagGroup, SimpleTag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
 		<>
-			<AKTagGroup alignment="end">
+			{/*<AKTagGroup alignment="end">
 				<AKSimpleTag text="Simple Tag" appearance="default" />
 				<AKSimpleTag
 					text="Colored simple Tag"
@@ -24,7 +24,7 @@ function TagShowcase(props: ShowcaseProps) {
 			</AKTagGroup>
 			<AKTagGroup>
 				<AKSimpleTag text="Simple Tag" color="blue" />
-			</AKTagGroup>
+	</AKTagGroup>*/}
 		</>
 	)
 

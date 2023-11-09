@@ -55,6 +55,13 @@ function TooltipShowcase(props: ShowcaseProps) {
 					<SearchIcon label="" />
 				</Tooltip>
 				<Tooltip
+					tooltipContent={<p>I&apos;m a error tooltip.</p>}
+					variant="error"
+					opacity={0.5}
+				>
+					<SearchIcon label="" />
+				</Tooltip>
+				<Tooltip
 					tooltipContent={<p>I&apos;m a dark tooltip.</p>}
 					variant="dark"
 				>
@@ -77,6 +84,9 @@ function TooltipShowcase(props: ShowcaseProps) {
 					tooltip content. <br />
 					<br />
 					Based on react-tooltip.
+					<br />
+					The variant defines the color of the tooltip - if it is not
+					defined, it is unstyled.
 				</p>
 			}
 			{...props}

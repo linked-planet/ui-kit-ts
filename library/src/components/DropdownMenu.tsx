@@ -6,7 +6,7 @@ import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
 import { Button } from "./Button"
 import RadioIcon from "@atlaskit/icon/glyph/radio"
 import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 
 const commonStyles = "px-3 py-1.5 flex items-center outline-none" as const
 const disabledStyles = "text-disabled-text cursor-not-allowed" as const
@@ -240,11 +240,15 @@ function SubMenu({
 	const triggerNode: React.ReactNode = useMemo(() => {
 		if (typeof trigger === "string") {
 			return (
-				<Button className="bg-surface-overlay flex flex-1 justify-between pl-4 outline-none">
+				<div className={twJoin(commonStyles, normalStyles, "w-full")}>
 					{chevronSide === "left" && <ChevronLeftIcon label="" />}
 					{trigger}
-					{chevronSide === "right" && <ChevronRightIcon label="" />}
-				</Button>
+					{chevronSide === "right" && (
+						<span className="ml-auto">
+							<ChevronRightIcon label="" />
+						</span>
+					)}
+				</div>
 			)
 		}
 		return trigger

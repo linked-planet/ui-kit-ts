@@ -23,7 +23,7 @@ export function SimpleTag({
 					appearance === "default"
 						? "rounded-[0.35rem]"
 						: "rounded-full"
-				} overflow-hidden px-1 leading-5`,
+				} m-1 overflow-hidden whitespace-nowrap px-1 text-[14px] leading-5`,
 				className,
 			)}
 			style={{
@@ -51,7 +51,7 @@ export function TagGroup({
 	return (
 		<div
 			className={twMerge(
-				`flex gap-2 px-1 ${
+				`flex w-full flex-wrap px-1 ${
 					alignment === "start" ? "justify-start" : "justify-end"
 				}`,
 				className,

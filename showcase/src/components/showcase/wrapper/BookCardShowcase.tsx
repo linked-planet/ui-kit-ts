@@ -10,7 +10,7 @@ import ShowcaseWrapperItem, {
 
 import Button, { ButtonGroup } from "@atlaskit/button"
 import { Fieldset } from "@atlaskit/form"
-import { SimpleTag } from "@atlaskit/tag"
+import { SimpleTag, TagGroup } from "@linked-planet/ui-kit-ts"
 
 //#region bookcardcomponents
 function BookCardComponentsExample() {
@@ -105,16 +105,18 @@ function BookCardExample() {
 				actionsInfo={"Action:"}
 				actions={
 					<>
-						<SimpleTag
-							key="action"
-							text="action item"
-							color="blue"
-						/>
-						<SimpleTag
-							key="action 1"
-							text="action item 1"
-							color="green"
-						/>
+						<TagGroup>
+							<SimpleTag
+								key="action"
+								text="action item"
+								color="lightblue"
+							/>
+							<SimpleTag
+								key="action 1"
+								text="action item 1"
+								color="lightgreen"
+							/>
+						</TagGroup>
 					</>
 				}
 			>

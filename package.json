@@ -59,6 +59,8 @@
 	},
 	"dependencies": {
 		"@atlaskit/checkbox": "^12.6.11",
+		"@atlaskit/tag": "^11.6.2",
+		"@atlaskit/tag-group": "^10.2.5",
 		"@emotion/css": "^11.11.2",
 		"@radix-ui/react-avatar": "^1.0.4",
 		"@radix-ui/react-checkbox": "^1.0.4",
@@ -135,8 +137,6 @@
 		"@atlaskit/select": "^16.7.6",
 		"@atlaskit/side-navigation": "^3.0.1",
 		"@atlaskit/table-tree": "^9.6.6",
-		"@atlaskit/tag": "^11.6.2",
-		"@atlaskit/tag-group": "^10.2.5",
 		"@atlaskit/textarea": "^4.7.7",
 		"@atlaskit/textfield": "^5.6.8",
 		"@atlaskit/theme": "^12.6.2",

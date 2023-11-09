@@ -67,7 +67,7 @@ export const Button = ({
 			style={style}
 			className={twMerge(
 				ButtonStyles[appearance],
-				"disabled:bg-disabled disabled:text-disabled-text outline-brand-hovered relative flex flex-shrink-0 items-center justify-center gap-1 rounded px-3 py-1.5 outline-1 outline-offset-2 disabled:cursor-not-allowed",
+				"disabled:bg-disabled disabled:text-disabled-text focus:outline-brand-hovered relative flex flex-shrink-0 items-center justify-center gap-1 rounded px-3 py-1.5 outline-1 outline-offset-2 disabled:cursor-not-allowed",
 				isSelected ? ButtonSelectedStyles : undefined,
 				className,
 			)}

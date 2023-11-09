@@ -3,7 +3,7 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { HeadingItem, MenuGroup } from "@atlaskit/menu"
-import { SimpleTag } from "@atlaskit/tag"
+import { SimpleTag } from "@linked-planet/ui-kit-ts"
 import { Badge } from "@linked-planet/ui-kit-ts"
 
 function MenuShowcase(props: ShowcaseProps) {

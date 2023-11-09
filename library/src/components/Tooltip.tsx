@@ -1,4 +1,4 @@
-import React, { useRef } from "react"
+import React, { CSSProperties, useRef } from "react"
 import { Tooltip as TTP, VariantType, PlacesType } from "react-tooltip"
 
 type TooltipProps = {
@@ -7,6 +7,7 @@ type TooltipProps = {
 	tooltipContent?: React.ReactNode
 	tooltipHTMLContent?: string
 	variant?: VariantType
+	opacity?: number
 } & React.ComponentPropsWithoutRef<"div">
 
 const borderColors: { [key in VariantType]: string } = {
@@ -21,12 +22,14 @@ const borderColors: { [key in VariantType]: string } = {
 /**
  * A tooltip component that wraps the children in a div and adds a tooltip to it.
  * Use tooltipContent for the tooltip content and tooltipHTMLContent in case you have a stringified HTML content.
+ * The variant defines the color of the tooltip - if it is undefined, it is unstyled.
  */
 export function Tooltip({
 	tooltipContent,
 	tooltipHTMLContent,
 	id,
 	place = "left",
+	opacity = 1,
 	variant,
 	children,
 	...props
@@ -58,6 +61,11 @@ export function Tooltip({
 				anchorSelect={"#" + ttID.current}
 				place={place}
 				variant={themeVariant}
+				style={
+					{
+						"--rt-opacity": opacity,
+					} as CSSProperties
+				}
 			>
 				{ttContent}
 			</TTP>
