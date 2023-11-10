@@ -173,16 +173,6 @@ function BookCardExample() {
 							Closed Undefined
 						</Button>
 					</ButtonGroup>
-					<p
-						style={{
-							marginBottom: "1rem",
-						}}
-					>
-						<b>closed: </b>
-						<br></br>
-						<em>true/false</em> - card is collapsible<br></br>
-						<em>undefined/null</em> - card is not collapsible
-					</p>
 				</Fieldset>
 				<Fieldset legend="Book Card Body Layout">
 					<ButtonGroup>
@@ -223,6 +213,25 @@ export default function BookCardShowcase(props: ShowcaseProps) {
 					url: "https://www.github.com/linked-planet/ui-kit-ts",
 				},
 			]}
+			description={
+				<>
+					<p>
+						Book Card is a card component that is used to display
+						search result information or similar. It can be used as
+						a collapsible component or as a static component.
+					</p>
+					<p>
+						If <b>closed</b> is used, the collapse state is
+						controlled. By <b>defaultOpen</b> if it collapsible but
+						uncontrolled. If both are undefined, the component is
+						static.
+					</p>
+					<p>
+						Book Card is a composition of several components. The
+						components can be used individually or as a whole.
+					</p>
+				</>
+			}
 			examples={[
 				{
 					title: "Complete Bookcard",

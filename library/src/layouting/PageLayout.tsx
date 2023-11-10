@@ -14,7 +14,7 @@ const Page = ({
 }) => (
 	<div
 		className={twMerge(
-			"flex h-full min-h-0 w-full flex-col overflow-hidden",
+			"flex h-full min-h-0 flex-col overflow-hidden",
 			className,
 		)}
 		id={id}
@@ -38,7 +38,7 @@ const PageHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			`border-border bg-neutral-subtle z-0 flex w-full flex-col border-b-2 pb-1 pl-4 pr-4 pt-3 ${
+			`border-border bg-surface z-10 flex flex-col border-b pb-1 pl-4 pr-4 pt-3 ${
 				shadow ? "shadow-overflow" : ""
 			}`,
 			className,
@@ -167,7 +167,7 @@ const PageBody = ({
 }) => (
 	<div
 		className={twMerge(
-			"flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
+			"bg-surface-sunken z-0 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
 			className,
 		)}
 		style={style}
@@ -190,7 +190,7 @@ const PageBodyContent = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface min-h-0 flex-1 overflow-y-auto pb-5 pl-5 pr-3 pt-3",
+			"min-h-0 flex-1 overflow-y-auto pb-5 pl-5 pr-3 pt-3",
 			className,
 		)}
 		id={id}

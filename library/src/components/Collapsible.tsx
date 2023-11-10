@@ -60,14 +60,11 @@ export function Collapsible({
 			open={open}
 			defaultOpen={defaultOpen}
 			onOpenChange={openCB}
-			className={twMerge(
-				"border-border overflow-hidden rounded border",
-				className,
-			)}
+			className={twMerge("border-border rounded border", className)}
 		>
 			<div
 				className={twMerge(
-					"border-border bg-surface flex",
+					"border-border bg-surface-raised flex",
 					headerContainerClassName,
 				)}
 				style={headerContainerStyle}
@@ -82,7 +79,7 @@ export function Collapsible({
 					{openButtonPosition === "right" && <>{chevron}</>}
 				</CollapsibleRUI.Trigger>
 			</div>
-			<CollapsibleRUI.Content className="bg-surface">
+			<CollapsibleRUI.Content className="bg-surface-raised">
 				{children}
 			</CollapsibleRUI.Content>
 		</CollapsibleRUI.Root>

@@ -70,7 +70,7 @@ export const theme = {
 		},
 
 		surface: {
-			DEFAULT: `var(--ds-surface, ${N0})`,
+			DEFAULT: `var(--ds-surface, ${N10})`,
 			hovered: `var(--ds-surface-hovered, ${N10})`,
 			pressed: `var(--ds-surface-pressed, ${N20})`,
 			overlay: {
@@ -83,7 +83,7 @@ export const theme = {
 				hovered: `var(--ds-surface-raised-hovered, ${N30})`,
 				pressed: `var(--ds-surface-raised-pressed, ${N40})`,
 			},
-			sunken: `var(--ds-surface-sunken, ${N10})`,
+			sunken: `var(--ds-surface-sunken, ${N0})`,
 		},
 
 		transparent: colors.transparent,
@@ -99,14 +99,14 @@ export const theme = {
 		},
 
 		neutral: {
-			DEFAULT: `var(--ds-background-neutral, ${N20A})`,
+			DEFAULT: `var(--ds-background-neutral, ${N30A})`,
+			hovered: `var(--ds-background-neutral-hovered, ${N40A})`,
+			pressed: `var(--ds-background-neutral-pressed, ${N50A})`,
 			full: {
 				DEFAULT: `var(--ds-background-neutral, ${N200})`,
 				hovered: `var(--ds-background-neutral-hovered, ${N300})`,
 				pressed: `var(--ds-background-neutral-pressed, ${N400})`,
 			},
-			hovered: `var(--ds-background-neutral-hovered, ${N30A})`,
-			pressed: `var(--ds-background-neutral-pressed, ${N40A})`,
 			bold: {
 				DEFAULT: `var(--ds-neutral-bold, ${N50})`,
 				hovered: `var(--ds-neutral-bold-hovered, ${N60})`,
@@ -205,7 +205,7 @@ export const theme = {
 		},
 
 		border: {
-			DEFAULT: `var(--ds-border, ${N50A})`,
+			DEFAULT: `var(--ds-border, ${N40A})`,
 			bold: `var(--ds-border-bold, ${N500A})`,
 		},
 		icon: {

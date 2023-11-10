@@ -24,7 +24,7 @@ type CheckboxProps = {
 }
 
 const checkBoxStyles =
-	"outline-brand-hovered focus:border-brand-hovered mx-2 ease-linear duration-100 transition-colors flex flex-none h-[1.3rem] w-[1.3rem] cursor-default items-center rounded-sm border-2 outline-none outline-0 outline-offset-0 focus:border-2 disabled:border-disabled invalid:border-danger-bold" as const
+	"outline-brand-hovered box-border focus:border-brand-hovered mx-2 ease-linear duration-100 transition-colors flex flex-none h-[14px] w-[14px] cursor-default items-center justify-center rounded-sm border-[2.5px] outline-none outline-0 outline-offset-0 focus:border-2 disabled:border-disabled invalid:border-danger-bold" as const
 
 const checkBoxCheckedStyles = "text-brand-bold border-brand-hovered" as const
 const checkBoxUncheckedStyles = "border-border" as const
@@ -103,12 +103,16 @@ function Checkbox({
 					checked ? checkBoxCheckedStyles : checkBoxUncheckedStyles
 				} `}
 			>
-				<RCheckbox.Indicator className="box-border flex h-4 w-4 flex-none items-center justify-center">
+				<RCheckbox.Indicator className="relative box-border flex h-4 w-4 flex-none items-center justify-center">
 					{typeof checked === "boolean" && checked === true && (
-						<CheckboxIcon label="" />
+						<div className="absolute inset-0 flex items-center justify-center">
+							<CheckboxIcon label="" />
+						</div>
 					)}
 					{checked === indeterminateState && (
-						<CheckboxIndeterminateIcon label="" />
+						<div className="absolute inset-0 flex items-center justify-center">
+							<CheckboxIndeterminateIcon label="" />
+						</div>
 					)}
 				</RCheckbox.Indicator>
 			</RCheckbox.Root>
