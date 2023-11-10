@@ -202,7 +202,9 @@ function ItemRadio({
 		>
 			<div
 				className={twMerge(
-					"border-border relative mr-6 flex h-5 w-5 flex-none items-center justify-center rounded-full border-2",
+					`${
+						isSelected ? "border-brand-bold" : "border-border"
+					} relative mr-6 flex h-3 w-3 flex-none items-center justify-center rounded-full border-2`,
 				)}
 			>
 				{isSelected && (
