@@ -139,7 +139,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 			selectableValues: ["apple", "banana", "orange"],
 			selectedValues,
 		},
-		{
+		/*{
 			attributeName: "Vegetables",
 			availableValues: ["tomato", "carrot", "cucumber", "potato"],
 			selectableValues: ["tomato", "carrot", "cucumber"],
@@ -150,13 +150,22 @@ function FiltersShowcase(props: ShowcaseProps) {
 			availableValues: ["water", "cola", "juice", "beer"],
 			selectableValues: ["water", "cola", "juice"],
 			selectedValues: ["water", "cola"],
-		},
+		},*/
 	]
 
 	const filterCardsExample = (
 		<FilterCards
 			filters={filters}
 			onAttributeClick={(cat, attr) => {
+				if (cat !== "Ice Creams") {
+					console.info(
+						"onAttributeClick",
+						cat,
+						attr,
+						"only Ice Cream is supported",
+					)
+					return
+				}
 				setSelectedValues((old) => {
 					const newSelected = [...old]
 					const index = newSelected.indexOf(attr)
@@ -167,6 +176,19 @@ function FiltersShowcase(props: ShowcaseProps) {
 					}
 					return newSelected
 				})
+			}}
+			onSelectedChanged={(cat, attrs) => {
+				if (cat !== "Ice Creams") {
+					console.info(
+						"onAttributeClick",
+						cat,
+						attrs,
+						"only Ice Cream is supported",
+					)
+					return
+				}
+				console.log("onSelectedChanged", attrs)
+				setSelectedValues(attrs)
 			}}
 			className="max-h-[20rem]"
 		/>

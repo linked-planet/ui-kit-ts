@@ -59,6 +59,11 @@ export function FilterCard({
 		[debounceHelper],
 	)
 
+	const placeHolder =
+		selectedValues.length > 0
+			? selectedValues.join(", ")
+			: filter.attributeName
+
 	return useMemo(
 		() => (
 			<div
@@ -73,12 +78,13 @@ export function FilterCard({
 				>
 					<fieldset className="flex min-w-[1rem] flex-1 items-center">
 						<input
+							title={placeHolder}
 							ref={inputRef}
 							required
 							type="text"
-							placeholder={filter.attributeName}
+							placeholder={placeHolder}
 							className={`focus:bg-surface  focus:border-border placeholder:text-text focus:placeholder:text-disabled-text peer relative min-w-0 flex-1 truncate  bg-transparent px-0.5 outline-none transition-transform duration-100 ease-in-out focus:translate-y-0 focus:border ${
-								searchString
+								searchString || selectedValues.length > 0
 									? "translate-y-0"
 									: "-translate-y-1.5"
 							}`}
@@ -88,7 +94,9 @@ export function FilterCard({
 						{/* seems like that the peer-* dependent property needs to be after the peer tailwind definition usage */}
 						<legend
 							className={`text-text-subtle h-3 pl-0.5 text-[0.6rem] font-light transition duration-300 ease-in-out peer-focus:opacity-100 ${
-								searchString ? "opacity-100" : "opacity-0"
+								searchString || selectedValues.length > 0
+									? "opacity-100"
+									: "opacity-0"
 							}`}
 						>
 							{filter.attributeName}
@@ -110,13 +118,19 @@ export function FilterCard({
 						) : (
 							<EditorSearchIcon label="Search" />
 						)}
-						<div
-							className={`text-text-inverse bg-danger-bold flex items-center justify-center rounded text-xs duration-1000 ease-in-out ${
-								!selectedValues.length ? "w-0" : "w-5"
-							}`}
-						>
-							{selectedValues.length ? selectedValues.length : ""}
-						</div>
+					</div>
+					<div
+						className={`text-text-inverse hover:bg-danger-bold-hovered active:bg-danger-bold-pressed bg-danger-bold flex cursor-pointer items-center justify-center rounded text-xs duration-150 ease-in-out active:scale-90 ${
+							!selectedValues.length ? "w-0" : "w-5"
+						}`}
+						onClick={() => {
+							if (selectedValues.length === 0) return
+							console.log("WARG")
+							onSelectedChanged?.(filter.attributeName, [])
+						}}
+						title="klick löscht die Auswahl"
+					>
+						{selectedValues.length ? selectedValues.length : ""}
 					</div>
 				</div>
 				<div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
@@ -187,6 +201,7 @@ export function FilterCard({
 			onAttributeClick,
 			onSearchInputChange,
 			onSelectedChanged,
+			placeHolder,
 			searchString,
 			selectableValues,
 			selectedValues,
