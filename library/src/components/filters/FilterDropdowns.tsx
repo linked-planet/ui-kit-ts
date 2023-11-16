@@ -10,11 +10,14 @@ import { twMerge } from "tailwind-merge"
 export function FilterDropdown({
 	filter,
 	onAttributeClick,
+	onSelectedChanged,
 }: {
 	filter: FilterType
 	onAttributeClick?: (filterIdent: string, attribute: string) => void
+	onSelectedChanged?: (filterIdent: string, attributes: string[]) => void
 }) {
 	const { availableValues, selectedValues, selectableValues } = filter
+	console.log("SELECTED", selectedValues)
 
 	const available = useMemo(
 		() =>
@@ -37,6 +40,10 @@ export function FilterDropdown({
 
 	const onChange = useCallback(
 		(filterValues: MultiValue<{ label: string; value: string }>) => {
+			onSelectedChanged?.(
+				filter.attributeName,
+				filterValues?.map((it) => it.value),
+			)
 			if (!onAttributeClick) {
 				return
 			}
@@ -55,7 +62,12 @@ export function FilterDropdown({
 				onAttributeClick(filter.attributeName, selectedValue)
 			}
 		},
-		[filter.attributeName, onAttributeClick, selectedValues],
+		[
+			filter.attributeName,
+			onAttributeClick,
+			onSelectedChanged,
+			selectedValues,
+		],
 	)
 
 	return useMemo(
@@ -84,11 +96,13 @@ export function FilterDropdown({
 export function FilterDropdowns({
 	filters,
 	onAttributeClick,
+	onSelectedChanged,
 	className,
 	style,
 }: {
 	filters: readonly FilterType[]
 	onAttributeClick?: (filterCategory: string, attribute: string) => void
+	onSelectedChanged?: (filterCategory: string, attributes: string[]) => void
 	className?: string
 	style?: React.CSSProperties
 }) {
@@ -101,9 +115,10 @@ export function FilterDropdowns({
 				key={filter.attributeName}
 				filter={filter}
 				onAttributeClick={onAttributeClick}
+				onSelectedChanged={onSelectedChanged}
 			/>
 		))
-	}, [filters, onAttributeClick])
+	}, [filters, onAttributeClick, onSelectedChanged])
 
 	return (
 		<div

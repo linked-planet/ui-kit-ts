@@ -139,7 +139,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 			selectableValues: ["apple", "banana", "orange"],
 			selectedValues,
 		},
-		/*{
+		{
 			attributeName: "Vegetables",
 			availableValues: ["tomato", "carrot", "cucumber", "potato"],
 			selectableValues: ["tomato", "carrot", "cucumber"],
@@ -150,7 +150,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 			availableValues: ["water", "cola", "juice", "beer"],
 			selectableValues: ["water", "cola", "juice"],
 			selectedValues: ["water", "cola"],
-		},*/
+		},
 	]
 
 	const filterCardsExample = (
@@ -196,11 +196,39 @@ function FiltersShowcase(props: ShowcaseProps) {
 	//#endregion filtercards
 
 	//#region filterdropdown
-	const filterDropdownExample = <FilterDropdown filter={filter} />
+	const filterDropdownExample = (
+		<FilterDropdown
+			filter={filter}
+			onAttributeClick={(cat, attr) => {
+				console.log("CLICK", cat, attr)
+			}}
+			onSelectedChanged={(cat, attrs) => {
+				console.log("SET", attrs)
+				setSelectedValues(attrs)
+			}}
+		/>
+	)
 	//#endregion filterdropdown
 
 	//#region filterdropdowns
-	const filterDropdownsExample = <FilterDropdowns filters={filters} />
+	const filterDropdownsExample = (
+		<FilterDropdowns
+			filters={filters}
+			onSelectedChanged={(cat, attrs) => {
+				if (cat !== "Ice Creams") {
+					console.info(
+						"onAttributeClick",
+						cat,
+						attrs,
+						"only Ice Cream is supported",
+					)
+					return
+				}
+				console.log("onSelectedChanged", attrs)
+				setSelectedValues(attrs)
+			}}
+		/>
+	)
 	//#endregion filterdropdowns
 
 	return (

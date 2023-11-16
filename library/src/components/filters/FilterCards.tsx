@@ -1,4 +1,4 @@
-import { useDebounceHelper } from "@linked-planet/ui-kit-ts/utils"
+import { useDebounceHelper } from "../../utils"
 import React, {
 	ChangeEvent,
 	useCallback,

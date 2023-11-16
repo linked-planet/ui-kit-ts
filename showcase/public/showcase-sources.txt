@@ -1980,6 +1980,15 @@ function FiltersShowcase(props: ShowcaseProps) {
 		<FilterCards
 			filters={filters}
 			onAttributeClick={(cat, attr) => {
+				if (cat !== "Ice Creams") {
+					console.info(
+						"onAttributeClick",
+						cat,
+						attr,
+						"only Ice Cream is supported",
+					)
+					return
+				}
 				setSelectedValues((old) => {
 					const newSelected = [...old]
 					const index = newSelected.indexOf(attr)
@@ -1991,17 +2000,58 @@ function FiltersShowcase(props: ShowcaseProps) {
 					return newSelected
 				})
 			}}
+			onSelectedChanged={(cat, attrs) => {
+				if (cat !== "Ice Creams") {
+					console.info(
+						"onAttributeClick",
+						cat,
+						attrs,
+						"only Ice Cream is supported",
+					)
+					return
+				}
+				console.log("onSelectedChanged", attrs)
+				setSelectedValues(attrs)
+			}}
 			className="max-h-[20rem]"
 		/>
 	)
 	//#endregion filtercards
 
 	//#region filterdropdown
-	const filterDropdownExample = <FilterDropdown filter={filter} />
+	const filterDropdownExample = (
+		<FilterDropdown
+			filter={filter}
+			onAttributeClick={(cat, attr) => {
+				console.log("CLICK", cat, attr)
+			}}
+			onSelectedChanged={(cat, attrs) => {
+				console.log("SET", attrs)
+				setSelectedValues(attrs)
+			}}
+		/>
+	)
 	//#endregion filterdropdown
 
 	//#region filterdropdowns
-	const filterDropdownsExample = <FilterDropdowns filters={filters} />
+	const filterDropdownsExample = (
+		<FilterDropdowns
+			filters={filters}
+			onSelectedChanged={(cat, attrs) => {
+				if (cat !== "Ice Creams") {
+					console.info(
+						"onAttributeClick",
+						cat,
+						attrs,
+						"only Ice Cream is supported",
+					)
+					return
+				}
+				console.log("onSelectedChanged", attrs)
+				setSelectedValues(attrs)
+			}}
+		/>
+	)
 	//#endregion filterdropdowns
 
 	return (
@@ -5003,7 +5053,7 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-//import AKToggle from "@atlaskit/toggle"
+import AKToggle from "@atlaskit/toggle"
 import { Toggle } from "@linked-planet/ui-kit-ts"
 
 function ToggleShowcase(props: ShowcaseProps) {
@@ -5011,13 +5061,13 @@ function ToggleShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<>
-			{/*<AKToggle
-			label="test label"
-			name="test name"
-			value="test value"
-			isChecked={isToggleActive}
-			onChange={() => setIsToggleActive(!isToggleActive)}
-	/>*/}
+			<AKToggle
+				label="test label"
+				name="test name"
+				value="test value"
+				isChecked={isToggleActive}
+				onChange={() => setIsToggleActive(!isToggleActive)}
+			/>
 		</>
 	)
 

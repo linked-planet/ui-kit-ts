@@ -105,9 +105,9 @@ export const theme = {
 			hovered: `var(--ds-background-neutral-hovered, ${N40A})`,
 			pressed: `var(--ds-background-neutral-pressed, ${N50A})`,
 			full: {
-				DEFAULT: `var(--ds-background-neutral, ${N200})`,
-				hovered: `var(--ds-background-neutral-hovered, ${N300})`,
-				pressed: `var(--ds-background-neutral-pressed, ${N400})`,
+				DEFAULT: `var(--ds-background-neutral-bold, ${N200})`,
+				hovered: `var(--ds-background-neutral-bold-hovered, ${N300})`,
+				pressed: `var(--ds-background-neutral-bold-pressed, ${N400})`,
 			},
 			bold: {
 				DEFAULT: `var(--ds-neutral-bold, ${N50})`,

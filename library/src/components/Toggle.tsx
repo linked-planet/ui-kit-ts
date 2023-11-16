@@ -35,7 +35,7 @@ export function Toggle({
 		<Switch.Root
 			id={id}
 			className={twMerge(
-				"bg-neutral-full hover:bg-neutral-full-pressed data-[state=checked]:bg-success-bold-hovered data-[state=checked]:hover:bg-success-bold-pressed relative mx-2 flex h-[16px] w-[32px] items-center overflow-hidden rounded-full p-0.5",
+				"bg-neutral-full hover:bg-neutral-full-pressed data-[state=checked]:bg-success-bold-hovered data-[state=checked]:hover:bg-success-bold-pressed relative mx-1.5 flex h-[15px] w-[32px] items-center overflow-hidden rounded-full",
 				className,
 			)}
 			style={style}
@@ -49,11 +49,11 @@ export function Toggle({
 			onBlur={onBlur}
 			onFocus={onFocus}
 		>
-			<span className="text-text-inverse flex h-4 w-5 flex-none items-center justify-center">
+			<span className="text-icon-inverse flex flex-none items-center justify-center">
 				<EditorDoneIcon label="" size="small" />
 			</span>
-			<Switch.Thumb className="bg-text-inverse text-text absolute my-auto block h-[12px] w-[12px] translate-x-[0.5px] rounded-full transition-transform duration-150 will-change-transform data-[state=checked]:translate-x-[16px]" />
-			<span className="text-text-inverse flex h-4 w-5 items-center justify-center">
+			<Switch.Thumb className="bg-icon-inverse text-text absolute left-[2px] my-auto block h-[12px]  w-[12px] rounded-full transition-transform duration-150 will-change-transform data-[state=checked]:translate-x-[16px]" />
+			<span className="text-icon-inverse flex items-center justify-center">
 				<EditorCloseIcon label="" size="small" />
 			</span>
 		</Switch.Root>
