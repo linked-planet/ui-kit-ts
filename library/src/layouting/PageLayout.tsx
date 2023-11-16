@@ -14,7 +14,7 @@ const Page = ({
 }) => (
 	<div
 		className={twMerge(
-			"flex h-full min-h-0 flex-col overflow-hidden",
+			"flex h-full min-h-0 w-full flex-col overflow-hidden",
 			className,
 		)}
 		id={id}
@@ -38,7 +38,7 @@ const PageHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			`border-border bg-surface z-10 flex flex-col border-b pb-1 pl-4 pr-4 pt-3 ${
+			`border-border bg-surface z-[1] flex flex-col border-b pb-1 pl-4 pr-4 pt-3 ${
 				shadow ? "shadow-overflow" : ""
 			}`,
 			className,

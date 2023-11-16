@@ -36,9 +36,9 @@ const CardBase = ({
 			open={openVal}
 			defaultOpen={defaultOpen}
 			onChanged={onOpenChanged}
-			headerContainerClassName={`border-border box-border border-b bg-surface-sunken`}
+			headerContainerClassName={`border-border border box-border rounded-t`}
 		>
-			<div className="border-border bg-surface box-border flex rounded-b border-x border-b">
+			<div className="bg-surface-sunken border-border box-border flex rounded-b border-x border-b">
 				{children}
 			</div>
 		</Collapsible>

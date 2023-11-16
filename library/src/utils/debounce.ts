@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useRef } from "react"
 
 /**
  * The debounceHelper function returns a debounced version of a callback function that will only be
@@ -10,7 +10,8 @@ import { useEffect, useRef, useState } from "react"
 export function debounceHelper() {
 	let timer: number | null = null
 
-	return (cb: () => void, delay: number) => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return (cb: (...args: any[]) => void, delay: number, ...args: any[]) => {
 		if (timer) {
 			clearTimeout(timer)
 		}
@@ -20,7 +21,7 @@ export function debounceHelper() {
 		}
 
 		timer = setTimeout(() => {
-			cb()
+			cb(...args)
 			timer = null
 		}, delay)
 	}

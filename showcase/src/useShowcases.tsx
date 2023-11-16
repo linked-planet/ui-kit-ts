@@ -38,6 +38,7 @@ import ToggleShowcase from "./components/showcase/wrapper/ToggleShowcase"
 import TooltipShowcase from "./components/showcase/wrapper/TooltipShowcase"
 import UtilsShowcase from "./components/showcase/wrapper/UtilsShowcase"
 import IconSizeHelperShowcase from "./components/showcase/wrapper/IconSizeHelperShowcase"
+import { SidebarShowcase } from "./components/showcase/wrapper/SidebarShowcase"
 
 export default function useShowcases({
 	overallSourceCode,
@@ -107,6 +108,7 @@ export default function useShowcases({
 			),
 			Popup: <PopupShowcase overallSourceCode={overallSourceCode} />,
 			Select: <SelectShowcase overallSourceCode={overallSourceCode} />,
+			Sidebar: <SidebarShowcase overallSourceCode={overallSourceCode} />,
 			Tabs: <TabsShowcase overallSourceCode={overallSourceCode} />,
 			Tag: <TagShowcase overallSourceCode={overallSourceCode} />,
 			"Dynamic Table": (

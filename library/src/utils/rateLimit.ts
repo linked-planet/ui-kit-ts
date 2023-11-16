@@ -12,11 +12,12 @@ export function rateLimitHelper(minDistanceMS: number) {
 		throw new Error("minDistanceMS must be positive and above 0")
 	}
 
-	return (cb: () => void) => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	return (cb: (...args: any[]) => any, ...args: any[]) => {
 		const now = Date.now()
 
 		if (now - lastTime > minDistanceMS) {
-			cb()
+			cb(...args)
 			lastTime = now
 		}
 	}

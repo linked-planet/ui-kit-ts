@@ -60,11 +60,11 @@ export function Collapsible({
 			open={open}
 			defaultOpen={defaultOpen}
 			onOpenChange={openCB}
-			className={twMerge("border-border rounded border", className)}
+			className={twMerge("rounded", className)}
 		>
 			<div
 				className={twMerge(
-					"border-border bg-surface-raised flex",
+					"bg-surface-raised flex",
 					headerContainerClassName,
 				)}
 				style={headerContainerStyle}
