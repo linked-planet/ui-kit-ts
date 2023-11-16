@@ -36,7 +36,7 @@ const CardBase = ({
 			open={openVal}
 			defaultOpen={defaultOpen}
 			onChanged={onOpenChanged}
-			headerContainerClassName={`border-border border box-border rounded-t`}
+			headerContainerClassName={`border-border border box-border rounded-t overflow-hidden`}
 		>
 			<div className="bg-surface-sunken border-border box-border flex rounded-b border-x border-b">
 				{children}
@@ -109,32 +109,38 @@ const cardBodyEntryBaseStyle = css`
 	}
 `
 const CardGridBody = ({ children }: { children: React.ReactNode }) => (
-	<div
-		className={`grid border-collapse overflow-auto ${cardBodyEntryBaseStyle} ${css`
-			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-		`}`}
-	>
-		{children}
+	<div className="overflow-hidden rounded-b">
+		<div
+			className={`grid border-collapse overflow-auto ${cardBodyEntryBaseStyle} ${css`
+				grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+			`}`}
+		>
+			{children}
+		</div>
 	</div>
 )
 
 const CardRowBody = ({ children }: { children: React.ReactNode }) => (
-	<div
-		className={`grid border-collapse grid-flow-col overflow-x-auto overflow-y-hidden ${cardBodyEntryBaseStyle} ${css`
-			grid-auto-columns: minmax(150px, 1fr);
-		`}`}
-	>
-		{children}
+	<div className="overflow-hidden rounded-b">
+		<div
+			className={`grid border-collapse grid-flow-col overflow-x-auto overflow-y-hidden ${cardBodyEntryBaseStyle} ${css`
+				grid-auto-columns: minmax(150px, 1fr);
+			`}`}
+		>
+			{children}
+		</div>
 	</div>
 )
 
 const CardColumnBody = ({ children }: { children: React.ReactNode }) => (
-	<div
-		className={`grid border-collapse grid-flow-row overflow-auto ${cardBodyEntryBaseStyle} ${css`
-			grid-auto-rows: minmax(150px, 1fr);
-		`}`}
-	>
-		{children}
+	<div className="overflow-hidden rounded-b">
+		<div
+			className={`grid border-collapse grid-flow-row overflow-auto ${cardBodyEntryBaseStyle} ${css`
+				grid-auto-rows: minmax(150px, 1fr);
+			`}`}
+		>
+			{children}
+		</div>
 	</div>
 )
 
@@ -172,6 +178,7 @@ type BookCardProps = {
 	defaultOpen?: boolean
 	bodyLayout: "row" | "grid" | "column"
 	bodyStyle?: CSSProperties
+	bodyClassName?: string
 	actions?: React.ReactNode
 	actionsInfo?: React.ReactNode
 	children?: React.ReactNode
@@ -186,6 +193,7 @@ export function BookCard({
 	actions,
 	actionsInfo,
 	bodyStyle,
+	bodyClassName,
 	bodyLayout,
 	children,
 	onOpenChanged,
@@ -227,14 +235,10 @@ export function BookCard({
 				</CardHeader>
 			}
 		>
-			<div
-				className="m-[-1px] box-border rounded-b"
-				style={{
-					width: "calc(100% + 2px)",
-					height: "calc(100% + 2px)",
-				}}
-			>
-				<div style={bodyStyle}>{body}</div>
+			<div className="bg-surface box-border w-full rounded-b">
+				<div style={bodyStyle} className={bodyClassName}>
+					{body}
+				</div>
 			</div>
 		</CardBase>
 	)

@@ -60,28 +60,35 @@ export function Collapsible({
 			open={open}
 			defaultOpen={defaultOpen}
 			onOpenChange={openCB}
-			className={twMerge("rounded", className)}
+			className={twMerge("bg-surface-sunken rounded", className)}
 		>
-			<div
-				className={twMerge(
-					"bg-surface-raised flex",
-					headerContainerClassName,
-				)}
-				style={headerContainerStyle}
+			<CollapsibleRUI.Trigger
+				className={`flex w-full flex-1 items-center justify-start ${
+					openButtonPosition === "hidden" ? "cursor-default" : ""
+				}`}
 			>
-				<CollapsibleRUI.Trigger
-					className={`flex flex-1 items-center overflow-hidden ${
-						openButtonPosition === "hidden" ? "cursor-default" : ""
-					}`}
+				{openButtonPosition === "left" && (
+					<div className="flex h-full flex-none items-center justify-center">
+						{chevron}
+					</div>
+				)}
+				<div
+					className={twMerge(
+						"flex flex-1 justify-start",
+						headerContainerClassName,
+					)}
+					style={headerContainerStyle}
 				>
-					{openButtonPosition === "left" && <>{chevron}</>}
 					{header}
-					{openButtonPosition === "right" && <>{chevron}</>}
-				</CollapsibleRUI.Trigger>
-			</div>
-			<CollapsibleRUI.Content className="bg-surface-raised">
-				{children}
-			</CollapsibleRUI.Content>
+				</div>
+				{openButtonPosition === "right" && (
+					<div className="flex h-full flex-none items-center justify-center">
+						{chevron}
+					</div>
+				)}
+			</CollapsibleRUI.Trigger>
+
+			<CollapsibleRUI.Content>{children}</CollapsibleRUI.Content>
 		</CollapsibleRUI.Root>
 	)
 }

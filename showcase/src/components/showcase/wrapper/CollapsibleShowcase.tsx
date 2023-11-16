@@ -7,11 +7,7 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 	//#region collapsible
 	const example = (
 		<Collapsible
-			header={
-				<div>
-					<h4>Collapsible Title</h4>
-				</div>
-			}
+			header={<h4>Collapsible Title</h4>}
 			openButtonPosition="left"
 		>
 			<div className="p-4">collapsible content</div>
@@ -23,7 +19,7 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 	const example1 = (
 		<Collapsible
 			header={
-				<div className="m-auto p-2">
+				<div className="p-2">
 					<h2>Collapsible Title</h2>
 				</div>
 			}

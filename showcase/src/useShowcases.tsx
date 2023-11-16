@@ -39,6 +39,7 @@ import TooltipShowcase from "./components/showcase/wrapper/TooltipShowcase"
 import UtilsShowcase from "./components/showcase/wrapper/UtilsShowcase"
 import IconSizeHelperShowcase from "./components/showcase/wrapper/IconSizeHelperShowcase"
 import { SidebarShowcase } from "./components/showcase/wrapper/SidebarShowcase"
+import FiltersShowcase from "./components/showcase/wrapper/FiltersShowcase"
 
 export default function useShowcases({
 	overallSourceCode,
@@ -84,6 +85,7 @@ export default function useShowcases({
 				<EmptyStateShowcase overallSourceCode={overallSourceCode} />
 			),
 			Flag: <FlagShowcase overallSourceCode={overallSourceCode} />,
+			Filters: <FiltersShowcase overallSourceCode={overallSourceCode} />,
 			Form: <FormShowcase overallSourceCode={overallSourceCode} />,
 			Icon: <IconShowcase overallSourceCode={overallSourceCode} />,
 			"Icon Size Helper": (

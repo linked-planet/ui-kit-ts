@@ -209,11 +209,7 @@ function ShowCaseExample({
 				<div className={styles.example}>{example}</div>
 			)}
 			{content === "source" && (
-				<div
-					style={{
-						padding: "0px",
-					}}
-				>
+				<div>
 					{!code && <span>No sources found...</span>}
 					{code && (
 						<div>

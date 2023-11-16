@@ -44,6 +44,8 @@ import {
 	N400,
 	N300,
 	N50A,
+	N600,
+	N500,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -70,20 +72,20 @@ export const theme = {
 		},
 
 		surface: {
-			DEFAULT: `var(--ds-surface, ${N10})`,
+			DEFAULT: `var(--ds-surface, ${N0})`,
 			hovered: `var(--ds-surface-hovered, ${N10})`,
 			pressed: `var(--ds-surface-pressed, ${N20})`,
 			overlay: {
 				DEFAULT: `var(--ds-surface-overlay, ${N0})`,
-				hovered: `var(--ds-surface-overlay-hovered, ${N20})`,
-				pressed: `var(--ds-surface-overlay-pressed, ${N30})`,
+				hovered: `var(--ds-surface-overlay-hovered, ${N10})`,
+				pressed: `var(--ds-surface-overlay-pressed, ${N20})`,
 			},
 			raised: {
-				DEFAULT: `var(--ds-surface-raised, ${N20})`,
-				hovered: `var(--ds-surface-raised-hovered, ${N30})`,
-				pressed: `var(--ds-surface-raised-pressed, ${N40})`,
+				DEFAULT: `var(--ds-surface-raised, ${N0})`,
+				hovered: `var(--ds-surface-raised-hovered, ${N10})`,
+				pressed: `var(--ds-surface-raised-pressed, ${N20})`,
 			},
-			sunken: `var(--ds-surface-sunken, ${N0})`,
+			sunken: `var(--ds-surface-sunken, ${N20})`,
 		},
 
 		transparent: colors.transparent,
@@ -121,12 +123,12 @@ export const theme = {
 
 		selected: {
 			DEFAULT: `var(--ds-background-selected, ${N700})`,
-			hovered: `var(--ds-background-selected-hovered, ${B500})`,
-			pressed: `var(--ds-background-selected-pressed, ${B400})`,
+			hovered: `var(--ds-background-selected-hovered, ${N600})`,
+			pressed: `var(--ds-background-selected-pressed, ${N500})`,
 			bold: {
-				DEFAULT: `var(--ds-background-selected-bold, ${B400})`,
-				hovered: `var(--ds-background-selected-bold-hovered, ${B500})`,
-				pressed: `var(--ds-background-selected-bold-pressed, ${B400})`,
+				DEFAULT: `var(--ds-background-selected-bold, ${B300})`,
+				hovered: `var(--ds-background-selected-bold-hovered, ${B400})`,
+				pressed: `var(--ds-background-selected-bold-pressed, ${B500})`,
 			},
 			text: `var(--ds-text-selected, ${N0})`,
 			border: `var(--ds-border-selected, ${B400})`,
