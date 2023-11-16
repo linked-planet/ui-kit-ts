@@ -17,7 +17,6 @@ export function FilterDropdown({
 	onSelectedChanged?: (filterIdent: string, attributes: string[]) => void
 }) {
 	const { availableValues, selectedValues, selectableValues } = filter
-	console.log("SELECTED", selectedValues)
 
 	const available = useMemo(
 		() =>

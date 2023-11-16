@@ -213,7 +213,7 @@ const PageBodyHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-neutral-subtle shadow-overflow z-0 pb-1 pl-4 pr-4 pt-1",
+			"bg-surface shadow-overflow z-0 pb-1 pl-4 pr-4 pt-1",
 			className,
 		)}
 		id={id}
@@ -236,7 +236,7 @@ const PageBodyFooter = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-neutral-subtle border-border shadow-overflow flex justify-center border-t pt-1",
+			"bg-surface border-border shadow-overflow flex justify-center border-t pt-1",
 			className,
 		)}
 		id={id}

@@ -125,7 +125,6 @@ export function FilterCard({
 						}`}
 						onClick={() => {
 							if (selectedValues.length === 0) return
-							console.log("WARG")
 							onSelectedChanged?.(filter.attributeName, [])
 						}}
 						title="klick löscht die Auswahl"
@@ -220,12 +219,16 @@ export function FilterCards({
 	onSelectedChanged,
 	style,
 	className,
+	filterStyle,
+	filterClassName,
 }: {
 	filters: readonly FilterType[]
 	onAttributeClick?: (filterCategory: string, attribute: string) => void
 	onSelectedChanged?: (filterCategory: string, attributes: string[]) => void
 	style?: React.CSSProperties
 	className?: string
+	filterStyle?: React.CSSProperties
+	filterClassName?: string
 }) {
 	const filterCards = useMemo(
 		() =>
@@ -236,10 +239,18 @@ export function FilterCards({
 						filter={filter}
 						onAttributeClick={onAttributeClick}
 						onSelectedChanged={onSelectedChanged}
+						style={filterStyle}
+						className={filterClassName}
 					/>
 				)
 			}),
-		[filters, onAttributeClick, onSelectedChanged],
+		[
+			filterClassName,
+			filterStyle,
+			filters,
+			onAttributeClick,
+			onSelectedChanged,
+		],
 	)
 
 	return (
@@ -248,10 +259,7 @@ export function FilterCards({
 				"flex w-full flex-row gap-2 overflow-x-auto px-2 py-1",
 				className,
 			)}
-			style={{
-				scrollbarGutter: "stable both-edges",
-				...style,
-			}}
+			style={style}
 		>
 			{filterCards}
 		</div>
