@@ -66,26 +66,29 @@ export function Collapsible({
 				className={`flex w-full flex-1 items-center justify-start ${
 					openButtonPosition === "hidden" ? "cursor-default" : ""
 				}`}
+				asChild
 			>
-				{openButtonPosition === "left" && (
-					<div className="flex h-full flex-none items-center justify-center">
-						{chevron}
-					</div>
-				)}
-				<div
-					className={twMerge(
-						"flex flex-1 justify-start",
-						headerContainerClassName,
+				<div>
+					{openButtonPosition === "left" && (
+						<div className="flex h-full flex-none items-center justify-center">
+							{chevron}
+						</div>
 					)}
-					style={headerContainerStyle}
-				>
-					{header}
-				</div>
-				{openButtonPosition === "right" && (
-					<div className="flex h-full flex-none items-center justify-center">
-						{chevron}
+					<div
+						className={twMerge(
+							"flex flex-1 justify-start",
+							headerContainerClassName,
+						)}
+						style={headerContainerStyle}
+					>
+						{header}
 					</div>
-				)}
+					{openButtonPosition === "right" && (
+						<div className="flex h-full flex-none items-center justify-center">
+							{chevron}
+						</div>
+					)}
+				</div>
 			</CollapsibleRUI.Trigger>
 
 			<CollapsibleRUI.Content>{children}</CollapsibleRUI.Content>
