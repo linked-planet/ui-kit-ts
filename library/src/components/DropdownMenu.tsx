@@ -270,6 +270,16 @@ function SubMenu({
 	)
 }
 
+export type DropdownMenuProps = {
+	placement?: "bottom" | "top" | "left" | "right"
+	align?: "start" | "end" | "center"
+	open?: boolean
+	defaultOpen?: boolean
+	onOpenChange?: (open: boolean) => void
+	trigger: React.ReactNode
+	children: React.ReactNode
+}
+
 /**
  * Root of the dropdown menu, which contains the trigger and the content
  */
@@ -281,15 +291,7 @@ function Menu({
 	onOpenChange,
 	trigger,
 	children,
-}: {
-	placement?: "bottom" | "top" | "left" | "right"
-	align?: "start" | "end" | "center"
-	open?: boolean
-	defaultOpen?: boolean
-	onOpenChange?: (open: boolean) => void
-	trigger: React.ReactNode
-	children: React.ReactNode
-}) {
+}: DropdownMenuProps) {
 	const contentRef = useRef<HTMLDivElement>(null)
 
 	const [opened, setOpened] = useState(

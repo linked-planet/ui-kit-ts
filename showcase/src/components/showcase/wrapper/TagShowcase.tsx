@@ -2,14 +2,25 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-//import { SimpleTag as AKSimpleTag } from "@atlaskit/tag"
+//import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
 //import AKTagGroup from "@atlaskit/tag-group"
-import { TagGroup, SimpleTag } from "@linked-planet/ui-kit-ts"
+import { TagGroup, SimpleTag, Tag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
 		<>
 			{/*<AKTagGroup alignment="end">
+				<AKTag
+					onBeforeRemoveAction={() => {
+						console.log("ON BEFORE REMOVE")
+						return true
+					}}
+					onAfterRemoveAction={(str) =>
+						console.log("ON AFTER REMOVE", str)
+					}
+					text="Removable Tag"
+				/>
+				<AKTag isRemovable={false} text="Not Removable Tag" />
 				<AKSimpleTag text="Simple Tag" appearance="default" />
 				<AKSimpleTag
 					text="Colored simple Tag"
@@ -24,7 +35,7 @@ function TagShowcase(props: ShowcaseProps) {
 			</AKTagGroup>
 			<AKTagGroup>
 				<AKSimpleTag text="Simple Tag" color="blue" />
-	</AKTagGroup>*/}
+				</AKTagGroup>*/}
 		</>
 	)
 
@@ -32,6 +43,17 @@ function TagShowcase(props: ShowcaseProps) {
 	const lpExample = (
 		<>
 			<TagGroup alignment="end">
+				<Tag
+					onBeforeRemoveAction={() => {
+						console.log("ON BEFORE REMOVE")
+						return false
+					}}
+					onAfterRemoveAction={(str) =>
+						console.log("ON AFTER REMOVE", str)
+					}
+					text="Removable Tag"
+				/>
+				<Tag isRemovable={false} text="Not Removable Tag" />
 				<SimpleTag text="Simple Tag" />
 				<SimpleTag
 					text="Colored simple Tag"

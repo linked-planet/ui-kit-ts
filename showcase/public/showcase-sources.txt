@@ -4084,20 +4084,27 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Pagination from "@atlaskit/pagination"
+import { Pagination } from "@linked-planet/ui-kit-ts"
 
 function PaginationShowcase(props: ShowcaseProps) {
 	//#region pagination
 	const [selectedPage, setSelectedPage] = useState(0)
+	const [pageSize, setPageSize] = useState(10)
+
 	const example = (
 		<Pagination
 			pages={[...Array(10)].map((item, index) => {
 				return index + 1
 			})}
-			defaultSelectedIndex={0}
-			max={10}
-			selectedIndex={selectedPage}
-			onChange={(event, page) => setSelectedPage(page - 1)}
+			currentPage={selectedPage + 1}
+			setCurrentPage={(page) => setSelectedPage(page - 1)}
+			totalPages={10}
+			maxPageButtons={6}
+			pageSize={pageSize}
+			pageSizes={[10, 20, 50, 100]}
+			setPageSize={setPageSize}
+			pageSizeMenuPlacement="top"
+			pageSizeMenuAlignment="end"
 		/>
 	)
 	//#endregion pagination
@@ -4108,8 +4115,8 @@ function PaginationShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/pagination",
-					url: "https://atlassian.design/components/pagination/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single#Pagination",
 				},
 			]}
 			examples={[
@@ -4669,6 +4676,7 @@ function TagShowcase(props: ShowcaseProps) {
 	const lpExample = (
 		<>
 			<TagGroup alignment="end">
+				<Ta
 				<SimpleTag text="Simple Tag" />
 				<SimpleTag
 					text="Colored simple Tag"
