@@ -2,10 +2,10 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-/*import AKButton, {
+import AKButton, {
 	ButtonGroup as AKButtonGroup,
 	LoadingButton as AKLoadingButton,
-} from "@atlaskit/button"*/
+} from "@atlaskit/button"
 import { Button, LoadingButton, ButtonGroup } from "@linked-planet/ui-kit-ts"
 import SearchIcon from "@atlaskit/icon/glyph/search"
 
@@ -14,7 +14,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<>
-			{/*<AKButtonGroup>
+			<AKButtonGroup>
 				<AKButton
 					appearance="default"
 					onClick={() => console.log("Button pressed")}
@@ -93,7 +93,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 				>
 					Icon Loading Button
 				</AKLoadingButton>
-				</AKButtonGroup>*/}
+			</AKButtonGroup>
 		</>
 	)
 

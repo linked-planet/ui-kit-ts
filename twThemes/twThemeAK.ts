@@ -46,6 +46,7 @@ import {
 	N50A,
 	N600,
 	N500,
+	R300,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -172,8 +173,8 @@ export const theme = {
 			hovered: `var(--ds-background-danger-hovered, ${R100})`,
 			pressed: `var(--ds-background-danger-pressed, ${R200})`,
 			bold: {
-				DEFAULT: `var(--ds-background-danger-bold, ${R200})`,
-				hovered: `var(--ds-background-danger-bold-hovered, ${R400})`,
+				DEFAULT: `var(--ds-background-danger-bold, ${R400})`,
+				hovered: `var(--ds-background-danger-bold-hovered, ${R300})`,
 				pressed: `var(--ds-background-danger-bold-pressed, ${R500})`,
 			},
 			text: `var(--ds-text-danger, ${R400})`,
