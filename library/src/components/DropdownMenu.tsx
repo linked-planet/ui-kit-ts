@@ -1,6 +1,7 @@
 import React, { useMemo, useRef, useState } from "react"
 import * as RDd from "@radix-ui/react-dropdown-menu"
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
+import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
 import { Button } from "./Button"
@@ -275,9 +276,12 @@ export type DropdownMenuProps = {
 	align?: "start" | "end" | "center"
 	open?: boolean
 	defaultOpen?: boolean
+	isDisabled?: boolean
 	onOpenChange?: (open: boolean) => void
 	trigger: React.ReactNode
 	children: React.ReactNode
+	triggerStyle?: React.CSSProperties
+	triggerClassName?: string
 }
 
 /**
@@ -289,8 +293,11 @@ function Menu({
 	open,
 	defaultOpen,
 	onOpenChange,
+	isDisabled = false,
 	trigger,
 	children,
+	triggerStyle,
+	triggerClassName,
 }: DropdownMenuProps) {
 	const contentRef = useRef<HTMLDivElement>(null)
 
@@ -298,17 +305,29 @@ function Menu({
 		open != null ? open : defaultOpen ?? false,
 	)
 
-	const triggerNode: React.ReactNode = useMemo(() => {
-		if (typeof trigger === "string") {
+	const triggerNode = useMemo(() => {
+		if (
+			typeof trigger === "string" ||
+			typeof trigger === "number" ||
+			typeof trigger === "undefined"
+		) {
 			return (
-				<Button className="flex items-center">
+				<Button
+					className={triggerClassName}
+					style={triggerStyle}
+					isDisabled={isDisabled}
+				>
 					{trigger}
-					<ChevronDownIcon label="" />
+					{opened ? (
+						<ChevronUpIcon label="" />
+					) : (
+						<ChevronDownIcon label="" />
+					)}
 				</Button>
 			)
 		}
 		return trigger
-	}, [trigger])
+	}, [isDisabled, trigger, triggerClassName, triggerStyle])
 
 	return useMemo(
 		() => (
@@ -320,7 +339,7 @@ function Menu({
 					onOpenChange?.(!opened)
 				}}
 			>
-				<RDd.Trigger>{triggerNode}</RDd.Trigger>
+				<RDd.Trigger asChild>{triggerNode}</RDd.Trigger>
 				<RDd.Content
 					ref={contentRef}
 					className="bg-surface-overlay shadow-overlay z-50 overflow-auto rounded"

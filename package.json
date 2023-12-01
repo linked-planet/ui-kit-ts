@@ -16,7 +16,7 @@
 	],
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build:lib": "tsc --noEmit && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist/twThemes",
+		"build:lib": "tsc --noEmit && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist",
 		"build:sc": "node ./showcase/copySources.js && tsc --noEmit && vite build -c vite.config.showcase.ts && npm run messages:compile && node ./showcase/copyIndexTo404.js",
 		"preview": "npm run build:sc && vite preview -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
@@ -27,7 +27,8 @@
 		"messages:extract": "formatjs extract './library/src/**/*.{ts,tsx}' --ignore '**/*.d.ts' --out-file ./library/src/localization/translations/en.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
 		"messages:compile": "formatjs compile-folder library/src/localization/translations library/src/localization/translations-compiled && mkdir -p dist && mkdir -p dist-showcase && cp -r library/src/localization/translations-compiled dist/ && cp -r library/src/localization/translations-compiled showcase/public/",
 		"messages": "npm run messages:extract && npm run messages:compile",
-		"tsc": "tsc --noEmit"
+		"tsc": "tsc --noEmit",
+		"pack": "npm run build:lib && npm pack"
 	},
 	"author": "Markus Toepfer",
 	"contributors": [
@@ -58,7 +59,6 @@
 		]
 	},
 	"dependencies": {
-		"@atlaskit/button": "^16.17.7",
 		"@atlaskit/checkbox": "^13.0.1",
 		"@emotion/css": "^11.11.2",
 		"@radix-ui/react-avatar": "^1.0.4",
@@ -127,10 +127,10 @@
 		"@atlaskit/empty-state": "^7.6.4",
 		"@atlaskit/form": "^9.0.1",
 		"@atlaskit/icon": "^22.0.0",
-		"@atlaskit/lozenge": "^11.4.6",
+		"@atlaskit/lozenge": "^11.5.0",
 		"@atlaskit/menu": "^2.1.2",
 		"@atlaskit/modal-dialog": "^12.10.0",
-		"@atlaskit/page-layout": "^2.0.0",
+		"@atlaskit/page-layout": "^2.0.1",
 		"@atlaskit/pagination": "^14.4.16",
 		"@atlaskit/popup": "^1.11.5",
 		"@atlaskit/select": "^17.0.1",

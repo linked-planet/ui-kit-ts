@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react"
+import React, { CSSProperties, forwardRef } from "react"
 import { twMerge } from "tailwind-merge"
 import { InteractiveAppearance } from "../utils/appearanceTypes"
 import Spinner from "@atlaskit/spinner"
@@ -45,41 +45,50 @@ const ButtonStyles: { [style in InteractiveAppearance]: string } = {
 export const ButtonSelectedStyles =
 	"bg-selected text-selected-text active:bg-selected active:text-selected-text hover:bg-selected hover:text-selected-text cursor-pointer" as const
 
-export const Button = ({
-	label = "",
-	title = "",
-	appearance = "default",
-	iconBefore,
-	iconAfter,
-	isDisabled = false,
-	isSelected = false,
-	autoFocus = false,
-	style,
-	children,
-	className,
-	...props
-}: ButtonProps) => {
-	return (
-		<button
-			title={title}
-			autoFocus={autoFocus}
-			aria-label={label}
-			style={style}
-			className={twMerge(
-				ButtonStyles[appearance],
-				"disabled:bg-disabled disabled:text-disabled-text focus:outline-brand-hovered relative flex flex-shrink-0 items-center justify-center gap-1 rounded px-3 py-1 outline-1 outline-offset-2 disabled:cursor-not-allowed",
-				isSelected ? ButtonSelectedStyles : undefined,
-				className,
-			)}
-			disabled={isDisabled}
-			{...props}
-		>
-			{iconBefore}
-			{children}
-			{iconAfter}
-		</button>
-	)
-}
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+	(
+		{
+			label = "",
+			title = "",
+			appearance = "default",
+			iconBefore,
+			iconAfter,
+			isDisabled = false,
+			isSelected = false,
+			autoFocus = false,
+			style,
+			children,
+			className,
+			...props
+		}: ButtonProps,
+		ref,
+	) => {
+		return (
+			<button
+				ref={ref}
+				title={title}
+				autoFocus={autoFocus}
+				aria-label={label}
+				style={style}
+				className={twMerge(
+					ButtonStyles[appearance],
+					"disabled:bg-disabled disabled:text-disabled-text focus:outline-brand-hovered relative flex flex-shrink-0 items-center justify-center gap-1 rounded px-3 py-1 outline-1 outline-offset-2 disabled:cursor-not-allowed",
+					isSelected ? ButtonSelectedStyles : undefined,
+					className,
+				)}
+				disabled={isDisabled}
+				{...props}
+			>
+				{iconBefore}
+				{children}
+				{iconAfter}
+			</button>
+		)
+	},
+)
+
+Button.displayName = "LPButton"
+export { Button }
 
 export const LoadingButton = ({
 	isLoading = false,
