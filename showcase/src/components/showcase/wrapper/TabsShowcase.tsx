@@ -2,11 +2,11 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-/*import AKTabs, {
+import AKTabs, {
 	Tab as AKTab,
 	TabList as AKTabList,
 	TabPanel as AKTabPanel,
-} from "@atlaskit/tabs"*/
+} from "@atlaskit/tabs"
 
 import { Tabs, TabList, TabPanel, Tab, Button } from "@linked-planet/ui-kit-ts"
 
@@ -32,20 +32,22 @@ function AutomaticTabsValue() {
 function ExampleLabels() {
 	const akExample = (
 		<div style={{ minWidth: 300, border: "2px solid orange" }}>
-			{/*<AKTabs id="tab-example" defaultSelected={1}>
-				<AKTabList>
-					<AKTab>
-						<div>Tab 1</div>
-					</AKTab>
-					<AKTab>Tab 2</AKTab>
-				</AKTabList>
-				<AKTabPanel>
-					<span>First Content</span>
-				</AKTabPanel>
-				<AKTabPanel>
-					<span>Second Content</span>
-				</AKTabPanel>
-	</AKTabs>*/}
+			{
+				<AKTabs id="tab-example" defaultSelected={1}>
+					<AKTabList>
+						<AKTab>
+							<div>Tab 1</div>
+						</AKTab>
+						<AKTab>Tab 2</AKTab>
+					</AKTabList>
+					<AKTabPanel>
+						<span>First Content</span>
+					</AKTabPanel>
+					<AKTabPanel>
+						<span>Second Content</span>
+					</AKTabPanel>
+				</AKTabs>
+			}
 		</div>
 	)
 

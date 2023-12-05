@@ -47,6 +47,7 @@ import {
 	N600,
 	N500,
 	R300,
+	N800,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -58,7 +59,7 @@ export const theme = {
 		text: {
 			DEFAULT: `var(--ds-text, ${N900})`,
 			inverse: `var(--ds-text-inverse, ${N10})`,
-			subtle: `var(--ds-text-subtle, ${N90})`,
+			subtle: `var(--ds-text-subtle, ${N500})`,
 			subtlest: `var(--ds-text-subtlest, ${N200})`,
 
 			warning: {
@@ -131,13 +132,13 @@ export const theme = {
 				hovered: `var(--ds-background-selected-bold-hovered, ${B400})`,
 				pressed: `var(--ds-background-selected-bold-pressed, ${B500})`,
 			},
-			text: `var(--ds-text-selected, ${N0})`,
-			border: `var(--ds-border-selected, ${B400})`,
+			text: `var(--ds-text-selected, ${B400})`,
+			border: `var(--ds-border-selected, ${B500})`,
 			/* subtle only exists as an escape hedge against the difference between theme/no theme, and it provides a light background for selections in unthemed mode */
 			subtle: {
-				DEFAULT: `var(--ds-background-selected, ${N20})`,
-				hovered: `var(--ds-background-selected-hovered, ${N30})`,
-				pressed: `var(--ds-background-selected-pressed, ${N40})`,
+				DEFAULT: `var(--ds-background-selected, ${B50})`,
+				hovered: `var(--ds-background-selected-hovered, ${B75})`,
+				pressed: `var(--ds-background-selected-pressed, ${N30})`,
 				text: `var(--ds-text-selected, ${N900})`,
 			},
 		},
@@ -208,7 +209,7 @@ export const theme = {
 		},
 
 		border: {
-			DEFAULT: `var(--ds-border, ${N40A})`,
+			DEFAULT: `var(--ds-border, ${N30})`,
 			bold: `var(--ds-border-bold, ${N500A})`,
 		},
 		icon: {

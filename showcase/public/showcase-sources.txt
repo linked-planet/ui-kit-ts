@@ -1615,12 +1615,22 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 		</>
 	)
 
+	const lpExample2 = (
+		<>
+			<Dropdown.Menu trigger="Dropdown">
+				<Dropdown.Item>Test 1</Dropdown.Item>
+				<Dropdown.Item>Test 2</Dropdown.Item>
+			</Dropdown.Menu>
+		</>
+	)
+
 	//#endregion dropdown-menu
 
 	const example = (
 		<div className="flex gap-4">
 			{akExample}
 			{lpExample}
+			{lpExample2}
 		</div>
 	)
 
@@ -3943,8 +3953,6 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import SettingsIcon from "@atlaskit/icon/glyph/settings"
-
 function PageLayoutExample() {
 	//#region pagelayout
 	return (
@@ -3954,36 +3962,36 @@ function PageLayoutExample() {
 			}}
 		>
 			<PageLayout.Page>
-				<PageLayout.PageHeader
-					headerMenu={[
-						<div key="0">Menu Item 1</div>,
-						<div key="1">Menu Item 2</div>,
-						<Dropdown.SubMenu
-							key="sub"
-							trigger="submenu"
-							chevronSide="left"
-						>
-							<Dropdown.Item>Submenu Entry</Dropdown.Item>
-						</Dropdown.SubMenu>,
-						<Dropdown.ItemGroup key="4" hasSeparator>
-							<Dropdown.ItemCheckbox>
-								Check 1
-							</Dropdown.ItemCheckbox>
-							<Dropdown.ItemCheckbox>
-								Check 2
-							</Dropdown.ItemCheckbox>
-						</Dropdown.ItemGroup>,
-						<Dropdown.ItemRadioGroup key="5" hasSeparator>
-							<Dropdown.ItemRadio value="r1">
-								Radio 1
-							</Dropdown.ItemRadio>
-							<Dropdown.ItemRadio value="r2">
-								Radio 2
-							</Dropdown.ItemRadio>
-						</Dropdown.ItemRadioGroup>,
-					]}
-				>
-					<PageLayout.PageHeaderTitle>
+				<PageLayout.PageHeader>
+					<PageLayout.PageHeaderTitle
+						titleMenu={[
+							<div key="0">Menu Item 1</div>,
+							<div key="1">Menu Item 2</div>,
+							<Dropdown.SubMenu
+								key="sub"
+								trigger="submenu"
+								chevronSide="left"
+							>
+								<Dropdown.Item>Submenu Entry</Dropdown.Item>
+							</Dropdown.SubMenu>,
+							<Dropdown.ItemGroup key="4" hasSeparator>
+								<Dropdown.ItemCheckbox>
+									Check 1
+								</Dropdown.ItemCheckbox>
+								<Dropdown.ItemCheckbox>
+									Check 2
+								</Dropdown.ItemCheckbox>
+							</Dropdown.ItemGroup>,
+							<Dropdown.ItemRadioGroup key="5" hasSeparator>
+								<Dropdown.ItemRadio value="r1">
+									Radio 1
+								</Dropdown.ItemRadio>
+								<Dropdown.ItemRadio value="r2">
+									Radio 2
+								</Dropdown.ItemRadio>
+							</Dropdown.ItemRadioGroup>,
+						]}
+					>
 						<h1>Page Header Title</h1>
 					</PageLayout.PageHeaderTitle>
 					<PageLayout.PageHeaderSubTitle>
@@ -4464,11 +4472,11 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-/*import AKTabs, {
+import AKTabs, {
 	Tab as AKTab,
 	TabList as AKTabList,
 	TabPanel as AKTabPanel,
-} from "@atlaskit/tabs"*/
+} from "@atlaskit/tabs"
 
 import { Tabs, TabList, TabPanel, Tab, Button } from "@linked-planet/ui-kit-ts"
 
@@ -4494,20 +4502,22 @@ function AutomaticTabsValue() {
 function ExampleLabels() {
 	const akExample = (
 		<div style={{ minWidth: 300, border: "2px solid orange" }}>
-			{/*<AKTabs id="tab-example" defaultSelected={1}>
-				<AKTabList>
-					<AKTab>
-						<div>Tab 1</div>
-					</AKTab>
-					<AKTab>Tab 2</AKTab>
-				</AKTabList>
-				<AKTabPanel>
-					<span>First Content</span>
-				</AKTabPanel>
-				<AKTabPanel>
-					<span>Second Content</span>
-				</AKTabPanel>
-	</AKTabs>*/}
+			{
+				<AKTabs id="tab-example" defaultSelected={1}>
+					<AKTabList>
+						<AKTab>
+							<div>Tab 1</div>
+						</AKTab>
+						<AKTab>Tab 2</AKTab>
+					</AKTabList>
+					<AKTabPanel>
+						<span>First Content</span>
+					</AKTabPanel>
+					<AKTabPanel>
+						<span>Second Content</span>
+					</AKTabPanel>
+				</AKTabs>
+			}
 		</div>
 	)
 

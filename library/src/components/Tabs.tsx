@@ -21,8 +21,10 @@ export function Tab({ label, disabled, children, className, style }: TabProps) {
 		)
 	}
 	if (!label) {
-		throw new Error("label must be defined for Tab component")
-		// this should have happend in the Tabs component already
+		throw new Error(
+			"label must be defined for Tab component, and it must be within a TabList component",
+		)
+		// this should have happened in the Tabs component already
 	}
 
 	return (
@@ -30,7 +32,7 @@ export function Tab({ label, disabled, children, className, style }: TabProps) {
 			value={label.toString()} /* this is either set manually by the user using the label, or automatically by the Tabs component */
 			disabled={disabled}
 			className={twMerge(
-				"data-[state=active]:text-brand-bold data-[state=active]:border-b-brand-border -mb-[0.5px] data-[state=active]:border-b",
+				"data-[state=active]:text-selected-text text-text-subtle data-[state=active]:after:bg-selected-border relative pb-0.5 font-[500] data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-[2px] data-[state=active]:after:rounded-sm",
 				className,
 			)}
 			style={style}
@@ -76,7 +78,7 @@ export function TabList({
 	return (
 		<RTabs.TabsList
 			className={twMerge(
-				"border-b-border flex gap-4 border-b",
+				"before:bg-border relative mb-0.5 flex gap-4 before:absolute before:bottom-0 before:left-0 before:right-0 before:h-[2px] before:rounded-sm",
 				className,
 			)}
 			style={style}

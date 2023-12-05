@@ -181,7 +181,7 @@ export function FilterCard({
 									!isSelectable
 										? "text-disabled-text cursor-not-allowed"
 										: isSelected
-										  ? "text-selected-text bg-selected hover:bg-selected-hovered active:bg-selected-pressed cursor-pointer"
+										  ? "text-text-inverse bg-selected hover:bg-selected-hovered active:bg-selected-pressed cursor-pointer"
 										  : "hover:bg-surface-hovered active:bg-surface-pressed cursor-pointer"
 								}`}
 								key={item}

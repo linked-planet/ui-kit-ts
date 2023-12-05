@@ -9,12 +9,13 @@ import RadioIcon from "@atlaskit/icon/glyph/radio"
 import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
 import { twJoin, twMerge } from "tailwind-merge"
 
-const commonStyles = "px-3 py-1.5 flex items-center outline-none" as const
+const commonStyles =
+	"pl-1 pr-5 py-1.5 flex items-center outline-none border-l-2 border-l-transparent" as const
 const disabledStyles = "text-disabled-text cursor-not-allowed" as const
 const selectedStyles =
-	"bg-selected-subtle hover:bg-selected-subtle-hovered active:bg-selected-subtle-pressed" as const
+	"bg-selected-subtle hover:bg-selected-subtle-hovered border-selected-bold border-l-2 active:bg-selected-subtle-pressed" as const
 const normalStyles =
-	"hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed cursor-pointer" as const
+	"hover:bg-surface-overlay-hovered hover:border-l-selected-bold active:bg-surface-overlay-pressed cursor-pointer" as const
 
 const descriptionStyle = "text-text-subtlest text-[12px] leading-4 h-4" as const
 
@@ -41,9 +42,7 @@ function Item({
 			className={twMerge(
 				commonStyles,
 				!isDisabled && !isSelected ? normalStyles : undefined,
-				isSelected
-					? `${selectedStyles} border-selected-bold border-l-2`
-					: undefined,
+				isSelected ? `${selectedStyles} border-l-2` : undefined,
 				isDisabled ? disabledStyles : undefined,
 			)}
 			onClick={onClick}
@@ -96,12 +95,12 @@ function ItemCheckbox({
 		>
 			<div
 				className={twMerge(
-					"border-border mr-6 flex h-5 w-5 flex-none items-center justify-center rounded-sm border-2",
-					isSelected ? "border-brand-bold" : undefined,
+					"border-border relative mr-6 flex h-4 w-4 flex-none items-center justify-center rounded border-2",
+					isSelected ? "border-selected-bold" : undefined,
 				)}
 			>
-				<RDd.ItemIndicator className="text-brand-bold relative h-full w-full">
-					<div className="absolute inset-0 flex items-center justify-center">
+				<RDd.ItemIndicator asChild>
+					<div className="text-brand-bold flex items-center justify-center">
 						<CheckboxIcon label="" />
 					</div>
 				</RDd.ItemIndicator>
@@ -204,7 +203,9 @@ function ItemRadio({
 			<div
 				className={twMerge(
 					`${
-						isSelected ? "border-brand-bold" : "border-border"
+						isSelected
+							? "border-selected-bold"
+							: "border-border hover:border-selected-bold"
 					} relative mr-6 flex h-3 w-3 flex-none items-center justify-center rounded-full border-2`,
 				)}
 			>
@@ -327,7 +328,7 @@ function Menu({
 			)
 		}
 		return trigger
-	}, [isDisabled, trigger, triggerClassName, triggerStyle])
+	}, [isDisabled, opened, trigger, triggerClassName, triggerStyle])
 
 	return useMemo(
 		() => (

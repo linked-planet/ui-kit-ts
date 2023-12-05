@@ -203,12 +203,22 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 		</>
 	)
 
+	const lpExample2 = (
+		<>
+			<Dropdown.Menu trigger="Dropdown">
+				<Dropdown.Item>Test 1</Dropdown.Item>
+				<Dropdown.Item>Test 2</Dropdown.Item>
+			</Dropdown.Menu>
+		</>
+	)
+
 	//#endregion dropdown-menu
 
 	const example = (
 		<div className="flex gap-4">
 			{akExample}
 			{lpExample}
+			{lpExample2}
 		</div>
 	)
 

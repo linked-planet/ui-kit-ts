@@ -4,8 +4,6 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import SettingsIcon from "@atlaskit/icon/glyph/settings"
-
 function PageLayoutExample() {
 	//#region pagelayout
 	return (
