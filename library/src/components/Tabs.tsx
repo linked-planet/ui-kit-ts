@@ -32,7 +32,7 @@ export function Tab({ label, disabled, children, className, style }: TabProps) {
 			value={label.toString()} /* this is either set manually by the user using the label, or automatically by the Tabs component */
 			disabled={disabled}
 			className={twMerge(
-				"data-[state=active]:text-selected-text text-text-subtle data-[state=active]:after:bg-selected-border relative pb-0.5 font-[500] data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-[2px] data-[state=active]:after:rounded-sm",
+				"data-[state=active]:text-selected-text hover:text-selected-text  text-text-subtle data-[state=active]:after:bg-selected-border relative pb-1.5 font-[500] data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-[1px] data-[state=active]:after:rounded-sm",
 				className,
 			)}
 			style={style}
@@ -78,7 +78,7 @@ export function TabList({
 	return (
 		<RTabs.TabsList
 			className={twMerge(
-				"before:bg-border relative mb-0.5 flex gap-4 before:absolute before:bottom-0 before:left-0 before:right-0 before:h-[2px] before:rounded-sm",
+				"before:bg-border relative mb-0.5 flex gap-4 before:absolute before:bottom-0 before:left-0 before:right-0 before:h-[1px] before:rounded-sm",
 				className,
 			)}
 			style={style}

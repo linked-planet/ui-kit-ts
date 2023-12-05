@@ -47,7 +47,6 @@ import {
 	N600,
 	N500,
 	R300,
-	N800,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -133,7 +132,7 @@ export const theme = {
 				pressed: `var(--ds-background-selected-bold-pressed, ${B500})`,
 			},
 			text: `var(--ds-text-selected, ${B400})`,
-			border: `var(--ds-border-selected, ${B500})`,
+			border: `var(--ds-border-selected, ${B400})`,
 			/* subtle only exists as an escape hedge against the difference between theme/no theme, and it provides a light background for selections in unthemed mode */
 			subtle: {
 				DEFAULT: `var(--ds-background-selected, ${B50})`,

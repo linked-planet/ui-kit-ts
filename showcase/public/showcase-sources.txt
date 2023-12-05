@@ -4506,15 +4506,15 @@ function ExampleLabels() {
 				<AKTabs id="tab-example" defaultSelected={1}>
 					<AKTabList>
 						<AKTab>
-							<div>Tab 1</div>
+							<div>AK Tab 1</div>
 						</AKTab>
-						<AKTab>Tab 2</AKTab>
+						<AKTab>AK Tab 2</AKTab>
 					</AKTabList>
 					<AKTabPanel>
-						<span>First Content</span>
+						<span>First AK Content</span>
 					</AKTabPanel>
 					<AKTabPanel>
-						<span>Second Content</span>
+						<span>Second AK Content</span>
 					</AKTabPanel>
 				</AKTabs>
 			}
