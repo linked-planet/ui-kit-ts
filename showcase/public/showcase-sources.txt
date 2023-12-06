@@ -1022,20 +1022,20 @@ function CheckboxShowcase(props: ShowcaseProps) {
 		<div style={{ display: "flex", gap: "1rem" }}>
 			<Checkbox
 				label="controlled"
-				isChecked={isCheckboxActive}
+				checked={isCheckboxActive}
 				onCheckedChange={setIsCheckboxActive}
 			/>
 			<Checkbox label="uncontrolled" defaultChecked />
-			<Checkbox label="disabled" isDisabled />
+			<Checkbox label="disabled" disabled />
 			<Checkbox label="invalid" isInvalid />
 			<Checkbox
 				label="indeterminate"
 				isIndeterminate
-				isChecked={isCheckboxActive}
+				checked={isCheckboxActive}
 				onCheckedChange={setIsCheckboxActive}
 			/>
 			<Checkbox label="indeterminate uncontrolled" isIndeterminate />
-			<Checkbox label="required" isIndeterminate isRequired />
+			<Checkbox label="required" isIndeterminate required />
 		</div>
 	)
 	//#endregion checkbox

@@ -2,26 +2,31 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Select from "@atlaskit/select"
+import { default as AKSelect } from "@atlaskit/select"
+import { Select } from "@linked-planet/ui-kit-ts"
 
 function SelectShowcase(props: ShowcaseProps) {
 	//#region select
 	const example1 = (
-		<div style={{ minWidth: 300 }}>
-			<Select
+		<div className="flex flex-col gap-4">
+			<AKSelect
 				inputId="select-1"
 				options={[
 					{ label: "First option", value: "first" },
 					{ label: "Second option", value: "second" },
 				]}
 			/>
+			<Select
+				placeholder="Select an option"
+				options={[{ label: "First option", value: "first" }]}
+			/>
 		</div>
 	)
 	//#endregion select
 	//#region select2
 	const example2 = (
-		<div style={{ minWidth: 300 }}>
-			<Select
+		<div className="flex flex-col gap-4">
+			<AKSelect
 				inputId="select-s"
 				options={[
 					{
@@ -33,6 +38,15 @@ function SelectShowcase(props: ShowcaseProps) {
 						options: [{ label: "Second option", value: "second" }],
 					},
 				]}
+			/>
+			<Select
+				placeholder="Select a value"
+				options={{
+					"First Group": [{ label: "First option", value: "first" }],
+					"Second Group": [
+						{ label: "Second option", value: "second" },
+					],
+				}}
 			/>
 		</div>
 	)

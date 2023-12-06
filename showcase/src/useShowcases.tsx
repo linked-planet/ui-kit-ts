@@ -40,6 +40,7 @@ import UtilsShowcase from "./components/showcase/wrapper/UtilsShowcase"
 import IconSizeHelperShowcase from "./components/showcase/wrapper/IconSizeHelperShowcase"
 import { SidebarShowcase } from "./components/showcase/wrapper/SidebarShowcase"
 import FiltersShowcase from "./components/showcase/wrapper/FiltersShowcase"
+import InputShowcase from "./components/showcase/wrapper/InputShowcase"
 
 export default function useShowcases({
 	overallSourceCode,
@@ -91,6 +92,7 @@ export default function useShowcases({
 			"Icon Size Helper": (
 				<IconSizeHelperShowcase overallSourceCode={overallSourceCode} />
 			),
+			Input: <InputShowcase overallSourceCode={overallSourceCode} />,
 			Joyride: <JoyrideShowcase overallSourceCode={overallSourceCode} />,
 			"Inline Message": (
 				<InlineMessageShowcase overallSourceCode={overallSourceCode} />
