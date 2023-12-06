@@ -47,6 +47,7 @@ import {
 	N600,
 	N500,
 	R300,
+	N10A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -78,8 +79,8 @@ export const theme = {
 			pressed: `var(--ds-surface-pressed, ${N20})`,
 			overlay: {
 				DEFAULT: `var(--ds-surface-overlay, ${N0})`,
-				hovered: `var(--ds-surface-overlay-hovered, ${N10})`,
-				pressed: `var(--ds-surface-overlay-pressed, ${N20})`,
+				hovered: `var(--ds-surface-overlay-hovered, ${N20})`,
+				pressed: `var(--ds-surface-overlay-pressed, ${N30})`,
 			},
 			raised: {
 				DEFAULT: `var(--ds-surface-raised, ${N0})`,
@@ -87,6 +88,13 @@ export const theme = {
 				pressed: `var(--ds-surface-raised-pressed, ${N20})`,
 			},
 			sunken: `var(--ds-surface-sunken, ${N20})`,
+		},
+
+		input: {
+			DEFAULT: `var(--ds-background-input, ${N10})`,
+			active: `var(--ds-background-input-pressed, ${N0})`,
+			hovered: `var(--ds-background-input-hovered, ${N30})`,
+			border: `var(--ds-border-input, ${N40})`,
 		},
 
 		transparent: colors.transparent,
@@ -97,7 +105,7 @@ export const theme = {
 		},
 
 		disabled: {
-			DEFAULT: `var(--ds-background-disabled, ${N20A})`,
+			DEFAULT: `var(--ds-background-disabled, ${N10})`,
 			text: `var(--ds-text-disabled, ${N70})`,
 		},
 
@@ -208,7 +216,7 @@ export const theme = {
 		},
 
 		border: {
-			DEFAULT: `var(--ds-border, ${N30})`,
+			DEFAULT: `var(--ds-border, ${N40A})`,
 			bold: `var(--ds-border-bold, ${N500A})`,
 		},
 		icon: {

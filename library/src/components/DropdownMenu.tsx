@@ -10,10 +10,10 @@ import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
 import { twJoin, twMerge } from "tailwind-merge"
 
 const commonStyles =
-	"pl-1 pr-5 py-1.5 flex items-center outline-none border-l-2 border-l-transparent" as const
+	"pl-1 pr-5 py-1.5 flex items-center outline-none border-l-[2.5px] border-l-transparent cursor-default" as const
 const disabledStyles = "text-disabled-text cursor-not-allowed" as const
 const selectedStyles =
-	"bg-selected-subtle hover:bg-selected-subtle-hovered border-selected-bold border-l-2 active:bg-selected-subtle-pressed" as const
+	"bg-selected-subtle hover:bg-selected-subtle-hovered border-selected-bold active:bg-selected-subtle-pressed" as const
 const normalStyles =
 	"hover:bg-surface-overlay-hovered hover:border-l-selected-bold active:bg-surface-overlay-pressed cursor-pointer" as const
 

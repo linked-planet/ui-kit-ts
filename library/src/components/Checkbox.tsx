@@ -1,6 +1,6 @@
 import React, { CSSProperties, useState } from "react"
 import * as RCheckbox from "@radix-ui/react-checkbox"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
 import CheckboxIndeterminateIcon from "@atlaskit/icon/glyph/checkbox-indeterminate"
 
@@ -8,65 +8,70 @@ const indeterminateState = "indeterminate" as const
 
 type CheckboxProps = {
 	label: React.ReactChild
+	value?: string
+	checked?: boolean | typeof indeterminateState
 	title?: string
-	isChecked?: boolean
 	defaultChecked?: boolean
-	isDisabled?: boolean
+	disabled?: boolean
 	isInvalid?: boolean
-	isRequired?: boolean
+	required?: boolean
 	isIndeterminate?: boolean
 	autoFocus?: boolean
 	name?: string
-	onChange?: (checked: boolean) => void
+	onChange?: (event: { target: { checked: boolean } }) => void
 	onCheckedChange?: (checked: boolean | typeof indeterminateState) => void
 	style?: CSSProperties
 	className?: string
 }
 
 const checkBoxStyles =
-	"outline-brand-hovered box-border focus:border-brand-hovered mx-2 ease-linear duration-100 transition-colors flex flex-none h-[14px] w-[14px] cursor-default items-center justify-center rounded-sm border-[2.5px] outline-none outline-0 outline-offset-0 focus:border-2 disabled:border-disabled invalid:border-danger-bold" as const
+	"box-border focus:border-selected-border mx-2 ease-linear transition duration-200 flex flex-none h-[14px] w-[14px] cursor-default items-center justify-center rounded-[3px] border-[2.5px] outline-none outline-0 outline-offset-0 focus:border-2 disabled:border-disabled invalid:border-danger-bold" as const
 
-const checkBoxCheckedStyles = "text-brand-bold border-brand-hovered" as const
+const checkBoxCheckedStyles =
+	"text-selected-text border-selected-border" as const
 const checkBoxUncheckedStyles = "border-border" as const
 const checkBoxInvalidStyles = "border-danger-border" as const
 
-const disabledLabelStyles = "text-disabled-text" as const
+const disabledLabelStyles = "aria-disabled:text-disabled-text" as const
+
 const requiredLabelStyles =
-	'after:content-["*"] after:text-danger-bold-hovered' as const
+	"aria-required:after:content-['*'] aria-required:after:text-danger-bold aria-required:after:ml-0.5"
 
 function Checkbox({
 	label,
-	isChecked,
+	value,
+	checked: checkedProp,
 	defaultChecked,
-	isDisabled,
+	disabled,
 	isInvalid,
 	/**
 	 * isIndeterminate is a special case where the checkbox is neither checked nor unchecked. It replaces the checked state by a different icon.
 	 */
 	isIndeterminate,
-	isRequired,
+	required,
 	autoFocus,
 	onChange,
 	onCheckedChange,
 	name,
 	style,
 	className,
+	...props
 }: CheckboxProps) {
 	const [checked, setChecked] = useState<boolean | typeof indeterminateState>(
-		isChecked ?? defaultChecked ?? false,
+		checkedProp ?? defaultChecked ?? false,
 	)
 
 	if (isIndeterminate) {
-		if (isChecked !== undefined) {
-			if (isChecked === true && checked !== indeterminateState) {
+		if (checkedProp !== undefined || checkedProp !== undefined) {
+			if (checkedProp === true && checked !== indeterminateState) {
 				setChecked(indeterminateState)
-			} else if (!isChecked && checked !== false) {
+			} else if (!checkedProp && checked !== false) {
 				setChecked(false)
 			}
 		}
 	} else {
-		if (isChecked !== undefined && checked !== isChecked) {
-			setChecked(isChecked ?? false)
+		if (checkedProp !== undefined && checked !== checkedProp) {
+			setChecked(checkedProp ?? false)
 		}
 	}
 
@@ -74,9 +79,11 @@ function Checkbox({
 		<div className={twMerge("flex items-center", className)}>
 			<RCheckbox.Root
 				name={name}
+				value={value}
 				style={style}
 				checked={checked}
-				disabled={isDisabled}
+				disabled={disabled}
+				required={required}
 				aria-invalid={isInvalid}
 				autoFocus={autoFocus}
 				onCheckedChange={(e: RCheckbox.CheckedState) => {
@@ -84,7 +91,7 @@ function Checkbox({
 					if (checked === indeterminateState) {
 						if (e === true || e === indeterminateState) {
 							setChecked(false)
-							onChange?.(false)
+							onChange?.({ target: { checked: false } })
 							return
 						}
 					} else {
@@ -93,7 +100,7 @@ function Checkbox({
 						} else {
 							setChecked(e)
 						}
-						onChange?.(!!e)
+						onChange?.({ target: { checked: !!e } })
 					}
 				}}
 				className={`${twMerge(
@@ -102,6 +109,7 @@ function Checkbox({
 				)} ${
 					checked ? checkBoxCheckedStyles : checkBoxUncheckedStyles
 				} `}
+				{...props}
 			>
 				<RCheckbox.Indicator className="relative box-border flex h-4 w-4 flex-none items-center justify-center">
 					{typeof checked === "boolean" && checked === true && (
@@ -117,14 +125,9 @@ function Checkbox({
 				</RCheckbox.Indicator>
 			</RCheckbox.Root>
 			<label
-				aria-disabled={isDisabled}
-				className={
-					isDisabled
-						? disabledLabelStyles
-						: isRequired
-						? requiredLabelStyles
-						: undefined
-				}
+				aria-disabled={disabled}
+				aria-required={required}
+				className={twJoin(disabledLabelStyles, requiredLabelStyles)}
 			>
 				{label}
 			</label>

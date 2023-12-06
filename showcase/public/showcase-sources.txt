@@ -988,13 +988,15 @@ import AKCheckbox from "@atlaskit/checkbox"
 import { Checkbox } from "@linked-planet/ui-kit-ts"
 
 function CheckboxShowcase(props: ShowcaseProps) {
-	const [isCheckboxActive, setIsCheckboxActive] = useState(false)
+	const [isCheckboxActive, setIsCheckboxActive] = useState<
+		boolean | "indeterminate"
+	>(false)
 
 	const akExample = (
 		<div style={{ display: "flex", gap: "1rem" }}>
 			<AKCheckbox
 				label="controlled"
-				isChecked={isCheckboxActive}
+				isChecked={!!isCheckboxActive}
 				onChange={(e) => {
 					setIsCheckboxActive(e.target.checked)
 				}}
@@ -1004,7 +1006,7 @@ function CheckboxShowcase(props: ShowcaseProps) {
 			<AKCheckbox label="invalid" isInvalid />
 			<AKCheckbox
 				label="indeterminate"
-				isChecked={isCheckboxActive}
+				isChecked={!!isCheckboxActive}
 				isIndeterminate
 				onChange={(e) => {
 					setIsCheckboxActive(e.target.checked)
@@ -1021,7 +1023,7 @@ function CheckboxShowcase(props: ShowcaseProps) {
 			<Checkbox
 				label="controlled"
 				isChecked={isCheckboxActive}
-				onChange={setIsCheckboxActive}
+				onCheckedChange={setIsCheckboxActive}
 			/>
 			<Checkbox label="uncontrolled" defaultChecked />
 			<Checkbox label="disabled" isDisabled />
@@ -1030,7 +1032,7 @@ function CheckboxShowcase(props: ShowcaseProps) {
 				label="indeterminate"
 				isIndeterminate
 				isChecked={isCheckboxActive}
-				onChange={setIsCheckboxActive}
+				onCheckedChange={setIsCheckboxActive}
 			/>
 			<Checkbox label="indeterminate uncontrolled" isIndeterminate />
 			<Checkbox label="required" isIndeterminate isRequired />
