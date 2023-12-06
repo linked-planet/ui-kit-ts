@@ -2619,6 +2619,67 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 	)
 }
 
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+//import TextField from "@atlaskit/textfield"
+import { Input } from "@linked-planet/ui-kit-ts"
+
+export default function InputShowcase(props: ShowcaseProps) {
+	const exampleAK = (
+		<div className="flex flex-col">
+			{/*<TextField />
+			<TextField isDisabled />
+			<TextField placeholder="Placeholder" />
+			<TextField isInvalid value={"invalid"} />
+			<TextField isReadOnly value={"readonly"} />
+	<TextField type="number" defaultValue={1} />*/}
+		</div>
+	)
+
+	//#region input
+	const exampleLP = (
+		<div className="flex flex-col">
+			<Input />
+			<Input disabled />
+			<Input placeholder="Placeholder" />
+			<Input aria-invalid={true} value={"invalid"} />
+			<Input readOnly value={"readonly"} />
+			<Input type="number" defaultValue={1} />
+		</div>
+	)
+	//#endregion input
+
+	const example = (
+		<div className="flex gap-4">
+			{exampleAK}
+			{exampleLP}
+		</div>
+	)
+
+	return (
+		<ShowcaseWrapperItem
+			name="Input"
+			description="Input compatible to use with react-hook-form but with Atlassian fitting styling."
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single#Input",
+				},
+			]}
+			examples={[
+				{
+					title: "TextInput",
+					example: example,
+					sourceCodeExampleId: "input",
+				},
+			]}
+		/>
+	)
+}
+
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
@@ -4197,26 +4258,31 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Select from "@atlaskit/select"
+import { default as AKSelect } from "@atlaskit/select"
+import { Select } from "@linked-planet/ui-kit-ts"
 
 function SelectShowcase(props: ShowcaseProps) {
 	//#region select
 	const example1 = (
-		<div style={{ minWidth: 300 }}>
-			<Select
+		<div className="flex flex-col gap-4">
+			<AKSelect
 				inputId="select-1"
 				options={[
 					{ label: "First option", value: "first" },
 					{ label: "Second option", value: "second" },
 				]}
 			/>
+			<Select
+				placeholder="Select an option"
+				options={[{ label: "First option", value: "first" }]}
+			/>
 		</div>
 	)
 	//#endregion select
 	//#region select2
 	const example2 = (
-		<div style={{ minWidth: 300 }}>
-			<Select
+		<div className="flex flex-col gap-4">
+			<AKSelect
 				inputId="select-s"
 				options={[
 					{
@@ -4228,6 +4294,15 @@ function SelectShowcase(props: ShowcaseProps) {
 						options: [{ label: "Second option", value: "second" }],
 					},
 				]}
+			/>
+			<Select
+				placeholder="Select a value"
+				options={{
+					"First Group": [{ label: "First option", value: "first" }],
+					"Second Group": [
+						{ label: "Second option", value: "second" },
+					],
+				}}
 			/>
 		</div>
 	)

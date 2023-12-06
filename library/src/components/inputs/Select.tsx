@@ -19,13 +19,15 @@ type SelectOption = {
 type SelectProps = {
 	defaultOpen?: boolean
 	open?: boolean
+	id?: string
 	defaultValue?: string
 	value?: string
+	name?: string
 	placeholder?: string
 	required?: boolean
 	disabled?: boolean
 	ref?: React.Ref<HTMLButtonElement>
-	onChange?: (event: { target: { value: string } }) => void
+	onChange?: (event: { target: { value: string; name: string } }) => void
 	onValueChange?: (selectedValue: string) => void
 	options: SelectOption[] | { [groupName: string]: SelectOption[] }
 	className?: string
@@ -55,6 +57,7 @@ const Select = forwardRef(
 			defaultValue,
 			placeholder,
 			value,
+			name = "",
 			required,
 			disabled,
 			onChange,
@@ -99,10 +102,10 @@ const Select = forwardRef(
 
 		const onValueChangeCB = useCallback(
 			(newValue: string) => {
-				onChange?.({ target: { value: newValue } })
+				onChange?.({ target: { value: newValue, name } })
 				onValueChange?.(newValue)
 			},
-			[onChange, onValueChange],
+			[name, onChange, onValueChange],
 		)
 
 		return (
@@ -114,6 +117,7 @@ const Select = forwardRef(
 				value={value}
 				required={required}
 				disabled={disabled}
+				name={name}
 				{...props}
 			>
 				<RSelect.Trigger
@@ -121,9 +125,8 @@ const Select = forwardRef(
 					style={style}
 					disabled={disabled}
 					aria-required={required}
-					ref={ref}
 				>
-					<RSelect.Value placeholder={placeholder} />
+					<RSelect.Value ref={ref} placeholder={placeholder} />
 					<RSelect.Icon className="flex items-center justify-center">
 						<ChevronDownIcon label="open select" />
 					</RSelect.Icon>

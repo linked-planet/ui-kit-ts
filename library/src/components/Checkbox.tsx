@@ -8,6 +8,7 @@ const indeterminateState = "indeterminate" as const
 
 type CheckboxProps = {
 	label: React.ReactChild
+	id?: string
 	value?: string
 	checked?: boolean | typeof indeterminateState
 	title?: string
