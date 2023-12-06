@@ -54,7 +54,14 @@ import colors from "tailwindcss/colors"
 /** @type {import('tailwindcss').Config} */
 
 export const theme = {
-	//extend: {
+	extend: {
+		aria: {
+			invalid: 'invalid="true"',
+		},
+		fontSize: {
+			"2xs": ".625rem",
+		},
+	},
 	colors: {
 		text: {
 			DEFAULT: `var(--ds-text, ${N900})`,
