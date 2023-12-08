@@ -9,7 +9,7 @@ import * as RSelect from "@radix-ui/react-select"
 import { twJoin, twMerge } from "tailwind-merge"
 
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
-import { getPortal } from "@linked-planet/ui-kit-ts/utils/getPortal"
+import { getPortal } from "../../utils/getPortal"
 
 type SelectOption = {
 	label: string
