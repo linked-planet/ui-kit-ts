@@ -21,8 +21,8 @@ function PaginationShowcase(props: ShowcaseProps) {
 			pageSize={pageSize}
 			pageSizes={[10, 20, 50, 100]}
 			setPageSize={setPageSize}
-			pageSizeMenuPlacement="top"
-			pageSizeMenuAlignment="end"
+			pageSizeMenuSide="top"
+			pageSizeMenuAlign="end"
 		/>
 	)
 	//#endregion pagination

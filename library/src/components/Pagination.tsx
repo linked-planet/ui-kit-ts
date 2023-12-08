@@ -8,16 +8,16 @@ function PageSizeSelector({
 	defaultPageSize = 20,
 	pageSizes = [10, 20, 50, 100],
 	setPageSize,
-	pageSizeMenuPlacement = "bottom",
-	pageSizeMenuAlignment = "start",
+	pageSizeMenuSide = "bottom",
+	pageSizeMenuAlign = "start",
 	pageSizeTitle = "",
 }: {
 	pageSizes?: number[]
 	pageSize?: number
 	defaultPageSize?: number
 	setPageSize?: (pageSize: number) => void
-	pageSizeMenuPlacement?: DropdownMenuProps["placement"]
-	pageSizeMenuAlignment?: DropdownMenuProps["align"]
+	pageSizeMenuSide?: DropdownMenuProps["side"]
+	pageSizeMenuAlign?: DropdownMenuProps["align"]
 	pageSizeTitle?: string
 }) {
 	const [pageSizeUsed, setPageSizeUsed] = useState(
@@ -57,8 +57,8 @@ function PageSizeSelector({
 						</div>
 					</div>
 				}
-				placement={pageSizeMenuPlacement}
-				align={pageSizeMenuAlignment}
+				side={pageSizeMenuSide}
+				align={pageSizeMenuAlign}
 			>
 				{pageSizesItems}
 			</Dropdown.Menu>
@@ -92,8 +92,8 @@ export function Pagination({
 	pageSize?: number
 	defaultPageSize?: number
 	setPageSize?: (pageSize: number) => void
-	pageSizeMenuPlacement?: DropdownMenuProps["placement"]
-	pageSizeMenuAlignment?: DropdownMenuProps["align"]
+	pageSizeMenuSide?: DropdownMenuProps["side"]
+	pageSizeMenuAlign?: DropdownMenuProps["align"]
 	pageSizeTitle?: string
 	className?: string
 	style?: React.CSSProperties

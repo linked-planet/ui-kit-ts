@@ -14,9 +14,9 @@ type CheckboxProps = {
 	title?: string
 	defaultChecked?: boolean
 	disabled?: boolean
-	isInvalid?: boolean
+	invalid?: boolean
 	required?: boolean
-	isIndeterminate?: boolean
+	indeterminate?: boolean
 	autoFocus?: boolean
 	name?: string
 	onChange?: (event: { target: { checked: boolean } }) => void
@@ -44,11 +44,11 @@ function Checkbox({
 	checked: checkedProp,
 	defaultChecked,
 	disabled,
-	isInvalid,
+	invalid,
 	/**
-	 * isIndeterminate is a special case where the checkbox is neither checked nor unchecked. It replaces the checked state by a different icon.
+	 * indeterminate is a special case where the checkbox is neither checked nor unchecked. It replaces the checked state by a different icon.
 	 */
-	isIndeterminate,
+	indeterminate,
 	required,
 	autoFocus,
 	onChange,
@@ -62,7 +62,7 @@ function Checkbox({
 		checkedProp ?? defaultChecked ?? false,
 	)
 
-	if (isIndeterminate) {
+	if (indeterminate) {
 		if (checkedProp !== undefined || checkedProp !== undefined) {
 			if (checkedProp === true && checked !== indeterminateState) {
 				setChecked(indeterminateState)
@@ -85,7 +85,7 @@ function Checkbox({
 				checked={checked}
 				disabled={disabled}
 				required={required}
-				aria-invalid={isInvalid}
+				aria-invalid={invalid}
 				autoFocus={autoFocus}
 				onCheckedChange={(e: RCheckbox.CheckedState) => {
 					onCheckedChange?.(e)
@@ -96,7 +96,7 @@ function Checkbox({
 							return
 						}
 					} else {
-						if (isIndeterminate && e === true) {
+						if (indeterminate && e === true) {
 							setChecked(indeterminateState)
 						} else {
 							setChecked(e)
@@ -106,7 +106,7 @@ function Checkbox({
 				}}
 				className={`${twMerge(
 					checkBoxStyles,
-					isInvalid ? checkBoxInvalidStyles : undefined,
+					invalid ? checkBoxInvalidStyles : undefined,
 				)} ${
 					checked ? checkBoxCheckedStyles : checkBoxUncheckedStyles
 				} `}

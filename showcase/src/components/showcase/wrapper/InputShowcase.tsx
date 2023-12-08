@@ -20,10 +20,20 @@ export default function InputShowcase(props: ShowcaseProps) {
 	//#region input
 	const exampleLP = (
 		<div className="flex flex-col">
-			<Input />
+			<Input minLength={3} helpMessage="This is a help message." />
 			<Input disabled />
 			<Input placeholder="Placeholder" />
-			<Input aria-invalid={true} value={"invalid"} />
+			<Input
+				invalid={true}
+				value={"invalid"}
+				errorMessage="This is an error message."
+			/>
+			<Input
+				aria-invalid={true}
+				value={"aria-invalid"}
+				errorMessage="This is an error message."
+				helpMessage="This is a help message."
+			/>
 			<Input readOnly value={"readonly"} />
 			<Input type="number" defaultValue={1} />
 		</div>

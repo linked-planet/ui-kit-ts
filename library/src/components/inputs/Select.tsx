@@ -9,6 +9,7 @@ import * as RSelect from "@radix-ui/react-select"
 import { twJoin, twMerge } from "tailwind-merge"
 
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
+import { getPortal } from "@linked-planet/ui-kit-ts/utils/getPortal"
 
 type SelectOption = {
 	label: string
@@ -24,6 +25,8 @@ type SelectProps = {
 	value?: string
 	name?: string
 	placeholder?: string
+	side?: RSelect.SelectContentProps["side"]
+	align?: RSelect.SelectContentProps["align"]
 	required?: boolean
 	disabled?: boolean
 	ref?: React.Ref<HTMLButtonElement>
@@ -31,7 +34,10 @@ type SelectProps = {
 	onValueChange?: (selectedValue: string) => void
 	options: SelectOption[] | { [groupName: string]: SelectOption[] }
 	className?: string
+	contentClassName?: string
 	style?: CSSProperties
+	contentStyle?: CSSProperties
+	usePortal?: boolean
 }
 
 const selectNormalStyles =
@@ -57,6 +63,8 @@ const Select = forwardRef(
 			defaultValue,
 			placeholder,
 			value,
+			side = "bottom",
+			align = "start",
 			name = "",
 			required,
 			disabled,
@@ -64,7 +72,10 @@ const Select = forwardRef(
 			onValueChange,
 			options,
 			className,
+			contentClassName,
+			contentStyle,
 			style,
+			usePortal,
 			...props
 		}: SelectProps,
 		ref: ForwardedRef<HTMLButtonElement>,
@@ -108,6 +119,24 @@ const Select = forwardRef(
 			[name, onChange, onValueChange],
 		)
 
+		const content = useMemo(
+			() => (
+				<RSelect.Content
+					position="popper"
+					side={side}
+					align={align}
+					className={twMerge(
+						"bg-surface-raised shadow-overlay py-2",
+						contentClassName,
+					)}
+					style={contentStyle}
+				>
+					{items}
+				</RSelect.Content>
+			),
+			[align, contentClassName, contentStyle, items, side],
+		)
+
 		return (
 			<RSelect.Root
 				onValueChange={onValueChangeCB}
@@ -132,9 +161,13 @@ const Select = forwardRef(
 					</RSelect.Icon>
 				</RSelect.Trigger>
 
-				<RSelect.Content className="bg-surface-raised shadow-overlay py-2">
-					{items}
-				</RSelect.Content>
+				{usePortal ? (
+					<RSelect.Portal container={getPortal()}>
+						{content}
+					</RSelect.Portal>
+				) : (
+					content
+				)}
 			</RSelect.Root>
 		)
 	},

@@ -63,23 +63,17 @@ export default function ItemWrapper<
 
 	return (
 		<div
+			className="relative top-0 box-border"
 			style={{
-				position: "relative",
 				left,
 				width,
-				top: 0,
 				pointerEvents: multiSelectionMode ? "none" : "auto",
-				boxSizing: "border-box",
 			}}
 			{...mouseHandler}
 		>
 			<div
 				ref={ref}
-				className={utilStyles.fadeIn}
-				style={{
-					position: "relative",
-					zIndex: 1,
-				}}
+				className="animate-fade-in relative z-[1]"
 				onClick={() => {
 					if (onTimeSlotItemClick) onTimeSlotItemClick(group, item)
 				}}

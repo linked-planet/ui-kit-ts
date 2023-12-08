@@ -273,8 +273,8 @@ function SubMenu({
 }
 
 export type DropdownMenuProps = {
-	placement?: "bottom" | "top" | "left" | "right"
-	align?: "start" | "end" | "center"
+	side?: RDd.MenuContentProps["side"]
+	align?: RDd.MenuContentProps["align"]
 	open?: boolean
 	defaultOpen?: boolean
 	isDisabled?: boolean
@@ -283,13 +283,14 @@ export type DropdownMenuProps = {
 	children: React.ReactNode
 	triggerStyle?: React.CSSProperties
 	triggerClassName?: string
+	usePortal?: boolean
 }
 
 /**
  * Root of the dropdown menu, which contains the trigger and the content
  */
 function Menu({
-	placement,
+	side,
 	align = "start",
 	open,
 	defaultOpen,
@@ -299,6 +300,7 @@ function Menu({
 	children,
 	triggerStyle,
 	triggerClassName,
+	usePortal,
 }: DropdownMenuProps) {
 	const contentRef = useRef<HTMLDivElement>(null)
 
@@ -330,45 +332,41 @@ function Menu({
 		return trigger
 	}, [isDisabled, opened, trigger, triggerClassName, triggerStyle])
 
-	return useMemo(
+	const content = useMemo(
 		() => (
-			<RDd.Root
-				open={opened}
-				defaultOpen={defaultOpen}
-				onOpenChange={() => {
-					setOpened(!opened)
-					onOpenChange?.(!opened)
+			<RDd.Content
+				ref={contentRef}
+				className="bg-surface-overlay shadow-overlay z-50 overflow-auto rounded"
+				side={side}
+				align={align}
+				onFocusOutside={() => {
+					setOpened(false)
+				}}
+				style={{
+					maxHeight:
+						"var(--radix-dropdown-menu-content-available-height)",
+					transformOrigin:
+						"var(--radix-dropdown-menu-content-transform-origin)",
 				}}
 			>
-				<RDd.Trigger asChild>{triggerNode}</RDd.Trigger>
-				<RDd.Content
-					ref={contentRef}
-					className="bg-surface-overlay shadow-overlay z-50 overflow-auto rounded"
-					side={placement}
-					align={align}
-					onFocusOutside={() => {
-						setOpened(false)
-					}}
-					style={{
-						maxHeight:
-							"var(--radix-dropdown-menu-content-available-height)",
-						transformOrigin:
-							"var(--radix-dropdown-menu-content-transform-origin)",
-					}}
-				>
-					{children}
-				</RDd.Content>
-			</RDd.Root>
+				{children}
+			</RDd.Content>
 		),
-		[
-			align,
-			children,
-			defaultOpen,
-			onOpenChange,
-			opened,
-			placement,
-			triggerNode,
-		],
+		[align, children, side],
+	)
+
+	return (
+		<RDd.Root
+			open={opened}
+			defaultOpen={defaultOpen}
+			onOpenChange={() => {
+				setOpened(!opened)
+				onOpenChange?.(!opened)
+			}}
+		>
+			<RDd.Trigger asChild>{triggerNode}</RDd.Trigger>
+			{usePortal ? <RDd.Portal>{content}</RDd.Portal> : content}
+		</RDd.Root>
 	)
 }
 

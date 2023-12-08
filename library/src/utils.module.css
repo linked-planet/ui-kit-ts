@@ -1,9 +1,9 @@
 .fadeOut {
-	animation: fade-out 100ms linear;
+	animation: fade-out 200ms linear;
 }
 
 .fadeIn {
-	animation: fade-in 100ms linear;
+	animation: fade-in 200ms linear;
 }
 
 @keyframes fade-out {

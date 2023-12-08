@@ -1027,15 +1027,15 @@ function CheckboxShowcase(props: ShowcaseProps) {
 			/>
 			<Checkbox label="uncontrolled" defaultChecked />
 			<Checkbox label="disabled" disabled />
-			<Checkbox label="invalid" isInvalid />
+			<Checkbox label="invalid" invalid />
 			<Checkbox
 				label="indeterminate"
-				isIndeterminate
+				indeterminate
 				checked={isCheckboxActive}
 				onCheckedChange={setIsCheckboxActive}
 			/>
-			<Checkbox label="indeterminate uncontrolled" isIndeterminate />
-			<Checkbox label="required" isIndeterminate required />
+			<Checkbox label="indeterminate uncontrolled" indeterminate />
+			<Checkbox label="required" indeterminate required />
 		</div>
 	)
 	//#endregion checkbox
@@ -2641,10 +2641,20 @@ export default function InputShowcase(props: ShowcaseProps) {
 	//#region input
 	const exampleLP = (
 		<div className="flex flex-col">
-			<Input />
+			<Input minLength={3} helpMessage="This is a help message." />
 			<Input disabled />
 			<Input placeholder="Placeholder" />
-			<Input aria-invalid={true} value={"invalid"} />
+			<Input
+				invalid={true}
+				value={"invalid"}
+				errorMessage="This is an error message."
+			/>
+			<Input
+				aria-invalid={true}
+				value={"aria-invalid"}
+				errorMessage="This is an error message."
+				helpMessage="This is a help message."
+			/>
 			<Input readOnly value={"readonly"} />
 			<Input type="number" defaultValue={1} />
 		</div>
@@ -3936,26 +3946,116 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Button, { ButtonGroup } from "@atlaskit/button"
 import CrossIcon from "@atlaskit/icon/glyph/cross"
-import Modal, {
+import {
+	default as AKModal,
+	ModalBody as AKModalBody,
+	ModalFooter as AKModalFooter,
+	ModalHeader as AKModalHeader,
+	ModalTitle as AKModalTitle,
+	ModalTransition as AKModalTransition,
+} from "@atlaskit/modal-dialog"
+import {
+	Modal,
 	ModalBody,
+	ModalCloseTrigger,
 	ModalFooter,
 	ModalHeader,
 	ModalTitle,
-	ModalTransition,
-} from "@atlaskit/modal-dialog"
+	Select,
+	Button,
+	ButtonGroup,
+} from "@linked-planet/ui-kit-ts"
+import { default as AKSelect } from "@atlaskit/select"
 
-function ModalShowcase(props: ShowcaseProps) {
-	//#region modal
+function AKExample() {
+	const [isAKModalActive, setIsAKModalActive] = useState(false)
+
+	const selectOptions = []
+	for (let i = 0; i < 100; i++) {
+		selectOptions.push({
+			label: i.toString(),
+			value: i.toString(),
+		})
+	}
+
+	return (
+		<>
+			<div>AKModal: {isAKModalActive.toString()}</div>
+			<Button onClick={() => setIsAKModalActive(true)}>
+				Show AK Modal
+			</Button>
+
+			{isAKModalActive && (
+				<AKModalTransition>
+					<AKModal onClose={() => setIsAKModalActive(false)}>
+						<AKModalHeader>
+							<AKModalTitle>Sample Modal</AKModalTitle>
+							<Button
+								appearance="link"
+								onClick={() => setIsAKModalActive(false)}
+							>
+								<CrossIcon
+									label="Close popup"
+									primaryColor="#000"
+								/>
+							</Button>
+						</AKModalHeader>
+
+						<AKModalBody>
+							<p>This is the body of the AK modal.</p>
+							<AKSelect options={selectOptions}></AKSelect>
+							<Select
+								placeholder="Choose"
+								options={selectOptions}
+							></Select>
+						</AKModalBody>
+
+						<AKModalFooter>
+							<ButtonGroup>
+								<Button
+									autoFocus={true}
+									appearance="primary"
+									onClick={() => setIsAKModalActive(false)}
+								>
+									Close
+								</Button>
+							</ButtonGroup>
+						</AKModalFooter>
+					</AKModal>
+				</AKModalTransition>
+			)}
+		</>
+	)
+}
+
+function ControlledExample() {
+	const selectOptions = []
+	for (let i = 0; i < 100; i++) {
+		selectOptions.push({
+			label: i.toString(),
+			value: i.toString(),
+		})
+	}
+
+	//#region modal_controlled
 	const [isModalActive, setIsModalActive] = useState(false)
-	const example = (
-		<div>
-			<Button onClick={() => setIsModalActive(true)}>Show modal</Button>
 
-			{isModalActive && (
-				<ModalTransition>
-					<Modal onClose={() => setIsModalActive(false)}>
+	return (
+		<>
+			<div>Modal: {isModalActive.toString()}</div>
+			<div>
+				<Button onClick={() => setIsModalActive(true)}>
+					Show Modal
+				</Button>
+
+				{isModalActive && (
+					<Modal
+						open={isModalActive}
+						onOpenChange={(opened) => {
+							if (!opened) setIsModalActive(false)
+						}}
+					>
 						<ModalHeader>
 							<ModalTitle>Sample Modal</ModalTitle>
 							<Button
@@ -3968,28 +4068,42 @@ function ModalShowcase(props: ShowcaseProps) {
 								/>
 							</Button>
 						</ModalHeader>
-
 						<ModalBody>
-							<p>This is the body of the modal.</p>
+							<div>
+								<p>This is the body of the modal.</p>
+							</div>
+							<AKSelect options={selectOptions}></AKSelect>
+							<Select
+								placeholder="Choose"
+								options={selectOptions}
+								side="bottom"
+								align="end"
+								contentClassName="z-50"
+								open
+							/>
 						</ModalBody>
-
 						<ModalFooter>
-							<ButtonGroup>
-								<Button
-									autoFocus={true}
-									appearance="primary"
-									onClick={() => setIsModalActive(false)}
-								>
+							<ModalCloseTrigger>
+								<Button appearance="primary" className="z-0">
 									Close
 								</Button>
-							</ButtonGroup>
+							</ModalCloseTrigger>
 						</ModalFooter>
 					</Modal>
-				</ModalTransition>
-			)}
-		</div>
+				)}
+			</div>
+		</>
 	)
-	//#endregion modal
+	//#endregion modal_controlled
+}
+
+function ModalShowcase(props: ShowcaseProps) {
+	const example = (
+		<>
+			<AKExample />
+			<ControlledExample />
+		</>
+	)
 
 	return (
 		<ShowcaseWrapperItem
@@ -3997,12 +4111,16 @@ function ModalShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/modal-dialog",
-					url: "https://atlassian.design/components/modal-dialog/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "http://linked-planet.github.io/ui-kit-ts/single?component=Modal",
 				},
 			]}
 			examples={[
-				{ title: "Example", example, sourceCodeExampleId: "modal" },
+				{
+					title: "Example Controlled",
+					example,
+					sourceCodeExampleId: "modal_controlled",
+				},
 			]}
 		/>
 	)

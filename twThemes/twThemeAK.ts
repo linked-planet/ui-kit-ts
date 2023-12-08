@@ -48,6 +48,7 @@ import {
 	N500,
 	R300,
 	N10A,
+	N100A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -60,6 +61,20 @@ export const theme = {
 		},
 		fontSize: {
 			"2xs": ".625rem",
+		},
+		animation: {
+			"fade-in": "fade-in 100ms linear",
+			"fade-out": "fade-out 100ms linear",
+		},
+		keyframes: {
+			"fade-in": {
+				"0%": { opacity: 0 },
+				"100%": { opacity: "100%" },
+			},
+			"fade-out": {
+				"1000%": { opacity: 0 },
+				"0%": { opacity: "100%" },
+			},
 		},
 	},
 	colors: {
@@ -105,6 +120,8 @@ export const theme = {
 		},
 
 		transparent: colors.transparent,
+
+		blanket: `var(--ds-blanket, ${N100A})`,
 
 		link: {
 			DEFAULT: `var(--ds-link, ${B400})`,

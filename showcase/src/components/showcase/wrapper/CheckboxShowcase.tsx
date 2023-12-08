@@ -45,15 +45,15 @@ function CheckboxShowcase(props: ShowcaseProps) {
 			/>
 			<Checkbox label="uncontrolled" defaultChecked />
 			<Checkbox label="disabled" disabled />
-			<Checkbox label="invalid" isInvalid />
+			<Checkbox label="invalid" invalid />
 			<Checkbox
 				label="indeterminate"
-				isIndeterminate
+				indeterminate
 				checked={isCheckboxActive}
 				onCheckedChange={setIsCheckboxActive}
 			/>
-			<Checkbox label="indeterminate uncontrolled" isIndeterminate />
-			<Checkbox label="required" isIndeterminate required />
+			<Checkbox label="indeterminate uncontrolled" indeterminate />
+			<Checkbox label="required" indeterminate required />
 		</div>
 	)
 	//#endregion checkbox

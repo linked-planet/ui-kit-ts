@@ -2,6 +2,11 @@ import React, {
 	forwardRef,
 	type ComponentPropsWithoutRef,
 	ForwardedRef,
+	type CSSProperties,
+	useImperativeHandle,
+	useRef,
+	useEffect,
+	ReactNode,
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 
@@ -25,12 +30,11 @@ export function Label({
 		/>
 	)
 }
-
 //#endregion
 
 //#region Input
-const inputActiveStyles =
-	"p-2 rounded border border-input-border bg-input ease-in-out transition duration-200"
+const inputNormalStyles =
+	"p-2 w-full rounded border border-input-border bg-input ease-in-out transition duration-200"
 const inputFocusStyles =
 	"focus:border-selected-bold focus:bg-input-active outline-none hover:bg-input-hovered"
 const inputDisabledStyles =
@@ -38,7 +42,7 @@ const inputDisabledStyles =
 const invalidInputStyles = "aria-invalid:border-danger-border"
 
 const inputStyles = twJoin(
-	inputActiveStyles,
+	inputNormalStyles,
 	inputFocusStyles,
 	inputDisabledStyles,
 	invalidInputStyles,
@@ -46,19 +50,92 @@ const inputStyles = twJoin(
 
 const Input = forwardRef(
 	(
-		{ className, ...props }: ComponentPropsWithoutRef<"input">,
+		{
+			className,
+			inputClassName,
+			helpMessage,
+			errorMessage,
+			invalid = false,
+			"aria-invalid": ariaInvalid = false,
+			style,
+			inputStyle,
+			...props
+		}: ComponentPropsWithoutRef<"input"> & {
+			helpMessage?: ReactNode
+			errorMessage?: ReactNode
+			inputClassName?: string
+			invalid?: boolean
+			inputStyle?: CSSProperties
+		},
 		ref: ForwardedRef<HTMLInputElement>,
 	) => {
+		const internalRef = useRef<HTMLInputElement>(null)
+		const spanRef = useRef<HTMLParagraphElement>(null)
+		useImperativeHandle(ref, () => internalRef.current!)
+
+		useEffect(() => {
+			// Function to be called when mutations are observed
+			const observer = new MutationObserver((mutationsList) => {
+				// Handle mutations here
+				for (const mutation of mutationsList) {
+					if (
+						mutation.type === "attributes" &&
+						mutation.attributeName === "aria-invalid"
+					) {
+						const target = mutation.target as HTMLElement
+						if (target.getAttribute("aria-invalid") === "true") {
+							spanRef.current?.setAttribute(
+								"aria-invalid",
+								"true",
+							)
+						} else {
+							spanRef.current?.setAttribute(
+								"aria-invalid",
+								"false",
+							)
+						}
+					}
+				}
+			})
+
+			// Start observing the target node for configured mutations
+			observer.observe(internalRef.current!, { attributes: true })
+
+			return () => {
+				observer.disconnect()
+			}
+		}, [])
+
 		return (
-			<input
-				ref={ref}
-				className={twMerge(inputStyles, className)}
-				{...props}
-			/>
+			<div className={className} style={style}>
+				<input
+					ref={internalRef}
+					className={twMerge(inputStyles, inputClassName)}
+					style={inputStyle}
+					aria-invalid={ariaInvalid || invalid}
+					{...props}
+				/>
+				{helpMessage && (
+					<p className="text-text-subtle text-2xs m-0 p-0">
+						{helpMessage}
+					</p>
+				)}
+				{errorMessage && (
+					<p
+						ref={spanRef}
+						aria-invalid={ariaInvalid || invalid ? "true" : "false"}
+						className="text-danger-text text-2xs aria-invalid:scale-y-100 m-0 block origin-top scale-y-0 p-0 transition duration-200 ease-in-out"
+					>
+						{errorMessage}
+					</p>
+				)}
+			</div>
 		)
 	},
 )
 Input.displayName = "Input"
 
-export { Input }
+const memoizedInput = React.memo(Input)
+
+export { memoizedInput as Input }
 //#endregion
