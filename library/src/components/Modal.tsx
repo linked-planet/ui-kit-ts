@@ -1,9 +1,4 @@
-import React, {
-	type CSSProperties,
-	type ReactNode,
-	useRef,
-	useMemo,
-} from "react"
+import React, { type CSSProperties, type ReactNode, useMemo } from "react"
 import * as RDialog from "@radix-ui/react-dialog"
 import { twMerge } from "tailwind-merge"
 import { getPortal } from "../utils/getPortal"
