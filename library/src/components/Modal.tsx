@@ -1,4 +1,9 @@
-import React, { type CSSProperties, type ReactNode, useRef } from "react"
+import React, {
+	type CSSProperties,
+	type ReactNode,
+	useRef,
+	useMemo,
+} from "react"
 import * as RDialog from "@radix-ui/react-dialog"
 import { twMerge } from "tailwind-merge"
 import { getPortal } from "../utils/getPortal"
@@ -10,6 +15,7 @@ type ModalDialogProps = {
 	children: ReactNode
 	shouldCloseOnEscapePress?: boolean
 	shouldCloseOnOverlayClick?: boolean
+	usePortal?: boolean
 }
 
 const blanketStyles =
@@ -21,14 +27,12 @@ function Container({
 	open = true,
 	onOpenChange,
 	trigger,
+	usePortal = true,
 	children,
 }: ModalDialogProps) {
-	const portalNode = useRef(getPortal())
-
-	return (
-		<RDialog.Root open={open} onOpenChange={onOpenChange}>
-			{trigger && <RDialog.Trigger>{trigger}</RDialog.Trigger>}
-			<RDialog.Portal container={portalNode.current}>
+	const content = useMemo(
+		() => (
+			<>
 				<RDialog.Overlay
 					className={blanketStyles}
 					role="presentation"
@@ -48,7 +52,22 @@ function Container({
 				>
 					{children}
 				</RDialog.Content>
-			</RDialog.Portal>
+			</>
+		),
+		[children, shouldCloseOnEscapePress, shouldCloseOnOverlayClick],
+	)
+
+	return (
+		<RDialog.Root open={open} onOpenChange={onOpenChange}>
+			{trigger && <RDialog.Trigger>{trigger}</RDialog.Trigger>}
+
+			{usePortal ? (
+				<RDialog.Portal container={getPortal()}>
+					{content}
+				</RDialog.Portal>
+			) : (
+				content
+			)}
 		</RDialog.Root>
 	)
 }
