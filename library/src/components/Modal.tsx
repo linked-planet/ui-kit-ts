@@ -18,7 +18,7 @@ const blanketStyles =
 function Container({
 	shouldCloseOnEscapePress,
 	shouldCloseOnOverlayClick,
-	open,
+	open = true,
 	onOpenChange,
 	trigger,
 	children,
