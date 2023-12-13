@@ -993,7 +993,7 @@ function CheckboxShowcase(props: ShowcaseProps) {
 	>(false)
 
 	const akExample = (
-		<div style={{ display: "flex", gap: "1rem" }}>
+		<div className="flex gap-4">
 			<AKCheckbox
 				label="controlled"
 				isChecked={!!isCheckboxActive}
@@ -1019,10 +1019,10 @@ function CheckboxShowcase(props: ShowcaseProps) {
 
 	//#region checkbox
 	const lpExample = (
-		<div style={{ display: "flex", gap: "1rem" }}>
+		<div className="flex gap-4">
 			<Checkbox
 				label="controlled"
-				checked={isCheckboxActive}
+				checked={!!isCheckboxActive}
 				onCheckedChange={setIsCheckboxActive}
 			/>
 			<Checkbox label="uncontrolled" defaultChecked />
@@ -1534,11 +1534,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 	//#region dropdown-menu
 	const lpExample = (
 		<>
-			<Dropdown.Menu
-				trigger="Dropdown"
-				placement={"right"}
-				align="center"
-			>
+			<Dropdown.Menu trigger="Dropdown" side={"right"} align="center">
 				<Dropdown.ItemCheckbox
 					isSelected={checkBoxes.includes("item-1")}
 					description={"test description"}
@@ -3957,16 +3953,13 @@ import {
 } from "@atlaskit/modal-dialog"
 import {
 	Modal,
-	ModalBody,
-	ModalCloseTrigger,
-	ModalFooter,
-	ModalHeader,
-	ModalTitle,
 	Select,
 	Button,
 	ButtonGroup,
+	Dropdown,
 } from "@linked-planet/ui-kit-ts"
 import { default as AKSelect } from "@atlaskit/select"
+import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
 
 function AKExample() {
 	const [isAKModalActive, setIsAKModalActive] = useState(false)
@@ -4008,6 +4001,9 @@ function AKExample() {
 							<Select
 								placeholder="Choose"
 								options={selectOptions}
+								side="bottom"
+								align="end"
+								className="z-10"
 							></Select>
 						</AKModalBody>
 
@@ -4038,6 +4034,11 @@ function ControlledExample() {
 		})
 	}
 
+	const ddItems = []
+	for (let i = 0; i < 100; i++) {
+		ddItems.push(<DropdownMenuItem>{i}</DropdownMenuItem>)
+	}
+
 	//#region modal_controlled
 	const [isModalActive, setIsModalActive] = useState(false)
 
@@ -4050,14 +4051,14 @@ function ControlledExample() {
 				</Button>
 
 				{isModalActive && (
-					<Modal
+					<Modal.Container
 						open={isModalActive}
 						onOpenChange={(opened) => {
 							if (!opened) setIsModalActive(false)
 						}}
 					>
-						<ModalHeader>
-							<ModalTitle>Sample Modal</ModalTitle>
+						<Modal.Header>
+							<Modal.Title>Sample Modal</Modal.Title>
 							<Button
 								appearance="link"
 								onClick={() => setIsModalActive(false)}
@@ -4067,8 +4068,8 @@ function ControlledExample() {
 									primaryColor="#000"
 								/>
 							</Button>
-						</ModalHeader>
-						<ModalBody>
+						</Modal.Header>
+						<Modal.Body>
 							<div>
 								<p>This is the body of the modal.</p>
 							</div>
@@ -4078,18 +4079,23 @@ function ControlledExample() {
 								options={selectOptions}
 								side="bottom"
 								align="end"
-								contentClassName="z-50"
-								open
 							/>
-						</ModalBody>
-						<ModalFooter>
-							<ModalCloseTrigger>
+							<Dropdown.Menu
+								triggerClassName="w-full"
+								align="end"
+								trigger="Dropdown"
+							>
+								{ddItems}
+							</Dropdown.Menu>
+						</Modal.Body>
+						<Modal.Footer>
+							<Modal.CloseTrigger>
 								<Button appearance="primary" className="z-0">
 									Close
 								</Button>
-							</ModalCloseTrigger>
-						</ModalFooter>
-					</Modal>
+							</Modal.CloseTrigger>
+						</Modal.Footer>
+					</Modal.Container>
 				)}
 			</div>
 		</>
@@ -4292,8 +4298,8 @@ function PaginationShowcase(props: ShowcaseProps) {
 			pageSize={pageSize}
 			pageSizes={[10, 20, 50, 100]}
 			setPageSize={setPageSize}
-			pageSizeMenuPlacement="top"
-			pageSizeMenuAlignment="end"
+			pageSizeMenuSide="top"
+			pageSizeMenuAlign="end"
 		/>
 	)
 	//#endregion pagination

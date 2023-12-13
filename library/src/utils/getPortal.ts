@@ -1,6 +1,6 @@
 export const portalContainerID = "#uikts-portal" as const
 
-export function getPortal() {
+export function getPortal(insidePortalContainerID: string) {
 	let portalNode = document.getElementById(portalContainerID)
 	if (!portalNode) {
 		portalNode = document.createElement("div")
@@ -10,5 +10,13 @@ export function getPortal() {
 		const body = document.getElementsByTagName("body")[0]
 		body.appendChild(portalNode)
 	}
-	return portalNode
+	let insidePortalNode = portalNode.querySelector(
+		"#" + insidePortalContainerID,
+	) as HTMLElement | null
+	if (!insidePortalNode) {
+		insidePortalNode = document.createElement("div")
+		insidePortalNode.setAttribute("id", insidePortalContainerID)
+		portalNode.appendChild(insidePortalNode)
+	}
+	return insidePortalNode
 }

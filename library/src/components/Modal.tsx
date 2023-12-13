@@ -57,7 +57,7 @@ function Container({
 			{trigger && <RDialog.Trigger>{trigger}</RDialog.Trigger>}
 
 			{usePortal ? (
-				<RDialog.Portal container={getPortal()}>
+				<RDialog.Portal container={getPortal("uikts-modal")}>
 					{content}
 				</RDialog.Portal>
 			) : (

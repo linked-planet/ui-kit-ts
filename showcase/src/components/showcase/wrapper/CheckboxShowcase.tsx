@@ -11,7 +11,7 @@ function CheckboxShowcase(props: ShowcaseProps) {
 	>(false)
 
 	const akExample = (
-		<div style={{ display: "flex", gap: "1rem" }}>
+		<div className="flex gap-4">
 			<AKCheckbox
 				label="controlled"
 				isChecked={!!isCheckboxActive}
@@ -37,10 +37,10 @@ function CheckboxShowcase(props: ShowcaseProps) {
 
 	//#region checkbox
 	const lpExample = (
-		<div style={{ display: "flex", gap: "1rem" }}>
+		<div className="flex gap-4">
 			<Checkbox
 				label="controlled"
-				checked={isCheckboxActive}
+				checked={!!isCheckboxActive}
 				onCheckedChange={setIsCheckboxActive}
 			/>
 			<Checkbox label="uncontrolled" defaultChecked />

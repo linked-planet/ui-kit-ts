@@ -82,23 +82,8 @@ const Select = forwardRef(
 	) => {
 		const items = useMemo(() => {
 			if (Array.isArray(options)) {
-				const items = options.map((option) => (
-					<SelectItem
-						value={option.value}
-						key={option.label}
-						disabled={option.disabled}
-					>
-						{option.label}
-					</SelectItem>
-				))
-				return <RSelect.Group>{items}</RSelect.Group>
-			}
-			return Object.entries(options).map(([groupName, options]) => (
-				<RSelect.Group key={groupName}>
-					<RSelect.Label className={selectGroupLabelStyles}>
-						{groupName}
-					</RSelect.Label>
-					{options.map((option) => (
+				const items = options.map((option) => {
+					return (
 						<SelectItem
 							value={option.value}
 							key={option.label}
@@ -106,7 +91,26 @@ const Select = forwardRef(
 						>
 							{option.label}
 						</SelectItem>
-					))}
+					)
+				})
+				return <RSelect.Group>{items}</RSelect.Group>
+			}
+			return Object.entries(options).map(([groupName, options]) => (
+				<RSelect.Group key={groupName}>
+					<RSelect.Label className={selectGroupLabelStyles}>
+						{groupName}
+					</RSelect.Label>
+					{options.map((option) => {
+						return (
+							<SelectItem
+								value={option.value}
+								key={option.label}
+								disabled={option.disabled}
+							>
+								{option.label}
+							</SelectItem>
+						)
+					})}
 				</RSelect.Group>
 			))
 		}, [options])
@@ -156,13 +160,14 @@ const Select = forwardRef(
 					aria-required={required}
 				>
 					<RSelect.Value ref={ref} placeholder={placeholder} />
+
 					<RSelect.Icon className="flex items-center justify-center">
 						<ChevronDownIcon label="open select" />
 					</RSelect.Icon>
 				</RSelect.Trigger>
 
 				{usePortal ? (
-					<RSelect.Portal container={getPortal()}>
+					<RSelect.Portal container={getPortal("uikts-select")}>
 						{content}
 					</RSelect.Portal>
 				) : (

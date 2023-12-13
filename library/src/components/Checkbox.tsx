@@ -1,140 +1,144 @@
-import React, { CSSProperties, useState } from "react"
-import * as RCheckbox from "@radix-ui/react-checkbox"
+import React, {
+	type InputHTMLAttributes,
+	forwardRef,
+	useState,
+	type ForwardedRef,
+	ReactNode,
+	useImperativeHandle,
+	useRef,
+	useEffect,
+} from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
 import CheckboxIndeterminateIcon from "@atlaskit/icon/glyph/checkbox-indeterminate"
 
 const indeterminateState = "indeterminate" as const
 
-type CheckboxProps = {
-	label: React.ReactChild
-	id?: string
-	value?: string
-	checked?: boolean | typeof indeterminateState
-	title?: string
-	defaultChecked?: boolean
-	disabled?: boolean
-	invalid?: boolean
-	required?: boolean
+type CheckboxProps2 = Omit<
+	InputHTMLAttributes<HTMLInputElement>,
+	"type" | "checked"
+> & {
 	indeterminate?: boolean
-	autoFocus?: boolean
-	name?: string
-	onChange?: (event: { target: { checked: boolean } }) => void
-	onCheckedChange?: (checked: boolean | typeof indeterminateState) => void
-	style?: CSSProperties
-	className?: string
+	checked?: boolean | typeof indeterminateState
+	label?: ReactNode
+	invalid?: boolean
+	onCheckedChange?: (checked: boolean) => void
 }
 
 const checkBoxStyles =
-	"box-border focus:border-selected-border mx-2 ease-linear transition duration-200 flex flex-none h-[14px] w-[14px] cursor-default items-center justify-center rounded-[3px] border-[2.5px] outline-none outline-0 outline-offset-0 focus:border-2 disabled:border-disabled invalid:border-danger-bold" as const
+	"absolute left-0 box-border border-border focus:border-selected-border mr-2 ease-linear transition duration-150 flex flex-none h-[14px] w-[14px] cursor-default items-center justify-center rounded-[3px] border-[2.5px] outline-none outline-0 outline-offset-0 focus:border-2" as const
+
+const disabledStyles = "cursor-not-allowed border-disabled" as const
 
 const checkBoxCheckedStyles =
-	"text-selected-text border-selected-border" as const
-const checkBoxUncheckedStyles = "border-border" as const
+	"text-selected-text border-selected-border opacity-100" as const
+const checkBoxUncheckedStyles = "border-border text-transparent" as const
 const checkBoxInvalidStyles = "border-danger-border" as const
 
+//#region label styles
 const disabledLabelStyles = "aria-disabled:text-disabled-text" as const
 
 const requiredLabelStyles =
 	"aria-required:after:content-['*'] aria-required:after:text-danger-bold aria-required:after:ml-0.5"
+//#endregion
 
-function Checkbox({
-	label,
-	value,
-	checked: checkedProp,
-	defaultChecked,
-	disabled,
-	invalid,
-	/**
-	 * indeterminate is a special case where the checkbox is neither checked nor unchecked. It replaces the checked state by a different icon.
-	 */
-	indeterminate,
-	required,
-	autoFocus,
-	onChange,
-	onCheckedChange,
-	name,
-	style,
-	className,
-	...props
-}: CheckboxProps) {
-	const [checked, setChecked] = useState<boolean | typeof indeterminateState>(
-		checkedProp ?? defaultChecked ?? false,
-	)
+const Checkbox = forwardRef(
+	(
+		{
+			id,
+			className,
+			style,
+			label,
+			disabled,
+			required,
+			checked: checkedProp,
+			defaultChecked,
+			indeterminate: indeterminateProp,
+			invalid,
+			onChange,
+			onCheckedChange,
+			...props
+		}: CheckboxProps2,
+		ref: ForwardedRef<HTMLInputElement>,
+	) => {
+		const [checked, setChecked] = useState(
+			checkedProp ?? defaultChecked ?? false,
+		)
 
-	if (indeterminate) {
-		if (checkedProp !== undefined || checkedProp !== undefined) {
-			if (checkedProp === true && checked !== indeterminateState) {
-				setChecked(indeterminateState)
-			} else if (!checkedProp && checked !== false) {
-				setChecked(false)
-			}
-		}
-	} else {
+		const inputRef = useRef<HTMLInputElement>(null)
+		// forward the local ref to the forwarded ref
+		useImperativeHandle(ref, () => inputRef.current!)
+
+		// update from outside
 		if (checkedProp !== undefined && checked !== checkedProp) {
-			setChecked(checkedProp ?? false)
+			setChecked(checkedProp)
 		}
-	}
 
-	return (
-		<div className={twMerge("flex items-center", className)}>
-			<RCheckbox.Root
-				name={name}
-				value={value}
+		const indeterminate =
+			indeterminateProp ?? checked === indeterminateState
+
+		// this needs to be in a useEffect to check if the input is checked after react rendered the component, else it will still have the old checked value
+		// this is needed because the input is not controlled by react
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		useEffect(() => {
+			const checked = inputRef.current?.checked
+			setChecked(checked ?? false)
+		})
+
+		return (
+			<div
+				className={twMerge(
+					"relative flex items-center justify-start",
+					className,
+				)}
 				style={style}
-				checked={checked}
-				disabled={disabled}
-				required={required}
-				aria-invalid={invalid}
-				autoFocus={autoFocus}
-				onCheckedChange={(e: RCheckbox.CheckedState) => {
-					onCheckedChange?.(e)
-					if (checked === indeterminateState) {
-						if (e === true || e === indeterminateState) {
-							setChecked(false)
-							onChange?.({ target: { checked: false } })
-							return
-						}
-					} else {
-						if (indeterminate && e === true) {
-							setChecked(indeterminateState)
-						} else {
-							setChecked(e)
-						}
-						onChange?.({ target: { checked: !!e } })
-					}
-				}}
-				className={`${twMerge(
-					checkBoxStyles,
-					invalid ? checkBoxInvalidStyles : undefined,
-				)} ${
-					checked ? checkBoxCheckedStyles : checkBoxUncheckedStyles
-				} `}
-				{...props}
 			>
-				<RCheckbox.Indicator className="relative box-border flex h-4 w-4 flex-none items-center justify-center">
-					{typeof checked === "boolean" && checked === true && (
-						<div className="absolute inset-0 flex items-center justify-center">
-							<CheckboxIcon label="" />
-						</div>
+				<div
+					className={`${twMerge(
+						checkBoxStyles,
+						invalid ? checkBoxInvalidStyles : undefined,
+						disabled ? disabledStyles : undefined,
+					)} ${
+						checked
+							? checkBoxCheckedStyles
+							: checkBoxUncheckedStyles
+					} `}
+				>
+					{!indeterminate ? (
+						<CheckboxIcon label="" />
+					) : (
+						<CheckboxIndeterminateIcon label="" />
 					)}
-					{checked === indeterminateState && (
-						<div className="absolute inset-0 flex items-center justify-center">
-							<CheckboxIndeterminateIcon label="" />
-						</div>
-					)}
-				</RCheckbox.Indicator>
-			</RCheckbox.Root>
-			<label
-				aria-disabled={disabled}
-				aria-required={required}
-				className={twJoin(disabledLabelStyles, requiredLabelStyles)}
-			>
-				{label}
-			</label>
-		</div>
-	)
-}
+				</div>
+				<input
+					type="checkbox"
+					id={id}
+					ref={inputRef}
+					disabled={disabled}
+					checked={!!checked}
+					required={required}
+					className={"mr-2 opacity-0"}
+					onChange={(e) => {
+						onCheckedChange?.(e.target.checked)
+						onChange?.(e)
+						setChecked(e.target.checked)
+					}}
+					{...props}
+				/>
 
-const memoizedCheckbox = React.memo(Checkbox)
-export { memoizedCheckbox as Checkbox }
+				<label
+					htmlFor={id}
+					aria-disabled={disabled}
+					aria-required={required}
+					aria-invalid={invalid}
+					className={twJoin(disabledLabelStyles, requiredLabelStyles)}
+				>
+					{label}
+				</label>
+			</div>
+		)
+	},
+)
+Checkbox.displayName = "Checkbox"
+
+export { Checkbox }
