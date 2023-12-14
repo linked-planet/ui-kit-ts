@@ -11,7 +11,7 @@ setGlobalTheme({
 	spacing: "spacing",
 	shape: "shape",
 	colorMode: "auto", // auto loads light and dark theme, if this is set to "dark" only the dark theme is loaded, and switching doesn't work
-	typography: "typography",
+	typography: "typography-adg3",
 }).then(() => {
 	if (savedTheme) {
 		applyTheme(savedTheme)

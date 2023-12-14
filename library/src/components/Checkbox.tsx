@@ -26,12 +26,12 @@ type CheckboxProps2 = Omit<
 }
 
 const checkBoxStyles =
-	"absolute left-0 box-border border-border focus:border-selected-border mr-2 ease-linear transition duration-150 flex flex-none h-[14px] w-[14px] cursor-default items-center justify-center rounded-[3px] border-[2.5px] outline-none outline-0 outline-offset-0 focus:border-2" as const
+	"border-border focus:border-selected-border hover:border-selected-bold-hovered box-border flex flex-none h-[14px] w-[14px]  items-center justify-center mr-2 ease-linear transition duration-150 cursor-default rounded-[3px] border-[2.5px] outline-none outline-0 outline-offset-0 focus:border-2"
 
 const disabledStyles = "cursor-not-allowed border-disabled" as const
 
 const checkBoxCheckedStyles =
-	"text-selected-text border-selected-border opacity-100" as const
+	"text-selected-bold hover:text-selected-bold-hovered border-selected-border opacity-100" as const
 const checkBoxUncheckedStyles = "border-border text-transparent" as const
 const checkBoxInvalidStyles = "border-danger-border" as const
 
@@ -94,37 +94,40 @@ const Checkbox = forwardRef(
 				style={style}
 			>
 				<div
-					className={`${twMerge(
+					className={twMerge(
 						checkBoxStyles,
-						invalid ? checkBoxInvalidStyles : undefined,
-						disabled ? disabledStyles : undefined,
-					)} ${
 						checked
 							? checkBoxCheckedStyles
-							: checkBoxUncheckedStyles
-					} `}
-				>
-					{!indeterminate ? (
-						<CheckboxIcon label="" />
-					) : (
-						<CheckboxIndeterminateIcon label="" />
+							: checkBoxUncheckedStyles,
+						invalid ? checkBoxInvalidStyles : undefined,
+						disabled ? disabledStyles : undefined,
 					)}
+				>
+					<div
+						className={"absolute flex items-center justify-center"}
+					>
+						{!indeterminate ? (
+							<CheckboxIcon label="" />
+						) : (
+							<CheckboxIndeterminateIcon label="" />
+						)}
+					</div>
+					<input
+						type="checkbox"
+						id={id}
+						ref={inputRef}
+						disabled={disabled}
+						checked={!!checked}
+						required={required}
+						className={"mr-2 opacity-0"}
+						onChange={(e) => {
+							onCheckedChange?.(e.target.checked)
+							onChange?.(e)
+							setChecked(e.target.checked)
+						}}
+						{...props}
+					/>
 				</div>
-				<input
-					type="checkbox"
-					id={id}
-					ref={inputRef}
-					disabled={disabled}
-					checked={!!checked}
-					required={required}
-					className={"mr-2 opacity-0"}
-					onChange={(e) => {
-						onCheckedChange?.(e.target.checked)
-						onChange?.(e)
-						setChecked(e.target.checked)
-					}}
-					{...props}
-				/>
 
 				<label
 					htmlFor={id}

@@ -2,18 +2,18 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-//import TextField from "@atlaskit/textfield"
+import TextField from "@atlaskit/textfield"
 import { Input } from "@linked-planet/ui-kit-ts"
 
 export default function InputShowcase(props: ShowcaseProps) {
 	const exampleAK = (
 		<div className="flex flex-col">
-			{/*<TextField />
+			<TextField />
 			<TextField isDisabled />
 			<TextField placeholder="Placeholder" />
 			<TextField isInvalid value={"invalid"} />
 			<TextField isReadOnly value={"readonly"} />
-	<TextField type="number" defaultValue={1} />*/}
+			<TextField type="number" defaultValue={1} />
 		</div>
 	)
 
