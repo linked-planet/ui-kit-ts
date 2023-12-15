@@ -9,7 +9,8 @@ import * as RSelect from "@radix-ui/react-select"
 import { twJoin, twMerge } from "tailwind-merge"
 
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
-import { getPortal } from "../../utils/getPortal"
+import { getPortal } from "@linked-planet/ui-kit-ts"
+//import { getPortal } from "../../utils/getPortal"
 
 type SelectOption = {
 	label: string
@@ -41,7 +42,7 @@ type SelectProps = {
 }
 
 const selectNormalStyles =
-	"p-2 text-left bg-input-active rounded border border-input-border ease-in-out transition duration-200 flex items-center justify-between w-full"
+	"p-2 select-none text-left bg-input-active rounded border border-input-border ease-in-out transition duration-200 flex items-center justify-between w-full"
 const selectFocusStyles =
 	"focus:border-selected-bold focus:bg-input-active outline-none hover:bg-input-hovered"
 const selectDisabledStyles =
@@ -130,7 +131,7 @@ const Select = forwardRef(
 					side={side}
 					align={align}
 					className={twMerge(
-						"bg-surface-raised shadow-overlay py-2",
+						"bg-surface-raised shadow-overlay z-10 py-2",
 						contentClassName,
 					)}
 					style={contentStyle}
@@ -159,7 +160,14 @@ const Select = forwardRef(
 					disabled={disabled}
 					aria-required={required}
 				>
-					<RSelect.Value ref={ref} placeholder={placeholder} />
+					<RSelect.Value
+						ref={ref}
+						placeholder={
+							<div className="text-disabled-text">
+								{placeholder ?? "Select..."}
+							</div>
+						}
+					/>
 
 					<RSelect.Icon className="flex items-center justify-center">
 						<ChevronDownIcon label="open select" />

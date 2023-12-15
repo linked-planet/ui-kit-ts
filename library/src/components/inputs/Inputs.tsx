@@ -11,7 +11,7 @@ import React, {
 import { twJoin, twMerge } from "tailwind-merge"
 
 //#region Label
-const labelNormalStyles = "text-text-subtlest text-xs font-semibold"
+const labelNormalStyles = "text-text-subtlest text-sm pb-1 pt-3 font-semibold"
 const requiredStyles =
 	"aria-required:after:content-['*'] aria-required:after:text-danger-bold aria-required:after:ml-0.5"
 const invalidStyles = "aria-invalid:text-danger-text"

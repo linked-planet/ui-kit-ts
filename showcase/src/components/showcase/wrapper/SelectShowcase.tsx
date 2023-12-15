@@ -3,7 +3,53 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { default as AKSelect } from "@atlaskit/select"
-import { Select } from "@linked-planet/ui-kit-ts"
+import { Button, ButtonGroup, Select } from "@linked-planet/ui-kit-ts"
+import { Select as RSelect } from "@linked-planet/ui-kit-ts/components/inputs/Select2"
+import { useForm } from "react-hook-form"
+
+//#region select2form
+type OptionType = {
+	value: string
+	label: string
+}
+
+type FormData = {
+	singleValue: OptionType
+}
+
+function FormExample() {
+	const availableOptions: OptionType[] = [
+		{ label: "First option", value: "first" },
+		{ label: "Second option", value: "second" },
+	]
+
+	const { handleSubmit, control, reset } = useForm<FormData>({
+		defaultValues: {
+			singleValue: availableOptions[0],
+		},
+	})
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={() => reset()}
+		>
+			<RSelect
+				control={control}
+				name="singleValue"
+				options={availableOptions}
+			/>
+
+			<ButtonGroup className="mt-2 w-full justify-end">
+				<Button type="reset">Reset</Button>
+				<Button type="submit" appearance="primary">
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion select2form
 
 function SelectShowcase(props: ShowcaseProps) {
 	//#region select
@@ -19,6 +65,16 @@ function SelectShowcase(props: ShowcaseProps) {
 			<Select
 				placeholder="Select an option"
 				options={[{ label: "First option", value: "first" }]}
+			/>
+
+			<RSelect
+				placeholder="Select an option"
+				options={[
+					{ label: "First option", value: "first" },
+					{ label: "Second option", value: "second" },
+				]}
+				isDisabled={false}
+				menuIsOpen={true}
 			/>
 		</div>
 	)
@@ -48,6 +104,20 @@ function SelectShowcase(props: ShowcaseProps) {
 					],
 				}}
 			/>
+
+			<RSelect
+				placeholder="Select a value 2"
+				options={[
+					{
+						label: "First group",
+						options: [{ label: "First option", value: "first" }],
+					},
+					{
+						label: "Second group",
+						options: [{ label: "Second option", value: "second" }],
+					},
+				]}
+			/>
 		</div>
 	)
 	//#endregion select2
@@ -72,6 +142,11 @@ function SelectShowcase(props: ShowcaseProps) {
 					title: "Example 2",
 					example: example2,
 					sourceCodeExampleId: "select2",
+				},
+				{
+					title: "Form Example",
+					example: <FormExample />,
+					sourceCodeExampleId: "select2form",
 				},
 			]}
 		/>
