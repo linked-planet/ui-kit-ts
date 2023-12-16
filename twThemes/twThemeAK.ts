@@ -76,6 +76,10 @@ export const theme = {
 				"0%": { opacity: "100%" },
 			},
 		},
+		/* responsive breakpoints */
+		screens: {
+			xs: "480px",
+		},
 	},
 	colors: {
 		text: {

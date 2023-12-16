@@ -38,6 +38,7 @@ function FormExample() {
 				control={control}
 				name="singleValue"
 				options={availableOptions}
+				usePortal
 			/>
 
 			<ButtonGroup className="mt-2 w-full justify-end">

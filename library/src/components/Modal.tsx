@@ -8,6 +8,8 @@ type ModalDialogProps = {
 	onOpenChange?: (open: boolean) => void
 	trigger?: ReactNode
 	children: ReactNode
+	className?: string
+	style?: CSSProperties
 	shouldCloseOnEscapePress?: boolean
 	shouldCloseOnOverlayClick?: boolean
 	usePortal?: boolean
@@ -22,6 +24,8 @@ function Container({
 	open = true,
 	onOpenChange,
 	trigger,
+	className,
+	style,
 	usePortal = true,
 	children,
 }: ModalDialogProps) {
@@ -33,7 +37,11 @@ function Container({
 					role="presentation"
 				/>
 				<RDialog.Content
-					className="fixed left-1/2 top-16 z-0 min-w-[40rem] -translate-x-1/2"
+					className={twMerge(
+						"xs:w-auto fixed left-1/2 top-16 z-0 w-full -translate-x-1/2",
+						className,
+					)}
+					style={style}
 					onEscapeKeyDown={
 						!shouldCloseOnEscapePress
 							? (e) => e.preventDefault()
@@ -49,7 +57,13 @@ function Container({
 				</RDialog.Content>
 			</>
 		),
-		[children, shouldCloseOnEscapePress, shouldCloseOnOverlayClick],
+		[
+			children,
+			className,
+			shouldCloseOnEscapePress,
+			shouldCloseOnOverlayClick,
+			style,
+		],
 	)
 
 	return (

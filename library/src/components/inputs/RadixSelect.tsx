@@ -55,7 +55,7 @@ const selectStyles = twJoin(
 const selectGroupLabelStyles =
 	"text-text-subtlest text-2xs font-[500] uppercase pt-4 pb-0.5 px-4" as const
 
-const Select = forwardRef(
+const RadixSelect = forwardRef(
 	(
 		{
 			defaultOpen,
@@ -184,8 +184,8 @@ const Select = forwardRef(
 		)
 	},
 )
-Select.displayName = "Select"
-export { Select }
+RadixSelect.displayName = "RadixSelect"
+export { RadixSelect }
 
 const normalStyles =
 	"px-4 normal-case font-normal text-sm text-text py-1.5 outline-none border-l-[2.5px] border-l-transparent cursor-pointer" as const

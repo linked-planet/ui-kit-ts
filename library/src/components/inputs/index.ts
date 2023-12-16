@@ -1,2 +1,3 @@
 export { Input, Label } from "./Inputs"
-export { Select } from "./Select"
+//export { RadixSelect } from "./RadixSelect"
+export { Select } from "./Select2"

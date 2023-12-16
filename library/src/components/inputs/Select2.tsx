@@ -1,3 +1,4 @@
+import { getPortal } from "@linked-planet/ui-kit-ts/utils"
 import React, { useMemo } from "react"
 import {
 	Controller,
@@ -30,6 +31,8 @@ type OptionType = {
 	isDisabled?: boolean
 	isFixed?: boolean
 }
+
+const portalDivId = "uikts-select"
 
 function useClassNamesConfig<
 	Option = unknown,
@@ -104,8 +107,13 @@ type SelectProps<
 > = RSelectProps<Option, IsMulti, GroupOptionType> & {
 	control?: FormData extends FieldValues ? Control<FormData> : undefined
 	name?: FormData extends FieldValues ? Path<FormData> : string | undefined
+	usePortal?: boolean
 }
 
+/**
+ * Simply a wrapper around react-select that provides some default styles and props, and encapuslates the react-hook-form Controller.
+ * Has a portalling macro that allows the menu to be rendered outside of the parent container. (usePortal={true})
+ */
 export function Select<
 	Option extends OptionType = OptionType,
 	IsMulti extends boolean = false,
@@ -114,6 +122,7 @@ export function Select<
 >({
 	control,
 	name,
+	usePortal,
 	...props
 }: SelectProps<Option, IsMulti, GroupOptionType, FormData>) {
 	if (control && name) {
@@ -126,6 +135,9 @@ export function Select<
 						<SelectInner<Option, IsMulti, GroupOptionType>
 							{...props}
 							{...field}
+							menuPortalTarget={
+								usePortal ? getPortal(portalDivId) : undefined
+							}
 						/>
 					)
 				}}
@@ -133,5 +145,10 @@ export function Select<
 		)
 	}
 
-	return <SelectInner<Option, IsMulti, GroupOptionType> {...props} />
+	return (
+		<SelectInner<Option, IsMulti, GroupOptionType>
+			{...props}
+			menuPortalTarget={usePortal ? getPortal(portalDivId) : undefined}
+		/>
+	)
 }
