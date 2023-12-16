@@ -6,7 +6,9 @@ export function getPortal(insidePortalContainerID: string) {
 		portalNode = document.createElement("div")
 		portalNode.setAttribute("id", portalContainerID)
 		portalNode.style.setProperty("z-index", "511") // the atlaskit portal has 510
-		portalNode.style.setProperty("position", "relative")
+		portalNode.style.setProperty("position", "absolute")
+		portalNode.style.setProperty("inset", "0")
+		portalNode.style.setProperty("pointer-events", "none")
 		const body = document.getElementsByTagName("body")[0]
 		body.appendChild(portalNode)
 	}
@@ -16,6 +18,7 @@ export function getPortal(insidePortalContainerID: string) {
 	if (!insidePortalNode) {
 		insidePortalNode = document.createElement("div")
 		insidePortalNode.setAttribute("id", insidePortalContainerID)
+		insidePortalNode.style.setProperty("pointer-events", "auto")
 		portalNode.appendChild(insidePortalNode)
 	}
 	return insidePortalNode
