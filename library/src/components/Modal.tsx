@@ -38,7 +38,7 @@ function Container({
 				/>
 				<RDialog.Content
 					className={twMerge(
-						"xs:w-auto fixed left-1/2 top-16 z-0 w-full -translate-x-1/2",
+						"fixed left-1/2 top-16 z-0 -translate-x-1/2",
 						className,
 					)}
 					style={style}

@@ -133,13 +133,21 @@ function ControlledExample() {
 							<div>
 								<p>This is the body of the modal.</p>
 							</div>
-							<AKSelect options={selectOptions}></AKSelect>
 							<Select
+								placeholder="Choose..."
+								options={selectOptions}
+							/>
+							<Select
+								placeholder="Choose..."
+								options={selectOptions}
+								menuPlacement="top"
+							/>
+							{/*<Select
 								placeholder="Choose"
 								options={selectOptions}
 								side="bottom"
 								align="end"
-							/>
+					/>*/}
 							<Dropdown.Menu
 								triggerClassName="w-full"
 								align="end"
