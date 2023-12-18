@@ -3,51 +3,92 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { default as AKSelect } from "@atlaskit/select"
-import { Button, ButtonGroup, Select } from "@linked-planet/ui-kit-ts"
-import { Select as RSelect } from "@linked-planet/ui-kit-ts/components/inputs/Select2"
+import {
+	Button,
+	ButtonGroup,
+	OptionGroupType,
+	Select,
+} from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
 //#region select2form
-type OptionType = {
-	value: string
-	label: string
-}
 
 type FormData = {
-	singleValue: OptionType
+	singleValue: string
+	multiValues: string[]
+	groupedMultiValues: string[]
 }
 
 function FormExample() {
-	const availableOptions: OptionType[] = [
+	const availableOptions = [
 		{ label: "First option", value: "first" },
 		{ label: "Second option", value: "second" },
+		{ label: "Third option", value: "third" },
+		{ label: "Fourth option", value: "fourth" },
+	]
+
+	const availableGroupOptions: OptionGroupType[] = [
+		{
+			label: "First group",
+			options: [
+				{ label: "First option", value: "first" },
+				{ label: "Second option", value: "second" },
+			],
+		},
+		{
+			label: "Second group",
+			options: [
+				{ label: "Third option", value: "third" },
+				{ label: "Fourth option", value: "fourth" },
+			],
+		},
 	]
 
 	const { handleSubmit, control, reset } = useForm<FormData>({
 		defaultValues: {
-			singleValue: availableOptions[0],
+			singleValue: availableOptions[0].value,
+			multiValues: [availableOptions[0].value, availableOptions[1].value],
 		},
 	})
 
 	return (
-		<form
-			onSubmit={handleSubmit((data) => console.log(data))}
-			onReset={() => reset()}
-		>
-			<RSelect
-				control={control}
-				name="singleValue"
-				options={availableOptions}
-				usePortal
-			/>
+		<>
+			<form
+				onSubmit={handleSubmit((data) => console.log(data))}
+				onReset={() => reset()}
+			>
+				<Select<FormData>
+					control={control}
+					name="singleValue"
+					options={availableOptions}
+					usePortal
+				/>
 
-			<ButtonGroup className="mt-2 w-full justify-end">
-				<Button type="reset">Reset</Button>
-				<Button type="submit" appearance="primary">
-					Submit
-				</Button>
-			</ButtonGroup>
-		</form>
+				<Select<FormData>
+					isMulti
+					control={control}
+					name="multiValues"
+					options={availableOptions}
+					usePortal
+				/>
+
+				<Select<FormData>
+					isMulti
+					control={control}
+					name="groupedMultiValues"
+					options={availableGroupOptions}
+					usePortal
+					onChange={(value) => console.log("ON CHANGE", value)}
+				/>
+
+				<ButtonGroup className="mt-2 w-full justify-end">
+					<Button type="reset">Reset</Button>
+					<Button type="submit" appearance="primary">
+						Submit
+					</Button>
+				</ButtonGroup>
+			</form>
+		</>
 	)
 }
 //#endregion select2form
@@ -60,15 +101,26 @@ function SelectShowcase(props: ShowcaseProps) {
 				inputId="select-1"
 				options={[
 					{ label: "First option", value: "first" },
-					{ label: "Second option", value: "second" },
+					{ label: "Second option", value: { test: "bla" } },
 				]}
 			/>
 			<Select
 				placeholder="Select an option"
-				options={[{ label: "First option", value: "first" }]}
+				onChange={(value) => {
+					console.log("VALUE", value)
+				}}
+				options={[
+					{ label: "First option", value: { test: "first" } },
+					{ label: "Second option", value: { test: "second" } },
+					{ label: "Third option", value: { test: "third" } },
+				]}
+				defaultValue={{
+					label: "Second option",
+					value: { test: "second" },
+				}}
 			/>
 
-			<RSelect
+			{/*<RadixSelect
 				placeholder="Select an option"
 				options={[
 					{ label: "First option", value: "first" },
@@ -76,7 +128,7 @@ function SelectShowcase(props: ShowcaseProps) {
 				]}
 				isDisabled={false}
 				menuIsOpen={true}
-			/>
+			/>*/}
 		</div>
 	)
 	//#endregion select
@@ -88,15 +140,21 @@ function SelectShowcase(props: ShowcaseProps) {
 				options={[
 					{
 						label: "First group",
-						options: [{ label: "First option", value: "first" }],
+						options: [
+							{ label: "First option", value: "first" },
+							{ label: "Second option", value: "second" },
+						],
 					},
 					{
 						label: "Second group",
-						options: [{ label: "Second option", value: "second" }],
+						options: [
+							{ label: "Third option", value: "third" },
+							{ label: "Fourth option", value: "fourth" },
+						],
 					},
 				]}
 			/>
-			<Select
+			{/*<RadixSelect
 				placeholder="Select a value"
 				options={{
 					"First Group": [{ label: "First option", value: "first" }],
@@ -104,9 +162,9 @@ function SelectShowcase(props: ShowcaseProps) {
 						{ label: "Second option", value: "second" },
 					],
 				}}
-			/>
+			/>*/}
 
-			<RSelect
+			<Select
 				placeholder="Select a value 2"
 				options={[
 					{
