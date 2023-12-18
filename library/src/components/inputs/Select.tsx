@@ -120,7 +120,6 @@ function SelectInner<
 
 	// get the browsers locale
 	const locale = navigator.language
-	console.log("LOCALE", locale)
 
 	if (isCreateable) {
 		return (
