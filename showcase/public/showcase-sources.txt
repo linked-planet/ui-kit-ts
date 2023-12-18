@@ -4391,7 +4391,12 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { default as AKSelect } from "@atlaskit/select"
-import { Button, ButtonGroup, Select } from "@linked-planet/ui-kit-ts"
+import {
+	Button,
+	ButtonGroup,
+	OptionGroupType,
+	Select,
+} from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
 //#region select2form
@@ -4399,6 +4404,7 @@ import { useForm } from "react-hook-form"
 type FormData = {
 	singleValue: string
 	multiValues: string[]
+	groupedMultiValues: string[]
 }
 
 function FormExample() {
@@ -4409,22 +4415,22 @@ function FormExample() {
 		{ label: "Fourth option", value: "fourth" },
 	]
 
-	/*const availableGroupOptions: OptionGroupType[] = [
+	const availableGroupOptions: OptionGroupType<string>[] = [
 		{
-			label: "First group", 
+			label: "First group",
 			options: [
 				{ label: "First option", value: "first" },
 				{ label: "Second option", value: "second" },
 			],
 		},
 		{
-			label: "Second group", 
+			label: "Second group",
 			options: [
 				{ label: "Third option", value: "third" },
-				{ label: "Fourth option", value: "fourth" },
+				{ label: "Fourth option", value: "fourth", isDisabled: true },
 			],
 		},
-	]*/
+	]
 
 	const { handleSubmit, control, reset } = useForm<FormData>({
 		defaultValues: {
@@ -4439,19 +4445,42 @@ function FormExample() {
 				onSubmit={handleSubmit((data) => console.log(data))}
 				onReset={() => reset()}
 			>
-				{/*<Select<FormData>
+				<Select<FormData, string>
 					control={control}
 					name="singleValue"
 					options={availableOptions}
+					onChange={(value) => console.log("ON CHANGE", value)}
 					usePortal
-	/>*/}
+				/>
 
-				<Select<FormData>
-					isMulti
+				<Select<FormData, string>
 					control={control}
+					isMulti
 					name="multiValues"
 					options={availableOptions}
 					usePortal
+					onChange={(value) => console.log("ON CHANGE", value)}
+				/>
+
+				{/* string is the value type, FormData the type of the form data for the control, true is the isMulti flag */}
+				<Select<FormData, string, true>
+					isMulti
+					control={control}
+					name="groupedMultiValues"
+					options={availableGroupOptions}
+					defaultValue={availableGroupOptions[0].options}
+					usePortal
+					onChange={(value) => console.log("ON CHANGE", value)}
+				/>
+
+				<Select
+					isMulti
+					//control={control}
+					name="groupedMultiValues"
+					options={availableGroupOptions}
+					defaultValue={availableGroupOptions[0].options}
+					disabled
+					onChange={(value) => console.log("ON CHANGE", value)}
 				/>
 
 				<ButtonGroup className="mt-2 w-full justify-end">

@@ -49,10 +49,12 @@ function useClassNamesConfig<
 				twJoin(
 					"px-2",
 					controlStyles,
-					provided.isDisabled ? "bg-disabled" : undefined,
+					provided.isDisabled
+						? "bg-disabled border-transparent cursor-not-allowed"
+						: "bg-input hover:bg-input-hovered",
 					provided.isFocused && !provided.isDisabled
 						? "bg-input-active border-selected-border"
-						: "bg-input hover:bg-input-hovered",
+						: "",
 				),
 			menu: () => menuStyles,
 			clearIndicator: () =>
