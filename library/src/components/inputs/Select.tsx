@@ -7,22 +7,24 @@ import {
 } from "react-hook-form"
 import {
 	default as RSelect,
-	type Props as RSelectProps,
 	type ClassNamesConfig,
 	type GroupBase,
-	OnChangeValue,
-	ActionMeta,
+	type OnChangeValue,
+	type ActionMeta,
 } from "react-select"
 
 import { getPortal } from "../../utils/getPortal"
 
 import { twJoin, twMerge } from "tailwind-merge"
+import ReactSelectCreatable, {
+	type CreatableProps,
+} from "react-select/creatable"
 
 //#region styles
 const controlStyles =
 	"border-input-border border rounded ease-in-out transition duration-300"
 
-const menuStyles = "bg-surface-overlay shadow-overlay rounded-b overflow-hidden"
+const menuStyles = "bg-surface-overlay shadow-overlay rounded overflow-hidden"
 
 const optionStyles = "py-1 px-3 border-l-2 border-l-transparent"
 
@@ -80,6 +82,9 @@ function useClassNamesConfig<
 					provided.isSelected
 						? "bg-selected-subtle border-l-selected-border"
 						: undefined,
+					provided.isFocused
+						? "border-l-selected-border bg-surface-overlay-hovered"
+						: undefined,
 					provided.isDisabled
 						? "text-disabled-text"
 						: "hover:border-l-selected-border hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed",
@@ -100,12 +105,44 @@ function SelectInner<
 	Option extends OptionType<ValueType> = OptionType<ValueType>,
 	IsMulti extends boolean = boolean,
 	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
->(props: RSelectProps<Option, IsMulti, GroupOptionType>) {
+>({
+	isCreateable,
+	formatCreateLabel,
+	...props
+}: CreatableProps<Option, IsMulti, GroupOptionType> & {
+	isCreateable?: boolean
+}) {
 	const classNamesConfig = useClassNamesConfig<
 		Option,
 		IsMulti,
 		GroupOptionType
 	>()
+
+	// get the browsers locale
+	const locale = navigator.language
+	console.log("LOCALE", locale)
+
+	if (isCreateable) {
+		return (
+			<ReactSelectCreatable<Option, IsMulti, GroupOptionType>
+				placeholder={
+					props.placeholder ?? locale.startsWith("de-")
+						? "Auswahl..."
+						: "Select..."
+				}
+				unstyled
+				classNames={classNamesConfig}
+				formatCreateLabel={
+					formatCreateLabel ??
+					((value) =>
+						locale.startsWith("de-")
+							? `Erstelle "${value}"`
+							: `Create "${value}"`)
+				}
+				{...props}
+			/>
+		)
+	}
 
 	return (
 		<RSelect<Option, IsMulti, GroupOptionType>
@@ -134,9 +171,10 @@ type SelectPropsProto<
 	Option extends OptionType<ValueType> = OptionType<ValueType>,
 	IsMulti extends boolean = boolean,
 	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
-> = RSelectProps<Option, IsMulti, GroupOptionType> & {
+> = CreatableProps<Option, IsMulti, GroupOptionType> & {
 	usePortal?: boolean
 	disabled?: boolean
+	isCreateable?: boolean
 }
 
 // extends with the control and fieldName props for react-hook-form.. the fieldName is the normal name prop of react-hook-form

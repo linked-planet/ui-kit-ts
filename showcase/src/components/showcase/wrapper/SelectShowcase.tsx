@@ -119,9 +119,14 @@ function SelectShowcase(props: ShowcaseProps) {
 				]}
 			/>
 			<Select
+				isCreateable
+				isClearable
 				placeholder="Select an option"
 				onChange={(value) => {
 					console.log("VALUE", value)
+				}}
+				onCreateOption={(value) => {
+					console.log("CREATE", value)
 				}}
 				options={[
 					{ label: "First option", value: { test: "first" } },
