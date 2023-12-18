@@ -24,18 +24,16 @@ const controlStyles =
 
 const menuStyles = "bg-surface-overlay shadow-overlay rounded-b overflow-hidden"
 
-const optionStyles =
-	"py-1 px-3 hover:bg-surface-overlay-hovered border-l-2 border-l-transparent hover:border-l-selected-border active:bg-surface-overlay-pressed"
-const optionSelectedStyles = "bg-selected-subtle border-l-selected-border"
+const optionStyles = "py-1 px-3 border-l-2 border-l-transparent"
 
-export type OptionType = {
+export type OptionType<ValueType> = {
 	label: string
-	value: string | number | boolean | object
+	value: ValueType
 	isDisabled?: boolean
 	isFixed?: boolean
 }
 
-export type OptionGroupType = GroupBase<OptionType>
+export type OptionGroupType<ValueType> = GroupBase<OptionType<ValueType>>
 
 const portalDivId = "uikts-select"
 
@@ -52,7 +50,7 @@ function useClassNamesConfig<
 					"px-2",
 					controlStyles,
 					provided.isDisabled ? "bg-disabled" : undefined,
-					provided.isFocused
+					provided.isFocused && !provided.isDisabled
 						? "bg-input-active border-selected-border"
 						: "bg-input hover:bg-input-hovered",
 				),
@@ -64,13 +62,25 @@ function useClassNamesConfig<
 			indicatorSeparator: () => "hidden" as const,
 			//input: (provided) => "",
 			placeholder: () => "text-disabled-text" as const,
-			//singleValue: (provided) => "",
-			multiValue: () =>
-				"text-text border-border border px-1 rounded-sm bg-surface mx-0.5" as const,
+			singleValue: (provided) =>
+				provided.isDisabled ? "text-disabled-text" : "text-text",
+			multiValue: (provided) => {
+				return twMerge(
+					"bg-selected-subtle rounded-sm px-1 mr-0.5 text-text",
+					provided.isDisabled
+						? "bg-disabled text-disabled-text"
+						: undefined,
+				)
+			},
 			option: (provided) =>
 				twMerge(
 					optionStyles,
-					provided.isSelected ? optionSelectedStyles : undefined,
+					provided.isSelected
+						? "bg-selected-subtle border-l-selected-border"
+						: undefined,
+					provided.isDisabled
+						? "text-disabled-text"
+						: "hover:border-l-selected-border hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed",
 				),
 			groupHeading: () =>
 				"text-text-subtlest text-2xs font-[500] uppercase pt-4 pb-0.5 px-3" as const,
@@ -84,7 +94,8 @@ function useClassNamesConfig<
  * Simply a wrapper around react-select that provides some default styles and props.
  */
 function SelectInner<
-	Option extends OptionType = OptionType,
+	ValueType,
+	Option extends OptionType<ValueType> = OptionType<ValueType>,
 	IsMulti extends boolean = boolean,
 	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
 >(props: RSelectProps<Option, IsMulti, GroupOptionType>) {
@@ -104,11 +115,12 @@ function SelectInner<
 	)
 }
 
-function isOptionType(o: unknown): o is OptionType {
+function isOptionType<ValueType>(o: unknown): o is OptionType<ValueType> {
 	return typeof o === "object" && o != null && "label" in o && "value" in o
 }
 function isOptionGroupType<
-	Option extends OptionType = OptionType,
+	ValueType,
+	Option extends OptionType<ValueType> = OptionType<ValueType>,
 	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
 >(o: unknown): o is GroupOptionType {
 	return typeof o === "object" && o != null && "label" in o && "options" in o
@@ -116,7 +128,8 @@ function isOptionGroupType<
 
 // base react-select props + extensions
 type SelectPropsProto<
-	Option extends OptionType = OptionType,
+	ValueType,
+	Option extends OptionType<ValueType> = OptionType<ValueType>,
 	IsMulti extends boolean = boolean,
 	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
 > = RSelectProps<Option, IsMulti, GroupOptionType> & {
@@ -127,35 +140,39 @@ type SelectPropsProto<
 // extends with the control and fieldName props for react-hook-form.. the fieldName is the normal name prop of react-hook-form
 type SelectInFormProps<
 	FormData extends FieldValues,
-	Option extends OptionType,
+	ValueType,
+	Option extends OptionType<ValueType>,
 	IsMulti extends boolean,
 	GroupOptionType extends GroupBase<Option>,
-> = SelectPropsProto<Option, IsMulti, GroupOptionType> & {
+> = SelectPropsProto<ValueType, Option, IsMulti, GroupOptionType> & {
 	control: Control<FormData>
 	name: Path<FormData>
 }
 
 type SelectNotInFormProps<
-	Option extends OptionType,
+	ValueType,
+	Option extends OptionType<ValueType>,
 	IsMulti extends boolean,
 	GroupOptionType extends GroupBase<Option>,
-> = SelectPropsProto<Option, IsMulti, GroupOptionType> & {
+> = SelectPropsProto<ValueType, Option, IsMulti, GroupOptionType> & {
 	control?: never
 }
 
 function SelectInForm<
 	FormData extends FieldValues,
-	Option extends OptionType,
+	ValueType,
+	Option extends OptionType<ValueType>,
 	IsMulti extends boolean,
 	GroupOptionType extends GroupBase<Option>,
 >({
 	control,
 	name,
 	disabled,
+	isDisabled,
 	options,
 	usePortal,
 	...props
-}: SelectInFormProps<FormData, Option, IsMulti, GroupOptionType>) {
+}: SelectInFormProps<FormData, ValueType, Option, IsMulti, GroupOptionType>) {
 	return (
 		<Controller<FormData>
 			control={control}
@@ -208,7 +225,7 @@ function SelectInForm<
 				}
 
 				return (
-					<SelectInner<Option, IsMulti, GroupOptionType>
+					<SelectInner<ValueType, Option, IsMulti, GroupOptionType>
 						{...props}
 						{...field}
 						onChange={onChange}
@@ -218,7 +235,7 @@ function SelectInForm<
 						menuPortalTarget={
 							usePortal ? getPortal(portalDivId) : undefined
 						}
-						isDisabled={disabled}
+						isDisabled={disabled || isDisabled}
 					/>
 				)
 			}}
@@ -227,53 +244,75 @@ function SelectInForm<
 }
 
 function SelectNotInForm<
-	Option extends OptionType,
+	ValueType,
+	Option extends OptionType<ValueType>,
 	IsMulti extends boolean,
 	GroupOptionType extends GroupBase<Option>,
 >({
 	options,
 	usePortal,
+	disabled,
+	isDisabled,
 	...props
-}: SelectNotInFormProps<Option, IsMulti, GroupOptionType>) {
+}: SelectNotInFormProps<ValueType, Option, IsMulti, GroupOptionType>) {
 	return (
-		<SelectInner<Option, IsMulti, GroupOptionType>
+		<SelectInner<ValueType, Option, IsMulti, GroupOptionType>
 			{...props}
 			options={options}
 			menuPortalTarget={usePortal ? getPortal(portalDivId) : undefined}
+			isDisabled={disabled || isDisabled}
 		/>
 	)
 }
 
 // function overloads
 export function Select<
-	FormData extends FieldValues = FieldValues,
-	Option extends OptionType = OptionType,
+	FormData extends FieldValues,
+	ValueType,
 	IsMulti extends boolean = boolean,
+	Option extends OptionType<ValueType> = OptionType<ValueType>,
 	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
 >(
-	props: SelectInFormProps<FormData, Option, IsMulti, GroupOptionType>,
+	props: SelectInFormProps<
+		FormData,
+		ValueType,
+		Option,
+		IsMulti,
+		GroupOptionType
+	>,
 ): JSX.Element
 export function Select<
-	Option extends OptionType = OptionType,
+	ValueType,
 	IsMulti extends boolean = boolean,
+	Option extends OptionType<ValueType> = OptionType<ValueType>,
 	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
->(props: SelectNotInFormProps<Option, IsMulti, GroupOptionType>): JSX.Element
+>(
+	props: SelectNotInFormProps<ValueType, Option, IsMulti, GroupOptionType>,
+): JSX.Element
 
 export function Select<
+	ValueType,
 	FormData extends FieldValues,
-	Option extends OptionType = OptionType,
 	IsMulti extends boolean = boolean,
+	Option extends OptionType<ValueType> = OptionType<ValueType>,
 	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
 >(
 	props:
-		| SelectNotInFormProps<Option, IsMulti, GroupOptionType>
-		| SelectInFormProps<FormData, Option, IsMulti, GroupOptionType>,
+		| SelectNotInFormProps<ValueType, Option, IsMulti, GroupOptionType>
+		| SelectInFormProps<
+				FormData,
+				ValueType,
+				Option,
+				IsMulti,
+				GroupOptionType
+		  >,
 ) {
 	if ("control" in props) {
 		return (
-			<SelectInForm
+			<SelectInForm<FormData, ValueType, Option, IsMulti, GroupOptionType>
 				{...(props as SelectInFormProps<
 					FormData,
+					ValueType,
 					Option,
 					IsMulti,
 					GroupOptionType
@@ -282,8 +321,9 @@ export function Select<
 		)
 	}
 	return (
-		<SelectNotInForm<Option, IsMulti, GroupOptionType>
+		<SelectNotInForm<ValueType, Option, IsMulti, GroupOptionType>
 			{...(props as SelectNotInFormProps<
+				ValueType,
 				Option,
 				IsMulti,
 				GroupOptionType
@@ -291,13 +331,3 @@ export function Select<
 		/>
 	)
 }
-
-/*type SelectProps<
-	FormData extends FieldValues | undefined = undefined,
-	Option extends OptionType = OptionType,
-	IsMulti extends boolean = false,
-	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
-> = FormData extends FieldValues
-	? SelectInFormProps<FormData, Option, IsMulti, GroupOptionType>
-	: SelectPropsProto<Option, IsMulti, GroupOptionType>
-*/

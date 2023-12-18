@@ -27,7 +27,7 @@ function FormExample() {
 		{ label: "Fourth option", value: "fourth" },
 	]
 
-	const availableGroupOptions: OptionGroupType[] = [
+	const availableGroupOptions: OptionGroupType<string>[] = [
 		{
 			label: "First group",
 			options: [
@@ -39,7 +39,7 @@ function FormExample() {
 			label: "Second group",
 			options: [
 				{ label: "Third option", value: "third" },
-				{ label: "Fourth option", value: "fourth" },
+				{ label: "Fourth option", value: "fourth", isDisabled: true },
 			],
 		},
 	]
@@ -57,27 +57,41 @@ function FormExample() {
 				onSubmit={handleSubmit((data) => console.log(data))}
 				onReset={() => reset()}
 			>
-				<Select<FormData>
+				<Select<FormData, string>
 					control={control}
 					name="singleValue"
 					options={availableOptions}
+					onChange={(value) => console.log("ON CHANGE", value)}
 					usePortal
 				/>
 
-				<Select<FormData>
-					isMulti
+				<Select<FormData, string>
 					control={control}
+					isMulti
 					name="multiValues"
 					options={availableOptions}
 					usePortal
+					onChange={(value) => console.log("ON CHANGE", value)}
 				/>
 
-				<Select<FormData>
+				{/* string is the value type, FormData the type of the form data for the control, true is the isMulti flag */}
+				<Select<FormData, string, true>
 					isMulti
 					control={control}
 					name="groupedMultiValues"
 					options={availableGroupOptions}
+					defaultValue={availableGroupOptions[0].options}
 					usePortal
+					onChange={(value) => console.log("ON CHANGE", value)}
+				/>
+
+				<Select
+					isMulti
+					//control={control}
+					name="groupedMultiValues"
+					options={availableGroupOptions}
+					defaultValue={availableGroupOptions[0].options}
+					disabled
 					onChange={(value) => console.log("ON CHANGE", value)}
 				/>
 
