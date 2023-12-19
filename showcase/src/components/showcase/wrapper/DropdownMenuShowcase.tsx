@@ -201,7 +201,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const lpExample2 = (
 		<>
-			<Dropdown.Menu trigger="Dropdown">
+			<Dropdown.Menu trigger="Dropdown 2" usePortal>
 				<Dropdown.Item>Test 1</Dropdown.Item>
 				<Dropdown.Item>Test 2</Dropdown.Item>
 			</Dropdown.Menu>

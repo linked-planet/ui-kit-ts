@@ -1,74 +1,84 @@
-import React, { CSSProperties, useRef } from "react"
-import { Tooltip as TTP, VariantType, PlacesType } from "react-tooltip"
+import React, { CSSProperties, useMemo } from "react"
+import { twMerge } from "tailwind-merge"
+import * as RTTp from "@radix-ui/react-tooltip"
+import { getPortal } from "../utils"
+
+const portalDivId = "uikts-tooltip" as const
 
 type TooltipProps = {
-	id?: string
-	place?: PlacesType
 	tooltipContent?: React.ReactNode
 	tooltipHTMLContent?: string
-	variant?: VariantType
-	opacity?: number
-} & React.ComponentPropsWithoutRef<"div">
+	usePortal?: boolean
+	className?: string
+	style?: CSSProperties
+	tooltipClassName?: string
+	tooltipStyle?: CSSProperties
+	side?: RTTp.TooltipContentProps["side"]
+	align?: RTTp.TooltipContentProps["align"]
+} & RTTp.TooltipProps
 
-const borderColors: { [key in VariantType]: string } = {
-	light: "#000",
-	dark: "#fff",
-	error: "#ff0000",
-	info: "#0000ff",
-	success: "#00ff00",
-	warning: "#ffff00",
-} as const
-
-/**
- * A tooltip component that wraps the children in a div and adds a tooltip to it.
- * Use tooltipContent for the tooltip content and tooltipHTMLContent in case you have a stringified HTML content.
- * The variant defines the color of the tooltip - if it is undefined, it is unstyled.
- */
 export function Tooltip({
 	tooltipContent,
 	tooltipHTMLContent,
-	id,
-	place = "left",
-	opacity = 1,
-	variant,
 	children,
-	...props
+	tooltipStyle,
+	tooltipClassName,
+	className,
+	style,
+	side = "top",
+	align = "center",
+	usePortal = true,
 }: TooltipProps) {
-	const ttID = useRef(
-		id ?? "tooltip-" + Math.random().toString(36).substring(7),
-	)
-
-	const themeVariant =
-		variant ??
-		(document
-			.getElementsByTagName("html")[0]
-			.getAttribute("data-color-mode") as VariantType) ??
-		("light" as VariantType)
-
-	const ttContent = tooltipContent ?? (
-		<div
-			dangerouslySetInnerHTML={{
-				__html: tooltipHTMLContent ?? "No Content",
-			}}
-		></div>
-	)
+	const content = useMemo(() => {
+		return (
+			<RTTp.Content
+				className={twMerge(
+					"bg-surface-overlay border-border shadow-overlay rounded border p-2",
+					tooltipClassName,
+				)}
+				style={tooltipStyle}
+				side={side}
+				align={align}
+			>
+				<>
+					{tooltipHTMLContent && (
+						<div
+							dangerouslySetInnerHTML={{
+								__html: tooltipHTMLContent,
+							}}
+						></div>
+					)}
+					{tooltipContent}
+				</>
+			</RTTp.Content>
+		)
+	}, [
+		align,
+		side,
+		tooltipClassName,
+		tooltipContent,
+		tooltipHTMLContent,
+		tooltipStyle,
+	])
 
 	return (
-		<div id={ttID.current} {...props}>
-			{children}
-			<TTP
-				border={`solid 2px ${borderColors[themeVariant]} `}
-				anchorSelect={"#" + ttID.current}
-				place={place}
-				variant={themeVariant}
-				style={
-					{
-						"--rt-opacity": opacity,
-					} as CSSProperties
-				}
-			>
-				{ttContent}
-			</TTP>
-		</div>
+		<RTTp.Root>
+			<RTTp.Trigger className={className} style={style} asChild>
+				<div className={className} style={style}>
+					{children}
+				</div>
+			</RTTp.Trigger>
+			{usePortal ? (
+				<RTTp.Portal container={getPortal(portalDivId)}>
+					{content}
+				</RTTp.Portal>
+			) : (
+				content
+			)}
+		</RTTp.Root>
 	)
+}
+
+export function TooltipProvider(props: RTTp.TooltipProviderProps) {
+	return <RTTp.TooltipProvider {...props} />
 }

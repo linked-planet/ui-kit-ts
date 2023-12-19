@@ -8,6 +8,7 @@ import { Button } from "./Button"
 import RadioIcon from "@atlaskit/icon/glyph/radio"
 import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
 import { twJoin, twMerge } from "tailwind-merge"
+import { getPortal } from "../utils"
 
 const commonStyles =
 	"pl-1 pr-5 py-1.5 flex items-center outline-none border-l-[2.5px] border-l-transparent cursor-default" as const
@@ -18,6 +19,8 @@ const normalStyles =
 	"hover:bg-surface-overlay-hovered hover:border-l-selected-bold active:bg-surface-overlay-pressed cursor-pointer" as const
 
 const descriptionStyle = "text-text-subtlest text-[12px] leading-4 h-4" as const
+
+const portalDivId = "uikts-dropdown" as const
 
 function Item({
 	description,
@@ -256,7 +259,7 @@ function SubMenu({
 			)
 		}
 		return trigger
-	}, [trigger])
+	}, [chevronSide, trigger])
 
 	return (
 		<RDd.Sub defaultOpen={defaultOpen} open={open}>
@@ -365,7 +368,13 @@ function Menu({
 			}}
 		>
 			<RDd.Trigger asChild>{triggerNode}</RDd.Trigger>
-			{usePortal ? <RDd.Portal>{content}</RDd.Portal> : content}
+			{usePortal ? (
+				<RDd.Portal container={getPortal(portalDivId)}>
+					{content}
+				</RDd.Portal>
+			) : (
+				content
+			)}
 		</RDd.Root>
 	)
 }

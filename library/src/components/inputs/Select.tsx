@@ -37,7 +37,7 @@ export type OptionType<ValueType> = {
 
 export type OptionGroupType<ValueType> = GroupBase<OptionType<ValueType>>
 
-const portalDivId = "uikts-select"
+const portalDivId = "uikts-select" as const
 
 function useClassNamesConfig<
 	Option = unknown,

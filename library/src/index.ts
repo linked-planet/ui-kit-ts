@@ -1,5 +1,4 @@
 import "react-toastify/dist/ReactToastify.css"
-import "react-tooltip/dist/react-tooltip.css"
 import "./styles.css"
 
 export * from "./components"
