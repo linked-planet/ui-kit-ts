@@ -17,6 +17,7 @@ import {
 	Button,
 	ButtonGroup,
 	Dropdown,
+	Collapsible,
 } from "@linked-planet/ui-kit-ts"
 import { default as AKSelect } from "@atlaskit/select"
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
@@ -48,10 +49,7 @@ function AKExample() {
 								appearance="link"
 								onClick={() => setIsAKModalActive(false)}
 							>
-								<CrossIcon
-									label="Close popup"
-									primaryColor="#000"
-								/>
+								<CrossIcon label="Close popup" />
 							</Button>
 						</AKModalHeader>
 
@@ -65,6 +63,70 @@ function AKExample() {
 								align="end"
 								className="z-10"
 							></Select>
+							<>
+								Lorem, ipsum dolor sit amet consectetur
+								adipisicing elit. Distinctio ipsam harum rerum
+								quia, nam, autem non, commodi expedita dolore
+								quisquam saepe odit maiores id alias reiciendis.
+								Aut aperiam minus eum. Lorem ipsum dolor sit
+								amet consectetur adipisicing elit. Illum quos
+								dolorum officia id porro illo sit voluptates
+								error doloremque? Iste deserunt amet illo
+								incidunt modi. Facilis reiciendis ratione at
+								veritatis. Lorem ipsum dolor sit amet
+								consectetur, adipisicing elit. Deserunt non,
+								perspiciatis voluptate cumque vel eveniet
+								ratione sequi ullam facilis! Beatae, voluptatem
+								aperiam consequatur assumenda consectetur
+								possimus accusantium maxime similique labore!
+								Lorem ipsum dolor sit amet consectetur,
+								adipisicing elit. Ullam, possimus facere ut odit
+								mollitia vel consectetur earum reiciendis beatae
+								inventore fugiat, quo eaque ipsum soluta facilis
+								doloremque, voluptatibus odio officiis. Lorem
+								ipsum dolor sit amet consectetur adipisicing
+								elit. Laudantium voluptatum aut voluptates
+								distinctio nam neque dolore, maiores autem
+								impedit, doloribus eveniet laborum
+								necessitatibus ex! Possimus odit in commodi
+								nulla architecto. Lorem ipsum dolor sit amet
+								consectetur adipisicing elit. Officia, facere
+								reiciendis incidunt obcaecati aut corrupti
+								tempora commodi nam aspernatur et quas beatae
+								delectus perspiciatis alias quia inventore
+								molestias quis exercitationem? Lorem, ipsum
+								dolor sit amet consectetur adipisicing elit.
+								Blanditiis temporibus doloremque nam molestiae
+								quidem, repellendus eligendi ex magnam quasi.
+								Est doloribus quam accusantium? Consequuntur,
+								vel sapiente alias repudiandae nisi soluta.
+								Lorem ipsum dolor sit amet consectetur
+								adipisicing elit. Reiciendis, quibusdam maxime.
+								Numquam, explicabo! At vero eligendi cupiditate
+								vel molestias eos sint, obcaecati minus suscipit
+								ducimus libero reprehenderit, itaque debitis
+								atque? Lorem ipsum dolor sit amet, consectetur
+								adipisicing elit. Repellendus vero consequatur
+								velit dolores neque distinctio harum tempore.
+								Vitae, doloribus perferendis! Deserunt
+								reprehenderit dolor tempora atque amet officiis
+								ea, velit iste. Lorem ipsum dolor sit, amet
+								consectetur adipisicing elit. Est nemo
+								accusamus, inventore assumenda et nulla. Eius,
+								consequuntur repudiandae ea corrupti eos magni
+								itaque temporibus blanditiis aspernatur, earum
+								quam ut. Laudantium. Lorem ipsum dolor sit amet
+								consectetur adipisicing elit. Doloremque
+								recusandae, distinctio in fuga vero ullam
+								tempora nisi laborum unde architecto, doloribus
+								dicta fugiat itaque voluptatibus dolorum vel
+								aspernatur, inventore nemo? Lorem ipsum dolor
+								sit amet consectetur adipisicing elit. Error,
+								corporis animi. Praesentium voluptate, optio
+								tenetur harum odio sequi eos possimus officiis
+								dignissimos. Laboriosam voluptates fuga est.
+								Deserunt quod officia harum!
+							</>
 						</AKModalBody>
 
 						<AKModalFooter>
@@ -107,64 +169,114 @@ function ControlledExample() {
 			<div>Modal: {isModalActive.toString()}</div>
 			<div>
 				<Button onClick={() => setIsModalActive(true)}>
-					Show Modal
+					Show Modal2
 				</Button>
 
-				{isModalActive && (
-					<Modal.Container
-						open={isModalActive}
-						onOpenChange={(opened) => {
-							if (!opened) setIsModalActive(false)
-						}}
-					>
-						<Modal.Header>
-							<Modal.Title>Sample Modal</Modal.Title>
-							<Button
-								appearance="link"
-								onClick={() => setIsModalActive(false)}
-							>
-								<CrossIcon
-									label="Close popup"
-									primaryColor="#000"
-								/>
+				<Modal.Container
+					open={isModalActive}
+					onOpenChange={(opened) => {
+						if (!opened) setIsModalActive(false)
+					}}
+				>
+					<Modal.Header>
+						<Modal.Title>Sample Modal</Modal.Title>
+						<Button
+							appearance="link"
+							onClick={() => setIsModalActive(false)}
+							className="text-text p-0"
+						>
+							<CrossIcon label="Close popup" />
+						</Button>
+					</Modal.Header>
+					<Modal.Body>
+						<div>
+							<p>This is the body of the modal.</p>
+						</div>
+						<Select
+							placeholder="Choose..."
+							options={selectOptions}
+						/>
+						<Select
+							placeholder="Choose..."
+							options={selectOptions}
+							menuPlacement="top"
+						/>
+						<Dropdown.Menu
+							triggerClassName="w-full"
+							align="end"
+							trigger="Dropdown"
+							usePortal={false}
+						>
+							{ddItems}
+						</Dropdown.Menu>
+						<Collapsible header={"lorem"} defaultOpen={false}>
+							Lorem, ipsum dolor sit amet consectetur adipisicing
+							elit. Distinctio ipsam harum rerum quia, nam, autem
+							non, commodi expedita dolore quisquam saepe odit
+							maiores id alias reiciendis. Aut aperiam minus eum.
+							Lorem ipsum dolor sit amet consectetur adipisicing
+							elit. Illum quos dolorum officia id porro illo sit
+							voluptates error doloremque? Iste deserunt amet illo
+							incidunt modi. Facilis reiciendis ratione at
+							veritatis. Lorem ipsum dolor sit amet consectetur,
+							adipisicing elit. Deserunt non, perspiciatis
+							voluptate cumque vel eveniet ratione sequi ullam
+							facilis! Beatae, voluptatem aperiam consequatur
+							assumenda consectetur possimus accusantium maxime
+							similique labore! Lorem ipsum dolor sit amet
+							consectetur, adipisicing elit. Ullam, possimus
+							facere ut odit mollitia vel consectetur earum
+							reiciendis beatae inventore fugiat, quo eaque ipsum
+							soluta facilis doloremque, voluptatibus odio
+							officiis. Lorem ipsum dolor sit amet consectetur
+							adipisicing elit. Laudantium voluptatum aut
+							voluptates distinctio nam neque dolore, maiores
+							autem impedit, doloribus eveniet laborum
+							necessitatibus ex! Possimus odit in commodi nulla
+							architecto. Lorem ipsum dolor sit amet consectetur
+							adipisicing elit. Officia, facere reiciendis
+							incidunt obcaecati aut corrupti tempora commodi nam
+							aspernatur et quas beatae delectus perspiciatis
+							alias quia inventore molestias quis exercitationem?
+							Lorem, ipsum dolor sit amet consectetur adipisicing
+							elit. Blanditiis temporibus doloremque nam molestiae
+							quidem, repellendus eligendi ex magnam quasi. Est
+							doloribus quam accusantium? Consequuntur, vel
+							sapiente alias repudiandae nisi soluta. Lorem ipsum
+							dolor sit amet consectetur adipisicing elit.
+							Reiciendis, quibusdam maxime. Numquam, explicabo! At
+							vero eligendi cupiditate vel molestias eos sint,
+							obcaecati minus suscipit ducimus libero
+							reprehenderit, itaque debitis atque? Lorem ipsum
+							dolor sit amet, consectetur adipisicing elit.
+							Repellendus vero consequatur velit dolores neque
+							distinctio harum tempore. Vitae, doloribus
+							perferendis! Deserunt reprehenderit dolor tempora
+							atque amet officiis ea, velit iste. Lorem ipsum
+							dolor sit, amet consectetur adipisicing elit. Est
+							nemo accusamus, inventore assumenda et nulla. Eius,
+							consequuntur repudiandae ea corrupti eos magni
+							itaque temporibus blanditiis aspernatur, earum quam
+							ut. Laudantium. Lorem ipsum dolor sit amet
+							consectetur adipisicing elit. Doloremque recusandae,
+							distinctio in fuga vero ullam tempora nisi laborum
+							unde architecto, doloribus dicta fugiat itaque
+							voluptatibus dolorum vel aspernatur, inventore nemo?
+							Lorem ipsum dolor sit amet consectetur adipisicing
+							elit. Error, corporis animi. Praesentium voluptate,
+							optio tenetur harum odio sequi eos possimus officiis
+							dignissimos. Laboriosam voluptates fuga est.
+							Deserunt quod officia harum!
+						</Collapsible>
+					</Modal.Body>
+					<Modal.Footer>
+						<Modal.CloseTrigger>
+							<Button appearance="primary" className="z-0">
+								Close
 							</Button>
-						</Modal.Header>
-						<Modal.Body>
-							<div>
-								<p>This is the body of the modal.</p>
-							</div>
-							<Select
-								placeholder="Choose..."
-								options={selectOptions}
-							/>
-							<Select
-								placeholder="Choose..."
-								options={selectOptions}
-								menuPlacement="top"
-							/>
-							{/*<Select
-								placeholder="Choose"
-								options={selectOptions}
-								side="bottom"
-								align="end"
-					/>*/}
-							<Dropdown.Menu
-								triggerClassName="w-full"
-								align="end"
-								trigger="Dropdown"
-							>
-								{ddItems}
-							</Dropdown.Menu>
-						</Modal.Body>
-						<Modal.Footer>
-							<Modal.CloseTrigger>
-								<Button appearance="primary" className="z-0">
-									Close
-								</Button>
-							</Modal.CloseTrigger>
-						</Modal.Footer>
-					</Modal.Container>
-				)}
+						</Modal.CloseTrigger>
+					</Modal.Footer>
+				</Modal.Container>
 			</div>
 		</>
 	)

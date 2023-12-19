@@ -303,7 +303,7 @@ function Menu({
 	children,
 	triggerStyle,
 	triggerClassName,
-	usePortal,
+	usePortal = true,
 }: DropdownMenuProps) {
 	const contentRef = useRef<HTMLDivElement>(null)
 

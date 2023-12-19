@@ -24,7 +24,8 @@ import ReactSelectCreatable, {
 const controlStyles =
 	"border-input-border border rounded ease-in-out transition duration-300"
 
-const menuStyles = "bg-surface-overlay shadow-overlay rounded overflow-hidden"
+const menuStyles =
+	"bg-surface-overlay z-10 shadow-overlay rounded overflow-hidden"
 
 const optionStyles = "py-1 px-3 border-l-2 border-l-transparent"
 
@@ -209,7 +210,7 @@ function SelectInForm<
 	disabled,
 	isDisabled,
 	options,
-	usePortal,
+	usePortal = true,
 	...props
 }: SelectInFormProps<FormData, ValueType, Option, IsMulti, GroupOptionType>) {
 	return (
@@ -289,7 +290,7 @@ function SelectNotInForm<
 	GroupOptionType extends GroupBase<Option>,
 >({
 	options,
-	usePortal,
+	usePortal = true,
 	disabled,
 	isDisabled,
 	...props
