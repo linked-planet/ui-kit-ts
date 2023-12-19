@@ -5,7 +5,7 @@ import { getPortal } from "../utils"
 
 const portalDivId = "uikts-tooltip" as const
 
-type TooltipProps = {
+export type TooltipProps = {
 	tooltipContent?: React.ReactNode
 	tooltipHTMLContent?: string
 	usePortal?: boolean
