@@ -8,6 +8,7 @@ import {
 	FilterCards,
 	FilterDropdown,
 	FilterDropdowns,
+	PageLayout,
 } from "@linked-planet/ui-kit-ts"
 import type { FilterType } from "@linked-planet/ui-kit-ts"
 //import Avatar, { AvatarItem } from "@atlaskit/avatar"
@@ -212,22 +213,42 @@ function FiltersShowcase(props: ShowcaseProps) {
 
 	//#region filterdropdowns
 	const filterDropdownsExample = (
-		<FilterDropdowns
-			filters={filters}
-			onSelectedChanged={(cat, attrs) => {
-				if (cat !== "Ice Creams") {
-					console.info(
-						"onAttributeClick",
-						cat,
-						attrs,
-						"only Ice Cream is supported",
-					)
-					return
-				}
-				console.log("onSelectedChanged", attrs)
-				setSelectedValues(attrs)
-			}}
-		/>
+		<>
+			<PageLayout.Page>
+				<PageLayout.PageHeader>
+					<PageLayout.PageHeaderTitle>
+						Filters
+					</PageLayout.PageHeaderTitle>
+					<PageLayout.PageHeaderLine>
+						<FilterDropdowns
+							className="w-full"
+							filters={filters}
+							onSelectedChanged={(cat, attrs) => {
+								if (cat !== "Ice Creams") {
+									console.info(
+										"onAttributeClick",
+										cat,
+										attrs,
+										"only Ice Cream is supported",
+									)
+									return
+								}
+								console.log("onSelectedChanged", attrs)
+								setSelectedValues(attrs)
+							}}
+						/>
+					</PageLayout.PageHeaderLine>
+				</PageLayout.PageHeader>
+				<PageLayout.PageBody>
+					<PageLayout.PageBodyHeader>
+						Body Header
+					</PageLayout.PageBodyHeader>
+					<PageLayout.PageBodyContent>
+						Body Content
+					</PageLayout.PageBodyContent>
+				</PageLayout.PageBody>
+			</PageLayout.Page>
+		</>
 	)
 	//#endregion filterdropdowns
 

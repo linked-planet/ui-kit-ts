@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo } from "react"
 import type { MultiValue } from "react-select"
-import Select from "@atlaskit/select"
 import { FilterType } from "./FilterCards"
 import { twMerge } from "tailwind-merge"
+import { Select } from "../inputs"
 
 /**
  * FilterDropdown is a single filter dropdown, if you need multiple filters use FilterDropdowns
@@ -74,7 +74,7 @@ export function FilterDropdown({
 			<div className="border-border bg-surface rounded border">
 				<Select
 					placeholder={filter.attributeName}
-					isMulti={true}
+					isMulti
 					options={available}
 					isOptionDisabled={(option) =>
 						!selectables?.includes(option)
