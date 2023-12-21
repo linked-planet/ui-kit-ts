@@ -32,7 +32,7 @@ export function Tab({ label, disabled, children, className, style }: TabProps) {
 			value={label.toString()} /* this is either set manually by the user using the label, or automatically by the Tabs component */
 			disabled={disabled}
 			className={twMerge(
-				"data-[state=active]:text-selected-text hover:text-selected-text  text-text-subtle data-[state=active]:after:bg-selected-border relative pb-1.5 font-[500] data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-[1px] data-[state=active]:after:rounded-sm",
+				"data-[state=active]:text-selected-text hover:text-selected-text disabled:text-disabled-text  text-text-subtle data-[state=active]:after:bg-selected-border relative pb-1.5 font-[500] data-[state=active]:after:absolute data-[state=active]:after:bottom-0 data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-[1px] data-[state=active]:after:rounded-sm",
 				className,
 			)}
 			style={style}

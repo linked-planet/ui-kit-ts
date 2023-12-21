@@ -17,12 +17,16 @@ function AutomaticTabsValue() {
 			<TabList>
 				<Tab>Tab 1</Tab>
 				<Tab>Tab 2</Tab>
+				<Tab disabled>Tab 3</Tab>
 			</TabList>
 			<TabPanel>
 				<span>First Content</span>
 			</TabPanel>
 			<TabPanel>
 				<span>Second Content</span>
+			</TabPanel>
+			<TabPanel>
+				<span>Third Content</span>
 			</TabPanel>
 		</Tabs>
 	)
