@@ -89,6 +89,7 @@ export function showFlagExtended({
 		padding: "unset",
 		border: 0,
 		background: "unset",
+		fontFamily: "unset",
 	}
 
 	const className = invert

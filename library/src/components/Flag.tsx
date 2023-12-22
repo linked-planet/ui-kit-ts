@@ -47,11 +47,11 @@ export const FlagStyles: { [style in FlagAppearance]: string } = {
 	information: informationStyle,
 } as const
 
-const defaultInvertedStyle = "bg-surface text-text"
-const warningInvertedStyle = "bg-surface border-warning-bold text-text"
-const errorInvertedStyle = "bg-surface border-danger-bold text-text"
-const successInvertedStyle = "bg-surface border-success-bold text-text"
-const informationInvertedStyle = "bg-surface border-information-bold text-text"
+const defaultInvertedStyle = "bg-surface border-border text-text"
+const warningInvertedStyle = "bg-surface border-border text-text"
+const errorInvertedStyle = "bg-surface border-border text-text"
+const successInvertedStyle = "bg-surface border-border text-text"
+const informationInvertedStyle = "bg-surface border-border text-text"
 export const FlagInvertedStyles: {
 	[style in FlagAppearance]: string
 } = {

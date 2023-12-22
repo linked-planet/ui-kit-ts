@@ -2,24 +2,30 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Flag } from "@linked-planet/ui-kit-ts"
+import { Flag, ToastFlagContainer, showFlag } from "@linked-planet/ui-kit-ts"
 import WarningIcon from "@atlaskit/icon/glyph/warning"
 
 function FlagShowcase(props: ShowcaseProps) {
 	//#region flag
 	const example = (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				gap: "1rem",
-			}}
-		>
+		<div className="flex flex-col gap-3">
 			<Flag
 				title="Flag"
 				icon={<WarningIcon label="" />}
 				description="Action Flag"
-				actions={[{ content: "Action", onClick: () => {} }]}
+				actions={[
+					{
+						content: "Action",
+						onClick: () => {
+							console.log("Action clicked")
+							showFlag({
+								title: "Flag",
+								description: "Action Flag",
+								autoClose: false,
+							})
+						},
+					},
+				]}
 			/>
 			<Flag
 				title="Flag"
@@ -76,6 +82,7 @@ function FlagShowcase(props: ShowcaseProps) {
 				description="Information Flag"
 				appearance="information"
 			/>
+			<ToastFlagContainer />
 		</div>
 	)
 	//#endregion flag
