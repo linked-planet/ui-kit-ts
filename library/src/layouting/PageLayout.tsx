@@ -14,7 +14,7 @@ const Page = ({
 }) => (
 	<div
 		className={twMerge(
-			"flex h-full min-h-0 w-full flex-col overflow-hidden",
+			"bg-surface flex h-full min-h-0 w-full flex-col overflow-hidden",
 			className,
 		)}
 		id={id}
@@ -38,7 +38,7 @@ const PageHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			`border-border bg-surface z-[1] flex flex-col border-b pb-1 pl-4 pr-4 pt-3 ${
+			`border-border bg-surface-raised z-[1] flex flex-col border-b pt-4 ${
 				shadow ? "shadow-overflow" : ""
 			}`,
 			className,
@@ -85,7 +85,7 @@ const PageHeaderTitle = ({
 		return (
 			<Dropdown.Menu
 				trigger={
-					<Button appearance="subtle">
+					<Button appearance="subtle" className="mr-2 p-0">
 						<MenuIcon size="large" label="" />
 					</Button>
 				}
@@ -98,14 +98,12 @@ const PageHeaderTitle = ({
 
 	return (
 		<div
-			className={twMerge("mb-2 flex items-center", className)}
+			className={twMerge("mb-2 flex items-center pl-4", className)}
 			id={id}
 			style={style}
 		>
-			{children}
-			{titleMenu && (
-				<span className="ml-auto flex-none">{headerMenu}</span>
-			)}
+			{typeof children === "string" ? <h1>{children}</h1> : children}
+			{titleMenu && <div className="ml-auto flex-none">{headerMenu}</div>}
 		</div>
 	)
 }
@@ -122,11 +120,15 @@ const PageHeaderSubTitle = ({
 	style?: React.CSSProperties
 }) => (
 	<div
-		className={twMerge("text-text-subtlest mb-1", className)}
+		className={twMerge("text-text-subtlest mb-1 px-4", className)}
 		id={id}
 		style={style}
 	>
-		{children}
+		{typeof children === "string" ? (
+			<p className="pt-0">{children}</p>
+		) : (
+			children
+		)}
 	</div>
 )
 
@@ -142,7 +144,10 @@ const PageHeaderLine = ({
 	style?: React.CSSProperties
 }) => (
 	<div
-		className={twMerge("flex w-full items-center gap-1", className)}
+		className={twMerge(
+			"flex w-full items-center gap-1 px-4 pb-1",
+			className,
+		)}
 		style={style}
 		id={id}
 	>
@@ -163,7 +168,7 @@ const PageBody = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface-sunken z-0 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
+			"bg-surface z-0 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden",
 			className,
 		)}
 		style={style}
@@ -186,7 +191,7 @@ const PageBodyContent = ({
 }) => (
 	<div
 		className={twMerge(
-			"min-h-0 flex-1 overflow-y-auto pb-5 pl-5 pr-3 pt-3",
+			"min-h-0 flex-1 overflow-y-auto px-4 py-3",
 			className,
 		)}
 		id={id}
@@ -209,7 +214,7 @@ const PageBodyHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface shadow-overflow z-0 pb-1 pl-4 pr-4 pt-1",
+			"bg-surface-raised shadow-overflow z-0 px-4 py-1",
 			className,
 		)}
 		id={id}
@@ -232,7 +237,7 @@ const PageBodyFooter = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface border-border shadow-overflow flex justify-center border-t p-1.5",
+			"bg-surface-raised border-border shadow-overflow flex justify-center border-t p-1.5",
 			className,
 		)}
 		id={id}

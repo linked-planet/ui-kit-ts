@@ -193,13 +193,13 @@ function ShowCaseExample({
 		<div className="bg-surface w-full py-4">
 			<ButtonGroup>
 				<Button
-					isSelected={content === "example"}
+					selected={content === "example"}
 					onClick={() => setContent("example")}
 				>
 					Example
 				</Button>
 				<Button
-					isSelected={content === "source"}
+					selected={content === "source"}
 					onClick={() => setContent("source")}
 				>
 					Source

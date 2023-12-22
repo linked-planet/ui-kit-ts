@@ -231,14 +231,10 @@ function ExampleForm() {
 				}}
 			/>
 			<ButtonGroup className="w-full justify-end">
-				<Button appearance="subtle" type="reset" isDisabled={!isDirty}>
+				<Button appearance="subtle" type="reset" disabled={!isDirty}>
 					Reset
 				</Button>
-				<Button
-					appearance="primary"
-					type="submit"
-					isDisabled={!isValid}
-				>
+				<Button appearance="primary" type="submit" disabled={!isValid}>
 					Submit
 				</Button>
 			</ButtonGroup>

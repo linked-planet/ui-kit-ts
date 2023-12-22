@@ -1,5 +1,10 @@
 import React from "react"
-import { Dropdown, PageLayout } from "@linked-planet/ui-kit-ts"
+import {
+	Button,
+	ButtonGroup,
+	Dropdown,
+	PageLayout,
+} from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -43,20 +48,48 @@ function PageLayoutExample() {
 							</Dropdown.ItemRadioGroup>,
 						]}
 					>
-						<h1>Page Header Title</h1>
+						Page Header Title
 					</PageLayout.PageHeaderTitle>
 					<PageLayout.PageHeaderSubTitle>
-						<h2>Page Header Sub Title</h2>
+						Page Header Sub Title
 					</PageLayout.PageHeaderSubTitle>
 					<PageLayout.PageHeaderLine>
-						<div>Page Header Line</div>
-						<div>Page Header Line</div>
-						<div>Page Header Line</div>
+						<ButtonGroup>
+							<Button>Button</Button>
+							<Button>Button</Button>
+							<Button>Button</Button>
+							<Button>Button</Button>
+						</ButtonGroup>
 					</PageLayout.PageHeaderLine>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
 					<PageLayout.PageBodyContent>
-						<div>TEST</div>
+						<h1>Text H1</h1>
+						<h2>Text H2</h2>
+						<h3>Text H3</h3>
+						<h4>Text H4</h4>
+						<h5>Text H5</h5>
+						<h6>Text H6</h6>
+						<p>Text P (paragraph)</p>
+						<span>Text SPAN</span>
+						<pre>Text PRE</pre>
+						<code>Text CODE</code>
+						<hr />
+						<div className="text-2xs">Text 2XS</div>
+						<div className="text-xs">Text XS</div>
+						<div className="text-sm">Text SM</div>
+						<div className="text-md">Text MD</div>
+						<div className="text-lg">Text LG</div>
+						<div className="text-xl">Text XL</div>
+						<div className="text-2xl">Text 2XL</div>
+						<div className="text-3xl">Text 3XL</div>
+						<div className="text-4xl">Text 4XL</div>
+						<div className="text-5xl">Text 5XL</div>
+						<div className="text-6xl">Text 6XL</div>
+						<div className="text-7xl">Text 7XL</div>
+						<div className="text-8xl">Text 8XL</div>
+						<div className="text-9xl">Text 9XL</div>
+						<hr />
 						{Array(100)
 							.fill(null)
 							.map((_, i) => (
@@ -84,15 +117,18 @@ function PageLayoutExampleWithBodyHeader() {
 			<PageLayout.Page>
 				<PageLayout.PageHeader shadow={false}>
 					<PageLayout.PageHeaderTitle>
-						<h1>Page Header Title</h1>
+						Page Header Title
 					</PageLayout.PageHeaderTitle>
 					<PageLayout.PageHeaderSubTitle>
-						<h2>Page Header Sub Title</h2>
+						Page Header Sub Title
 					</PageLayout.PageHeaderSubTitle>
 					<PageLayout.PageHeaderLine>
-						<div>Page Header Line</div>
-						<div>Page Header Line</div>
-						<div>Page Header Line</div>
+						<ButtonGroup>
+							<Button>Button</Button>
+							<Button>Button</Button>
+							<Button>Button</Button>
+							<Button>Button</Button>
+						</ButtonGroup>
 					</PageLayout.PageHeaderLine>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
@@ -110,6 +146,34 @@ function PageLayoutExampleWithBodyHeader() {
 		</div>
 	)
 	//#endregion pagelayoutwithbodyheader
+}
+
+function PageLayouOnlyTitle() {
+	//#region pagelayouttitleonly
+	return (
+		<div
+			style={{
+				height: "40vh",
+			}}
+		>
+			<PageLayout.Page>
+				<PageLayout.PageHeader>
+					<PageLayout.PageHeaderTitle>
+						Page Header Title
+					</PageLayout.PageHeaderTitle>
+				</PageLayout.PageHeader>
+				<PageLayout.PageBody>
+					<PageLayout.PageBodyContent>
+						Body Content
+					</PageLayout.PageBodyContent>
+					<PageLayout.PageBodyFooter>
+						Page Body Footer
+					</PageLayout.PageBodyFooter>
+				</PageLayout.PageBody>
+			</PageLayout.Page>
+		</div>
+	)
+	//#endregion pagelayouttitleonly
 }
 
 export default function PageLayoutShowcase(props: ShowcaseProps) {
@@ -130,9 +194,14 @@ export default function PageLayoutShowcase(props: ShowcaseProps) {
 					sourceCodeExampleId: "pagelayout",
 				},
 				{
-					title: "Page Layout With Body Header",
+					title: "Body Header",
 					example: <PageLayoutExampleWithBodyHeader />,
 					sourceCodeExampleId: "pagelayoutwithbodyheader",
+				},
+				{
+					title: "Title Only",
+					example: <PageLayouOnlyTitle />,
+					sourceCodeExampleId: "pagelayouttitleonly",
 				},
 			]}
 		/>
