@@ -1,13 +1,16 @@
-import React, { useState } from "react"
+import React, { FormEvent, useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
+	Button,
+	ButtonGroup,
 	DateRangePicker,
 	DateType,
 	DateTypeFormatString,
 } from "@linked-planet/ui-kit-ts"
 import dayjs from "dayjs"
+import { SubmitHandler, useForm } from "react-hook-form"
 
 //#region date-range-picker
 function Example() {
@@ -175,6 +178,75 @@ function Example3() {
 }
 //#endregion date-range-picker-3
 
+//#region date-range-picker-form
+
+type FormData = {
+	dateRange: [DateType, DateType | undefined]
+}
+
+function ExampleForm() {
+	const {
+		control,
+		formState: { isValid, isDirty, errors },
+		handleSubmit,
+		reset,
+	} = useForm<FormData>({
+		defaultValues: {
+			dateRange: ["1985-08-02", "1985-08-12"],
+		},
+	})
+
+	const onSubmit: SubmitHandler<FormData> = (data) => {
+		console.log("DATA", data)
+	}
+
+	const onReset = (e: FormEvent) => {
+		e.preventDefault()
+		console.log("RESET")
+		reset()
+	}
+
+	console.log("FORMSTATE", isValid, isDirty, errors)
+
+	return (
+		<form onSubmit={handleSubmit(onSubmit)} onReset={onReset}>
+			<DateRangePicker<FormData>
+				control={control}
+				name="dateRange"
+				locale="de-DE"
+				onCollision={() => console.info("Collision detected")}
+				weekStartDate={1}
+				onDateRangeSelected={(start: string, end: string) => {
+					console.info("Date range selected", start, end)
+				}}
+				onStartDateSelected={(date: DateType) => {
+					console.info("Start date selected", date)
+				}}
+				onEndDateSelected={(date: DateType | undefined) => {
+					if (date) {
+						console.info("End date selected", date)
+					} else {
+						console.info("End date cleared")
+					}
+				}}
+			/>
+			<ButtonGroup className="w-full justify-end">
+				<Button appearance="subtle" type="reset" isDisabled={!isDirty}>
+					Reset
+				</Button>
+				<Button
+					appearance="primary"
+					type="submit"
+					isDisabled={!isValid}
+				>
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion date-range-picker-form
+
 function DateRangePickerShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -201,6 +273,11 @@ function DateRangePickerShowcase(props: ShowcaseProps) {
 					title: "Example 3",
 					example: <Example3 />,
 					sourceCodeExampleId: "date-range-picker-3",
+				},
+				{
+					title: "Example Form",
+					example: <ExampleForm />,
+					sourceCodeExampleId: "date-range-picker-form",
 				},
 			]}
 		/>
