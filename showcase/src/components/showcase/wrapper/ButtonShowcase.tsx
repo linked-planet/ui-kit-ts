@@ -111,7 +111,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 			<Button
 				appearance="default"
 				onClick={() => console.log("Button pressed")}
-				isSelected={true}
+				selected={true}
 			>
 				Selected Button
 			</Button>
@@ -119,7 +119,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 			<Button
 				appearance="default"
 				onClick={() => console.log("Button pressed")}
-				isDisabled={true}
+				disabled={true}
 			>
 				Disabled Button
 			</Button>
@@ -134,9 +134,16 @@ function ButtonShowcase(props: ShowcaseProps) {
 			<Button
 				appearance="primary"
 				onClick={() => console.log("Button pressed")}
-				isDisabled={true}
+				inverted
 			>
-				Primary Button
+				Primary Inverted Button
+			</Button>
+
+			<Button
+				onClick={() => console.log("Button pressed")}
+				disabled={true}
+			>
+				Disabed Button
 			</Button>
 
 			<Button
@@ -161,6 +168,14 @@ function ButtonShowcase(props: ShowcaseProps) {
 			</Button>
 
 			<Button
+				appearance="warning"
+				onClick={() => console.log("Button pressed")}
+				inverted
+			>
+				Warning Inverted Button
+			</Button>
+
+			<Button
 				appearance="danger"
 				onClick={() => console.log("Button pressed")}
 			>
@@ -168,10 +183,26 @@ function ButtonShowcase(props: ShowcaseProps) {
 			</Button>
 
 			<Button
+				appearance="danger"
+				onClick={() => console.log("Button pressed")}
+				inverted
+			>
+				Danger Inverted Button
+			</Button>
+
+			<Button
 				appearance="success"
 				onClick={() => console.log("Button pressed")}
 			>
 				Success Button
+			</Button>
+
+			<Button
+				appearance="success"
+				onClick={() => console.log("Button pressed")}
+				inverted
+			>
+				Success Inverted Button
 			</Button>
 
 			<Button
@@ -183,12 +214,22 @@ function ButtonShowcase(props: ShowcaseProps) {
 				Information Button
 			</Button>
 
+			<Button
+				appearance="information"
+				onClick={() => console.log("Button pressed")}
+				iconAfter={<SearchIcon label="" />}
+				iconBefore={<SearchIcon label="" />}
+				inverted
+			>
+				Information Inverted Button
+			</Button>
+
 			<LoadingButton
 				onClick={() => {
 					setIsLoading(true)
 					window.setTimeout(() => setIsLoading(false), 3000)
 				}}
-				isLoading={isLoading}
+				loading={isLoading}
 				iconBefore={<SearchIcon label="" />}
 				iconAfter={<SearchIcon label="" />}
 			>

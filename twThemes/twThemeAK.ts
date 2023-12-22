@@ -49,6 +49,9 @@ import {
 	R300,
 	N10A,
 	N100A,
+	Y75,
+	R75,
+	G75,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -183,21 +186,21 @@ export const theme = {
 
 		brand: {
 			DEFAULT: `var(--ds-background-brand, ${B50})`,
-			hovered: `var(--ds-background-brand-hovered, ${B100})`,
-			pressed: `var(--ds-background-brand-pressed, ${B200})`,
+			hovered: `var(--ds-background-brand-hovered, ${B75})`,
+			pressed: `var(--ds-background-brand-pressed, ${B100})`,
 			bold: {
 				DEFAULT: `var(--ds-background-brand-bold, ${B300})`,
 				hovered: `var(--ds-background-brand-bold-hovered, ${B400})`,
 				pressed: `var(--ds-background-brand-bold-pressed, ${B500})`,
 			},
-			text: `var(--ds-text-brand, ${B500}})`,
+			text: `var(--ds-text-brand, ${B500})`,
 			border: `var(--ds-border-brand, ${B400})`,
 		},
 
 		warning: {
 			DEFAULT: `var(--ds-background-warning, ${Y50})`,
-			hovered: `var(--ds-background-warning-hovered, ${Y100})`,
-			pressed: `var(--ds-background-warning-pressed, ${Y300})`,
+			hovered: `var(--ds-background-warning-hovered, ${Y75})`,
+			pressed: `var(--ds-background-warning-pressed, ${Y100})`,
 			bold: {
 				DEFAULT: `var(--ds-background-warning-bold, ${Y300})`,
 				hovered: `var(--ds-background-warning-bold-hovered, ${Y400})`,
@@ -209,21 +212,21 @@ export const theme = {
 
 		danger: {
 			DEFAULT: `var(--ds-background-danger, ${R50})`,
-			hovered: `var(--ds-background-danger-hovered, ${R100})`,
-			pressed: `var(--ds-background-danger-pressed, ${R200})`,
+			hovered: `var(--ds-background-danger-hovered, ${R75})`,
+			pressed: `var(--ds-background-danger-pressed, ${R100})`,
 			bold: {
 				DEFAULT: `var(--ds-background-danger-bold, ${R400})`,
 				hovered: `var(--ds-background-danger-bold-hovered, ${R300})`,
 				pressed: `var(--ds-background-danger-bold-pressed, ${R500})`,
 			},
-			text: `var(--ds-text-danger, ${R400})`,
+			text: `var(--ds-text-danger, ${R500})`,
 			border: `var(--ds-border-danger, ${R400})`,
 		},
 
 		success: {
 			DEFAULT: `var(--ds-background-success, ${G50})`,
-			hovered: `var(--ds-background-success-hovered, ${G100})`,
-			pressed: `var(--ds-background-success-pressed, ${G200})`,
+			hovered: `var(--ds-background-success-hovered, ${G75})`,
+			pressed: `var(--ds-background-success-pressed, ${G100})`,
 			bold: {
 				DEFAULT: `var(--ds-background-success-bold, ${G300})`,
 				hovered: `var(--ds-background-success-bold-hovered, ${G400})`,

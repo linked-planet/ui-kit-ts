@@ -321,7 +321,7 @@ function Menu({
 				<Button
 					className={triggerClassName}
 					style={triggerStyle}
-					isDisabled={isDisabled}
+					disabled={isDisabled}
 				>
 					{trigger}
 					{opened ? (
