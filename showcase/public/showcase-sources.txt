@@ -833,7 +833,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 			<Button
 				appearance="default"
 				onClick={() => console.log("Button pressed")}
-				isSelected={true}
+				selected={true}
 			>
 				Selected Button
 			</Button>
@@ -841,7 +841,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 			<Button
 				appearance="default"
 				onClick={() => console.log("Button pressed")}
-				isDisabled={true}
+				disabled={true}
 			>
 				Disabled Button
 			</Button>
@@ -856,9 +856,16 @@ function ButtonShowcase(props: ShowcaseProps) {
 			<Button
 				appearance="primary"
 				onClick={() => console.log("Button pressed")}
-				isDisabled={true}
+				inverted
 			>
-				Primary Button
+				Primary Inverted Button
+			</Button>
+
+			<Button
+				onClick={() => console.log("Button pressed")}
+				disabled={true}
+			>
+				Disabed Button
 			</Button>
 
 			<Button
@@ -883,6 +890,14 @@ function ButtonShowcase(props: ShowcaseProps) {
 			</Button>
 
 			<Button
+				appearance="warning"
+				onClick={() => console.log("Button pressed")}
+				inverted
+			>
+				Warning Inverted Button
+			</Button>
+
+			<Button
 				appearance="danger"
 				onClick={() => console.log("Button pressed")}
 			>
@@ -890,10 +905,26 @@ function ButtonShowcase(props: ShowcaseProps) {
 			</Button>
 
 			<Button
+				appearance="danger"
+				onClick={() => console.log("Button pressed")}
+				inverted
+			>
+				Danger Inverted Button
+			</Button>
+
+			<Button
 				appearance="success"
 				onClick={() => console.log("Button pressed")}
 			>
 				Success Button
+			</Button>
+
+			<Button
+				appearance="success"
+				onClick={() => console.log("Button pressed")}
+				inverted
+			>
+				Success Inverted Button
 			</Button>
 
 			<Button
@@ -905,12 +936,22 @@ function ButtonShowcase(props: ShowcaseProps) {
 				Information Button
 			</Button>
 
+			<Button
+				appearance="information"
+				onClick={() => console.log("Button pressed")}
+				iconAfter={<SearchIcon label="" />}
+				iconBefore={<SearchIcon label="" />}
+				inverted
+			>
+				Information Inverted Button
+			</Button>
+
 			<LoadingButton
 				onClick={() => {
 					setIsLoading(true)
 					window.setTimeout(() => setIsLoading(false), 3000)
 				}}
-				isLoading={isLoading}
+				loading={isLoading}
 				iconBefore={<SearchIcon label="" />}
 				iconAfter={<SearchIcon label="" />}
 			>
@@ -1163,16 +1204,21 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React, { useState } from "react"
+import React, { FormEvent, useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
+	Button,
+	ButtonGroup,
 	DateRangePicker,
 	DateType,
 	DateTypeFormatString,
+	Input,
+	Label,
 } from "@linked-planet/ui-kit-ts"
 import dayjs from "dayjs"
+import { SubmitHandler, useForm } from "react-hook-form"
 
 //#region date-range-picker
 function Example() {
@@ -1340,6 +1386,117 @@ function Example3() {
 }
 //#endregion date-range-picker-3
 
+//#region date-range-picker-form
+
+type FormData = {
+	dateRange: [DateType, DateType]
+	dateRangeControlled: [DateType, DateType]
+}
+
+function ExampleForm() {
+	const {
+		control,
+		formState: { isValid, isDirty, errors },
+		handleSubmit,
+		reset,
+	} = useForm<FormData>({
+		defaultValues: {
+			dateRange: ["1985-08-02", "1985-08-12"],
+		},
+	})
+
+	const onSubmit: SubmitHandler<FormData> = (data) => {
+		console.log("DATA", data)
+	}
+
+	const onReset = (e: FormEvent) => {
+		e.preventDefault()
+		console.log("RESET")
+		reset()
+	}
+
+	const [startDateControlled, setStartDateControlled] =
+		useState<DateType>("1999-12-23")
+	const [endDateControlled, setEndDateControlled] = useState<
+		DateType | undefined
+	>("1999-12-25")
+
+	return (
+		<form onSubmit={handleSubmit(onSubmit)} onReset={onReset}>
+			<div className="flex gap-4">
+				<div>
+					<Label>Uncontrolled</Label>
+					<DateRangePicker<FormData>
+						control={control}
+						name="dateRange"
+						locale="de-DE"
+						onCollision={() => console.info("Collision detected")}
+						weekStartDate={1}
+						onDateRangeSelected={(start: string, end: string) => {
+							console.info("Date range selected", start, end)
+						}}
+						onStartDateSelected={(date: DateType) => {
+							console.info("Start date selected", date)
+						}}
+						onEndDateSelected={(date: DateType | undefined) => {
+							if (date) {
+								console.info("End date selected", date)
+							} else {
+								console.info("End date cleared")
+							}
+						}}
+						required
+					/>
+				</div>
+				<div>
+					<Label>Controlled</Label>
+					<Input
+						type="date"
+						value={startDateControlled}
+						onChange={(e) => {
+							setStartDateControlled(e.target.value as DateType)
+						}}
+					/>
+					<Input
+						type="date"
+						value={endDateControlled}
+						onChange={(e) => {
+							setEndDateControlled(e.target.value as DateType)
+						}}
+					/>
+
+					<DateRangePicker<FormData>
+						control={control}
+						name="dateRangeControlled"
+						locale="de-DE"
+						selectedStartDate={startDateControlled}
+						selectedEndDate={endDateControlled}
+						onCollision={() => console.info("Collision detected")}
+						weekStartDate={1}
+						onStartDateSelected={(date: DateType) => {
+							setStartDateControlled(date)
+						}}
+						onEndDateSelected={(date: DateType | undefined) => {
+							setEndDateControlled(date)
+						}}
+						invalid={!!errors.dateRangeControlled}
+						required
+					/>
+				</div>
+			</div>
+			<ButtonGroup className="w-full justify-end">
+				<Button appearance="subtle" type="reset" disabled={!isDirty}>
+					Reset
+				</Button>
+				<Button appearance="primary" type="submit" disabled={!isValid}>
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion date-range-picker-form
+
 function DateRangePickerShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -1367,6 +1524,11 @@ function DateRangePickerShowcase(props: ShowcaseProps) {
 					example: <Example3 />,
 					sourceCodeExampleId: "date-range-picker-3",
 				},
+				{
+					title: "Example Form",
+					example: <ExampleForm />,
+					sourceCodeExampleId: "date-range-picker-form",
+				},
 			]}
 		/>
 	)
@@ -1374,16 +1536,122 @@ function DateRangePickerShowcase(props: ShowcaseProps) {
 
 export default DateRangePickerShowcase
 
-import React from "react"
+import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { DateTimePicker } from "@atlaskit/datetime-picker"
+import {
+	Button,
+	ButtonGroup,
+	DateTimePicker,
+	DatePicker,
+	TimePicker,
+	DateType,
+	type TimeType,
+} from "@linked-planet/ui-kit-ts"
+import { useForm } from "react-hook-form"
+
+type FormData = {
+	dateTime: string
+	time: TimeType
+	date: DateType
+}
+
+//#region datetime-picker-form
+function FormExample() {
+	const { handleSubmit, control, reset } = useForm<FormData>({
+		defaultValues: {
+			dateTime: "2023-12-24T10:00+0100",
+			time: "10:10",
+			date: "2023-12-24",
+		},
+	})
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log("DATA:", data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<div className="flex flex-col gap-2">
+				<DateTimePicker control={control} name="dateTime" />
+				<hr />
+				<TimePicker control={control} name="time" />
+				<hr />
+				<DatePicker control={control} name="date" />
+			</div>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button appearance="subtle" type="reset">
+					Reset
+				</Button>
+				<Button appearance="primary" type="submit">
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion datetime-picker-form
+
+//#region datetime-picker-form-controlled
+function ControlledFormExample() {
+	const [selectedDate, setSelectedDate] = useState<DateType>("1999-12-23")
+	const [selectedTime, setSelectedTime] = useState<TimeType>("10:10")
+	const [selectedDateTime, setSelectedDateTime] = useState<string>(
+		"1999-12-23T10:10+0100",
+	)
+
+	const { handleSubmit, control, reset } = useForm<FormData>()
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log("DATA:", data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<div className="flex flex-col gap-2">
+				<DateTimePicker
+					control={control}
+					value={selectedDateTime}
+					onChange={setSelectedDateTime}
+					name="dateTime"
+				/>
+				<hr />
+				<TimePicker
+					control={control}
+					value={selectedTime}
+					onChange={setSelectedTime}
+					name="time"
+				/>
+				<hr />
+				<DatePicker
+					control={control}
+					value={selectedDate}
+					onChange={setSelectedDate}
+					name="date"
+				/>
+			</div>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button appearance="subtle" type="reset">
+					Reset
+				</Button>
+				<Button appearance="primary" type="submit">
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion datetime-picker-form-controlled
 
 function DateTimePickerShowcase(props: ShowcaseProps) {
 	//#region datetime-picker
 	const example = (
-		<div style={{ minWidth: 300 }}>
+		<div className="flex min-w-[300] gap-4">
 			<DateTimePicker />
 		</div>
 	)
@@ -1404,6 +1672,16 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					title: "Example",
 					example,
 					sourceCodeExampleId: "datetime-picker",
+				},
+				{
+					title: "Form Uncontrolled",
+					example: <FormExample />,
+					sourceCodeExampleId: "datetime-picker-form",
+				},
+				{
+					title: "Form Controlled",
+					example: <ControlledFormExample />,
+					sourceCodeExampleId: "datetime-picker-form-controlled",
 				},
 			]}
 		/>
@@ -1839,6 +2117,7 @@ import {
 	FilterCards,
 	FilterDropdown,
 	FilterDropdowns,
+	PageLayout,
 } from "@linked-planet/ui-kit-ts"
 import type { FilterType } from "@linked-planet/ui-kit-ts"
 //import Avatar, { AvatarItem } from "@atlaskit/avatar"
@@ -2043,22 +2322,42 @@ function FiltersShowcase(props: ShowcaseProps) {
 
 	//#region filterdropdowns
 	const filterDropdownsExample = (
-		<FilterDropdowns
-			filters={filters}
-			onSelectedChanged={(cat, attrs) => {
-				if (cat !== "Ice Creams") {
-					console.info(
-						"onAttributeClick",
-						cat,
-						attrs,
-						"only Ice Cream is supported",
-					)
-					return
-				}
-				console.log("onSelectedChanged", attrs)
-				setSelectedValues(attrs)
-			}}
-		/>
+		<>
+			<PageLayout.Page>
+				<PageLayout.PageHeader>
+					<PageLayout.PageHeaderTitle>
+						Filters
+					</PageLayout.PageHeaderTitle>
+					<PageLayout.PageHeaderLine>
+						<FilterDropdowns
+							className="w-full"
+							filters={filters}
+							onSelectedChanged={(cat, attrs) => {
+								if (cat !== "Ice Creams") {
+									console.info(
+										"onAttributeClick",
+										cat,
+										attrs,
+										"only Ice Cream is supported",
+									)
+									return
+								}
+								console.log("onSelectedChanged", attrs)
+								setSelectedValues(attrs)
+							}}
+						/>
+					</PageLayout.PageHeaderLine>
+				</PageLayout.PageHeader>
+				<PageLayout.PageBody>
+					<PageLayout.PageBodyHeader>
+						Body Header
+					</PageLayout.PageBodyHeader>
+					<PageLayout.PageBodyContent>
+						Body Content
+					</PageLayout.PageBodyContent>
+				</PageLayout.PageBody>
+			</PageLayout.Page>
+		</>
 	)
 	//#endregion filterdropdowns
 
@@ -2104,24 +2403,30 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Flag } from "@linked-planet/ui-kit-ts"
+import { Flag, ToastFlagContainer, showFlag } from "@linked-planet/ui-kit-ts"
 import WarningIcon from "@atlaskit/icon/glyph/warning"
 
 function FlagShowcase(props: ShowcaseProps) {
 	//#region flag
 	const example = (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				gap: "1rem",
-			}}
-		>
+		<div className="flex flex-col gap-3">
 			<Flag
 				title="Flag"
 				icon={<WarningIcon label="" />}
 				description="Action Flag"
-				actions={[{ content: "Action", onClick: () => {} }]}
+				actions={[
+					{
+						content: "Action",
+						onClick: () => {
+							console.log("Action clicked")
+							showFlag({
+								title: "Flag",
+								description: "Action Flag",
+								autoClose: false,
+							})
+						},
+					},
+				]}
 			/>
 			<Flag
 				title="Flag"
@@ -2178,6 +2483,7 @@ function FlagShowcase(props: ShowcaseProps) {
 				description="Information Flag"
 				appearance="information"
 			/>
+			<ToastFlagContainer />
 		</div>
 	)
 	//#endregion flag
@@ -3785,6 +4091,62 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
+//#region layeringexample
+function Example() {
+	return (
+		<div className="bg-surface hover:bg-surface-hovered active:bg-surface-pressed border-border border p-4">
+			bg-surface
+			<div className="bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed border-border border p-4">
+				bg-surface-raised
+				<div className="bg-surface-overlay hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed border-border border p-4">
+					bg-surface-overlay
+				</div>
+			</div>
+			<div className="bg-surface-sunken border-border mt-4 border p-4">
+				bg-surface-sunken
+			</div>
+			<div className="border-border shadow-raised mt-4 border p-4">
+				shadow-raised
+			</div>
+			<div className="border-border shadow-overflow mt-4 border p-4">
+				shadow-overflow
+			</div>
+			<div className="border-border shadow-overlay mt-4 border p-4">
+				shadow-overlay
+			</div>
+		</div>
+	)
+}
+//#endregion layeringexample
+
+export default function LayeringShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="Layering"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://www.github.com/linked-planet/ui-kit-ts",
+				},
+			]}
+			description="Not a component but only a showcase of the color layering system."
+			examples={[
+				{
+					title: "Layering",
+					example: <Example />,
+					sourceCodeExampleId: "layeringexample",
+				},
+			]}
+		/>
+	)
+}
+
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
 import { LoadingSpinner } from "@linked-planet/ui-kit-ts"
 
 export default function LoadingSpinnerShowcase(props: ShowcaseProps) {
@@ -3957,6 +4319,7 @@ import {
 	Button,
 	ButtonGroup,
 	Dropdown,
+	Collapsible,
 } from "@linked-planet/ui-kit-ts"
 import { default as AKSelect } from "@atlaskit/select"
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
@@ -3988,10 +4351,7 @@ function AKExample() {
 								appearance="link"
 								onClick={() => setIsAKModalActive(false)}
 							>
-								<CrossIcon
-									label="Close popup"
-									primaryColor="#000"
-								/>
+								<CrossIcon label="Close popup" />
 							</Button>
 						</AKModalHeader>
 
@@ -4005,6 +4365,70 @@ function AKExample() {
 								align="end"
 								className="z-10"
 							></Select>
+							<>
+								Lorem, ipsum dolor sit amet consectetur
+								adipisicing elit. Distinctio ipsam harum rerum
+								quia, nam, autem non, commodi expedita dolore
+								quisquam saepe odit maiores id alias reiciendis.
+								Aut aperiam minus eum. Lorem ipsum dolor sit
+								amet consectetur adipisicing elit. Illum quos
+								dolorum officia id porro illo sit voluptates
+								error doloremque? Iste deserunt amet illo
+								incidunt modi. Facilis reiciendis ratione at
+								veritatis. Lorem ipsum dolor sit amet
+								consectetur, adipisicing elit. Deserunt non,
+								perspiciatis voluptate cumque vel eveniet
+								ratione sequi ullam facilis! Beatae, voluptatem
+								aperiam consequatur assumenda consectetur
+								possimus accusantium maxime similique labore!
+								Lorem ipsum dolor sit amet consectetur,
+								adipisicing elit. Ullam, possimus facere ut odit
+								mollitia vel consectetur earum reiciendis beatae
+								inventore fugiat, quo eaque ipsum soluta facilis
+								doloremque, voluptatibus odio officiis. Lorem
+								ipsum dolor sit amet consectetur adipisicing
+								elit. Laudantium voluptatum aut voluptates
+								distinctio nam neque dolore, maiores autem
+								impedit, doloribus eveniet laborum
+								necessitatibus ex! Possimus odit in commodi
+								nulla architecto. Lorem ipsum dolor sit amet
+								consectetur adipisicing elit. Officia, facere
+								reiciendis incidunt obcaecati aut corrupti
+								tempora commodi nam aspernatur et quas beatae
+								delectus perspiciatis alias quia inventore
+								molestias quis exercitationem? Lorem, ipsum
+								dolor sit amet consectetur adipisicing elit.
+								Blanditiis temporibus doloremque nam molestiae
+								quidem, repellendus eligendi ex magnam quasi.
+								Est doloribus quam accusantium? Consequuntur,
+								vel sapiente alias repudiandae nisi soluta.
+								Lorem ipsum dolor sit amet consectetur
+								adipisicing elit. Reiciendis, quibusdam maxime.
+								Numquam, explicabo! At vero eligendi cupiditate
+								vel molestias eos sint, obcaecati minus suscipit
+								ducimus libero reprehenderit, itaque debitis
+								atque? Lorem ipsum dolor sit amet, consectetur
+								adipisicing elit. Repellendus vero consequatur
+								velit dolores neque distinctio harum tempore.
+								Vitae, doloribus perferendis! Deserunt
+								reprehenderit dolor tempora atque amet officiis
+								ea, velit iste. Lorem ipsum dolor sit, amet
+								consectetur adipisicing elit. Est nemo
+								accusamus, inventore assumenda et nulla. Eius,
+								consequuntur repudiandae ea corrupti eos magni
+								itaque temporibus blanditiis aspernatur, earum
+								quam ut. Laudantium. Lorem ipsum dolor sit amet
+								consectetur adipisicing elit. Doloremque
+								recusandae, distinctio in fuga vero ullam
+								tempora nisi laborum unde architecto, doloribus
+								dicta fugiat itaque voluptatibus dolorum vel
+								aspernatur, inventore nemo? Lorem ipsum dolor
+								sit amet consectetur adipisicing elit. Error,
+								corporis animi. Praesentium voluptate, optio
+								tenetur harum odio sequi eos possimus officiis
+								dignissimos. Laboriosam voluptates fuga est.
+								Deserunt quod officia harum!
+							</>
 						</AKModalBody>
 
 						<AKModalFooter>
@@ -4047,64 +4471,114 @@ function ControlledExample() {
 			<div>Modal: {isModalActive.toString()}</div>
 			<div>
 				<Button onClick={() => setIsModalActive(true)}>
-					Show Modal
+					Show Modal2
 				</Button>
 
-				{isModalActive && (
-					<Modal.Container
-						open={isModalActive}
-						onOpenChange={(opened) => {
-							if (!opened) setIsModalActive(false)
-						}}
-					>
-						<Modal.Header>
-							<Modal.Title>Sample Modal</Modal.Title>
-							<Button
-								appearance="link"
-								onClick={() => setIsModalActive(false)}
-							>
-								<CrossIcon
-									label="Close popup"
-									primaryColor="#000"
-								/>
+				<Modal.Container
+					open={isModalActive}
+					onOpenChange={(opened) => {
+						if (!opened) setIsModalActive(false)
+					}}
+				>
+					<Modal.Header>
+						<Modal.Title>Sample Modal</Modal.Title>
+						<Button
+							appearance="link"
+							onClick={() => setIsModalActive(false)}
+							className="text-text p-0"
+						>
+							<CrossIcon label="Close popup" />
+						</Button>
+					</Modal.Header>
+					<Modal.Body>
+						<div>
+							<p>This is the body of the modal.</p>
+						</div>
+						<Select
+							placeholder="Choose..."
+							options={selectOptions}
+						/>
+						<Select
+							placeholder="Choose..."
+							options={selectOptions}
+							menuPlacement="top"
+						/>
+						<Dropdown.Menu
+							triggerClassName="w-full"
+							align="end"
+							trigger="Dropdown"
+							usePortal={false}
+						>
+							{ddItems}
+						</Dropdown.Menu>
+						<Collapsible header={"lorem"} defaultOpen={false}>
+							Lorem, ipsum dolor sit amet consectetur adipisicing
+							elit. Distinctio ipsam harum rerum quia, nam, autem
+							non, commodi expedita dolore quisquam saepe odit
+							maiores id alias reiciendis. Aut aperiam minus eum.
+							Lorem ipsum dolor sit amet consectetur adipisicing
+							elit. Illum quos dolorum officia id porro illo sit
+							voluptates error doloremque? Iste deserunt amet illo
+							incidunt modi. Facilis reiciendis ratione at
+							veritatis. Lorem ipsum dolor sit amet consectetur,
+							adipisicing elit. Deserunt non, perspiciatis
+							voluptate cumque vel eveniet ratione sequi ullam
+							facilis! Beatae, voluptatem aperiam consequatur
+							assumenda consectetur possimus accusantium maxime
+							similique labore! Lorem ipsum dolor sit amet
+							consectetur, adipisicing elit. Ullam, possimus
+							facere ut odit mollitia vel consectetur earum
+							reiciendis beatae inventore fugiat, quo eaque ipsum
+							soluta facilis doloremque, voluptatibus odio
+							officiis. Lorem ipsum dolor sit amet consectetur
+							adipisicing elit. Laudantium voluptatum aut
+							voluptates distinctio nam neque dolore, maiores
+							autem impedit, doloribus eveniet laborum
+							necessitatibus ex! Possimus odit in commodi nulla
+							architecto. Lorem ipsum dolor sit amet consectetur
+							adipisicing elit. Officia, facere reiciendis
+							incidunt obcaecati aut corrupti tempora commodi nam
+							aspernatur et quas beatae delectus perspiciatis
+							alias quia inventore molestias quis exercitationem?
+							Lorem, ipsum dolor sit amet consectetur adipisicing
+							elit. Blanditiis temporibus doloremque nam molestiae
+							quidem, repellendus eligendi ex magnam quasi. Est
+							doloribus quam accusantium? Consequuntur, vel
+							sapiente alias repudiandae nisi soluta. Lorem ipsum
+							dolor sit amet consectetur adipisicing elit.
+							Reiciendis, quibusdam maxime. Numquam, explicabo! At
+							vero eligendi cupiditate vel molestias eos sint,
+							obcaecati minus suscipit ducimus libero
+							reprehenderit, itaque debitis atque? Lorem ipsum
+							dolor sit amet, consectetur adipisicing elit.
+							Repellendus vero consequatur velit dolores neque
+							distinctio harum tempore. Vitae, doloribus
+							perferendis! Deserunt reprehenderit dolor tempora
+							atque amet officiis ea, velit iste. Lorem ipsum
+							dolor sit, amet consectetur adipisicing elit. Est
+							nemo accusamus, inventore assumenda et nulla. Eius,
+							consequuntur repudiandae ea corrupti eos magni
+							itaque temporibus blanditiis aspernatur, earum quam
+							ut. Laudantium. Lorem ipsum dolor sit amet
+							consectetur adipisicing elit. Doloremque recusandae,
+							distinctio in fuga vero ullam tempora nisi laborum
+							unde architecto, doloribus dicta fugiat itaque
+							voluptatibus dolorum vel aspernatur, inventore nemo?
+							Lorem ipsum dolor sit amet consectetur adipisicing
+							elit. Error, corporis animi. Praesentium voluptate,
+							optio tenetur harum odio sequi eos possimus officiis
+							dignissimos. Laboriosam voluptates fuga est.
+							Deserunt quod officia harum!
+						</Collapsible>
+					</Modal.Body>
+					<Modal.Footer>
+						<Modal.CloseTrigger>
+							<Button appearance="primary" className="z-0">
+								Close
 							</Button>
-						</Modal.Header>
-						<Modal.Body>
-							<div>
-								<p>This is the body of the modal.</p>
-							</div>
-							<Select
-								placeholder="Choose..."
-								options={selectOptions}
-							/>
-							<Select
-								placeholder="Choose..."
-								options={selectOptions}
-								menuPlacement="top"
-							/>
-							{/*<Select
-								placeholder="Choose"
-								options={selectOptions}
-								side="bottom"
-								align="end"
-					/>*/}
-							<Dropdown.Menu
-								triggerClassName="w-full"
-								align="end"
-								trigger="Dropdown"
-							>
-								{ddItems}
-							</Dropdown.Menu>
-						</Modal.Body>
-						<Modal.Footer>
-							<Modal.CloseTrigger>
-								<Button appearance="primary" className="z-0">
-									Close
-								</Button>
-							</Modal.CloseTrigger>
-						</Modal.Footer>
-					</Modal.Container>
-				)}
+						</Modal.CloseTrigger>
+					</Modal.Footer>
+				</Modal.Container>
 			</div>
 		</>
 	)
@@ -4143,7 +4617,12 @@ function ModalShowcase(props: ShowcaseProps) {
 export default ModalShowcase
 
 import React from "react"
-import { Dropdown, PageLayout } from "@linked-planet/ui-kit-ts"
+import {
+	Button,
+	ButtonGroup,
+	Dropdown,
+	PageLayout,
+} from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -4187,20 +4666,48 @@ function PageLayoutExample() {
 							</Dropdown.ItemRadioGroup>,
 						]}
 					>
-						<h1>Page Header Title</h1>
+						Page Header Title
 					</PageLayout.PageHeaderTitle>
 					<PageLayout.PageHeaderSubTitle>
-						<h2>Page Header Sub Title</h2>
+						Page Header Sub Title
 					</PageLayout.PageHeaderSubTitle>
 					<PageLayout.PageHeaderLine>
-						<div>Page Header Line</div>
-						<div>Page Header Line</div>
-						<div>Page Header Line</div>
+						<ButtonGroup>
+							<Button>Button</Button>
+							<Button>Button</Button>
+							<Button>Button</Button>
+							<Button>Button</Button>
+						</ButtonGroup>
 					</PageLayout.PageHeaderLine>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
 					<PageLayout.PageBodyContent>
-						<div>TEST</div>
+						<h1>Text H1</h1>
+						<h2>Text H2</h2>
+						<h3>Text H3</h3>
+						<h4>Text H4</h4>
+						<h5>Text H5</h5>
+						<h6>Text H6</h6>
+						<p>Text P (paragraph)</p>
+						<span>Text SPAN</span>
+						<pre>Text PRE</pre>
+						<code>Text CODE</code>
+						<hr />
+						<div className="text-2xs">Text 2XS</div>
+						<div className="text-xs">Text XS</div>
+						<div className="text-sm">Text SM</div>
+						<div className="text-md">Text MD</div>
+						<div className="text-lg">Text LG</div>
+						<div className="text-xl">Text XL</div>
+						<div className="text-2xl">Text 2XL</div>
+						<div className="text-3xl">Text 3XL</div>
+						<div className="text-4xl">Text 4XL</div>
+						<div className="text-5xl">Text 5XL</div>
+						<div className="text-6xl">Text 6XL</div>
+						<div className="text-7xl">Text 7XL</div>
+						<div className="text-8xl">Text 8XL</div>
+						<div className="text-9xl">Text 9XL</div>
+						<hr />
 						{Array(100)
 							.fill(null)
 							.map((_, i) => (
@@ -4228,15 +4735,18 @@ function PageLayoutExampleWithBodyHeader() {
 			<PageLayout.Page>
 				<PageLayout.PageHeader shadow={false}>
 					<PageLayout.PageHeaderTitle>
-						<h1>Page Header Title</h1>
+						Page Header Title
 					</PageLayout.PageHeaderTitle>
 					<PageLayout.PageHeaderSubTitle>
-						<h2>Page Header Sub Title</h2>
+						Page Header Sub Title
 					</PageLayout.PageHeaderSubTitle>
 					<PageLayout.PageHeaderLine>
-						<div>Page Header Line</div>
-						<div>Page Header Line</div>
-						<div>Page Header Line</div>
+						<ButtonGroup>
+							<Button>Button</Button>
+							<Button>Button</Button>
+							<Button>Button</Button>
+							<Button>Button</Button>
+						</ButtonGroup>
 					</PageLayout.PageHeaderLine>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
@@ -4254,6 +4764,34 @@ function PageLayoutExampleWithBodyHeader() {
 		</div>
 	)
 	//#endregion pagelayoutwithbodyheader
+}
+
+function PageLayouOnlyTitle() {
+	//#region pagelayouttitleonly
+	return (
+		<div
+			style={{
+				height: "40vh",
+			}}
+		>
+			<PageLayout.Page>
+				<PageLayout.PageHeader>
+					<PageLayout.PageHeaderTitle>
+						Page Header Title
+					</PageLayout.PageHeaderTitle>
+				</PageLayout.PageHeader>
+				<PageLayout.PageBody>
+					<PageLayout.PageBodyContent>
+						Body Content
+					</PageLayout.PageBodyContent>
+					<PageLayout.PageBodyFooter>
+						Page Body Footer
+					</PageLayout.PageBodyFooter>
+				</PageLayout.PageBody>
+			</PageLayout.Page>
+		</div>
+	)
+	//#endregion pagelayouttitleonly
 }
 
 export default function PageLayoutShowcase(props: ShowcaseProps) {
@@ -4274,44 +4812,89 @@ export default function PageLayoutShowcase(props: ShowcaseProps) {
 					sourceCodeExampleId: "pagelayout",
 				},
 				{
-					title: "Page Layout With Body Header",
+					title: "Body Header",
 					example: <PageLayoutExampleWithBodyHeader />,
 					sourceCodeExampleId: "pagelayoutwithbodyheader",
+				},
+				{
+					title: "Title Only",
+					example: <PageLayouOnlyTitle />,
+					sourceCodeExampleId: "pagelayouttitleonly",
 				},
 			]}
 		/>
 	)
 }
 
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Pagination } from "@linked-planet/ui-kit-ts"
+import { default as AKPagination } from "@atlaskit/pagination"
 
-function PaginationShowcase(props: ShowcaseProps) {
+function PageExample() {
 	//#region pagination
-	const [selectedPage, setSelectedPage] = useState(0)
+	const [selectedPage, setSelectedPage] = useState(1)
 	const [pageSize, setPageSize] = useState(10)
 
-	const example = (
-		<Pagination
-			pages={[...Array(10)].map((item, index) => {
-				return index + 1
-			})}
-			currentPage={selectedPage + 1}
-			setCurrentPage={(page) => setSelectedPage(page - 1)}
-			totalPages={10}
-			maxPageButtons={6}
-			pageSize={pageSize}
-			pageSizes={[10, 20, 50, 100]}
-			setPageSize={setPageSize}
-			pageSizeMenuSide="top"
-			pageSizeMenuAlign="end"
-		/>
+	const pages = useMemo(
+		() => [...Array(100)].map((item, index) => index + 1),
+		[],
+	)
+
+	console.log("PAGE SIZE", pageSize)
+
+	return (
+		<>
+			<Pagination
+				pages={pages}
+				currentPage={selectedPage}
+				onPageChange={(page) => setSelectedPage(page)}
+				totalPages={10}
+				maxPageButtons={10}
+				pageSize={pageSize}
+				pageSizes={[10, 20, 50, 100]}
+				onPageSizeChange={setPageSize}
+				pageSizeMenuSide="top"
+				pageSizeMenuAlign="end"
+			/>
+		</>
 	)
 	//#endregion pagination
+}
 
+function IndexExample() {
+	//#region pagination
+	const [selectedIndex, setSelectedIndex] = useState(0)
+	const [pageSize, setPageSize] = useState(10)
+
+	const pages = useMemo(
+		() => [...Array(10)].map((item, index) => index + 1),
+		[],
+	)
+
+	return (
+		<>
+			<Pagination
+				pages={pages}
+				currentPageIndex={selectedIndex}
+				onPageIndexChange={(i) => setSelectedIndex(i)}
+				totalPages={10}
+				maxPageButtons={6}
+				pageSize={pageSize}
+				pageSizes={[10, 20, 50, 100]}
+				onPageSizeChange={setPageSize}
+				pageSizeMenuSide="top"
+				pageSizeMenuAlign="end"
+			/>
+			{/*<AKPagination pages={pages} max={6} selectedIndex={selectedIndex} />*/}
+		</>
+	)
+	//#endregion pagination
+}
+
+function PaginationShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Pagination"
@@ -4325,7 +4908,12 @@ function PaginationShowcase(props: ShowcaseProps) {
 			examples={[
 				{
 					title: "Example",
-					example,
+					example: <PageExample />,
+					sourceCodeExampleId: "pagination",
+				},
+				{
+					title: "Example Index",
+					example: <IndexExample />,
 					sourceCodeExampleId: "pagination",
 				},
 			]}
@@ -4394,6 +4982,7 @@ import { default as AKSelect } from "@atlaskit/select"
 import {
 	Button,
 	ButtonGroup,
+	Label,
 	OptionGroupType,
 	Select,
 } from "@linked-planet/ui-kit-ts"
@@ -4405,6 +4994,8 @@ type FormData = {
 	singleValue: string
 	multiValues: string[]
 	groupedMultiValues: string[]
+	controlled: string | undefined
+	controlledMulti: string[] | undefined
 }
 
 function FormExample() {
@@ -4436,6 +5027,8 @@ function FormExample() {
 		defaultValues: {
 			singleValue: availableOptions[0].value,
 			multiValues: [availableOptions[0].value, availableOptions[1].value],
+			controlled: undefined,
+			controlledMulti: undefined,
 		},
 	})
 
@@ -4445,6 +5038,7 @@ function FormExample() {
 				onSubmit={handleSubmit((data) => console.log(data))}
 				onReset={() => reset()}
 			>
+				<Label>Single</Label>
 				<Select<FormData, string>
 					control={control}
 					name="singleValue"
@@ -4453,26 +5047,29 @@ function FormExample() {
 					usePortal
 				/>
 
-				<Select<FormData, string>
+				<Label>Multi</Label>
+				{/*<Select<FormData, string>
 					control={control}
 					isMulti
 					name="multiValues"
 					options={availableOptions}
 					usePortal
 					onChange={(value) => console.log("ON CHANGE", value)}
-				/>
+	/>*/}
 
+				<Label>Grouped Multi</Label>
 				{/* string is the value type, FormData the type of the form data for the control, true is the isMulti flag */}
-				<Select<FormData, string, true>
-					isMulti
+				{/*<Select<FormData, string, true>
+					isMulti={true}
 					control={control}
 					name="groupedMultiValues"
 					options={availableGroupOptions}
 					defaultValue={availableGroupOptions[0].options}
 					usePortal
 					onChange={(value) => console.log("ON CHANGE", value)}
-				/>
+	/>*/}
 
+				<Label>Disabled</Label>
 				<Select
 					isMulti
 					//control={control}
@@ -4494,6 +5091,65 @@ function FormExample() {
 	)
 }
 //#endregion select2form
+
+//#region select2form-controlled
+function ControlledFormExample() {
+	const availableOptions = [
+		{ label: "First option", value: "first" },
+		{ label: "Second option", value: "second" },
+		{ label: "Third option", value: "third" },
+		{ label: "Fourth option", value: "fourth" },
+	]
+
+	const { handleSubmit, control, reset } = useForm<FormData>()
+
+	const [selectedControlled, setSelectedControlled] = React.useState<
+		{ label: string; value: string } | undefined | null
+	>(availableOptions[1])
+
+	const [selectedControlledMulti, setSelectedControlledMulti] =
+		React.useState<
+			readonly { label: string; value: string }[] | undefined | null
+		>([availableOptions[1], availableOptions[2]])
+
+	return (
+		<>
+			<form
+				onSubmit={handleSubmit((data) => console.log(data))}
+				onReset={() => reset()}
+			>
+				<Label htmlFor="controlled">Controlled Single</Label>
+				<Select<FormData, string, false>
+					id="controlled"
+					control={control}
+					name="controlled"
+					options={availableOptions}
+					value={selectedControlled}
+					onChange={(value) => setSelectedControlled(value)}
+				/>
+
+				<Label htmlFor="controlledmulti">Controlled Multi</Label>
+				<Select<FormData, string, true>
+					id="controlledmulti"
+					isMulti
+					control={control}
+					name="controlledMulti"
+					options={availableOptions}
+					value={selectedControlledMulti}
+					onChange={(value) => setSelectedControlledMulti(value)}
+				/>
+
+				<ButtonGroup className="mt-2 w-full justify-end">
+					<Button type="reset">Reset</Button>
+					<Button type="submit" appearance="primary">
+						Submit
+					</Button>
+				</ButtonGroup>
+			</form>
+		</>
+	)
+}
+//#endregion select2form-controlled
 
 function SelectShowcase(props: ShowcaseProps) {
 	//#region select
@@ -4610,9 +5266,14 @@ function SelectShowcase(props: ShowcaseProps) {
 					sourceCodeExampleId: "select2",
 				},
 				{
-					title: "Form Example",
+					title: "Form Uncontrolled",
 					example: <FormExample />,
 					sourceCodeExampleId: "select2form",
+				},
+				{
+					title: "Form Controlled",
+					example: <ControlledFormExample />,
+					sourceCodeExampleId: "select2form-controlled",
 				},
 			]}
 		/>
@@ -4849,12 +5510,16 @@ function AutomaticTabsValue() {
 			<TabList>
 				<Tab>Tab 1</Tab>
 				<Tab>Tab 2</Tab>
+				<Tab disabled>Tab 3</Tab>
 			</TabList>
 			<TabPanel>
 				<span>First Content</span>
 			</TabPanel>
 			<TabPanel>
 				<span>Second Content</span>
+			</TabPanel>
+			<TabPanel>
+				<span>Third Content</span>
 			</TabPanel>
 		</Tabs>
 	)
@@ -5511,8 +6176,7 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import SearchIcon from "@atlaskit/icon/glyph/search"
-import { Tooltip, Tooltip2, TooltipProvider } from "@linked-planet/ui-kit-ts"
-import InfoIcon from "@atlaskit/icon/glyph/info"
+import { Tooltip, TooltipProvider } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
 
@@ -5523,66 +6187,35 @@ function TooltipShowcase(props: ShowcaseProps) {
 			<div className="flex w-full flex-col items-center">
 				<div className="flex gap-4">
 					<Tooltip
-						place="left"
-						tooltipContent={<span>I&apos;m a tooltip</span>}
-					>
-						<SearchIcon label="" />
-					</Tooltip>
-					<Tooltip2
 						side="left"
 						tooltipContent={<span>I&apos;m a tooltip</span>}
-					>
-						<InfoIcon label="" />
-					</Tooltip2>
-					<Tooltip
-						place="top"
-						tooltipHTMLContent={`<span>I&apos;m a <b>top</b> tooltip with stringified HTML</span>`}
+						usePortal
+						align="start"
 					>
 						<SearchIcon label="" />
 					</Tooltip>
 					<Tooltip
-						place="bottom"
+						tooltipHTMLContent={`<span>I&apos;m a <b>top</b> tooltip with stringified HTML</span>`}
+						usePortal={false}
+						side="bottom"
+						align="end"
+					>
+						<SearchIcon label="" />
+					</Tooltip>
+					<Tooltip
+						side="bottom"
 						tooltipContent={"I'm a bottom tooltip"}
 					>
 						<SearchIcon label="" />
 					</Tooltip>
 					<Tooltip
-						id="unique-id"
-						place="bottom-end"
+						side="bottom"
 						tooltipContent={
 							<p>
 								I&apos;m a bottom-end tooltip <br />
 								with a unique id.
 							</p>
 						}
-					>
-						<SearchIcon label="" />
-					</Tooltip>
-				</div>
-				<div className="flex gap-4">
-					Variants:
-					<Tooltip
-						tooltipContent={<p>I&apos;m a light tooltip.</p>}
-						variant="light"
-					>
-						<SearchIcon label="" />
-					</Tooltip>
-					<Tooltip
-						tooltipContent={<p>I&apos;m a error tooltip.</p>}
-						variant="error"
-					>
-						<SearchIcon label="" />
-					</Tooltip>
-					<Tooltip
-						tooltipContent={<p>I&apos;m a error tooltip.</p>}
-						variant="error"
-						opacity={0.5}
-					>
-						<SearchIcon label="" />
-					</Tooltip>
-					<Tooltip
-						tooltipContent={<p>I&apos;m a dark tooltip.</p>}
-						variant="dark"
 					>
 						<SearchIcon label="" />
 					</Tooltip>

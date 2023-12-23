@@ -3,7 +3,45 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKCheckbox from "@atlaskit/checkbox"
-import { Checkbox } from "@linked-planet/ui-kit-ts"
+import { Button, ButtonGroup, Checkbox } from "@linked-planet/ui-kit-ts"
+import { useForm } from "react-hook-form"
+
+//#region checkbox-form
+type FormData = {
+	enabled: boolean
+}
+
+function FormExample() {
+	const { handleSubmit, reset, register } = useForm<FormData>({
+		defaultValues: {
+			enabled: true,
+		},
+	})
+
+	return (
+		<>
+			<form
+				onSubmit={handleSubmit((data) => console.log(data))}
+				onReset={(e) => {
+					e.preventDefault()
+					reset()
+				}}
+			>
+				<Checkbox label="Enabled" {...register("enabled")} />
+				<ButtonGroup>
+					<Button type="reset" appearance="subtle">
+						Reset
+					</Button>
+					<Button type="submit" appearance="primary">
+						Submit
+					</Button>
+				</ButtonGroup>
+			</form>
+		</>
+	)
+}
+
+//#endregion
 
 function CheckboxShowcase(props: ShowcaseProps) {
 	const [isCheckboxActive, setIsCheckboxActive] = useState<
@@ -77,6 +115,11 @@ function CheckboxShowcase(props: ShowcaseProps) {
 			]}
 			examples={[
 				{ title: "Example", example, sourceCodeExampleId: "checkbox" },
+				{
+					title: "Form Example",
+					example: <FormExample />,
+					sourceCodeExampleId: "checkbox-form",
+				},
 			]}
 		/>
 	)
