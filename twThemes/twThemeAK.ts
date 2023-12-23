@@ -107,16 +107,16 @@ export const theme = {
 			hovered: `var(--ds-surface-hovered, ${N10})`,
 			pressed: `var(--ds-surface-pressed, ${N20})`,
 			overlay: {
-				DEFAULT: `var(--ds-surface-overlay, ${N10})`,
-				hovered: `var(--ds-surface-overlay-hovered, ${N20})`,
-				pressed: `var(--ds-surface-overlay-pressed, ${N30})`,
+				DEFAULT: `var(--ds-surface-overlay, ${N20})`,
+				hovered: `var(--ds-surface-overlay-hovered, ${N30})`,
+				pressed: `var(--ds-surface-overlay-pressed, ${N40})`,
 			},
 			raised: {
 				DEFAULT: `var(--ds-surface-raised, ${N10})`,
 				hovered: `var(--ds-surface-raised-hovered, ${N20})`,
 				pressed: `var(--ds-surface-raised-pressed, ${N30})`,
 			},
-			sunken: `var(--ds-surface-sunken, ${N0})`,
+			sunken: `var(--ds-surface-sunken, ${N20})`,
 		},
 
 		input: {
