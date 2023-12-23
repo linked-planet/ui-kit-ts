@@ -36,9 +36,10 @@ const CardBase = ({
 			open={openVal}
 			defaultOpen={defaultOpen}
 			onChanged={onOpenChanged}
-			headerContainerClassName={`border-border border box-border rounded-t overflow-hidden`}
+			className="border-border shadow-overlay border"
+			triggerClassName="rounded-t border-b border-border overflow-hidden"
 		>
-			<div className="bg-surface-sunken border-border box-border flex rounded-b border-x border-b">
+			<div className="bg-surface box-border flex rounded-b">
 				{children}
 			</div>
 		</Collapsible>
@@ -54,7 +55,7 @@ const CardHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			"flex flex-1 justify-between overflow-hidden p-3",
+			"bg-surface-overlay flex flex-1 justify-between overflow-hidden p-3",
 			className,
 		)}
 	>

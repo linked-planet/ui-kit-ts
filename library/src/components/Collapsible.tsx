@@ -10,6 +10,8 @@ type CollapsibleProps = {
 	defaultOpen?: boolean
 	onChanged?: (opened: boolean) => void
 	header: React.ReactNode
+	triggerClassName?: string
+	triggerStyle?: React.CSSProperties
 	headerContainerStyle?: React.CSSProperties
 	headerContainerClassName?: string
 	className?: string
@@ -24,6 +26,8 @@ export function Collapsible({
 	onChanged,
 	openButtonPosition = "left",
 	header,
+	triggerClassName,
+	triggerStyle,
 	headerContainerStyle,
 	headerContainerClassName,
 	className,
@@ -60,12 +64,16 @@ export function Collapsible({
 			open={open}
 			defaultOpen={defaultOpen}
 			onOpenChange={openCB}
-			className={twMerge("bg-surface-sunken rounded", className)}
+			className={twMerge("bg-surface-raised rounded", className)}
 		>
 			<CollapsibleRUI.Trigger
-				className={`flex w-full flex-1 items-center justify-start ${
-					openButtonPosition === "hidden" ? "cursor-default" : ""
-				}`}
+				className={twMerge(
+					`flex w-full flex-1 items-center justify-start ${
+						openButtonPosition === "hidden" ? "cursor-default" : ""
+					}`,
+					triggerClassName,
+				)}
+				style={triggerStyle}
 				asChild
 			>
 				<div>
