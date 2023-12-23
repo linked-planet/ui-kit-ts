@@ -41,6 +41,7 @@ import IconSizeHelperShowcase from "./components/showcase/wrapper/IconSizeHelper
 import { SidebarShowcase } from "./components/showcase/wrapper/SidebarShowcase"
 import FiltersShowcase from "./components/showcase/wrapper/FiltersShowcase"
 import InputShowcase from "./components/showcase/wrapper/InputShowcase"
+import LayeringShowcase from "./components/showcase/wrapper/LayeringShowcase"
 
 export default function useShowcases({
 	overallSourceCode,
@@ -97,16 +98,22 @@ export default function useShowcases({
 			"Inline Message": (
 				<InlineMessageShowcase overallSourceCode={overallSourceCode} />
 			),
+
+			Menu: <MenuShowcase overallSourceCode={overallSourceCode} />,
+
+			Layering: (
+				<LayeringShowcase overallSourceCode={overallSourceCode} />
+			),
+
 			"Loading Spinner": (
 				<LoadingSpinnerShowcase overallSourceCode={overallSourceCode} />
-			),
-			Menu: <MenuShowcase overallSourceCode={overallSourceCode} />,
-			"Page Layout": (
-				<PageLayoutShowcase overallSourceCode={overallSourceCode} />
 			),
 
 			Lozenge: <LozengeShowcase overallSourceCode={overallSourceCode} />,
 			Modal: <ModalShowcase overallSourceCode={overallSourceCode} />,
+			"Page Layout": (
+				<PageLayoutShowcase overallSourceCode={overallSourceCode} />
+			),
 			Pagination: (
 				<PaginationShowcase overallSourceCode={overallSourceCode} />
 			),
