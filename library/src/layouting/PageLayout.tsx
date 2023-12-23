@@ -98,7 +98,7 @@ const PageHeaderTitle = ({
 
 	return (
 		<div
-			className={twMerge("mb-2 flex items-center pl-4", className)}
+			className={twMerge("mb-2 flex items-center pl-8", className)}
 			id={id}
 			style={style}
 		>
@@ -120,7 +120,7 @@ const PageHeaderSubTitle = ({
 	style?: React.CSSProperties
 }) => (
 	<div
-		className={twMerge("text-text-subtlest mb-1 px-4", className)}
+		className={twMerge("text-text-subtlest mb-1 px-8", className)}
 		id={id}
 		style={style}
 	>
@@ -145,7 +145,7 @@ const PageHeaderLine = ({
 }) => (
 	<div
 		className={twMerge(
-			"flex w-full items-center gap-1 px-4 pb-1",
+			"px8 flex w-full items-center gap-1 px-8 pb-1",
 			className,
 		)}
 		style={style}
@@ -191,7 +191,7 @@ const PageBodyContent = ({
 }) => (
 	<div
 		className={twMerge(
-			"min-h-0 flex-1 overflow-y-auto px-4 py-3",
+			"min-h-0 flex-1 overflow-y-auto px-8 py-3",
 			className,
 		)}
 		id={id}
@@ -214,7 +214,7 @@ const PageBodyHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface-raised shadow-overflow z-0 px-4 py-1",
+			"bg-surface-raised shadow-overflow z-0 px-8 py-1",
 			className,
 		)}
 		id={id}

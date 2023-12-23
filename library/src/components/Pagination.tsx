@@ -22,11 +22,9 @@ function PageSizeSelector({
 	pageSizeMenuAlign?: DropdownMenuProps["align"]
 	pageSizeTitle?: React.ReactNode
 }) {
-	const [pageSizeUsed, setPageSizeUsed] = useState(
-		pageSize ?? defaultPageSize,
-	)
+	const [_pageSize, setPageSizeUsed] = useState(pageSize ?? defaultPageSize)
 
-	if (pageSize && pageSizeUsed !== pageSize) {
+	if (pageSize && _pageSize !== pageSize) {
 		setPageSizeUsed(pageSize)
 	}
 
@@ -35,9 +33,9 @@ function PageSizeSelector({
 			pageSizes.map((size) => (
 				<Dropdown.Item
 					key={size}
-					isSelected={pageSizeUsed === size}
+					isSelected={_pageSize === size}
 					onClick={() => {
-						if (pageSizeUsed === size) return
+						if (_pageSize === size) return
 						setPageSizeUsed(size)
 						onPageSizeChange?.(size)
 					}}
@@ -45,7 +43,7 @@ function PageSizeSelector({
 					{size}
 				</Dropdown.Item>
 			)),
-		[pageSizeUsed, pageSizes, onPageSizeChange],
+		[_pageSize, pageSizes, onPageSizeChange],
 	)
 
 	return (
@@ -54,7 +52,7 @@ function PageSizeSelector({
 			<Dropdown.Menu
 				trigger={
 					<div className="hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded bg-transparent p-1.5">
-						{pageSizeUsed}
+						{_pageSize}
 						<ChevronUpIcon size="small" label="" />
 					</div>
 				}
@@ -86,7 +84,7 @@ function PaginationPageHandler<P extends string | number>({
 	onPageChange?: (page: P) => void
 	maxPageButtons: number
 }) {
-	const [currentPageUsed, setCurrentPageUsed] = useState(
+	const [_currentPage, setCurrentPage] = useState(
 		currentPage ?? defaultPage ?? pages[0],
 	)
 
@@ -98,43 +96,43 @@ function PaginationPageHandler<P extends string | number>({
 			defaultPageIndex != null &&
 			pages
 		) {
-			setCurrentPageUsed(pages[defaultPageIndex])
+			setCurrentPage(pages[defaultPageIndex])
 		}
 	}, [currentPage, currentPageIndex, defaultPage, defaultPageIndex, pages])
 
-	if (currentPage != null && currentPageUsed !== currentPage) {
-		setCurrentPageUsed(currentPage)
+	if (currentPage != null && _currentPage !== currentPage) {
+		setCurrentPage(currentPage)
 	}
 
 	if (
 		currentPage == null &&
 		currentPageIndex != null &&
-		currentPageUsed !== pages[currentPageIndex]
+		currentPage !== pages[currentPageIndex]
 	) {
-		setCurrentPageUsed(pages[currentPageIndex])
+		setCurrentPage(pages[currentPageIndex])
 	}
 
 	const visiblePages = useMemo(() => {
 		const halfMaxPageButtons = Math.floor(maxPageButtons / 2)
 		if (pages.length <= maxPageButtons) return pages
-		const currentIndexUsed = pages.indexOf(currentPageUsed)
+		const _currentIndex = pages.indexOf(_currentPage)
 
 		let ret: (P | string)[] = []
 
-		if (currentIndexUsed < halfMaxPageButtons) {
+		if (_currentIndex < halfMaxPageButtons) {
 			ret = pages.slice(0, maxPageButtons)
 			if (maxPageButtons >= 5 && pages.length > maxPageButtons) {
 				ret[maxPageButtons - 2] = "..."
 				ret[maxPageButtons - 1] = pages[pages.length - 1]
 			}
-		} else if (currentIndexUsed > pages.length - halfMaxPageButtons) {
+		} else if (_currentIndex > pages.length - halfMaxPageButtons) {
 			ret = pages.slice(pages.length - maxPageButtons)
 			if (maxPageButtons >= 5 && pages.length > maxPageButtons) {
 				ret[1] = "..."
 				ret[0] = pages[0]
 			}
 		} else {
-			let start = currentIndexUsed - halfMaxPageButtons
+			let start = _currentIndex - halfMaxPageButtons
 			let addEnd = true
 			if (start >= pages.length - maxPageButtons) {
 				start = pages.length - maxPageButtons
@@ -156,9 +154,9 @@ function PaginationPageHandler<P extends string | number>({
 		}
 
 		return ret
-	}, [currentPageUsed, maxPageButtons, pages])
+	}, [_currentPage, maxPageButtons, pages])
 
-	const currentIdx = pages.indexOf(currentPageUsed)
+	const currentIdx = pages.indexOf(_currentPage)
 
 	return (
 		<div className="flex">
@@ -170,8 +168,8 @@ function PaginationPageHandler<P extends string | number>({
 						: "text-disabled-text"
 				}`}
 				onClick={() => {
-					const currentIndex = pages.indexOf(currentPageUsed)
-					setCurrentPageUsed(pages[currentIndex - 1])
+					const currentIndex = pages.indexOf(_currentPage)
+					setCurrentPage(pages[currentIndex - 1])
 					onPageIndexChange?.(currentIndex - 1)
 					onPageChange?.(pages[currentIndex - 1])
 				}}
@@ -185,13 +183,13 @@ function PaginationPageHandler<P extends string | number>({
 							key={page + i.toString()}
 							className={twMerge(
 								"flex h-8 min-w-8 select-none items-center justify-center rounded p-1.5",
-								page === currentPageUsed
+								page === _currentPage
 									? "bg-selected text-selected-text-inverse"
 									: "hover:bg-neutral-hovered active:bg-neutral-pressed",
 							)}
 							onClick={() => {
 								const currentIndex = pages.indexOf(page as P)
-								setCurrentPageUsed(page as P)
+								setCurrentPage(page as P)
 								onPageIndexChange?.(currentIndex)
 								onPageChange?.(page as P)
 							}}
@@ -215,10 +213,10 @@ function PaginationPageHandler<P extends string | number>({
 						: "text-disabled-text"
 				}`}
 				onClick={() => {
-					const currentIndexUsed = pages.indexOf(currentPageUsed)
-					setCurrentPageUsed(pages[currentIndexUsed + 1])
-					onPageIndexChange?.(currentIndexUsed + 1)
-					onPageChange?.(pages[currentIndexUsed + 1])
+					const _currentIndex = pages.indexOf(_currentPage)
+					setCurrentPage(pages[_currentIndex + 1])
+					onPageIndexChange?.(_currentIndex + 1)
+					onPageChange?.(pages[_currentIndex + 1])
 				}}
 				disabled={currentIdx >= pages.length - 1}
 			>
@@ -267,7 +265,7 @@ export function Pagination<P extends string | number>({
 	className?: string
 	style?: React.CSSProperties
 }) {
-	const pagesUsed = useMemo(() => {
+	const _pages = useMemo(() => {
 		if (pages) return pages
 		if (totalPages)
 			return Array.from({ length: totalPages }, (_, i) => i + 1) as P[]
@@ -284,7 +282,7 @@ export function Pagination<P extends string | number>({
 		>
 			<div className="flex flex-1 items-center justify-center">
 				<PaginationPageHandler<P>
-					pages={pagesUsed}
+					pages={_pages}
 					currentPage={currentPage}
 					defaultPage={defaultPage}
 					currentPageIndex={currentPageIndex}
@@ -299,7 +297,7 @@ export function Pagination<P extends string | number>({
 					<PageSizeSelector
 						onPageSizeChange={(ps) => {
 							onPageSizeChange?.(ps)
-							onPageChange?.(pagesUsed[0])
+							onPageChange?.(_pages[0])
 							onPageIndexChange?.(0)
 						}}
 						{...pageSizeSelectorProps}
