@@ -209,7 +209,9 @@ function SelectInForm<
 	name,
 	disabled,
 	isDisabled,
+	isMulti,
 	options,
+	value,
 	usePortal = true,
 	...props
 }: SelectInFormProps<FormData, ValueType, Option, IsMulti, GroupOptionType>) {
@@ -231,50 +233,87 @@ function SelectInForm<
 					}
 				}
 
-				let value: Option | Option[] | null = null
-				if (!props.isMulti && options && field.value) {
-					for (const opt of options) {
-						if (isOptionType(opt) && opt.value === field.value) {
-							value = opt
-							break
-						} else if (isOptionGroupType(opt)) {
-							for (const opt2 of opt.options) {
-								if (opt2.value === field.value) {
-									value = opt2
+				let valueUsed = value
+
+				// controlled
+				if (value) {
+					if (
+						!isMulti &&
+						isOptionType(value) &&
+						value.value !== field.value
+					) {
+						field.onChange(value.value)
+					}
+
+					if (isMulti && Array.isArray(value)) {
+						const valueSet = new Set(value.map((it) => it.value))
+						const fieldSet = new Set(field.value)
+						if (valueSet.size !== fieldSet.size) {
+							field.onChange(value.map((it) => it.value))
+						} else {
+							for (const val of valueSet) {
+								if (!fieldSet.has(val)) {
+									field.onChange(value.map((it) => it.value))
 									break
 								}
 							}
 						}
 					}
-				} else if (props.isMulti && options && field.value) {
-					value = []
-					for (const opt of options) {
-						if (
-							isOptionType(opt) &&
-							field.value.includes(opt.value)
-						) {
-							value.push(opt)
-						} else if (isOptionGroupType(opt)) {
-							for (const opt2 of opt.options) {
-								if (field.value.includes(opt2.value)) {
-									value.push(opt2)
+				}
+				//
+
+				// uncontrolled
+				if (!value) {
+					if (!isMulti && options && field.value) {
+						for (const opt of options) {
+							if (
+								isOptionType(opt) &&
+								opt.value === field.value
+							) {
+								valueUsed = opt
+								break
+							} else if (isOptionGroupType(opt)) {
+								for (const opt2 of opt.options) {
+									if (opt2.value === field.value) {
+										valueUsed = opt2
+										break
+									}
 								}
 							}
 						}
+					} else if (isMulti && options && field.value) {
+						const multiValueUsed = []
+						for (const opt of options) {
+							if (
+								isOptionType(opt) &&
+								field.value.includes(opt.value)
+							) {
+								multiValueUsed.push(opt)
+							} else if (isOptionGroupType(opt)) {
+								for (const opt2 of opt.options) {
+									if (field.value.includes(opt2.value)) {
+										multiValueUsed.push(opt2)
+									}
+								}
+							}
+						}
+						valueUsed = multiValueUsed
 					}
 				}
+				//
 
 				return (
 					<SelectInner<ValueType, Option, IsMulti, GroupOptionType>
 						{...props}
 						{...field}
 						onChange={onChange}
-						value={value}
+						value={valueUsed}
 						name={name}
 						options={options}
 						menuPortalTarget={
 							usePortal ? getPortal(portalDivId) : undefined
 						}
+						isMulti={isMulti}
 						isDisabled={disabled || isDisabled}
 					/>
 				)

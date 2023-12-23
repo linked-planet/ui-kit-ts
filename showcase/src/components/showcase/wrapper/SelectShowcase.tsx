@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -6,13 +6,13 @@ import { default as AKSelect } from "@atlaskit/select"
 import {
 	Button,
 	ButtonGroup,
+	Label,
 	OptionGroupType,
 	Select,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
-//#region select2form
-
+//#region select2form-uncontrolled
 type FormData = {
 	singleValue: string
 	multiValues: string[]
@@ -57,6 +57,7 @@ function FormExample() {
 				onSubmit={handleSubmit((data) => console.log(data))}
 				onReset={() => reset()}
 			>
+				<Label>Single Uncontrolled</Label>
 				<Select<FormData, string>
 					control={control}
 					name="singleValue"
@@ -64,7 +65,7 @@ function FormExample() {
 					onChange={(value) => console.log("ON CHANGE", value)}
 					usePortal
 				/>
-
+				<Label>Multi Uncontrolled</Label>
 				<Select<FormData, string>
 					control={control}
 					isMulti
@@ -73,10 +74,10 @@ function FormExample() {
 					usePortal
 					onChange={(value) => console.log("ON CHANGE", value)}
 				/>
-
+				<Label>Grouped Multi</Label>
 				{/* string is the value type, FormData the type of the form data for the control, true is the isMulti flag */}
 				<Select<FormData, string, true>
-					isMulti
+					isMulti={true}
 					control={control}
 					name="groupedMultiValues"
 					options={availableGroupOptions}
@@ -84,15 +85,75 @@ function FormExample() {
 					usePortal
 					onChange={(value) => console.log("ON CHANGE", value)}
 				/>
-
+				<Label>Disabled</Label>
 				<Select
 					isMulti
-					//control={control}
-					name="groupedMultiValues"
 					options={availableGroupOptions}
 					defaultValue={availableGroupOptions[0].options}
 					disabled
 					onChange={(value) => console.log("ON CHANGE", value)}
+				/>
+				<ButtonGroup className="mt-2 w-full justify-end">
+					<Button type="reset">Reset</Button>
+					<Button type="submit" appearance="primary">
+						Submit
+					</Button>
+				</ButtonGroup>
+			</form>
+		</>
+	)
+}
+//#endregion select2form-uncontrolled
+
+//#region select2form-controlled
+type FormDataControlled = {
+	singleValue: string
+	multiValues: string[]
+}
+
+function ControlledFormExample() {
+	const availableOptions = [
+		{ label: "First option", value: "first" },
+		{ label: "Second option", value: "second" },
+		{ label: "Third option", value: "third" },
+		{ label: "Fourth option", value: "fourth" },
+	]
+
+	const { handleSubmit, control, reset } = useForm<FormDataControlled>()
+
+	const [selectedControlled, setSelectedControlled] = useState<
+		{ label: string; value: string } | undefined | null
+	>(availableOptions[1])
+
+	const [selectedControlledMulti, setSelectedControlledMulti] = useState<
+		readonly { label: string; value: string }[] | undefined | null
+	>([availableOptions[1], availableOptions[2]])
+
+	return (
+		<>
+			<form
+				onSubmit={handleSubmit((data) => console.log(data))}
+				onReset={() => reset()}
+			>
+				<Label htmlFor="controlled">Controlled Single</Label>
+				<Select<FormDataControlled, string, false>
+					id="controlled"
+					control={control}
+					name="singleValue"
+					options={availableOptions}
+					value={selectedControlled}
+					onChange={(value) => setSelectedControlled(value)}
+				/>
+
+				<Label htmlFor="controlledmulti">Controlled Multi</Label>
+				<Select<FormDataControlled, string, true>
+					id="controlledmulti"
+					isMulti
+					control={control}
+					name="multiValues"
+					options={availableOptions}
+					value={selectedControlledMulti}
+					onChange={(value) => setSelectedControlledMulti(value)}
 				/>
 
 				<ButtonGroup className="mt-2 w-full justify-end">
@@ -105,7 +166,7 @@ function FormExample() {
 		</>
 	)
 }
-//#endregion select2form
+//#endregion select2form-controlled
 
 function SelectShowcase(props: ShowcaseProps) {
 	//#region select
@@ -222,9 +283,14 @@ function SelectShowcase(props: ShowcaseProps) {
 					sourceCodeExampleId: "select2",
 				},
 				{
-					title: "Form Example",
+					title: "Form Uncontrolled",
 					example: <FormExample />,
-					sourceCodeExampleId: "select2form",
+					sourceCodeExampleId: "select2form-uncontrolled",
+				},
+				{
+					title: "Form Controlled",
+					example: <ControlledFormExample />,
+					sourceCodeExampleId: "select2form-controlled",
 				},
 			]}
 		/>
