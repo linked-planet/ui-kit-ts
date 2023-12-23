@@ -8,6 +8,8 @@ import {
 	DateRangePicker,
 	DateType,
 	DateTypeFormatString,
+	Input,
+	Label,
 } from "@linked-planet/ui-kit-ts"
 import dayjs from "dayjs"
 import { SubmitHandler, useForm } from "react-hook-form"
@@ -181,7 +183,8 @@ function Example3() {
 //#region date-range-picker-form
 
 type FormData = {
-	dateRange: [DateType, DateType | undefined]
+	dateRange: [DateType, DateType]
+	dateRangeControlled: [DateType, DateType]
 }
 
 function ExampleForm() {
@@ -206,30 +209,75 @@ function ExampleForm() {
 		reset()
 	}
 
-	console.log("FORMSTATE", isValid, isDirty, errors)
+	const [startDateControlled, setStartDateControlled] =
+		useState<DateType>("1999-12-23")
+	const [endDateControlled, setEndDateControlled] = useState<
+		DateType | undefined
+	>("1999-12-25")
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} onReset={onReset}>
-			<DateRangePicker<FormData>
-				control={control}
-				name="dateRange"
-				locale="de-DE"
-				onCollision={() => console.info("Collision detected")}
-				weekStartDate={1}
-				onDateRangeSelected={(start: string, end: string) => {
-					console.info("Date range selected", start, end)
-				}}
-				onStartDateSelected={(date: DateType) => {
-					console.info("Start date selected", date)
-				}}
-				onEndDateSelected={(date: DateType | undefined) => {
-					if (date) {
-						console.info("End date selected", date)
-					} else {
-						console.info("End date cleared")
-					}
-				}}
-			/>
+			<div className="flex gap-4">
+				<div>
+					<Label>Uncontrolled</Label>
+					<DateRangePicker<FormData>
+						control={control}
+						name="dateRange"
+						locale="de-DE"
+						onCollision={() => console.info("Collision detected")}
+						weekStartDate={1}
+						onDateRangeSelected={(start: string, end: string) => {
+							console.info("Date range selected", start, end)
+						}}
+						onStartDateSelected={(date: DateType) => {
+							console.info("Start date selected", date)
+						}}
+						onEndDateSelected={(date: DateType | undefined) => {
+							if (date) {
+								console.info("End date selected", date)
+							} else {
+								console.info("End date cleared")
+							}
+						}}
+						required
+					/>
+				</div>
+				<div>
+					<Label>Controlled</Label>
+					<Input
+						type="date"
+						value={startDateControlled}
+						onChange={(e) => {
+							setStartDateControlled(e.target.value as DateType)
+						}}
+					/>
+					<Input
+						type="date"
+						value={endDateControlled}
+						onChange={(e) => {
+							setEndDateControlled(e.target.value as DateType)
+						}}
+					/>
+
+					<DateRangePicker<FormData>
+						control={control}
+						name="dateRangeControlled"
+						locale="de-DE"
+						selectedStartDate={startDateControlled}
+						selectedEndDate={endDateControlled}
+						onCollision={() => console.info("Collision detected")}
+						weekStartDate={1}
+						onStartDateSelected={(date: DateType) => {
+							setStartDateControlled(date)
+						}}
+						onEndDateSelected={(date: DateType | undefined) => {
+							setEndDateControlled(date)
+						}}
+						invalid={!!errors.dateRangeControlled}
+						required
+					/>
+				</div>
+			</div>
 			<ButtonGroup className="w-full justify-end">
 				<Button appearance="subtle" type="reset" disabled={!isDirty}>
 					Reset

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { FormEvent, useEffect, useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import Calendar, { ChangeEvent } from "@atlaskit/calendar"
 import { WeekDay } from "@atlaskit/calendar/types"
@@ -40,6 +40,7 @@ export type DateRangeProps<
 	disableWeekend?: boolean
 
 	disabled?: boolean
+	invalid?: boolean
 
 	onDateRangeSelected?: (start: DateType, end: DateType) => void
 
@@ -116,9 +117,11 @@ function DateRangePickerInner({
 	disabled,
 	disableWeekend,
 	onDateSelectCB,
+	onBlur,
 	locale,
 	weekStartDate,
 	onViewChanged,
+	invalid,
 }: {
 	startDate: Dayjs | undefined
 	endDate: Dayjs | undefined
@@ -134,8 +137,10 @@ function DateRangePickerInner({
 	disableWeekend?: boolean
 	onDateSelectCB: (value: DateType) => void
 	onViewChanged?: (e: ChangeEvent) => void
+	onBlur?: (e: FormEvent) => void
 	locale: string
 	weekStartDate: WeekDay
+	invalid?: boolean
 }) {
 	const defaultMonth =
 		viewDefaultMonth != undefined
@@ -156,42 +161,38 @@ function DateRangePickerInner({
 			? viewDefaultDay
 			: startDate?.date() ?? endDate?.date() ?? undefined
 
-	console.log(
-		"DEFAULT YEAR",
-		defaultDay,
-		defaultMonth,
-		defaultYear,
-		startDate,
-		endDate,
-		startDate,
-		endDate,
-	)
-
 	return (
-		<Calendar
-			minDate={minDate}
-			maxDate={maxDate}
-			disabled={disabledDates}
-			previouslySelected={[]}
-			selected={selectedDates}
-			defaultMonth={defaultMonth}
-			defaultYear={defaultYear}
-			defaultDay={defaultDay}
-			disabledDateFilter={
-				disabled
-					? allDisabledFilter
-					: disableWeekend
-						? weekendFilter
-						: undefined
-			}
-			onSelect={(event) => {
-				const selectedDate = event.iso
-				onDateSelectCB(selectedDate as DateType)
-			}}
-			onChange={onViewChanged}
-			locale={locale}
-			weekStartDay={weekStartDate}
-		/>
+		<div
+			className={`box-border border border-transparent ${
+				invalid ? "border-danger-bold" : ""
+			}`}
+		>
+			<Calendar
+				minDate={minDate}
+				maxDate={maxDate}
+				disabled={disabledDates}
+				previouslySelected={[]}
+				selected={selectedDates}
+				defaultMonth={defaultMonth}
+				defaultYear={defaultYear}
+				onBlur={onBlur}
+				defaultDay={defaultDay}
+				disabledDateFilter={
+					disabled
+						? allDisabledFilter
+						: disableWeekend
+							? weekendFilter
+							: undefined
+				}
+				onSelect={(event) => {
+					const selectedDate = event.iso
+					onDateSelectCB(selectedDate as DateType)
+				}}
+				onChange={onViewChanged}
+				locale={locale}
+				weekStartDay={weekStartDate}
+			/>
+		</div>
 	)
 }
 
@@ -216,13 +217,36 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 	control,
 	name,
 	required,
+	invalid,
 }: DateRangeProps<FormData>) {
-	const [startDate, setStartDate] = useState(
-		selectedStartDate ? dayjs(selectedStartDate) : undefined,
-	)
-	const [endDate, setEndDate] = useState(
-		selectedEndDate ? dayjs(selectedEndDate) : undefined,
-	)
+	let defaultStart = selectedStartDate ? dayjs(selectedStartDate) : undefined
+	let defaultEnd = selectedEndDate ? dayjs(selectedEndDate) : undefined
+
+	// setting the default values from the form, not sure if this is a good way
+	if (control && name && !selectedEndDate && !selectedStartDate) {
+		const defaultValues = control._defaultValues[name]
+		if (defaultValues) {
+			if (!Array.isArray(defaultValues) || defaultValues.length !== 2) {
+				console.warn(
+					"DateRangePicker: default values are not an array (or an array not of length 2)",
+					defaultValues,
+				)
+			} else {
+				defaultStart = dayjs(defaultValues[0])
+				defaultEnd = dayjs(defaultValues[1])
+				console.log(
+					"DEFAULT VALUES",
+					defaultValues,
+					defaultStart,
+					defaultEnd,
+				)
+			}
+		}
+	}
+	//
+
+	const [startDate, setStartDate] = useState(defaultStart)
+	const [endDate, setEndDate] = useState(defaultEnd)
 
 	useEffect(() => {
 		if (selectedStartDate) {
@@ -251,7 +275,7 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 
 	const onDateSelectCB = (
 		value: DateType,
-		controlOnChange?: (dates: [DateType, DateType | undefined]) => void,
+		controlOnChange?: (dates: [DateType, DateType] | null) => void,
 	) => {
 		const pickedDate = dayjs(value)
 		const collision = checkCollisions(pickedDate, disabledDatesUsed)
@@ -260,18 +284,19 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 			return
 		}
 
+		// new start date picked
 		if (startDate && endDate) {
 			setStartDate(pickedDate)
 			onStartDateSelected?.(toDateString(pickedDate))
 			setEndDate(undefined)
 			onEndDateSelected?.(undefined)
 			//onDateRangeSelected?.(toDateString(pickedDate), undefined)
-			controlOnChange?.([toDateString(pickedDate), undefined])
+			controlOnChange?.(null)
 		} else if (startDate && !endDate) {
 			if (pickedDate.isBefore(startDate)) {
 				setStartDate(pickedDate)
 				onStartDateSelected?.(toDateString(pickedDate))
-				controlOnChange?.([toDateString(pickedDate), undefined])
+				controlOnChange?.(null)
 			} else {
 				setEndDate(pickedDate)
 				onDateRangeSelected?.(
@@ -286,13 +311,20 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 			}
 		} else {
 			setStartDate(pickedDate)
-			controlOnChange?.([toDateString(pickedDate), undefined])
+			controlOnChange?.(null)
 		}
 	}
 
-	if (!control) {
-		const selectedDates = getSelectedDates(startDate, endDate)
+	let _invalid = invalid
+	let selectedDates: DateType[] | undefined = undefined
+	if ((startDate && !endDate) || (endDate && endDate.isBefore(startDate))) {
+		_invalid = true
+	}
+	if ((startDate && !endDate) || (endDate && endDate.isAfter(startDate))) {
+		selectedDates = getSelectedDates(startDate, endDate)
+	}
 
+	if (!control) {
 		return (
 			<DateRangePickerInner
 				minDate={minDate}
@@ -310,6 +342,7 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 				onViewChanged={onViewChanged}
 				locale={locale}
 				weekStartDate={weekStartDate}
+				invalid={_invalid}
 			/>
 		)
 	} else {
@@ -318,7 +351,9 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 				control={control}
 				name={name}
 				rules={{ required }}
-				render={({ field: { onChange, value } }) => {
+				render={({
+					field: { onChange, value, disabled: fieldDisabled, onBlur },
+				}) => {
 					if (value && !Array.isArray(value)) {
 						console.warn(
 							"DateRangePicker: value is not an array",
@@ -326,25 +361,39 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 						)
 					}
 
-					const startDateUsed =
-						startDate ?? value?.[0] ? dayjs(value?.[0]) : undefined
-					const endDateUsed =
-						endDate ?? value?.[1] ? dayjs(value?.[1]) : undefined
-
-					const selectedDates = getSelectedDates(
-						startDateUsed,
-						endDateUsed,
-					)
-
-					console.log(
-						"VALUE",
-						value,
-						startDate,
-						endDate,
-						startDateUsed,
-						endDateUsed,
-						selectedDates,
-					)
+					//controlled
+					if (selectedStartDate) {
+						if (
+							startDate &&
+							endDate &&
+							(toDateString(startDate) !== value?.[0] ||
+								toDateString(endDate) !== value?.[1])
+						) {
+							if (endDate.isBefore(startDate)) {
+								if (value) {
+									onChange(null)
+								}
+							} else {
+								onChange([selectedStartDate, selectedEndDate])
+							}
+						}
+					} else {
+						//uncontrolled
+						if (
+							value &&
+							startDate &&
+							value[0] !== toDateString(startDate)
+						) {
+							setStartDate(dayjs(value[0]))
+						}
+						if (
+							value &&
+							endDate &&
+							value[1] !== toDateString(endDate)
+						) {
+							setEndDate(dayjs(value[1]))
+						}
+					}
 
 					const controlOnChange = (selectedDate: DateType) =>
 						onDateSelectCB(selectedDate, onChange)
@@ -354,155 +403,26 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 							minDate={minDate}
 							maxDate={maxDate}
 							disabledDates={disabledDates}
-							startDate={startDateUsed}
-							endDate={endDateUsed}
+							startDate={startDate}
+							endDate={endDate}
 							selectedDates={selectedDates}
 							viewDefaultDay={viewDefaultDay}
 							viewDefaultMonth={viewDefaultMonth}
 							viewDefaultYear={viewDefaultYear}
-							disabled={disabled}
+							disabled={disabled || fieldDisabled}
 							disableWeekend={disableWeekend}
 							onDateSelectCB={controlOnChange}
 							onViewChanged={onViewChanged}
+							onBlur={onBlur}
 							locale={locale}
 							weekStartDate={weekStartDate}
+							invalid={_invalid}
 						/>
 					)
 				}}
 			/>
 		)
 	}
-
-	/*if (!control) {
-		const selectedDates = getSelectedDates(startDate, endDate)
-
-		const defaultMonth =
-			viewDefaultMonth != undefined
-				? viewDefaultMonth
-				: startDate?.month() != undefined
-					? startDate.month() + 1
-					: endDate?.month() != undefined
-						? endDate?.month() + 1
-						: undefined
-
-		const defaultYear =
-			viewDefaultYear != undefined
-				? viewDefaultYear
-				: startDate?.year() ?? endDate?.year() ?? undefined
-
-		const defaultDay =
-			viewDefaultDay != undefined
-				? viewDefaultDay
-				: startDate?.date() ?? endDate?.date() ?? undefined
-
-		return (
-			<Calendar
-				minDate={minDate}
-				maxDate={maxDate}
-				disabled={disabledDates}
-				previouslySelected={[]}
-				selected={selectedDates}
-				defaultMonth={defaultMonth}
-				defaultYear={defaultYear}
-				defaultDay={defaultDay}
-				disabledDateFilter={
-					disabled
-						? allDisabledFilter
-						: disableWeekend
-							? weekendFilter
-							: undefined
-				}
-				onSelect={(event) => {
-					const selectedDate = event.iso
-					onDateSelectCB(selectedDate)
-				}}
-				onChange={onViewChanged}
-				locale={locale}
-				weekStartDay={weekStartDate}
-			/>
-		)
-	}
-
-	return (
-		<Controller
-			control={control}
-			name={name}
-			rules={{ required }}
-			render={({ field: { onChange, value } }) => {
-				if (value && !Array.isArray(value)) {
-					console.warn(
-						"DateRangePicker: value is not an array",
-						value,
-					)
-				}
-
-				const startDate = value?.[0] ? dayjs(value?.[0]) : undefined
-				const endDate = value?.[1] ? dayjs(value?.[1]) : undefined
-
-				const selectedDates = getSelectedDates(startDate, endDate)
-
-				const defaultMonth =
-					viewDefaultMonth != undefined
-						? viewDefaultMonth
-						: startDate?.month() != undefined
-							? startDate.month() + 1
-							: endDate?.month() != undefined
-								? endDate?.month() + 1
-								: undefined
-
-				const defaultYear =
-					viewDefaultYear != undefined
-						? viewDefaultYear
-						: startDate?.year() ?? endDate?.year() ?? undefined
-
-				const defaultDay =
-					viewDefaultDay != undefined
-						? viewDefaultDay
-						: startDate?.date() ?? endDate?.date() ?? undefined
-
-				if (selectedDates) {
-					console.log(
-						"DateRangerPicker - selected dates in form are yet unhandled, please set default values on the form",
-					)
-				}
-
-				const selectedDatesUsed = getSelectedDates(startDate, endDate)
-				console.log("SELECTED DATES", selectedDatesUsed, selectedDates)
-
-				const controlOnChange = (dates: [DateType, DateType?]) => {
-					console.log("controlOnChange", dates)
-					onChange(dates)
-				}
-
-				return (
-					<Calendar
-						minDate={minDate}
-						maxDate={maxDate}
-						disabled={disabledDates}
-						previouslySelected={[]}
-						selected={selectedDatesUsed}
-						defaultMonth={defaultMonth}
-						defaultYear={defaultYear}
-						defaultDay={defaultDay}
-						disabledDateFilter={
-							disabled
-								? allDisabledFilter
-								: disableWeekend
-									? weekendFilter
-									: undefined
-						}
-						onSelect={(event) => {
-							const selectedDate = event.iso
-							onDateSelectCB(selectedDate, controlOnChange)
-						}}
-						onChange={onViewChanged}
-						locale={locale}
-						weekStartDay={weekStartDate}
-					/>
-				)
-			}}
-		/>
-	)*/
 }
 
 export function DateRangePickerOld<FormData extends FieldValues | undefined>({
