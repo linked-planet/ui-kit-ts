@@ -74,7 +74,7 @@ export function FilterCard({
 				style={style}
 			>
 				<div
-					className={`bg-surface-sunken border-border flex items-center border-b px-1 py-0.5 font-bold`}
+					className={`bg-surface-raised border-border flex items-center border-b px-1 py-0.5 font-bold`}
 				>
 					<fieldset className="flex min-w-[1rem] flex-1 items-center">
 						<input
@@ -147,7 +147,7 @@ export function FilterCard({
 						const onClick = !isSelectable
 							? undefined
 							: onAttributeClick || onSelectedChanged
-							  ? () => {
+								? () => {
 										onAttributeClick?.(
 											filter.attributeName,
 											item,
@@ -172,8 +172,8 @@ export function FilterCard({
 												)
 											}
 										}
-							    }
-							  : undefined
+									}
+								: undefined
 
 						return (
 							<div
@@ -181,8 +181,8 @@ export function FilterCard({
 									!isSelectable
 										? "text-disabled-text cursor-not-allowed"
 										: isSelected
-										  ? "text-text-inverse bg-selected hover:bg-selected-hovered active:bg-selected-pressed cursor-pointer"
-										  : "hover:bg-surface-hovered active:bg-surface-pressed cursor-pointer"
+											? "text-text-inverse bg-selected hover:bg-selected-hovered active:bg-selected-pressed cursor-pointer"
+											: "hover:bg-surface-hovered active:bg-surface-pressed cursor-pointer"
 								}`}
 								key={item}
 								onClick={onClick}

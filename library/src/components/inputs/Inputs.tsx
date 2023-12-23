@@ -137,5 +137,5 @@ Input.displayName = "Input"
 
 const memoizedInput = React.memo(Input)
 
-export { memoizedInput as Input }
+export { memoizedInput as Input, inputStyles }
 //#endregion
