@@ -11,7 +11,7 @@ import { twJoin, twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
 
 const commonStyles =
-	"pl-1 pr-5 py-1.5 flex items-center outline-none border-l-[2.5px] border-l-transparent cursor-default" as const
+	"pl-1 pr-5 py-1.5 flex items-center outline-none border-l-2 border-l-transparent cursor-default" as const
 const disabledStyles = "text-disabled-text cursor-not-allowed" as const
 const selectedStyles =
 	"bg-selected-subtle hover:bg-selected-subtle-hovered border-selected-bold active:bg-selected-subtle-pressed" as const

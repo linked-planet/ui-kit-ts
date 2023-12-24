@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { twMerge } from "tailwind-merge"
-import { Dropdown, type DropdownMenuProps } from "./DropdownMenu"
 import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
+import { type DropdownMenuProps, Dropdown } from "./DropdownMenu"
 
 function PageSizeSelector({
 	pageSize,
@@ -107,7 +107,7 @@ function PaginationPageHandler<P extends string | number>({
 	if (
 		currentPage == null &&
 		currentPageIndex != null &&
-		currentPage !== pages[currentPageIndex]
+		_currentPage !== pages[currentPageIndex]
 	) {
 		setCurrentPage(pages[currentPageIndex])
 	}
@@ -268,7 +268,10 @@ export function Pagination<P extends string | number>({
 	const _pages = useMemo(() => {
 		if (pages) return pages
 		if (totalPages)
-			return Array.from({ length: totalPages }, (_, i) => i + 1) as P[]
+			return Array.from(
+				{ length: Math.ceil(totalPages) },
+				(_, i) => i + 1,
+			) as P[]
 		return [1] as P[]
 	}, [pages, totalPages])
 

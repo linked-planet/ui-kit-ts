@@ -320,7 +320,10 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 	if ((startDate && !endDate) || (endDate && endDate.isBefore(startDate))) {
 		_invalid = true
 	}
-	if ((startDate && !endDate) || (endDate && endDate.isAfter(startDate))) {
+	if (
+		(startDate && !endDate) ||
+		(endDate && (endDate.isAfter(startDate) || endDate.isSame(startDate)))
+	) {
 		selectedDates = getSelectedDates(startDate, endDate)
 	}
 
@@ -613,7 +616,6 @@ export function DateRangePickerOld<FormData extends FieldValues | undefined>({
 				}
 
 				const selectedDatesUsed = getSelectedDates(startDate, endDate)
-				console.log("SELECTED DATES", selectedDatesUsed, selectedDates)
 
 				const controlOnChange = (dates: [DateType, DateType?]) => {
 					console.log("controlOnChange", dates)
