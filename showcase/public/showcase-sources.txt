@@ -1399,6 +1399,9 @@ function Example3() {
 	const viewDefaultYear = 1985
 	const viewDefaultDay = 2
 
+	const selectedStartDate = "1985-08-02" as DateType
+	const selectedEndDate = "1985-08-02" as DateType
+
 	return (
 		<>
 			<p>No onChange handler, selection will not change.</p>
@@ -1410,6 +1413,8 @@ function Example3() {
 				viewDefaultYear={viewDefaultYear}
 				viewDefaultDay={viewDefaultDay}
 				weekStartDate={1}
+				selectedStartDate={selectedStartDate}
+				selectedEndDate={selectedEndDate}
 				onDateRangeSelected={(start: string, end: string) => {
 					console.info("Date range selected", start, end)
 				}}
