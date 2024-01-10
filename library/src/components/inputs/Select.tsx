@@ -24,7 +24,7 @@ const controlStyles =
 const menuStyles =
 	"bg-surface-overlay z-10 shadow-overlay rounded overflow-hidden"
 
-const optionStyles = "py-1 px-3 border-l-2 border-l-transparent"
+const optionStyles = "py-2.5 px-3 border-l-2 border-l-transparent"
 
 export type OptionType<ValueType> = {
 	label: string

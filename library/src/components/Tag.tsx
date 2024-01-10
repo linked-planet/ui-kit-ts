@@ -99,7 +99,7 @@ export function Tag({
 	const classNameUsed = hovered
 		? `bg-danger text-danger-text ${className} ${
 				isRemovable ? "pr-0" : "pr-1"
-		  }`
+			}`
 		: `${className} ${isRemovable ? "pr-0" : "pr-1"}`
 	const styleUsed = hovered
 		? { backgroundColor: undefined, textColor: undefined, ...style }
@@ -133,7 +133,7 @@ export function TagGroup({
 	return (
 		<div
 			className={twMerge(
-				`flex w-full flex-wrap px-1 ${
+				`flex w-full flex-wrap ${
 					alignment === "start" ? "justify-start" : "justify-end"
 				}`,
 				className,
