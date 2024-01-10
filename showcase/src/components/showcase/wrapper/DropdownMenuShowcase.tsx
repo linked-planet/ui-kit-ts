@@ -122,21 +122,21 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 		<>
 			<Dropdown.Menu trigger="Dropdown" side={"right"} align="center">
 				<Dropdown.ItemCheckbox
-					isSelected={checkBoxes.includes("item-1")}
+					selected={checkBoxes.includes("item-1")}
 					description={"test description"}
 					onClick={() => handleCheckboxChange("item-1")}
 				>
 					Dropdown Checkbox Item 1
 				</Dropdown.ItemCheckbox>
 				<Dropdown.ItemCheckbox
-					isSelected={checkBoxes.includes("item-2")}
+					selected={checkBoxes.includes("item-2")}
 					onClick={() => handleCheckboxChange("item-2")}
 				>
 					Dropdown Checkbox Item 2
 				</Dropdown.ItemCheckbox>
 				<Dropdown.ItemCheckbox
-					isDisabled={true}
-					isSelected={checkBoxes.includes("item-3")}
+					disabled={true}
+					selected={checkBoxes.includes("item-3")}
 					onClick={() => handleCheckboxChange("item-3")}
 				>
 					Dropdown Checkbox Item 3
@@ -149,10 +149,8 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 					>
 						First dropdown item
 					</Dropdown.Item>
-					<Dropdown.Item isSelected>
-						Second dropdown item
-					</Dropdown.Item>
-					<Dropdown.Item isDisabled>
+					<Dropdown.Item selected>Second dropdown item</Dropdown.Item>
+					<Dropdown.Item disabled>
 						Disabled dropdown item
 					</Dropdown.Item>
 				</Dropdown.ItemGroup>
@@ -164,29 +162,29 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 					<Dropdown.ItemRadio
 						value="radio-1"
 						description={"another description"}
-						isSelected={radioValue === "testval1"}
+						selected={radioValue === "testval1"}
 						onClick={() => handleRadioChange("testval1")}
 					>
 						Radio 1
 					</Dropdown.ItemRadio>
 					<Dropdown.ItemRadio
 						value="radio-2"
-						isSelected={radioValue === "radio-2"}
+						selected={radioValue === "radio-2"}
 						onClick={() => handleRadioChange("radio-2")}
 					>
 						Radio 2
 					</Dropdown.ItemRadio>
 					<Dropdown.ItemRadio
 						value="radio-3"
-						isSelected={radioValue === "radio-3"}
+						selected={radioValue === "radio-3"}
 						onClick={() => handleRadioChange("radio-3")}
 					>
 						Radio 3
 					</Dropdown.ItemRadio>
 					<Dropdown.ItemRadio
 						value="radio-4"
-						isDisabled
-						isSelected={radioValue === "radio-4"}
+						disabled
+						selected={radioValue === "radio-4"}
 						onClick={() => handleRadioChange("radio-4")}
 					>
 						Radio Disabled

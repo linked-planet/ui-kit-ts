@@ -26,27 +26,27 @@ function Item({
 	description,
 	elemBefore,
 	elemAfter,
-	isDisabled = false,
-	isSelected,
+	disabled = false,
+	selected,
 	onClick,
 	children,
 }: {
 	elemBefore?: React.ReactNode
 	elemAfter?: React.ReactNode
 	description?: React.ReactNode
-	isDisabled?: boolean
-	isSelected?: boolean
+	disabled?: boolean
+	selected?: boolean
 	onClick?: () => void
 	children: React.ReactNode
 }) {
 	return (
 		<RDd.Item
-			disabled={isDisabled}
+			disabled={disabled}
 			className={twMerge(
 				commonStyles,
-				!isDisabled && !isSelected ? normalStyles : undefined,
-				isSelected ? `${selectedStyles} border-l-2` : undefined,
-				isDisabled ? disabledStyles : undefined,
+				!disabled && !selected ? normalStyles : undefined,
+				selected ? `${selectedStyles} border-l-2` : undefined,
+				disabled ? disabledStyles : undefined,
 			)}
 			onClick={onClick}
 		>
@@ -66,16 +66,16 @@ function Item({
 
 function ItemCheckbox({
 	description,
-	isSelected,
+	selected,
 	onClick,
 	defaultSelected,
-	isDisabled = false,
+	disabled = false,
 	children,
 }: {
 	description?: React.ReactNode
-	isSelected?: boolean
+	selected?: boolean
 	defaultSelected?: boolean
-	isDisabled?: boolean
+	disabled?: boolean
 	onClick?: () => void
 	children: React.ReactNode
 }) {
@@ -83,23 +83,23 @@ function ItemCheckbox({
 		<RDd.CheckboxItem
 			onClick={(e) => {
 				e.preventDefault()
-				if (isDisabled) return
+				if (disabled) return
 				onClick?.()
 			}}
-			disabled={isDisabled}
-			checked={isSelected}
+			disabled={disabled}
+			checked={selected}
 			defaultChecked={defaultSelected}
 			className={twMerge(
 				commonStyles,
-				!isDisabled && !isSelected ? normalStyles : undefined,
-				isSelected ? selectedStyles : undefined,
-				isDisabled ? disabledStyles : undefined,
+				!disabled && !selected ? normalStyles : undefined,
+				selected ? selectedStyles : undefined,
+				disabled ? disabledStyles : undefined,
 			)}
 		>
 			<div
 				className={twMerge(
 					"border-border relative mr-6 flex h-4 w-4 flex-none items-center justify-center rounded border-2",
-					isSelected ? "border-selected-bold" : undefined,
+					selected ? "border-selected-bold" : undefined,
 				)}
 			>
 				<RDd.ItemIndicator asChild>
@@ -175,15 +175,15 @@ function ItemRadioGroup({
 function ItemRadio({
 	onClick,
 	description,
-	isSelected,
-	isDisabled,
+	selected,
+	disabled,
 	value,
 	children,
 }: {
 	onClick?: () => void
 	description?: React.ReactNode
-	isDisabled?: boolean
-	isSelected?: boolean
+	disabled?: boolean
+	selected?: boolean
 	value: string
 	children: React.ReactNode
 }) {
@@ -191,28 +191,28 @@ function ItemRadio({
 		<RDd.RadioItem
 			onClick={(e) => {
 				e.preventDefault()
-				if (isDisabled) return
+				if (disabled) return
 				onClick?.()
 			}}
-			disabled={isDisabled}
+			disabled={disabled}
 			value={value}
 			className={twMerge(
 				commonStyles,
-				!isDisabled && !isSelected ? normalStyles : undefined,
-				isSelected ? selectedStyles : undefined,
-				isDisabled ? disabledStyles : undefined,
+				!disabled && !selected ? normalStyles : undefined,
+				selected ? selectedStyles : undefined,
+				disabled ? disabledStyles : undefined,
 			)}
 		>
 			<div
 				className={twMerge(
 					`${
-						isSelected
+						selected
 							? "border-selected-bold"
 							: "border-border hover:border-selected-bold"
 					} relative mr-6 flex h-3 w-3 flex-none items-center justify-center rounded-full border-2`,
 				)}
 			>
-				{isSelected && (
+				{selected && (
 					<div className="text-brand-bold absolute inset-0 flex items-center justify-center">
 						<RadioIcon label="" />
 					</div>
@@ -280,7 +280,7 @@ export type DropdownMenuProps = {
 	align?: RDd.MenuContentProps["align"]
 	open?: boolean
 	defaultOpen?: boolean
-	isDisabled?: boolean
+	disabled?: boolean
 	onOpenChange?: (open: boolean) => void
 	trigger: React.ReactNode
 	children: React.ReactNode
@@ -298,7 +298,7 @@ function Menu({
 	open,
 	defaultOpen,
 	onOpenChange,
-	isDisabled = false,
+	disabled = false,
 	trigger,
 	children,
 	triggerStyle,
@@ -321,19 +321,19 @@ function Menu({
 				<Button
 					className={triggerClassName}
 					style={triggerStyle}
-					disabled={isDisabled}
+					disabled={disabled}
 				>
 					{trigger}
 					{opened ? (
-						<ChevronUpIcon label="" />
+						<ChevronUpIcon label="" size="small" />
 					) : (
-						<ChevronDownIcon label="" />
+						<ChevronDownIcon label="" size="small" />
 					)}
 				</Button>
 			)
 		}
 		return trigger
-	}, [isDisabled, opened, trigger, triggerClassName, triggerStyle])
+	}, [disabled, opened, trigger, triggerClassName, triggerStyle])
 
 	const content = useMemo(
 		() => (

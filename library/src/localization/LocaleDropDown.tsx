@@ -12,7 +12,7 @@ export default function LocaleDropDown() {
 				{availableLocales.map(({ locale: localeName, label }) => (
 					<Dropdown.Item
 						key={localeName}
-						isSelected={localeName === locale}
+						selected={localeName === locale}
 						onClick={() => {
 							setLocale(localeName)
 						}}

@@ -1,8 +1,9 @@
-export const portalContainerID = "#uikts-portal" as const
+export const portalContainerID = "uikts-portal" as const
 
 export function getPortal(insidePortalContainerID: string) {
 	let portalNode = document.getElementById(portalContainerID)
 	if (!portalNode) {
+		console.log("creating portal node with id:", portalContainerID)
 		portalNode = document.createElement("div")
 		portalNode.setAttribute("id", portalContainerID)
 		portalNode.style.setProperty("z-index", "511") // the atlaskit portal has 510

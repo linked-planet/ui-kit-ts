@@ -38,8 +38,8 @@ const PageHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			`border-border bg-surface-raised z-[1] flex flex-col border-b pt-4 ${
-				shadow ? "shadow-overflow" : ""
+			`border-border bg-surface-raised z-[1] flex flex-col border-b pb-4 pt-6 ${
+				shadow ? "shadow-strong" : ""
 			}`,
 			className,
 		)}
@@ -145,7 +145,7 @@ const PageHeaderLine = ({
 }) => (
 	<div
 		className={twMerge(
-			"px8 flex w-full items-center gap-1 px-8 pb-1",
+			"flex w-full items-center gap-1 px-8 py-1",
 			className,
 		)}
 		style={style}
@@ -237,7 +237,7 @@ const PageBodyFooter = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface-raised border-border shadow-overflow flex justify-center border-t p-1.5",
+			"bg-surface-raised border-border shadow-strong flex justify-center border-t p-1.5",
 			className,
 		)}
 		id={id}

@@ -1,16 +1,13 @@
 import React, { useMemo } from "react"
-import {
-	Controller,
-	type FieldValues,
-	type Control,
-	Path,
-} from "react-hook-form"
+import { Controller } from "react-hook-form"
+import type { FieldValues, Path, Control } from "react-hook-form"
 import {
 	default as RSelect,
 	type ClassNamesConfig,
 	type GroupBase,
 	type OnChangeValue,
 	type ActionMeta,
+	type CSSObjectWithLabel,
 } from "react-select"
 
 import { getPortal } from "../../utils/getPortal"
@@ -32,8 +29,8 @@ const optionStyles = "py-1 px-3 border-l-2 border-l-transparent"
 export type OptionType<ValueType> = {
 	label: string
 	value: ValueType
-	isDisabled?: boolean
-	isFixed?: boolean
+	isDisabled?: boolean // needs to be isDisabled because of react-select
+	isFixed?: boolean // needs to be isFixed because of react-select
 }
 
 export type OptionGroupType<ValueType> = GroupBase<OptionType<ValueType>>
@@ -63,7 +60,7 @@ function useClassNamesConfig<
 			clearIndicator: () =>
 				"w-[14px] h-[14px] flex items-center justify-center" as const,
 			dropdownIndicator: () =>
-				"w-[14px] h-[14px] flex items-center justify-center" as const,
+				"w-[10.5px] h-[10.5px] flex items-center justify-center" as const,
 			indicatorSeparator: () => "hidden" as const,
 			//input: (provided) => "",
 			placeholder: () => "text-disabled-text" as const,
@@ -71,7 +68,7 @@ function useClassNamesConfig<
 				provided.isDisabled ? "text-disabled-text" : "text-text",
 			multiValue: (provided) => {
 				return twMerge(
-					"bg-selected-subtle rounded-sm px-1 mr-0.5 text-text",
+					"bg-neutral rounded-sm px-1 mr-2 text-text",
 					provided.isDisabled
 						? "bg-disabled text-disabled-text"
 						: undefined,
@@ -96,6 +93,16 @@ function useClassNamesConfig<
 		[],
 	)
 }
+
+// className overwrite doesn't work because it seems like that the css of react-select gets included after TW
+const customStyles = {
+	control: (provided: CSSObjectWithLabel) => ({
+		...provided,
+		minHeight: "2.33rem",
+		//height: "2.35rem",
+	}),
+}
+
 //#endregion styles
 
 /**
@@ -139,6 +146,7 @@ function SelectInner<
 							? `Erstelle "${value}"`
 							: `Create "${value}"`)
 				}
+				styles={customStyles}
 				{...props}
 			/>
 		)
@@ -149,6 +157,7 @@ function SelectInner<
 			placeholder={props.placeholder ?? "Select..."}
 			unstyled
 			classNames={classNamesConfig}
+			styles={customStyles}
 			{...props}
 		/>
 	)
@@ -196,6 +205,7 @@ type SelectNotInFormProps<
 	GroupOptionType extends GroupBase<Option>,
 > = SelectPropsProto<ValueType, Option, IsMulti, GroupOptionType> & {
 	control?: never
+	disabled?: boolean
 }
 
 function SelectInForm<
@@ -313,7 +323,6 @@ function SelectInForm<
 						menuPortalTarget={
 							usePortal ? getPortal(portalDivId) : undefined
 						}
-						isMulti={isMulti}
 						isDisabled={disabled || isDisabled}
 					/>
 				)

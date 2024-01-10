@@ -1,7 +1,12 @@
 import React, { CSSProperties } from "react"
+import { createPortal } from "react-dom"
 
 import { toast, ToastContainer } from "react-toastify"
-import type { ToastOptions, CloseButtonProps } from "react-toastify"
+import type {
+	ToastOptions,
+	CloseButtonProps,
+	ToastContainerProps,
+} from "react-toastify"
 
 //import "react-toastify/dist/ReactToastify.css"  -> needs to be imported in your app, probably before tailwindcss to make overrides work
 import CrossIcon from "@atlaskit/icon/glyph/cross"
@@ -15,6 +20,7 @@ import {
 	FlagAppearance,
 } from "./Flag"
 import { twMerge } from "tailwind-merge"
+import { getPortal } from "../utils"
 
 type ToastFlagProps = FlagProps & ToastOptions
 
@@ -56,6 +62,8 @@ const progressInvertedStyles: { [style in FlagAppearance]: string } = {
 	information: informationProgressInvertedStyles,
 }
 
+const portalDivId = "uikts-toasts" as const
+
 function CloseButton({
 	closeToast,
 	invert,
@@ -72,7 +80,10 @@ function CloseButton({
 	)
 }
 
-export { ToastContainer as ToastFlagContainer }
+export function ToastFlagContainer(props: ToastContainerProps) {
+	const portalNode = getPortal(portalDivId)
+	return <>{createPortal(<ToastContainer {...props} />, portalNode)}</>
+}
 
 export function showFlagExtended({
 	style,

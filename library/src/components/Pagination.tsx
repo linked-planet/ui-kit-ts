@@ -33,7 +33,7 @@ function PageSizeSelector({
 			pageSizes.map((size) => (
 				<Dropdown.Item
 					key={size}
-					isSelected={_pageSize === size}
+					selected={_pageSize === size}
 					onClick={() => {
 						if (_pageSize === size) return
 						setPageSizeUsed(size)
