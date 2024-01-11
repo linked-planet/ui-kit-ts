@@ -85,7 +85,7 @@
 		"use-resize-observer": "^9.1.0"
 	},
 	"devDependencies": {
-		"@atlaskit/eslint-plugin-design-system": "^8.15.5",
+		"@atlaskit/eslint-plugin-design-system": "^8.17.0",
 		"@formatjs/cli": "^6.2.4",
 		"@total-typescript/ts-reset": "^0.5.1",
 		"@types/react": "^16.14.55",
