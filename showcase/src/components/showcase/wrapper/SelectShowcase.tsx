@@ -48,6 +48,7 @@ function FormExample() {
 		defaultValues: {
 			singleValue: availableOptions[0].value,
 			multiValues: [availableOptions[0].value, availableOptions[1].value],
+			groupedMultiValues: [availableGroupOptions[0].options[0].value],
 		},
 	})
 
@@ -55,14 +56,16 @@ function FormExample() {
 		<>
 			<form
 				onSubmit={handleSubmit((data) => console.log(data))}
-				onReset={() => reset()}
+				onReset={(e) => {
+					e.preventDefault()
+					reset()
+				}}
 			>
 				<Label>Single Uncontrolled</Label>
 				<Select<FormData, string>
 					control={control}
 					name="singleValue"
 					options={availableOptions}
-					onChange={(value) => console.log("ON CHANGE", value)}
 					usePortal
 				/>
 				<Label>Multi Uncontrolled</Label>
@@ -72,26 +75,15 @@ function FormExample() {
 					name="multiValues"
 					options={availableOptions}
 					usePortal
-					onChange={(value) => console.log("ON CHANGE", value)}
 				/>
 				<Label>Grouped Multi</Label>
 				{/* string is the value type, FormData the type of the form data for the control, true is the isMulti flag */}
 				<Select<FormData, string, true>
-					isMulti={true}
+					isMulti
 					control={control}
 					name="groupedMultiValues"
 					options={availableGroupOptions}
-					defaultValue={availableGroupOptions[0].options}
 					usePortal
-					onChange={(value) => console.log("ON CHANGE", value)}
-				/>
-				<Label>Disabled</Label>
-				<Select
-					isMulti
-					options={availableGroupOptions}
-					defaultValue={availableGroupOptions[0].options}
-					disabled
-					onChange={(value) => console.log("ON CHANGE", value)}
 				/>
 				<ButtonGroup className="mt-2 w-full justify-end">
 					<Button type="reset">Reset</Button>
@@ -133,7 +125,10 @@ function ControlledFormExample() {
 		<>
 			<form
 				onSubmit={handleSubmit((data) => console.log(data))}
-				onReset={() => reset()}
+				onReset={(e) => {
+					e.preventDefault()
+					reset()
+				}}
 			>
 				<Label htmlFor="controlled">Controlled Single</Label>
 				<Select<FormDataControlled, string, false>
@@ -157,7 +152,6 @@ function ControlledFormExample() {
 				/>
 
 				<ButtonGroup className="mt-2 w-full justify-end">
-					<Button type="reset">Reset</Button>
 					<Button type="submit" appearance="primary">
 						Submit
 					</Button>
@@ -198,6 +192,19 @@ function SelectShowcase(props: ShowcaseProps) {
 					label: "Second option",
 					value: { test: "second" },
 				}}
+			/>
+
+			<Select<{ test: string }, true>
+				placeholder="Select an option"
+				onChange={(value) => {
+					console.log("VALUE", value)
+				}}
+				isMulti
+				options={[
+					{ label: "First option", value: { test: "first" } },
+					{ label: "Second option", value: { test: "second" } },
+					{ label: "Third option", value: { test: "third" } },
+				]}
 			/>
 
 			{/*<RadixSelect
@@ -246,6 +253,21 @@ function SelectShowcase(props: ShowcaseProps) {
 
 			<Select
 				placeholder="Select a value 2"
+				options={[
+					{
+						label: "First group",
+						options: [{ label: "First option", value: "first" }],
+					},
+					{
+						label: "Second group",
+						options: [{ label: "Second option", value: "second" }],
+					},
+				]}
+			/>
+
+			<Select
+				placeholder="Select a value 3"
+				isMulti
 				options={[
 					{
 						label: "First group",

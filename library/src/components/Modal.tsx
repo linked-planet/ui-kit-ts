@@ -197,7 +197,7 @@ function Body({
 			className={twMerge(
 				`${showTopBorder ? "border-t" : ""} ${
 					showBottomBorder ? "border-b" : ""
-				} border-border relative box-border flex h-full flex-1 flex-col overflow-auto p-8`,
+				} border-border relative box-border flex h-full flex-1 flex-col overflow-auto px-8 py-4`,
 				className,
 			)}
 			style={style}

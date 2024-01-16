@@ -231,7 +231,7 @@ function PaginationPageHandler<P extends string | number>({
  */
 export function Pagination<P extends string | number>({
 	totalPages,
-	maxPageButtons = 5,
+	maxPageButtons = 11,
 	currentPage,
 	currentPageIndex,
 	defaultPage,

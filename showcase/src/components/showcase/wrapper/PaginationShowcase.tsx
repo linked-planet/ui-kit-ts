@@ -15,8 +15,6 @@ function PageExample() {
 		[],
 	)
 
-	console.log("PAGE SIZE", pageSize)
-
 	return (
 		<>
 			<Pagination
@@ -24,7 +22,7 @@ function PageExample() {
 				currentPage={selectedPage}
 				onPageChange={(page) => setSelectedPage(page)}
 				totalPages={10}
-				maxPageButtons={10}
+				//maxPageButtons={10}
 				pageSize={pageSize}
 				pageSizes={[10, 20, 50, 100]}
 				onPageSizeChange={setPageSize}
@@ -37,7 +35,7 @@ function PageExample() {
 }
 
 function IndexExample() {
-	//#region pagination
+	//#region pagination-index
 	const [selectedIndex, setSelectedIndex] = useState(0)
 	const [pageSize, setPageSize] = useState(10)
 
@@ -53,7 +51,7 @@ function IndexExample() {
 				currentPageIndex={selectedIndex}
 				onPageIndexChange={(i) => setSelectedIndex(i)}
 				totalPages={10}
-				maxPageButtons={6}
+				maxPageButtons={7}
 				pageSize={pageSize}
 				pageSizes={[10, 20, 50, 100]}
 				onPageSizeChange={setPageSize}
@@ -63,7 +61,7 @@ function IndexExample() {
 			{/*<AKPagination pages={pages} max={6} selectedIndex={selectedIndex} />*/}
 		</>
 	)
-	//#endregion pagination
+	//#endregion pagination-index
 }
 
 function PaginationShowcase(props: ShowcaseProps) {
@@ -86,7 +84,7 @@ function PaginationShowcase(props: ShowcaseProps) {
 				{
 					title: "Example Index",
 					example: <IndexExample />,
-					sourceCodeExampleId: "pagination",
+					sourceCodeExampleId: "pagination-index",
 				},
 			]}
 		/>

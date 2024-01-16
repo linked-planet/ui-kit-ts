@@ -59,7 +59,7 @@ function TagShowcase(props: ShowcaseProps) {
 					text="Colored simple Tag"
 					textColor="var(--ds-text-accent-purple-bolder, #172B4D)"
 					color="var(--ds-background-accent-purple-subtle, #998DD9)"
-					appearance="rounded"
+					looks="rounded"
 				/>
 				<SimpleTag
 					text="Colored simple Tag"
@@ -68,7 +68,8 @@ function TagShowcase(props: ShowcaseProps) {
 				/>
 			</TagGroup>
 			<TagGroup>
-				<SimpleTag text="Simple Tag" color="blue" textColor="white" />
+				<SimpleTag text="Simple Tag" appearance="danger" />
+				<SimpleTag text="Simple Tag" appearance="warning" />
 			</TagGroup>
 		</>
 	)

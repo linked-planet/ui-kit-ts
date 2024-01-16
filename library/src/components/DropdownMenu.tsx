@@ -287,6 +287,8 @@ export type DropdownMenuProps = {
 	triggerStyle?: React.CSSProperties
 	triggerClassName?: string
 	usePortal?: boolean
+	"aria-label"?: string
+	id?: string
 }
 
 /**
@@ -304,6 +306,8 @@ function Menu({
 	triggerStyle,
 	triggerClassName,
 	usePortal = true,
+	id,
+	...props
 }: DropdownMenuProps) {
 	const contentRef = useRef<HTMLDivElement>(null)
 
@@ -322,6 +326,8 @@ function Menu({
 					className={triggerClassName}
 					style={triggerStyle}
 					disabled={disabled}
+					aria-label={props["aria-label"]}
+					id={id}
 				>
 					{trigger}
 					{opened ? (
@@ -333,7 +339,7 @@ function Menu({
 			)
 		}
 		return trigger
-	}, [disabled, opened, trigger, triggerClassName, triggerStyle])
+	}, [disabled, opened, props, trigger, triggerClassName, triggerStyle])
 
 	const content = useMemo(
 		() => (

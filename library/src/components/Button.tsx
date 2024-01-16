@@ -16,6 +16,8 @@ export type ButtonProps = {
 	style?: CSSProperties
 	className?: string
 	inverted?: boolean
+	id?: string
+	"aria-label"?: string
 } & Pick<
 	React.ButtonHTMLAttributes<HTMLButtonElement>,
 	| "type"
@@ -78,6 +80,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			children,
 			className,
 			inverted,
+			id,
 			...props
 		}: ButtonProps,
 		ref,
@@ -87,9 +90,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				ref={ref}
 				title={title}
 				autoFocus={autoFocus}
-				aria-label={label}
+				aria-label={label ?? props["aria-label"] ?? ""}
 				style={style}
 				data-inverted={inverted}
+				id={id}
 				className={twMerge(
 					"relative box-border flex flex-shrink-0 items-center justify-center gap-1 rounded border border-transparent px-3 py-1 outline-1 outline-offset-2",
 					!disabled ? ButtonStyles[appearance] : undefined,

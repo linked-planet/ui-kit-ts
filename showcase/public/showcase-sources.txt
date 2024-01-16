@@ -862,6 +862,15 @@ function ButtonShowcase(props: ShowcaseProps) {
 			</Button>
 
 			<Button
+				appearance="primary"
+				onClick={() => console.log("Button pressed")}
+				inverted
+				disabled
+			>
+				Primary Inverted Disabled Button
+			</Button>
+
+			<Button
 				onClick={() => console.log("Button pressed")}
 				disabled={true}
 			>
@@ -4936,8 +4945,6 @@ function PageExample() {
 		[],
 	)
 
-	console.log("PAGE SIZE", pageSize)
-
 	return (
 		<>
 			<Pagination
@@ -4945,7 +4952,7 @@ function PageExample() {
 				currentPage={selectedPage}
 				onPageChange={(page) => setSelectedPage(page)}
 				totalPages={10}
-				maxPageButtons={10}
+				//maxPageButtons={10}
 				pageSize={pageSize}
 				pageSizes={[10, 20, 50, 100]}
 				onPageSizeChange={setPageSize}
@@ -4958,7 +4965,7 @@ function PageExample() {
 }
 
 function IndexExample() {
-	//#region pagination
+	//#region pagination-index
 	const [selectedIndex, setSelectedIndex] = useState(0)
 	const [pageSize, setPageSize] = useState(10)
 
@@ -4974,7 +4981,7 @@ function IndexExample() {
 				currentPageIndex={selectedIndex}
 				onPageIndexChange={(i) => setSelectedIndex(i)}
 				totalPages={10}
-				maxPageButtons={6}
+				maxPageButtons={7}
 				pageSize={pageSize}
 				pageSizes={[10, 20, 50, 100]}
 				onPageSizeChange={setPageSize}
@@ -4984,7 +4991,7 @@ function IndexExample() {
 			{/*<AKPagination pages={pages} max={6} selectedIndex={selectedIndex} />*/}
 		</>
 	)
-	//#endregion pagination
+	//#endregion pagination-index
 }
 
 function PaginationShowcase(props: ShowcaseProps) {
@@ -5007,7 +5014,7 @@ function PaginationShowcase(props: ShowcaseProps) {
 				{
 					title: "Example Index",
 					example: <IndexExample />,
-					sourceCodeExampleId: "pagination",
+					sourceCodeExampleId: "pagination-index",
 				},
 			]}
 		/>
@@ -5826,7 +5833,7 @@ function TagShowcase(props: ShowcaseProps) {
 					text="Colored simple Tag"
 					textColor="var(--ds-text-accent-purple-bolder, #172B4D)"
 					color="var(--ds-background-accent-purple-subtle, #998DD9)"
-					appearance="rounded"
+					looks="rounded"
 				/>
 				<SimpleTag
 					text="Colored simple Tag"
@@ -5835,7 +5842,8 @@ function TagShowcase(props: ShowcaseProps) {
 				/>
 			</TagGroup>
 			<TagGroup>
-				<SimpleTag text="Simple Tag" color="blue" textColor="white" />
+				<SimpleTag text="Simple Tag" appearance="danger" />
+				<SimpleTag text="Simple Tag" appearance="warning" />
 			</TagGroup>
 		</>
 	)

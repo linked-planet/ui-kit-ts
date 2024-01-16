@@ -1,30 +1,48 @@
 import React, { CSSProperties, useMemo, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
+import type { Appearance } from "../utils/appearanceTypes"
 
 type SimpleTagProps = {
 	text: React.ReactNode
 	color?: string
-	appearance?: "default" | "rounded"
+	looks?: "default" | "rounded"
+	appearance?: Appearance
+	bold?: boolean
 	textColor?: string
 	style?: CSSProperties
 	className?: string
+	title?: string
 }
+
+const TagAppearanceColors: { [style in Appearance]: string } = {
+	brand: "bg-brand-bold text-text-inverse",
+	default: "bg-neutral-bold text-text",
+	success: "bg-success-bold text-text-inverse",
+	information: "bg-information-bold text-text-inverse",
+	discovery: "bg-information-bold text-text-inverse",
+	danger: "bg-danger-bold text-text-inverse",
+	warning: "bg-warning-bold text-text-inverse",
+} as const
 
 export function SimpleTag({
 	text,
 	color,
 	textColor,
 	appearance = "default",
+	looks = "default",
+	bold = false,
+	title,
 	style,
 	className,
 }: SimpleTagProps) {
 	return (
-		<span
+		<div
 			className={twMerge(
-				`bg-neutral cursor-default ${
-					appearance === "default" ? "rounded-[3px]" : "rounded-full"
-				} m-1 flex items-center justify-center overflow-hidden whitespace-nowrap pl-1 pr-1 text-[14px] leading-5`,
+				TagAppearanceColors[appearance],
+				looks === "default" ? "rounded-[3px]" : "rounded-full",
+				"m-1 inline-flex cursor-default select-none overflow-hidden whitespace-nowrap pl-1 pr-1 pt-[1px]",
+				bold ? "font-bold" : undefined,
 				className,
 			)}
 			style={{
@@ -32,9 +50,10 @@ export function SimpleTag({
 				color: textColor,
 				...style,
 			}}
+			title={title}
 		>
 			{text}
-		</span>
+		</div>
 	)
 }
 
@@ -61,8 +80,9 @@ export function Tag({
 
 	const textWithRemoveButton = useMemo(() => {
 		return (
-			<div className="flex items-center">
-				{text}
+			<>
+				<span>{text}</span>
+
 				<button
 					onClick={() => {
 						let removed = isRemovable
@@ -76,7 +96,7 @@ export function Tag({
 							onAfterRemoveAction(txt)
 						}
 					}}
-					className={`flex items-center justify-center ${
+					className={`my-auto h-4 w-4 items-center justify-center ${
 						!isRemovable ? "hidden" : ""
 					}`}
 					aria-label={removeButtonLabel}
@@ -86,7 +106,7 @@ export function Tag({
 				>
 					<EditorCloseIcon size="small" label={""} />
 				</button>
-			</div>
+			</>
 		)
 	}, [
 		isRemovable,
@@ -133,7 +153,7 @@ export function TagGroup({
 	return (
 		<div
 			className={twMerge(
-				`flex w-full flex-wrap ${
+				`flex w-full flex-wrap items-center ${
 					alignment === "start" ? "justify-start" : "justify-end"
 				}`,
 				className,

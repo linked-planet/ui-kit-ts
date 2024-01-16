@@ -320,6 +320,7 @@ function SelectInForm<
 						value={valueUsed}
 						name={name}
 						options={options}
+						isMulti={isMulti}
 						menuPortalTarget={
 							usePortal ? getPortal(portalDivId) : undefined
 						}
