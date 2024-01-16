@@ -9,9 +9,11 @@ import React, {
 	ReactNode,
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
+import { SlidingErrorMessage } from "./SlidingErrorMessage"
 
 //#region Label
-const labelNormalStyles = "text-text-subtlest text-sm pb-1 pt-3 font-semibold"
+const labelNormalStyles =
+	"text-text-subtlest block text-sm pb-1 pt-3 font-semibold"
 const requiredStyles =
 	"aria-required:after:content-['*'] aria-required:after:text-danger-bold aria-required:after:ml-0.5"
 const invalidStyles = "aria-invalid:text-danger-text"
@@ -34,7 +36,7 @@ export function Label({
 
 //#region Input
 const inputNormalStyles =
-	"p-2 w-full rounded border border-input-border bg-input ease-in-out transition duration-200"
+	"p-1 w-full rounded border border-input-border bg-input ease-in-out transition duration-200"
 const inputFocusStyles =
 	"focus:border-selected-bold focus:bg-input-active outline-none hover:bg-input-hovered"
 const inputDisabledStyles =
@@ -70,13 +72,11 @@ const Input = forwardRef(
 		ref: ForwardedRef<HTMLInputElement>,
 	) => {
 		const internalRef = useRef<HTMLInputElement>(null)
-		const spanRef = useRef<HTMLParagraphElement>(null)
+		const errorRef = useRef<HTMLDivElement>(null)
 		useImperativeHandle(ref, () => internalRef.current!)
 
 		useEffect(() => {
-			// Function to be called when mutations are observed
 			const observer = new MutationObserver((mutationsList) => {
-				// Handle mutations here
 				for (const mutation of mutationsList) {
 					if (
 						mutation.type === "attributes" &&
@@ -84,12 +84,12 @@ const Input = forwardRef(
 					) {
 						const target = mutation.target as HTMLElement
 						if (target.getAttribute("aria-invalid") === "true") {
-							spanRef.current?.setAttribute(
+							errorRef.current?.setAttribute(
 								"aria-invalid",
 								"true",
 							)
 						} else {
-							spanRef.current?.setAttribute(
+							errorRef.current?.setAttribute(
 								"aria-invalid",
 								"false",
 							)
@@ -98,7 +98,6 @@ const Input = forwardRef(
 				}
 			})
 
-			// Start observing the target node for configured mutations
 			observer.observe(internalRef.current!, { attributes: true })
 
 			return () => {
@@ -120,14 +119,15 @@ const Input = forwardRef(
 						{helpMessage}
 					</p>
 				)}
+
 				{errorMessage && (
-					<p
-						ref={spanRef}
-						aria-invalid={ariaInvalid || invalid ? "true" : "false"}
-						className="text-danger-text text-2xs aria-invalid:scale-y-100 m-0 block origin-top scale-y-0 p-0 transition duration-200 ease-in-out"
+					<SlidingErrorMessage
+						ref={errorRef}
+						invalid={invalid}
+						aria-invalid={ariaInvalid}
 					>
 						{errorMessage}
-					</p>
+					</SlidingErrorMessage>
 				)}
 			</div>
 		)

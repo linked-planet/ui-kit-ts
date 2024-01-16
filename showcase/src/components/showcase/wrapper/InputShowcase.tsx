@@ -3,7 +3,62 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import TextField from "@atlaskit/textfield"
-import { Input } from "@linked-planet/ui-kit-ts"
+import { Button, ButtonGroup, Input, Label } from "@linked-planet/ui-kit-ts"
+import { useForm } from "react-hook-form"
+
+//#region input-form-example
+type FormData = {
+	testInput: string
+}
+
+function FormExample() {
+	const {
+		handleSubmit,
+		control,
+		reset,
+		formState: { errors, isValid },
+	} = useForm<FormData>({
+		defaultValues: {
+			testInput: "test",
+		},
+		mode: "all",
+	})
+
+	console.log("errors", errors)
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<Label htmlFor="testInput" required>
+				Test Input
+			</Label>
+			<Input
+				{...control.register("testInput", {
+					required: true,
+					minLength: 3,
+				})}
+				invalid={!!errors.testInput}
+				errorMessage={
+					errors.testInput?.type === "required"
+						? "Required"
+						: "Min length 3"
+				}
+			/>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button type="reset">Reset</Button>
+				<Button appearance="primary" type="submit" disabled={!isValid}>
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion input-form-example
 
 export default function InputShowcase(props: ShowcaseProps) {
 	const exampleAK = (
@@ -63,6 +118,11 @@ export default function InputShowcase(props: ShowcaseProps) {
 					title: "TextInput",
 					example: example,
 					sourceCodeExampleId: "input",
+				},
+				{
+					title: "Form Example",
+					example: <FormExample />,
+					sourceCodeExampleId: "input-form-example",
 				},
 			]}
 		/>

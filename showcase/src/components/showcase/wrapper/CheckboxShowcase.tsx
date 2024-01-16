@@ -27,7 +27,12 @@ function FormExample() {
 					reset()
 				}}
 			>
-				<Checkbox label="Enabled" {...register("enabled")} />
+				<Checkbox
+					label="Enabled"
+					{...register("enabled")}
+					errorMessage="Test error"
+					invalid
+				/>
 				<ButtonGroup>
 					<Button type="reset" appearance="subtle">
 						Reset

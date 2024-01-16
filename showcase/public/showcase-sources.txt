@@ -1059,7 +1059,12 @@ function FormExample() {
 					reset()
 				}}
 			>
-				<Checkbox label="Enabled" {...register("enabled")} />
+				<Checkbox
+					label="Enabled"
+					{...register("enabled")}
+					errorMessage="Test error"
+					invalid
+				/>
 				<ButtonGroup>
 					<Button type="reset" appearance="subtle">
 						Reset
@@ -1954,7 +1959,6 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			</Dropdown.Menu>
 		</>
 	)
-
 	//#endregion dropdown-menu
 
 	const example = (
@@ -2981,7 +2985,62 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import TextField from "@atlaskit/textfield"
-import { Input } from "@linked-planet/ui-kit-ts"
+import { Button, ButtonGroup, Input, Label } from "@linked-planet/ui-kit-ts"
+import { useForm } from "react-hook-form"
+
+//#region input-form-example
+type FormData = {
+	testInput: string
+}
+
+function FormExample() {
+	const {
+		handleSubmit,
+		control,
+		reset,
+		formState: { errors, isValid },
+	} = useForm<FormData>({
+		defaultValues: {
+			testInput: "test",
+		},
+		mode: "all",
+	})
+
+	console.log("errors", errors)
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<Label htmlFor="testInput" required>
+				Test Input
+			</Label>
+			<Input
+				{...control.register("testInput", {
+					required: true,
+					minLength: 3,
+				})}
+				invalid={!!errors.testInput}
+				errorMessage={
+					errors.testInput?.type === "required"
+						? "Required"
+						: "Min length 3"
+				}
+			/>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button type="reset">Reset</Button>
+				<Button appearance="primary" type="submit" disabled={!isValid}>
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion input-form-example
 
 export default function InputShowcase(props: ShowcaseProps) {
 	const exampleAK = (
@@ -3041,6 +3100,11 @@ export default function InputShowcase(props: ShowcaseProps) {
 					title: "TextInput",
 					example: example,
 					sourceCodeExampleId: "input",
+				},
+				{
+					title: "Form Example",
+					example: <FormExample />,
+					sourceCodeExampleId: "input-form-example",
 				},
 			]}
 		/>
@@ -4145,7 +4209,14 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Button, Dropdown, Input, Select } from "@linked-planet/ui-kit-ts"
+import {
+	Button,
+	Checkbox,
+	Dropdown,
+	Input,
+	Label,
+	Select,
+} from "@linked-planet/ui-kit-ts"
 
 //#region layeringexample
 function Example() {
@@ -4176,7 +4247,11 @@ function Example() {
 				<div className="bg-surface-overlay hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed border-border border p-4">
 					bg-surface-overlay
 					<div className="p-4">
-						<Input placeholder="Test Input" />
+						<Input
+							placeholder="Test Input"
+							errorMessage="TEST"
+							invalid
+						/>
 						<Input disabled placeholder="Test Input Disabled" />
 					</div>
 				</div>
@@ -4198,13 +4273,24 @@ function Example() {
 			<div className="border-border shadow-overflow mt-4 border p-4">
 				shadow-overflow
 				<div className="p-4">
+					<Label>Test Label</Label>
 					<Input placeholder="Test Input" />
-					<Input disabled placeholder="Test Input Disabled" />
+					<Label>Test Label 2</Label>
+					<Select
+						options={[
+							{ label: "Test", value: "test" },
+							{ label: "Test 2", value: "test2" },
+						]}
+						placeholder="Test Select"
+					/>
+					<Label>Test Label 3</Label>
+					<Checkbox label="Test Checkbox" />
 				</div>
 			</div>
 			<div className="border-border shadow-overlay mt-4 border p-4">
 				shadow-overlay
 				<div className="flex h-48">
+					<Input placeholder="Test Input" />
 					<div>
 						<Button>In Div</Button>
 					</div>
@@ -4933,7 +5019,7 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Pagination } from "@linked-planet/ui-kit-ts"
-import { default as AKPagination } from "@atlaskit/pagination"
+//import { default as AKPagination } from "@atlaskit/pagination"
 
 function PageExample() {
 	//#region pagination
@@ -5124,6 +5210,7 @@ function FormExample() {
 		defaultValues: {
 			singleValue: availableOptions[0].value,
 			multiValues: [availableOptions[0].value, availableOptions[1].value],
+			groupedMultiValues: [availableGroupOptions[0].options[0].value],
 		},
 	})
 
@@ -5131,15 +5218,19 @@ function FormExample() {
 		<>
 			<form
 				onSubmit={handleSubmit((data) => console.log(data))}
-				onReset={() => reset()}
+				onReset={(e) => {
+					e.preventDefault()
+					reset()
+				}}
 			>
 				<Label>Single Uncontrolled</Label>
 				<Select<FormData, string>
 					control={control}
 					name="singleValue"
 					options={availableOptions}
-					onChange={(value) => console.log("ON CHANGE", value)}
 					usePortal
+					errorMessage="TEST"
+					invalid
 				/>
 				<Label>Multi Uncontrolled</Label>
 				<Select<FormData, string>
@@ -5148,26 +5239,15 @@ function FormExample() {
 					name="multiValues"
 					options={availableOptions}
 					usePortal
-					onChange={(value) => console.log("ON CHANGE", value)}
 				/>
 				<Label>Grouped Multi</Label>
 				{/* string is the value type, FormData the type of the form data for the control, true is the isMulti flag */}
 				<Select<FormData, string, true>
-					isMulti={true}
+					isMulti
 					control={control}
 					name="groupedMultiValues"
 					options={availableGroupOptions}
-					defaultValue={availableGroupOptions[0].options}
 					usePortal
-					onChange={(value) => console.log("ON CHANGE", value)}
-				/>
-				<Label>Disabled</Label>
-				<Select
-					isMulti
-					options={availableGroupOptions}
-					defaultValue={availableGroupOptions[0].options}
-					disabled
-					onChange={(value) => console.log("ON CHANGE", value)}
 				/>
 				<ButtonGroup className="mt-2 w-full justify-end">
 					<Button type="reset">Reset</Button>
@@ -5209,7 +5289,10 @@ function ControlledFormExample() {
 		<>
 			<form
 				onSubmit={handleSubmit((data) => console.log(data))}
-				onReset={() => reset()}
+				onReset={(e) => {
+					e.preventDefault()
+					reset()
+				}}
 			>
 				<Label htmlFor="controlled">Controlled Single</Label>
 				<Select<FormDataControlled, string, false>
@@ -5233,7 +5316,6 @@ function ControlledFormExample() {
 				/>
 
 				<ButtonGroup className="mt-2 w-full justify-end">
-					<Button type="reset">Reset</Button>
 					<Button type="submit" appearance="primary">
 						Submit
 					</Button>
@@ -5274,6 +5356,19 @@ function SelectShowcase(props: ShowcaseProps) {
 					label: "Second option",
 					value: { test: "second" },
 				}}
+			/>
+
+			<Select<{ test: string }, true>
+				placeholder="Select an option"
+				onChange={(value) => {
+					console.log("VALUE", value)
+				}}
+				isMulti
+				options={[
+					{ label: "First option", value: { test: "first" } },
+					{ label: "Second option", value: { test: "second" } },
+					{ label: "Third option", value: { test: "third" } },
+				]}
 			/>
 
 			{/*<RadixSelect
@@ -5322,6 +5417,21 @@ function SelectShowcase(props: ShowcaseProps) {
 
 			<Select
 				placeholder="Select a value 2"
+				options={[
+					{
+						label: "First group",
+						options: [{ label: "First option", value: "first" }],
+					},
+					{
+						label: "Second group",
+						options: [{ label: "Second option", value: "second" }],
+					},
+				]}
+			/>
+
+			<Select
+				placeholder="Select a value 3"
+				isMulti
 				options={[
 					{
 						label: "First group",

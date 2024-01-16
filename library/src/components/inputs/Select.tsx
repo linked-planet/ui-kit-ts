@@ -16,6 +16,7 @@ import { twJoin, twMerge } from "tailwind-merge"
 import ReactSelectCreatable, {
 	type CreatableProps,
 } from "react-select/creatable"
+import { SlidingErrorMessage } from "./SlidingErrorMessage"
 
 //#region styles
 const controlStyles =
@@ -24,7 +25,7 @@ const controlStyles =
 const menuStyles =
 	"bg-surface-overlay z-10 shadow-overlay rounded overflow-hidden"
 
-const optionStyles = "py-2.5 px-3 border-l-2 border-l-transparent"
+const optionStyles = "py-2 px-3 border-l-2 border-l-transparent"
 
 export type OptionType<ValueType> = {
 	label: string
@@ -63,15 +64,22 @@ function useClassNamesConfig<
 				"w-[10.5px] h-[10.5px] flex items-center justify-center" as const,
 			indicatorSeparator: () => "hidden" as const,
 			//input: (provided) => "",
-			placeholder: () => "text-disabled-text" as const,
+			placeholder: () =>
+				"text-disabled-text overflow-hidden text-ellipsis whitespace-nowrap" as const,
 			singleValue: (provided) =>
-				provided.isDisabled ? "text-disabled-text" : "text-text",
+				twJoin(
+					provided.isDisabled ? "text-disabled-text" : "text-text",
+					"text-ellipsis whitespace-nowrap",
+				),
 			multiValue: (provided) => {
-				return twMerge(
-					"bg-neutral rounded-sm px-1 mr-2 text-text",
-					provided.isDisabled
-						? "bg-disabled text-disabled-text"
-						: undefined,
+				return twJoin(
+					twMerge(
+						"bg-neutral rounded-sm px-1 mr-2 text-text text-ellipsis",
+						provided.isDisabled
+							? "bg-disabled text-disabled-text"
+							: undefined,
+					),
+					"text-ellipsis whitespace-nowrap",
 				)
 			},
 			option: (provided) =>
@@ -98,8 +106,8 @@ function useClassNamesConfig<
 const customStyles = {
 	control: (provided: CSSObjectWithLabel) => ({
 		...provided,
-		minHeight: "2.33rem",
-		//height: "2.35rem",
+		minHeight: "1.83rem",
+		//height: "1.83rem",
 	}),
 }
 
@@ -196,6 +204,8 @@ type SelectInFormProps<
 > = SelectPropsProto<ValueType, Option, IsMulti, GroupOptionType> & {
 	control: Control<FormData>
 	name: Path<FormData>
+	errorMessage?: string
+	invalid?: boolean
 }
 
 type SelectNotInFormProps<
@@ -222,6 +232,9 @@ function SelectInForm<
 	isMulti,
 	options,
 	value,
+	"aria-invalid": ariaInvalid = false,
+	invalid,
+	errorMessage,
 	usePortal = true,
 	...props
 }: SelectInFormProps<FormData, ValueType, Option, IsMulti, GroupOptionType>) {
@@ -229,7 +242,7 @@ function SelectInForm<
 		<Controller<FormData>
 			control={control}
 			name={name}
-			render={({ field }) => {
+			render={({ field, fieldState: { invalid: fsInvalid } }) => {
 				const onChange = (
 					value: OnChangeValue<Option, IsMulti>,
 					actionMeta: ActionMeta<Option>,
@@ -313,19 +326,35 @@ function SelectInForm<
 				//
 
 				return (
-					<SelectInner<ValueType, Option, IsMulti, GroupOptionType>
-						{...props}
-						{...field}
-						onChange={onChange}
-						value={valueUsed}
-						name={name}
-						options={options}
-						isMulti={isMulti}
-						menuPortalTarget={
-							usePortal ? getPortal(portalDivId) : undefined
-						}
-						isDisabled={disabled || isDisabled}
-					/>
+					<>
+						<SelectInner<
+							ValueType,
+							Option,
+							IsMulti,
+							GroupOptionType
+						>
+							{...props}
+							{...field}
+							onChange={onChange}
+							value={valueUsed}
+							name={name}
+							options={options}
+							isMulti={isMulti}
+							menuPortalTarget={
+								usePortal ? getPortal(portalDivId) : undefined
+							}
+							isDisabled={disabled || isDisabled}
+							aria-invalid={ariaInvalid || fsInvalid}
+						/>
+						{errorMessage && (
+							<SlidingErrorMessage
+								invalid={invalid || fsInvalid}
+								aria-invalid={ariaInvalid || fsInvalid}
+							>
+								{errorMessage}
+							</SlidingErrorMessage>
+						)}
+					</>
 				)
 			}}
 		/>

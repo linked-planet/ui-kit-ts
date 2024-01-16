@@ -67,6 +67,8 @@ function FormExample() {
 					name="singleValue"
 					options={availableOptions}
 					usePortal
+					errorMessage="TEST"
+					invalid
 				/>
 				<Label>Multi Uncontrolled</Label>
 				<Select<FormData, string>

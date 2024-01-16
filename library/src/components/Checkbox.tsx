@@ -8,9 +8,10 @@ import React, {
 	useRef,
 	useEffect,
 } from "react"
-import { twJoin, twMerge } from "tailwind-merge"
+import { twMerge } from "tailwind-merge"
 import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
 import CheckboxIndeterminateIcon from "@atlaskit/icon/glyph/checkbox-indeterminate"
+import { SlidingErrorMessage } from "./inputs/SlidingErrorMessage"
 
 const indeterminateState = "indeterminate" as const
 
@@ -21,8 +22,11 @@ type CheckboxProps2 = Omit<
 	indeterminate?: boolean
 	checked?: boolean | typeof indeterminateState
 	label?: ReactNode
-	invalid?: boolean
 	onCheckedChange?: (checked: boolean) => void
+	labelClassName?: string
+	labelStyle?: React.CSSProperties
+	invalid?: boolean
+	errorMessage?: ReactNode
 }
 
 const checkBoxStyles =
@@ -36,10 +40,8 @@ const checkBoxUncheckedStyles = "border-border text-transparent" as const
 const checkBoxInvalidStyles = "border-danger-border" as const
 
 //#region label styles
-const disabledLabelStyles = "aria-disabled:text-disabled-text" as const
-
-const requiredLabelStyles =
-	"aria-required:after:content-['*'] aria-required:after:text-danger-bold aria-required:after:ml-0.5"
+const labelStyles =
+	"text-text-subtlest text-sm aria-disabled:text-disabled-text aria-required:after:content-['*'] aria-required:after:text-danger-bold aria-required:after:ml-0.5"
 //#endregion
 
 const Checkbox = forwardRef(
@@ -55,8 +57,12 @@ const Checkbox = forwardRef(
 			defaultChecked,
 			indeterminate: indeterminateProp,
 			invalid,
+			errorMessage,
 			onChange,
 			onCheckedChange,
+			labelClassName,
+			labelStyle,
+			"aria-invalid": ariaInvalid,
 			...props
 		}: CheckboxProps2,
 		ref: ForwardedRef<HTMLInputElement>,
@@ -66,6 +72,7 @@ const Checkbox = forwardRef(
 		)
 
 		const inputRef = useRef<HTMLInputElement>(null)
+		const errorRef = useRef<HTMLDivElement>(null)
 		// forward the local ref to the forwarded ref
 		useImperativeHandle(ref, () => inputRef.current!)
 
@@ -85,60 +92,104 @@ const Checkbox = forwardRef(
 			setChecked(checked ?? false)
 		})
 
+		useEffect(() => {
+			const observer = new MutationObserver((mutationsList) => {
+				for (const mutation of mutationsList) {
+					if (
+						mutation.type === "attributes" &&
+						mutation.attributeName === "aria-invalid"
+					) {
+						const target = mutation.target as HTMLElement
+						if (target.getAttribute("aria-invalid") === "true") {
+							errorRef.current?.setAttribute(
+								"aria-invalid",
+								"true",
+							)
+						} else {
+							errorRef.current?.setAttribute(
+								"aria-invalid",
+								"false",
+							)
+						}
+					}
+				}
+			})
+
+			observer.observe(inputRef.current!, { attributes: true })
+
+			return () => {
+				observer.disconnect()
+			}
+		}, [])
+
 		return (
-			<div
-				className={twMerge(
-					"relative flex items-center justify-start",
-					className,
-				)}
-				style={style}
-			>
+			<>
 				<div
 					className={twMerge(
-						checkBoxStyles,
-						checked
-							? checkBoxCheckedStyles
-							: checkBoxUncheckedStyles,
-						invalid ? checkBoxInvalidStyles : undefined,
-						disabled ? disabledStyles : undefined,
+						"relative flex items-center justify-start",
+						className,
 					)}
+					style={style}
 				>
 					<div
-						className={"absolute flex items-center justify-center"}
-					>
-						{!indeterminate ? (
-							<CheckboxIcon label="" />
-						) : (
-							<CheckboxIndeterminateIcon label="" />
+						className={twMerge(
+							checkBoxStyles,
+							checked
+								? checkBoxCheckedStyles
+								: checkBoxUncheckedStyles,
+							invalid ? checkBoxInvalidStyles : undefined,
+							disabled ? disabledStyles : undefined,
 						)}
+					>
+						<div
+							className={
+								"absolute flex items-center justify-center"
+							}
+						>
+							{!indeterminate ? (
+								<CheckboxIcon label="" />
+							) : (
+								<CheckboxIndeterminateIcon label="" />
+							)}
+						</div>
+						<input
+							type="checkbox"
+							id={id}
+							ref={inputRef}
+							disabled={disabled}
+							checked={!!checked}
+							required={required}
+							className={"mr-2 opacity-0"}
+							onChange={(e) => {
+								onCheckedChange?.(e.target.checked)
+								onChange?.(e)
+								setChecked(e.target.checked)
+							}}
+							{...props}
+						/>
 					</div>
-					<input
-						type="checkbox"
-						id={id}
-						ref={inputRef}
-						disabled={disabled}
-						checked={!!checked}
-						required={required}
-						className={"mr-2 opacity-0"}
-						onChange={(e) => {
-							onCheckedChange?.(e.target.checked)
-							onChange?.(e)
-							setChecked(e.target.checked)
-						}}
-						{...props}
-					/>
-				</div>
 
-				<label
-					htmlFor={id}
-					aria-disabled={disabled}
-					aria-required={required}
-					aria-invalid={invalid}
-					className={twJoin(disabledLabelStyles, requiredLabelStyles)}
-				>
-					{label}
-				</label>
-			</div>
+					<label
+						htmlFor={id}
+						aria-disabled={disabled}
+						aria-required={required}
+						aria-invalid={invalid}
+						className={twMerge(labelStyles, labelClassName)}
+						style={labelStyle}
+					>
+						{label}
+					</label>
+				</div>
+				{errorMessage && (
+					<SlidingErrorMessage
+						ref={errorRef}
+						invalid={invalid}
+						aria-invalid={ariaInvalid}
+					>
+						{errorMessage}
+					</SlidingErrorMessage>
+				)}
+			</>
 		)
 	},
 )

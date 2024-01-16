@@ -2,7 +2,14 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Button, Dropdown, Input, Select } from "@linked-planet/ui-kit-ts"
+import {
+	Button,
+	Checkbox,
+	Dropdown,
+	Input,
+	Label,
+	Select,
+} from "@linked-planet/ui-kit-ts"
 
 //#region layeringexample
 function Example() {
@@ -33,7 +40,11 @@ function Example() {
 				<div className="bg-surface-overlay hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed border-border border p-4">
 					bg-surface-overlay
 					<div className="p-4">
-						<Input placeholder="Test Input" />
+						<Input
+							placeholder="Test Input"
+							errorMessage="TEST"
+							invalid
+						/>
 						<Input disabled placeholder="Test Input Disabled" />
 					</div>
 				</div>
@@ -55,13 +66,24 @@ function Example() {
 			<div className="border-border shadow-overflow mt-4 border p-4">
 				shadow-overflow
 				<div className="p-4">
+					<Label>Test Label</Label>
 					<Input placeholder="Test Input" />
-					<Input disabled placeholder="Test Input Disabled" />
+					<Label>Test Label 2</Label>
+					<Select
+						options={[
+							{ label: "Test", value: "test" },
+							{ label: "Test 2", value: "test2" },
+						]}
+						placeholder="Test Select"
+					/>
+					<Label>Test Label 3</Label>
+					<Checkbox label="Test Checkbox" />
 				</div>
 			</div>
 			<div className="border-border shadow-overlay mt-4 border p-4">
 				shadow-overlay
 				<div className="flex h-48">
+					<Input placeholder="Test Input" />
 					<div>
 						<Button>In Div</Button>
 					</div>

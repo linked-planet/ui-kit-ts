@@ -3,7 +3,7 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Pagination } from "@linked-planet/ui-kit-ts"
-import { default as AKPagination } from "@atlaskit/pagination"
+//import { default as AKPagination } from "@atlaskit/pagination"
 
 function PageExample() {
 	//#region pagination
