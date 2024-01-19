@@ -61,6 +61,14 @@ function ButtonShowcase(props: ShowcaseProps) {
 				</AKButton>
 
 				<AKButton
+					appearance="subtle"
+					onClick={() => console.log("Button pressed")}
+					isDisabled
+				>
+					Subtle Disabled button
+				</AKButton>
+
+				<AKButton
 					appearance="link"
 					onClick={() => console.log("Button pressed")}
 				>
@@ -152,7 +160,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 				onClick={() => console.log("Button pressed")}
 				disabled={true}
 			>
-				Disabed Button
+				Disabled Button
 			</Button>
 
 			<Button
@@ -160,6 +168,14 @@ function ButtonShowcase(props: ShowcaseProps) {
 				onClick={() => console.log("Button pressed")}
 			>
 				Subtle Button
+			</Button>
+
+			<Button
+				appearance="subtle"
+				onClick={() => console.log("Button pressed")}
+				disabled
+			>
+				Subtle Disabled Button
 			</Button>
 
 			<Button

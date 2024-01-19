@@ -576,18 +576,19 @@ function BookCardExample() {
 			<BookCard
 				title="Book Title very very very very very very very very very
 						very very very very very very long"
-				subtitle="Book Subtitle"
+				subtitle="Book Subtitle also very very very very very very long"
 				bodyLayout={bodyLayout}
 				bodyStyle={bodyStyle}
 				closed={isClosed}
 				actionsInfo={"Action:"}
 				actions={
-					<>
+					<div className="flex items-center">
+						<div>ICON</div>
 						<TagGroup>
 							<SimpleTag
 								key="action"
-								text="action item"
-								color="lightblue"
+								text="DAUERAUSLEIHE"
+								appearance="danger"
 							/>
 							<SimpleTag
 								key="action 1"
@@ -595,7 +596,7 @@ function BookCardExample() {
 								color="lightgreen"
 							/>
 						</TagGroup>
-					</>
+					</div>
 				}
 			>
 				<>
@@ -1959,6 +1960,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			</Dropdown.Menu>
 		</>
 	)
+
 	//#endregion dropdown-menu
 
 	const example = (
@@ -1992,16 +1994,24 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 export default DropDownMenuShowcase
 
-import React from "react"
+import React, { ReactNode, useMemo } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import DynamicTable from "@atlaskit/dynamic-table"
 import Button from "@atlaskit/button"
+import {
+	type ColumnDef,
+	type ColumnFilter,
+	DataTable,
+	Input,
+	Label,
+	Checkbox,
+} from "@linked-planet/ui-kit-ts"
 
-function DynamicTableShowcase(props: ShowcaseProps) {
-	//#region table
-	const example = (
+//#region table-example
+function AKDynamicTableExample() {
+	return (
 		<div style={{ minWidth: 300 }}>
 			<DynamicTable
 				caption=""
@@ -2102,8 +2112,151 @@ function DynamicTableShowcase(props: ShowcaseProps) {
 			></DynamicTable>
 		</div>
 	)
-	//#endregion table
+}
+//#endregion table-example
 
+//#region datatable-example
+type RowData = {
+	firstName: string
+	lastName: string
+	city: string
+	zip: number
+	state: string
+	button: ReactNode
+}
+
+function DataTableExample() {
+	const rows = useMemo(() => {
+		// create 100 example rows
+		const rows: RowData[] = []
+		for (let i = 0; i < 100; i++) {
+			rows.push({
+				firstName: `First ${i}`,
+				lastName: `Last ${i}`,
+				city: `City ${Math.floor(i / 2)}`,
+				zip: i,
+				state: `State ${i}`,
+				button: <Button appearance="primary">Delete</Button>,
+			})
+		}
+		return rows
+	}, [])
+
+	// see: https://tanstack.com/table/v8/docs/guide/column-defs#creating-accessor-columns
+	const columns = useMemo(() => {
+		const ret: ColumnDef<RowData>[] = [
+			{
+				id: "select", // either header or ID should be present
+				header: (headerprops) => (
+					<Checkbox
+						checked={
+							headerprops.table.getIsAllPageRowsSelected() ||
+							(headerprops.table.getIsSomePageRowsSelected() &&
+								"indeterminate")
+						}
+						onCheckedChange={(value) =>
+							headerprops.table.toggleAllPageRowsSelected(!!value)
+						}
+						className="pb-1.5 pl-2"
+						indeterminate
+					/>
+				),
+				cell: (cellprops) => (
+					<Checkbox
+						checked={cellprops.row.getIsSelected()}
+						onCheckedChange={() => {
+							cellprops.row.toggleSelected()
+						}}
+						className="pl-2"
+					/>
+				),
+			},
+			{
+				id: "Full Name", // either header or ID should be present
+				accessorFn: (row) => `${row.firstName} ${row.lastName}`,
+			},
+			{
+				//accessorFn: (row) => row.city,
+				header: "City",
+				accessorKey: "city",
+				enableGrouping: true,
+				enableSorting: true,
+				cell: (cellprops) => <b>{cellprops.getValue()}</b>,
+			},
+			{
+				header: "Zip",
+				accessorKey: "zip",
+				enableGrouping: true,
+				invertSorting: true,
+			},
+			{
+				header: "State",
+				accessorKey: "state",
+				enableGrouping: true,
+				invertSorting: true,
+			},
+			{
+				header: "Button",
+				accessorKey: "button",
+				cell: (cellprops) => cellprops.getValue(),
+			},
+		]
+		return ret
+	}, [])
+
+	const [fullNameFilter, setFullNameFilter] = React.useState<ColumnFilter>()
+	const [cityFilter, setCityFilter] = React.useState<ColumnFilter>()
+	const [hideState, setHideState] = React.useState<boolean>(false)
+
+	const filters = []
+	if (fullNameFilter) filters.push(fullNameFilter)
+	if (cityFilter) filters.push(cityFilter)
+
+	const visibilityState = {
+		state: !hideState,
+	}
+
+	return (
+		<>
+			<Label htmlFor="search">Search Full Name</Label>
+			<Input
+				type="text"
+				placeholder="Search"
+				onChange={(e) => {
+					const val = e.target.value
+					setFullNameFilter({ id: "Full Name", value: val })
+				}}
+			/>
+			<Label htmlFor="search">Search City</Label>
+			<Input
+				type="text"
+				placeholder="Search"
+				onChange={(e) => {
+					const val = e.target.value
+					setCityFilter({ id: "city", value: val })
+				}}
+				className="mb-4"
+			/>
+			<Label htmlFor="hideState">Hide State</Label>
+			<Checkbox
+				label="Hide State"
+				checked={hideState}
+				onCheckedChange={setHideState}
+			/>
+			<div className="bg-surface h-96 overflow-hidden">
+				<DataTable
+					data={rows}
+					columns={columns}
+					columnFilters={filters}
+					columnVisibility={visibilityState}
+				/>
+			</div>
+		</>
+	)
+}
+//#endregion datatable-example
+
+function DynamicTableShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Dynamic table"
@@ -2115,7 +2268,16 @@ function DynamicTableShowcase(props: ShowcaseProps) {
 				},
 			]}
 			examples={[
-				{ title: "Example", example, sourceCodeExampleId: "table" },
+				{
+					title: "AK Dynamic Table",
+					example: <AKDynamicTableExample />,
+					sourceCodeExampleId: "table-example",
+				},
+				{
+					title: "Data Table",
+					example: <DataTableExample />,
+					sourceCodeExampleId: "datatable-example",
+				},
 			]}
 		/>
 	)
@@ -5886,14 +6048,14 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-//import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
-//import AKTagGroup from "@atlaskit/tag-group"
+import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
+import AKTagGroup from "@atlaskit/tag-group"
 import { TagGroup, SimpleTag, Tag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
 		<>
-			{/*<AKTagGroup alignment="end">
+			<AKTagGroup alignment="end">
 				<AKTag
 					onBeforeRemoveAction={() => {
 						console.log("ON BEFORE REMOVE")
@@ -5919,14 +6081,25 @@ function TagShowcase(props: ShowcaseProps) {
 			</AKTagGroup>
 			<AKTagGroup>
 				<AKSimpleTag text="Simple Tag" color="blue" />
-				</AKTagGroup>*/}
+			</AKTagGroup>
 		</>
 	)
 
 	//#region tags
 	const lpExample = (
-		<>
-			<TagGroup alignment="end">
+		<div className="flex w-full items-center">
+			<div>TEST</div>
+			<Tag
+				onBeforeRemoveAction={() => {
+					console.log("ON BEFORE REMOVE")
+					return false
+				}}
+				onAfterRemoveAction={(str) =>
+					console.log("ON AFTER REMOVE", str)
+				}
+				text="Removable Tag"
+			/>
+			{/*<TagGroup>
 				<Tag
 					onBeforeRemoveAction={() => {
 						console.log("ON BEFORE REMOVE")
@@ -5950,12 +6123,12 @@ function TagShowcase(props: ShowcaseProps) {
 					textColor="var(--ds-text-accent-purple-bolder, #172B4D)"
 					color="var(--ds-background-accent-purple-subtle, #998DD9)"
 				/>
-			</TagGroup>
-			<TagGroup>
+				</TagGroup>*/}
+			{/*<TagGroup>
 				<SimpleTag text="Simple Tag" appearance="danger" />
 				<SimpleTag text="Simple Tag" appearance="warning" />
-			</TagGroup>
-		</>
+				</TagGroup>*/}
+		</div>
 	)
 	//#endregion tags
 
