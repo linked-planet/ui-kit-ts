@@ -11,10 +11,10 @@ import { twJoin, twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
 
 const commonStyles =
-	"pl-1 pr-5 py-1.5 flex items-center outline-none border-l-2 border-l-transparent cursor-default" as const
+	"pl-1 pr-5 py-2.5 flex items-center outline-none border-l-2 border-l-transparent cursor-default" as const
 const disabledStyles = "text-disabled-text cursor-not-allowed" as const
 const selectedStyles =
-	"bg-selected-subtle hover:bg-selected-subtle-hovered border-selected-bold active:bg-selected-subtle-pressed" as const
+	"bg-selected-subtle hover:bg-selected-subtle-hovered active:bg-selected-subtle-pressed text-selected-subtle-text" as const
 const normalStyles =
 	"hover:bg-surface-overlay-hovered hover:border-l-selected-bold active:bg-surface-overlay-pressed cursor-pointer" as const
 
@@ -45,7 +45,7 @@ function Item({
 			className={twMerge(
 				commonStyles,
 				!disabled && !selected ? normalStyles : undefined,
-				selected ? `${selectedStyles} border-l-2` : undefined,
+				selected ? `${selectedStyles} border-selected-bold` : undefined,
 				disabled ? disabledStyles : undefined,
 			)}
 			onClick={onClick}
@@ -98,8 +98,7 @@ function ItemCheckbox({
 		>
 			<div
 				className={twMerge(
-					"border-border relative mr-6 flex h-4 w-4 flex-none items-center justify-center rounded border-2",
-					selected ? "border-selected-bold" : undefined,
+					"border-border relative ml-2 mr-4 flex h-4 w-4 flex-none items-center justify-center rounded border-2",
 				)}
 			>
 				<RDd.ItemIndicator asChild>
@@ -109,7 +108,7 @@ function ItemCheckbox({
 				</RDd.ItemIndicator>
 			</div>
 			<div>
-				{children}
+				<div>{children}</div>
 				{description && (
 					<div className={descriptionStyle}>{description}</div>
 				)}
@@ -134,7 +133,7 @@ function ItemGroup({
 					<RDd.Separator className="border-border border-t-2 pb-4" />
 				)}
 				{title && (
-					<RDd.Label className="px-4 py-3 text-[1rem] font-bold uppercase">
+					<RDd.Label className="px-4 py-3 text-[11px] font-bold uppercase">
 						{title}
 					</RDd.Label>
 				)}
@@ -161,7 +160,7 @@ function ItemRadioGroup({
 					<RDd.Separator className="border-border border-t-2 pb-3" />
 				)}
 				{title && (
-					<RDd.Label className="px-4 py-3 text-[1rem] font-bold uppercase">
+					<RDd.Label className="px-4 py-3 text-[11px] font-bold uppercase">
 						{title}
 					</RDd.Label>
 				)}
@@ -209,7 +208,7 @@ function ItemRadio({
 						selected
 							? "border-selected-bold"
 							: "border-border hover:border-selected-bold"
-					} relative mr-6 flex h-3 w-3 flex-none items-center justify-center rounded-full border-2`,
+					} relative ml-2 mr-4 flex h-3 w-3 flex-none items-center justify-center rounded-full border-2`,
 				)}
 			>
 				{selected && (

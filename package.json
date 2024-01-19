@@ -61,6 +61,7 @@
 	"dependencies": {
 		"@atlaskit/button": "^17.2.0",
 		"@atlaskit/checkbox": "^13.0.1",
+		"@atlaskit/dropdown-menu": "^12.1.10",
 		"@atlaskit/tabs": "^14.0.0",
 		"@atlaskit/tag": "^12.0.1",
 		"@atlaskit/tag-group": "^10.2.6",
@@ -119,7 +120,7 @@
 		"tailwindcss": "^3.4.1",
 		"typescript": "^5.3.3",
 		"typescript-plugin-css-modules": "^5.0.2",
-		"vite": "^5.0.11",
+		"vite": "^5.0.12",
 		"vite-plugin-checker": "^0.6.2",
 		"vite-plugin-dts": "^3.7.1",
 		"vite-tsconfig-paths": "^4.3.1"

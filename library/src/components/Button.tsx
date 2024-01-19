@@ -63,7 +63,7 @@ const ButtonStyles: { [style in InteractiveAppearance]: string } = {
 } as const
 
 export const ButtonSelectedStyles =
-	"bg-selected active:bg-selected active:text-selected-text hover:bg-selected text-selected-text-inverse cursor-pointer" as const
+	"bg-selected active:bg-selected hover:bg-selected text-selected-text-inverse cursor-pointer" as const
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	(

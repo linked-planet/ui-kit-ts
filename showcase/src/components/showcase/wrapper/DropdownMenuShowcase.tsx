@@ -2,14 +2,14 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-/*import AKDropdownMenu, {
+import AKDropdownMenu, {
 	DropdownItemCheckbox as AKDropdownItemCheckbox,
 	DropdownItemGroup as AKDropdownItemGroup,
 	DropdownItem as AKDropdownItem,
 	DropdownItemRadioGroup as AKDropdownItemRadioGroup,
 	DropdownItemRadio as AKDropdownItemRadio,
 	DropdownItemCheckboxGroup as AKDropdownItemCheckboxGroup,
-} from "@atlaskit/dropdown-menu"*/
+} from "@atlaskit/dropdown-menu"
 
 import { Dropdown } from "@linked-planet/ui-kit-ts"
 
@@ -31,7 +31,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<>
-			{/*<AKDropdownMenu trigger={"Trigger"}>
+			<AKDropdownMenu trigger={"Trigger"}>
 				<AKDropdownItemCheckbox
 					id="item-1"
 					description={"test description"}
@@ -113,7 +113,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 				{Array.from(Array(100).keys()).map((i) => (
 					<AKDropdownItem key={i}>long test item {i}</AKDropdownItem>
 				))}
-				</AKDropdownMenu>*/}
+			</AKDropdownMenu>
 		</>
 	)
 
