@@ -60,7 +60,8 @@ export const theme = {
 			invalid: 'invalid="true"',
 		},
 		fontSize: {
-			"2xs": ".625rem",
+			"2xs": ".69rem",
+			"3xs": ".625rem",
 		},
 		animation: {
 			"fade-in": "fade-in 100ms linear",
@@ -270,6 +271,7 @@ export const theme = {
 			pressed: `var(--ds-interaction-pressed, ${N90A})`,
 		},
 	},
+
 	boxShadow: {
 		/*"2xl": `0 25px 50px -12px var(--ds-border, rgb(0 0 0 / 0.25))`,
 		xl: `0 20px 25px -5px var(--ds-border, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--ds-border, rgb(0 0 0 / 0.1))`,
@@ -278,7 +280,9 @@ export const theme = {
 		DEFAULT: `0 1px 3px 0 var(--ds-border, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--ds-border, rgb(0 0 0 / 0.1))`,
 		sm: `0 1px 2px 0 var(--ds-border, rgb(0 0 0 / 0.05)`,*/
 		overflow: `var(--ds-shadow-overflow, 0px 0px 8px #091E4229, 0px 0px 1px #091E421F)`,
+
 		overlay: `var(--ds-shadow-overlay, 0px 8px 12px #091E4226, 0px 0px 1px #091E424F)`,
+		"overlay-bold": `0 5px 8px -2px #091E4226, 0px 0px 2px #091E424F`,
 		raised: `var(--ds-shadow-raised, 0px 1px 1px #091E4240, 0px 0px 1px #091E424F)`,
 		strong: `0px 0px 15px #091E4226`,
 	},

@@ -2,11 +2,7 @@ import React, { CSSProperties } from "react"
 import { createPortal } from "react-dom"
 
 import { toast, ToastContainer } from "react-toastify"
-import type {
-	ToastOptions,
-	CloseButtonProps,
-	ToastContainerProps,
-} from "react-toastify"
+import type { ToastOptions, ToastContainerProps } from "react-toastify"
 
 //import "react-toastify/dist/ReactToastify.css"  -> needs to be imported in your app, probably before tailwindcss to make overrides work
 import CrossIcon from "@atlaskit/icon/glyph/cross"
@@ -21,6 +17,7 @@ import {
 } from "./Flag"
 import { twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
+import { CloseButtonProps } from "react-toastify/dist/components"
 
 type ToastFlagProps = FlagProps & ToastOptions
 

@@ -121,7 +121,7 @@ export function FilterDropdowns({
 
 	return (
 		<div
-			className={twMerge("grid gap-0.5", className)}
+			className={twMerge("mt-2 grid gap-2", className)}
 			style={{
 				gridTemplateColumns: "repeat(auto-fill, minmax(18rem, 1fr))",
 				...style,

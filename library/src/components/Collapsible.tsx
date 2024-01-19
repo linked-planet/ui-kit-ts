@@ -84,7 +84,7 @@ export function Collapsible({
 					)}
 					<div
 						className={twMerge(
-							"flex flex-1 justify-start",
+							"flex w-full flex-1 justify-start",
 							headerContainerClassName,
 						)}
 						style={headerContainerStyle}

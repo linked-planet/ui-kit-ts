@@ -98,7 +98,7 @@ const PageHeaderTitle = ({
 
 	return (
 		<div
-			className={twMerge("mb-2 flex items-center pl-8", className)}
+			className={twMerge("mb-2 flex items-center px-8", className)}
 			id={id}
 			style={style}
 		>
@@ -191,7 +191,7 @@ const PageBodyContent = ({
 }) => (
 	<div
 		className={twMerge(
-			"min-h-0 flex-1 overflow-y-auto px-8 py-3",
+			"min-h-0 flex-1 overflow-y-auto px-6 py-3",
 			className,
 		)}
 		id={id}

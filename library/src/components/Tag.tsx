@@ -37,22 +37,24 @@ export function SimpleTag({
 	className,
 }: SimpleTagProps) {
 	return (
-		<div
-			className={twMerge(
-				TagAppearanceColors[appearance],
-				looks === "default" ? "rounded-[3px]" : "rounded-full",
-				"m-1 inline-flex cursor-default select-none overflow-hidden whitespace-nowrap pl-1 pr-1 pt-[1px]",
-				bold ? "font-bold" : undefined,
-				className,
-			)}
-			style={{
-				backgroundColor: color,
-				color: textColor,
-				...style,
-			}}
-			title={title}
-		>
-			{text}
+		<div className="pb-0.5">
+			<div
+				className={twMerge(
+					TagAppearanceColors[appearance],
+					looks === "default" ? "rounded-[3px]" : "rounded-full",
+					"m-0.5 inline-flex cursor-default select-none overflow-hidden whitespace-nowrap px-1 pt-[1px] align-middle text-sm font-bold",
+					bold ? "font-bold" : undefined,
+					className,
+				)}
+				style={{
+					backgroundColor: color,
+					color: textColor,
+					...style,
+				}}
+				title={title}
+			>
+				{text}
+			</div>
 		</div>
 	)
 }

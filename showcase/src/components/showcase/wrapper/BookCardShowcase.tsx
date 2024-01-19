@@ -106,18 +106,19 @@ function BookCardExample() {
 			<BookCard
 				title="Book Title very very very very very very very very very
 						very very very very very very long"
-				subtitle="Book Subtitle"
+				subtitle="Book Subtitle also very very very very very very long"
 				bodyLayout={bodyLayout}
 				bodyStyle={bodyStyle}
 				closed={isClosed}
 				actionsInfo={"Action:"}
 				actions={
-					<>
+					<div className="flex items-center">
+						<div>ICON</div>
 						<TagGroup>
 							<SimpleTag
 								key="action"
-								text="action item"
-								color="lightblue"
+								text="DAUERAUSLEIHE"
+								appearance="danger"
 							/>
 							<SimpleTag
 								key="action 1"
@@ -125,7 +126,7 @@ function BookCardExample() {
 								color="lightgreen"
 							/>
 						</TagGroup>
-					</>
+					</div>
 				}
 			>
 				<>

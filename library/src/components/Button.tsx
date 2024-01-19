@@ -97,7 +97,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				className={twMerge(
 					"relative box-border flex flex-shrink-0 items-center justify-center gap-1 rounded border border-transparent px-3 py-1 outline-1 outline-offset-2",
 					!disabled ? ButtonStyles[appearance] : undefined,
-					"disabled:bg-disabled disabled:text-disabled-text focus:outline-brand-hovered disabled:cursor-not-allowed",
+					`${appearance !== "subtle" ? "disabled:bg-disabled" : ""} disabled:text-disabled-text focus:outline-brand-hovered disabled:cursor-not-allowed`,
 					selected ? ButtonSelectedStyles : undefined,
 					className,
 				)}

@@ -36,10 +36,10 @@ const CardBase = ({
 			open={openVal}
 			defaultOpen={defaultOpen}
 			onChanged={onOpenChanged}
-			className="border-border shadow-overlay border"
+			className="border-border shadow-overlay-bold border"
 			triggerClassName="rounded-t border-b border-border overflow-hidden"
 		>
-			<div className="bg-surface box-border flex rounded-b">
+			<div className="bg-surface box-border flex w-full rounded-b">
 				{children}
 			</div>
 		</Collapsible>
@@ -55,7 +55,7 @@ const CardHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface-overlay flex flex-1 justify-between overflow-hidden p-3",
+			"bg-surface-overlay flex w-full flex-1 justify-between px-6 py-3",
 			className,
 		)}
 	>
@@ -64,14 +64,16 @@ const CardHeader = ({
 )
 
 const CardHeaderMeta = ({ children }: { children: React.ReactNode }) => (
-	<div className="flex flex-1 flex-col items-baseline overflow-hidden">
-		{children}
-	</div>
+	<div className="w-full items-baseline overflow-hidden">{children}</div>
 )
 
 const CardHeaderTitle = ({ children }: { children: React.ReactNode }) => {
 	if (typeof children === "string") {
-		return <h3 className="w-full truncate text-start">{children}</h3>
+		return (
+			<h3 className="w-full truncate text-start text-xl font-medium">
+				{children}
+			</h3>
+		)
 	}
 
 	return <div className="w-full truncate text-start">{children}</div>
@@ -80,20 +82,20 @@ const CardHeaderTitle = ({ children }: { children: React.ReactNode }) => {
 const CardHeaderSubtitle = ({ children }: { children: React.ReactNode }) => {
 	if (typeof children === "string") {
 		return (
-			<h6 className="text-text-subtlest mt-1 w-full justify-start truncate text-start">
+			<p className="text-text-subtlest mt-1 w-full flex-1 justify-start truncate text-start text-sm font-semibold">
 				{children}
-			</h6>
+			</p>
 		)
 	}
 	return (
-		<div className="text-text-subtlest ml-auto mt-1 w-full justify-start truncate text-start">
+		<div className="text-text-subtlest mt-1 w-full flex-1 justify-start truncate text-start text-sm font-semibold">
 			{children}
 		</div>
 	)
 }
 
 const CardHeaderActions = ({ children }: { children: React.ReactNode }) => (
-	<div className="flex flex-none content-end items-center pl-2">
+	<div className="flex flex-none items-center justify-end pl-2">
 		{children}
 	</div>
 )
@@ -104,13 +106,13 @@ const CardHeaderActionsInfo = ({ children }: { children: React.ReactNode }) => (
 
 const cardBodyEntryBaseStyle = css`
 	> * {
-		padding: 8px 12px;
+		padding: 1rem 1.5rem;
 		border-bottom: 1px solid ${borderColor};
 		border-right: 1px solid ${borderColor};
 	}
 `
 const CardGridBody = ({ children }: { children: React.ReactNode }) => (
-	<div className="overflow-hidden rounded-b">
+	<div className="w-full overflow-hidden rounded-b">
 		<div
 			className={`grid border-collapse overflow-auto ${cardBodyEntryBaseStyle} ${css`
 				grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -146,13 +148,13 @@ const CardColumnBody = ({ children }: { children: React.ReactNode }) => (
 )
 
 const CardBodyEntry = ({ children }: { children: React.ReactNode }) => (
-	<div className="flex flex-1 flex-col items-baseline text-xs">
+	<div className="flex flex-1 flex-col items-baseline text-sm">
 		{children}
 	</div>
 )
 
 const CardBodyEntryTitle = ({ children }: { children: React.ReactNode }) => (
-	<span className="text-sm font-bold">{children}</span>
+	<span className="pb-1 text-[13px] font-semibold">{children}</span>
 )
 
 const BookCardComponents = {

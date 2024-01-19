@@ -2,14 +2,14 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-//import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
-//import AKTagGroup from "@atlaskit/tag-group"
+import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
+import AKTagGroup from "@atlaskit/tag-group"
 import { TagGroup, SimpleTag, Tag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
 		<>
-			{/*<AKTagGroup alignment="end">
+			<AKTagGroup alignment="end">
 				<AKTag
 					onBeforeRemoveAction={() => {
 						console.log("ON BEFORE REMOVE")
@@ -35,14 +35,25 @@ function TagShowcase(props: ShowcaseProps) {
 			</AKTagGroup>
 			<AKTagGroup>
 				<AKSimpleTag text="Simple Tag" color="blue" />
-				</AKTagGroup>*/}
+			</AKTagGroup>
 		</>
 	)
 
 	//#region tags
 	const lpExample = (
-		<>
-			<TagGroup alignment="end">
+		<div className="flex w-full items-center">
+			<div>TEST</div>
+			<Tag
+				onBeforeRemoveAction={() => {
+					console.log("ON BEFORE REMOVE")
+					return false
+				}}
+				onAfterRemoveAction={(str) =>
+					console.log("ON AFTER REMOVE", str)
+				}
+				text="Removable Tag"
+			/>
+			{/*<TagGroup>
 				<Tag
 					onBeforeRemoveAction={() => {
 						console.log("ON BEFORE REMOVE")
@@ -66,12 +77,12 @@ function TagShowcase(props: ShowcaseProps) {
 					textColor="var(--ds-text-accent-purple-bolder, #172B4D)"
 					color="var(--ds-background-accent-purple-subtle, #998DD9)"
 				/>
-			</TagGroup>
-			<TagGroup>
+				</TagGroup>*/}
+			{/*<TagGroup>
 				<SimpleTag text="Simple Tag" appearance="danger" />
 				<SimpleTag text="Simple Tag" appearance="warning" />
-			</TagGroup>
-		</>
+				</TagGroup>*/}
+		</div>
 	)
 	//#endregion tags
 

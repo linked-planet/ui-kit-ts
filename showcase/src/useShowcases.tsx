@@ -83,6 +83,9 @@ export default function useShowcases({
 			Dropdown: (
 				<DropDownMenuShowcase overallSourceCode={overallSourceCode} />
 			),
+			"Dynamic Table": (
+				<DynamicTableShowcase overallSourceCode={overallSourceCode} />
+			),
 			"Empty State": (
 				<EmptyStateShowcase overallSourceCode={overallSourceCode} />
 			),
@@ -122,9 +125,6 @@ export default function useShowcases({
 			Sidebar: <SidebarShowcase overallSourceCode={overallSourceCode} />,
 			Tabs: <TabsShowcase overallSourceCode={overallSourceCode} />,
 			Tag: <TagShowcase overallSourceCode={overallSourceCode} />,
-			"Dynamic Table": (
-				<DynamicTableShowcase overallSourceCode={overallSourceCode} />
-			),
 			"Table Tree": (
 				<TableTreeShowcase overallSourceCode={overallSourceCode} />
 			),
