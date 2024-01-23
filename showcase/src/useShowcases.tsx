@@ -42,6 +42,7 @@ import { SidebarShowcase } from "./components/showcase/wrapper/SidebarShowcase"
 import FiltersShowcase from "./components/showcase/wrapper/FiltersShowcase"
 import InputShowcase from "./components/showcase/wrapper/InputShowcase"
 import LayeringShowcase from "./components/showcase/wrapper/LayeringShowcase"
+import ColorsShowcase from "./components/showcase/wrapper/ColorsShowcase"
 
 export default function useShowcases({
 	overallSourceCode,
@@ -72,6 +73,7 @@ export default function useShowcases({
 			Collapsible: (
 				<CollapsibleShowcase overallSourceCode={overallSourceCode} />
 			),
+			Colors: <ColorsShowcase overallSourceCode={overallSourceCode} />,
 			"Date Time Picker": (
 				<DateTimePickerShowcase overallSourceCode={overallSourceCode} />
 			),

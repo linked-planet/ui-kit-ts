@@ -86,11 +86,86 @@ function TagShowcase(props: ShowcaseProps) {
 	)
 	//#endregion tags
 
+	const akColorTags = (
+		<AKTagGroup>
+			<AKTag color="blue" text="Blue" />
+			<AKTag color="blueLight" text="blueLight" />
+			<AKSimpleTag color="green" text="green" />
+			<AKSimpleTag color="greenLight" text="greenLight" />
+			<AKSimpleTag color="grey" text="grey" />
+			<AKSimpleTag color="greyLight" text="greyLight" />
+			<AKSimpleTag color="purple" text="purple" />
+			<AKSimpleTag color="purpleLight" text="purpleLight" />
+			<AKSimpleTag color="red" text="red" />
+			<AKSimpleTag color="redLight" text="redLight" />
+			<AKSimpleTag color="teal" text="teal" />
+			<AKSimpleTag color="tealLight" text="tealLight" />
+			<AKSimpleTag color="yellow" text="yellow" />
+			<AKSimpleTag color="yellowLight" text="yellowLight" />
+			<AKSimpleTag color="lime" text="lime" />
+			<AKSimpleTag color="limeLight" text="limeLight" />
+			<AKSimpleTag color="magenta" text="magenta" />
+			<AKSimpleTag color="magentaLight" text="magentaLight" />
+			<AKSimpleTag color="orange" text="orange" />
+			<AKSimpleTag color="orangeLight" text="orangeLight" />
+			<AKSimpleTag color="standard" text="standard" />
+		</AKTagGroup>
+	)
+
+	//#region tagscolors
+	const colorTags = (
+		<TagGroup>
+			<Tag appearance="blue" text="Blue" />
+			<Tag appearance="blueLight" text="blueLight" />
+			<SimpleTag appearance="green" text="green" />
+			<SimpleTag appearance="greenLight" text="greenLight" />
+			<SimpleTag appearance="gray" text="grey" />
+			<SimpleTag appearance="grayLight" text="greyLight" />
+			<SimpleTag appearance="purple" text="purple" />
+			<SimpleTag appearance="purpleLight" text="purpleLight" />
+			<SimpleTag appearance="red" text="red" />
+			<SimpleTag appearance="redLight" text="redLight" />
+			<SimpleTag appearance="teal" text="teal" />
+			<SimpleTag appearance="tealLight" text="tealLight" />
+			<SimpleTag appearance="yellow" text="yellow" />
+			<SimpleTag appearance="yellowLight" text="yellowLight" />
+			<SimpleTag appearance="lime" text="lime" />
+			<SimpleTag appearance="limeLight" text="limeLight" />
+			<SimpleTag appearance="pink" text="pink" />
+			<SimpleTag appearance="pinkLight" text="pinkLight" />
+			<SimpleTag appearance="orange" text="orange" />
+			<SimpleTag appearance="orangeLight" text="orangeLight" />
+			<SimpleTag appearance="indigo" text="indigo" />
+			<SimpleTag appearance="indigoLight" text="indigoLight" />
+			<SimpleTag appearance="cyan" text="cyan" />
+			<SimpleTag appearance="cyanLight" text="cyanLight" />
+			<SimpleTag appearance="violet" text="violet" />
+			<SimpleTag appearance="violetLight" text="violetLight" />
+			<SimpleTag appearance="amber" text="amber" />
+			<SimpleTag appearance="amberLight" text="amberLight" />
+			<SimpleTag appearance="emerald" text="emerald" />
+			<SimpleTag appearance="emeraldLight" text="emeraldLight" />
+			<SimpleTag appearance="fuchsia" text="fuchsia" />
+			<SimpleTag appearance="fuchsiaLight" text="fuchsiaLight" />
+			<SimpleTag appearance="sky" text="sky" />
+			<SimpleTag appearance="skyLight" text="skyLight" />
+		</TagGroup>
+	)
+	//#endregion
+
 	const example = (
 		<>
 			{akExample}
 			{lpExample}
 		</>
+	)
+
+	const colors = (
+		<div>
+			<div>{akColorTags}</div>
+			<hr className="border-border my-4" />
+			<div>{colorTags}</div>
+		</div>
 	)
 
 	return (
@@ -105,6 +180,11 @@ function TagShowcase(props: ShowcaseProps) {
 			]}
 			examples={[
 				{ title: "Example", example, sourceCodeExampleId: "tags" },
+				{
+					title: "Colors",
+					example: colors,
+					sourceCodeExampleId: "tagscolors",
+				},
 			]}
 		/>
 	)

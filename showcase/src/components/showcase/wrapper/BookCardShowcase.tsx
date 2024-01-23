@@ -123,7 +123,7 @@ function BookCardExample() {
 							<SimpleTag
 								key="action 1"
 								text="action item 1"
-								color="lightgreen"
+								appearance="greenLight"
 							/>
 						</TagGroup>
 					</div>

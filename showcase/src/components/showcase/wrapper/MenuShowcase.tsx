@@ -34,10 +34,10 @@ function MenuShowcase(props: ShowcaseProps) {
 							}}
 						>
 							<SimpleTag
-								color={
+								appearance={
 									selectedItems.includes(item)
-										? "grey"
-										: "standard"
+										? "gray"
+										: undefined
 								}
 								text={item}
 							/>
