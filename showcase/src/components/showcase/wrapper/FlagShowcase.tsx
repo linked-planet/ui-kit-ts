@@ -31,14 +31,7 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Action Flag"
 				actions={[{ content: "Action", onClick: () => {} }]}
-				invert={false}
-			/>
-
-			<Flag
-				title="Flag"
-				description="Success Flag"
-				appearance="success"
-				invert={false}
+				inverted
 			/>
 
 			<Flag
@@ -49,9 +42,9 @@ function FlagShowcase(props: ShowcaseProps) {
 
 			<Flag
 				title="Flag"
-				description="Warning Flag"
-				appearance="warning"
-				invert={false}
+				description="Success Flag"
+				appearance="success"
+				inverted
 			/>
 
 			<Flag
@@ -62,18 +55,25 @@ function FlagShowcase(props: ShowcaseProps) {
 
 			<Flag
 				title="Flag"
-				description="Error Flag"
-				appearance="error"
-				invert={false}
+				description="Warning Flag"
+				appearance="warning"
+				inverted
 			/>
 
 			<Flag title="Flag" description="Error Flag" appearance="error" />
 
 			<Flag
 				title="Flag"
+				description="Error Flag"
+				appearance="error"
+				inverted
+			/>
+
+			<Flag
+				title="Flag"
 				description="Information Flag"
 				appearance="information"
-				invert={false}
+				inverted={false}
 				actions={[{ content: "Action", onClick: () => {} }]}
 			/>
 
@@ -81,6 +81,7 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Information Flag"
 				appearance="information"
+				inverted
 			/>
 			<ToastFlagContainer />
 		</div>

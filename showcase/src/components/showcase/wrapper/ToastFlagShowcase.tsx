@@ -35,7 +35,7 @@ function ExampleShowExtendedFlag() {
 					showFlagExtended({
 						title: "1: Whoa a new flag!",
 						description: "This is a standard toast flag.",
-						invert: true,
+						inverted: true,
 					})
 				}
 			>
@@ -83,7 +83,7 @@ function ExampleShowExtendedFlag() {
 						description:
 							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
 						appearance: "information",
-						invert: true,
+						inverted: true,
 					})
 				}
 			>

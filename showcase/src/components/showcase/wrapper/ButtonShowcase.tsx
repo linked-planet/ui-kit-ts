@@ -115,6 +115,14 @@ function ButtonShowcase(props: ShowcaseProps) {
 			>
 				Default Button
 			</Button>
+			<Button
+				appearance="default"
+				onClick={() => console.log("Button pressed")}
+				autoFocus={true}
+				inverted
+			>
+				Default Inverted Button
+			</Button>
 
 			<Button
 				appearance="default"

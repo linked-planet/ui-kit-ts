@@ -838,6 +838,14 @@ function ButtonShowcase(props: ShowcaseProps) {
 			>
 				Default Button
 			</Button>
+			<Button
+				appearance="default"
+				onClick={() => console.log("Button pressed")}
+				autoFocus={true}
+				inverted
+			>
+				Default Inverted Button
+			</Button>
 
 			<Button
 				appearance="default"
@@ -1769,7 +1777,7 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 
 export default DateTimePickerShowcase
 
-import React from "react"
+import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -1783,10 +1791,11 @@ import AKDropdownMenu, {
 } from "@atlaskit/dropdown-menu"
 
 import { Dropdown } from "@linked-planet/ui-kit-ts"
+import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons"
 
 function DropDownMenuShowcase(props: ShowcaseProps) {
-	const [radioValue, setRadioValue] = React.useState("testval1")
-	const [checkBoxes, setCheckBoxes] = React.useState<string[]>([])
+	const [radioValue, setRadioValue] = useState("testval1")
+	const [checkBoxes, setCheckBoxes] = useState<string[]>([])
 
 	const handleRadioChange = (value: string) => {
 		setRadioValue(value)
@@ -1971,6 +1980,18 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 	const lpExample2 = (
 		<>
 			<Dropdown.Menu trigger="Dropdown 2" usePortal>
+				<Dropdown.Item>Test 1</Dropdown.Item>
+				<Dropdown.Item>Test 2</Dropdown.Item>
+			</Dropdown.Menu>
+			<Dropdown.Menu
+				trigger={({ opened }: { opened: boolean }) => (
+					<div className="hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded bg-transparent p-1.5">
+						trigger{" "}
+						{opened ? <ChevronUpIcon /> : <ChevronDownIcon />}
+					</div>
+				)}
+				usePortal
+			>
 				<Dropdown.Item>Test 1</Dropdown.Item>
 				<Dropdown.Item>Test 2</Dropdown.Item>
 			</Dropdown.Menu>
@@ -2669,14 +2690,7 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Action Flag"
 				actions={[{ content: "Action", onClick: () => {} }]}
-				invert={false}
-			/>
-
-			<Flag
-				title="Flag"
-				description="Success Flag"
-				appearance="success"
-				invert={false}
+				inverted
 			/>
 
 			<Flag
@@ -2687,9 +2701,9 @@ function FlagShowcase(props: ShowcaseProps) {
 
 			<Flag
 				title="Flag"
-				description="Warning Flag"
-				appearance="warning"
-				invert={false}
+				description="Success Flag"
+				appearance="success"
+				inverted
 			/>
 
 			<Flag
@@ -2700,18 +2714,25 @@ function FlagShowcase(props: ShowcaseProps) {
 
 			<Flag
 				title="Flag"
-				description="Error Flag"
-				appearance="error"
-				invert={false}
+				description="Warning Flag"
+				appearance="warning"
+				inverted
 			/>
 
 			<Flag title="Flag" description="Error Flag" appearance="error" />
 
 			<Flag
 				title="Flag"
+				description="Error Flag"
+				appearance="error"
+				inverted
+			/>
+
+			<Flag
+				title="Flag"
 				description="Information Flag"
 				appearance="information"
-				invert={false}
+				inverted={false}
 				actions={[{ content: "Action", onClick: () => {} }]}
 			/>
 
@@ -2719,6 +2740,7 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Information Flag"
 				appearance="information"
+				inverted
 			/>
 			<ToastFlagContainer />
 		</div>
@@ -4467,17 +4489,39 @@ function Example() {
 			</div>
 			<div className="border-border shadow-overlay mt-4 border p-4">
 				shadow-overlay
-				<div className="flex h-48">
+				<div className="flex">
 					<Input placeholder="Test Input" />
 					<div>
 						<Button>In Div</Button>
 					</div>
+					<Select
+						options={[
+							{ label: "Test", value: "test" },
+							{ label: "Test 2", value: "test2" },
+						]}
+						placeholder="Test Select"
+					/>
 					<div>
 						<Dropdown.Menu trigger="DD in Div">
 							<Dropdown.Item>Test</Dropdown.Item>
 							<Dropdown.Item>Test 2</Dropdown.Item>
 						</Dropdown.Menu>
 					</div>
+				</div>
+				<div className="mt-4 flex">
+					<Input placeholder="Test Input" />
+					<Button>In Div</Button>
+					<Select
+						options={[
+							{ label: "Test", value: "test" },
+							{ label: "Test 2", value: "test2" },
+						]}
+						placeholder="Test Select"
+					/>
+					<Dropdown.Menu trigger="DD in Div">
+						<Dropdown.Item>Test</Dropdown.Item>
+						<Dropdown.Item>Test 2</Dropdown.Item>
+					</Dropdown.Menu>
 				</div>
 			</div>
 		</div>
@@ -6295,7 +6339,7 @@ function ExampleShowExtendedFlag() {
 					showFlagExtended({
 						title: "1: Whoa a new flag!",
 						description: "This is a standard toast flag.",
-						invert: true,
+						inverted: true,
 					})
 				}
 			>
@@ -6343,7 +6387,7 @@ function ExampleShowExtendedFlag() {
 						description:
 							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
 						appearance: "information",
-						invert: true,
+						inverted: true,
 					})
 				}
 			>

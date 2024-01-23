@@ -82,17 +82,39 @@ function Example() {
 			</div>
 			<div className="border-border shadow-overlay mt-4 border p-4">
 				shadow-overlay
-				<div className="flex h-48">
+				<div className="flex">
 					<Input placeholder="Test Input" />
 					<div>
 						<Button>In Div</Button>
 					</div>
+					<Select
+						options={[
+							{ label: "Test", value: "test" },
+							{ label: "Test 2", value: "test2" },
+						]}
+						placeholder="Test Select"
+					/>
 					<div>
 						<Dropdown.Menu trigger="DD in Div">
 							<Dropdown.Item>Test</Dropdown.Item>
 							<Dropdown.Item>Test 2</Dropdown.Item>
 						</Dropdown.Menu>
 					</div>
+				</div>
+				<div className="mt-4 flex">
+					<Input placeholder="Test Input" />
+					<Button>In Div</Button>
+					<Select
+						options={[
+							{ label: "Test", value: "test" },
+							{ label: "Test 2", value: "test2" },
+						]}
+						placeholder="Test Select"
+					/>
+					<Dropdown.Menu trigger="DD in Div">
+						<Dropdown.Item>Test</Dropdown.Item>
+						<Dropdown.Item>Test 2</Dropdown.Item>
+					</Dropdown.Menu>
 				</div>
 			</div>
 		</div>

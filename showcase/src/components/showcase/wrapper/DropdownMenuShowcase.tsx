@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -12,10 +12,11 @@ import AKDropdownMenu, {
 } from "@atlaskit/dropdown-menu"
 
 import { Dropdown } from "@linked-planet/ui-kit-ts"
+import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons"
 
 function DropDownMenuShowcase(props: ShowcaseProps) {
-	const [radioValue, setRadioValue] = React.useState("testval1")
-	const [checkBoxes, setCheckBoxes] = React.useState<string[]>([])
+	const [radioValue, setRadioValue] = useState("testval1")
+	const [checkBoxes, setCheckBoxes] = useState<string[]>([])
 
 	const handleRadioChange = (value: string) => {
 		setRadioValue(value)
@@ -200,6 +201,18 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 	const lpExample2 = (
 		<>
 			<Dropdown.Menu trigger="Dropdown 2" usePortal>
+				<Dropdown.Item>Test 1</Dropdown.Item>
+				<Dropdown.Item>Test 2</Dropdown.Item>
+			</Dropdown.Menu>
+			<Dropdown.Menu
+				trigger={({ opened }: { opened: boolean }) => (
+					<div className="hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded bg-transparent p-1.5">
+						trigger{" "}
+						{opened ? <ChevronUpIcon /> : <ChevronDownIcon />}
+					</div>
+				)}
+				usePortal
+			>
 				<Dropdown.Item>Test 1</Dropdown.Item>
 				<Dropdown.Item>Test 2</Dropdown.Item>
 			</Dropdown.Menu>

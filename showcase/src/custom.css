@@ -9,3 +9,8 @@ div[data-style="ShowcaseStyles-showcaseCopyrightFooter"] span::after {
 .pd {
 	padding: 20px;
 }
+
+/* These styles are originating from the batch.js injected by Jira, not the the atlaskit css reset */
+html {
+	font-size: 14px;
+}
