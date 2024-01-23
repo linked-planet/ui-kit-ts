@@ -130,7 +130,7 @@ function Footer({
 	return (
 		<footer
 			className={twMerge(
-				"flex-0 relative z-0 flex justify-end gap-2 overflow-auto px-8 pb-4 pt-2",
+				"flex-0 relative z-0 flex justify-end gap-2 overflow-auto px-8 pb-7 pt-2",
 				className,
 			)}
 			style={style}
