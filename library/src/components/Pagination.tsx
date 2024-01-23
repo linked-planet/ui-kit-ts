@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
+import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
 import { type DropdownMenuProps, Dropdown } from "./DropdownMenu"
@@ -50,12 +51,16 @@ function PageSizeSelector({
 		<div className="flex items-center gap-2">
 			<span>{pageSizeTitle}</span>
 			<Dropdown.Menu
-				trigger={
+				trigger={({ opened }: { opened: boolean }) => (
 					<div className="hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded bg-transparent p-1.5">
 						{_pageSize}
-						<ChevronUpIcon size="small" label="" />
+						{opened ? (
+							<ChevronDownIcon size="small" label="" />
+						) : (
+							<ChevronUpIcon size="small" label="" />
+						)}
 					</div>
-				}
+				)}
 				side={pageSizeMenuSide}
 				align={pageSizeMenuAlign}
 			>
