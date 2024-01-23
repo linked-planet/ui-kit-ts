@@ -36,8 +36,10 @@ const ButtonStyles: { [style in InteractiveAppearance]: string } = {
 		"data-[inverted]:border-brand-bold data-[inverted]:text-brand-text",
 	),
 
-	default:
+	default: twJoin(
 		"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",
+		"data-[inverted]:bg-transparent data-[inverted]:border-neutral-bold data-[inverted]:hover:bg-neutral-hovered data-[inverted]:active:bg-neutral-pressed",
+	),
 	subtle: "bg-neutral-subtle hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed text-text",
 	link: "bg-transparent text-link hover:underline",
 	warning: twJoin(
