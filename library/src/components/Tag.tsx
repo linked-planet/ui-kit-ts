@@ -42,7 +42,7 @@ export function SimpleTag({
 				className={twMerge(
 					TagAppearanceColors[appearance],
 					looks === "default" ? "rounded-[3px]" : "rounded-full",
-					"m-0.5 inline-flex cursor-default select-none overflow-hidden whitespace-nowrap px-1 pt-[1px] align-middle text-sm font-bold",
+					"m-0.5 inline-flex cursor-default select-none overflow-hidden whitespace-nowrap px-1 pt-[1px] align-middle text-sm",
 					bold ? "font-bold" : undefined,
 					className,
 				)}
