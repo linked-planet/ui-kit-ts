@@ -63,12 +63,12 @@ const portalDivId = "uikts-toasts" as const
 
 function CloseButton({
 	closeToast,
-	invert,
-}: CloseButtonProps & { invert: boolean }) {
+	inverted,
+}: CloseButtonProps & { inverted: boolean }) {
 	return (
 		<div
 			className={`cursor-pointer ${
-				invert ? "text-text" : "text-text-inverse"
+				inverted ? "text-text" : "text-text-inverse"
 			}`}
 			onClick={closeToast}
 		>
@@ -85,10 +85,10 @@ export function ToastFlagContainer(props: ToastContainerProps) {
 export function showFlagExtended({
 	style,
 	appearance = "default",
-	invert = false,
+	inverted = false,
 	...props
 }: ToastFlagProps) {
-	const progressClassName = invert
+	const progressClassName = inverted
 		? progressInvertedStyles[appearance]
 		: progressStyles[appearance]
 
@@ -100,7 +100,7 @@ export function showFlagExtended({
 		fontFamily: "unset",
 	}
 
-	const className = invert
+	const className = inverted
 		? FlagInvertedStyles[appearance]
 		: FlagStyles[appearance]
 
@@ -108,14 +108,14 @@ export function showFlagExtended({
 		<Flag
 			icon={props.icon}
 			appearance={appearance}
-			invert={invert}
+			inverted={inverted}
 			style={flagStyle}
 			{...props}
 		/>,
 		{
 			...defaultSettings,
 			closeButton: (p: CloseButtonProps) => (
-				<CloseButton invert={invert} {...p} />
+				<CloseButton inverted={inverted} {...p} />
 			),
 			...props,
 			style,
@@ -124,7 +124,7 @@ export function showFlagExtended({
 				"--toastify-color-progress-light": "invalid",
 			} as CSSProperties,
 			progressClassName: progressClassName,
-			className: twMerge(className, invert ? "border" : undefined),
+			className: twMerge(className, inverted ? "border" : undefined),
 		},
 	)
 }
@@ -144,7 +144,7 @@ type SimpleFlagProps = {
 export function showFlag(props: SimpleFlagProps) {
 	showFlagExtended({
 		...props,
-		invert: true,
+		inverted: true,
 	})
 }
 
