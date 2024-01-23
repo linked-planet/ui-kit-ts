@@ -84,11 +84,14 @@ const PageHeaderTitle = ({
 
 		return (
 			<Dropdown.Menu
-				trigger={
-					<Button appearance="subtle" className="mr-2 p-0">
+				trigger={({ opened }: { opened: boolean }) => (
+					<Button
+						appearance={opened ? "primary" : "subtle"}
+						className="mr-2 p-0"
+					>
 						<MenuIcon size="large" label="" />
 					</Button>
-				}
+				)}
 				align="end"
 			>
 				{dropdownItems}
