@@ -106,7 +106,7 @@ const CardHeaderActionsInfo = ({ children }: { children: React.ReactNode }) => (
 
 const cardBodyEntryBaseStyle = css`
 	> * {
-		padding: 1rem 1.5rem;
+		padding: 12px 1.5rem;
 		border-bottom: 1px solid ${borderColor};
 		border-right: 1px solid ${borderColor};
 	}
