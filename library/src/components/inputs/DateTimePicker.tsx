@@ -109,7 +109,20 @@ export function DateTimePicker<FormData extends FieldValues | undefined>({
 		)
 	}
 
-	return <AKDateTimePicker {...props} />
+	const _onChange = onChange
+		? (onChange as (value: string) => void)
+		: undefined
+
+	return (
+		<AKDateTimePicker
+			isInvalid={ariaInvalid || isInvalid}
+			value={value}
+			onBlur={onBlur}
+			name={name}
+			onChange={_onChange}
+			{...props}
+		/>
+	)
 }
 
 //#endregion
@@ -215,10 +228,20 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 	}
 
 	const akProps = props as AKTimePickerProps
+	const _onChange = onChange
+		? (onChange as (value: string) => void)
+		: undefined
 
 	return (
 		<>
-			<AKTimePicker isInvalid={ariaInvalid || isInvalid} {...akProps} />
+			<AKTimePicker
+				isInvalid={ariaInvalid || isInvalid}
+				value={value}
+				onBlur={onBlur}
+				name={name}
+				onChange={_onChange}
+				{...akProps}
+			/>
 			{errorMessage && (
 				<SlidingErrorMessage
 					invalid={isInvalid || ariaInvalid}
@@ -332,10 +355,20 @@ export function DatePicker<FormData extends FieldValues | undefined>({
 	}
 
 	const akProps = props as AKDatePickerProps
+	const _onChange = onChange
+		? (onChange as (value: string) => void)
+		: undefined
 
 	return (
 		<>
-			<AKDatePicker {...akProps} isInvalid={isInvalid} />
+			<AKDatePicker
+				onChange={_onChange}
+				onBlur={onBlur}
+				name={name}
+				value={value}
+				{...akProps}
+				isInvalid={ariaInvalid || isInvalid}
+			/>
 			{errorMessage && (
 				<SlidingErrorMessage
 					invalid={isInvalid}
