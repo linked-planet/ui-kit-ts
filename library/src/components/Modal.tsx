@@ -49,7 +49,7 @@ function Container({
 				/>
 				<RDialog.Content
 					className={twMerge(
-						"xs:min-w-fit bg-surface shadow-overflow fixed left-1/2 top-16 z-0 flex max-h-[87svh] w-full min-w-full max-w-xl -translate-x-1/2 flex-col rounded",
+						"xs:min-w-min bg-surface shadow-overflow fixed left-1/2 top-16 z-0 flex max-h-[87svh] w-full min-w-full -translate-x-1/2 flex-col rounded",
 						className,
 					)}
 					style={style}
