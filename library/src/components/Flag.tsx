@@ -19,7 +19,7 @@ export type FlagProps = {
 	title: string
 	description: string | JSX.Element
 	appearance?: FlagAppearance
-	invert?: boolean
+	inverted?: boolean
 	icon?: JSX.Element
 	actions?: FlagActionType[]
 	style?: CSSProperties
@@ -143,16 +143,16 @@ export function Flag({
 	description,
 	icon,
 	appearance = "default",
-	invert = true,
+	inverted = false,
 	actions,
 	style,
 }: FlagProps) {
-	const appStyle = invert
+	const appStyle = inverted
 		? FlagInvertedStyles[appearance]
 		: FlagStyles[appearance]
 
 	if (!icon) {
-		icon = <FlagIcon appearance={appearance} invert={invert} />
+		icon = <FlagIcon appearance={appearance} invert={inverted} />
 	}
 
 	return (
@@ -163,7 +163,7 @@ export function Flag({
 			}}
 			className={twMerge(
 				appStyle,
-				`grid gap-4 rounded-sm p-4 shadow-md ${invert ? "border" : ""}`,
+				`grid gap-4 rounded-sm p-4 shadow-md ${inverted ? "border" : ""}`,
 			)}
 		>
 			{icon && (
