@@ -106,7 +106,7 @@ function useClassNamesConfig<
 const customStyles = {
 	control: (provided: CSSObjectWithLabel) => ({
 		...provided,
-		minHeight: "1.83rem",
+		minHeight: "2.0135rem",
 		//height: "1.83rem",
 	}),
 }
