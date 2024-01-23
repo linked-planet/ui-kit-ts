@@ -281,7 +281,7 @@ export type DropdownMenuProps = {
 	defaultOpen?: boolean
 	disabled?: boolean
 	onOpenChange?: (open: boolean) => void
-	trigger: React.ReactNode
+	trigger: (({ opened }: { opened: boolean }) => React.ReactNode) | string
 	children: React.ReactNode
 	triggerStyle?: React.CSSProperties
 	triggerClassName?: string
@@ -337,8 +337,8 @@ function Menu({
 				</Button>
 			)
 		}
-		return trigger
-	}, [disabled, opened, props, trigger, triggerClassName, triggerStyle])
+		return trigger({ opened })
+	}, [disabled, id, opened, props, trigger, triggerClassName, triggerStyle])
 
 	const content = useMemo(
 		() => (
