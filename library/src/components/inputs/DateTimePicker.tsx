@@ -80,7 +80,7 @@ export function DateTimePicker<FormData extends FieldValues | undefined>({
 					}
 
 					return (
-						<>
+						<div className="min-w-[13.3rem]">
 							<AKDateTimePicker
 								{...props}
 								value={valueUsed}
@@ -90,6 +90,7 @@ export function DateTimePicker<FormData extends FieldValues | undefined>({
 								onBlur={onBlurUsed}
 								isDisabled={disabled}
 								name={name}
+								timeFormat="HH:mm"
 								isInvalid={
 									isInvalid || ariaInvalid || fsInvalid
 								}
@@ -102,7 +103,7 @@ export function DateTimePicker<FormData extends FieldValues | undefined>({
 									{errorMessage}
 								</SlidingErrorMessage>
 							)}
-						</>
+						</div>
 					)
 				}}
 			/>
@@ -114,14 +115,17 @@ export function DateTimePicker<FormData extends FieldValues | undefined>({
 		: undefined
 
 	return (
-		<AKDateTimePicker
-			isInvalid={ariaInvalid || isInvalid}
-			value={value}
-			onBlur={onBlur}
-			name={name}
-			onChange={_onChange}
-			{...props}
-		/>
+		<div className="min-w-[13.3rem]">
+			<AKDateTimePicker
+				isInvalid={ariaInvalid || isInvalid}
+				value={value}
+				onBlur={onBlur}
+				timeFormat="HH:mm"
+				name={name}
+				onChange={_onChange}
+				{...props}
+			/>
+		</div>
 	)
 }
 
@@ -198,7 +202,7 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 					}
 
 					return (
-						<>
+						<div className="min-w-24">
 							<AKTimePicker
 								{...props}
 								value={valueUsed}
@@ -211,6 +215,7 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 									isInvalid || ariaInvalid || fsInvalid
 								}
 								name={name}
+								timeFormat="HH:mm"
 							/>
 							{errorMessage && (
 								<SlidingErrorMessage
@@ -220,7 +225,7 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 									{errorMessage}
 								</SlidingErrorMessage>
 							)}
-						</>
+						</div>
 					)
 				}}
 			/>
@@ -233,13 +238,14 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 		: undefined
 
 	return (
-		<>
+		<div className="min-w-24">
 			<AKTimePicker
 				isInvalid={ariaInvalid || isInvalid}
 				value={value}
 				onBlur={onBlur}
 				name={name}
 				onChange={_onChange}
+				timeFormat="HH:mm"
 				{...akProps}
 			/>
 			{errorMessage && (
@@ -250,7 +256,7 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 					{errorMessage}
 				</SlidingErrorMessage>
 			)}
-		</>
+		</div>
 	)
 }
 //#endregion
@@ -325,7 +331,7 @@ export function DatePicker<FormData extends FieldValues | undefined>({
 					}
 
 					return (
-						<>
+						<div className="min-w-[8.3rem]">
 							<AKDatePicker
 								{...props}
 								value={valueUsed}
@@ -347,7 +353,7 @@ export function DatePicker<FormData extends FieldValues | undefined>({
 									{errorMessage}
 								</SlidingErrorMessage>
 							)}
-						</>
+						</div>
 					)
 				}}
 			/>
@@ -360,7 +366,7 @@ export function DatePicker<FormData extends FieldValues | undefined>({
 		: undefined
 
 	return (
-		<>
+		<div className="min-w-[8.3rem]">
 			<AKDatePicker
 				onChange={_onChange}
 				onBlur={onBlur}
@@ -377,7 +383,7 @@ export function DatePicker<FormData extends FieldValues | undefined>({
 					{errorMessage}
 				</SlidingErrorMessage>
 			)}
-		</>
+		</div>
 	)
 }
 //#endregion
