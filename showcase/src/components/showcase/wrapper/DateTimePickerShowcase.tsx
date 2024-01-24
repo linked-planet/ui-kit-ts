@@ -76,26 +76,32 @@ function ControlledFormExample() {
 			}}
 		>
 			<div className="flex flex-col gap-2">
-				<DateTimePicker
-					control={control}
-					value={selectedDateTime}
-					onChange={setSelectedDateTime}
-					name="dateTime"
-				/>
+				<div className="w-[13.3rem] overflow-hidden">
+					<DateTimePicker
+						control={control}
+						value={selectedDateTime}
+						onChange={setSelectedDateTime}
+						name="dateTime"
+					/>
+				</div>
 				<hr />
-				<TimePicker
-					control={control}
-					value={selectedTime}
-					onChange={setSelectedTime}
-					name="time"
-				/>
+				<div className="w-24 overflow-hidden">
+					<TimePicker
+						control={control}
+						value={selectedTime}
+						onChange={setSelectedTime}
+						name="time"
+					/>
+				</div>
 				<hr />
-				<DatePicker
-					control={control}
-					value={selectedDate}
-					onChange={setSelectedDate}
-					name="date"
-				/>
+				<div className="w-[8.3rem] overflow-hidden">
+					<DatePicker
+						control={control}
+						value={selectedDate}
+						onChange={setSelectedDate}
+						name="date"
+					/>
+				</div>
 			</div>
 			<ButtonGroup className="mt-4 flex justify-end">
 				<Button appearance="subtle" type="reset">

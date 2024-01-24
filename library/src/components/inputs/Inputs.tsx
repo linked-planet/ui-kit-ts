@@ -36,9 +36,9 @@ export function Label({
 
 //#region Input
 const inputNormalStyles =
-	"p-1 w-full rounded border border-input-border bg-input ease-in-out transition duration-200"
+	"p-1 w-full box-border rounded border-2 border-input-border bg-input ease-in-out transition duration-200"
 const inputFocusStyles =
-	"focus:border-selected-bold focus:bg-input-active outline-none hover:bg-input-hovered"
+	"focus:border-input-border-focused focus:bg-input-active outline-none hover:bg-input-hovered"
 const inputDisabledStyles =
 	"disabled:bg-disabled disabled:text-disabled-text disabled:cursor-not-allowed disabled:border-transparent"
 const invalidInputStyles = "aria-invalid:border-danger-border"
