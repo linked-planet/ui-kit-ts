@@ -23,6 +23,7 @@ type ModalDialogProps = {
 	shouldCloseOnEscapePress?: boolean
 	shouldCloseOnOverlayClick?: boolean
 	usePortal?: boolean
+	useModal?: boolean
 }
 
 const blanketStyles =
@@ -38,15 +39,21 @@ function Container({
 	className,
 	style,
 	usePortal = true,
+	useModal = true,
 	children,
 }: ModalDialogProps) {
 	const content = useMemo(
 		() => (
 			<>
-				<RDialog.Overlay
-					className={blanketStyles}
-					role="presentation"
-				/>
+				{useModal ? (
+					<RDialog.Overlay
+						className={blanketStyles}
+						role="presentation"
+						id="blanket"
+					/>
+				) : (
+					<div className={blanketStyles} />
+				)}
 				<RDialog.Content
 					className={twMerge(
 						"xs:min-w-min bg-surface shadow-overflow fixed left-1/2 top-16 z-0 flex max-h-[87svh] w-full min-w-full -translate-x-1/2 flex-col rounded",
@@ -74,6 +81,7 @@ function Container({
 			shouldCloseOnEscapePress,
 			shouldCloseOnOverlayClick,
 			style,
+			useModal,
 		],
 	)
 
@@ -82,6 +90,7 @@ function Container({
 			open={open}
 			defaultOpen={defaultOpen}
 			onOpenChange={onOpenChange}
+			modal={useModal}
 		>
 			{trigger && <RDialog.Trigger>{trigger}</RDialog.Trigger>}
 
