@@ -121,7 +121,10 @@ export const theme = {
 			DEFAULT: `var(--ds-background-input, ${N10})`,
 			active: `var(--ds-background-input-pressed, ${N0})`,
 			hovered: `var(--ds-background-input-hovered, ${N30})`,
-			border: `var(--ds-border-input, ${N40})`,
+			border: {
+				DEFAULT: `var(--ds-border-input, ${N40})`,
+				focused: `var(--ds-border-focused, ${B200})`,
+			},
 		},
 
 		transparent: colors.transparent,
@@ -293,7 +296,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.blue[800],
 				bold: colors.blue[950],
-				inverse: colors.blue[100],
+				inverse: colors.blue[50],
 			},
 			border: colors.blue[700],
 		},
@@ -319,7 +322,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.sky[800],
 				bold: colors.sky[950],
-				inverse: colors.sky[100],
+				inverse: colors.sky[50],
 			},
 			border: colors.sky[700],
 		},
@@ -345,7 +348,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.emerald[800],
 				bold: colors.emerald[950],
-				inverse: colors.emerald[100],
+				inverse: colors.emerald[50],
 			},
 			border: colors.emerald[500],
 		},
@@ -371,7 +374,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.red[800],
 				bold: colors.red[950],
-				inverse: colors.red[100],
+				inverse: colors.red[50],
 			},
 			border: colors.red[700],
 		},
@@ -397,7 +400,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.orange[800],
 				bold: colors.orange[950],
-				inverse: colors.orange[100],
+				inverse: colors.orange[50],
 			},
 			border: colors.orange[700],
 		},
@@ -423,7 +426,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.yellow[800],
 				bold: colors.yellow[950],
-				inverse: colors.yellow[100],
+				inverse: colors.yellow[50],
 			},
 			border: colors.yellow[700],
 		},
@@ -449,7 +452,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.lime[800],
 				bold: colors.lime[950],
-				inverse: colors.lime[100],
+				inverse: colors.lime[50],
 			},
 			border: colors.lime[700],
 		},
@@ -475,7 +478,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.green[800],
 				bold: colors.green[950],
-				inverse: colors.green[100],
+				inverse: colors.green[50],
 			},
 			border: colors.green[700],
 		},
@@ -501,7 +504,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.cyan[800],
 				bold: colors.cyan[950],
-				inverse: colors.cyan[100],
+				inverse: colors.cyan[50],
 			},
 			border: colors.cyan[700],
 		},
@@ -527,7 +530,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.pink[800],
 				bold: colors.pink[950],
-				inverse: colors.pink[100],
+				inverse: colors.pink[50],
 			},
 			border: colors.pink[700],
 		},
@@ -553,7 +556,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.purple[800],
 				bold: colors.purple[950],
-				inverse: colors.purple[100],
+				inverse: colors.purple[50],
 			},
 			border: colors.purple[700],
 		},
@@ -579,7 +582,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.amber[800],
 				bold: colors.amber[950],
-				inverse: colors.amber[100],
+				inverse: colors.amber[50],
 			},
 			border: colors.amber[700],
 		},
@@ -605,7 +608,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.indigo[800],
 				bold: colors.indigo[950],
-				inverse: colors.indigo[100],
+				inverse: colors.indigo[50],
 			},
 			border: colors.indigo[700],
 		},
@@ -631,7 +634,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.violet[800],
 				bold: colors.violet[950],
-				inverse: colors.violet[100],
+				inverse: colors.violet[50],
 			},
 			border: colors.violet[700],
 		},
@@ -657,7 +660,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.fuchsia[800],
 				bold: colors.fuchsia[950],
-				inverse: colors.fuchsia[100],
+				inverse: colors.fuchsia[50],
 			},
 			border: colors.fuchsia[700],
 		},
@@ -683,7 +686,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.teal[800],
 				bold: colors.teal[950],
-				inverse: colors.teal[100],
+				inverse: colors.teal[50],
 			},
 			border: colors.teal[700],
 		},
@@ -709,7 +712,7 @@ export const theme = {
 			text: {
 				DEFAULT: colors.gray[800],
 				bold: colors.gray[950],
-				inverse: colors.gray[100],
+				inverse: colors.gray[50],
 			},
 			border: colors.gray[700],
 		},

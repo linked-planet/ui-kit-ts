@@ -20,7 +20,7 @@ import { SlidingErrorMessage } from "./SlidingErrorMessage"
 
 //#region styles
 const controlStyles =
-	"border-input-border border rounded ease-in-out transition duration-300"
+	"border-input-border border-2 box-border rounded ease-in-out transition duration-300"
 
 const menuStyles =
 	"bg-surface-overlay z-10 shadow-overlay rounded overflow-hidden"
@@ -54,7 +54,7 @@ function useClassNamesConfig<
 						? "bg-disabled border-transparent cursor-not-allowed"
 						: "bg-input hover:bg-input-hovered",
 					provided.isFocused && !provided.isDisabled
-						? "bg-input-active border-selected-border"
+						? "bg-input-active border-input-border-focused"
 						: "",
 				),
 			menu: () => menuStyles,
@@ -106,7 +106,7 @@ function useClassNamesConfig<
 const customStyles = {
 	control: (provided: CSSObjectWithLabel) => ({
 		...provided,
-		minHeight: "2.0135rem",
+		minHeight: "2.2rem",
 		//height: "1.83rem",
 	}),
 }
