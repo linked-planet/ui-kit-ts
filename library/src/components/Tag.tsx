@@ -6,38 +6,55 @@ import type { Appearance } from "../utils/appearanceTypes"
 export const TagColorOptions = [
 	"blue",
 	"blueLight",
+	"blueBold",
 	"sky",
 	"skyLight",
+	"skyBold",
 	"emerald",
 	"emeraldLight",
+	"emeraldBold",
 	"red",
 	"redLight",
+	"redBold",
 	"orange",
 	"orangeLight",
+	"orangeBold",
 	"amber",
 	"amberLight",
+	"amberBold",
 	"yellow",
 	"yellowLight",
+	"yellowBold",
 	"green",
 	"greenLight",
+	"greenBold",
 	"purple",
 	"purpleLight",
+	"purpleBold",
 	"violet",
 	"violetLight",
+	"violetBold",
 	"cyan",
 	"cyanLight",
+	"cyanBold",
 	"lime",
 	"limeLight",
+	"limeBold",
 	"pink",
 	"pinkLight",
+	"pinkBold",
 	"indigo",
 	"indigoLight",
+	"indigoBold",
 	"fuchsia",
 	"fuchsiaLight",
+	"fuchsiaBold",
 	"teal",
 	"tealLight",
+	"tealBold",
 	"gray",
 	"grayLight",
+	"grayBold",
 ] as const
 
 export type TagColor = (typeof TagColorOptions)[number]
@@ -59,44 +76,61 @@ const TagAppearanceColors: { [style in Appearance]: string } = {
 	information: "bg-information-bold text-text-inverse",
 	discovery: "bg-information-bold text-text-inverse",
 	danger: "bg-danger-bold text-text-inverse",
-	warning: "bg-warning-bold text-text-inverse",
+	warning: "bg-warning-bold text-warning-text",
 } as const
 
 const TagColors: { [style in TagColor]: string } = {
 	blue: "bg-blue text-blue-text-bold",
 	blueLight: "bg-blue-subtle text-blue-text",
+	blueBold: "bg-blue-bold text-text-inverse",
 	sky: "bg-sky text-sky-text-bold",
 	skyLight: "bg-sky-subtle text-sky-text",
+	skyBold: "bg-sky-bold text-text-inverse",
 	green: "bg-green text-green-text-bold",
 	greenLight: "bg-green-subtle text-green-text",
+	greenBold: "bg-green-bold text-text-inverse",
 	purple: "bg-purple text-purple-text-bold",
 	purpleLight: "bg-purple-subtle text-purple-text",
+	purpleBold: "bg-purple-bold text-text-inverse",
 	red: "bg-red text-red-text-bold",
 	redLight: "bg-red-subtle text-red-text",
+	redBold: "bg-red-bold text-text-inverse",
 	teal: "bg-teal text-teal-text-bold",
 	tealLight: "bg-teal-subtle text-teal-text",
+	tealBold: "bg-teal-bold text-text-inverse",
 	yellow: "bg-yellow text-yellow-text-bold",
 	yellowLight: "bg-yellow-subtle text-yellow-text",
+	yellowBold: "bg-yellow-bold text-text-inverse",
 	lime: "bg-lime text-lime-text-bold",
 	limeLight: "bg-lime-subtle text-lime-text",
+	limeBold: "bg-lime-bold text-text-inverse",
 	pink: "bg-pink text-pink-text-bold",
 	pinkLight: "bg-pink-subtle text-pink-text",
+	pinkBold: "bg-pink-bold text-text-inverse",
 	orange: "bg-orange text-orange-text-bold",
 	orangeLight: "bg-orange-subtle text-orange-text",
+	orangeBold: "bg-orange-bold text-text-inverse",
 	gray: "bg-gray text-gray-text-bold",
 	grayLight: "bg-gray-subtle text-gray-text",
+	grayBold: "bg-gray-bold text-text-inverse",
 	fuchsia: "bg-fuchsia text-fuchsia-text-bold",
 	fuchsiaLight: "bg-fuchsia-subtle text-fuchsia-text",
+	fuchsiaBold: "bg-fuchsia-bold text-text-inverse",
 	indigo: "bg-indigo text-indigo-text-bold",
 	indigoLight: "bg-indigo-subtle text-indigo-text",
+	indigoBold: "bg-indigo-bold text-text-inverse",
 	cyan: "bg-cyan text-cyan-text-bold",
 	cyanLight: "bg-cyan-subtle text-cyan-text",
+	cyanBold: "bg-cyan-bold text-text-inverse",
 	violet: "bg-violet text-violet-text-bold",
 	violetLight: "bg-violet-subtle text-violet-text",
+	violetBold: "bg-violet-bold text-text-inverse",
 	amber: "bg-amber text-amber-text-bold",
 	amberLight: "bg-amber-subtle text-amber-text",
+	amberBold: "bg-amber-bold text-text-inverse",
 	emerald: "bg-emerald text-emerald-text-bold",
 	emeraldLight: "bg-emerald-subtle text-emerald-text",
+	emeraldBold: "bg-emerald-bold text-text-inverse",
 } as const
 
 function isColorOption(color: Appearance | TagColor): color is TagColor {
@@ -117,22 +151,20 @@ export function SimpleTag({
 		: TagAppearanceColors[appearance]
 
 	return (
-		<div className="inline-block pb-0.5">
-			<div
-				className={twMerge(
-					colors,
-					looks === "default" ? "rounded-[3px]" : "rounded-full",
-					"inline-flex cursor-default select-none overflow-hidden whitespace-nowrap px-1 pt-[1px] align-middle text-sm",
-					bold ? "font-bold" : undefined,
-					className,
-				)}
-				style={{
-					...style,
-				}}
-				title={title}
-			>
-				{text}
-			</div>
+		<div
+			className={twMerge(
+				colors,
+				looks === "default" ? "rounded-[3px]" : "rounded-full",
+				"box-border inline-flex cursor-default select-none items-center overflow-hidden whitespace-nowrap px-1 pt-[1px] align-middle text-base",
+				bold ? "font-bold" : undefined,
+				className,
+			)}
+			style={{
+				...style,
+			}}
+			title={title}
+		>
+			{text}
 		</div>
 	)
 }
@@ -178,7 +210,7 @@ export function Tag({
 							onAfterRemoveAction(txt)
 						}
 					}}
-					className={`my-auto h-4 w-4 items-center justify-center ${
+					className={`m-0 ml-0.5 flex h-4 w-4 items-center justify-center ${
 						!isRemovable ? "hidden" : ""
 					}`}
 					aria-label={removeButtonLabel}
@@ -235,7 +267,7 @@ export function TagGroup({
 	return (
 		<div
 			className={twMerge(
-				`flex w-full flex-wrap items-center gap-1.5 ${
+				`flex w-full flex-wrap items-center gap-1.5 py-0.5 ${
 					alignment === "start" ? "justify-start" : "justify-end"
 				}`,
 				className,
