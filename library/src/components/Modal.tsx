@@ -16,6 +16,7 @@ type ModalDialogProps = {
 	open?: boolean
 	defaultOpen?: boolean
 	onOpenChange?: (open: boolean) => void
+	onEscapeKeyDown?: (event: KeyboardEvent) => void
 	trigger?: ReactNode
 	children: ReactNode
 	className?: string
@@ -30,10 +31,11 @@ const blanketStyles =
 	"fixed inset-0 bg-blanket ease-out transition-opacity duration-200 animate-fade-in"
 
 function Container({
-	shouldCloseOnEscapePress,
-	shouldCloseOnOverlayClick,
+	shouldCloseOnEscapePress = true,
+	shouldCloseOnOverlayClick = true,
 	open,
 	onOpenChange,
+	onEscapeKeyDown,
 	defaultOpen,
 	trigger,
 	className,
@@ -56,15 +58,16 @@ function Container({
 				)}
 				<RDialog.Content
 					className={twMerge(
-						"xs:min-w-min bg-surface shadow-overflow fixed left-1/2 top-16 z-0 flex max-h-[87svh] w-full min-w-full -translate-x-1/2 flex-col rounded",
+						"xs:min-w-min bg-surface shadow-overflow fixed left-1/2 top-16 z-0 flex max-h-[87svh] w-full min-w-full max-w-2xl -translate-x-1/2 flex-col rounded",
 						className,
 					)}
 					style={style}
-					onEscapeKeyDown={
-						!shouldCloseOnEscapePress
-							? (e) => e.preventDefault()
-							: undefined
-					}
+					onEscapeKeyDown={(e) => {
+						onEscapeKeyDown?.(e)
+						if (!shouldCloseOnEscapePress) {
+							e.preventDefault()
+						}
+					}}
 					onInteractOutside={
 						!shouldCloseOnOverlayClick
 							? (e) => e.preventDefault()
@@ -78,6 +81,7 @@ function Container({
 		[
 			children,
 			className,
+			onEscapeKeyDown,
 			shouldCloseOnEscapePress,
 			shouldCloseOnOverlayClick,
 			style,

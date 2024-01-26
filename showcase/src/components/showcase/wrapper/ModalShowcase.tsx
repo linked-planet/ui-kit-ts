@@ -174,9 +174,11 @@ function ControlledExample() {
 
 				<Modal.Container
 					open={isModalActive}
+					//defaultOpen={true}
 					onOpenChange={(opened) => {
 						if (!opened) setIsModalActive(false)
 					}}
+					shouldCloseOnEscapePress={true}
 				>
 					<Modal.Header>
 						<Modal.Title>Sample Modal</Modal.Title>
