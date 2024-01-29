@@ -163,8 +163,8 @@ function DateRangePickerInner({
 
 	return (
 		<div
-			className={`box-border border border-transparent ${
-				invalid ? "border-danger-bold" : ""
+			className={`box-border w-min rounded border-2 ${
+				invalid ? "border-danger-bold" : "border-transparent"
 			}`}
 		>
 			<Calendar
