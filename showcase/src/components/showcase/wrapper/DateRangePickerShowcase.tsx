@@ -125,6 +125,7 @@ function Example2() {
 				selectedStartDate={selectedStartDate}
 				selectedEndDate={selectedEndDate}
 				weekStartDate={1}
+				invalid
 				onDateRangeSelected={(start: string, end: string) => {
 					console.info("Date range selected", start, end)
 				}}

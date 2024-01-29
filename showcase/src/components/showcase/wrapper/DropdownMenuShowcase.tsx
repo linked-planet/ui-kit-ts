@@ -121,7 +121,12 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 	//#region dropdown-menu
 	const lpExample = (
 		<>
-			<Dropdown.Menu trigger="Dropdown" side={"right"} align="center">
+			<Dropdown.Menu
+				trigger="Dropdown"
+				side={"right"}
+				align="center"
+				appearance="primary"
+			>
 				<Dropdown.ItemCheckbox
 					selected={checkBoxes.includes("item-1")}
 					description={"test description"}
