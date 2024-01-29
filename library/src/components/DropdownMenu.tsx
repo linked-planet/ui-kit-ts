@@ -4,7 +4,7 @@ import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
-import { Button } from "./Button"
+import { Button, type ButtonProps } from "./Button"
 import RadioIcon from "@atlaskit/icon/glyph/radio"
 import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
 import { twJoin, twMerge } from "tailwind-merge"
@@ -288,7 +288,7 @@ export type DropdownMenuProps = {
 	usePortal?: boolean
 	"aria-label"?: string
 	id?: string
-}
+} & ButtonProps
 
 /**
  * Root of the dropdown menu, which contains the trigger and the content
@@ -327,6 +327,7 @@ function Menu({
 					disabled={disabled}
 					aria-label={props["aria-label"]}
 					id={id}
+					{...props}
 				>
 					{trigger}
 					{opened ? (
