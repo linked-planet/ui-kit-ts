@@ -1673,6 +1673,7 @@ function Example2() {
 				selectedStartDate={selectedStartDate}
 				selectedEndDate={selectedEndDate}
 				weekStartDate={1}
+				invalid
 				onDateRangeSelected={(start: string, end: string) => {
 					console.info("Date range selected", start, end)
 				}}
@@ -2166,7 +2167,12 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 	//#region dropdown-menu
 	const lpExample = (
 		<>
-			<Dropdown.Menu trigger="Dropdown" side={"right"} align="center">
+			<Dropdown.Menu
+				trigger="Dropdown"
+				side={"right"}
+				align="center"
+				appearance="primary"
+			>
 				<Dropdown.ItemCheckbox
 					selected={checkBoxes.includes("item-1")}
 					description={"test description"}
@@ -5152,6 +5158,7 @@ function ControlledExample() {
 
 				<Modal.Container
 					open={isModalActive}
+					//defaultOpen={true}
 					onOpenChange={(opened) => {
 						if (!opened) setIsModalActive(false)
 					}}
