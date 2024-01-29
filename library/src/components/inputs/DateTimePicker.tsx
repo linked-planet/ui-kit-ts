@@ -143,7 +143,7 @@ export type TimeType = `${number}:${number}`
 type TimePickerProps<FormData extends FieldValues | undefined = undefined> =
 	Omit<AKTimePickerProps, "value" | "defaultValue" | "onChange"> & {
 		// just remap from string to TimeType
-		value?: TimeType
+		value?: TimeType | null
 		defaultValue?: TimeType
 		onChange?: (value: TimeType) => void
 		errorMessage?: string
@@ -241,7 +241,7 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 		<div className="min-w-24">
 			<AKTimePicker
 				isInvalid={ariaInvalid || isInvalid}
-				value={value}
+				value={value ?? undefined}
 				onBlur={onBlur}
 				name={name}
 				onChange={_onChange}
@@ -271,7 +271,7 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 type DatePickerProps<FormData extends FieldValues | undefined = undefined> =
 	Omit<AKDatePickerProps, "value" | "defaultValue" | "onChange"> & {
 		// just remap from string to TimeType
-		value?: DateType
+		value?: DateType | null
 		defaultValue?: DateType
 		onChange?: (value: DateType) => void
 		errorMessage?: string
@@ -371,7 +371,7 @@ export function DatePicker<FormData extends FieldValues | undefined>({
 				onChange={_onChange}
 				onBlur={onBlur}
 				name={name}
-				value={value}
+				value={value ?? undefined}
 				{...akProps}
 				isInvalid={ariaInvalid || isInvalid}
 			/>

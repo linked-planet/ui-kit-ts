@@ -234,12 +234,6 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 			} else {
 				defaultStart = dayjs(defaultValues[0])
 				defaultEnd = dayjs(defaultValues[1])
-				console.log(
-					"DEFAULT VALUES",
-					defaultValues,
-					defaultStart,
-					defaultEnd,
-				)
 			}
 		}
 	}
@@ -275,7 +269,9 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 
 	const onDateSelectCB = (
 		value: DateType,
-		controlOnChange?: (dates: [DateType, DateType] | null) => void,
+		controlOnChange?: (
+			dates: [DateType, DateType | undefined | null] | null,
+		) => void,
 	) => {
 		const pickedDate = dayjs(value)
 		const collision = checkCollisions(pickedDate, disabledDatesUsed)
@@ -291,12 +287,12 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 			setEndDate(undefined)
 			onEndDateSelected?.(undefined)
 			//onDateRangeSelected?.(toDateString(pickedDate), undefined)
-			controlOnChange?.(null)
+			controlOnChange?.([toDateString(pickedDate), undefined])
 		} else if (startDate && !endDate) {
 			if (pickedDate.isBefore(startDate)) {
 				setStartDate(pickedDate)
 				onStartDateSelected?.(toDateString(pickedDate))
-				controlOnChange?.(null)
+				controlOnChange?.([toDateString(pickedDate), undefined])
 			} else {
 				setEndDate(pickedDate)
 				onDateRangeSelected?.(
@@ -311,7 +307,7 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 			}
 		} else {
 			setStartDate(pickedDate)
-			controlOnChange?.(null)
+			controlOnChange?.([toDateString(pickedDate), undefined])
 		}
 	}
 
