@@ -42,6 +42,7 @@ type CheckboxProps = Omit<
 		labelStyle?: React.CSSProperties
 		invalid?: boolean
 		errorMessage?: ReactNode
+		testId?: string
 	}
 
 const checkBoxStyles =
@@ -77,6 +78,7 @@ const CheckboxI = (
 		labelClassName,
 		labelStyle,
 		"aria-invalid": ariaInvalid,
+		testId,
 		...props
 	}: CheckboxProps,
 	ref: ForwardedRef<HTMLInputElement>,
@@ -164,6 +166,7 @@ const CheckboxI = (
 					<input
 						type="checkbox"
 						id={id}
+						data-testid={testId}
 						ref={inputRef}
 						disabled={disabled}
 						checked={!!checked}

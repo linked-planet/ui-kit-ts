@@ -49,6 +49,7 @@ export type DateRangeProps<
 	onEndDateSelected?: (dateString: DateType | undefined) => void
 	onViewChanged?: (e: ChangeEvent) => void
 	onCollision?: (dateString: string) => void
+	testId?: string
 } & (FormData extends FieldValues
 	? {
 			control: Control<FormData>
@@ -122,6 +123,7 @@ function DateRangePickerInner({
 	weekStartDate,
 	onViewChanged,
 	invalid,
+	testId,
 }: {
 	startDate: Dayjs | undefined
 	endDate: Dayjs | undefined
@@ -141,6 +143,7 @@ function DateRangePickerInner({
 	locale: string
 	weekStartDate: WeekDay
 	invalid?: boolean
+	testId?: string
 }) {
 	const defaultMonth =
 		viewDefaultMonth != undefined
@@ -166,6 +169,7 @@ function DateRangePickerInner({
 			className={`box-border w-min rounded border-2 ${
 				invalid ? "border-danger-bold" : "border-transparent"
 			}`}
+			data-testid={testId}
 		>
 			<Calendar
 				minDate={minDate}
