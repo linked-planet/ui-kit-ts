@@ -38,6 +38,12 @@ export function itemsOutsideOfDayRangeORSameStartAndEnd(
 			itemsWithSameStartAndEnd.push(it)
 			return false
 		}
+		if (slotsArray.length === 0) {
+			console.log(
+				"timeTableUtils - itemsOutsideOfDayRange - no slotsArray",
+			)
+			return false
+		}
 		const startAndEndSlot = getStartAndEndSlot(
 			it,
 			slotsArray,

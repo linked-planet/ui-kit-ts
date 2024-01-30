@@ -229,8 +229,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				? weekendColor0
 				: weekendColor1
 			: groupNumber % 2 === 0
-			? dayColor0
-			: dayColor1,
+				? dayColor0
+				: dayColor1,
 		cursor:
 			isWeekendDay && disableWeekendInteractions
 				? "not-allowed"
@@ -300,7 +300,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						renderTimeSlotItem={renderTimeSlotItem}
 					/>
 				)
-		  })
+			})
 		: null
 
 	const mouseHandlersUsed = timeSlotSelectionDisabled ? {} : mouseHandlers
@@ -399,7 +399,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 		selectedTimeSlots && selectedTimeSlots.group === group
 			? selectedTimeSlots.timeSlots.findIndex(
 					(it) => it === timeSlotNumber,
-			  )
+				)
 			: -1
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 	const isFirstOfSelection = timeSlotSelectedIndex === 0
@@ -440,8 +440,8 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 				? weekendColor0
 				: weekendColor1
 			: groupNumber % 2 === 0
-			? dayColor0
-			: dayColor1,
+				? dayColor0
+				: dayColor1,
 		verticalAlign: "top",
 		cursor: "pointer",
 		borderRight: `${
@@ -578,7 +578,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				const itemsOfTimeSlot = itemsOfRow
 					? itemsOfRow.filter(
 							(it) => it && it.startSlot === timeSlotNumber,
-					  )
+						)
 					: undefined
 
 				tds.push(
@@ -750,6 +750,10 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 		status: "before" | "after" | "in"
 		item: I
 	}[][] = []
+	if (!slotsArray || slotsArray.length === 0) {
+		console.log("LPTimeTable - no slots array, returning empty item rows")
+		return itemRows
+	}
 	groupItems.forEach((item) => {
 		let added = false
 

@@ -501,6 +501,11 @@ function moveNowBar(
 		endDate: now,
 	}
 
+	if (!slotsArray || slotsArray.length === 0) {
+		console.log("LPTimeTable - no time slots found")
+		return
+	}
+
 	const startAndEndSlot = getStartAndEndSlot(
 		nowItem,
 		slotsArray,
