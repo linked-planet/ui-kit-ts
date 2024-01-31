@@ -11,6 +11,7 @@ const Page = ({
 	children: React.ReactNode
 	id?: string
 	className?: string
+	testId?: string
 }) => (
 	<div
 		className={twMerge(
@@ -29,12 +30,15 @@ const PageHeader = ({
 	id,
 	className,
 	style,
+	testId,
+	...props
 }: {
 	shadow?: boolean
 	children: React.ReactNode
 	id?: string
 	className?: string
 	style?: React.CSSProperties
+	testId?: string
 }) => (
 	<div
 		className={twMerge(
@@ -45,6 +49,8 @@ const PageHeader = ({
 		)}
 		id={id}
 		style={style}
+		data-testid={testId}
+		{...props}
 	>
 		{children}
 	</div>
@@ -56,12 +62,15 @@ const PageHeaderTitle = ({
 	className,
 	style,
 	titleMenu,
+	testId,
+	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
 	style?: React.CSSProperties
 	titleMenu?: React.ReactNodeArray
+	testId?: string
 }) => {
 	const headerMenu = useMemo(() => {
 		if (!titleMenu || titleMenu.length === 0) return undefined
@@ -104,6 +113,8 @@ const PageHeaderTitle = ({
 			className={twMerge("mb-2 flex items-center px-8", className)}
 			id={id}
 			style={style}
+			data-testid={testId}
+			{...dataProps}
 		>
 			{typeof children === "string" ? <h1>{children}</h1> : children}
 			{titleMenu && <div className="ml-auto flex-none">{headerMenu}</div>}
@@ -116,16 +127,21 @@ const PageHeaderSubTitle = ({
 	id,
 	className,
 	style,
+	testId,
+	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
 	style?: React.CSSProperties
+	testId?: string
 }) => (
 	<div
 		className={twMerge("text-text-subtlest mb-1 px-8", className)}
 		id={id}
 		style={style}
+		data-testid={testId}
+		{...dataProps}
 	>
 		{typeof children === "string" ? (
 			<p className="pt-0">{children}</p>
@@ -140,6 +156,8 @@ const PageHeaderLine = ({
 	id,
 	className,
 	style,
+	testId,
+	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
@@ -153,6 +171,8 @@ const PageHeaderLine = ({
 		)}
 		style={style}
 		id={id}
+		data-testid={testId}
+		{...dataProps}
 	>
 		{children}
 	</div>
@@ -163,11 +183,14 @@ const PageBody = ({
 	id,
 	className,
 	style,
+	testId,
+	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
 	style?: React.CSSProperties
+	testId?: string
 }) => (
 	<div
 		className={twMerge(
@@ -176,6 +199,8 @@ const PageBody = ({
 		)}
 		style={style}
 		id={id}
+		data-testid={testId}
+		{...dataProps}
 	>
 		{children}
 	</div>
@@ -186,11 +211,14 @@ const PageBodyContent = ({
 	id,
 	className,
 	style,
+	testId,
+	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
 	style?: React.CSSProperties
+	testId?: string
 }) => (
 	<div
 		className={twMerge(
@@ -199,6 +227,8 @@ const PageBodyContent = ({
 		)}
 		id={id}
 		style={style}
+		data-testid={testId}
+		{...dataProps}
 	>
 		{children}
 	</div>
@@ -209,11 +239,14 @@ const PageBodyHeader = ({
 	id,
 	className,
 	style,
+	testId,
+	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
 	style?: React.CSSProperties
+	testId?: string
 }) => (
 	<div
 		className={twMerge(
@@ -222,6 +255,8 @@ const PageBodyHeader = ({
 		)}
 		id={id}
 		style={style}
+		data-testid={testId}
+		{...dataProps}
 	>
 		{children}
 	</div>
@@ -232,11 +267,14 @@ const PageBodyFooter = ({
 	id,
 	className,
 	style,
+	testId,
+	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
 	style?: React.CSSProperties
+	testId?: string
 }) => (
 	<div
 		className={twMerge(
@@ -245,6 +283,8 @@ const PageBodyFooter = ({
 		)}
 		id={id}
 		style={style}
+		data-testid={testId}
+		{...dataProps}
 	>
 		{children}
 	</div>
