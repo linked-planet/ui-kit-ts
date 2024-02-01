@@ -9,12 +9,20 @@ type TabProps = {
 	className?: string
 	style?: React.CSSProperties
 	tooltip?: string
+	testId?: string
 }
 
 /**
  * Tab is the TabList tab menu bar entry (not the tab panel)
  */
-export function Tab({ label, disabled, children, className, style }: TabProps) {
+export function Tab({
+	label,
+	disabled,
+	children,
+	className,
+	style,
+	testId,
+}: TabProps) {
 	if (!label && !children) {
 		throw new Error(
 			"Either label or children must be defined for Tab component",
@@ -37,6 +45,7 @@ export function Tab({ label, disabled, children, className, style }: TabProps) {
 			)}
 			style={style}
 			aria-label={label.toString()}
+			data-testid={testId}
 		>
 			{children ?? label}
 		</RTabs.Trigger>
@@ -50,10 +59,12 @@ export function TabList({
 	children,
 	className,
 	style,
+	testId,
 }: {
 	children: React.ReactNode
 	className?: string
 	style?: React.CSSProperties
+	testId?: string
 }) {
 	const tabListChildrenWithValue = React.Children.map(
 		children,
@@ -82,6 +93,7 @@ export function TabList({
 				className,
 			)}
 			style={style}
+			data-testid={testId}
 		>
 			{tabListChildrenWithValue}
 		</RTabs.TabsList>
@@ -93,9 +105,16 @@ type TabPanelProps = {
 	children: React.ReactNode
 	className?: string
 	style?: React.CSSProperties
+	testId?: string
 }
 
-export function TabPanel({ label, children, className, style }: TabPanelProps) {
+export function TabPanel({
+	label,
+	children,
+	className,
+	style,
+	testId,
+}: TabPanelProps) {
 	if (label == undefined) {
 		throw new Error("TabPanel must have a label prop")
 	}
@@ -104,6 +123,7 @@ export function TabPanel({ label, children, className, style }: TabPanelProps) {
 			className={className}
 			style={style}
 			value={label.toString()} /* this is set in the Tabs component! */
+			data-testid={testId}
 		>
 			{children}
 		</RTabs.Content>
@@ -121,6 +141,7 @@ export function Tabs({
 	children,
 	className,
 	style,
+	testId,
 }: {
 	id?: string
 	selected?: number | string | null | undefined
@@ -129,6 +150,7 @@ export function Tabs({
 	children: React.ReactNodeArray
 	className?: string
 	style?: React.CSSProperties
+	testId?: string
 }) {
 	// the TabPanels, which are the child elements after the TabList, need to have value set, if not set yet by using the "label" prop
 	// this is because the value is used to match the TabList and TabPanel
@@ -173,6 +195,7 @@ export function Tabs({
 			defaultValue={defaultSelectedValue}
 			className={twMerge("p-2", className)}
 			style={style}
+			data-testid={testId}
 		>
 			{tabPanelChildrenWithValue}
 		</RTabs.Root>

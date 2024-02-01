@@ -18,6 +18,7 @@ type CollapsibleProps = {
 	style?: React.CSSProperties
 	children: React.ReactNode
 	openButtonPosition?: "left" | "right" | "hidden"
+	testId?: string
 }
 
 export function Collapsible({
@@ -31,7 +32,9 @@ export function Collapsible({
 	headerContainerStyle,
 	headerContainerClassName,
 	className,
+	style,
 	children,
+	testId,
 }: CollapsibleProps) {
 	const [open, setOpen] = useState(opened == undefined ? defaultOpen : opened)
 
@@ -65,6 +68,8 @@ export function Collapsible({
 			defaultOpen={defaultOpen}
 			onOpenChange={openCB}
 			className={twMerge("bg-surface-raised rounded", className)}
+			style={style}
+			data-testid={testId}
 		>
 			<CollapsibleRUI.Trigger
 				className={twMerge(

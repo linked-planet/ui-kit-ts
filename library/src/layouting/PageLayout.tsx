@@ -63,7 +63,6 @@ const PageHeaderTitle = ({
 	style,
 	titleMenu,
 	testId,
-	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
@@ -114,7 +113,6 @@ const PageHeaderTitle = ({
 			id={id}
 			style={style}
 			data-testid={testId}
-			{...dataProps}
 		>
 			{typeof children === "string" ? <h1>{children}</h1> : children}
 			{titleMenu && <div className="ml-auto flex-none">{headerMenu}</div>}
@@ -128,7 +126,6 @@ const PageHeaderSubTitle = ({
 	className,
 	style,
 	testId,
-	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
@@ -141,7 +138,6 @@ const PageHeaderSubTitle = ({
 		id={id}
 		style={style}
 		data-testid={testId}
-		{...dataProps}
 	>
 		{typeof children === "string" ? (
 			<p className="pt-0">{children}</p>
@@ -157,12 +153,12 @@ const PageHeaderLine = ({
 	className,
 	style,
 	testId,
-	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
 	style?: React.CSSProperties
+	testId?: string
 }) => (
 	<div
 		className={twMerge(
@@ -172,7 +168,6 @@ const PageHeaderLine = ({
 		style={style}
 		id={id}
 		data-testid={testId}
-		{...dataProps}
 	>
 		{children}
 	</div>
@@ -184,7 +179,6 @@ const PageBody = ({
 	className,
 	style,
 	testId,
-	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
@@ -200,7 +194,6 @@ const PageBody = ({
 		style={style}
 		id={id}
 		data-testid={testId}
-		{...dataProps}
 	>
 		{children}
 	</div>
@@ -212,7 +205,6 @@ const PageBodyContent = ({
 	className,
 	style,
 	testId,
-	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
@@ -228,7 +220,6 @@ const PageBodyContent = ({
 		id={id}
 		style={style}
 		data-testid={testId}
-		{...dataProps}
 	>
 		{children}
 	</div>
@@ -240,7 +231,6 @@ const PageBodyHeader = ({
 	className,
 	style,
 	testId,
-	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
@@ -256,7 +246,6 @@ const PageBodyHeader = ({
 		id={id}
 		style={style}
 		data-testid={testId}
-		{...dataProps}
 	>
 		{children}
 	</div>
@@ -268,7 +257,6 @@ const PageBodyFooter = ({
 	className,
 	style,
 	testId,
-	...dataProps
 }: {
 	children: React.ReactNode
 	id?: string
@@ -284,7 +272,6 @@ const PageBodyFooter = ({
 		id={id}
 		style={style}
 		data-testid={testId}
-		{...dataProps}
 	>
 		{children}
 	</div>

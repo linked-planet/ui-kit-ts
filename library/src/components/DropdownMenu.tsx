@@ -288,6 +288,7 @@ export type DropdownMenuProps = {
 	usePortal?: boolean
 	"aria-label"?: string
 	id?: string
+	testId?: string
 } & ButtonProps
 
 /**
@@ -306,6 +307,7 @@ function Menu({
 	triggerClassName,
 	usePortal = true,
 	id,
+	testId,
 	...props
 }: DropdownMenuProps) {
 	const contentRef = useRef<HTMLDivElement>(null)
@@ -372,6 +374,7 @@ function Menu({
 				setOpened(!opened)
 				onOpenChange?.(!opened)
 			}}
+			data-testid={testId}
 		>
 			<RDd.Trigger asChild>{triggerNode}</RDd.Trigger>
 			{usePortal ? (

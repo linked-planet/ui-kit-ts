@@ -18,6 +18,7 @@ export type ButtonProps = {
 	inverted?: boolean
 	id?: string
 	"aria-label"?: string
+	testId?: string
 } & Pick<
 	React.ButtonHTMLAttributes<HTMLButtonElement>,
 	| "type"
@@ -83,6 +84,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			className,
 			inverted,
 			id,
+			testId,
 			...props
 		}: ButtonProps,
 		ref,
@@ -104,6 +106,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 					className,
 				)}
 				disabled={disabled}
+				data-testid={testId}
 				{...props}
 			>
 				{iconBefore}
