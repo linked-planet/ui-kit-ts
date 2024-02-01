@@ -19,6 +19,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 	const [selectedValues, setSelectedValues] = useState<string[]>([
 		"chocolate",
 		"vanilla",
+		"banana",
 	])
 
 	const filter: FilterType = {
@@ -53,7 +54,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 			"chocolate",
 			"vanilla",
 			"mint",
-			"banana",
+			//"banana",
 			"orange",
 			"apple",
 			"lemon",

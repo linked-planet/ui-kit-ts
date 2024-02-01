@@ -185,9 +185,9 @@ export function FilterCard({
 							<div
 								className={`px-2 py-0.5 ${
 									!isSelectable
-										? "text-disabled-text cursor-not-allowed"
+										? `text-disabled-text cursor-not-allowed ${isSelected ? "bg-selected-subtle" : ""}`
 										: isSelected
-											? "text-text-inverse bg-selected hover:bg-selected-hovered active:bg-selected-pressed cursor-pointer"
+											? "text-selected-text-inverse bg-selected hover:bg-selected-hovered active:bg-selected-pressed cursor-pointer"
 											: "hover:bg-surface-hovered active:bg-surface-pressed cursor-pointer"
 								}`}
 								key={item}
