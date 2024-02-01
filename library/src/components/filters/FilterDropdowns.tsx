@@ -13,12 +13,14 @@ export function FilterDropdown({
 	onSelectedChanged,
 	id,
 	testId,
+	hideNotSelectable = false,
 }: {
 	filter: FilterType
 	onAttributeClick?: (filterIdent: string, attribute: string) => void
 	onSelectedChanged?: (filterIdent: string, attributes: string[]) => void
 	id?: string
 	testId?: string
+	hideNotSelectable?: boolean
 }) {
 	const { availableValues, selectedValues, selectableValues } = filter
 
@@ -83,7 +85,7 @@ export function FilterDropdown({
 				<Select
 					placeholder={filter.attributeName}
 					isMulti
-					options={available}
+					options={hideNotSelectable ? selectables : available}
 					isOptionDisabled={(option) =>
 						!selectables?.includes(option)
 					}
@@ -93,7 +95,16 @@ export function FilterDropdown({
 				/>
 			</div>
 		),
-		[available, filter.attributeName, onChange, selectables, selected],
+		[
+			available,
+			filter.attributeName,
+			hideNotSelectable,
+			id,
+			onChange,
+			selectables,
+			selected,
+			testId,
+		],
 	)
 }
 
