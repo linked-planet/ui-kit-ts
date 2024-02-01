@@ -25,6 +25,10 @@ type ModalDialogProps = {
 	shouldCloseOnOverlayClick?: boolean
 	usePortal?: boolean
 	useModal?: boolean
+	id?: string
+	triggerId?: string
+	testId?: string
+	triggerTestId?: string
 }
 
 const blanketStyles =
@@ -43,6 +47,10 @@ function Container({
 	usePortal = true,
 	useModal = true,
 	children,
+	id,
+	triggerId,
+	testId,
+	triggerTestId,
 }: ModalDialogProps) {
 	const content = useMemo(
 		() => (
@@ -73,6 +81,8 @@ function Container({
 							? (e) => e.preventDefault()
 							: undefined
 					}
+					id={id}
+					data-testid={testId}
 				>
 					{children}
 				</RDialog.Content>
@@ -81,10 +91,12 @@ function Container({
 		[
 			children,
 			className,
+			id,
 			onEscapeKeyDown,
 			shouldCloseOnEscapePress,
 			shouldCloseOnOverlayClick,
 			style,
+			testId,
 			useModal,
 		],
 	)
@@ -96,7 +108,11 @@ function Container({
 			onOpenChange={onOpenChange}
 			modal={useModal}
 		>
-			{trigger && <RDialog.Trigger>{trigger}</RDialog.Trigger>}
+			{trigger && (
+				<RDialog.Trigger id={triggerId} data-testid={triggerTestId}>
+					{trigger}
+				</RDialog.Trigger>
+			)}
 
 			{usePortal ? (
 				<RDialog.Portal container={getPortal("uikts-modal")}>
@@ -113,10 +129,14 @@ function Header({
 	children,
 	className,
 	style,
+	id,
+	testId,
 }: {
 	children: ReactNode
 	className?: string
 	style?: CSSProperties
+	id?: string
+	testId?: string
 }) {
 	return (
 		<header
@@ -125,6 +145,8 @@ function Header({
 				className,
 			)}
 			style={style}
+			id={id}
+			data-testid={testId}
 		>
 			{children}
 		</header>
@@ -135,10 +157,14 @@ function Footer({
 	children,
 	className,
 	style,
+	id,
+	testId,
 }: {
 	children: ReactNode
 	className?: string
 	style?: CSSProperties
+	id?: string
+	testId?: string
 }) {
 	return (
 		<footer
@@ -147,6 +173,8 @@ function Footer({
 				className,
 			)}
 			style={style}
+			id={id}
+			data-testid={testId}
 		>
 			{children}
 		</footer>
@@ -157,13 +185,22 @@ function Title({
 	children,
 	className,
 	style,
+	id,
+	testId,
 }: {
 	children: ReactNode
 	className?: string
 	style?: CSSProperties
+	id?: string
+	testId?: string
 }) {
 	return (
-		<RDialog.Title className={twMerge("text-xl", className)} style={style}>
+		<RDialog.Title
+			className={twMerge("text-xl", className)}
+			style={style}
+			id={id}
+			data-testid={testId}
+		>
 			{children}
 		</RDialog.Title>
 	)
@@ -173,10 +210,14 @@ function Body({
 	className,
 	style,
 	children,
+	id,
+	testId,
 }: {
 	className?: string
 	style?: CSSProperties
 	children: ReactNode
+	id?: string
+	testId?: string
 }) {
 	const ref = useRef<ElementRef<"section">>(null)
 
@@ -216,6 +257,8 @@ function Body({
 			style={style}
 			onScroll={scrollbarCB}
 			ref={ref}
+			id={id}
+			data-testid={testId}
 		>
 			{children}
 		</section>

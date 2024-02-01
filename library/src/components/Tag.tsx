@@ -67,6 +67,8 @@ export type SimpleTagProps = {
 	style?: CSSProperties
 	className?: string
 	title?: string
+	id?: string
+	testId?: string
 }
 
 const TagAppearanceColors: { [style in Appearance]: string } = {
@@ -145,6 +147,8 @@ export function SimpleTag({
 	title,
 	style,
 	className,
+	id,
+	testId,
 }: SimpleTagProps) {
 	const colors = isColorOption(appearance)
 		? TagColors[appearance]
@@ -163,6 +167,8 @@ export function SimpleTag({
 				...style,
 			}}
 			title={title}
+			id={id}
+			data-testid={testId}
 		>
 			{text}
 		</div>
@@ -258,11 +264,15 @@ export function TagGroup({
 	style,
 	children,
 	alignment = "start",
+	id,
+	testId,
 }: {
 	className?: string
 	style?: CSSProperties
 	children: React.ReactNode
 	alignment?: "start" | "end"
+	id?: string
+	testId?: string
 }) {
 	return (
 		<div
@@ -273,6 +283,8 @@ export function TagGroup({
 				className,
 			)}
 			style={style}
+			id={id}
+			data-testid={testId}
 		>
 			{children}
 		</div>
