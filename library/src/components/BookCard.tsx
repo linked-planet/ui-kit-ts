@@ -98,26 +98,39 @@ const CardHeaderMeta = ({
 
 const CardHeaderTitle = ({
 	children,
+	className,
+	style,
 	id,
 	testId,
 }: {
 	children: React.ReactNode
+	className?: string
+	style?: CSSProperties
 	id?: string
 	testId?: string
 }) => {
+	const _className = twMerge(
+		"mt-2 w-full truncate text-start text-xl font-medium",
+		className,
+	)
 	if (typeof children === "string") {
 		return (
 			<h3
-				className="mt-2 w-full truncate text-start text-xl font-medium"
+				className={_className}
 				id={id}
 				data-testid={testId}
+				style={style}
 			>
 				{children}
 			</h3>
 		)
 	}
 
-	return <div className="w-full truncate text-start">{children}</div>
+	return (
+		<div className={_className} id={id} data-testid={testId} style={style}>
+			{children}
+		</div>
+	)
 }
 
 const CardHeaderSubtitle = ({
