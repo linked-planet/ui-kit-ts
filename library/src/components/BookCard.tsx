@@ -55,28 +55,63 @@ const CardBase = ({
 const CardHeader = ({
 	className,
 	children,
+	style,
+	id,
+	testId,
 }: {
 	className?: string
 	children: React.ReactNode
+	style?: CSSProperties
+	id?: string
+	testId?: string
 }) => (
 	<div
 		className={twMerge(
 			"bg-surface-overlay flex w-full flex-1 justify-between px-6 py-3",
 			className,
 		)}
+		style={style}
+		id={id}
+		data-testid={testId}
 	>
 		{children}
 	</div>
 )
 
-const CardHeaderMeta = ({ children }: { children: React.ReactNode }) => (
-	<div className="w-full items-baseline overflow-hidden">{children}</div>
+const CardHeaderMeta = ({
+	children,
+	id,
+	testId,
+}: {
+	children: React.ReactNode
+	id?: string
+	testId?: string
+}) => (
+	<div
+		className="w-full items-baseline overflow-hidden"
+		id={id}
+		data-testid={testId}
+	>
+		{children}
+	</div>
 )
 
-const CardHeaderTitle = ({ children }: { children: React.ReactNode }) => {
+const CardHeaderTitle = ({
+	children,
+	id,
+	testId,
+}: {
+	children: React.ReactNode
+	id?: string
+	testId?: string
+}) => {
 	if (typeof children === "string") {
 		return (
-			<h3 className="w-full truncate text-start text-xl font-medium">
+			<h3
+				className="mt-2 w-full truncate text-start text-xl font-medium"
+				id={id}
+				data-testid={testId}
+			>
 				{children}
 			</h3>
 		)
@@ -87,30 +122,71 @@ const CardHeaderTitle = ({ children }: { children: React.ReactNode }) => {
 
 const CardHeaderSubtitle = ({
 	children,
+	className,
+	style,
 	testId,
 	id,
 }: {
 	children: React.ReactNode
+	className?: string
+	style?: CSSProperties
 	testId?: string
 	id?: string
 }) => {
+	const _className = twMerge(
+		"text-text-subtlest mt-1 w-full flex-1 justify-start truncate text-start text-sm font-semibold",
+		className,
+	)
 	if (typeof children === "string") {
 		return (
 			<p
-				className="text-text-subtlest mt-1 w-full flex-1 justify-start truncate text-start text-sm font-semibold"
+				className={_className}
 				id={id}
 				data-testid={testId}
+				style={style}
 			>
 				{children}
 			</p>
 		)
 	}
 	return (
-		<div
-			className="text-text-subtlest mt-1 w-full flex-1 justify-start truncate text-start text-sm font-semibold"
-			id={id}
-			data-testid={testId}
-		>
+		<div className={_className} id={id} data-testid={testId} style={style}>
+			{children}
+		</div>
+	)
+}
+
+const CardHeaderUpperTitle = ({
+	children,
+	className,
+	style,
+	testId,
+	id,
+}: {
+	children: React.ReactNode
+	className?: string
+	style?: CSSProperties
+	testId?: string
+	id?: string
+}) => {
+	const _className = twMerge(
+		"text-text-subtlest mt-1 w-full flex-1 justify-start truncate text-start text-xs font-light italic",
+		className,
+	)
+	if (typeof children === "string") {
+		return (
+			<p
+				className={_className}
+				id={id}
+				data-testid={testId}
+				style={style}
+			>
+				{children}
+			</p>
+		)
+	}
+	return (
+		<div className={_className} id={id} data-testid={testId} style={style}>
 			{children}
 		</div>
 	)
@@ -247,6 +323,7 @@ const BookCardComponents = {
 	CardHeaderMeta,
 	CardHeaderTitle,
 	CardHeaderSubtitle,
+	CardHeaderUpperTitle,
 	CardHeaderActions,
 	CardHeaderActionsInfo,
 	CardGridBody,
@@ -261,6 +338,7 @@ export { BookCardComponents }
 type BookCardProps = {
 	title: React.ReactNode
 	subtitle?: React.ReactNode
+	upperTitle?: React.ReactNode
 	closed?: boolean
 	defaultOpen?: boolean
 	bodyLayout: "row" | "grid" | "column"
@@ -277,6 +355,7 @@ type BookCardProps = {
 export function BookCard({
 	title,
 	subtitle,
+	upperTitle,
 	closed,
 	defaultOpen,
 	actions,
@@ -312,6 +391,11 @@ export function BookCard({
 			header={
 				<CardHeader>
 					<CardHeaderMeta>
+						{upperTitle && (
+							<CardHeaderUpperTitle>
+								{upperTitle}
+							</CardHeaderUpperTitle>
+						)}
 						<CardHeaderTitle>{title}</CardHeaderTitle>
 						{subtitle && (
 							<CardHeaderSubtitle>{subtitle}</CardHeaderSubtitle>
