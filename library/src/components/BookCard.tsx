@@ -16,12 +16,16 @@ const CardBase = ({
 	defaultOpen,
 	onOpenChanged,
 	children,
+	id,
+	testId,
 }: {
 	header: React.ReactNode
 	closed?: boolean
 	defaultOpen?: boolean
 	onOpenChanged?: (opened: boolean) => void
 	children?: React.ReactNode
+	id?: string
+	testId?: string
 }) => {
 	const openVal =
 		closed != null ? !closed : defaultOpen != null ? undefined : true
@@ -38,6 +42,8 @@ const CardBase = ({
 			onChanged={onOpenChanged}
 			className="border-border shadow-overlay-bold border"
 			triggerClassName="rounded-t border-b border-border overflow-hidden"
+			id={id}
+			testId={testId}
 		>
 			<div className="bg-surface box-border flex w-full rounded-b">
 				{children}
@@ -79,29 +85,67 @@ const CardHeaderTitle = ({ children }: { children: React.ReactNode }) => {
 	return <div className="w-full truncate text-start">{children}</div>
 }
 
-const CardHeaderSubtitle = ({ children }: { children: React.ReactNode }) => {
+const CardHeaderSubtitle = ({
+	children,
+	testId,
+	id,
+}: {
+	children: React.ReactNode
+	testId?: string
+	id?: string
+}) => {
 	if (typeof children === "string") {
 		return (
-			<p className="text-text-subtlest mt-1 w-full flex-1 justify-start truncate text-start text-sm font-semibold">
+			<p
+				className="text-text-subtlest mt-1 w-full flex-1 justify-start truncate text-start text-sm font-semibold"
+				id={id}
+				data-testid={testId}
+			>
 				{children}
 			</p>
 		)
 	}
 	return (
-		<div className="text-text-subtlest mt-1 w-full flex-1 justify-start truncate text-start text-sm font-semibold">
+		<div
+			className="text-text-subtlest mt-1 w-full flex-1 justify-start truncate text-start text-sm font-semibold"
+			id={id}
+			data-testid={testId}
+		>
 			{children}
 		</div>
 	)
 }
 
-const CardHeaderActions = ({ children }: { children: React.ReactNode }) => (
-	<div className="flex flex-none items-center justify-end pl-2">
+const CardHeaderActions = ({
+	children,
+	id,
+	testId,
+}: {
+	children: React.ReactNode
+	id?: string
+	testId?: string
+}) => (
+	<div
+		className="flex flex-none items-center justify-end pl-2"
+		id={id}
+		data-testid={testId}
+	>
 		{children}
 	</div>
 )
 
-const CardHeaderActionsInfo = ({ children }: { children: React.ReactNode }) => (
-	<div className="mr-2 items-center text-sm">{children}</div>
+const CardHeaderActionsInfo = ({
+	children,
+	id,
+	testId,
+}: {
+	children: React.ReactNode
+	id?: string
+	testId?: string
+}) => (
+	<div className="mr-2 items-center text-sm" id={id} data-testid={testId}>
+		{children}
+	</div>
 )
 
 const cardBodyEntryBaseStyle = css`
@@ -111,8 +155,20 @@ const cardBodyEntryBaseStyle = css`
 		border-right: 1px solid ${borderColor};
 	}
 `
-const CardGridBody = ({ children }: { children: React.ReactNode }) => (
-	<div className="w-full overflow-hidden rounded-b">
+const CardGridBody = ({
+	children,
+	id,
+	testId,
+}: {
+	children: React.ReactNode
+	id?: string
+	testId?: string
+}) => (
+	<div
+		className="w-full overflow-hidden rounded-b"
+		is={id}
+		data-testid={testId}
+	>
 		<div
 			className={`grid border-collapse overflow-auto ${cardBodyEntryBaseStyle} ${css`
 				grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -123,8 +179,16 @@ const CardGridBody = ({ children }: { children: React.ReactNode }) => (
 	</div>
 )
 
-const CardRowBody = ({ children }: { children: React.ReactNode }) => (
-	<div className="overflow-hidden rounded-b">
+const CardRowBody = ({
+	children,
+	id,
+	testId,
+}: {
+	children: React.ReactNode
+	id?: string
+	testId?: string
+}) => (
+	<div className="overflow-hidden rounded-b" id={id} data-testid={testId}>
 		<div
 			className={`grid border-collapse grid-flow-col overflow-x-auto overflow-y-hidden ${cardBodyEntryBaseStyle} ${css`
 				grid-auto-columns: minmax(150px, 1fr);
@@ -135,8 +199,16 @@ const CardRowBody = ({ children }: { children: React.ReactNode }) => (
 	</div>
 )
 
-const CardColumnBody = ({ children }: { children: React.ReactNode }) => (
-	<div className="overflow-hidden rounded-b">
+const CardColumnBody = ({
+	children,
+	id,
+	testId,
+}: {
+	children: React.ReactNode
+	id?: string
+	testId?: string
+}) => (
+	<div className="overflow-hidden rounded-b" id={id} data-testid={testId}>
 		<div
 			className={`grid border-collapse grid-flow-row overflow-auto ${cardBodyEntryBaseStyle} ${css`
 				grid-auto-rows: minmax(150px, 1fr);
@@ -147,8 +219,20 @@ const CardColumnBody = ({ children }: { children: React.ReactNode }) => (
 	</div>
 )
 
-const CardBodyEntry = ({ children }: { children: React.ReactNode }) => (
-	<div className="flex flex-1 flex-col items-baseline text-sm">
+const CardBodyEntry = ({
+	children,
+	id,
+	testId,
+}: {
+	children: React.ReactNode
+	id?: string
+	testId?: string
+}) => (
+	<div
+		className="flex flex-1 flex-col items-baseline text-sm"
+		id={id}
+		data-testid={testId}
+	>
 		{children}
 	</div>
 )
@@ -186,6 +270,8 @@ type BookCardProps = {
 	actionsInfo?: React.ReactNode
 	children?: React.ReactNode
 	onOpenChanged?: (opened: boolean) => void
+	id?: string
+	testId?: string
 }
 
 export function BookCard({
@@ -200,6 +286,8 @@ export function BookCard({
 	bodyLayout,
 	children,
 	onOpenChanged,
+	id,
+	testId,
 }: BookCardProps) {
 	const body = (() => {
 		switch (bodyLayout) {
@@ -219,6 +307,8 @@ export function BookCard({
 			closed={closed}
 			onOpenChanged={onOpenChanged}
 			defaultOpen={defaultOpen}
+			id={id}
+			testId={testId}
 			header={
 				<CardHeader>
 					<CardHeaderMeta>

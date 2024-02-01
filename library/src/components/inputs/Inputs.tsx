@@ -61,6 +61,7 @@ const Input = forwardRef(
 			"aria-invalid": ariaInvalid = false,
 			style,
 			inputStyle,
+			testId,
 			...props
 		}: ComponentPropsWithoutRef<"input"> & {
 			helpMessage?: ReactNode
@@ -68,6 +69,7 @@ const Input = forwardRef(
 			inputClassName?: string
 			invalid?: boolean
 			inputStyle?: CSSProperties
+			testId?: string
 		},
 		ref: ForwardedRef<HTMLInputElement>,
 	) => {
@@ -112,6 +114,7 @@ const Input = forwardRef(
 					className={twMerge(inputStyles, inputClassName)}
 					style={inputStyle}
 					aria-invalid={ariaInvalid || invalid}
+					data-testid={testId}
 					{...props}
 				/>
 				{helpMessage && (

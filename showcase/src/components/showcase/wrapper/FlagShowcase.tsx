@@ -13,6 +13,8 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				icon={<WarningIcon label="" />}
 				description="Action Flag"
+				id="testflag"
+				testId="testflag"
 				actions={[
 					{
 						content: "Action",

@@ -11,10 +11,14 @@ export function FilterDropdown({
 	filter,
 	onAttributeClick,
 	onSelectedChanged,
+	id,
+	testId,
 }: {
 	filter: FilterType
 	onAttributeClick?: (filterIdent: string, attribute: string) => void
 	onSelectedChanged?: (filterIdent: string, attributes: string[]) => void
+	id?: string
+	testId?: string
 }) {
 	const { availableValues, selectedValues, selectableValues } = filter
 
@@ -71,7 +75,11 @@ export function FilterDropdown({
 
 	return useMemo(
 		() => (
-			<div className="border-border bg-surface rounded border">
+			<div
+				className="border-border bg-surface rounded border"
+				id={id}
+				data-testid={testId}
+			>
 				<Select
 					placeholder={filter.attributeName}
 					isMulti
@@ -98,12 +106,16 @@ export function FilterDropdowns({
 	onSelectedChanged,
 	className,
 	style,
+	id,
+	testId,
 }: {
 	filters: readonly FilterType[]
 	onAttributeClick?: (filterCategory: string, attribute: string) => void
 	onSelectedChanged?: (filterCategory: string, attributes: string[]) => void
 	className?: string
 	style?: React.CSSProperties
+	id?: string
+	testId?: string
 }) {
 	const dropDowns = useMemo(() => {
 		if (!filters || filters.length == 0) {
@@ -126,6 +138,8 @@ export function FilterDropdowns({
 				gridTemplateColumns: "repeat(auto-fill, minmax(18rem, 1fr))",
 				...style,
 			}}
+			id={id}
+			data-testid={testId}
 		>
 			{dropDowns}
 		</div>

@@ -20,10 +20,14 @@ export function LoadingSpinner({
 	size = "medium",
 	style,
 	className,
+	id,
+	testId,
 }: {
 	size?: Size
 	className?: string
 	style?: CSSProperties
+	id?: string
+	testId?: string
 }) {
 	return (
 		<div
@@ -35,6 +39,8 @@ export function LoadingSpinner({
 				className,
 			)}
 			style={style}
+			id={id}
+			data-testid={testId}
 		></div>
 	)
 }

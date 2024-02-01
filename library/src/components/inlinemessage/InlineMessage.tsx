@@ -32,11 +32,15 @@ export default function InlineMessage({
 	display = "block",
 	openingDirection = "topdown",
 	removable = true,
+	id,
+	testId,
 }: {
 	message: Message
 	display?: "inline-block" | "block"
 	openingDirection?: OpeningDirection
 	removable?: boolean
+	id?: string
+	testId?: string
 }) {
 	const [open, setOpen] = useState(true)
 	const [msg, setMessage] = useState(message)
@@ -77,6 +81,8 @@ export default function InlineMessage({
 					}, message.timeOut * 1000)
 				}
 			}}
+			id={id}
+			data-testid={testId}
 		>
 			<div
 				style={{

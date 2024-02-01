@@ -15,6 +15,10 @@ export type TooltipProps = {
 	tooltipStyle?: CSSProperties
 	side?: RTTp.TooltipContentProps["side"]
 	align?: RTTp.TooltipContentProps["align"]
+	testId?: string
+	triggerTestId?: string
+	id?: string
+	triggerId?: string
 } & RTTp.TooltipProps
 
 export function Tooltip({
@@ -28,6 +32,10 @@ export function Tooltip({
 	side = "top",
 	align = "center",
 	usePortal = true,
+	testId,
+	triggerTestId,
+	id,
+	triggerId,
 }: TooltipProps) {
 	const content = useMemo(() => {
 		return (
@@ -39,6 +47,8 @@ export function Tooltip({
 				style={tooltipStyle}
 				side={side}
 				align={align}
+				data-testid={testId}
+				id={id}
 			>
 				<>
 					{tooltipHTMLContent && (
@@ -54,7 +64,9 @@ export function Tooltip({
 		)
 	}, [
 		align,
+		id,
 		side,
+		testId,
 		tooltipClassName,
 		tooltipContent,
 		tooltipHTMLContent,
@@ -63,7 +75,13 @@ export function Tooltip({
 
 	return (
 		<RTTp.Root>
-			<RTTp.Trigger className={className} style={style} asChild>
+			<RTTp.Trigger
+				className={className}
+				style={style}
+				asChild
+				data-testid={triggerTestId}
+				id={triggerId}
+			>
 				<div className={className} style={style}>
 					{children}
 				</div>

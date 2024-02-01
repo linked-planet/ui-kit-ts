@@ -1,9 +1,4 @@
-import React, {
-	type CSSProperties,
-	useState,
-	useCallback,
-	useEffect,
-} from "react"
+import React, { type CSSProperties, useState, useCallback } from "react"
 import {
 	type ColumnDef,
 	flexRender,
@@ -57,6 +52,9 @@ interface DataTableProps<TData, TValue> {
 
 	tableRowClassName?: string
 	tableRowStyle?: CSSProperties
+
+	id?: string
+	testId?: string
 }
 
 // I need to use the default any because the cell values can have an arbitrary type
@@ -82,6 +80,8 @@ export function DataTable<TData, TValue = any>({
 	tableBodyStyle,
 	tableRowClassName,
 	tableRowStyle,
+	id,
+	testId,
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>(_sorting ?? [])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
@@ -106,8 +106,8 @@ export function DataTable<TData, TValue = any>({
 	}
 
 	const onRowSelectionChangeCB = useCallback(
-		selectionUpdateFn => {
-			setRowSelection(prev => {
+		(selectionUpdateFn) => {
+			setRowSelection((prev) => {
 				const selection = selectionUpdateFn(prev)
 				onRowSelectionChange?.(selection)
 				return selection
@@ -117,8 +117,8 @@ export function DataTable<TData, TValue = any>({
 	)
 
 	const onColumnVisibilityChangeCB = useCallback(
-		visibilityUpdateFn => {
-			setColumnVisibility(prev => {
+		(visibilityUpdateFn) => {
+			setColumnVisibility((prev) => {
 				const newVisibility = visibilityUpdateFn(prev)
 				onColumnVisibilityChange?.(newVisibility)
 				return newVisibility
@@ -128,8 +128,8 @@ export function DataTable<TData, TValue = any>({
 	)
 
 	const onSortingChangeCB = useCallback(
-		sortingUpdateFn => {
-			setSorting(prev => {
+		(sortingUpdateFn) => {
+			setSorting((prev) => {
 				const newSorting = sortingUpdateFn(prev)
 				onSortingChange?.(newSorting)
 				return newSorting
@@ -139,8 +139,8 @@ export function DataTable<TData, TValue = any>({
 	)
 
 	const onColumnFiltersChangeCB = useCallback(
-		filtersUpdateFn => {
-			setColumnFilters(prev => {
+		(filtersUpdateFn) => {
+			setColumnFilters((prev) => {
 				const filters = filtersUpdateFn(prev)
 				onColumnFiltersChange?.(filters)
 				return filters
@@ -171,9 +171,9 @@ export function DataTable<TData, TValue = any>({
 	const tableRowModel = table.getRowModel()
 
 	// should not be in a useMemo, else things like the chevrons on the ordered headers do not work
-	const tableHeaderGroupElements = tableHeaderGroups.map(headerGroup => (
+	const tableHeaderGroupElements = tableHeaderGroups.map((headerGroup) => (
 		<TableRow key={headerGroup.id}>
-			{headerGroup.headers.map(header => {
+			{headerGroup.headers.map((header) => {
 				const inner = header.isPlaceholder
 					? null
 					: flexRender(
@@ -230,14 +230,14 @@ export function DataTable<TData, TValue = any>({
 
 	// should not be in a useMemo, else things like column visibility do not get updated
 	const tableRows = tableRowModel.rows?.length ? (
-		tableRowModel.rows.map(row => (
+		tableRowModel.rows.map((row) => (
 			<TableRow
 				key={row.id}
 				data-state={row.getIsSelected() && "selected"}
 				className={tableRowClassName}
 				style={tableRowStyle}
 			>
-				{row.getVisibleCells().map(cell => (
+				{row.getVisibleCells().map((cell) => (
 					<TableCell
 						key={cell.id}
 						className={tableCellClassName}
@@ -264,7 +264,12 @@ export function DataTable<TData, TValue = any>({
 	)
 
 	return (
-		<Table className={tableClassName} style={tableStyle}>
+		<Table
+			className={tableClassName}
+			style={tableStyle}
+			id={id}
+			data-testid={testId}
+		>
 			<TableHeader
 				className={tableHeaderClassName}
 				style={tableHeaderStyle}

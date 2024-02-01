@@ -30,12 +30,16 @@ export function FilterCard({
 	filter,
 	className,
 	style,
+	id,
+	testId,
 }: {
 	onAttributeClick?: (filterIdent: string, attribute: string) => void
 	onSelectedChanged?: (filterIdent: string, attributes: string[]) => void
 	filter: FilterType
 	className?: string
 	style?: React.CSSProperties
+	id?: string
+	testId?: string
 }) {
 	const { availableValues, selectedValues, selectableValues } = filter
 	const [searchString, setSearchString] = useState<string>("")
@@ -72,6 +76,8 @@ export function FilterCard({
 					className,
 				)}
 				style={style}
+				id={id}
+				data-testid={testId}
 			>
 				<div
 					className={`bg-surface-raised border-border flex items-center border-b px-1 py-0.5 font-bold`}
@@ -197,6 +203,7 @@ export function FilterCard({
 		[
 			className,
 			filter.attributeName,
+			id,
 			onAttributeClick,
 			onSearchInputChange,
 			onSelectedChanged,
@@ -205,6 +212,7 @@ export function FilterCard({
 			selectableValues,
 			selectedValues,
 			style,
+			testId,
 			visibleValues,
 		],
 	)
@@ -221,6 +229,8 @@ export function FilterCards({
 	className,
 	filterStyle,
 	filterClassName,
+	id,
+	testId,
 }: {
 	filters: readonly FilterType[]
 	onAttributeClick?: (filterCategory: string, attribute: string) => void
@@ -229,6 +239,8 @@ export function FilterCards({
 	className?: string
 	filterStyle?: React.CSSProperties
 	filterClassName?: string
+	id?: string
+	testId?: string
 }) {
 	const filterCards = useMemo(
 		() =>
@@ -260,6 +272,8 @@ export function FilterCards({
 				className,
 			)}
 			style={style}
+			id={id}
+			data-testid={testId}
 		>
 			{filterCards}
 		</div>

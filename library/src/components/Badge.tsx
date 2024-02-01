@@ -14,6 +14,8 @@ type BadgeProps = {
 	children: React.ReactNode
 	style?: React.CSSProperties
 	className?: string
+	id?: string
+	testId?: string
 }
 
 const defaultStyle = "bg-neutral"
@@ -37,6 +39,8 @@ export function Badge({
 	children,
 	style,
 	className,
+	id,
+	testId,
 }: BadgeProps) {
 	return (
 		<span
@@ -46,6 +50,8 @@ export function Badge({
 				className,
 			)}
 			style={style}
+			id={id}
+			data-testid={testId}
 		>
 			{children}
 		</span>

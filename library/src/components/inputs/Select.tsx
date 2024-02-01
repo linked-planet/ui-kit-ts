@@ -124,9 +124,11 @@ function SelectInner<
 >({
 	isCreateable,
 	formatCreateLabel,
+	testId,
 	...props
 }: CreatableProps<Option, IsMulti, GroupOptionType> & {
 	isCreateable?: boolean
+	testId?: string
 }) {
 	const classNamesConfig = useClassNamesConfig<
 		Option,
@@ -146,6 +148,7 @@ function SelectInner<
 						: "Select..."
 				}
 				unstyled
+				data-testid={testId}
 				classNames={classNamesConfig}
 				formatCreateLabel={
 					formatCreateLabel ??
@@ -165,6 +168,7 @@ function SelectInner<
 			placeholder={props.placeholder ?? "Select..."}
 			unstyled
 			classNames={classNamesConfig}
+			data-testid={testId}
 			styles={customStyles}
 			{...props}
 		/>
@@ -192,6 +196,7 @@ type SelectPropsProto<
 	usePortal?: boolean
 	disabled?: boolean
 	isCreateable?: boolean
+	testId?: string
 }
 
 // extends with the control and fieldName props for react-hook-form.. the fieldName is the normal name prop of react-hook-form

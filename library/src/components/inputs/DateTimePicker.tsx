@@ -45,6 +45,8 @@ export function DateTimePicker<FormData extends FieldValues | undefined>({
 	"aria-invalid": ariaInvalid,
 	errorMessage,
 	onBlur,
+	id,
+	testId,
 	...props
 }: DateTimePickerProps<FormData>) {
 	if (control && name) {
@@ -82,6 +84,8 @@ export function DateTimePicker<FormData extends FieldValues | undefined>({
 					return (
 						<div className="min-w-[13.3rem]">
 							<AKDateTimePicker
+								id={id}
+								testId={testId}
 								{...props}
 								value={valueUsed}
 								onChange={
@@ -123,6 +127,8 @@ export function DateTimePicker<FormData extends FieldValues | undefined>({
 				timeFormat="HH:mm"
 				name={name}
 				onChange={_onChange}
+				id={id}
+				testId={testId}
 				{...props}
 			/>
 		</div>
@@ -167,6 +173,8 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 	"aria-invalid": ariaInvalid,
 	isInvalid,
 	errorMessage,
+	id,
+	testId,
 	...props
 }: TimePickerProps<FormData>) {
 	if (control && name) {
@@ -205,6 +213,8 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 						<div className="min-w-24">
 							<AKTimePicker
 								{...props}
+								id={id}
+								testId={testId}
 								value={valueUsed}
 								onChange={
 									onChangeUsed as (value: string) => void
@@ -246,6 +256,8 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 				name={name}
 				onChange={_onChange}
 				timeFormat="HH:mm"
+				id={id}
+				testId={testId}
 				{...akProps}
 			/>
 			{errorMessage && (
@@ -296,6 +308,8 @@ export function DatePicker<FormData extends FieldValues | undefined>({
 	"aria-invalid": ariaInvalid,
 	errorMessage,
 	isInvalid,
+	id,
+	testId,
 	...props
 }: DatePickerProps<FormData>) {
 	if (control && name) {
@@ -334,6 +348,8 @@ export function DatePicker<FormData extends FieldValues | undefined>({
 						<div className="min-w-[8.3rem]">
 							<AKDatePicker
 								{...props}
+								id={id}
+								testId={testId}
 								value={valueUsed}
 								onChange={
 									onChangeUsed as (value: string) => void
@@ -371,6 +387,8 @@ export function DatePicker<FormData extends FieldValues | undefined>({
 				onChange={_onChange}
 				onBlur={onBlur}
 				name={name}
+				id={id}
+				testId={testId}
 				value={value ?? undefined}
 				{...akProps}
 				isInvalid={ariaInvalid || isInvalid}

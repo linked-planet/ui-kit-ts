@@ -23,6 +23,8 @@ export type FlagProps = {
 	icon?: JSX.Element
 	actions?: FlagActionType[]
 	style?: CSSProperties
+	id?: string
+	testId?: string
 }
 
 export type FlagActionType = {
@@ -146,6 +148,8 @@ export function Flag({
 	inverted = false,
 	actions,
 	style,
+	id,
+	testId,
 }: FlagProps) {
 	const appStyle = inverted
 		? FlagInvertedStyles[appearance]
@@ -165,6 +169,8 @@ export function Flag({
 				appStyle,
 				`grid gap-4 rounded-sm p-4 shadow-md ${inverted ? "border" : ""}`,
 			)}
+			id={id}
+			data-testid={testId}
 		>
 			{icon && (
 				<div>

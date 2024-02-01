@@ -6,6 +6,7 @@ import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
 
 export function Toggle({
 	id,
+	testId,
 	value,
 	onChange,
 	label,
@@ -19,6 +20,7 @@ export function Toggle({
 	onFocus,
 }: {
 	id?: string
+	testId?: string
 	value?: string
 	onChange?: (checked: boolean) => void
 	label?: string
@@ -48,6 +50,7 @@ export function Toggle({
 			value={value}
 			onBlur={onBlur}
 			onFocus={onFocus}
+			data-testid={testId}
 		>
 			<span className="text-icon-inverse flex flex-none items-center justify-center">
 				<EditorDoneIcon label="" size="small" />

@@ -27,6 +27,8 @@ type AvatarProps = {
 	borderColor?: string
 	presence?: PresenceStatus
 	status?: Status
+	id?: string
+	testId?: string
 }
 
 const sizes: { [size in Sizes]: number } = {
@@ -166,14 +168,16 @@ export function Avatar({
 	borderColor,
 	presence,
 	status,
+	id,
+	testId,
 }: AvatarProps) {
 	const diameter = sizes[size]
 	const shapeStyles = appearance === "circle" ? "rounded-full" : "rounded-sm"
 	const colorStyles = isDisabled
 		? "bg-icon-disabled  cursor-not-allowed"
 		: src
-		? ""
-		: "bg-icon-subtle"
+			? ""
+			: "bg-icon-subtle"
 
 	const nameLetters = name
 		?.split(" ")
@@ -205,6 +209,8 @@ export function Avatar({
 	const avatarComp = (
 		<RAvatar.Root
 			aria-disabled={isDisabled}
+			id={id}
+			data-testid={testId}
 			className={twMerge(
 				"text-icon-inverse bg-surface-overlay border-surface-overlay relative box-content inline-flex flex-none select-none items-center justify-center border-2 align-middle",
 				shapeStyles,
