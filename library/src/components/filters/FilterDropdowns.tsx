@@ -119,6 +119,7 @@ export function FilterDropdowns({
 	style,
 	id,
 	testId,
+	hideNotSelectable = false,
 }: {
 	filters: readonly FilterType[]
 	onAttributeClick?: (filterCategory: string, attribute: string) => void
@@ -127,6 +128,7 @@ export function FilterDropdowns({
 	style?: React.CSSProperties
 	id?: string
 	testId?: string
+	hideNotSelectable?: boolean
 }) {
 	const dropDowns = useMemo(() => {
 		if (!filters || filters.length == 0) {
@@ -138,9 +140,10 @@ export function FilterDropdowns({
 				filter={filter}
 				onAttributeClick={onAttributeClick}
 				onSelectedChanged={onSelectedChanged}
+				hideNotSelectable={hideNotSelectable}
 			/>
 		))
-	}, [filters, onAttributeClick, onSelectedChanged])
+	}, [filters, hideNotSelectable, onAttributeClick, onSelectedChanged])
 
 	return (
 		<div
