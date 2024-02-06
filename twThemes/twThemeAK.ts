@@ -64,8 +64,8 @@ export const theme = {
 			"3xs": ".625rem",
 		},
 		animation: {
-			"fade-in": "fade-in 100ms linear",
-			"fade-out": "fade-out 100ms linear",
+			"fade-in": "fade-in 300ms linear",
+			"fade-out": "fade-out 300ms linear",
 		},
 		keyframes: {
 			"fade-in": {
@@ -73,7 +73,7 @@ export const theme = {
 				"100%": { opacity: "100%" },
 			},
 			"fade-out": {
-				"1000%": { opacity: 0 },
+				"100%": { opacity: 0 },
 				"0%": { opacity: "100%" },
 			},
 		},
