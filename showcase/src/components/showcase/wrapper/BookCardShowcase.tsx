@@ -1,4 +1,4 @@
-import React, { CSSProperties, useMemo, useState } from "react"
+import React, { CSSProperties, useMemo, useRef, useState } from "react"
 import {
 	BookCard,
 	BookCardComponents,
@@ -11,6 +11,7 @@ import ShowcaseWrapperItem, {
 import Button, { ButtonGroup } from "@atlaskit/button"
 import { Fieldset } from "@atlaskit/form"
 import { Badge, SimpleTag, TagGroup } from "@linked-planet/ui-kit-ts"
+import { CSSTransition } from "react-transition-group"
 
 //#region bookcardcomponents
 function BookCardComponentsExample() {
@@ -55,6 +56,53 @@ function BookCardComponentsExample() {
 	)
 }
 //#endregion bookcardcomponents
+
+//#region bookcard-animation
+function BookCardAnimationExample() {
+	const [showCard, setShowCard] = useState(true)
+	const nodeRef = useRef<HTMLDivElement>(null)
+
+	return (
+		<>
+			<Button onClick={() => setShowCard(!showCard)} className="mb-4">
+				Toggle Card
+			</Button>
+			<CSSTransition
+				in={showCard}
+				timeout={300} // this needs to be the same as the duration of the animation in the css
+				classNames={{
+					exit: "transition-opacity duration-300 ease-out opacity-0",
+				}}
+				nodeRef={nodeRef}
+				unmountOnExit
+			>
+				<BookCardComponents.CardBase
+					header={
+						<BookCardComponents.CardHeader>
+							<BookCardComponents.CardHeaderMeta>
+								<BookCardComponents.CardHeaderTitle className="">
+									Title
+								</BookCardComponents.CardHeaderTitle>
+							</BookCardComponents.CardHeaderMeta>
+						</BookCardComponents.CardHeader>
+					}
+					defaultOpen={true}
+					ref={nodeRef}
+				>
+					<BookCardComponents.CardGridBody>
+						<BookCardComponents.CardBodyEntry>
+							<BookCardComponents.CardBodyEntryTitle>
+								Entry Title
+							</BookCardComponents.CardBodyEntryTitle>
+							<div>Book Entry Content</div>
+						</BookCardComponents.CardBodyEntry>
+					</BookCardComponents.CardGridBody>
+				</BookCardComponents.CardBase>
+			</CSSTransition>
+		</>
+	)
+}
+//#endregion bookcard-animation
 
 function BookCardExample() {
 	//#region bookcard
@@ -146,14 +194,7 @@ function BookCardExample() {
 
 	return (
 		<div>
-			<div
-				style={{
-					display: "flex",
-					flexDirection: "row",
-					justifyContent: "space-between",
-					marginBottom: "8px",
-				}}
-			>
+			<div className="mb-2 flex flex-row justify-between">
 				<Fieldset legend="Book Card Collapsible">
 					<ButtonGroup>
 						<Button
@@ -246,6 +287,13 @@ export default function BookCardShowcase(props: ShowcaseProps) {
 						<BookCardComponentsExample key="bookcardcomponentexample" />
 					),
 					sourceCodeExampleId: "bookcardcomponents",
+				},
+				{
+					title: "Animation",
+					example: (
+						<BookCardAnimationExample key="bookcardanimationexample" />
+					),
+					sourceCodeExampleId: "bookcard-animation",
 				},
 			]}
 		/>

@@ -526,6 +526,45 @@ function BookCardComponentsExample() {
 }
 //#endregion bookcardcomponents
 
+//#region bookcard-animation
+function BookCardAnimationExample() {
+	const [showCard, setShowCard] = useState(true)
+
+	return (
+		<>
+			<Button onClick={() => setShowCard(!showCard)} className="mb-4">
+				Toggle Card
+			</Button>
+			{showCard ? (
+				<BookCardComponents.CardBase
+					header={
+						<BookCardComponents.CardHeader>
+							<BookCardComponents.CardHeaderMeta>
+								<BookCardComponents.CardHeaderTitle>
+									Title
+								</BookCardComponents.CardHeaderTitle>
+							</BookCardComponents.CardHeaderMeta>
+						</BookCardComponents.CardHeader>
+					}
+					defaultOpen={true}
+				>
+					<BookCardComponents.CardGridBody>
+						<BookCardComponents.CardBodyEntry>
+							<BookCardComponents.CardBodyEntryTitle>
+								Entry Title
+							</BookCardComponents.CardBodyEntryTitle>
+							<div>Book Entry Content</div>
+						</BookCardComponents.CardBodyEntry>
+					</BookCardComponents.CardGridBody>
+				</BookCardComponents.CardBase>
+			) : (
+				<div>Card is hidden</div>
+			)}
+		</>
+	)
+}
+//#endregion bookcard-animation
+
 function BookCardExample() {
 	//#region bookcard
 	const [bodyLayout, setBodyLayout] = useState<"row" | "grid" | "column">(
@@ -716,6 +755,13 @@ export default function BookCardShowcase(props: ShowcaseProps) {
 						<BookCardComponentsExample key="bookcardcomponentexample" />
 					),
 					sourceCodeExampleId: "bookcardcomponents",
+				},
+				{
+					title: "Animation",
+					example: (
+						<BookCardAnimationExample key="bookcardanimationexample" />
+					),
+					sourceCodeExampleId: "bookcard-animation",
 				},
 			]}
 		/>
@@ -2659,6 +2705,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 	const [selectedValues, setSelectedValues] = useState<string[]>([
 		"chocolate",
 		"vanilla",
+		"banana",
 	])
 
 	const filter: FilterType = {
@@ -2693,7 +2740,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 			"chocolate",
 			"vanilla",
 			"mint",
-			"banana",
+			//"banana",
 			"orange",
 			"apple",
 			"lemon",

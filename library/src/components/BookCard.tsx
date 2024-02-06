@@ -1,4 +1,4 @@
-import React from "react"
+import React, { forwardRef } from "react"
 import type { CSSProperties } from "react"
 
 import { token } from "@atlaskit/tokens"
@@ -10,47 +10,62 @@ import { twMerge } from "tailwind-merge"
 
 const borderColor = token("color.border", "#091e4224")
 
-const CardBase = ({
-	header,
-	closed,
-	defaultOpen,
-	onOpenChanged,
-	children,
-	id,
-	testId,
-}: {
-	header: React.ReactNode
-	closed?: boolean
-	defaultOpen?: boolean
-	onOpenChanged?: (opened: boolean) => void
-	children?: React.ReactNode
-	id?: string
-	testId?: string
-}) => {
-	const openVal =
-		closed != null ? !closed : defaultOpen != null ? undefined : true
+export const CardBase = forwardRef(
+	(
+		{
+			header,
+			closed,
+			defaultOpen,
+			onOpenChanged,
+			children,
+			id,
+			testId,
+			className,
+			style,
+		}: {
+			header: React.ReactNode
+			closed?: boolean
+			defaultOpen?: boolean
+			onOpenChanged?: (opened: boolean) => void
+			children?: React.ReactNode
+			id?: string
+			testId?: string
+			className?: string
+			style?: CSSProperties
+		},
+		ref: React.ForwardedRef<HTMLDivElement>,
+	) => {
+		const openVal =
+			closed != null ? !closed : defaultOpen != null ? undefined : true
 
-	const openButtonPos =
-		closed == undefined && defaultOpen == undefined ? "hidden" : "right"
+		const openButtonPos =
+			closed == undefined && defaultOpen == undefined ? "hidden" : "right"
 
-	return (
-		<Collapsible
-			openButtonPosition={openButtonPos}
-			header={header}
-			open={openVal}
-			defaultOpen={defaultOpen}
-			onChanged={onOpenChanged}
-			className="border-border shadow-overlay-bold border"
-			triggerClassName="rounded-t border-b border-border overflow-hidden"
-			id={id}
-			testId={testId}
-		>
-			<div className="bg-surface box-border flex w-full rounded-b">
-				{children}
-			</div>
-		</Collapsible>
-	)
-}
+		return (
+			<Collapsible
+				openButtonPosition={openButtonPos}
+				header={header}
+				open={openVal}
+				defaultOpen={defaultOpen}
+				onChanged={onOpenChanged}
+				className={twMerge(
+					"border-border shadow-overlay-bold border",
+					className,
+				)}
+				triggerClassName="rounded-t border-b border-border overflow-hidden"
+				id={id}
+				testId={testId}
+				ref={ref}
+				style={style}
+			>
+				<div className="bg-surface box-border flex w-full rounded-b">
+					{children}
+				</div>
+			</Collapsible>
+		)
+	},
+)
+CardBase.displayName = "CardBase"
 
 const CardHeader = ({
 	className,
@@ -365,71 +380,80 @@ type BookCardProps = {
 	testId?: string
 }
 
-export function BookCard({
-	title,
-	subtitle,
-	upperTitle,
-	closed,
-	defaultOpen,
-	actions,
-	actionsInfo,
-	bodyStyle,
-	bodyClassName,
-	bodyLayout,
-	children,
-	onOpenChanged,
-	id,
-	testId,
-}: BookCardProps) {
-	const body = (() => {
-		switch (bodyLayout) {
-			case "row":
-				return <CardRowBody>{children}</CardRowBody>
-			case "grid":
-				return <CardGridBody>{children}</CardGridBody>
-			case "column":
-				return <CardColumnBody>{children}</CardColumnBody>
-			default:
-				return <CardGridBody>{children}</CardGridBody>
-		}
-	})()
-
-	return (
-		<CardBase
-			closed={closed}
-			onOpenChanged={onOpenChanged}
-			defaultOpen={defaultOpen}
-			id={id}
-			testId={testId}
-			header={
-				<CardHeader>
-					<CardHeaderMeta>
-						{upperTitle && (
-							<CardHeaderUpperTitle>
-								{upperTitle}
-							</CardHeaderUpperTitle>
-						)}
-						<CardHeaderTitle>{title}</CardHeaderTitle>
-						{subtitle && (
-							<CardHeaderSubtitle>{subtitle}</CardHeaderSubtitle>
-						)}
-					</CardHeaderMeta>
-					<CardHeaderActions>
-						{actionsInfo && (
-							<CardHeaderActionsInfo>
-								{actionsInfo}
-							</CardHeaderActionsInfo>
-						)}
-						{actions}
-					</CardHeaderActions>
-				</CardHeader>
+export const BookCard = forwardRef(
+	(
+		{
+			title,
+			subtitle,
+			upperTitle,
+			closed,
+			defaultOpen,
+			actions,
+			actionsInfo,
+			bodyStyle,
+			bodyClassName,
+			bodyLayout,
+			children,
+			onOpenChanged,
+			id,
+			testId,
+		}: BookCardProps,
+		ref: React.ForwardedRef<HTMLDivElement>,
+	) => {
+		const body = (() => {
+			switch (bodyLayout) {
+				case "row":
+					return <CardRowBody>{children}</CardRowBody>
+				case "grid":
+					return <CardGridBody>{children}</CardGridBody>
+				case "column":
+					return <CardColumnBody>{children}</CardColumnBody>
+				default:
+					return <CardGridBody>{children}</CardGridBody>
 			}
-		>
-			<div className="bg-surface box-border w-full rounded-b">
-				<div style={bodyStyle} className={bodyClassName}>
-					{body}
+		})()
+
+		return (
+			<CardBase
+				closed={closed}
+				onOpenChanged={onOpenChanged}
+				defaultOpen={defaultOpen}
+				id={id}
+				testId={testId}
+				ref={ref}
+				header={
+					<CardHeader>
+						<CardHeaderMeta>
+							{upperTitle && (
+								<CardHeaderUpperTitle>
+									{upperTitle}
+								</CardHeaderUpperTitle>
+							)}
+							<CardHeaderTitle>{title}</CardHeaderTitle>
+							{subtitle && (
+								<CardHeaderSubtitle>
+									{subtitle}
+								</CardHeaderSubtitle>
+							)}
+						</CardHeaderMeta>
+						<CardHeaderActions>
+							{actionsInfo && (
+								<CardHeaderActionsInfo>
+									{actionsInfo}
+								</CardHeaderActionsInfo>
+							)}
+							{actions}
+						</CardHeaderActions>
+					</CardHeader>
+				}
+			>
+				<div className="bg-surface box-border w-full rounded-b">
+					<div style={bodyStyle} className={bodyClassName}>
+						{body}
+					</div>
 				</div>
-			</div>
-		</CardBase>
-	)
-}
+			</CardBase>
+		)
+	},
+)
+BookCard.displayName = "BookCard"

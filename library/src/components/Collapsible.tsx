@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { forwardRef, useCallback, useState } from "react"
 import * as CollapsibleRUI from "@radix-ui/react-collapsible"
 import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
@@ -22,92 +22,103 @@ type CollapsibleProps = {
 	testId?: string
 }
 
-export function Collapsible({
-	open: opened,
-	defaultOpen = true,
-	onChanged,
-	openButtonPosition = "left",
-	header,
-	triggerClassName,
-	triggerStyle,
-	headerContainerStyle,
-	headerContainerClassName,
-	className,
-	style,
-	children,
-	id,
-	testId,
-}: CollapsibleProps) {
-	const [open, setOpen] = useState(opened == undefined ? defaultOpen : opened)
+export const Collapsible = forwardRef(
+	(
+		{
+			open: opened,
+			defaultOpen = true,
+			onChanged,
+			openButtonPosition = "left",
+			header,
+			triggerClassName,
+			triggerStyle,
+			headerContainerStyle,
+			headerContainerClassName,
+			className,
+			style,
+			children,
+			id,
+			testId,
+		}: CollapsibleProps,
+		ref: React.ForwardedRef<HTMLDivElement>,
+	) => {
+		const [open, setOpen] = useState(
+			opened == undefined ? defaultOpen : opened,
+		)
 
-	if (opened != null && opened !== open) {
-		setOpen(opened)
-	}
-
-	const openCB = useCallback(
-		(opened: boolean) => {
+		if (opened != null && opened !== open) {
 			setOpen(opened)
-			if (onChanged) onChanged(opened)
-		},
-		[onChanged],
-	)
+		}
 
-	const chevron = open ? (
-		<ChevronDownIcon label="close" />
-	) : (
-		<>
-			{openButtonPosition === "left" ? (
-				<ChevronRightIcon label="open" />
-			) : (
-				<ChevronUpIcon label="open" />
-			)}
-		</>
-	)
+		const openCB = useCallback(
+			(opened: boolean) => {
+				setOpen(opened)
+				if (onChanged) onChanged(opened)
+			},
+			[onChanged],
+		)
 
-	return (
-		<CollapsibleRUI.Root
-			open={open}
-			defaultOpen={defaultOpen}
-			onOpenChange={openCB}
-			className={twMerge("bg-surface-raised rounded", className)}
-			style={style}
-			data-testid={testId}
-			id={id}
-		>
-			<CollapsibleRUI.Trigger
-				className={twMerge(
-					`flex w-full flex-1 items-center justify-start ${
-						openButtonPosition === "hidden" ? "cursor-default" : ""
-					}`,
-					triggerClassName,
+		const chevron = open ? (
+			<ChevronDownIcon label="close" />
+		) : (
+			<>
+				{openButtonPosition === "left" ? (
+					<ChevronRightIcon label="open" />
+				) : (
+					<ChevronUpIcon label="open" />
 				)}
-				style={triggerStyle}
-				asChild
-			>
-				<div>
-					{openButtonPosition === "left" && (
-						<div className="flex h-full flex-none items-center justify-center">
-							{chevron}
-						</div>
-					)}
-					<div
-						className={twMerge(
-							"flex w-full flex-1 justify-start",
-							headerContainerClassName,
-						)}
-						style={headerContainerStyle}
-					>
-						{header}
-					</div>
-					{openButtonPosition === "right" && (
-						<div className="flex h-full flex-none items-center justify-center">
-							{chevron}
-						</div>
-					)}
-				</div>
-			</CollapsibleRUI.Trigger>
+			</>
+		)
 
-			<CollapsibleRUI.Content>{children}</CollapsibleRUI.Content>
-		</CollapsibleRUI.Root>
-	)
-}
+		return (
+			<CollapsibleRUI.Root
+				open={open}
+				defaultOpen={defaultOpen}
+				onOpenChange={openCB}
+				className={twMerge("bg-surface-raised rounded", className)}
+				style={style}
+				data-testid={testId}
+				id={id}
+				ref={ref}
+			>
+				<CollapsibleRUI.Trigger
+					className={twMerge(
+						`flex w-full flex-1 items-center justify-start ${
+							openButtonPosition === "hidden"
+								? "cursor-default"
+								: ""
+						}`,
+						triggerClassName,
+					)}
+					style={triggerStyle}
+					asChild
+				>
+					<div>
+						{openButtonPosition === "left" && (
+							<div className="flex h-full flex-none items-center justify-center">
+								{chevron}
+							</div>
+						)}
+						<div
+							className={twMerge(
+								"flex w-full flex-1 justify-start",
+								headerContainerClassName,
+							)}
+							style={headerContainerStyle}
+						>
+							{header}
+						</div>
+						{openButtonPosition === "right" && (
+							<div className="flex h-full flex-none items-center justify-center">
+								{chevron}
+							</div>
+						)}
+					</div>
+				</CollapsibleRUI.Trigger>
+
+				<CollapsibleRUI.Content>{children}</CollapsibleRUI.Content>
+			</CollapsibleRUI.Root>
+		)
+	},
+)
+Collapsible.displayName = "Collapsible"
