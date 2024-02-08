@@ -16,9 +16,9 @@ function AnimatedListExample() {
 
 	return (
 		<>
-			<ButtonGroup>
+			<ButtonGroup className="mb-4">
 				<Button onClick={() => setShowItem0(!showItem0)}>
-					{showItem0 ? "Hide Item0" : "Show Item0"}
+					{showItem0 ? "Hide Item0" : "Show Item 0"}
 				</Button>
 				<Button onClick={() => setShowItem1(!showItem1)}>
 					{showItem0 ? "Hide Item 1" : "Show Item 1"}
@@ -28,13 +28,27 @@ function AnimatedListExample() {
 				</Button>
 			</ButtonGroup>
 			<AnimatedList
+				className="flex flex-col gap-2"
 				classNames={{
 					exit: "duration-300 ease-in-out opacity-5 relative -translate-x-full",
 				}}
+				timeout={300}
 			>
-				{showItem0 && <div className={className}>Item 0</div>}
-				{showItem1 && <div className={className}>Item 1</div>}
-				{showItem2 && <div className={className}>Item 2</div>}
+				{showItem0 && (
+					<div key="0" className={className}>
+						Item 0
+					</div>
+				)}
+				{showItem1 && (
+					<div key="1" className={className}>
+						Item 1
+					</div>
+				)}
+				{showItem2 && (
+					<div key="2" className={className}>
+						Item 2
+					</div>
+				)}
 			</AnimatedList>
 		</>
 	)

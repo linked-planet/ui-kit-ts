@@ -17,6 +17,13 @@ export type AnimatedListProps = {
 	className?: string
 	style?: CSSProperties
 	timeout?: number
+
+	/** en- or disable appear animations */
+	appear?: boolean
+	/** en- or disable enter animations */
+	enter?: boolean
+	/** en- or disable exit animations */
+	exit?: boolean
 }
 
 export function AnimatedList({
@@ -26,6 +33,9 @@ export function AnimatedList({
 	className,
 	style,
 	timeout = 300,
+	appear = true,
+	enter = true,
+	exit = true,
 }: AnimatedListProps) {
 	const listElements = useMemo(
 		() =>
@@ -54,7 +64,13 @@ export function AnimatedList({
 	)
 
 	return (
-		<TransitionGroup className={className} style={style}>
+		<TransitionGroup
+			className={className}
+			style={style}
+			appear={appear}
+			enter={enter}
+			exit={exit}
+		>
 			{listElements}
 		</TransitionGroup>
 	)
