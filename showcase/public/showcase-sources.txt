@@ -1,3 +1,68 @@
+import React, { useState } from "react"
+
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
+import { AnimatedList, Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
+
+//#region animated-list
+function AnimatedListExample() {
+	const [showItem0, setShowItem0] = useState(true)
+	const [showItem1, setShowItem1] = useState(true)
+	const [showItem2, setShowItem2] = useState(true)
+
+	const className = "border rounded border-border p-4 bg-brand"
+
+	return (
+		<>
+			<ButtonGroup>
+				<Button onClick={() => setShowItem0(!showItem0)}>
+					{showItem0 ? "Hide Item0" : "Show Item0"}
+				</Button>
+				<Button onClick={() => setShowItem1(!showItem1)}>
+					{showItem0 ? "Hide Item 1" : "Show Item 1"}
+				</Button>
+				<Button onClick={() => setShowItem2(!showItem2)}>
+					{showItem0 ? "Hide Item 2" : "Show Item 2"}
+				</Button>
+			</ButtonGroup>
+			<AnimatedList
+				classNames={{
+					exit: "duration-300 ease-in-out opacity-5 relative -translate-x-full",
+				}}
+			>
+				{showItem0 && <div className={className}>Item 0</div>}
+				{showItem1 && <div className={className}>Item 1</div>}
+				{showItem2 && <div className={className}>Item 2</div>}
+			</AnimatedList>
+		</>
+	)
+}
+//#endregion animated-list
+
+export default function AnimatedListShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="Animated List"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single#AnimatedList",
+				},
+			]}
+			examples={[
+				{
+					title: "Animated List",
+					example: <AnimatedListExample />,
+					sourceCodeExampleId: "animated-list",
+				},
+			]}
+		/>
+	)
+}
+
 import React from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
@@ -468,7 +533,7 @@ function BannerShowcase(props: ShowcaseProps) {
 
 export default BannerShowcase
 
-import React, { CSSProperties, useMemo, useState } from "react"
+import React, { CSSProperties, useMemo, useRef, useState } from "react"
 import {
 	BookCard,
 	BookCardComponents,
@@ -481,6 +546,7 @@ import ShowcaseWrapperItem, {
 import Button, { ButtonGroup } from "@atlaskit/button"
 import { Fieldset } from "@atlaskit/form"
 import { Badge, SimpleTag, TagGroup } from "@linked-planet/ui-kit-ts"
+import { CSSTransition } from "react-transition-group"
 
 //#region bookcardcomponents
 function BookCardComponentsExample() {
@@ -529,24 +595,34 @@ function BookCardComponentsExample() {
 //#region bookcard-animation
 function BookCardAnimationExample() {
 	const [showCard, setShowCard] = useState(true)
+	const nodeRef = useRef<HTMLDivElement>(null)
 
 	return (
 		<>
 			<Button onClick={() => setShowCard(!showCard)} className="mb-4">
 				Toggle Card
 			</Button>
-			{showCard ? (
+			<CSSTransition
+				in={showCard}
+				timeout={300} // this needs to be the same as the duration of the animation in the css
+				classNames={{
+					exit: "transition-opacity duration-300 ease-out opacity-0",
+				}}
+				nodeRef={nodeRef}
+				unmountOnExit
+			>
 				<BookCardComponents.CardBase
 					header={
 						<BookCardComponents.CardHeader>
 							<BookCardComponents.CardHeaderMeta>
-								<BookCardComponents.CardHeaderTitle>
+								<BookCardComponents.CardHeaderTitle className="">
 									Title
 								</BookCardComponents.CardHeaderTitle>
 							</BookCardComponents.CardHeaderMeta>
 						</BookCardComponents.CardHeader>
 					}
 					defaultOpen={true}
+					ref={nodeRef}
 				>
 					<BookCardComponents.CardGridBody>
 						<BookCardComponents.CardBodyEntry>
@@ -557,9 +633,7 @@ function BookCardAnimationExample() {
 						</BookCardComponents.CardBodyEntry>
 					</BookCardComponents.CardGridBody>
 				</BookCardComponents.CardBase>
-			) : (
-				<div>Card is hidden</div>
-			)}
+			</CSSTransition>
 		</>
 	)
 }
@@ -655,14 +729,7 @@ function BookCardExample() {
 
 	return (
 		<div>
-			<div
-				style={{
-					display: "flex",
-					flexDirection: "row",
-					justifyContent: "space-between",
-					marginBottom: "8px",
-				}}
-			>
+			<div className="mb-2 flex flex-row justify-between">
 				<Fieldset legend="Book Card Collapsible">
 					<ButtonGroup>
 						<Button

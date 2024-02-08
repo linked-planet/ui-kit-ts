@@ -43,6 +43,7 @@ import FiltersShowcase from "./components/showcase/wrapper/FiltersShowcase"
 import InputShowcase from "./components/showcase/wrapper/InputShowcase"
 import LayeringShowcase from "./components/showcase/wrapper/LayeringShowcase"
 import ColorsShowcase from "./components/showcase/wrapper/ColorsShowcase"
+import AnimatedListShowcase from "./components/showcase/wrapper/AnimatedListShowcase"
 
 export default function useShowcases({
 	overallSourceCode,
@@ -51,6 +52,9 @@ export default function useShowcases({
 }) {
 	return useMemo(
 		() => ({
+			"Animated List": (
+				<AnimatedListShowcase overallSourceCode={overallSourceCode} />
+			),
 			Avatars: <AvatarShowcase overallSourceCode={overallSourceCode} />,
 			"Awesome Slider": (
 				<AwesomeSliderShowcase overallSourceCode={overallSourceCode} />
