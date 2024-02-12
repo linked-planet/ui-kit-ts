@@ -24,6 +24,14 @@ export type AnimatedListProps = {
 	enter?: boolean
 	/** en- or disable exit animations */
 	exit?: boolean
+
+	onEnter?: () => void
+	onEntering?: () => void
+	onEntered?: () => void
+
+	onExit?: () => void
+	onExiting?: () => void
+	onExited?: () => void
 }
 
 export function AnimatedList({
@@ -32,6 +40,12 @@ export function AnimatedList({
 	classNames,
 	className,
 	style,
+	onEnter,
+	onEntering,
+	onEntered,
+	onExit,
+	onExiting,
+	onExited,
 	timeout = 300,
 	appear = true,
 	enter = true,
@@ -55,6 +69,12 @@ export function AnimatedList({
 						nodeRef={ref}
 						classNames={classNames}
 						unmountOnExit={unmountOnExit}
+						onEnter={onEnter}
+						onEntering={onEntering}
+						onEntered={onEntered}
+						onExit={onExit}
+						onExiting={onExiting}
+						onExited={onExited}
 					>
 						<div ref={ref}>{it}</div>
 					</CSSTransition>
