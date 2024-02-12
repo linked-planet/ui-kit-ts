@@ -139,6 +139,7 @@ function Example2() {
 						console.info("End date cleared")
 					}
 				}}
+				//readOnly
 			/>
 		</>
 	)

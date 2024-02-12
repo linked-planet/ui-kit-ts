@@ -41,6 +41,7 @@ export type DateRangeProps<
 
 	disabled?: boolean
 	invalid?: boolean
+	readOnly?: boolean
 
 	onDateRangeSelected?: (start: DateType, end: DateType) => void
 
@@ -123,6 +124,7 @@ function DateRangePickerInner({
 	weekStartDate,
 	onViewChanged,
 	invalid,
+	readOnly,
 	testId,
 }: {
 	startDate: Dayjs | undefined
@@ -143,6 +145,7 @@ function DateRangePickerInner({
 	locale: string
 	weekStartDate: WeekDay
 	invalid?: boolean
+	readOnly?: boolean
 	testId?: string
 }) {
 	const defaultMonth =
@@ -163,6 +166,8 @@ function DateRangePickerInner({
 		viewDefaultDay != undefined
 			? viewDefaultDay
 			: startDate?.date() ?? endDate?.date() ?? undefined
+
+	const onChangeCB = !readOnly ? onViewChanged : undefined
 
 	return (
 		<div
@@ -189,10 +194,11 @@ function DateRangePickerInner({
 							: undefined
 				}
 				onSelect={(event) => {
+					if (readOnly) return
 					const selectedDate = event.iso
 					onDateSelectCB(selectedDate as DateType)
 				}}
-				onChange={onViewChanged}
+				onChange={onChangeCB}
 				locale={locale}
 				weekStartDay={weekStartDate}
 			/>
@@ -222,6 +228,7 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 	name,
 	required,
 	invalid,
+	readOnly,
 }: DateRangeProps<FormData>) {
 	let defaultStart = selectedStartDate ? dayjs(selectedStartDate) : undefined
 	let defaultEnd = selectedEndDate ? dayjs(selectedEndDate) : undefined
@@ -346,6 +353,7 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 				locale={locale}
 				weekStartDate={weekStartDate}
 				invalid={_invalid}
+				readOnly={readOnly}
 			/>
 		)
 	} else {
@@ -420,6 +428,7 @@ export function DateRangePicker<FormData extends FieldValues | undefined>({
 							locale={locale}
 							weekStartDate={weekStartDate}
 							invalid={_invalid}
+							readOnly={readOnly}
 						/>
 					)
 				}}
@@ -449,6 +458,7 @@ export function DateRangePickerOld<FormData extends FieldValues | undefined>({
 	control,
 	name,
 	required,
+	readOnly,
 }: DateRangeProps<FormData>) {
 	const [startDate, setStartDate] = useState(
 		selectedStartDate ? dayjs(selectedStartDate) : undefined,
@@ -562,6 +572,7 @@ export function DateRangePickerOld<FormData extends FieldValues | undefined>({
 							: undefined
 				}
 				onSelect={(event) => {
+					if (readOnly) return
 					const selectedDate = event.iso
 					onDateSelectCB(selectedDate)
 				}}
@@ -640,6 +651,7 @@ export function DateRangePickerOld<FormData extends FieldValues | undefined>({
 									: undefined
 						}
 						onSelect={(event) => {
+							if (readOnly) return
 							const selectedDate = event.iso
 							onDateSelectCB(selectedDate, controlOnChange)
 						}}
