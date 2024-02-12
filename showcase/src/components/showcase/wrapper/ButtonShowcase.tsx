@@ -141,6 +141,15 @@ function ButtonShowcase(props: ShowcaseProps) {
 			</Button>
 
 			<Button
+				appearance="default"
+				onClick={() => console.log("Button pressed")}
+				disabled
+				inverted
+			>
+				Disabled Inverted Button
+			</Button>
+
+			<Button
 				appearance="primary"
 				onClick={() => console.log("Button pressed")}
 			>
