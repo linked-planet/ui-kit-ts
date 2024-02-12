@@ -59,6 +59,12 @@ function AnimatedListExample() {
 				timeout={300}
 				enter={enableEnterAnimation}
 				exit={enableExitAnimation}
+				onEnter={() => console.log("Enter")}
+				onEntering={() => console.log("Entering")}
+				onEntered={() => console.log("Entered")}
+				onExit={() => console.log("Exit")}
+				onExiting={() => console.log("Exiting")}
+				onExited={() => console.log("Exited")}
 			>
 				{showItem0 && <div className={className}>Item 0</div>}
 				{showItem1 && <div className={className}>Item 1</div>}
