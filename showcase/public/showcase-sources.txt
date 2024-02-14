@@ -7187,13 +7187,15 @@ function TooltipShowcase(props: ShowcaseProps) {
 						<SearchIcon label="" />
 					</Tooltip>
 					<Tooltip
-						side="bottom"
-						tooltipContent={"I'm a bottom tooltip"}
+						side="top"
+						defaultOpen
+						tooltipContent={"I'm a top tooltip"}
 					>
 						<SearchIcon label="" />
 					</Tooltip>
 					<Tooltip
 						side="bottom"
+						open
 						tooltipContent={
 							<p>
 								I&apos;m a bottom-end tooltip <br />

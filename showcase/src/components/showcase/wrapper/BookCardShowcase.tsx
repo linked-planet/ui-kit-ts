@@ -183,7 +183,13 @@ function BookCardExample() {
 						<BookCardComponents.CardBodyEntryTitle>
 							Book Entry Title
 						</BookCardComponents.CardBodyEntryTitle>
-						<div>Book Entry Content</div>
+						<BookCardComponents.CardBodyEntryScaling>
+							Lorem ipsum dolor sit amet consectetur adipisicing
+							elit. Beatae aperiam tenetur est in quidem? Tempore,
+							cumque perspiciatis optio aperiam dolorem saepe
+							harum, sequi eaque nisi quas, assumenda praesentium!
+							Labore, incidunt.
+						</BookCardComponents.CardBodyEntryScaling>
 					</BookCardComponents.CardBodyEntry>
 					{children}
 				</>

@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react"
+import React, { forwardRef, useState } from "react"
 import type { CSSProperties } from "react"
 
 import { token } from "@atlaskit/tokens"
@@ -7,6 +7,7 @@ import { css } from "@emotion/css"
 
 import { Collapsible } from "./Collapsible"
 import { twMerge } from "tailwind-merge"
+import { Button } from "./Button"
 
 const borderColor = token("color.border", "#091e4224")
 
@@ -341,6 +342,40 @@ const CardBodyEntry = ({
 	</div>
 )
 
+const CardBodyEntryScaling = ({
+	moreString = "more",
+	lessString = "less",
+	children,
+	testId,
+}: {
+	children: React.ReactNode
+	testId?: string
+	moreString?: string
+	lessString?: string
+}) => {
+	const [open, setOpen] = useState(false)
+
+	return (
+		<div
+			className={`flex w-full items-start ${open ? "flex-col" : "flex-row"} ease-in-out`}
+		>
+			<div
+				data-testid={testId}
+				className={`${open ? "max-h-full" : "max-h-6 truncate"}`}
+			>
+				{children}
+			</div>
+			<Button
+				appearance="link"
+				onClick={() => setOpen(!open)}
+				className="ml-auto p-0  text-sm"
+			>
+				{open ? lessString : moreString}
+			</Button>
+		</div>
+	)
+}
+
 const CardBodyEntryTitle = ({ children }: { children: React.ReactNode }) => (
 	<span className="pb-1 text-[13px] font-semibold">{children}</span>
 )
@@ -359,6 +394,7 @@ const BookCardComponents = {
 	CardColumnBody,
 	CardBodyEntry,
 	CardBodyEntryTitle,
+	CardBodyEntryScaling,
 }
 
 export { BookCardComponents }
