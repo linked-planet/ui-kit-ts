@@ -36,6 +36,9 @@ export function Tooltip({
 	triggerTestId,
 	id,
 	triggerId,
+	defaultOpen,
+	open,
+	onOpenChange,
 }: TooltipProps) {
 	const content = useMemo(() => {
 		return (
@@ -74,7 +77,11 @@ export function Tooltip({
 	])
 
 	return (
-		<RTTp.Root>
+		<RTTp.Root
+			open={open}
+			defaultOpen={defaultOpen}
+			onOpenChange={onOpenChange}
+		>
 			<RTTp.Trigger
 				className={className}
 				style={style}
