@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from "react"
+import React, { forwardRef, useLayoutEffect, useState } from "react"
 import type { CSSProperties } from "react"
 
 import { token } from "@atlaskit/tokens"
@@ -8,6 +8,7 @@ import { css } from "@emotion/css"
 import { Collapsible } from "./Collapsible"
 import { twMerge } from "tailwind-merge"
 import { Button } from "./Button"
+import { set } from "react-hook-form"
 
 const borderColor = token("color.border", "#091e4224")
 
@@ -354,24 +355,55 @@ const CardBodyEntryScaling = ({
 	lessString?: string
 }) => {
 	const [open, setOpen] = useState(false)
+	const [animating, setAnimating] = useState(false)
+	const [isTruncated, setIsTruncated] = useState(false)
+	const containerRef = React.createRef<HTMLDivElement>()
+	const animationDuration = 300
+
+	console.log("TRUNCATED", isTruncated)
+
+	useLayoutEffect(() => {
+		if (containerRef.current) {
+			setIsTruncated(
+				containerRef.current.scrollWidth >
+					containerRef.current.clientWidth,
+			)
+		}
+	}, [containerRef, children])
 
 	return (
 		<div
-			className={`flex w-full items-start ${open ? "flex-col" : "flex-row"} ease-in-out`}
+			className={`flex w-full items-start ${open || animating ? "flex-col" : "flex-row"}`}
 		>
 			<div
 				data-testid={testId}
-				className={`${open ? "max-h-full" : "max-h-6 truncate"}`}
+				className={`grid min-h-4 transition-[grid-template-rows] ease-in-out ${open && animating ? "grid-rows-[0fr]" : open ? "grid-rows-[1fr]" : animating ? "grid-rows-[0fr]" : "grid-rows-[1rem]"}`}
+				style={{
+					transitionDuration: `${animationDuration}ms`,
+				}}
 			>
-				{children}
+				<div
+					className={
+						open || animating ? `overflow-hidden` : "truncate"
+					}
+					ref={containerRef}
+				>
+					{children}
+				</div>
 			</div>
-			<Button
-				appearance="link"
-				onClick={() => setOpen(!open)}
-				className="ml-auto p-0  text-sm"
-			>
-				{open ? lessString : moreString}
-			</Button>
+			{(isTruncated || open) && (
+				<Button
+					appearance="link"
+					onClick={() => {
+						setOpen(!open)
+						setAnimating(true)
+						setTimeout(() => setAnimating(false), animationDuration)
+					}}
+					className="ml-auto p-0 pl-1 text-sm"
+				>
+					{open ? lessString : moreString}
+				</Button>
+			)}
 		</div>
 	)
 }

@@ -184,11 +184,19 @@ function BookCardExample() {
 							Book Entry Title
 						</BookCardComponents.CardBodyEntryTitle>
 						<BookCardComponents.CardBodyEntryScaling>
-							Lorem ipsum dolor sit amet consectetur adipisicing
-							elit. Beatae aperiam tenetur est in quidem? Tempore,
-							cumque perspiciatis optio aperiam dolorem saepe
-							harum, sequi eaque nisi quas, assumenda praesentium!
-							Labore, incidunt.
+							truncated - Lorem ipsum dolor sit amet consectetur
+							adipisicing elit. Beatae aperiam tenetur est in
+							quidem? Tempore, cumque perspiciatis optio aperiam
+							dolorem saepe harum, sequi eaque nisi quas,
+							assumenda praesentium! Labore, incidunt.
+						</BookCardComponents.CardBodyEntryScaling>
+					</BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntry>
+						<BookCardComponents.CardBodyEntryTitle>
+							Book Entry Title
+						</BookCardComponents.CardBodyEntryTitle>
+						<BookCardComponents.CardBodyEntryScaling>
+							not truncated
 						</BookCardComponents.CardBodyEntryScaling>
 					</BookCardComponents.CardBodyEntry>
 					{children}
