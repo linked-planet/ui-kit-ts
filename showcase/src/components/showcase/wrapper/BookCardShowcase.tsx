@@ -12,6 +12,7 @@ import Button, { ButtonGroup } from "@atlaskit/button"
 import { Fieldset } from "@atlaskit/form"
 import { Badge, SimpleTag, TagGroup } from "@linked-planet/ui-kit-ts"
 import { CSSTransition } from "react-transition-group"
+import { TruncatedText } from "@linked-planet/ui-kit-ts/components/TruncatedText"
 
 //#region bookcardcomponents
 function BookCardComponentsExample() {
@@ -183,21 +184,19 @@ function BookCardExample() {
 						<BookCardComponents.CardBodyEntryTitle>
 							Book Entry Title
 						</BookCardComponents.CardBodyEntryTitle>
-						<BookCardComponents.CardBodyEntryScaling>
+						<TruncatedText>
 							truncated - Lorem ipsum dolor sit amet consectetur
 							adipisicing elit. Beatae aperiam tenetur est in
 							quidem? Tempore, cumque perspiciatis optio aperiam
 							dolorem saepe harum, sequi eaque nisi quas,
 							assumenda praesentium! Labore, incidunt.
-						</BookCardComponents.CardBodyEntryScaling>
+						</TruncatedText>
 					</BookCardComponents.CardBodyEntry>
 					<BookCardComponents.CardBodyEntry>
 						<BookCardComponents.CardBodyEntryTitle>
 							Book Entry Title
 						</BookCardComponents.CardBodyEntryTitle>
-						<BookCardComponents.CardBodyEntryScaling>
-							not truncated
-						</BookCardComponents.CardBodyEntryScaling>
+						<TruncatedText>not truncated</TruncatedText>
 					</BookCardComponents.CardBodyEntry>
 					{children}
 				</>

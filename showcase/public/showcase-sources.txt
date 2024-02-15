@@ -581,6 +581,7 @@ import Button, { ButtonGroup } from "@atlaskit/button"
 import { Fieldset } from "@atlaskit/form"
 import { Badge, SimpleTag, TagGroup } from "@linked-planet/ui-kit-ts"
 import { CSSTransition } from "react-transition-group"
+import { TruncatedText } from "@linked-planet/ui-kit-ts/components/TruncatedText"
 
 //#region bookcardcomponents
 function BookCardComponentsExample() {
@@ -752,7 +753,21 @@ function BookCardExample() {
 						<BookCardComponents.CardBodyEntryTitle>
 							Book Entry Title
 						</BookCardComponents.CardBodyEntryTitle>
-						<div>Book Entry Content</div>
+						<BookCardComponents.CardBodyEntryScaling>
+							truncated - Lorem ipsum dolor sit amet consectetur
+							adipisicing elit. Beatae aperiam tenetur est in
+							quidem? Tempore, cumque perspiciatis optio aperiam
+							dolorem saepe harum, sequi eaque nisi quas,
+							assumenda praesentium! Labore, incidunt.
+						</BookCardComponents.CardBodyEntryScaling>
+					</BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntry>
+						<BookCardComponents.CardBodyEntryTitle>
+							Book Entry Title
+						</BookCardComponents.CardBodyEntryTitle>
+						<BookCardComponents.CardBodyEntryScaling>
+							not truncated
+						</BookCardComponents.CardBodyEntryScaling>
 					</BookCardComponents.CardBodyEntry>
 					{children}
 				</>
@@ -842,6 +857,21 @@ export default function BookCardShowcase(props: ShowcaseProps) {
 						Book Card is a composition of several components. The
 						components can be used individually or as a whole.
 					</p>
+					<TruncatedText lines={2}>
+						Lorem ipsum dolor sit amet consectetur, adipisicing
+						elit. Magnam ratione vitae neque cupiditate molestiae,
+						reiciendis sed voluptate accusantium quibusdam nisi
+						soluta dolor ut asperiores assumenda officia hic eveniet
+						obcaecati nemo! Lorem ipsum dolor sit amet consectetur
+						adipisicing elit. Distinctio quia ea laborum
+						necessitatibus consequatur, fugit aliquam reiciendis cum
+						beatae obcaecati aut nam atque quidem ab, culpa
+						molestias nobis mollitia sint. Lorem ipsum dolor sit
+						amet consectetur adipisicing elit. Culpa iure, est
+						veritatis vitae hic similique, repudiandae quibusdam
+						nisi dolor quia distinctio consequatur molestias earum
+						incidunt cupiditate voluptatem tenetur quo et.
+					</TruncatedText>
 				</>
 			}
 			examples={[
@@ -7243,6 +7273,65 @@ function TooltipShowcase(props: ShowcaseProps) {
 }
 
 export default TooltipShowcase
+
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { TruncatedText } from "@linked-planet/ui-kit-ts"
+
+//import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
+
+function TruncatedTextShowcase(props: ShowcaseProps) {
+	//#region truncatedtext
+	const example = (
+		<div className="flex gap-4">
+			<TruncatedText lines={2}>
+				Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iusto
+				quod libero hic accusantium porro. Temporibus quaerat molestiae
+				recusandae tenetur maiores ab sit ullam deleniti eligendi,
+				officia nobis! Id, natus qui?
+			</TruncatedText>
+			<TruncatedText>
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut
+				ipsum iure minus, molestiae rem debitis culpa. Molestiae maxime
+				cumque exercitationem commodi dolores, modi dolorem aut. Quis
+				reprehenderit temporibus pariatur corrupti?
+			</TruncatedText>
+			<TruncatedText>only short text, no truncation needed</TruncatedText>
+		</div>
+	)
+	//#endregion truncatedtext
+
+	return (
+		<ShowcaseWrapperItem
+			name="TruncatedText"
+			description={
+				<p>
+					A container for a text, which truncates the text after a
+					given number of lines using an ellipsis, and showing a
+					&quot;more&quot; link to expand the text.
+				</p>
+			}
+			{...props}
+			packages={[
+				{
+					name: "truncatedtext",
+					url: "http://localhost:3000/ui-kit-ts/single#TruncatedText",
+				},
+			]}
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "truncatedtext",
+				},
+			]}
+		/>
+	)
+}
+
+export default TruncatedTextShowcase
 
 import React, { useState } from "react"
 import {

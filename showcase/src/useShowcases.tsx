@@ -44,7 +44,7 @@ import InputShowcase from "./components/showcase/wrapper/InputShowcase"
 import LayeringShowcase from "./components/showcase/wrapper/LayeringShowcase"
 import ColorsShowcase from "./components/showcase/wrapper/ColorsShowcase"
 import AnimatedListShowcase from "./components/showcase/wrapper/AnimatedListShowcase"
-
+import TruncatedTextShowcase from "./components/showcase/wrapper/TruncatedTextShowcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -148,6 +148,9 @@ export default function useShowcases({
 			),
 			Toggle: <ToggleShowcase overallSourceCode={overallSourceCode} />,
 			Tooltip: <TooltipShowcase overallSourceCode={overallSourceCode} />,
+			"Truncated Text": (
+				<TruncatedTextShowcase overallSourceCode={overallSourceCode} />
+			),
 			Utils: <UtilsShowcase overallSourceCode={overallSourceCode} />,
 		}),
 		[overallSourceCode],

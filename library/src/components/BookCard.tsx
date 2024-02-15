@@ -1,4 +1,4 @@
-import React, { forwardRef, useLayoutEffect, useState } from "react"
+import React, { forwardRef } from "react"
 import type { CSSProperties } from "react"
 
 import { token } from "@atlaskit/tokens"
@@ -7,8 +7,6 @@ import { css } from "@emotion/css"
 
 import { Collapsible } from "./Collapsible"
 import { twMerge } from "tailwind-merge"
-import { Button } from "./Button"
-import { set } from "react-hook-form"
 
 const borderColor = token("color.border", "#091e4224")
 
@@ -343,71 +341,6 @@ const CardBodyEntry = ({
 	</div>
 )
 
-const CardBodyEntryScaling = ({
-	moreString = "more",
-	lessString = "less",
-	children,
-	testId,
-}: {
-	children: React.ReactNode
-	testId?: string
-	moreString?: string
-	lessString?: string
-}) => {
-	const [open, setOpen] = useState(false)
-	const [animating, setAnimating] = useState(false)
-	const [isTruncated, setIsTruncated] = useState(false)
-	const containerRef = React.createRef<HTMLDivElement>()
-	const animationDuration = 300
-
-	console.log("TRUNCATED", isTruncated)
-
-	useLayoutEffect(() => {
-		if (containerRef.current) {
-			setIsTruncated(
-				containerRef.current.scrollWidth >
-					containerRef.current.clientWidth,
-			)
-		}
-	}, [containerRef, children])
-
-	return (
-		<div
-			className={`flex w-full items-start ${open || animating ? "flex-col" : "flex-row"}`}
-		>
-			<div
-				data-testid={testId}
-				className={`grid min-h-4 transition-[grid-template-rows] ease-in-out ${open && animating ? "grid-rows-[0fr]" : open ? "grid-rows-[1fr]" : animating ? "grid-rows-[0fr]" : "grid-rows-[1rem]"}`}
-				style={{
-					transitionDuration: `${animationDuration}ms`,
-				}}
-			>
-				<div
-					className={
-						open || animating ? `overflow-hidden` : "truncate"
-					}
-					ref={containerRef}
-				>
-					{children}
-				</div>
-			</div>
-			{(isTruncated || open) && (
-				<Button
-					appearance="link"
-					onClick={() => {
-						setOpen(!open)
-						setAnimating(true)
-						setTimeout(() => setAnimating(false), animationDuration)
-					}}
-					className="ml-auto p-0 pl-1 text-sm"
-				>
-					{open ? lessString : moreString}
-				</Button>
-			)}
-		</div>
-	)
-}
-
 const CardBodyEntryTitle = ({ children }: { children: React.ReactNode }) => (
 	<span className="pb-1 text-[13px] font-semibold">{children}</span>
 )
@@ -426,7 +359,6 @@ const BookCardComponents = {
 	CardColumnBody,
 	CardBodyEntry,
 	CardBodyEntryTitle,
-	CardBodyEntryScaling,
 }
 
 export { BookCardComponents }

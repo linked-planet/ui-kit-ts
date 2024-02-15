@@ -1,0 +1,100 @@
+import React, { useEffect, useRef, useState } from "react"
+import { Button } from "./Button"
+import { twMerge } from "tailwind-merge"
+
+const TruncatedText = ({
+	children,
+	lines = 1,
+	lessCaption = "less",
+	moreCaption = "more",
+	defaultOpen = false,
+	textClassName,
+	textStyle,
+	moreButtonClassName,
+	moreButtonStyle,
+	className,
+	style,
+	testId,
+	duration = 150,
+}: {
+	children: React.ReactNode
+	lines?: number
+	lessCaption?: string
+	moreCaption?: string
+	defaultOpen?: boolean
+	textClassName?: string
+	textStyle?: React.CSSProperties
+	moreButtonClassName?: string
+	moreButtonStyle?: React.CSSProperties
+	className?: string
+	style?: React.CSSProperties
+	testId?: string
+	duration?: number
+}) => {
+	const ref = useRef<HTMLParagraphElement>(null)
+	const [open, setOpen] = useState(defaultOpen)
+	const [animating, setAnimating] = useState(false)
+	const [isTruncated, setIsTruncated] = useState(false)
+
+	useEffect(() => {
+		if (ref.current) {
+			setIsTruncated(
+				ref.current?.scrollHeight > ref.current?.clientHeight ||
+					ref.current?.scrollWidth > ref.current?.clientWidth,
+			)
+		}
+	}, [children])
+
+	return (
+		<div
+			className={twMerge(
+				`flex w-full items-start ${open || animating || lines > 1 ? "flex-col" : "flex-row"}`,
+				className,
+			)}
+			style={style}
+			data-testid={testId}
+		>
+			<div
+				className={`transition-[grid-template-rows] ease-in-out ${open && animating ? "grid grid-rows-[0fr]" : open ? " grid grid-rows-[1fr]" : animating ? "grid grid-rows-[0fr]" : ""}`}
+				style={{
+					transitionDuration: `${duration}ms`,
+				}}
+			>
+				<p
+					style={{
+						...textStyle,
+						display: open || animating ? "block" : "-webkit-box",
+						WebkitLineClamp: lines,
+						WebkitBoxOrient: "vertical",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+						whiteSpace: "normal",
+					}}
+					ref={ref}
+					className={textClassName}
+				>
+					{children}
+				</p>
+			</div>
+			{(isTruncated || open) && (
+				<Button
+					appearance="link"
+					onClick={() => {
+						setOpen(!open)
+						setAnimating(true)
+						setTimeout(() => setAnimating(false), duration)
+					}}
+					className={twMerge(
+						"ml-auto p-0 text-sm",
+						moreButtonClassName,
+					)}
+					style={moreButtonStyle}
+				>
+					{open ? lessCaption : moreCaption}
+				</Button>
+			)}
+		</div>
+	)
+}
+TruncatedText.displayName = "TruncatedText"
+export { TruncatedText }
