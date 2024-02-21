@@ -1,3 +1,102 @@
+import { Accordion } from "@linked-planet/ui-kit-ts"
+import React from "react"
+import ShowcaseWrapperItem, {
+	ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
+//#region accordion-single
+function AccordionExample() {
+	return (
+		<div className="bg-surface">
+			<Accordion.Container type="single" defaultValue="item-1">
+				<Accordion.Item value="item-1">
+					<Accordion.Trigger>Is it accessible?</Accordion.Trigger>
+					<Accordion.Content>
+						Yes. It adheres to the WAI-ARIA design pattern.
+					</Accordion.Content>
+				</Accordion.Item>
+
+				<Accordion.Item value="item-2">
+					<Accordion.Trigger>Is it unstyled?</Accordion.Trigger>
+					<Accordion.Content>
+						Yes. It is unstyled by default, giving you freedom over
+						the look and feel.
+					</Accordion.Content>
+				</Accordion.Item>
+
+				<Accordion.Item value="item-3">
+					<Accordion.Trigger>Can it be animated?</Accordion.Trigger>
+					<Accordion.Content>
+						Yes! You can animate the Accordion with CSS or
+						JavaScript.
+					</Accordion.Content>
+				</Accordion.Item>
+			</Accordion.Container>
+		</div>
+	)
+}
+//#endregion accordion-single
+
+//#region accordion-multi
+function AccordionMultiExample() {
+	return (
+		<div className="bg-surface">
+			<Accordion.Container type="multiple">
+				<Accordion.Item value="item-1">
+					<Accordion.Trigger>Is it accessible?</Accordion.Trigger>
+					<Accordion.Content>
+						Yes. It adheres to the WAI-ARIA design pattern.
+					</Accordion.Content>
+				</Accordion.Item>
+
+				<Accordion.Item value="item-2">
+					<Accordion.Trigger>Is it unstyled?</Accordion.Trigger>
+					<Accordion.Content>
+						Yes. It is unstyled by default, giving you freedom over
+						the look and feel.
+					</Accordion.Content>
+				</Accordion.Item>
+
+				<Accordion.Item value="item-3">
+					<Accordion.Trigger>Can it be animated?</Accordion.Trigger>
+					<Accordion.Content>
+						Yes! You can animate the Accordion with CSS or
+						JavaScript.
+					</Accordion.Content>
+				</Accordion.Item>
+			</Accordion.Container>
+		</div>
+	)
+}
+//#endregion accordion-multi
+
+export default function AnimatedListShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="Accordion"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single#Accordion",
+				},
+			]}
+			examples={[
+				{
+					title: "Accordion Single",
+					example: <AccordionExample />,
+					sourceCodeExampleId: "accordion-single",
+				},
+				{
+					title: "Accordion Multi",
+					example: <AccordionMultiExample />,
+					sourceCodeExampleId: "accordion-multi",
+				},
+			]}
+		/>
+	)
+}
+
 import React, { useState } from "react"
 
 import ShowcaseWrapperItem, {
@@ -753,21 +852,19 @@ function BookCardExample() {
 						<BookCardComponents.CardBodyEntryTitle>
 							Book Entry Title
 						</BookCardComponents.CardBodyEntryTitle>
-						<BookCardComponents.CardBodyEntryScaling>
+						<TruncatedText>
 							truncated - Lorem ipsum dolor sit amet consectetur
 							adipisicing elit. Beatae aperiam tenetur est in
 							quidem? Tempore, cumque perspiciatis optio aperiam
 							dolorem saepe harum, sequi eaque nisi quas,
 							assumenda praesentium! Labore, incidunt.
-						</BookCardComponents.CardBodyEntryScaling>
+						</TruncatedText>
 					</BookCardComponents.CardBodyEntry>
 					<BookCardComponents.CardBodyEntry>
 						<BookCardComponents.CardBodyEntryTitle>
 							Book Entry Title
 						</BookCardComponents.CardBodyEntryTitle>
-						<BookCardComponents.CardBodyEntryScaling>
-							not truncated
-						</BookCardComponents.CardBodyEntryScaling>
+						<TruncatedText>not truncated</TruncatedText>
 					</BookCardComponents.CardBodyEntry>
 					{children}
 				</>
@@ -857,21 +954,6 @@ export default function BookCardShowcase(props: ShowcaseProps) {
 						Book Card is a composition of several components. The
 						components can be used individually or as a whole.
 					</p>
-					<TruncatedText lines={2}>
-						Lorem ipsum dolor sit amet consectetur, adipisicing
-						elit. Magnam ratione vitae neque cupiditate molestiae,
-						reiciendis sed voluptate accusantium quibusdam nisi
-						soluta dolor ut asperiores assumenda officia hic eveniet
-						obcaecati nemo! Lorem ipsum dolor sit amet consectetur
-						adipisicing elit. Distinctio quia ea laborum
-						necessitatibus consequatur, fugit aliquam reiciendis cum
-						beatae obcaecati aut nam atque quidem ab, culpa
-						molestias nobis mollitia sint. Lorem ipsum dolor sit
-						amet consectetur adipisicing elit. Culpa iure, est
-						veritatis vitae hic similique, repudiandae quibusdam
-						nisi dolor quia distinctio consequatur molestias earum
-						incidunt cupiditate voluptatem tenetur quo et.
-					</TruncatedText>
 				</>
 			}
 			examples={[

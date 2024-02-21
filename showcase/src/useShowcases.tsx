@@ -45,6 +45,7 @@ import LayeringShowcase from "./components/showcase/wrapper/LayeringShowcase"
 import ColorsShowcase from "./components/showcase/wrapper/ColorsShowcase"
 import AnimatedListShowcase from "./components/showcase/wrapper/AnimatedListShowcase"
 import TruncatedTextShowcase from "./components/showcase/wrapper/TruncatedTextShowcase"
+import AccordionShowcase from "./components/showcase/wrapper/AccordionShowcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -52,6 +53,9 @@ export default function useShowcases({
 }) {
 	return useMemo(
 		() => ({
+			Accordion: (
+				<AccordionShowcase overallSourceCode={overallSourceCode} />
+			),
 			"Animated List": (
 				<AnimatedListShowcase overallSourceCode={overallSourceCode} />
 			),

@@ -66,6 +66,8 @@ export const theme = {
 		animation: {
 			"fade-in": "fade-in 300ms linear",
 			"fade-out": "fade-out 300ms linear",
+			slideDown: "slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1)",
+			slideUp: "slideUp 300ms cubic-bezier(0.87, 0, 0.13, 1)",
 		},
 		keyframes: {
 			"fade-in": {
@@ -75,6 +77,15 @@ export const theme = {
 			"fade-out": {
 				"100%": { opacity: 0 },
 				"0%": { opacity: "100%" },
+			},
+			// for the accordion
+			slideDown: {
+				from: { height: "0px" },
+				to: { height: "var(--radix-accordion-content-height)" },
+			},
+			slideUp: {
+				from: { height: "var(--radix-accordion-content-height)" },
+				to: { height: "0px" },
 			},
 		},
 		/* responsive breakpoints */
