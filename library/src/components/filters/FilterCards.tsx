@@ -150,42 +150,46 @@ export function FilterCard({
 						const isSelectable =
 							selectableValues?.includes(item) ?? false
 
-						const onClick = !isSelectable
-							? undefined
-							: onAttributeClick || onSelectedChanged
-								? () => {
-										onAttributeClick?.(
-											filter.attributeName,
-											item,
-										)
-										if (onSelectedChanged) {
-											const removed =
-												selectedValues.filter(
-													(it) => it !== item,
-												)
-											if (
-												removed.length ===
-												selectedValues.length
-											) {
-												onSelectedChanged(
-													filter.attributeName,
-													[...selectedValues, item],
-												)
-											} else {
-												onSelectedChanged(
-													filter.attributeName,
-													removed,
-												)
+						const onClick =
+							!isSelectable && !isSelected
+								? undefined
+								: onAttributeClick || onSelectedChanged
+									? () => {
+											onAttributeClick?.(
+												filter.attributeName,
+												item,
+											)
+											if (onSelectedChanged) {
+												const removed =
+													selectedValues.filter(
+														(it) => it !== item,
+													)
+												if (
+													removed.length ===
+													selectedValues.length
+												) {
+													onSelectedChanged(
+														filter.attributeName,
+														[
+															...selectedValues,
+															item,
+														],
+													)
+												} else {
+													onSelectedChanged(
+														filter.attributeName,
+														removed,
+													)
+												}
 											}
 										}
-									}
-								: undefined
+									: undefined
 
 						return (
 							<div
 								className={`px-2 py-0.5 ${
 									!isSelectable
-										? `text-disabled-text cursor-not-allowed ${isSelected ? "bg-selected-subtle" : ""}`
+										? `text-disabled-text ${isSelected ? "bg-selected-subtle cursor-pointer" : "cursor-not-allowed"}`
 										: isSelected
 											? "text-selected-text-inverse bg-selected hover:bg-selected-hovered active:bg-selected-pressed cursor-pointer"
 											: "hover:bg-surface-hovered active:bg-surface-pressed cursor-pointer"
