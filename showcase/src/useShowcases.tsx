@@ -46,6 +46,7 @@ import ColorsShowcase from "./components/showcase/wrapper/ColorsShowcase"
 import AnimatedListShowcase from "./components/showcase/wrapper/AnimatedListShowcase"
 import TruncatedTextShowcase from "./components/showcase/wrapper/TruncatedTextShowcase"
 import AccordionShowcase from "./components/showcase/wrapper/AccordionShowcase"
+import Calendar2Showcase from "./components/showcase/wrapper/Calendar2Showcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -71,6 +72,9 @@ export default function useShowcases({
 			Button: <ButtonShowcase overallSourceCode={overallSourceCode} />,
 			Calendar: (
 				<CalendarShowcase overallSourceCode={overallSourceCode} />
+			),
+			Calendar2: (
+				<Calendar2Showcase overallSourceCode={overallSourceCode} />
 			),
 			Checkbox: (
 				<CheckboxShowcase overallSourceCode={overallSourceCode} />
