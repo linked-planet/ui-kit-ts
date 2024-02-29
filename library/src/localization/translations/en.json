@@ -8,6 +8,9 @@
   "timetable.bookingsOutsideOfDayRange": {
     "defaultMessage": "{itemCount} {itemCount, plural, one {booking} other {bookings}} found out of day range of the available time slots."
   },
+  "timetable.cellDisabled": {
+    "defaultMessage": "This slot is disabled."
+  },
   "timetable.deselectFromOuterBorder": {
     "defaultMessage": "Please deselect from the outer borders of the time slot range."
   },

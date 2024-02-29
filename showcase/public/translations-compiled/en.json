@@ -2,6 +2,7 @@
   "timetable.bookingsAfterDayRange": "{itemCount} {itemCount, plural, one {booking} other {bookings}} found after the day range of the available time slots.",
   "timetable.bookingsBeforeDayRange": "{itemCount} {itemCount, plural, one {booking} other {bookings}} found before the day range of the available time slots.",
   "timetable.bookingsOutsideOfDayRange": "{itemCount} {itemCount, plural, one {booking} other {bookings}} found out of day range of the available time slots.",
+  "timetable.cellDisabled": "This slot is disabled.",
   "timetable.deselectFromOuterBorder": "Please deselect from the outer borders of the time slot range.",
   "timetable.endDateAfterStartDate": "The end date must be after start date.",
   "timetable.itemsOutsideTimeFrame": "Found {outsideItemCount} {outsideItemCount, plural, one {booking} other {bookings}} outside of the valid time frame of each day.",

@@ -1,5 +1,4 @@
 import React, {
-	CSSProperties,
 	Fragment,
 	MouseEvent,
 	useCallback,
@@ -18,7 +17,6 @@ import type {
 
 import { Group } from "./Group"
 
-import styles from "./LPTimeTable.module.css"
 import {
 	getStartAndEndSlot,
 	isOverlapping,
@@ -54,13 +52,6 @@ interface TimeLineTableSimplifiedProps<
 
 	onGroupClick: ((_: G) => void) | undefined
 }
-
-const weekendColor0 = token("elevation.surface.raised.hovered", "#F1F2F4")
-const weekendColor1 = token("elevation.surface.raised.pressed", "#DCDFE4")
-const dayColor0 = token("elevation.surface", "#FFFFFF")
-const dayColor1 = token("elevation.surface.hovered", "#F1F2F4")
-const timeSlotBorderWidth = 1
-const newDayBorderWidth = 2
 
 /**
  * Creates the table rows for the given entries.
@@ -129,18 +120,7 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 				if (onGroupClick) onGroupClick(group)
 			}}
 			rowSpan={groupRowMax}
-			className={`${styles.unselectable}`}
-			style={{
-				backgroundColor: groupNumber % 2 === 0 ? dayColor0 : dayColor1,
-				position: "sticky",
-				left: 0,
-				zIndex: 2,
-				borderWidth: 0,
-				borderRightWidth: "2px",
-				borderBottomWidth: "1px",
-				borderStyle: "solid",
-				borderColor: token("color.border.bold", "#758195"),
-			}}
+			className={`border-border-bold border-b-border sticky left-0 z-[2] select-none border-0 border-b-2 border-r-2 border-solid ${groupNumber % 2 === 0 ? "bg-surface" : "bg-surface-hovered"}`}
 		>
 			{renderGroup ? renderGroup(group) : <Group group={group} />}
 		</td>
@@ -199,9 +179,23 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		hideOutOfRangeMarkers,
 		timeSlotSelectionDisabled,
 		timeSlotMinutes,
+		isCellDisabled,
 	} = useTimeTableConfig()
 
-	const mouseHandlers = useMouseHandlers(timeSlotNumber, group)
+	const cellDisabled =
+		isCellDisabled?.(
+			group,
+			timeSlot,
+			timeSlot.add(timeSlotMinutes, "minutes"),
+		) ?? false
+
+	const mouseHandlers = useMouseHandlers(
+		timeSlotNumber,
+		group,
+		cellDisabled,
+		isWeekendDay,
+		disableWeekendInteractions,
+	)
 
 	const tableCellRef = useRef<HTMLTableCellElement>(null)
 	const [tableCellWidth, setTableCellWidth] = useState(
@@ -217,31 +211,11 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		round: (n: number) => n, // we don't need rounding here
 	})
 
-	const style: CSSProperties = {
-		boxSizing: "border-box",
-		borderBottom: isLastGroupRow
-			? `1px solid ${token("color.border.bold", "#758195")}`
-			: undefined,
-		paddingBottom: isLastGroupRow ? "10px" : undefined,
-		paddingTop: isFirstRow ? "10px" : undefined,
-		backgroundColor: isWeekendDay
-			? groupNumber % 2 === 0
-				? weekendColor0
-				: weekendColor1
-			: groupNumber % 2 === 0
-				? dayColor0
-				: dayColor1,
-		cursor:
-			isWeekendDay && disableWeekendInteractions
-				? "not-allowed"
-				: "pointer",
-		borderRight: `${
-			isLastSlotOfTheDay && viewType === "hours"
-				? newDayBorderWidth + "px"
-				: timeSlotBorderWidth + "px"
-		} solid ${token("color.border", "#091E4224")}`,
-		maxWidth: columnWidth,
-	}
+	const isDisabledByDisabledMatcher = isCellDisabled?.(
+		group,
+		timeSlot,
+		timeSlot.add(timeSlotMinutes, "minutes"),
+	)
 
 	// TIME SLOT ITEMS
 	let gridTemplateColumns = ""
@@ -305,61 +279,56 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 	const mouseHandlersUsed = timeSlotSelectionDisabled ? {} : mouseHandlers
 
+	const cursorStyle =
+		isDisabledByDisabledMatcher ||
+		(isWeekendDay && disableWeekendInteractions)
+			? "cursor-not-allowed"
+			: "cursor-pointer"
+
+	const brStyle =
+		isLastSlotOfTheDay && viewType === "hours"
+			? "border-r-2"
+			: "border-r-[1px]"
+	const bbStyle = isLastGroupRow ? "border-b-2" : "border-b-0"
+
+	const bgStyle = isWeekendDay
+		? groupNumber % 2 === 0
+			? "bg-surface-raised"
+			: "bg-surface-raised-hovered"
+		: groupNumber % 2 !== 0
+			? "bg-surface-hovered"
+			: ""
+
 	return (
 		<td
 			key={timeSlotNumber}
 			{...mouseHandlersUsed}
-			style={style}
+			style={{
+				maxWidth: columnWidth,
+			}}
 			colSpan={2} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			ref={tableCellRef}
+			className={`border-border box-border border-l-0 border-t-0 border-solid ${isFirstRow ? "pt-2" : ""} ${isLastGroupRow ? "pb-2" : ""} ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
 		>
 			{itemsToRender && itemsToRender.length > 0 && (
 				<>
 					{beforeCount > 0 && !hideOutOfRangeMarkers && (
 						<div
-							style={{
-								position: "absolute",
-								top: 0,
-								left: 0,
-								width: "0.15rem",
-								height: "100%",
-								opacity: 0.5,
-								borderTopRightRadius: "100%",
-								borderBottomRightRadius: "100%",
-								backgroundColor: token(
-									"color.background.accent.lime.bolder",
-									"#4f819e",
-								),
-							}}
+							className="bg-lime-bold absolute left-0 top-0 h-full w-[0.15rem] rounded-r-full opacity-50"
 							title={`${beforeCount} more items`}
 						/>
 					)}
 					<div
+						className="box-border grid"
 						style={{
-							display: "grid",
 							gridTemplateColumns,
-							boxSizing: "border-box",
 						}}
 					>
 						{itemsToRender}
 					</div>
 					{afterCount > 0 && !hideOutOfRangeMarkers && (
 						<div
-							style={{
-								position: "absolute",
-								top: 0,
-								right: 0,
-								width: "0.15rem",
-								height: "100%",
-								opacity: 0.5,
-								borderTopLeftRadius: "100%",
-								borderBottomLeftRadius: "100%",
-								backgroundColor: token(
-									"color.background.accent.lime.bolder",
-									"#4f819e",
-								),
-								transform: "translate(0%, 0%)",
-							}}
+							className="bg-lime-bold absolute right-0 top-0 h-full w-[0.15rem] translate-x-0 translate-y-0 rounded-l-full opacity-50"
 							title={`${afterCount} more items`}
 						/>
 					)}
@@ -386,9 +355,13 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	timeSlotMinutes: number
 }) {
 	const { selectedTimeSlots, setSelectedTimeSlots } = useSelectedTimeSlots()
-	const { slotsArray, placeHolderHeight, renderPlaceHolder } =
-		useTimeTableConfig()
-	const mouseHandlers = useMouseHandlers(timeSlotNumber, group)
+	const {
+		slotsArray,
+		placeHolderHeight,
+		renderPlaceHolder,
+		isCellDisabled,
+		disableWeekendInteractions,
+	} = useTimeTableConfig()
 
 	const clearTimeRangeSelectionCB = useCallback(() => {
 		setSelectedTimeSlots(undefined)
@@ -401,7 +374,6 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 					(it) => it === timeSlotNumber,
 				)
 			: -1
-	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 	const isFirstOfSelection = timeSlotSelectedIndex === 0
 	const timeSlotAfter =
 		timeSlotNumber < slotsArray.length - 1
@@ -429,27 +401,37 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 		)
 	}
 
+	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
+	const cellDisabled =
+		isCellDisabled?.(
+			group,
+			timeSlot,
+			timeSlot.add(timeSlotMinutes, "minutes"),
+		) ?? false
+	const mouseHandlers = useMouseHandlers(
+		timeSlotNumber,
+		group,
+		cellDisabled,
+		isWeekendDay,
+		disableWeekendInteractions,
+	)
+
 	if (timeSlotSelectedIndex > 0) {
 		return <></> // the cell is not rendered since the placeholder item spans over multiple selected cells
 	}
 
-	const styles: CSSProperties = {
-		boxSizing: "border-box",
-		backgroundColor: isWeekendDay
-			? groupNumber % 2 === 0
-				? weekendColor0
-				: weekendColor1
-			: groupNumber % 2 === 0
-				? dayColor0
-				: dayColor1,
-		verticalAlign: "top",
-		cursor: "pointer",
-		borderRight: `${
-			isLastSlotOfTheDay && viewType === "hours"
-				? newDayBorderWidth + "px"
-				: timeSlotBorderWidth + "px"
-		} solid ${token("color.border", "#091E4224")}`,
-	}
+	const brStyle =
+		isLastSlotOfTheDay && viewType === "hours"
+			? "border-r-2"
+			: "border-r-[1px]"
+
+	const bgStyle = isWeekendDay
+		? groupNumber % 2 === 0
+			? "bg-surface-raised"
+			: "bg-surface-raised-hovered"
+		: groupNumber % 2 !== 0
+			? "bg-surface-hovered"
+			: ""
 
 	return (
 		<td
@@ -460,7 +442,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 					: 2
 			} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			{...(timeSlotSelectedIndex === -1 ? mouseHandlers : undefined)}
-			style={styles}
+			className={`border-border relative box-border cursor-pointer border-b-0 border-l-0 border-t-0 border-solid ${brStyle} ${bgStyle} p-0 align-top`}
 		>
 			{placeHolderItem}
 		</td>
@@ -552,8 +534,8 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			trs.push(
 				<tr
 					key={-1}
+					className="bg-surface"
 					style={{
-						backgroundColor: token("elevation.surface", "#FFFFFF"),
 						height: placeHolderHeight, // height works as min height in tables
 					}}
 				>
@@ -600,14 +582,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			}
 
 			trs.push(
-				<tr
-					key={r}
-					style={{
-						backgroundColor: token("elevation.surface", "#FFFFFF"),
-						height: "1rem", // height works as min height in tables
-						boxSizing: "border-box",
-					}}
-				>
+				<tr key={r} className="bg-surface box-border h-4">
 					{tds}
 				</tr>,
 			)
@@ -643,93 +618,113 @@ let mouseLeftTS: number | null = null
 function useMouseHandlers<G extends TimeTableGroup>(
 	timeSlotNumber: number,
 	group: G,
+	isDisabled: boolean,
+	isWeekendDay: boolean,
+	isWeekendDisabled: boolean,
 ) {
 	const { selectedTimeSlots, toggleTimeSlotCB } = useSelectedTimeSlots()
 	const { multiSelectionMode, setMultiSelectionMode } =
 		useMultiSelectionMode()
 	const { setMessage } = useTimeTableMessage()
-	const { slotsArray, disableWeekendInteractions } = useTimeTableConfig()
-	const timeSlot = slotsArray[timeSlotNumber]
-	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 
-	const handleWeekendError = () => {
-		setMessage({
-			appearance: "information",
-			messageKey: "timetable.weekendsDeactivated",
-			timeOut: 3,
-		})
-		return
-	}
+	return useMemo(() => {
+		const handleDisabledError = () => {
+			if (isDisabled) {
+				setMessage({
+					appearance: "information",
+					messageKey: "timetable.cellDisabled",
+					timeOut: 3,
+				})
+				return
+			}
+			setMessage({
+				appearance: "information",
+				messageKey: "timetable.weekendsDeactivated",
+				timeOut: 3,
+			})
+		}
 
-	// the actual mouse handlers
-	return {
-		onMouseMove: (e: MouseEvent) => {
-			if (e.buttons !== 1) {
-				// we only want to react to left mouse button
-				return
-			}
-			if (disableWeekendInteractions && isWeekendDay) {
-				handleWeekendError()
-				return
-			}
-			setMultiSelectionMode(true)
-			toggleTimeSlotCB(timeSlotNumber, group, "drag")
-		},
-		onMouseLeave: (e: MouseEvent) => {
-			if (e.buttons !== 1) {
-				// we only want to react to left mouse button
-				// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
+		// the actual mouse handlers
+		return {
+			onMouseMove: (e: MouseEvent) => {
+				if (e.buttons !== 1) {
+					// we only want to react to left mouse button
+					return
+				}
+				if (isDisabled || (isWeekendDisabled && isWeekendDay)) {
+					handleDisabledError()
+					return
+				}
+				setMultiSelectionMode(true)
+				toggleTimeSlotCB(timeSlotNumber, group, "drag")
+			},
+			onMouseLeave: (e: MouseEvent) => {
+				if (e.buttons !== 1) {
+					// we only want to react to left mouse button
+					// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
+					setMultiSelectionMode(false)
+					return
+				}
+				if (!multiSelectionMode) {
+					return
+				}
+				if (isDisabled || (isWeekendDisabled && isWeekendDay)) {
+					handleDisabledError()
+					return
+				}
+				mouseLeftTS = timeSlotNumber
+				toggleTimeSlotCB(timeSlotNumber, group, "drag")
+			},
+			onMouseEnter: (e: MouseEvent) => {
+				if (e.buttons !== 1) {
+					// we only want to react to left mouse button
+					setMultiSelectionMode(false)
+					return
+				}
+				if (!multiSelectionMode) {
+					return
+				}
+				if (isDisabled || (isWeekendDisabled && isWeekendDay)) {
+					handleDisabledError()
+					return
+				}
+				// to remove time slots again when dragging
+				if (
+					mouseLeftTS != null &&
+					(mouseLeftTS === timeSlotNumber + 1 ||
+						mouseLeftTS === timeSlotNumber - 1) &&
+					selectedTimeSlots?.timeSlots.includes(mouseLeftTS)
+				) {
+					toggleTimeSlotCB(mouseLeftTS, group, "remove")
+				}
+				toggleTimeSlotCB(timeSlotNumber, group, "drag")
+				setMultiSelectionMode(true)
+			},
+			onMouseUp: () => {
 				setMultiSelectionMode(false)
-				return
-			}
-			if (!multiSelectionMode) {
-				return
-			}
-			if (disableWeekendInteractions && isWeekendDay) {
-				handleWeekendError()
-				return
-			}
-			mouseLeftTS = timeSlotNumber
-			toggleTimeSlotCB(timeSlotNumber, group, "drag")
-		},
-		onMouseEnter: (e: MouseEvent) => {
-			if (e.buttons !== 1) {
-				// we only want to react to left mouse button
-				setMultiSelectionMode(false)
-				return
-			}
-			if (!multiSelectionMode) {
-				return
-			}
-			if (disableWeekendInteractions && isWeekendDay) {
-				handleWeekendError()
-				return
-			}
-			// to remove time slots again when dragging
-			if (
-				mouseLeftTS != null &&
-				(mouseLeftTS === timeSlotNumber + 1 ||
-					mouseLeftTS === timeSlotNumber - 1) &&
-				selectedTimeSlots?.timeSlots.includes(mouseLeftTS)
-			) {
-				toggleTimeSlotCB(mouseLeftTS, group, "remove")
-			}
-			toggleTimeSlotCB(timeSlotNumber, group, "drag")
-			setMultiSelectionMode(true)
-		},
-		onMouseUp: () => {
-			setMultiSelectionMode(false)
-			if (disableWeekendInteractions && isWeekendDay) {
-				handleWeekendError()
-				return
-			}
-			toggleTimeSlotCB(
-				timeSlotNumber,
-				group,
-				multiSelectionMode ? "drag" : "click",
-			)
-		},
-	}
+				if (isDisabled || (isWeekendDisabled && isWeekendDay)) {
+					handleDisabledError()
+					return
+				}
+				toggleTimeSlotCB(
+					timeSlotNumber,
+					group,
+					multiSelectionMode ? "drag" : "click",
+				)
+			},
+		}
+	}, [
+		group,
+		isDisabled,
+		isWeekendDay,
+		isWeekendDisabled,
+		multiSelectionMode,
+		selectedTimeSlots?.timeSlots,
+		setMessage,
+		setMultiSelectionMode,
+		timeSlotNumber,
+		toggleTimeSlotCB,
+	])
 }
 
 /**

@@ -19,13 +19,7 @@ export function Item({
 			}`}
 			title={title}
 		>
-			<p
-				style={{
-					overflow: "hidden",
-				}}
-			>
-				{item.title ?? "no name"}
-			</p>
+			<p className="truncate">{item.title ?? "no name"}</p>
 		</div>
 	)
 }

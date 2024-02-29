@@ -2,6 +2,7 @@
   "timetable.bookingsAfterDayRange": "{itemCount} {itemCount, plural, one {Eintrag} other {Einträge}} vor Beginn des Tageszeitbereichs.",
   "timetable.bookingsBeforeDayRange": "{itemCount} {itemCount, plural, one {Eintrag} other {Einträge}} nach Ende des Tageszeitbereichs.",
   "timetable.bookingsOutsideOfDayRange": "{itemCount} {itemCount, plural, one {Eintrag} other {Einträge}} außerhalb des Tagesbereichs der verfügbaren Zeitslots gefunden.",
+  "timetable.cellDisabled": "Dieser Zeitslot ist deaktiviert.",
   "timetable.deselectFromOuterBorder": "Bitte entfernen Sie selektierte Zeitslots von den äußeren Rändern des selektierten Bereiches.",
   "timetable.endDateAfterStartDate": "Das Enddatum muss nach dem Startdatum liegen.",
   "timetable.itemsOutsideTimeFrame": "Es sind {outsideItemCount} {outsideItemCount, plural, one {Eintrag} other {Einträge}} außerhalb des Zeitbereichs eines Tages.",

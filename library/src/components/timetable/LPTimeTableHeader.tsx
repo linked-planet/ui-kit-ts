@@ -1,8 +1,6 @@
 import React, { forwardRef, Fragment } from "react"
 import dayjs, { Dayjs } from "dayjs"
-import { token } from "@atlaskit/tokens"
 
-import styles from "./LPTimeTable.module.css"
 import { TimeTableViewType } from "./LPTimeTable"
 import { TimeFrameDay } from "./timeTableUtils"
 
@@ -19,12 +17,6 @@ type Props = {
 	showTimeSlotHeader: boolean
 	timeFrameDay: TimeFrameDay
 }
-
-const backgroundColor = token("elevation.surface.sunken", "#F7F8F9")
-const headerBorder = `2px solid ${token(
-	"color.border.bold",
-	"#758195",
-)}` as const
 
 export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 	{
@@ -93,77 +85,33 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 					)
 				})}
 			</colgroup>
-			<thead ref={tableHeaderRef}>
+			<thead ref={tableHeaderRef} className="sticky top-0 z-[3]">
 				<tr>
 					<th
 						style={{
-							zIndex: 4,
-							position: "sticky",
-							left: 0,
-							top: 0,
-							borderLeftStyle: "none",
 							width: groupHeaderColumnWidth,
-							borderRight: headerBorder,
-							borderBottom: showTimeSlotHeader
-								? `1px solid ${token(
-										"color.border",
-										"#091E4224",
-								  )}`
-								: undefined,
-							backgroundColor,
-							paddingTop: "1rem",
-							paddingBottom: showTimeSlotHeader
-								? "1rem"
-								: "1.5rem",
-							borderTopLeftRadius: "2px",
 						}}
-						className={styles.unselectable}
+						className={`bg-surface-sunken border-border-bold sticky left-0 top-0 z-[4] select-none border-l-0 border-t-0 border-solid pt-4 ${showTimeSlotHeader ? "border-b-border border-b pb-4" : "pb-6"}`}
 					>
-						<div
-							style={{
-								display: "flex",
-								justifyContent: "right",
-								paddingRight: "1rem",
-							}}
-						>
+						<div className="flex justify-end pr-4">
 							{`${startDate.format("DD.MM.")} - ${endDate.format(
 								"DD.MM.YY",
 							)}`}
 						</div>
 					</th>
 					{/* DAYS */}
-					{daysOrWeeksOrMonths.map((date, i) => {
+					{daysOrWeeksOrMonths.map((date) => {
 						return (
 							<th
 								key={date.toISOString()}
 								colSpan={topHeaderColSpan * 2}
-								style={{
-									backgroundColor,
-
-									paddingTop: "1rem",
-									borderBottom: showTimeSlotHeader
-										? `1px solid ${token(
-												"color.border",
-												"#091E4224",
-										  )}`
-										: undefined,
-									borderTopRightRadius:
-										i === daysOrWeeksOrMonths.length - 1
-											? "2px"
-											: undefined,
-								}}
-								className={`${styles.unselectable} ${styles.headerFullBorder}`}
+								className={`bg-surface-sunken border-border select-none border-x-0 border-t-0 border-solid pt-4 ${showTimeSlotHeader ? "border-b" : ""}`}
 							>
 								<div>
 									<div
-										style={{
-											textAlign: "center",
-											paddingLeft: "1rem",
-											paddingRight: "1rem",
-											overflow: "hidden",
-											textOverflow: "ellipsis",
-										}}
-										className={styles.unselectable}
+										className={
+											"select-none truncate pl-4 pr-4 text-center"
+										}
 									>
 										{date.format(headerDateFormat)}
 									</div>
@@ -175,27 +123,10 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 				{/* TIME SLOTS */}
 				<tr>
 					<th
-						className={`${styles.unselectable}`}
-						style={{
-							zIndex: 4,
-							position: "sticky",
-							left: 0,
-							top: 0,
-							borderLeftStyle: "none",
-							borderRight: headerBorder,
-							borderBottom: headerBorder,
-							backgroundColor,
-							paddingTop: showTimeSlotHeader ? "1rem" : undefined,
-						}}
+						className={`border-border-bold bg-surface-sunken sticky left-0 top-0 z-[4] select-none border-l-0 border-t-0 border-solid ${showTimeSlotHeader ? "pt-4" : ""}`}
 					>
 						{showTimeSlotHeader && (
-							<div
-								style={{
-									paddingRight: "1rem",
-									display: "flex",
-									justifyContent: "right",
-								}}
-							>
+							<div className="flex justify-end pr-4">
 								{`${dayjs()
 									.startOf("day")
 									.add(timeFrameDay.startHour, "hours")
@@ -215,24 +146,12 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 						return (
 							<th
 								key={i}
-								style={{
-									backgroundColor,
-									paddingBottom: showTimeSlotHeader
-										? "0.75rem"
-										: undefined,
-									paddingTop: showTimeSlotHeader
-										? "0.75rem"
-										: undefined,
-									borderBottom: headerBorder,
-								}}
 								colSpan={2}
-								className={`${styles.unselectable} ${
-									styles.headerTimeSlot
-								} ${
+								className={`bg-surface-sunken border-border border-b-border-bold after:border-border relative select-none border-l-0 border-r-0 border-t-0 border-solid pl-2 font-bold after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-solid ${
 									isLastOfDay
-										? styles.headerFullBorder
-										: styles.headerHalfBorder
-								}`}
+										? "after:border-l-2"
+										: "after:border-r-[1px]"
+								} ${showTimeSlotHeader ? "pb-3 pt-3" : ""}`}
 							>
 								{showTimeSlotHeader
 									? slot.format(headerTimeSlotFormat)

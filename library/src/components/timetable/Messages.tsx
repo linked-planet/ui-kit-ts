@@ -103,6 +103,13 @@ export const WeekendsDeactivated = () => (
 	/>
 )
 
+export const CellDisabled = () => (
+	<FormattedMessage
+		defaultMessage={"This slot is disabled."}
+		id="timetable.cellDisabled"
+	/>
+)
+
 export const UnableToFindEarliestTS = () => (
 	<FormattedMessage
 		defaultMessage={"Unable to find the earliest time slot."}

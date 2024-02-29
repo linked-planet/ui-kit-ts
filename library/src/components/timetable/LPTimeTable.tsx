@@ -7,9 +7,6 @@ import React, {
 } from "react"
 import dayjs, { Dayjs } from "dayjs"
 
-//import styles from "./LPTimeTable.module.css";
-import "./LPTimeTable.module.css"
-import styles from "./LPTimeTable.module.css"
 import {
 	calculateTimeSlotPropertiesForView,
 	getStartAndEndSlot,
@@ -137,6 +134,15 @@ export interface LPTimeTableProps<
 	 * Hides the small sideline markers when there are bookings before the begin of the day time slot range, or after the end.
 	 */
 	hideOutOfRangeMarkers?: boolean
+
+	/**
+	 * If defined this is called by each cell to check if it is disabled
+	 */
+	isCellDisabled?: (
+		group: G,
+		timeSlotStart: Dayjs,
+		timeSlotEnd: Dayjs,
+	) => boolean
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -179,6 +185,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	height = "100%",
 	placeHolderHeight = "1.5rem",
 	viewType = "hours",
+	isCellDisabled,
 	disableWeekendInteractions = true,
 	showTimeSlotHeader,
 	hideOutOfRangeMarkers = false,
@@ -273,7 +280,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	//#endregion
 
 	//#region now bar
-
 	const nowBarRef = useRef<HTMLDivElement | undefined>()
 	const nowRef = useRef<Dayjs>(nowOverwrite ?? dayjs())
 	// adjust the now bar moves the now bar to the current time slot, if it exists
@@ -391,6 +397,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				hideOutOfRangeMarkers={hideOutOfRangeMarkers}
 				timeSlotSelectionDisabled={!onTimeRangeSelected}
 				renderPlaceHolder={renderPlaceHolder}
+				isCellDisabled={isCellDisabled}
 				timeSlotMinutes={timeSlotMinutes}
 			>
 				<SelectedTimeSlotsProvider
@@ -403,9 +410,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					viewType={viewType}
 				>
 					<div
+						className="overflow-auto"
 						style={{
-							overflow: "auto",
-							//overflowY: "hidden",
 							height: `calc(${height} - ${inlineMessageRef.current?.clientHeight}px)`,
 						}}
 					>
@@ -414,7 +420,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								userSelect: "none",
 								width: "100%",
 							}}
-							className={styles.lpTimeTable}
+							className={
+								"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
+							}
 						>
 							<LPTimeTableHeader
 								slotsArray={slotsArray}
@@ -431,7 +439,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								}
 								ref={tableHeaderRef}
 							/>
-							<tbody ref={tableBodyRef}>
+							<tbody ref={tableBodyRef} className="table-fixed">
 								<TimeLineTableSimplified<G, I>
 									entries={entries}
 									selectedTimeSlotItem={selectedTimeSlotItem}
@@ -492,7 +500,8 @@ function moveNowBar(
 	}
 	const headerTimeSlotCells = headerTimeslotRow.children
 	for (const headerTimeSlotCell of headerTimeSlotCells) {
-		headerTimeSlotCell.classList.remove(styles.nowHeaderTimeSlot)
+		headerTimeSlotCell.classList.remove("border-b-orange-bold", "font-bold")
+		headerTimeSlotCell.classList.add("border-b-border-bold")
 	}
 
 	const nowItem: TimeSlotBooking = {
@@ -548,7 +557,9 @@ function moveNowBar(
 		}
 	} else {
 		nowBar = document.createElement("div")
-		nowBar.className = styles.nowBar
+		//nowBar.className = styles.nowBar
+		nowBar.className =
+			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-[1] w-[2px]"
 		slotBar.appendChild(nowBar)
 		nowBarRef.current = nowBar
 	}
@@ -577,7 +588,14 @@ function moveNowBar(
 		console.error("unable to find header for time slot of the current time")
 		return
 	}
-	nowTimeSlotCell.classList.add(styles.nowHeaderTimeSlot, styles.unselectable)
+
+	nowTimeSlotCell.classList.remove("border-b-border-bold")
+
+	nowTimeSlotCell.classList.add(
+		"border-b-orange-bold",
+		"font-bold",
+		"select-none",
+	)
 
 	// adjust the date header to mark the current date
 	const headerDateRow = tableHeader.children[0]
@@ -587,11 +605,11 @@ function moveNowBar(
 	}
 	const headerDateCells = headerDateRow.children
 	for (const headerDateCell of headerDateCells) {
-		headerDateCell.classList.remove(styles.nowHeaderDate)
+		headerDateCell.classList.remove("text-text-subtle")
 		const textContent = headerDateCell.textContent
 		const nowTextContent = now.format(headerDateFormat)
 		if (textContent === nowTextContent) {
-			headerDateCell.classList.add(styles.nowHeaderDate)
+			headerDateCell.classList.add("text-text-subtle")
 		}
 	}
 }

@@ -5,7 +5,7 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { LPTimeTable } from "@linked-planet/ui-kit-ts"
+import { Button, LPTimeTable } from "@linked-planet/ui-kit-ts"
 import type {
 	TimeSlotBooking,
 	TimeTableEntry,
@@ -15,7 +15,6 @@ import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/ti
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
-import Button from "@atlaskit/button"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
@@ -532,22 +531,10 @@ function Example() {
 
 	return (
 		<>
-			<div
-				style={{
-					display: "flex",
-					gap: "2rem",
-				}}
-			>
+			<div className="flex gap-8">
 				{/* time table setup values */}
-				<div
-					style={{
-						display: "grid",
-						gridTemplateColumns: "auto auto",
-						gap: "0.5rem",
-						alignItems: "start",
-					}}
-				>
-					<label style={{ marginRight: "1rem" }} htmlFor="startdate">
+				<div className="grid grid-cols-2 items-start gap-2">
+					<label className="mr-4" htmlFor="startdate">
 						Start:
 					</label>
 					<input
@@ -560,7 +547,7 @@ function Example() {
 							})
 						}}
 					/>
-					<label style={{ marginRight: "1rem" }} htmlFor="enddate">
+					<label className="mr-4" htmlFor="enddate">
 						End:
 					</label>
 					<input
@@ -573,12 +560,7 @@ function Example() {
 							})
 						}}
 					/>
-					<label
-						htmlFor="timesteps"
-						style={{
-							marginRight: "1rem",
-						}}
-					>
+					<label className="mr-4" htmlFor="timesteps">
 						Time Steps [min]:
 					</label>
 					<input
@@ -593,28 +575,12 @@ function Example() {
 							setTimeStepsInputValue(val)
 							debounceHelper(() => setTimeSteps(val))
 						}}
-						style={{
-							width: "4rem",
-							textAlign: "center",
-							marginRight: "0.25rem",
-						}}
+						className="mr-1 w-16 text-center"
 					/>
 				</div>
 				{/* time table layout */}
-				<div
-					style={{
-						display: "grid",
-						gridTemplateColumns: "auto auto",
-						gap: "0.5rem",
-						alignItems: "start",
-					}}
-				>
-					<label
-						htmlFor="firstcolwidth"
-						style={{
-							marginRight: "1rem",
-						}}
-					>
+				<div className="grid grid-cols-2 items-start gap-2">
+					<label className="mr-4" htmlFor="firstcolwidth">
 						Group Header Width [px]:
 					</label>
 					<input
@@ -631,18 +597,9 @@ function Example() {
 								),
 							)
 						}
-						style={{
-							width: "4rem",
-							textAlign: "center",
-							marginRight: "0.25rem",
-						}}
+						className="mr-1 w-16 text-center"
 					/>
-					<label
-						htmlFor="colwidth"
-						style={{
-							marginRight: "1rem",
-						}}
-					>
+					<label className="mr-4" htmlFor="colwidth">
 						Column Width [px]:
 					</label>
 					<input
@@ -657,28 +614,12 @@ function Example() {
 								setColumnWidth(parseInt(e.target.value)),
 							)
 						}
-						style={{
-							width: "4rem",
-							textAlign: "center",
-							marginRight: "0.25rem",
-						}}
+						className="mr-1 w-16 text-center"
 					/>
 				</div>
 				{/* time table settings */}
-				<div
-					style={{
-						display: "grid",
-						gridTemplateColumns: "auto auto",
-						gap: "0.5rem",
-						alignItems: "start",
-					}}
-				>
-					<label
-						htmlFor="diableweekends"
-						style={{
-							marginRight: "1rem",
-						}}
-					>
+				<div className="grid grid-cols-2 items-start gap-2">
+					<label htmlFor="diableweekends" className="mr-4">
 						Disable Weekend Interactions:
 					</label>
 					<input
@@ -688,17 +629,9 @@ function Example() {
 						onChange={(e) =>
 							setDisabledWeekendInteractions(e.target.checked)
 						}
-						style={{
-							textAlign: "center",
-							marginRight: "0.25rem",
-						}}
+						className="mr-1 text-center"
 					/>
-					<label
-						htmlFor="showtimeslotheader"
-						style={{
-							marginRight: "1rem",
-						}}
-					>
+					<label htmlFor="showtimeslotheader" className="mr-4">
 						Show Time Slot Header:
 					</label>
 					<input
@@ -708,17 +641,9 @@ function Example() {
 						onChange={(e) => {
 							setShowTimeSlotHeader(e.target.checked)
 						}}
-						style={{
-							textAlign: "center",
-							marginRight: "0.25rem",
-						}}
+						className="mr-1 text-center"
 					/>
-					<label
-						htmlFor="hideoutofdayrange"
-						style={{
-							marginRight: "1rem",
-						}}
-					>
+					<label htmlFor="hideoutofdayrange" className="mr-4">
 						Hide Out Of Day Range Markers:
 					</label>
 					<input
@@ -728,10 +653,7 @@ function Example() {
 						onChange={(e) => {
 							setHideOutOfDayRangeMarkers(e.target.checked)
 						}}
-						style={{
-							textAlign: "center",
-							marginRight: "0.25rem",
-						}}
+						className="mr-1 text-center"
 					/>
 					<label
 						htmlFor="disabletimerangeselection"
@@ -748,17 +670,9 @@ function Example() {
 						onChange={(e) => {
 							setDisableTimeRangeSelection(e.target.checked)
 						}}
-						style={{
-							textAlign: "center",
-							marginRight: "0.25rem",
-						}}
+						className="mr-1 text-center"
 					/>
-					<label
-						htmlFor="viewtype"
-						style={{
-							marginRight: "1rem",
-						}}
-					>
+					<label htmlFor="viewtype" className="mr-4">
 						View Type
 					</label>
 					<select
@@ -776,39 +690,28 @@ function Example() {
 					</select>
 				</div>
 			</div>
-			<div
-				style={{
-					display: "flex",
-					alignItems: "flex-start",
-				}}
-			>
+			<div className="flex-start flex">
 				<Button
 					onClick={requestPrevTimeFrameCB}
 					title="Previous Time Frame"
-					style={{
-						margin: "0 0.5rem 0.5rem 0",
-					}}
+					className="mb-2 mr-2"
 				>
 					<ChevronLeftIcon label="prevtimeframe" />
 				</Button>
 				<Button
 					onClick={requestNextTimeFrameCB}
 					title="Next Time Frame"
-					style={{
-						margin: "0 0.5rem 0.5rem 0",
-					}}
+					className="mb-2 mr-2"
 				>
 					<ChevronRightIcon label="nexttimeframe" />
 				</Button>
 				<Button
-					isDisabled={!selectedTimeRange}
+					disabled={!selectedTimeRange}
 					onClick={() => {
 						setShowCreateNewItemModal(true)
 					}}
 					title="Create New Item"
-					style={{
-						margin: "0 0.5rem 0.5rem 0",
-					}}
+					className="mb-2 mr-2"
 				>
 					Create New Item
 				</Button>
@@ -848,6 +751,12 @@ function Example() {
 					disableWeekendInteractions={disabledWeekendInteractions}
 					showTimeSlotHeader={showTimeSlotHeader}
 					hideOutOfRangeMarkers={hideOutOfDayRangeMarkers}
+					isCellDisabled={(group, start, end) => {
+						if (group.title === "Group 2") {
+							return start.isBefore(dayjs().startOf("day"))
+						}
+						return false
+					}}
 					viewType={viewType}
 				/>
 			</div>

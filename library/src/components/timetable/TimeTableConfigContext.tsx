@@ -14,6 +14,9 @@ type TimeTableConfig<G extends TimeTableGroup> = {
 	viewType: TimeTableViewType
 	hideOutOfRangeMarkers: boolean
 	timeSlotSelectionDisabled: boolean
+	isCellDisabled:
+		| ((group: G, timeSlotStart: Dayjs, timeSlotEnd: Dayjs) => boolean)
+		| undefined
 	renderPlaceHolder:
 		| ((props: PlaceholderItemProps<G>) => JSX.Element)
 		| undefined
@@ -34,10 +37,18 @@ export function TimeTableConfigProvider<G extends TimeTableGroup>({
 	hideOutOfRangeMarkers,
 	timeSlotSelectionDisabled,
 	renderPlaceHolder,
+	isCellDisabled,
 	children,
 }: TimeTableConfig<G> & { children: React.ReactNode }) {
 	const renderPlaceHolderG = renderPlaceHolder as
 		| ((props: PlaceholderItemProps<TimeTableGroup>) => JSX.Element)
+		| undefined
+	const isCellDisabledG = isCellDisabled as
+		| ((
+				group: TimeTableGroup,
+				timeSlotStart: Dayjs,
+				timeSlotEnd: Dayjs,
+		  ) => boolean)
 		| undefined
 
 	return (
@@ -53,6 +64,7 @@ export function TimeTableConfigProvider<G extends TimeTableGroup>({
 				hideOutOfRangeMarkers,
 				timeSlotSelectionDisabled,
 				renderPlaceHolder: renderPlaceHolderG,
+				isCellDisabled: isCellDisabledG,
 			}}
 		>
 			{children}
