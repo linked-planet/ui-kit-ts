@@ -23,7 +23,6 @@ import {
 	TimeFrameDay,
 } from "./timeTableUtils"
 import ItemWrapper, { RenderItemProps } from "./ItemWrapper"
-import { token } from "@atlaskit/tokens"
 
 import { useTimeTableMessage } from "./TimeTableMessageContext"
 import { useTimeTableConfig } from "./TimeTableConfigContext"
@@ -308,7 +307,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			}}
 			colSpan={2} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			ref={tableCellRef}
-			className={`border-border box-border border-l-0 border-t-0 border-solid ${isFirstRow ? "pt-2" : ""} ${isLastGroupRow ? "pb-2" : ""} ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
+			className={`border-border box-border border-l-0 border-t-0 border-solid p-0 ${isFirstRow ? "pt-2" : ""} ${isLastGroupRow ? "pb-2" : ""} ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
 		>
 			{itemsToRender && itemsToRender.length > 0 && (
 				<>

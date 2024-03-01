@@ -500,8 +500,17 @@ function moveNowBar(
 	}
 	const headerTimeSlotCells = headerTimeslotRow.children
 	for (const headerTimeSlotCell of headerTimeSlotCells) {
-		headerTimeSlotCell.classList.remove("border-b-orange-bold", "font-bold")
-		headerTimeSlotCell.classList.add("border-b-border-bold")
+		headerTimeSlotCell.classList.remove(
+			"border-b-orange-bold",
+			"font-bold",
+			"border-b-[3px]",
+		)
+		headerTimeSlotCell.classList.add(
+			"border-b-border-bold",
+			"border-b-2",
+			"font-normal",
+			"select-none",
+		)
 	}
 
 	const nowItem: TimeSlotBooking = {
@@ -589,12 +598,16 @@ function moveNowBar(
 		return
 	}
 
-	nowTimeSlotCell.classList.remove("border-b-border-bold")
+	nowTimeSlotCell.classList.remove(
+		"border-b-border-bold",
+		"font-normal",
+		"border-b-2",
+	)
 
 	nowTimeSlotCell.classList.add(
 		"border-b-orange-bold",
 		"font-bold",
-		"select-none",
+		"border-b-[3px]",
 	)
 
 	// adjust the date header to mark the current date
