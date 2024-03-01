@@ -416,10 +416,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 						}}
 					>
 						<table
-							style={{
-								userSelect: "none",
-								width: "100%",
-							}}
 							className={
 								"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
 							}

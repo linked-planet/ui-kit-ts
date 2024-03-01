@@ -17,6 +17,7 @@
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build:lib": "tsc --noEmit && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist",
+		"build:lib:debug": "tsc --noEmit && vite build -c vite.config.lib.ts --mode development --minify false && npm run messages:compile && cp -r ./twThemes dist",
 		"build:sc": "node ./showcase/copySources.js && tsc --noEmit && vite build -c vite.config.showcase.ts && npm run messages:compile && node ./showcase/copyIndexTo404.js",
 		"preview": "npm run build:sc && vite preview -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
@@ -28,7 +29,7 @@
 		"messages:compile": "formatjs compile-folder library/src/localization/translations library/src/localization/translations-compiled && mkdir -p dist && mkdir -p dist-showcase && cp -r library/src/localization/translations-compiled dist/ && cp -r library/src/localization/translations-compiled showcase/public/",
 		"messages": "npm run messages:extract && npm run messages:compile",
 		"tsc": "tsc --noEmit",
-		"pack": "npm run build:lib && npm pack"
+		"pack": "npm run build:lib:debug && npm pack"
 	},
 	"author": "Markus Toepfer",
 	"contributors": [

@@ -290,13 +290,17 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			: "border-r-[1px]"
 	const bbStyle = isLastGroupRow ? "border-b-2" : "border-b-0"
 
-	const bgStyle = isWeekendDay
-		? groupNumber % 2 === 0
-			? "bg-surface-raised"
-			: "bg-surface-raised-hovered"
-		: groupNumber % 2 !== 0
-			? "bg-surface-hovered"
-			: ""
+	const bgStyle =
+		isDisabledByDisabledMatcher ||
+		(isWeekendDay && disableWeekendInteractions)
+			? "bg-neutral-bold"
+			: isWeekendDay
+				? groupNumber % 2 === 0
+					? "bg-surface-raised"
+					: "bg-surface-raised-hovered"
+				: groupNumber % 2 !== 0
+					? "bg-surface-hovered"
+					: ""
 
 	return (
 		<td
@@ -401,7 +405,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	}
 
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
-	const cellDisabled =
+	const isDisabledByDisabledMatcher =
 		isCellDisabled?.(
 			group,
 			timeSlot,
@@ -410,7 +414,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	const mouseHandlers = useMouseHandlers(
 		timeSlotNumber,
 		group,
-		cellDisabled,
+		isDisabledByDisabledMatcher,
 		isWeekendDay,
 		disableWeekendInteractions,
 	)
@@ -419,18 +423,28 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 		return <></> // the cell is not rendered since the placeholder item spans over multiple selected cells
 	}
 
+	const cursorStyle =
+		isDisabledByDisabledMatcher ||
+		(isWeekendDay && disableWeekendInteractions)
+			? "cursor-not-allowed"
+			: "cursor-pointer"
+
 	const brStyle =
 		isLastSlotOfTheDay && viewType === "hours"
 			? "border-r-2"
 			: "border-r-[1px]"
 
-	const bgStyle = isWeekendDay
-		? groupNumber % 2 === 0
-			? "bg-surface-raised"
-			: "bg-surface-raised-hovered"
-		: groupNumber % 2 !== 0
-			? "bg-surface-hovered"
-			: ""
+	const bgStyle =
+		isDisabledByDisabledMatcher ||
+		(isWeekendDay && disableWeekendInteractions)
+			? "bg-neutral-bold"
+			: isWeekendDay
+				? groupNumber % 2 === 0
+					? "bg-surface-raised"
+					: "bg-surface-raised-hovered"
+				: groupNumber % 2 !== 0
+					? "bg-surface-hovered"
+					: ""
 
 	return (
 		<td
@@ -441,7 +455,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 					: 2
 			} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			{...(timeSlotSelectedIndex === -1 ? mouseHandlers : undefined)}
-			className={`border-border relative box-border cursor-pointer border-b-0 border-l-0 border-t-0 border-solid ${brStyle} ${bgStyle} p-0 align-top`}
+			className={`border-border relative box-border ${cursorStyle} border-b-0 border-l-0 border-t-0 border-solid ${brStyle} ${bgStyle} p-0 align-top`}
 		>
 			{placeHolderItem}
 		</td>

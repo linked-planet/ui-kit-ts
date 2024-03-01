@@ -378,11 +378,15 @@ export function calculateTimeSlotPropertiesForView(
 
 	const unit = vieWType
 
-	const start = startDate.startOf(unit)
-	const end = endDate.endOf(unit)
+	const start = startDate
+	const end = endDate
 	const diff = end.diff(start, unit) + 1
 	const slotsArray = Array.from({ length: diff }, (x, i) => i).map((i) => {
-		return dayjs(start).add(i, unit)
+		const ret = start.add(i, unit)
+		if (ret.hour() > endHour) ret.set("hour", endHour)
+		if (ret.minute() > endMinute) ret.set("minute", endMinute)
+		return ret.subtract(timeStepsMinute, "minutes")
+		//return dayjs(start).add(i, unit)
 	})
 
 	let oneDayMinutes = dayjs()
@@ -416,6 +420,8 @@ export function calculateTimeSlotPropertiesForView(
 		endMinute,
 		oneDayMinutes,
 	}
+
+	console.log("TIMEFRAME DAY", timeFrameDay)
 
 	// how many minutes has 1 time slot
 	const unitDays = dayjs()
