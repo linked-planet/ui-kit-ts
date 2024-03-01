@@ -85,13 +85,13 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 					)
 				})}
 			</colgroup>
-			<thead ref={tableHeaderRef} className="sticky top-0 z-[3]">
+			<thead ref={tableHeaderRef} className="sticky top-0 z-[5]">
 				<tr>
 					<th
 						style={{
 							width: groupHeaderColumnWidth,
 						}}
-						className={`bg-surface-sunken border-border-bold sticky left-0 top-0 z-[4] select-none border-l-0 border-t-0 border-solid pt-4 ${showTimeSlotHeader ? "border-b-border border-b pb-4" : "pb-6"}`}
+						className={`bg-surface-sunken border-border-bold sticky left-0 top-0 z-[5] select-none border-l-0 border-t-0 border-solid pt-4 ${showTimeSlotHeader ? "border-b-border border-b pb-4" : "pb-6"}`}
 					>
 						<div className="flex justify-end pr-4">
 							{`${startDate.format("DD.MM.")} - ${endDate.format(
@@ -123,7 +123,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 				{/* TIME SLOTS */}
 				<tr>
 					<th
-						className={`border-border-bold bg-surface-sunken sticky left-0 top-0 z-[4] select-none border-l-0 border-t-0 border-solid ${showTimeSlotHeader ? "pt-4" : ""}`}
+						className={`border-border-bold bg-surface-sunken sticky left-0 top-0 z-[5] select-none border-l-0 border-t-0 border-solid ${showTimeSlotHeader ? "pt-4" : ""}`}
 					>
 						{showTimeSlotHeader && (
 							<div className="flex justify-end pr-4">

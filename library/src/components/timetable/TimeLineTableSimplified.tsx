@@ -119,7 +119,7 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 				if (onGroupClick) onGroupClick(group)
 			}}
 			rowSpan={groupRowMax}
-			className={`border-border-bold border-b-border sticky left-0 z-[2] select-none border-0 border-b-2 border-r-2 border-solid ${groupNumber % 2 === 0 ? "bg-surface" : "bg-surface-hovered"}`}
+			className={`border-border-bold border-b-border sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${groupNumber % 2 === 0 ? "bg-surface" : "bg-surface-hovered"}`}
 		>
 			{renderGroup ? renderGroup(group) : <Group group={group} />}
 		</td>
@@ -311,13 +311,13 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			}}
 			colSpan={2} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			ref={tableCellRef}
-			className={`border-border box-border border-l-0 border-t-0 border-solid p-0 ${isFirstRow ? "pt-2" : ""} ${isLastGroupRow ? "pb-2" : ""} ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
+			className={`border-border relative box-border border-l-0 border-t-0 border-solid p-0 ${isFirstRow ? "pt-2" : ""} ${isLastGroupRow ? "pb-2" : ""} ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
 		>
 			{itemsToRender && itemsToRender.length > 0 && (
 				<>
 					{beforeCount > 0 && !hideOutOfRangeMarkers && (
 						<div
-							className="bg-lime-bold absolute left-0 top-0 h-full w-[0.15rem] rounded-r-full opacity-50"
+							className="bg-lime-bold absolute left-0 top-0 z-[2] h-full h-full w-1 rounded-r-full opacity-50"
 							title={`${beforeCount} more items`}
 						/>
 					)}
@@ -331,7 +331,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					</div>
 					{afterCount > 0 && !hideOutOfRangeMarkers && (
 						<div
-							className="bg-lime-bold absolute right-0 top-0 h-full w-[0.15rem] translate-x-0 translate-y-0 rounded-l-full opacity-50"
+							className="bg-lime-bold absolute right-0 top-0 z-[2] h-full w-1 translate-x-0 translate-y-0 rounded-l-full opacity-50"
 							title={`${afterCount} more items`}
 						/>
 					)}
