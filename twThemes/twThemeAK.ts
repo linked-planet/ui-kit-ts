@@ -49,6 +49,7 @@ import {
 	Y75,
 	R75,
 	G75,
+	N200A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -140,7 +141,9 @@ export const theme = {
 
 		transparent: colors.transparent,
 
-		blanket: `var(--ds-blanket, ${N100A})`,
+		blanket: {
+			DEFAULT: `var(--ds-blanket, ${N100A})`,
+		},
 
 		link: {
 			DEFAULT: `var(--ds-link, ${B400})`,
