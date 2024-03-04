@@ -406,12 +406,12 @@ function createMoreTestGroups(
 }
 
 const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
-const endDateInitial = dayjs().startOf("day").add(5, "days").add(16, "hours")
+const endDateInitial = dayjs().startOf("day").add(5, "days").add(20, "hours")
 
 function Example() {
 	//#region timetable
 
-	const [timeSteps, setTimeSteps] = useState(110)
+	const [timeSteps, setTimeSteps] = useState(60)
 	const [timeStepsInputValue, setTimeStepsInputValue] = useState(110)
 	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
 	const [columnWidth, setColumnWidth] = useState(70)
@@ -751,7 +751,7 @@ function Example() {
 					disableWeekendInteractions={disabledWeekendInteractions}
 					showTimeSlotHeader={showTimeSlotHeader}
 					hideOutOfRangeMarkers={hideOutOfDayRangeMarkers}
-					isCellDisabled={(group, start, end) => {
+					isCellDisabled={(group, start) => {
 						if (group.title === "Group 2") {
 							return start.isBefore(dayjs().startOf("day"))
 						}

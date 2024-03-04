@@ -293,7 +293,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const bgStyle =
 		isDisabledByDisabledMatcher ||
 		(isWeekendDay && disableWeekendInteractions)
-			? "bg-blanket"
+			? "bg-blanket-subtle"
 			: isWeekendDay
 				? groupNumber % 2 === 0
 					? "bg-surface-raised"
@@ -437,7 +437,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	const bgStyle =
 		isDisabledByDisabledMatcher ||
 		(isWeekendDay && disableWeekendInteractions)
-			? "bg-blanket"
+			? "bg-blanket-subtle"
 			: isWeekendDay
 				? groupNumber % 2 === 0
 					? "bg-surface-raised"

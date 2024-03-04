@@ -49,7 +49,6 @@ import {
 	Y75,
 	R75,
 	G75,
-	N200A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -143,6 +142,7 @@ export const theme = {
 
 		blanket: {
 			DEFAULT: `var(--ds-blanket, ${N100A})`,
+			subtle: `var(--ds-blanket-subtle, ${N50A})`,
 		},
 
 		link: {
