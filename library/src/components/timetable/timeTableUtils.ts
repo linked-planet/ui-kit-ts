@@ -421,8 +421,6 @@ export function calculateTimeSlotPropertiesForView(
 		oneDayMinutes,
 	}
 
-	console.log("TIMEFRAME DAY", timeFrameDay)
-
 	// how many minutes has 1 time slot
 	const unitDays = dayjs()
 		.startOf("day")
