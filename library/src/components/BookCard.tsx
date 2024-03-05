@@ -114,22 +114,29 @@ const CardHeaderMeta = ({
 const CardHeaderTitle = ({
 	children,
 	className,
+	prefix,
+	prefixClassName,
+	prefixStyle,
 	style,
 	id,
 	testId,
 }: {
 	children: React.ReactNode
 	className?: string
+	prefix?: React.ReactNode
 	style?: CSSProperties
 	id?: string
 	testId?: string
+	prefixClassName?: string
+	prefixStyle?: CSSProperties
 }) => {
 	const _className = twMerge(
 		"mt-2 w-full truncate text-start text-xl font-medium",
 		className,
 	)
-	if (typeof children === "string") {
-		return (
+
+	const content =
+		typeof children === "string" ? (
 			<h3
 				className={_className}
 				id={id}
@@ -138,12 +145,28 @@ const CardHeaderTitle = ({
 			>
 				{children}
 			</h3>
+		) : (
+			<div
+				className={_className}
+				id={id}
+				data-testid={testId}
+				style={style}
+			>
+				{children}
+			</div>
 		)
-	}
 
 	return (
-		<div className={_className} id={id} data-testid={testId} style={style}>
-			{children}
+		<div className="flex w-full items-baseline">
+			{prefix && (
+				<div
+					style={prefixStyle}
+					className={twMerge("max-w-20 truncate", prefixClassName)}
+				>
+					{prefix}
+				</div>
+			)}
+			{content}
 		</div>
 	)
 }
@@ -167,14 +190,14 @@ const CardHeaderSubtitle = ({
 	)
 	if (typeof children === "string") {
 		return (
-			<p
+			<div
 				className={_className}
 				id={id}
 				data-testid={testId}
 				style={style}
 			>
 				{children}
-			</p>
+			</div>
 		)
 	}
 	return (
@@ -203,14 +226,14 @@ const CardHeaderUpperTitle = ({
 	)
 	if (typeof children === "string") {
 		return (
-			<p
+			<div
 				className={_className}
 				id={id}
 				data-testid={testId}
 				style={style}
 			>
 				{children}
-			</p>
+			</div>
 		)
 	}
 	return (
@@ -261,12 +284,16 @@ const cardBodyEntryBaseStyle = css`
 `
 const CardGridBody = ({
 	children,
+	className,
+	style,
 	id,
 	testId,
 }: {
 	children: React.ReactNode
 	id?: string
 	testId?: string
+	className?: string
+	style?: CSSProperties
 }) => (
 	<div
 		className="w-full overflow-hidden rounded-b"
@@ -274,9 +301,13 @@ const CardGridBody = ({
 		data-testid={testId}
 	>
 		<div
-			className={`grid border-collapse overflow-auto ${cardBodyEntryBaseStyle} ${css`
-				grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-			`}`}
+			className={twMerge(
+				`grid border-collapse overflow-hidden ${cardBodyEntryBaseStyle} ${css`
+					grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+				`}`,
+				className,
+			)}
+			style={style}
 		>
 			{children}
 		</div>
@@ -325,19 +356,27 @@ const CardColumnBody = ({
 
 const CardBodyEntry = ({
 	children,
+	className,
+	style,
 	id,
 	testId,
 }: {
 	children: React.ReactNode
 	id?: string
 	testId?: string
+	className?: string
+	style?: CSSProperties
 }) => (
 	<div
-		className="flex flex-1 flex-col items-baseline text-sm"
+		className={twMerge(
+			"flex w-full flex-1 flex-col items-baseline overflow-hidden text-sm",
+			className,
+		)}
 		id={id}
 		data-testid={testId}
+		style={style}
 	>
-		{children}
+		<div className="w-full">{children}</div>
 	</div>
 )
 
@@ -367,6 +406,7 @@ type BookCardProps = {
 	title: React.ReactNode
 	subtitle?: React.ReactNode
 	upperTitle?: React.ReactNode
+	titlePrefix?: React.ReactNode
 	closed?: boolean
 	defaultOpen?: boolean
 	bodyLayout: "row" | "grid" | "column"
@@ -386,6 +426,7 @@ export const BookCard = forwardRef(
 			title,
 			subtitle,
 			upperTitle,
+			titlePrefix,
 			closed,
 			defaultOpen,
 			actions,
@@ -429,7 +470,9 @@ export const BookCard = forwardRef(
 									{upperTitle}
 								</CardHeaderUpperTitle>
 							)}
-							<CardHeaderTitle>{title}</CardHeaderTitle>
+							<CardHeaderTitle prefix={titlePrefix}>
+								{title}
+							</CardHeaderTitle>
 							{subtitle && (
 								<CardHeaderSubtitle>
 									{subtitle}

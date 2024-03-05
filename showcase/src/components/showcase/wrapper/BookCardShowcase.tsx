@@ -1,8 +1,5 @@
 import React, { CSSProperties, useMemo, useRef, useState } from "react"
-import {
-	BookCard,
-	BookCardComponents,
-} from "@linked-planet/ui-kit-ts/components/BookCard"
+import { BookCard, BookCardComponents, Tag } from "@linked-planet/ui-kit-ts"
 
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
@@ -50,7 +47,13 @@ function BookCardComponentsExample() {
 					<BookCardComponents.CardBodyEntryTitle>
 						Book Entry Title 2
 					</BookCardComponents.CardBodyEntryTitle>
-					<div>Book Entry Content 2</div>
+					<Tag>
+						Lorem ipsum dolor sit, amet consectetur adipisicing
+						elit. Consequatur qui fuga similique dicta doloremque
+						incidunt aliquid nesciunt quae culpa? Eos expedita
+						doloribus exercitationem nihil fuga quidem rem quod
+						voluptate? A!
+					</Tag>
 				</BookCardComponents.CardBodyEntry>
 			</BookCardComponents.CardGridBody>
 		</BookCardComponents.CardBase>
@@ -157,24 +160,20 @@ function BookCardExample() {
 						very very very very very very long"
 				subtitle="Book Subtitle also very very very very very very long"
 				upperTitle="Book Upper Title also looooooooooooooooooooooooooooong"
+				titlePrefix="looooooooooooooooooooooooooooong prefix"
 				bodyLayout={bodyLayout}
 				bodyStyle={bodyStyle}
 				closed={isClosed}
 				actionsInfo={"Action:"}
 				actions={
 					<div className="flex items-center">
-						<div>ICON</div>
 						<TagGroup>
-							<SimpleTag
-								key="action"
-								text="DAUERAUSLEIHE"
-								appearance="danger"
-							/>
-							<SimpleTag
-								key="action 1"
-								text="action item 1"
-								appearance="greenLight"
-							/>
+							<SimpleTag key="action" appearance="danger">
+								DAUERAUSLEIHE
+							</SimpleTag>
+							<SimpleTag key="action 1" appearance="greenLight">
+								action item
+							</SimpleTag>
 						</TagGroup>
 					</div>
 				}
@@ -196,7 +195,24 @@ function BookCardExample() {
 						<BookCardComponents.CardBodyEntryTitle>
 							Book Entry Title
 						</BookCardComponents.CardBodyEntryTitle>
-						<TruncatedText>not truncated</TruncatedText>
+						<TruncatedText>untruncated</TruncatedText>
+					</BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntry>
+						<BookCardComponents.CardBodyEntryTitle>
+							Book Entry Title
+						</BookCardComponents.CardBodyEntryTitle>
+						<SimpleTag>
+							Lorem ipsum, dolor sit amet consectetur adipisicing
+							elit. Illo cumque eum laborum voluptate ipsa sed
+							consectetur tempore vel quia est quas itaque
+							voluptatem neque odio, maiores ut cum at distinctio?
+						</SimpleTag>
+						<Tag>
+							Lorem ipsum, dolor sit amet consectetur adipisicing
+							elit. Illo cumque eum laborum voluptate ipsa sed
+							consectetur tempore vel quia est quas itaque
+							voluptatem neque odio, maiores ut cum at distinctio?
+						</Tag>
 					</BookCardComponents.CardBodyEntry>
 					{children}
 				</>
