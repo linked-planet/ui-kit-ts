@@ -131,7 +131,7 @@ const CardHeaderTitle = ({
 	prefixStyle?: CSSProperties
 }) => {
 	const _className = twMerge(
-		"mt-2 w-full truncate text-start text-xl font-medium",
+		"mt-0 w-full truncate text-start text-xl font-medium",
 		className,
 	)
 
@@ -161,7 +161,10 @@ const CardHeaderTitle = ({
 			{prefix && (
 				<div
 					style={prefixStyle}
-					className={twMerge("max-w-20 truncate", prefixClassName)}
+					className={twMerge(
+						"text-text-subtlest mr-2 max-w-16 flex-none truncate text-xs font-semibold",
+						prefixClassName,
+					)}
 				>
 					{prefix}
 				</div>
@@ -221,7 +224,7 @@ const CardHeaderUpperTitle = ({
 	id?: string
 }) => {
 	const _className = twMerge(
-		"text-text-subtlest mt-1 w-full flex-1 justify-start truncate text-start text-xs font-light italic",
+		"text-text-subtlest my-1 w-full flex-1 justify-start truncate text-start text-xs font-light italic",
 		className,
 	)
 	if (typeof children === "string") {
