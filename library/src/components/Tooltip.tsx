@@ -44,7 +44,7 @@ export function Tooltip({
 		return (
 			<RTTp.Content
 				className={twMerge(
-					"bg-surface-overlay border-border shadow-overlay rounded border p-2",
+					"bg-surface-overlay border-border shadow-overlay max-h-[768px] max-w-3xl overflow-auto rounded border p-2",
 					tooltipClassName,
 				)}
 				style={tooltipStyle}

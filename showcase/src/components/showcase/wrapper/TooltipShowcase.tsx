@@ -3,6 +3,7 @@ import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import SearchIcon from "@atlaskit/icon/glyph/search"
+import WatchIcon from "@atlaskit/icon/glyph/watch"
 import { Tooltip, TooltipProvider } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
@@ -47,6 +48,23 @@ function TooltipShowcase(props: ShowcaseProps) {
 						}
 					>
 						<SearchIcon label="" />
+					</Tooltip>
+					<Tooltip
+						tooltipContent={`Der Fliegenpilz ist mit seinem auffälligen roten, weiß gepunkteten Hut weit und gut zu sehen. Er hat einen Durchmesser von 5 bis über 15 Zentimeter, ist jung kugelig oder halbkugelig geschlossen, dann konvex, schließlich scheibenförmig mit etwas herabgebogenem, gestreiftem Rand. Jung ist er durch sehr dicht stehende Warzen und Schuppen noch fast weiß mit schwachem orangen oder rötlichem Schimmer, dann tief rot und mit grauweißen kegelförmigen Warzen, zum Teil auch breiten Schuppen – den charakteristischen weißen „Punkten“ – besetzt, die leicht abgewischt werden können. Sie sind Reste einer Gesamthülle (Velum universale), die den jungen Pilz anfangs schützend umschließt.
+
+						Der rote Hut ist bisweilen auch fleckenweise heller, und zwar besonders gegen den Rand mit oranger Mischfarbe, gelegentlich durch tiefer rot gefärbte Linien wie faserig gestreift. Am Hutrand hängen teilweise leicht entfernbare weiße Velumflocken. Im Übrigen ist die Oberfläche weitgehend glatt bzw. wie gehämmert uneben, im feuchten Zustand etwas schmierig und schwach glänzend. Die Hutdeckschicht ist als Haut bis zur Mitte des Hutes abziehbar; das dadurch freigelegte Hutfleisch ist tief safrangelb gefärbt.
+						
+						Auf der Unterseite des Hutes befinden sich Lamellen. Diese stehen frei, untermischt und ziemlich gedrängt. Sie sind schwach bauchig und weisen eine fein gezähnte Schneide auf, die unter der Lupe gesehen zugleich flockig ist. Ihre Farbe ist weißlich, bei älteren Stücken aus der Tiefe heraus mit schwach lachsfarbenem Schein. Gegen den Hutrand sind sie stumpf geformt. Sie fühlen sich weich an und haben eine glatte Lamellenfläche. Der Sporenstaub ist weiß.
+						
+						Der Stiel ist 8 bis 20 Zentimeter hoch und 1,5 bis 3 Zentimeter dick und besitzt einen runden Querschnitt. Die Stielspitze ist gegen den Hut ausweitend, die Stielbasis knollig verdickt. In seiner oberen Hälfte (oft sogar ziemlich weit oben) weist er einen häutigen, empfindlichen Ring auf, der unterseits flockig ist und oberseits wie gepresste Watte aussieht; dieser hat einen gezähnten Rand und ist weiß bzw. gelegentlich und stellenweise leicht gelblich gefärbt.
+						
+						Der Stiel ist insgesamt weiß, an seiner Spitze bereift, gegen die Stielknolle auch schwach bräunlich und bisweilen durch unscheinbare Linien gezeichnet, die unregelmäßig netzig zusammenlaufen können. An der Stielknolle fügen sich zahlreiche weißlich-graue Warzen zu drei bis vier meist unvollständigen Ringzonen. Bisweilen findet sich auch eine Volva, die jedoch in der Regel nicht gut entwickelt ist.[3]
+						
+						Das Fleisch ist schwammig, weich, lediglich in der Knolle ziemlich fest und ohne besonderen Geruch. Es ist im Stiel voll und schwach faserig bis schwammig. Von der Hutoberfläche her ist es orangegelb eingefärbt, sonst rein weiß. Während des Trocknungsprozesses schimmert die Huthaut zeitweilig golden bis kupfern, nimmt jedoch später eine mattorange Färbung an, wobei der metallische Schimmer wieder verblasst.[4]:103–104
+						
+						Ältere Pilzkörper bilden im Becherstadium eine Vertiefung in ihrem Hut, in dem sich Regenwasser sammeln kann, der sogenannte Zwergenwein.[5]`}
+					>
+						<WatchIcon label="" />
 					</Tooltip>
 				</div>
 			</div>
