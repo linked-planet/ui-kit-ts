@@ -60,7 +60,7 @@ export const TagColorOptions = [
 export type TagColor = (typeof TagColorOptions)[number]
 
 export type SimpleTagProps = {
-	text: React.ReactNode
+	children: React.ReactNode
 	looks?: "default" | "rounded"
 	appearance?: Appearance | TagColor
 	bold?: boolean
@@ -78,7 +78,7 @@ const TagAppearanceColors: { [style in Appearance]: string } = {
 	information: "bg-information-bold text-text-inverse",
 	discovery: "bg-information-bold text-text-inverse",
 	danger: "bg-danger-bold text-text-inverse",
-	warning: "bg-warning-bold text-warning-text",
+	warning: "bg-warning-bold text-text-inverse",
 } as const
 
 const TagColors: { [style in TagColor]: string } = {
@@ -140,7 +140,7 @@ function isColorOption(color: Appearance | TagColor): color is TagColor {
 }
 
 export function SimpleTag({
-	text,
+	children,
 	appearance = "default",
 	looks = "default",
 	bold = false,
@@ -159,7 +159,7 @@ export function SimpleTag({
 			className={twMerge(
 				colors,
 				looks === "default" ? "rounded-[3px]" : "rounded-full",
-				"box-border inline-flex cursor-default select-none items-center overflow-hidden whitespace-nowrap px-1 pt-[1px] align-middle text-base",
+				"box-border flex cursor-default select-none items-center px-1 align-middle text-base",
 				bold ? "font-bold" : undefined,
 				className,
 			)}
@@ -170,7 +170,7 @@ export function SimpleTag({
 			id={id}
 			data-testid={testId}
 		>
-			{text}
+			<div className="truncate">{children}</div>
 		</div>
 	)
 }
@@ -186,7 +186,7 @@ export type TagProps = SimpleTagProps & {
  * onBeforeRemoveAction: return false to prevent removal
  */
 export function Tag({
-	text,
+	children,
 	removeButtonLabel,
 	className,
 	style,
@@ -200,8 +200,8 @@ export function Tag({
 
 	const textWithRemoveButton = useMemo(() => {
 		return (
-			<>
-				<span>{text}</span>
+			<div className="flex w-full items-center">
+				<div className="truncate">{children}</div>
 
 				<button
 					onClick={() => {
@@ -212,11 +212,13 @@ export function Tag({
 						setRemoved(removed)
 						if (removed && onAfterRemoveAction) {
 							const txt =
-								typeof text === "string" ? text : undefined
+								typeof children === "string"
+									? children
+									: undefined
 							onAfterRemoveAction(txt)
 						}
 					}}
-					className={`m-0 ml-0.5 flex h-4 w-4 items-center justify-center ${
+					className={`m-0 ml-0.5 flex size-4 flex-none items-center justify-center ${
 						!isRemovable ? "hidden" : ""
 					}`}
 					aria-label={removeButtonLabel}
@@ -226,14 +228,14 @@ export function Tag({
 				>
 					<EditorCloseIcon size="small" label={""} />
 				</button>
-			</>
+			</div>
 		)
 	}, [
 		isRemovable,
 		onAfterRemoveAction,
 		onBeforeRemoveAction,
 		removeButtonLabel,
-		text,
+		children,
 	])
 
 	const classNameUsed = hovered
@@ -249,11 +251,12 @@ export function Tag({
 		<>
 			{!removed && (
 				<SimpleTag
-					text={textWithRemoveButton}
 					className={classNameUsed}
 					style={styleUsed}
 					{...simpleTagProps}
-				/>
+				>
+					{textWithRemoveButton}
+				</SimpleTag>
 			)}
 		</>
 	)

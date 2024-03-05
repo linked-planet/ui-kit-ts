@@ -39,8 +39,9 @@ function MenuShowcase(props: ShowcaseProps) {
 										? "gray"
 										: undefined
 								}
-								text={item}
-							/>
+							>
+								{item}
+							</SimpleTag>
 							<Badge appearance="default">0</Badge>
 						</a>
 					)

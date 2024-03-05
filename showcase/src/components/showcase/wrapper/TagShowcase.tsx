@@ -42,7 +42,6 @@ function TagShowcase(props: ShowcaseProps) {
 	//#region tags
 	const lpExample = (
 		<div className="flex w-full items-center">
-			<div>TEST</div>
 			<Tag
 				onBeforeRemoveAction={() => {
 					console.log("ON BEFORE REMOVE")
@@ -51,9 +50,10 @@ function TagShowcase(props: ShowcaseProps) {
 				onAfterRemoveAction={(str) =>
 					console.log("ON AFTER REMOVE", str)
 				}
-				text="Removable Tag"
-			/>
-			{/*<TagGroup>
+			>
+				Removable Tag
+			</Tag>
+			<TagGroup>
 				<Tag
 					onBeforeRemoveAction={() => {
 						console.log("ON BEFORE REMOVE")
@@ -62,26 +62,29 @@ function TagShowcase(props: ShowcaseProps) {
 					onAfterRemoveAction={(str) =>
 						console.log("ON AFTER REMOVE", str)
 					}
-					text="Removable Tag"
-				/>
-				<Tag isRemovable={false} text="Not Removable Tag" />
-				<SimpleTag text="Simple Tag" />
-				<SimpleTag
-					text="Colored simple Tag"
-					textColor="var(--ds-text-accent-purple-bolder, #172B4D)"
-					color="var(--ds-background-accent-purple-subtle, #998DD9)"
-					looks="rounded"
-				/>
-				<SimpleTag
-					text="Colored simple Tag"
-					textColor="var(--ds-text-accent-purple-bolder, #172B4D)"
-					color="var(--ds-background-accent-purple-subtle, #998DD9)"
-				/>
-				</TagGroup>*/}
-			{/*<TagGroup>
-				<SimpleTag text="Simple Tag" appearance="danger" />
-				<SimpleTag text="Simple Tag" appearance="warning" />
-				</TagGroup>*/}
+				>
+					Removable Tag
+				</Tag>
+				<Tag isRemovable={false}>Non-removal Tag</Tag>
+				<SimpleTag>Simple Tag</SimpleTag>
+				<SimpleTag looks="rounded">Colored Simple Tag</SimpleTag>
+				<SimpleTag>Colored Simple Tag</SimpleTag>
+			</TagGroup>
+			<TagGroup>
+				<SimpleTag appearance="danger">Danger Simple Tag</SimpleTag>
+				<SimpleTag appearance="warning">Warning Simple Tag</SimpleTag>
+				<SimpleTag appearance="brand">Brand Simple Tag</SimpleTag>
+				<SimpleTag appearance="success">Success Simple Tag</SimpleTag>
+				<SimpleTag appearance="discovery">
+					Discovery Simple Tag
+				</SimpleTag>
+				<SimpleTag appearance="information">
+					Information Simple Tag
+				</SimpleTag>
+				<SimpleTag appearance="discovery">
+					Discovery Simple Tag
+				</SimpleTag>
+			</TagGroup>
 		</div>
 	)
 	//#endregion tags
@@ -116,70 +119,70 @@ function TagShowcase(props: ShowcaseProps) {
 	const colorTags = (
 		<>
 			<TagGroup>
-				<Tag appearance="blue" text="Blue" />
-				<SimpleTag appearance="green" text="green" />
-				<SimpleTag appearance="gray" text="grey" />
-				<SimpleTag appearance="purple" text="purple" />
-				<SimpleTag appearance="red" text="red" />
-				<SimpleTag appearance="teal" text="teal" />
-				<SimpleTag appearance="yellow" text="yellow" />
-				<SimpleTag appearance="lime" text="lime" />
-				<SimpleTag appearance="pink" text="pink" />
-				<SimpleTag appearance="orange" text="orange" />
-				<SimpleTag appearance="indigo" text="indigo" />
-				<SimpleTag appearance="cyan" text="cyan" />
-				<SimpleTag appearance="violet" text="violet" />
-				<SimpleTag appearance="amber" text="amber" />
-				<SimpleTag appearance="emerald" text="emerald" />
-				<SimpleTag appearance="fuchsia" text="fuchsia" />
-				<SimpleTag appearance="sky" text="sky" />
+				<Tag appearance="blue">blue</Tag>
+				<SimpleTag appearance="green">green</SimpleTag>
+				<SimpleTag appearance="gray">gray</SimpleTag>
+				<SimpleTag appearance="purple">purple</SimpleTag>
+				<SimpleTag appearance="red">red</SimpleTag>
+				<SimpleTag appearance="teal">teal</SimpleTag>
+				<SimpleTag appearance="yellow">yellow</SimpleTag>
+				<SimpleTag appearance="lime">lime</SimpleTag>
+				<SimpleTag appearance="pink">pink</SimpleTag>
+				<SimpleTag appearance="orange">orange</SimpleTag>
+				<SimpleTag appearance="indigo">indigo</SimpleTag>
+				<SimpleTag appearance="cyan">cyan</SimpleTag>
+				<SimpleTag appearance="violet">violet</SimpleTag>
+				<SimpleTag appearance="amber">amber</SimpleTag>
+				<SimpleTag appearance="emerald">emerald</SimpleTag>
+				<SimpleTag appearance="fuchsia">fuchsia</SimpleTag>
+				<SimpleTag appearance="sky">sky</SimpleTag>
 			</TagGroup>
 			<TagGroup>
-				<Tag appearance="blueLight" text="blueLight" />
-				<SimpleTag appearance="greenLight" text="greenLight" />
-				<SimpleTag appearance="grayLight" text="greyLight" />
-				<SimpleTag appearance="purpleLight" text="purpleLight" />
-				<SimpleTag appearance="redLight" text="redLight" />
-				<SimpleTag appearance="tealLight" text="tealLight" />
-				<SimpleTag appearance="yellowLight" text="yellowLight" />
-				<SimpleTag appearance="limeLight" text="limeLight" />
-				<SimpleTag appearance="pinkLight" text="pinkLight" />
-				<SimpleTag appearance="orangeLight" text="orangeLight" />
-				<SimpleTag appearance="indigoLight" text="indigoLight" />
-				<SimpleTag appearance="cyanLight" text="cyanLight" />
-				<SimpleTag appearance="violetLight" text="violetLight" />
-				<SimpleTag appearance="amberLight" text="amberLight" />
-				<SimpleTag appearance="emeraldLight" text="emeraldLight" />
-				<SimpleTag appearance="fuchsiaLight" text="fuchsiaLight" />
-				<SimpleTag appearance="skyLight" text="skyLight" />
+				<Tag appearance="blueLight">blueLight</Tag>
+				<SimpleTag appearance="greenLight">greenLight</SimpleTag>
+				<SimpleTag appearance="grayLight">greyLight</SimpleTag>
+				<SimpleTag appearance="purpleLight">purpleLight</SimpleTag>
+				<SimpleTag appearance="redLight">redLight</SimpleTag>
+				<SimpleTag appearance="tealLight">tealLight</SimpleTag>
+				<SimpleTag appearance="yellowLight">yellowLight</SimpleTag>
+				<SimpleTag appearance="limeLight">limeLight</SimpleTag>
+				<SimpleTag appearance="pinkLight">pinkLight</SimpleTag>
+				<SimpleTag appearance="orangeLight">orangeLight</SimpleTag>
+				<SimpleTag appearance="indigoLight">indigoLight</SimpleTag>
+				<SimpleTag appearance="cyanLight">cyanLight</SimpleTag>
+				<SimpleTag appearance="violetLight">violetLight</SimpleTag>
+				<SimpleTag appearance="amberLight">amberLight</SimpleTag>
+				<SimpleTag appearance="emeraldLight">emeraldLight</SimpleTag>
+				<SimpleTag appearance="fuchsiaLight">fuchsiaLight</SimpleTag>
+				<SimpleTag appearance="skyLight">skyLight</SimpleTag>
 			</TagGroup>
 			<TagGroup>
-				<Tag appearance="blueBold" text="blueBold" />
-				<SimpleTag appearance="greenBold" text="greenBold" />
-				<SimpleTag appearance="grayBold" text="greyBold" />
-				<SimpleTag appearance="purpleBold" text="purpleBold" />
-				<SimpleTag appearance="redBold" text="redBold" />
-				<SimpleTag appearance="tealBold" text="tealBold" />
-				<SimpleTag appearance="yellowBold" text="yellowBold" />
-				<SimpleTag appearance="limeBold" text="limeBold" />
-				<SimpleTag appearance="pinkBold" text="pinkBold" />
-				<SimpleTag appearance="orangeBold" text="orangeBold" />
-				<SimpleTag appearance="indigoBold" text="indigoBold" />
-				<SimpleTag appearance="cyanBold" text="cyanBold" />
-				<SimpleTag appearance="violetBold" text="violetBold" />
-				<SimpleTag appearance="amberBold" text="amberBold" />
-				<SimpleTag appearance="emeraldBold" text="emeraldBold" />
-				<SimpleTag appearance="fuchsiaBold" text="fuchsiaBold" />
-				<SimpleTag appearance="skyBold" text="skyBold" />
+				<Tag appearance="blueBold">blueBold</Tag>
+				<SimpleTag appearance="greenBold">greenBold</SimpleTag>
+				<SimpleTag appearance="grayBold">greyBold</SimpleTag>
+				<SimpleTag appearance="purpleBold">purpleBold</SimpleTag>
+				<SimpleTag appearance="redBold">redBold</SimpleTag>
+				<SimpleTag appearance="tealBold">tealBold</SimpleTag>
+				<SimpleTag appearance="yellowBold">yellowBold</SimpleTag>
+				<SimpleTag appearance="limeBold">limeBold</SimpleTag>
+				<SimpleTag appearance="pinkBold">pinkBold</SimpleTag>
+				<SimpleTag appearance="orangeBold">orangeBold</SimpleTag>
+				<SimpleTag appearance="indigoBold">indigoBold</SimpleTag>
+				<SimpleTag appearance="cyanBold">cyanBold</SimpleTag>
+				<SimpleTag appearance="violetBold">violetBold</SimpleTag>
+				<SimpleTag appearance="amberBold">amberBold</SimpleTag>
+				<SimpleTag appearance="emeraldBold">emeraldBold</SimpleTag>
+				<SimpleTag appearance="fuchsiaBold">fuchsiaBold</SimpleTag>
+				<SimpleTag appearance="skyBold">skyBold</SimpleTag>
 			</TagGroup>
 			<TagGroup>
-				<Tag appearance="default" text="default" />
-				<Tag appearance="danger" text="danger" />
-				<Tag appearance="warning" text="warning" />
-				<Tag appearance="information" text="information" />
-				<Tag appearance="success" text="success" />
-				<Tag appearance="discovery" text="discovery" />
-				<Tag appearance="brand" text="brand" />
+				<Tag appearance="default">default</Tag>
+				<Tag appearance="danger">danger</Tag>
+				<Tag appearance="warning">warning</Tag>
+				<Tag appearance="information">information</Tag>
+				<Tag appearance="success">success</Tag>
+				<Tag appearance="discovery">discovery</Tag>
+				<Tag appearance="brand">brand</Tag>
 			</TagGroup>
 		</>
 	)
