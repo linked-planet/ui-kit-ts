@@ -89,7 +89,7 @@ export function TabList({
 	return (
 		<RTabs.TabsList
 			className={twMerge(
-				"before:bg-border relative mb-0.5 flex gap-4 before:absolute before:bottom-0 before:left-0 before:right-0 before:h-[1px] before:rounded-sm",
+				"before:bg-border relative mb-0.5 flex flex-wrap gap-4 before:absolute before:bottom-0 before:left-0 before:right-0 before:h-[1px] before:rounded-sm",
 				className,
 			)}
 			style={style}
