@@ -384,7 +384,7 @@ const CardBodyEntry = ({
 )
 
 const CardBodyEntryTitle = ({ children }: { children: React.ReactNode }) => (
-	<span className="pb-1 text-[13px] font-semibold">{children}</span>
+	<p className="pb-1 text-[13px] font-semibold">{children}</p>
 )
 
 const BookCardComponents = {
