@@ -73,7 +73,7 @@ export type SimpleTagProps = {
 
 const TagAppearanceColors: { [style in Appearance]: string } = {
 	brand: "bg-brand-bold text-text-inverse",
-	default: "bg-neutral-bold text-text",
+	default: "bg-neutral-bold text-text-inverse",
 	success: "bg-success-bold text-text-inverse",
 	information: "bg-information-bold text-text-inverse",
 	discovery: "bg-information-bold text-text-inverse",

@@ -21,8 +21,6 @@ import {
 	R50,
 	Y50,
 	N40,
-	N50,
-	N60,
 	N70,
 	N30A,
 	N20A,
@@ -49,6 +47,7 @@ import {
 	Y75,
 	R75,
 	G75,
+	N80,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -165,9 +164,9 @@ export const theme = {
 				pressed: `var(--ds-background-neutral-bold-pressed, ${N400})`,
 			},
 			bold: {
-				DEFAULT: `var(--ds-neutral-bold, ${N50})`,
-				hovered: `var(--ds-neutral-bold-hovered, ${N60})`,
-				pressed: `var(--ds-neutral-bold-pressed, ${N70})`,
+				DEFAULT: `var(--ds-neutral-bold, ${N70})`,
+				hovered: `var(--ds-neutral-bold-hovered, ${N80})`,
+				pressed: `var(--ds-neutral-bold-pressed, ${N90})`,
 			},
 			subtle: {
 				DEFAULT: `var(--ds-background-neutral-subtle, none)`,
@@ -719,9 +718,9 @@ export const theme = {
 				pressed: colors.gray[200],
 			},
 			bold: {
-				DEFAULT: colors.gray[600],
-				hovered: colors.gray[700],
-				pressed: colors.gray[800],
+				DEFAULT: colors.gray[500],
+				hovered: colors.gray[600],
+				pressed: colors.gray[700],
 			},
 			text: {
 				DEFAULT: colors.gray[800],
