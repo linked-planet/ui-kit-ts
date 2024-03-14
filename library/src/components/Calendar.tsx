@@ -200,16 +200,16 @@ export function CalendarBase(
 type AKCompatibleProps = {
 	id?: string
 	testId?: string
-	mode?: "single" | "multiple" | "range"
+	mode?: "multiple"
 	key?: string
 	month?: number
 	defaultMonth?: number
 	year?: number
 	defaultYear?: number
-	defaultSelected?: { from: DateType; to: DateType }
-	defaultPreviouslySelected?: { from: DateType; to: DateType }
-	selected?: { from: DateType; to: DateType }
-	previouslySelected?: { from: DateType; to: DateType }
+	defaultSelected?: DateType[]
+	defaultPreviouslySelected?: DateType[]
+	selected?: DateType[]
+	previouslySelected?: DateType[]
 	disabledDates?: DateType[]
 	disabledDateFilter?: (date: DateType) => boolean
 	//locale?: string
@@ -225,7 +225,7 @@ type AKCompatibleProps = {
 	fixedWeeks?: boolean
 
 	onDayClick?: (date: DateType, activeModifiers: ActiveModifiers) => void
-	onSelectionChanged?: (selected: { from: DateType; to: DateType }) => void
+	onSelectionChanged?: (selected: DateType[]) => void
 }
 
 export function Calendar({
