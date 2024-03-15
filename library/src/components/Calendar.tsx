@@ -2,18 +2,20 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import {
 	DayPicker,
-	type DayPickerDefaultProps,
+	//type DayPickerDefaultProps,
 	type DayPickerSingleProps,
 	type DayPickerMultipleProps,
 	type DayPickerRangeProps,
 	type DayPickerProps,
 	ActiveModifiers,
+	Matcher,
+	DateRange,
 } from "react-day-picker"
 
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
 import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
 import { dateFromString, formatToDateType } from "../utils/DateUtils"
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 
 //import "react-day-picker/dist/style.css" -> is imported in index.ts of the library that it is before TW
 
@@ -48,9 +50,8 @@ export type DateType = `${number}-${number}-${number}`
 	todayLabel?: string
 }*/
 
-type CalendarSingleProps = Pick<
+type CalendarBaseSingleProps = Pick<
 	DayPickerSingleProps,
-	| "mode"
 	| "defaultMonth"
 	| "onMonthChange"
 	| "disableNavigation"
@@ -72,15 +73,15 @@ type CalendarSingleProps = Pick<
 	| "title"
 	| "labels"
 > & {
+	mode: "single"
 	testId?: string
 	nextMonthLabel?: string
 	previousMonthLabel?: string
 	todayLabel?: string
 }
 
-type CalendarMultipleProps = Pick<
+type CalendarBaseMultipleProps = Pick<
 	DayPickerMultipleProps,
-	| "mode"
 	| "defaultMonth"
 	| "onMonthChange"
 	| "disableNavigation"
@@ -102,15 +103,15 @@ type CalendarMultipleProps = Pick<
 	| "fixedWeeks"
 	| "labels"
 > & {
+	mode: "multiple"
 	testId?: string
 	nextMonthLabel?: string
 	previousMonthLabel?: string
 	todayLabel?: string
 }
 
-type CalendarRangeProps = Pick<
+type CalendarBaseRangeProps = Pick<
 	DayPickerRangeProps,
-	| "mode"
 	| "defaultMonth"
 	| "onMonthChange"
 	| "disableNavigation"
@@ -132,6 +133,7 @@ type CalendarRangeProps = Pick<
 	| "fixedWeeks"
 	| "labels"
 > & {
+	mode: "range"
 	testId?: string
 	nextMonthLabel?: string
 	previousMonthLabel?: string
@@ -169,11 +171,14 @@ const classNames: DayPickerProps["classNames"] = {
 	tbody: "border-b-0",
 }
 
-export function CalendarBase(props: CalendarSingleProps): JSX.Element
-export function CalendarBase(props: CalendarMultipleProps): JSX.Element
-export function CalendarBase(props: CalendarRangeProps): JSX.Element
+export function CalendarBase(props: CalendarBaseSingleProps): JSX.Element
+export function CalendarBase(props: CalendarBaseMultipleProps): JSX.Element
+export function CalendarBase(props: CalendarBaseRangeProps): JSX.Element
 export function CalendarBase(
-	props: CalendarSingleProps | CalendarMultipleProps | CalendarRangeProps,
+	props:
+		| CalendarBaseSingleProps
+		| CalendarBaseMultipleProps
+		| CalendarBaseRangeProps,
 ): React.ReactNode {
 	const nextMonthLabel = props.nextMonthLabel || "Next Month"
 	const previousMonthLabel = props.previousMonthLabel || "Previous Month"
@@ -197,19 +202,14 @@ export function CalendarBase(
 	)
 }
 
-type AKCompatibleProps = {
+type BaseProps = {
 	id?: string
 	testId?: string
-	mode?: "multiple"
 	key?: string
 	month?: number
 	defaultMonth?: number
 	year?: number
 	defaultYear?: number
-	defaultSelected?: DateType[]
-	defaultPreviouslySelected?: DateType[]
-	selected?: DateType[]
-	previouslySelected?: DateType[]
 	disabledDates?: DateType[]
 	disabledDateFilter?: (date: DateType) => boolean
 	//locale?: string
@@ -224,89 +224,112 @@ type AKCompatibleProps = {
 	/* always show 6 weeks, requires show outside day to be true */
 	fixedWeeks?: boolean
 
-	onDayClick?: (date: DateType, activeModifiers: ActiveModifiers) => void
+	onDayClicked?: (date: DateType, activeModifiers: ActiveModifiers) => void
+	onNextMonthClicked?: (month: number, year: number) => void
+	onPreviousMonthClicked?: (month: number, year: number) => void
+	onMonthChanged?: (month: number, year: number) => void
+}
+
+type CalendarSingleProps = BaseProps & {
+	mode: "single"
+	defaultSelected?: DateType
+	defaultPreviouslySelected?: DateType
+	selected?: DateType
+	previouslySelected?: DateType
+	onSelectionChanged?: (selected: DateType | undefined) => void
+}
+
+type CalendarRangeProps = BaseProps & {
+	mode: "range"
+	defaultSelected?: { from: DateType; to: DateType }
+	defaultPreviouslySelected?: { from: DateType; to: DateType }
+	selected?: { from: DateType | undefined; to: DateType | undefined }
+	previouslySelected?: {
+		from: DateType | undefined
+		to: DateType | undefined
+	}
+	onSelectionChanged?: (selected: {
+		from: DateType | undefined
+		to: DateType | undefined
+	}) => void
+}
+
+type CalendarMultiProps = BaseProps & {
+	mode: "multiple"
+	defaultSelected?: DateType[]
+	defaultPreviouslySelected?: DateType[]
+	selected?: DateType[]
+	previouslySelected?: DateType[]
 	onSelectionChanged?: (selected: DateType[]) => void
 }
 
-export function Calendar({
-	id,
-	testId,
-	key,
-	mode,
-	month: monthProp,
-	defaultMonth,
-	year: yearProp,
-	defaultYear,
-	defaultSelected,
-	defaultPreviouslySelected,
-	selected,
-	previouslySelected,
-	disabledDates,
-	disabledDateFilter,
-	//locale: localeString,
-	minDate: minDateProp,
-	maxDate: maxDateProp,
-	nextMonthLabel,
-	previousMonthLabel,
-	weekStartDay,
-	onDayClick,
-	onSelectionChanged,
-	fixedWeeks,
-	showOutsideDays,
-}: AKCompatibleProps) {
+function getMonthAndYear(date: Date) {
+	return { month: date.getMonth() + 1, year: date.getFullYear() }
+}
+
+export function Calendar(props: CalendarSingleProps): JSX.Element
+export function Calendar(props: CalendarMultiProps): JSX.Element
+export function Calendar(props: CalendarRangeProps): JSX.Element
+export function Calendar(
+	props: CalendarSingleProps | CalendarMultiProps | CalendarRangeProps,
+): JSX.Element {
+	const {
+		minDate,
+		maxDate,
+		onMonthChanged,
+		onNextMonthClicked,
+		onPreviousMonthClicked,
+		disabledDates,
+		disabledDateFilter,
+	} = props
+
 	const [month, setMonth] = useState<dayjs.Dayjs>(dayjs().startOf("month"))
-	const [selectedDates, setSelectedDates] = useState<DateType[]>()
 
-	useEffect(() => {
-		if (mode === "single") {
-		}
-	}, [mode])
-
-	const minDate = useMemo(
+	const _minDate = useMemo(
 		() =>
-			minDateProp
-				? dayjs(dateFromString(minDateProp, true)).startOf("month")
+			minDate
+				? dayjs(dateFromString(minDate, true)).startOf("month")
 				: undefined,
-		[minDateProp],
+		[minDate],
 	)
-	const maxDate = useMemo(
+	const _maxDate = useMemo(
 		() =>
-			maxDateProp
-				? dayjs(dateFromString(maxDateProp, true)).startOf("month")
+			maxDate
+				? dayjs(dateFromString(maxDate, true)).startOf("month")
 				: undefined,
-		[maxDateProp],
+		[maxDate],
 	)
 
 	useEffect(() => {
-		let month = monthProp
+		let month = props.month
 			? dayjs()
-					.month(monthProp - 1)
+					.month(props.month - 1)
 					.startOf("month")
-			: defaultMonth
+			: props.defaultMonth
 				? dayjs()
-						.month(defaultMonth - 1)
+						.month(props.defaultMonth - 1)
 						.startOf("month")
 				: dayjs().startOf("month")
-		if (yearProp) {
+		if (props.year) {
 			if (month) {
-				month = month.year(yearProp)
+				month = month.year(props.year)
 			} else {
-				month = dayjs().year(yearProp)
+				month = dayjs().year(props.year)
 			}
-		} else if (defaultYear) {
+		} else if (props.defaultYear) {
 			if (month) {
-				month = month.year(defaultYear)
+				month = month.year(props.defaultYear)
 			} else {
-				month = dayjs().year(defaultYear)
+				month = dayjs().year(props.defaultYear)
 			}
 		}
 		month = month?.startOf("month")
 
-		if (minDate && month && month.isBefore(minDate, "month")) {
-			month = minDate
+		if (_minDate && month && month.isBefore(_minDate, "month")) {
+			month = _minDate
 		}
-		if (maxDate && month && month.isAfter(maxDate, "month")) {
-			month = maxDate
+		if (_maxDate && month && month.isAfter(_maxDate, "month")) {
+			month = _maxDate
 		}
 
 		setMonth((curr) => {
@@ -319,75 +342,21 @@ export function Calendar({
 			return month
 		})
 	}, [
-		defaultMonth,
-		defaultYear,
-		maxDate,
-		minDate,
-		month,
-		monthProp,
-		yearProp,
+		props.defaultMonth,
+		props.defaultYear,
+		_maxDate,
+		_minDate,
+		props.month,
+		props.year,
 	])
-
-	const _onDayClick = useCallback(
-		(day: Date, activeModifiers: ActiveModifiers) => {
-			const dateType = formatToDateType(day)
-
-			setSelectedDates((selectedDates) => {
-				if (mode === "single") {
-					if (
-						selectedDates.length === 1 &&
-						selectedDates[0] === dateType
-					) {
-						onSelectionChanged?.([])
-						return []
-					}
-					onSelectionChanged?.([dateType])
-					return [dateType]
-				}
-
-				if (mode === "range") {
-					if (selectedDates.length === 1) {
-						if (selectedDates[0] === dateType) {
-							onSelectionChanged?.([])
-							return []
-						}
-						const from = dateFromString(selectedDates[0], true)
-						const to = day
-						if (from.getTime() > to.getTime()) {
-							onSelectionChanged?.([dateType, selectedDates[0]])
-							return [dateType, selectedDates[0]]
-						}
-						onSelectionChanged?.([selectedDates[0], dateType])
-						return [selectedDates[0], dateType]
-					}
-					onSelectionChanged?.([dateType])
-					return [dateType]
-				}
-
-				const idx = selectedDates.indexOf(dateType)
-				if (idx !== -1) {
-					const updated = [...selectedDates]
-					updated.splice(idx, 1)
-					onSelectionChanged?.(updated)
-					return updated
-				}
-				const updated = [...selectedDates, dateType]
-				onSelectionChanged?.(updated)
-				return updated
-			})
-
-			onDayClick?.(dateType, activeModifiers)
-		},
-		[mode, onDayClick, onSelectionChanged],
-	)
 
 	const disabledMatcher = useCallback(
 		(dateD: Date) => {
 			const date = dayjs(dateD)
-			if (minDate && date.isBefore(minDate, "day")) {
+			if (_minDate && date.isBefore(_minDate, "day")) {
 				return true
 			}
-			if (maxDate && date.isAfter(maxDate, "day")) {
+			if (_maxDate && date.isAfter(_maxDate, "day")) {
 				return true
 			}
 			if (
@@ -404,91 +373,357 @@ export function Calendar({
 			}
 			return false
 		},
-		[disabledDateFilter, disabledDates, maxDate, minDate],
+		[_minDate, _maxDate, disabledDates, disabledDateFilter],
 	)
 
-	const _selectedDates = useMemo(
+	const _onNextMonthClicked = useCallback(
+		(date: Date) => {
+			if (!onNextMonthClicked) {
+				return
+			}
+			const { month, year } = getMonthAndYear(date)
+			onNextMonthClicked(month, year)
+		},
+		[onNextMonthClicked],
+	)
+
+	const _onPreviousMonthClicked = useCallback(
+		(date: Date) => {
+			if (!onPreviousMonthClicked) {
+				return
+			}
+			const { month, year } = getMonthAndYear(date)
+			onPreviousMonthClicked(month, year)
+		},
+		[onPreviousMonthClicked],
+	)
+
+	const _onMonthChanged = useCallback(
+		(date: Date) => {
+			if (!onMonthChanged) {
+				return
+			}
+			const { month, year } = getMonthAndYear(date)
+			onMonthChanged(month, year)
+		},
+		[onMonthChanged],
+	)
+
+	if (props.mode === "single") {
+		return (
+			<CalendarSingle
+				{...props}
+				minDate={_minDate}
+				maxDate={_maxDate}
+				month={month}
+				disabled={disabledMatcher}
+				onNextMonthClicked={_onNextMonthClicked}
+				onPreviousMonthClicked={_onPreviousMonthClicked}
+				onMonthChanged={_onMonthChanged}
+			/>
+		)
+	}
+	if (props.mode === "multiple") {
+		return (
+			<CalendarMulti
+				{...props}
+				minDate={_minDate}
+				maxDate={_maxDate}
+				month={month}
+				disabled={disabledMatcher}
+				onNextMonthClicked={_onNextMonthClicked}
+				onPreviousMonthClicked={_onPreviousMonthClicked}
+				onMonthChanged={_onMonthChanged}
+			/>
+		)
+	}
+	if (props.mode === "range") {
+		return (
+			<CalendarRange
+				{...props}
+				minDate={_minDate}
+				maxDate={_maxDate}
+				month={month}
+				disabled={disabledMatcher}
+				onNextMonthClicked={_onNextMonthClicked}
+				onPreviousMonthClicked={_onPreviousMonthClicked}
+				onMonthChanged={_onMonthChanged}
+			/>
+		)
+	}
+	throw new Error("Invalid mode")
+}
+
+function CalendarSingle({
+	selected,
+	defaultSelected,
+	previouslySelected,
+	defaultPreviouslySelected,
+	onSelectionChanged,
+	onDayClicked,
+	onNextMonthClicked,
+	onPreviousMonthClicked,
+	onMonthChanged,
+	...props
+}: Omit<
+	CalendarSingleProps,
+	| "minDate"
+	| "maxDate"
+	| "month"
+	| "defaultMonth"
+	| "year"
+	| "defaultYear"
+	| "disabledDates"
+	| "disabledDateFilter"
+	| "onNextMonthClicked"
+	| "onPreviousMonthClicked"
+	| "onMonthChanged"
+> & {
+	minDate?: Dayjs
+	maxDate?: Dayjs
+	month: Dayjs
+	disabled: Matcher
+	onNextMonthClicked?: (date: Date) => void
+	onPreviousMonthClicked?: (date: Date) => void
+	onMonthChanged?: (date: Date) => void
+}) {
+	const [selectedDate, setSelectedDate] = useState<DateType | undefined>(
+		selected || defaultSelected,
+	)
+
+	if (selected && selected !== selectedDate) {
+		setSelectedDate(selected)
+	}
+
+	const _onDayClick = useCallback(
+		(_date: Date, activeModifiers: ActiveModifiers) => {
+			const date = formatToDateType(_date)
+			onDayClicked?.(date, activeModifiers)
+		},
+		[onDayClicked],
+	)
+
+	const _onSelect = useCallback(
+		(d: Date | undefined) => {
+			if (!d) {
+				setSelectedDate(undefined)
+				onSelectionChanged?.(undefined)
+				return
+			}
+			const val = formatToDateType(d)
+			onSelectionChanged?.(val)
+			setSelectedDate(val)
+		},
+		[onSelectionChanged],
+	)
+
+	const _selected = useMemo(
+		() => (selectedDate ? dateFromString(selectedDate, true) : undefined),
+		[selectedDate],
+	)
+
+	return (
+		<CalendarBase
+			{...props}
+			month={props.month.toDate()}
+			selected={_selected}
+			onSelect={_onSelect}
+			onDayClick={_onDayClick}
+			onNextClick={onNextMonthClicked}
+			onPrevClick={onPreviousMonthClicked}
+			onMonthChange={onMonthChanged}
+		/>
+	)
+}
+
+function CalendarRange({
+	selected,
+	defaultSelected,
+	previouslySelected,
+	defaultPreviouslySelected,
+	onSelectionChanged,
+	onDayClicked,
+	onNextMonthClicked,
+	onPreviousMonthClicked,
+	onMonthChanged,
+	...props
+}: Omit<
+	CalendarRangeProps,
+	| "minDate"
+	| "maxDate"
+	| "month"
+	| "defaultMonth"
+	| "year"
+	| "defaultYear"
+	| "disabledDates"
+	| "disabledDateFilter"
+	| "onNextMonthClicked"
+	| "onPreviousMonthClicked"
+	| "onMonthChanged"
+> & {
+	minDate?: Dayjs
+	maxDate?: Dayjs
+	month: Dayjs
+	disabled: Matcher
+	onNextMonthClicked?: (date: Date) => void
+	onPreviousMonthClicked?: (date: Date) => void
+	onMonthChanged?: (date: Date) => void
+}) {
+	const [selectedDates, setSelectedDates] = useState<{
+		from: DateType | undefined
+		to: DateType | undefined
+	}>(selected || defaultSelected || { from: undefined, to: undefined })
+
+	if (selected && selected !== selectedDates) {
+		setSelectedDates(selected)
+	}
+
+	const _onDayClick = useCallback(
+		(_date: Date, activeModifiers: ActiveModifiers) => {
+			const date = formatToDateType(_date)
+			/*setSelectedDates((selectedDate) => {
+				if (selectedDate.from && selectedDate.to) {
+					const updated = { from: date, to: undefined }
+					onSelectionChanged?.(updated)
+					return updated
+				}
+				if (selectedDate.from) {
+					if (selectedDate.from === date) {
+						const updated = { from: undefined, to: undefined }
+						onSelectionChanged?.(updated)
+						return updated
+					}
+					const updated = { from: selectedDate.from, to: date }
+					onSelectionChanged?.(updated)
+					return updated
+				}
+				const updated = { from: date, to: undefined }
+				onSelectionChanged?.(updated)
+				return updated
+			})*/
+			onDayClicked?.(date, activeModifiers)
+		},
+		[onDayClicked],
+	)
+
+	const _selected = useMemo(() => {
+		return {
+			from: selectedDates.from
+				? dateFromString(selectedDates.from, true)
+				: undefined,
+			to: selectedDates.to
+				? dateFromString(selectedDates.to, true)
+				: undefined,
+		}
+	}, [selectedDates])
+
+	const _onSelect = useCallback(
+		(dr: DateRange | undefined) => {
+			if (!dr) {
+				setSelectedDates({ from: undefined, to: undefined })
+				onSelectionChanged?.({ from: undefined, to: undefined })
+				return
+			}
+			const from = dr.from ? formatToDateType(dr.from) : undefined
+			const to = dr.to ? formatToDateType(dr.to) : undefined
+			setSelectedDates({ from, to })
+			onSelectionChanged?.({ from, to })
+		},
+		[onSelectionChanged],
+	)
+
+	return (
+		<CalendarBase
+			{...props}
+			month={props.month.toDate()}
+			selected={_selected}
+			onSelect={_onSelect}
+			onDayClick={_onDayClick}
+			onNextClick={onNextMonthClicked}
+			onPrevClick={onPreviousMonthClicked}
+			onMonthChange={onMonthChanged}
+		/>
+	)
+}
+
+function CalendarMulti({
+	selected,
+	defaultSelected,
+	previouslySelected,
+	defaultPreviouslySelected,
+	onSelectionChanged,
+	onDayClicked,
+	onNextMonthClicked,
+	onPreviousMonthClicked,
+	onMonthChanged,
+	...props
+}: Omit<
+	CalendarMultiProps,
+	| "minDate"
+	| "maxDate"
+	| "month"
+	| "defaultMonth"
+	| "year"
+	| "defaultYear"
+	| "disabledDates"
+	| "disabledDateFilter"
+	| "onNextMonthClicked"
+	| "onPreviousMonthClicked"
+	| "onMonthChanged"
+> & {
+	minDate?: Dayjs
+	maxDate?: Dayjs
+	month: Dayjs
+	disabled: Matcher
+	onNextMonthClicked?: (date: Date) => void
+	onPreviousMonthClicked?: (date: Date) => void
+	onMonthChanged?: (date: Date) => void
+}) {
+	const [selectedDates, setSelectedDates] = useState(
+		selected || defaultSelected || [],
+	)
+
+	if (selected && selected !== selectedDates) {
+		setSelectedDates(selected)
+	}
+
+	const _onDayClick = useCallback(
+		(_date: Date, activeModifiers: ActiveModifiers) => {
+			const date = formatToDateType(_date)
+			onDayClicked?.(date, activeModifiers)
+		},
+		[onDayClicked],
+	)
+
+	const _selected = useMemo(
 		() => selectedDates.map((d) => dateFromString(d, true)),
 		[selectedDates],
 	)
 
-	return useMemo(() => {
-		switch (mode) {
-			case "single":
-				return (
-					<CalendarBase
-						id={id}
-						key={key}
-						month={month.toDate()}
-						testId={testId}
-						disabled={disabledMatcher}
-						//locale={locale}
-						onDayClick={_onDayClick}
-						weekStartsOn={weekStartDay}
-						nextMonthLabel={nextMonthLabel}
-						previousMonthLabel={previousMonthLabel}
-						fixedWeeks={fixedWeeks}
-						showOutsideDays={showOutsideDays}
-						mode="single"
-						selected={_selectedDates[0]}
-					/>
-				)
+	const _onSelect = useCallback(
+		(dts: Date[] | undefined) => {
+			if (!dts) {
+				setSelectedDates([])
+				onSelectionChanged?.([])
+				return
+			}
+			const val = dts.map((d) => formatToDateType(d))
+			onSelectionChanged?.(val)
+			setSelectedDates(val)
+		},
+		[onSelectionChanged],
+	)
 
-			case "multiple":
-				return (
-					<CalendarBase
-						id={id}
-						key={key}
-						month={month.toDate()}
-						testId={testId}
-						disabled={disabledMatcher}
-						//locale={locale}
-						onDayClick={_onDayClick}
-						weekStartsOn={weekStartDay}
-						nextMonthLabel={nextMonthLabel}
-						previousMonthLabel={previousMonthLabel}
-						fixedWeeks={fixedWeeks}
-						showOutsideDays={showOutsideDays}
-						mode="multiple"
-						selected={_selectedDates}
-					/>
-				)
-			case "range":
-				return (
-					<CalendarBase
-						id={id}
-						key={key}
-						month={month.toDate()}
-						testId={testId}
-						disabled={disabledMatcher}
-						//locale={locale}
-						onDayClick={_onDayClick}
-						weekStartsOn={weekStartDay}
-						nextMonthLabel={nextMonthLabel}
-						previousMonthLabel={previousMonthLabel}
-						fixedWeeks={fixedWeeks}
-						showOutsideDays={showOutsideDays}
-						mode="range"
-						selected={{
-							from: _selectedDates[0],
-							to: _selectedDates[1],
-						}}
-					/>
-				)
-		}
-	}, [
-		_onDayClick,
-		_selectedDates,
-		disabledMatcher,
-		fixedWeeks,
-		id,
-		key,
-		mode,
-		month,
-		nextMonthLabel,
-		previousMonthLabel,
-		showOutsideDays,
-		testId,
-		weekStartDay,
-	])
+	return (
+		<CalendarBase
+			{...props}
+			month={props.month.toDate()}
+			selected={_selected}
+			onSelect={_onSelect}
+			onDayClick={_onDayClick}
+			onNextClick={onNextMonthClicked}
+			onPrevClick={onPreviousMonthClicked}
+			onMonthChange={onMonthChanged}
+		/>
+	)
 }

@@ -2,34 +2,49 @@ import React, { useCallback, useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Calendar } from "@linked-planet/ui-kit-ts"
+import { CalendarBase, Calendar, DateType } from "@linked-planet/ui-kit-ts"
 import { DateRange } from "react-day-picker"
 import AKCalendar from "@atlaskit/calendar"
+import {
+	dateFromString,
+	formatToDateType,
+} from "@linked-planet/ui-kit-ts/utils/DateUtils"
 
 //#region calendar2-example
 function CalendarExample() {
-	return <Calendar />
+	return <Calendar mode="single" />
 }
 //#endregion calendar2-example
 
 //#region calendar2-single
 function CalendarSingle() {
-	const [selected, setSelected] = useState(new Date())
+	const [selected, setSelected] = useState<DateType | undefined>(
+		formatToDateType(new Date()),
+	)
+	const selectedDate = selected ? dateFromString(selected) : undefined
 	return (
 		<div className="flex gap-4">
+			<CalendarBase
+				mode="single"
+				selected={selectedDate}
+				onDayClick={(date) => {
+					const dt = formatToDateType(date)
+					setSelected(dt)
+				}}
+			/>
 			<Calendar
 				mode="single"
 				selected={selected}
-				onDayClick={setSelected}
+				onSelectionChanged={setSelected}
 			/>
-			<AKCalendar />
+			<AKCalendar selected={selected ? [selected] : []} />
 		</div>
 	)
 }
 //#endregion calendar2-single
 
-//#region calendar2-multi
-function CalendarMulti() {
+//#region calendar2-base
+function CalendarBaseExample() {
 	const [selected, setSelected] = useState<Date[]>([new Date()])
 
 	const handleDayClick = useCallback((day: Date) => {
@@ -45,40 +60,50 @@ function CalendarMulti() {
 	}, [])
 
 	return (
-		<Calendar
+		<CalendarBase
 			mode="multiple"
 			selected={selected}
 			onDayClick={handleDayClick}
 		/>
 	)
 }
-//#endregion calendar2-multi
+//#endregion calendar2-base
 
 //#region calendar2-range
 function CalendarRange() {
-	const [selected, setSelected] = useState<DateRange>({
-		from: new Date(),
+	const [selected, setSelected] = useState<{
+		from: DateType | undefined
+		to: DateType | undefined
+	}>({
+		from: formatToDateType(new Date()),
 		to: undefined,
 	})
 
-	const handleDayClick = useCallback((day: Date) => {
-		setSelected((selected) => {
-			if (selected.from && selected.to) {
-				return { from: day, to: undefined }
-			}
-			if (selected.from) {
-				return { from: selected.from, to: day }
-			}
-			return { from: day, to: undefined }
-		})
-	}, [])
-
 	return (
-		<Calendar
-			mode="range"
-			selected={selected}
-			onDayClick={handleDayClick}
-		/>
+		<div className="flex gap-4">
+			<Calendar
+				mode="range"
+				selected={selected}
+				onSelectionChanged={setSelected}
+			/>
+			<CalendarBase
+				mode="range"
+				selected={{
+					from: selected.from
+						? dateFromString(selected.from)
+						: undefined,
+					to: selected.to ? dateFromString(selected.to) : undefined,
+				}}
+				onSelect={(range: DateRange | undefined) => {
+					setSelected({
+						from: range?.from
+							? formatToDateType(range.from)
+							: undefined,
+						to: range?.to ? formatToDateType(range.to) : undefined,
+					})
+				}}
+			/>
+		</div>
 	)
 }
 //#endregion calendar2-range
@@ -107,14 +132,14 @@ export default function Calendar2Showcase(props: ShowcaseProps) {
 					sourceCodeExampleId: "calendar2-single",
 				},
 				{
-					title: "Calendar Multiple Days",
-					example: <CalendarMulti />,
-					sourceCodeExampleId: "calendar2-multi",
-				},
-				{
 					title: "Calendar Day Range",
 					example: <CalendarRange />,
 					sourceCodeExampleId: "calendar2-range",
+				},
+				{
+					title: "Base Calendar",
+					example: <CalendarBaseExample />,
+					sourceCodeExampleId: "calendar2-base",
 				},
 			]}
 		/>
