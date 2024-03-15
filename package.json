@@ -62,7 +62,7 @@
 	"dependencies": {
 		"@atlaskit/button": "^17.7.0",
 		"@atlaskit/checkbox": "^13.1.0",
-		"@atlaskit/dropdown-menu": "^12.8.0",
+		"@atlaskit/dropdown-menu": "^12.8.1",
 		"@atlaskit/tabs": "^14.0.3",
 		"@atlaskit/tag": "^12.0.2",
 		"@atlaskit/tag-group": "^10.2.6",
@@ -93,7 +93,7 @@
 		"use-resize-observer": "^9.1.0"
 	},
 	"devDependencies": {
-		"@atlaskit/eslint-plugin-design-system": "^8.36.3",
+		"@atlaskit/eslint-plugin-design-system": "^8.37.0",
 		"@formatjs/cli": "^6.2.7",
 		"@total-typescript/ts-reset": "^0.5.1",
 		"@types/react": "^16.14.57",
@@ -127,7 +127,7 @@
 		"vite": "^5.1.6",
 		"vite-plugin-checker": "^0.6.4",
 		"vite-plugin-dts": "^3.7.3",
-		"vite-tsconfig-paths": "^4.3.1"
+		"vite-tsconfig-paths": "^4.3.2"
 	},
 	"peerDependencies": {
 		"@atlaskit/atlassian-navigation": "^3.3.0",
@@ -141,17 +141,17 @@
 		"@atlaskit/form": "^9.0.10",
 		"@atlaskit/icon": "^22.1.1",
 		"@atlaskit/lozenge": "^11.6.4",
-		"@atlaskit/menu": "^2.1.8",
+		"@atlaskit/menu": "^2.1.9",
 		"@atlaskit/modal-dialog": "^12.10.8",
 		"@atlaskit/page-layout": "^2.1.4",
-		"@atlaskit/pagination": "^14.6.0",
-		"@atlaskit/popup": "^1.13.0",
+		"@atlaskit/pagination": "^14.6.1",
+		"@atlaskit/popup": "^1.13.1",
 		"@atlaskit/select": "^17.3.0",
 		"@atlaskit/side-navigation": "^3.0.7",
 		"@atlaskit/table-tree": "^9.6.13",
 		"@atlaskit/textarea": "^5.1.0",
 		"@atlaskit/textfield": "^6.1.0",
-		"@atlaskit/theme": "^12.6.4",
+		"@atlaskit/theme": "^12.6.5",
 		"@atlaskit/tokens": "^1.41.0",
 		"@monaco-editor/react": "^4.6.0",
 		"react": "^16.8.0",

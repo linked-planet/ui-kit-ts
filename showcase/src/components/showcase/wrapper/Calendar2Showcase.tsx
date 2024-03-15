@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -9,6 +9,7 @@ import {
 	dateFromString,
 	formatToDateType,
 } from "@linked-planet/ui-kit-ts/utils/DateUtils"
+import dayjs from "dayjs"
 
 //#region calendar2-example
 function CalendarExample() {
@@ -21,23 +22,75 @@ function CalendarSingle() {
 	const [selected, setSelected] = useState<DateType | undefined>(
 		formatToDateType(new Date()),
 	)
+	const [secondarySelected, setSecondarySelected] = useState<
+		DateType | undefined
+	>()
+
 	const selectedDate = selected ? dateFromString(selected) : undefined
+	const secondarySelectedDate = secondarySelected
+		? dateFromString(secondarySelected)
+		: undefined
+
+	const defaultMonth = 8
+	const defaultYear = 2022
+
+	const minDate = dayjs()
+		.month(defaultMonth - 1)
+		.year(defaultYear)
+		.subtract(3, "days")
+		.toDate()
+	const minDateDT = formatToDateType(minDate)
+
+	const maxDate = dayjs()
+		.month(defaultMonth - 1)
+		.year(defaultYear)
+		.add(38, "days")
+		.toDate()
+	const maxDateDT = formatToDateType(maxDate)
+
+	const defaultMonthDate = dayjs()
+		.month(defaultMonth - 1)
+		.year(defaultYear)
+		.toDate()
+
 	return (
 		<div className="flex gap-4">
 			<CalendarBase
 				mode="single"
 				selected={selectedDate}
+				secondarySelected={secondarySelectedDate}
 				onDayClick={(date) => {
 					const dt = formatToDateType(date)
+					setSecondarySelected(selected)
 					setSelected(dt)
 				}}
+				fromDate={minDate}
+				toDate={maxDate}
+				defaultMonth={defaultMonthDate}
 			/>
 			<Calendar
 				mode="single"
 				selected={selected}
-				onSelectionChanged={setSelected}
+				secondarySelected={secondarySelected}
+				onSelectionChanged={(date) => {
+					setSecondarySelected(selected)
+					setSelected(date)
+				}}
+				minDate={minDateDT}
+				maxDate={maxDateDT}
+				defaultMonth={defaultMonth}
+				defaultYear={defaultYear}
 			/>
-			<AKCalendar selected={selected ? [selected] : []} />
+			<AKCalendar
+				selected={selected ? [selected] : []}
+				previouslySelected={
+					secondarySelected ? [secondarySelected] : []
+				}
+				minDate={minDateDT}
+				maxDate={maxDateDT}
+				defaultMonth={defaultMonth}
+				defaultYear={defaultYear}
+			/>
 		</div>
 	)
 }

@@ -6,4 +6,3 @@ export { DatePicker } from "./DateTimePicker"
 export { TimePicker } from "./DateTimePicker"
 
 export { type OptionType, type OptionGroupType } from "./Select"
-export { type TimeType } from "./DateTimePicker"
