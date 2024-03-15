@@ -8,7 +8,7 @@ import {
 	DateTimePicker,
 	DatePicker,
 	TimePicker,
-	DateType,
+	type DateType,
 	type TimeType,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"

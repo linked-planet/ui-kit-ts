@@ -13,8 +13,8 @@ import {
 	type FieldValues,
 	type Path,
 } from "react-hook-form"
-import { DateType } from "../DateRangePicker"
 import { SlidingErrorMessage } from "./SlidingErrorMessage"
+import type { DateType, TimeType } from "../../utils/DateUtils"
 
 //#region Date Time Picker
 
@@ -143,8 +143,6 @@ export function DateTimePicker<FormData extends FieldValues | undefined>({
  * defaultValue: TimeType string
  * onChange: (value: TimeType) => void
  */
-
-export type TimeType = `${number}:${number}`
 
 type TimePickerProps<FormData extends FieldValues | undefined = undefined> =
 	Omit<AKTimePickerProps, "value" | "defaultValue" | "onChange"> & {

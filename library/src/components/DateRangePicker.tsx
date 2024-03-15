@@ -3,12 +3,11 @@ import dayjs, { Dayjs } from "dayjs"
 import Calendar, { ChangeEvent } from "@atlaskit/calendar"
 import { WeekDay } from "@atlaskit/calendar/types"
 import { Control, Controller, FieldValues, Path } from "react-hook-form"
+import type { DateType } from "../utils/DateUtils"
 
 export class EndDateBeforeStartDateError extends Error {}
 
 // i.g. "2023-12-31"
-export type DateType = `${number}-${number}-${number}`
-export const DateTypeFormatString = "YYYY-MM-DD" as const
 
 export type DateRangeProps<
 	FormData extends FieldValues | undefined = undefined,
