@@ -125,6 +125,7 @@ type InnerProps<
 > = CreatableProps<Option, IsMulti, GroupOptionType> & {
 	isCreateable?: boolean
 	testId?: string
+	innerRef?: React.Ref<SelectInstance<Option, IsMulti, GroupOptionType>>
 }
 
 const SelectInner = <
@@ -132,15 +133,13 @@ const SelectInner = <
 	Option extends OptionType<ValueType> = OptionType<ValueType>,
 	IsMulti extends boolean = boolean,
 	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
->(
-	{
-		isCreateable,
-		formatCreateLabel,
-		testId,
-		...props
-	}: InnerProps<ValueType, Option, IsMulti, GroupOptionType>,
-	ref?: React.ForwardedRef<SelectInstance<Option, IsMulti, GroupOptionType>>,
-) => {
+>({
+	isCreateable,
+	formatCreateLabel,
+	testId,
+	innerRef,
+	...props
+}: InnerProps<ValueType, Option, IsMulti, GroupOptionType>) => {
 	const classNamesConfig = useClassNamesConfig<
 		Option,
 		IsMulti,
@@ -153,7 +152,7 @@ const SelectInner = <
 	if (isCreateable) {
 		return (
 			<ReactSelectCreatable<Option, IsMulti, GroupOptionType>
-				ref={ref}
+				ref={innerRef}
 				placeholder={
 					props.placeholder ?? locale.startsWith("de-")
 						? "Auswahl..."
@@ -187,10 +186,10 @@ const SelectInner = <
 	)
 }
 
-const SelectInnerFR = React.forwardRef<
+/*const SelectInnerFR = React.forwardRef<
 	SelectInstance<OptionType<any>, boolean, GroupBase<OptionType<any>>>,
 	InnerProps<any, OptionType<any>, boolean>
->(SelectInner)
+>(SelectInner)*/
 
 function isOptionType<ValueType>(o: unknown): o is OptionType<ValueType> {
 	return typeof o === "object" && o != null && "label" in o && "value" in o
@@ -358,11 +357,14 @@ function SelectInForm<
 					testId: props.testId,
 				}
 
+				const { ref: innerRef, ...fieldProps } = field
+
 				return (
 					<>
-						<SelectInnerFR
+						<SelectInner
 							{...innerProps}
-							{...field}
+							{...fieldProps}
+							innerRef={innerRef}
 							onChange={onChange}
 							value={valueUsed}
 							name={name}
