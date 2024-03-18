@@ -8,7 +8,11 @@ function TextAreaShowcase(props: ShowcaseProps) {
 	//#region textarea
 	const example = (
 		<div style={{ minWidth: 300 }}>
-			<TextArea defaultValue="Content of text area..." />
+			<TextArea
+				placeholder="This is a placeholder."
+				onPointerEnterCapture={() => console.log("pointer capture")}
+				onPointerLeaveCapture={() => console.log("pointer left")}
+			/>
 		</div>
 	)
 	//#endregion textarea

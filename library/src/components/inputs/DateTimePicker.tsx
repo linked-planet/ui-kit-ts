@@ -171,6 +171,7 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 	"aria-invalid": ariaInvalid,
 	isInvalid,
 	errorMessage,
+	isDisabled,
 	id,
 	testId,
 	...props
@@ -218,7 +219,7 @@ export function TimePicker<FormData extends FieldValues | undefined>({
 									onChangeUsed as (value: string) => void
 								}
 								onBlur={onBlurUsed}
-								isDisabled={disabled}
+								isDisabled={disabled || isDisabled}
 								isInvalid={
 									isInvalid || ariaInvalid || fsInvalid
 								}
@@ -306,6 +307,7 @@ export function DatePicker<FormData extends FieldValues | undefined>({
 	"aria-invalid": ariaInvalid,
 	errorMessage,
 	isInvalid,
+	isDisabled,
 	id,
 	testId,
 	...props
@@ -353,7 +355,7 @@ export function DatePicker<FormData extends FieldValues | undefined>({
 									onChangeUsed as (value: string) => void
 								}
 								onBlur={onBlurUsed}
-								isDisabled={disabled}
+								isDisabled={disabled || isDisabled}
 								isInvalid={
 									isInvalid || ariaInvalid || fsInvalid
 								}
