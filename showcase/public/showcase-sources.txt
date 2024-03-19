@@ -828,7 +828,7 @@ function BookCardExample() {
 						very very very very very very long"
 				subtitle="Book Subtitle also very very very very very very long"
 				upperTitle="Book Upper Title also looooooooooooooooooooooooooooong"
-				titlePrefix="looooooooooooooooooooooooooooong prefix"
+				headerPrefix="looooooooooooooooooooooooooooong prefix"
 				bodyLayout={bodyLayout}
 				bodyStyle={bodyStyle}
 				closed={isClosed}
@@ -1310,34 +1310,102 @@ import React, { useCallback, useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Calendar } from "@linked-planet/ui-kit-ts"
+import { CalendarBase, Calendar, DateType } from "@linked-planet/ui-kit-ts"
 import { DateRange } from "react-day-picker"
 import AKCalendar from "@atlaskit/calendar"
+import {
+	dateFromString,
+	formatToDateType,
+} from "@linked-planet/ui-kit-ts/utils/DateUtils"
+import dayjs from "dayjs"
 
 //#region calendar2-example
 function CalendarExample() {
-	return <Calendar />
+	return <Calendar mode="single" />
 }
 //#endregion calendar2-example
 
 //#region calendar2-single
 function CalendarSingle() {
-	const [selected, setSelected] = useState(new Date())
+	const [selected, setSelected] = useState<DateType | undefined>(
+		formatToDateType(new Date()),
+	)
+	const [secondarySelected, setSecondarySelected] = useState<
+		DateType | undefined
+	>()
+
+	const selectedDate = selected ? dateFromString(selected) : undefined
+	const secondarySelectedDate = secondarySelected
+		? dateFromString(secondarySelected)
+		: undefined
+
+	const defaultMonth = 8
+	const defaultYear = 2022
+
+	const minDate = dayjs()
+		.month(defaultMonth - 1)
+		.year(defaultYear)
+		.subtract(3, "days")
+		.toDate()
+	const minDateDT = formatToDateType(minDate)
+
+	const maxDate = dayjs()
+		.month(defaultMonth - 1)
+		.year(defaultYear)
+		.add(38, "days")
+		.toDate()
+	const maxDateDT = formatToDateType(maxDate)
+
+	const defaultMonthDate = dayjs()
+		.month(defaultMonth - 1)
+		.year(defaultYear)
+		.toDate()
+
 	return (
 		<div className="flex gap-4">
+			<CalendarBase
+				mode="single"
+				selected={selectedDate}
+				secondarySelected={secondarySelectedDate}
+				onDayClick={(date) => {
+					const dt = formatToDateType(date)
+					setSecondarySelected(selected)
+					setSelected(dt)
+				}}
+				fromDate={minDate}
+				toDate={maxDate}
+				defaultMonth={defaultMonthDate}
+			/>
 			<Calendar
 				mode="single"
 				selected={selected}
-				onDayClick={setSelected}
+				secondarySelected={secondarySelected}
+				onSelectionChanged={(date) => {
+					setSecondarySelected(selected)
+					setSelected(date)
+				}}
+				minDate={minDateDT}
+				maxDate={maxDateDT}
+				defaultMonth={defaultMonth}
+				defaultYear={defaultYear}
 			/>
-			<AKCalendar />
+			<AKCalendar
+				selected={selected ? [selected] : []}
+				previouslySelected={
+					secondarySelected ? [secondarySelected] : []
+				}
+				minDate={minDateDT}
+				maxDate={maxDateDT}
+				defaultMonth={defaultMonth}
+				defaultYear={defaultYear}
+			/>
 		</div>
 	)
 }
 //#endregion calendar2-single
 
-//#region calendar2-multi
-function CalendarMulti() {
+//#region calendar2-base
+function CalendarBaseExample() {
 	const [selected, setSelected] = useState<Date[]>([new Date()])
 
 	const handleDayClick = useCallback((day: Date) => {
@@ -1353,40 +1421,50 @@ function CalendarMulti() {
 	}, [])
 
 	return (
-		<Calendar
+		<CalendarBase
 			mode="multiple"
 			selected={selected}
 			onDayClick={handleDayClick}
 		/>
 	)
 }
-//#endregion calendar2-multi
+//#endregion calendar2-base
 
 //#region calendar2-range
 function CalendarRange() {
-	const [selected, setSelected] = useState<DateRange>({
-		from: new Date(),
+	const [selected, setSelected] = useState<{
+		from: DateType | undefined
+		to: DateType | undefined
+	}>({
+		from: formatToDateType(new Date()),
 		to: undefined,
 	})
 
-	const handleDayClick = useCallback((day: Date) => {
-		setSelected((selected) => {
-			if (selected.from && selected.to) {
-				return { from: day, to: undefined }
-			}
-			if (selected.from) {
-				return { from: selected.from, to: day }
-			}
-			return { from: day, to: undefined }
-		})
-	}, [])
-
 	return (
-		<Calendar
-			mode="range"
-			selected={selected}
-			onDayClick={handleDayClick}
-		/>
+		<div className="flex gap-4">
+			<Calendar
+				mode="range"
+				selected={selected}
+				onSelectionChanged={setSelected}
+			/>
+			<CalendarBase
+				mode="range"
+				selected={{
+					from: selected.from
+						? dateFromString(selected.from)
+						: undefined,
+					to: selected.to ? dateFromString(selected.to) : undefined,
+				}}
+				onSelect={(range: DateRange | undefined) => {
+					setSelected({
+						from: range?.from
+							? formatToDateType(range.from)
+							: undefined,
+						to: range?.to ? formatToDateType(range.to) : undefined,
+					})
+				}}
+			/>
+		</div>
 	)
 }
 //#endregion calendar2-range
@@ -1415,14 +1493,14 @@ export default function Calendar2Showcase(props: ShowcaseProps) {
 					sourceCodeExampleId: "calendar2-single",
 				},
 				{
-					title: "Calendar Multiple Days",
-					example: <CalendarMulti />,
-					sourceCodeExampleId: "calendar2-multi",
-				},
-				{
 					title: "Calendar Day Range",
 					example: <CalendarRange />,
 					sourceCodeExampleId: "calendar2-range",
+				},
+				{
+					title: "Base Calendar",
+					example: <CalendarBaseExample />,
+					sourceCodeExampleId: "calendar2-base",
 				},
 			]}
 		/>
@@ -1963,22 +2041,18 @@ import {
 	ButtonGroup,
 	DateRangePicker,
 	DateType,
-	DateTypeFormatString,
 	Input,
 	Label,
+	dateFormat,
 } from "@linked-planet/ui-kit-ts"
 import dayjs from "dayjs"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 //#region date-range-picker
 function Example() {
-	const today = dayjs().format(DateTypeFormatString) as DateType
-	const todayPlus2 = dayjs()
-		.add(2, "day")
-		.format(DateTypeFormatString) as DateType
-	const todayPlus10 = dayjs()
-		.add(10, "day")
-		.format(DateTypeFormatString) as DateType
+	const today = dayjs().format(dateFormat) as DateType
+	const todayPlus2 = dayjs().add(2, "day").format(dateFormat) as DateType
+	const todayPlus10 = dayjs().add(10, "day").format(dateFormat) as DateType
 
 	const [startDate, setStartDate] = useState<DateType>()
 	const [endDate, setEndDate] = useState<DateType>()
@@ -2064,12 +2138,12 @@ function Example2() {
 		.set("year", 1911)
 		.set("month", 1) //month are 0-indexed in dayjs!
 		.set("date", 11)
-		.format(DateTypeFormatString) as DateType
+		.format(dateFormat) as DateType
 	const selectedEndDate = dayjs()
 		.set("year", 1911)
 		.set("month", 1)
 		.set("date", 16)
-		.format(DateTypeFormatString) as DateType
+		.format(dateFormat) as DateType
 
 	return (
 		<>
@@ -2303,7 +2377,7 @@ import {
 	DateTimePicker,
 	DatePicker,
 	TimePicker,
-	DateType,
+	type DateType,
 	type TimeType,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
@@ -6939,7 +7013,11 @@ function TextAreaShowcase(props: ShowcaseProps) {
 	//#region textarea
 	const example = (
 		<div style={{ minWidth: 300 }}>
-			<TextArea defaultValue="Content of text area..." />
+			<TextArea
+				placeholder="This is a placeholder."
+				onPointerEnterCapture={() => console.log("pointer capture")}
+				onPointerLeaveCapture={() => console.log("pointer left")}
+			/>
 		</div>
 	)
 	//#endregion textarea

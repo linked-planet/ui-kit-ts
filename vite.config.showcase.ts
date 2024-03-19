@@ -2,7 +2,6 @@ import { defineConfig, splitVendorChunkPlugin } from "vite"
 import react from "@vitejs/plugin-react-swc"
 import tsconfigPaths from "vite-tsconfig-paths"
 import checker from "vite-plugin-checker"
-//import nodePolyfills from "rollup-plugin-polyfill-node"
 
 // postcss:
 import tailwindcss from "tailwindcss"

@@ -160,7 +160,7 @@ function BookCardExample() {
 						very very very very very very long"
 				subtitle="Book Subtitle also very very very very very very long"
 				upperTitle="Book Upper Title also looooooooooooooooooooooooooooong"
-				titlePrefix="looooooooooooooooooooooooooooong prefix"
+				headerPrefix="looooooooooooooooooooooooooooong prefix"
 				bodyLayout={bodyLayout}
 				bodyStyle={bodyStyle}
 				closed={isClosed}

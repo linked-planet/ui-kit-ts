@@ -23,37 +23,9 @@ import {
 	formatToDateType,
 } from "../utils/DateUtils"
 import dayjs, { type Dayjs } from "dayjs"
+import { Control, Controller, FieldPath, FieldValues } from "react-hook-form"
 
 //import "react-day-picker/dist/style.css" -> is imported in index.ts of the library that it is before TW
-
-/*type CalendarDefaultProps = Pick<
-	DayPickerDefaultProps,
-	| "mode"
-	| "defaultMonth"
-	| "onMonthChange"
-	| "disableNavigation"
-	| "locale"
-	| "month"
-	| "onDayClick"
-	| "onNextClick"
-	| "onPrevClick"
-	| "selected"
-	| "today"
-	| "weekStartsOn"
-	| "id"
-	| "className"
-	| "style"
-	| "disabled"
-	| "title"
-	| "showOutsideDays"
-	| "fixedWeeks"
-	| "labels"
-> & {
-	testId?: string
-	nextMonthLabel?: string
-	previousMonthLabel?: string
-	todayLabel?: string
-}*/
 
 type CalendarBaseSingleProps = Pick<
 	DayPickerSingleProps,
@@ -72,7 +44,6 @@ type CalendarBaseSingleProps = Pick<
 	| "id"
 	| "className"
 	| "style"
-	| "disabled"
 	| "showOutsideDays"
 	| "fixedWeeks"
 	| "title"
@@ -80,6 +51,7 @@ type CalendarBaseSingleProps = Pick<
 	| "hidden"
 	| "fromDate"
 	| "toDate"
+	| "required"
 > & {
 	mode: "single"
 	testId?: string
@@ -87,6 +59,9 @@ type CalendarBaseSingleProps = Pick<
 	previousMonthLabel?: string
 	todayLabel?: string
 	secondarySelected?: Date
+	invalid?: boolean
+	disabledDays?: Matcher | Matcher[]
+	disabled?: boolean
 }
 
 type CalendarBaseMultipleProps = Pick<
@@ -106,7 +81,6 @@ type CalendarBaseMultipleProps = Pick<
 	| "id"
 	| "className"
 	| "style"
-	| "disabled"
 	| "title"
 	| "showOutsideDays"
 	| "fixedWeeks"
@@ -121,6 +95,10 @@ type CalendarBaseMultipleProps = Pick<
 	previousMonthLabel?: string
 	todayLabel?: string
 	secondarySelected?: Date[]
+	invalid?: boolean
+	required?: boolean
+	disabledDays?: Matcher | Matcher[]
+	disabled?: boolean
 }
 
 type CalendarBaseRangeProps = Pick<
@@ -141,7 +119,6 @@ type CalendarBaseRangeProps = Pick<
 	| "id"
 	| "className"
 	| "style"
-	| "disabled"
 	| "title"
 	| "showOutsideDays"
 	| "fixedWeeks"
@@ -156,6 +133,10 @@ type CalendarBaseRangeProps = Pick<
 	previousMonthLabel?: string
 	todayLabel?: string
 	secondarySelected?: DateRange
+	invalid?: boolean
+	required?: boolean
+	disabledDays?: Matcher | Matcher[]
+	disabled?: boolean
 }
 
 const captionStyles = "flex justify-center items-center relative w-full"
@@ -168,12 +149,15 @@ const dayTodayStyles =
 const navStyles =
 	"whitespace-nowrap absolute w-full flex justify-between items-center"
 
+const cellStyles =
+	"p-0 text-center w-9 h-8 hover:bg-surface-overlay-hovered group-data-[disabled=true]:hover:bg-transparent"
+
 const classNames: DayPickerProps["classNames"] = {
 	caption_label: captionLabelStyles,
 	caption: captionStyles,
 	day_selected: daySelectedStyles,
-	cell: "p-0 text-center w-9 h-8 hover:bg-surface-overlay-hovered",
-	button: "w-full h-full",
+	cell: cellStyles,
+	button: "w-full h-full group-data-[disabled=true]:cursor-not-allowed",
 	nav: navStyles,
 	nav_button:
 		"p-1 rounded hover:bg-neutral-subtle-hovered flex items-center justify-center",
@@ -185,7 +169,7 @@ const classNames: DayPickerProps["classNames"] = {
 	day_disabled: "text-disabled-text",
 	day_outside: "text-disabled-text",
 	day_today: dayTodayStyles,
-	root: "p-1 w-max",
+	root: "group p-1 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2 data-[disabled=true]:border-brand-border",
 	tbody: "border-b-0",
 }
 
@@ -201,9 +185,20 @@ export function CalendarBase(
 	const nextMonthLabel = props.nextMonthLabel || "Next Month"
 	const previousMonthLabel = props.previousMonthLabel || "Previous Month"
 
+	const {
+		onDayClick,
+		onNextClick,
+		onPrevClick,
+		onSelect,
+		disabled,
+		...propsWOEventHandler
+	} = props
+
 	return (
 		<DayPicker
 			data-testid={props.testId}
+			data-invalid={props.invalid}
+			data-disabled={props.disabled}
 			classNames={classNames}
 			showOutsideDays={props.showOutsideDays ?? true}
 			fixedWeeks={props.fixedWeeks ?? true}
@@ -220,7 +215,13 @@ export function CalendarBase(
 				hidden: "bg-selected-subtle hover:bg-selected-subtle-hovered",
 			}}
 			hidden={props.secondarySelected}
-			{...props}
+			disabled={props.disabledDays}
+			onDayClick={!disabled ? onDayClick : undefined}
+			onNextClick={!disabled ? onNextClick : undefined}
+			onPrevClick={!disabled ? onPrevClick : undefined}
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			onSelect={!disabled ? (onSelect as any) : undefined}
+			{...propsWOEventHandler}
 		/>
 	)
 }
@@ -260,6 +261,8 @@ type BaseProps = {
 	showOutsideDays?: boolean
 	/* always show 6 weeks, requires show outside day to be true */
 	fixedWeeks?: boolean
+	invalid?: boolean
+	disabled?: boolean
 
 	onDayClicked?: (date: DateType, activeModifiers: ActiveModifiers) => void
 	onNextMonthClicked?: (month: number, year: number) => void
@@ -274,6 +277,19 @@ type CalendarSingleProps = BaseProps & {
 	selected?: DateType
 	secondarySelected?: DateType
 	onSelectionChanged?: (selected: DateType | undefined) => void
+}
+
+type CalendarSingleFormProps<FormData extends FieldValues> =
+	CalendarSingleProps & {
+		name: FieldPath<FormData>
+		control: Control<FormData>
+		required?: boolean
+	}
+
+function isSingleInFormProps<FormData extends FieldValues>(
+	props: CalendarSingleProps | CalendarSingleFormProps<FormData>,
+): props is CalendarSingleFormProps<FormData> {
+	return "control" in props
 }
 
 type CalendarRangeProps = BaseProps & {
@@ -295,6 +311,19 @@ type CalendarRangeProps = BaseProps & {
 	}) => void
 }
 
+type CalendarRangeFormProps<FormData extends FieldValues> =
+	CalendarRangeProps & {
+		name: FieldPath<FormData>
+		control: Control<FormData>
+		required?: boolean
+	}
+
+function isRangeInFormProps<FormData extends FieldValues>(
+	props: CalendarRangeProps | CalendarRangeFormProps<FormData>,
+): props is CalendarRangeFormProps<FormData> {
+	return "control" in props
+}
+
 type CalendarMultiProps = BaseProps & {
 	mode: "multiple"
 	defaultSelected?: DateType[]
@@ -304,6 +333,19 @@ type CalendarMultiProps = BaseProps & {
 	onSelectionChanged?: (selected: DateType[]) => void
 }
 
+type CalendarMultiFormProps<FormData extends FieldValues> =
+	CalendarMultiProps & {
+		name: FieldPath<FormData>
+		control: Control<FormData>
+		required?: boolean
+	}
+
+function isMultiInFormProps<FormData extends FieldValues>(
+	props: CalendarMultiProps | CalendarMultiFormProps<FormData>,
+): props is CalendarMultiFormProps<FormData> {
+	return "control" in props
+}
+
 function getMonthAndYear(date: Date) {
 	return { month: date.getMonth(), year: date.getFullYear() }
 }
@@ -311,8 +353,23 @@ function getMonthAndYear(date: Date) {
 export function Calendar(props: CalendarSingleProps): JSX.Element
 export function Calendar(props: CalendarMultiProps): JSX.Element
 export function Calendar(props: CalendarRangeProps): JSX.Element
-export function Calendar(
-	props: CalendarSingleProps | CalendarMultiProps | CalendarRangeProps,
+export function Calendar<FormData extends FieldValues>(
+	props: CalendarSingleFormProps<FormData>,
+): JSX.Element
+export function Calendar<FormData extends FieldValues>(
+	props: CalendarMultiFormProps<FormData>,
+): JSX.Element
+export function Calendar<FormData extends FieldValues>(
+	props: CalendarRangeFormProps<FormData>,
+): JSX.Element
+export function Calendar<FormData extends FieldValues>(
+	props:
+		| CalendarSingleProps
+		| CalendarSingleFormProps<FormData>
+		| CalendarMultiProps
+		| CalendarMultiFormProps<FormData>
+		| CalendarRangeProps
+		| CalendarRangeFormProps<FormData>,
 ): JSX.Element {
 	const {
 		minDate,
@@ -436,65 +493,56 @@ export function Calendar(
 		return ret
 	}, [defaultMonth, defaultYear])
 
-	if (props.mode === "single") {
-		return (
-			<CalendarSingle
-				{...props}
-				minDate={_minDate}
-				maxDate={_maxDate}
-				month={_month}
-				defaultMonth={_defaultMonth}
-				disabled={disabledMatcher}
-				onNextMonthClicked={_onNextMonthClicked}
-				onPreviousMonthClicked={_onPreviousMonthClicked}
-				onMonthChanged={_onMonthChanged}
-			/>
-		)
+	const transmutedProps = {
+		minDate: _minDate,
+		maxDate: _maxDate,
+		month: _month,
+		defaultMonth: _defaultMonth,
+		disabledDates: disabledMatcher,
+		onNextMonthClicked: _onNextMonthClicked,
+		onPreviousMonthClicked: _onPreviousMonthClicked,
+		onMonthChanged: _onMonthChanged,
 	}
-	if (props.mode === "multiple") {
-		return (
-			<CalendarMulti
-				{...props}
-				minDate={_minDate}
-				maxDate={_maxDate}
-				month={_month}
-				defaultMonth={_defaultMonth}
-				disabled={disabledMatcher}
-				onNextMonthClicked={_onNextMonthClicked}
-				onPreviousMonthClicked={_onPreviousMonthClicked}
-				onMonthChanged={_onMonthChanged}
-			/>
-		)
+
+	if (props.mode === "single") {
+		if (isSingleInFormProps(props)) {
+			return (
+				<CalendarSingleForm<FormData> {...props} {...transmutedProps} />
+			)
+		}
+		return <CalendarSingle {...props} {...transmutedProps} />
 	}
 	if (props.mode === "range") {
-		return (
-			<CalendarRange
-				{...props}
-				minDate={_minDate}
-				maxDate={_maxDate}
-				month={_month}
-				defaultMonth={_defaultMonth}
-				disabled={disabledMatcher}
-				onNextMonthClicked={_onNextMonthClicked}
-				onPreviousMonthClicked={_onPreviousMonthClicked}
-				onMonthChanged={_onMonthChanged}
-			/>
-		)
+		if (isRangeInFormProps(props)) {
+			return (
+				<CalendarRangeForm<FormData> {...props} {...transmutedProps} />
+			)
+		}
+		return <CalendarRange {...props} {...transmutedProps} />
+	}
+	if (props.mode === "multiple") {
+		if (isMultiInFormProps(props)) {
+			return (
+				<CalendarMultiForm<FormData> {...props} {...transmutedProps} />
+			)
+		}
+		return <CalendarMulti {...props} {...transmutedProps} />
 	}
 	throw new Error("Invalid mode")
 }
 
-function CalendarSingle({
-	selected,
-	defaultSelected,
-	secondarySelected,
-	onSelectionChanged,
-	onDayClicked,
-	onNextMonthClicked,
-	onPreviousMonthClicked,
-	onMonthChanged,
-	...props
-}: Omit<
+type TransmutedProps = {
+	minDate?: Dayjs
+	maxDate?: Dayjs
+	month?: Dayjs
+	defaultMonth?: Dayjs
+	disabledDates: Matcher
+	onNextMonthClicked?: (date: Date) => void
+	onPreviousMonthClicked?: (date: Date) => void
+	onMonthChanged?: (date: Date) => void
+}
+
+type SingleToBaseProps = Omit<
 	CalendarSingleProps,
 	| "minDate"
 	| "maxDate"
@@ -508,16 +556,20 @@ function CalendarSingle({
 	| "onPreviousMonthClicked"
 	| "onMonthChanged"
 	| "defaultMonth"
-> & {
-	minDate?: Dayjs
-	maxDate?: Dayjs
-	month?: Dayjs
-	defaultMonth?: Dayjs
-	disabled: Matcher
-	onNextMonthClicked?: (date: Date) => void
-	onPreviousMonthClicked?: (date: Date) => void
-	onMonthChanged?: (date: Date) => void
-}) {
+> &
+	TransmutedProps
+
+function CalendarSingle({
+	selected,
+	defaultSelected,
+	secondarySelected,
+	onSelectionChanged,
+	onDayClicked,
+	onNextMonthClicked,
+	onPreviousMonthClicked,
+	onMonthChanged,
+	...props
+}: SingleToBaseProps) {
 	const [selectedDate, setSelectedDate] = useState<DateType | undefined>(
 		selected || defaultSelected,
 	)
@@ -579,17 +631,51 @@ function CalendarSingle({
 	)
 }
 
-function CalendarRange({
-	selected,
-	defaultSelected,
-	secondarySelected,
-	onSelectionChanged,
-	onDayClicked,
-	onNextMonthClicked,
-	onPreviousMonthClicked,
-	onMonthChanged,
+type SingleFormToBaseProps<FormData extends FieldValues> = SingleToBaseProps & {
+	name: FieldPath<FormData>
+	control: Control<FormData>
+	required?: boolean
+}
+
+function CalendarSingleForm<FormData extends FieldValues>({
+	name,
+	control,
+	required,
 	...props
-}: Omit<
+}: SingleFormToBaseProps<FormData>) {
+	// props are then pof type SingleToBaseProps
+	return (
+		<Controller
+			control={control}
+			name={name}
+			render={({ field, fieldState }) => {
+				const onSelect = (date: DateType | undefined) => {
+					if (!date) {
+						field.onChange(null)
+						return
+					}
+					field.onChange(date)
+				}
+
+				return (
+					<CalendarSingle
+						{...props}
+						disabled={props.disabled}
+						selected={field.value}
+						onSelectionChanged={onSelect}
+						invalid={
+							fieldState.invalid ||
+							props.invalid ||
+							(required === true && !field.value)
+						}
+					/>
+				)
+			}}
+		/>
+	)
+}
+
+type RangeToBaseProps = Omit<
 	CalendarRangeProps,
 	| "minDate"
 	| "maxDate"
@@ -603,16 +689,20 @@ function CalendarRange({
 	| "onPreviousMonthClicked"
 	| "onMonthChanged"
 	| "defaultMonth"
-> & {
-	minDate?: Dayjs
-	maxDate?: Dayjs
-	month?: Dayjs
-	defaultMonth?: Dayjs
-	disabled: Matcher
-	onNextMonthClicked?: (date: Date) => void
-	onPreviousMonthClicked?: (date: Date) => void
-	onMonthChanged?: (date: Date) => void
-}) {
+> &
+	TransmutedProps
+
+function CalendarRange({
+	selected,
+	defaultSelected,
+	secondarySelected,
+	onSelectionChanged,
+	onDayClicked,
+	onNextMonthClicked,
+	onPreviousMonthClicked,
+	onMonthChanged,
+	...props
+}: RangeToBaseProps) {
 	const [selectedDates, setSelectedDates] = useState<{
 		from: DateType | undefined
 		to: DateType | undefined
@@ -705,17 +795,64 @@ function CalendarRange({
 	)
 }
 
-function CalendarMulti({
-	selected,
-	defaultSelected,
-	secondarySelected,
-	onSelectionChanged,
-	onDayClicked,
-	onNextMonthClicked,
-	onPreviousMonthClicked,
-	onMonthChanged,
+type RangeFormToBaseProps<FormData extends FieldValues> = RangeToBaseProps & {
+	name: FieldPath<FormData>
+	control: Control<FormData>
+	required?: boolean
+}
+
+function CalendarRangeForm<FormData extends FieldValues>({
+	name,
+	control,
+	required,
 	...props
-}: Omit<
+}: RangeFormToBaseProps<FormData>) {
+	// props are then pof type SingleToBaseProps
+	return (
+		<Controller
+			control={control}
+			name={name}
+			render={({ field, fieldState }) => {
+				const onSelect = (
+					dateRange:
+						| {
+								from: DateType | undefined | null
+								to: DateType | undefined | null
+						  }
+						| undefined,
+				) => {
+					if (!dateRange) {
+						field.onChange(null)
+						return
+					}
+					if (!dateRange.from) {
+						dateRange.from = null
+					}
+					if (!dateRange.to) {
+						dateRange.to = null
+					}
+					field.onChange(dateRange)
+				}
+
+				return (
+					<CalendarRange
+						{...props}
+						disabled={props.disabled}
+						selected={field.value}
+						onSelectionChanged={onSelect}
+						invalid={
+							fieldState.invalid ||
+							props.invalid ||
+							(required === true && !field.value)
+						}
+					/>
+				)
+			}}
+		/>
+	)
+}
+
+type MultiToBaseProps = Omit<
 	CalendarMultiProps,
 	| "minDate"
 	| "maxDate"
@@ -734,11 +871,22 @@ function CalendarMulti({
 	maxDate?: Dayjs
 	month?: Dayjs
 	defaultMonth?: Dayjs
-	disabled: Matcher
 	onNextMonthClicked?: (date: Date) => void
 	onPreviousMonthClicked?: (date: Date) => void
 	onMonthChanged?: (date: Date) => void
-}) {
+}
+
+function CalendarMulti({
+	selected,
+	defaultSelected,
+	secondarySelected,
+	onSelectionChanged,
+	onDayClicked,
+	onNextMonthClicked,
+	onPreviousMonthClicked,
+	onMonthChanged,
+	...props
+}: MultiToBaseProps) {
 	const [selectedDates, setSelectedDates] = useState(
 		selected || defaultSelected || [],
 	)
@@ -794,6 +942,50 @@ function CalendarMulti({
 			onMonthChange={onMonthChanged}
 			fromDate={props.minDate?.toDate()}
 			toDate={props.maxDate?.toDate()}
+		/>
+	)
+}
+
+type MultiFormToBaseProps<FormData extends FieldValues> = MultiToBaseProps & {
+	name: FieldPath<FormData>
+	control: Control<FormData>
+	required?: boolean
+}
+
+function CalendarMultiForm<FormData extends FieldValues>({
+	name,
+	control,
+	required,
+	...props
+}: MultiFormToBaseProps<FormData>) {
+	// props are then pof type SingleToBaseProps
+	return (
+		<Controller
+			control={control}
+			name={name}
+			render={({ field, fieldState }) => {
+				const onSelect = (dates: DateType[] | undefined) => {
+					if (!dates) {
+						field.onChange(null)
+						return
+					}
+					field.onChange(dates)
+				}
+
+				return (
+					<CalendarMulti
+						{...props}
+						disabled={props.disabled}
+						selected={field.value}
+						onSelectionChanged={onSelect}
+						invalid={
+							fieldState.invalid ||
+							props.invalid ||
+							(required === true && !field.value)
+						}
+					/>
+				)
+			}}
 		/>
 	)
 }

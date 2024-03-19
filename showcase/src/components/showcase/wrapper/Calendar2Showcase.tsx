@@ -1,8 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { CalendarBase, Calendar, DateType } from "@linked-planet/ui-kit-ts"
+import {
+	CalendarBase,
+	Calendar,
+	DateType,
+	Button,
+	ButtonGroup,
+} from "@linked-planet/ui-kit-ts"
 import { DateRange } from "react-day-picker"
 import AKCalendar from "@atlaskit/calendar"
 import {
@@ -10,12 +16,7 @@ import {
 	formatToDateType,
 } from "@linked-planet/ui-kit-ts/utils/DateUtils"
 import dayjs from "dayjs"
-
-//#region calendar2-example
-function CalendarExample() {
-	return <Calendar mode="single" />
-}
-//#endregion calendar2-example
+import { useForm } from "react-hook-form"
 
 //#region calendar2-single
 function CalendarSingle() {
@@ -57,6 +58,7 @@ function CalendarSingle() {
 		<div className="flex gap-4">
 			<CalendarBase
 				mode="single"
+				testId="test_id"
 				selected={selectedDate}
 				secondarySelected={secondarySelectedDate}
 				onDayClick={(date) => {
@@ -67,6 +69,9 @@ function CalendarSingle() {
 				fromDate={minDate}
 				toDate={maxDate}
 				defaultMonth={defaultMonthDate}
+				invalid
+				disabledDays={(date) => date.getDay() === 0}
+				disabled
 			/>
 			<Calendar
 				mode="single"
@@ -95,6 +100,84 @@ function CalendarSingle() {
 	)
 }
 //#endregion calendar2-single
+
+//#region calendar2-single-form
+function CalendarSingleForm() {
+	const {
+		handleSubmit,
+		control,
+		reset,
+		formState: { isValid },
+	} = useForm<{ date: DateType }>({
+		defaultValues: {
+			date: "2023-12-31",
+		},
+		mode: "all",
+	})
+
+	console.log("IS VALID", isValid)
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={() => reset()}
+		>
+			<Calendar
+				mode="single"
+				name="date"
+				control={control}
+				invalid={!isValid}
+				defaultMonth={12}
+				defaultYear={2023}
+			/>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button type="reset">Reset</Button>
+				<Button appearance="primary" type="submit" disabled={!isValid}>
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion calendar2-single-form
+
+//#region calendar2-multiple-form
+function CalendarMultipleForm() {
+	const {
+		handleSubmit,
+		control,
+		reset,
+		formState: { isValid },
+	} = useForm<{ dates: DateType[] }>({
+		defaultValues: {
+			dates: ["2023-12-31", "2023-12-24", "2023-12-27"],
+		},
+		mode: "all",
+	})
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={() => reset()}
+		>
+			<Calendar
+				mode="multiple"
+				name="dates"
+				control={control}
+				invalid={!isValid}
+				defaultMonth={12}
+				defaultYear={2023}
+			/>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button type="reset">Reset</Button>
+				<Button appearance="primary" type="submit" disabled={!isValid}>
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion calendar2-multiple-form
 
 //#region calendar2-base
 function CalendarBaseExample() {
@@ -161,6 +244,44 @@ function CalendarRange() {
 }
 //#endregion calendar2-range
 
+//#region calendar2-range-form
+function CalendarRangeForm() {
+	const {
+		handleSubmit,
+		control,
+		reset,
+		formState: { isValid },
+	} = useForm<{ range: { from: DateType; to: DateType } }>({
+		defaultValues: {
+			range: { from: "2023-12-24", to: "2023-12-31" },
+		},
+		mode: "all",
+	})
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={() => reset()}
+		>
+			<Calendar
+				mode="range"
+				name="range"
+				control={control}
+				invalid={!isValid}
+				defaultMonth={12}
+				defaultYear={2023}
+			/>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button type="reset">Reset</Button>
+				<Button appearance="primary" type="submit" disabled={!isValid}>
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion calendar2-range-form
+
 export default function Calendar2Showcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -175,11 +296,6 @@ export default function Calendar2Showcase(props: ShowcaseProps) {
 			description="Calendar, date and date range picker components."
 			examples={[
 				{
-					title: "Calendar",
-					example: <CalendarExample />,
-					sourceCodeExampleId: "calendar2-example",
-				},
-				{
 					title: "Calendar Single Day",
 					example: <CalendarSingle />,
 					sourceCodeExampleId: "calendar2-single",
@@ -193,6 +309,21 @@ export default function Calendar2Showcase(props: ShowcaseProps) {
 					title: "Base Calendar",
 					example: <CalendarBaseExample />,
 					sourceCodeExampleId: "calendar2-base",
+				},
+				{
+					title: "Calendar Single Form",
+					example: <CalendarSingleForm />,
+					sourceCodeExampleId: "calendar2-single-form",
+				},
+				{
+					title: "Calendar Multiple Form",
+					example: <CalendarMultipleForm />,
+					sourceCodeExampleId: "calendar2-multiple-form",
+				},
+				{
+					title: "Calendar Range Form",
+					example: <CalendarRangeForm />,
+					sourceCodeExampleId: "calendar2-range-form",
 				},
 			]}
 		/>
