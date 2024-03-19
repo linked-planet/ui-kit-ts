@@ -169,7 +169,7 @@ const classNames: DayPickerProps["classNames"] = {
 	day_disabled: "text-disabled-text",
 	day_outside: "text-disabled-text",
 	day_today: dayTodayStyles,
-	root: "group p-1 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2 data-[disabled=true]:border-brand-border",
+	root: "group p-1 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2",
 	tbody: "border-b-0",
 }
 
