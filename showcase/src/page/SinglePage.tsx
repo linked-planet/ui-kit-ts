@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react"
-import Select from "@atlaskit/select"
 import useShowCases from "../useShowcases"
 import { useSearchParams } from "react-router-dom"
+import { Select } from "@linked-planet/ui-kit-ts"
 
 export default function SinglePage() {
 	const [overallSourceCode, setOverallSourceCode] = useState("")
@@ -41,7 +41,7 @@ export default function SinglePage() {
 
 	return (
 		<div className="mt-12">
-			<Select
+			<Select<JSX.Element, false>
 				options={options}
 				onChange={(e) => {
 					if (e?.value) {
