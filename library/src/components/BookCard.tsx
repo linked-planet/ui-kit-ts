@@ -67,9 +67,36 @@ export const CardBase = forwardRef(
 )
 CardBase.displayName = "CardBase"
 
+const CardHeaderPrefix = ({
+	children,
+	className,
+	style,
+	id,
+	testId,
+}: {
+	children: React.ReactNode
+	className?: string
+	style?: CSSProperties
+	id?: string
+	testId?: string
+}) => {
+	const _className = twMerge(
+		"text-text-subtlest pr-2 mr-4 text-sm border-border border-r w-16 flex-none font-semibold grid items-center justify-start",
+		className,
+	)
+	return (
+		<div className={_className} id={id} data-testid={testId} style={style}>
+			<div className="truncate">{children}</div>
+		</div>
+	)
+}
+
 const CardHeader = ({
 	className,
 	children,
+	prefix,
+	prefixClassName,
+	prefixStyle,
 	style,
 	id,
 	testId,
@@ -79,16 +106,24 @@ const CardHeader = ({
 	style?: CSSProperties
 	id?: string
 	testId?: string
+	prefix?: React.ReactNode
+	prefixClassName?: string
+	prefixStyle?: CSSProperties
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface-overlay flex w-full flex-1 justify-between px-6 py-3",
+			"bg-surface-overlay flex w-full flex-1 justify-between px-4 py-3",
 			className,
 		)}
 		style={style}
 		id={id}
 		data-testid={testId}
 	>
+		{prefix && (
+			<CardHeaderPrefix className={prefixClassName} style={prefixStyle}>
+				{prefix}
+			</CardHeaderPrefix>
+		)}
 		{children}
 	</div>
 )
@@ -114,16 +149,12 @@ const CardHeaderMeta = ({
 const CardHeaderTitle = ({
 	children,
 	className,
-	prefix,
-	prefixClassName,
-	prefixStyle,
 	style,
 	id,
 	testId,
 }: {
 	children: React.ReactNode
 	className?: string
-	prefix?: React.ReactNode
 	style?: CSSProperties
 	id?: string
 	testId?: string
@@ -156,22 +187,7 @@ const CardHeaderTitle = ({
 			</div>
 		)
 
-	return (
-		<div className="flex w-full items-baseline">
-			{prefix && (
-				<div
-					style={prefixStyle}
-					className={twMerge(
-						"text-text-subtlest mr-2 max-w-16 flex-none truncate text-xs font-semibold",
-						prefixClassName,
-					)}
-				>
-					{prefix}
-				</div>
-			)}
-			{content}
-		</div>
-	)
+	return <div className="flex w-full items-baseline">{content}</div>
 }
 
 const CardHeaderSubtitle = ({
@@ -280,7 +296,7 @@ const CardHeaderActionsInfo = ({
 
 const cardBodyEntryBaseStyle = css`
 	> * {
-		padding: 12px 1.5rem;
+		padding: 12px 1rem;
 		border-bottom: 1px solid ${borderColor};
 		border-right: 1px solid ${borderColor};
 	}
@@ -409,7 +425,7 @@ type BookCardProps = {
 	title: React.ReactNode
 	subtitle?: React.ReactNode
 	upperTitle?: React.ReactNode
-	titlePrefix?: React.ReactNode
+	headerPrefix?: React.ReactNode
 	closed?: boolean
 	defaultOpen?: boolean
 	bodyLayout: "row" | "grid" | "column"
@@ -429,7 +445,7 @@ export const BookCard = forwardRef(
 			title,
 			subtitle,
 			upperTitle,
-			titlePrefix,
+			headerPrefix,
 			closed,
 			defaultOpen,
 			actions,
@@ -466,16 +482,14 @@ export const BookCard = forwardRef(
 				testId={testId}
 				ref={ref}
 				header={
-					<CardHeader>
+					<CardHeader prefix={headerPrefix}>
 						<CardHeaderMeta>
 							{upperTitle && (
 								<CardHeaderUpperTitle>
 									{upperTitle}
 								</CardHeaderUpperTitle>
 							)}
-							<CardHeaderTitle prefix={titlePrefix}>
-								{title}
-							</CardHeaderTitle>
+							<CardHeaderTitle>{title}</CardHeaderTitle>
 							{subtitle && (
 								<CardHeaderSubtitle>
 									{subtitle}
