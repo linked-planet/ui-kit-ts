@@ -6,11 +6,9 @@ import BadgeShowcase from "./components/showcase/wrapper/BadgeShowcase"
 import BannerShowcase from "./components/showcase/wrapper/BannerShowcase"
 import BookCardShowcase from "./components/showcase/wrapper/BookCardShowcase"
 import ButtonShowcase from "./components/showcase/wrapper/ButtonShowcase"
-import CalendarShowcase from "./components/showcase/wrapper/CalendarShowcase"
 import CheckboxShowcase from "./components/showcase/wrapper/CheckboxShowcase"
 import CodeBlockShowcase from "./components/showcase/wrapper/CodeBlockShowcase"
 import CollapsibleShowcase from "./components/showcase/wrapper/CollapsibleShowcase"
-import DateRangePickerShowcase from "./components/showcase/wrapper/DateRangePickerShowcase"
 import DateTimePickerShowcase from "./components/showcase/wrapper/DateTimePickerShowcase"
 import DropDownMenuShowcase from "./components/showcase/wrapper/DropdownMenuShowcase"
 import DynamicTableShowcase from "./components/showcase/wrapper/DynamicTableShowcase"
@@ -71,9 +69,6 @@ export default function useShowcases({
 			),
 			Button: <ButtonShowcase overallSourceCode={overallSourceCode} />,
 			Calendar: (
-				<CalendarShowcase overallSourceCode={overallSourceCode} />
-			),
-			Calendar2: (
 				<Calendar2Showcase overallSourceCode={overallSourceCode} />
 			),
 			Checkbox: (
@@ -88,11 +83,6 @@ export default function useShowcases({
 			Colors: <ColorsShowcase overallSourceCode={overallSourceCode} />,
 			"Date Time Picker": (
 				<DateTimePickerShowcase overallSourceCode={overallSourceCode} />
-			),
-			"Date Range Picker": (
-				<DateRangePickerShowcase
-					overallSourceCode={overallSourceCode}
-				/>
 			),
 			Dropdown: (
 				<DropDownMenuShowcase overallSourceCode={overallSourceCode} />
