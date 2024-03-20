@@ -60,7 +60,7 @@ type CalendarBaseSingleProps = Pick<
 	todayLabel?: string
 	secondarySelected?: Date
 	invalid?: boolean
-	disabledDays?: Matcher | Matcher[]
+	disabledDates?: Matcher | Matcher[]
 	disabled?: boolean
 }
 
@@ -97,7 +97,7 @@ type CalendarBaseMultipleProps = Pick<
 	secondarySelected?: Date[]
 	invalid?: boolean
 	required?: boolean
-	disabledDays?: Matcher | Matcher[]
+	disabledDates?: Matcher | Matcher[]
 	disabled?: boolean
 }
 
@@ -135,14 +135,14 @@ type CalendarBaseRangeProps = Pick<
 	secondarySelected?: DateRange
 	invalid?: boolean
 	required?: boolean
-	disabledDays?: Matcher | Matcher[]
+	disabledDates?: Matcher | Matcher[]
 	disabled?: boolean
 }
 
 const captionStyles = "flex justify-center items-center relative w-full"
 const captionLabelStyles = "text-text text-sm font-bold flex justify-center"
 const daySelectedStyles =
-	"rounded-none bg-selected hover:bg-selected-hovered active:bg-selected-pressed text-selected-text-inverse font-bold w-full h-full"
+	"rounded-none bg-selected group-data-[disabled=false]:hover:bg-selected-hovered group-data-[disabled=false]:active:bg-selected-pressed text-selected-text-inverse font-bold w-full h-full"
 const headStyles = "text-text-subtle text-sm border-b-0"
 const dayTodayStyles =
 	"font-bold relative text-brand-text aria-selected:text-text-inverse after:absolute after:block after:left-1 after:right-1 after:bg-brand-text after:aria-selected:bg-text-inverse after:h-[2px]"
@@ -166,8 +166,8 @@ const classNames: DayPickerProps["classNames"] = {
 	table: "w-auto",
 	head: headStyles,
 	day: "text-sm",
-	day_disabled: "text-disabled-text",
-	day_outside: "text-disabled-text",
+	day_disabled: "text-disabled-text cursor-not-allowed",
+	//day_outside: "text-disabled-text",
 	day_today: dayTodayStyles,
 	root: "group p-1 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2",
 	tbody: "border-b-0",
@@ -191,6 +191,7 @@ export function CalendarBase(
 		onPrevClick,
 		onSelect,
 		disabled,
+		disabledDates,
 		...propsWOEventHandler
 	} = props
 
@@ -198,7 +199,7 @@ export function CalendarBase(
 		<DayPicker
 			data-testid={props.testId}
 			data-invalid={props.invalid}
-			data-disabled={props.disabled}
+			data-disabled={props.disabled ?? false}
 			classNames={classNames}
 			showOutsideDays={props.showOutsideDays ?? true}
 			fixedWeeks={props.fixedWeeks ?? true}
@@ -212,10 +213,10 @@ export function CalendarBase(
 				Day,
 			}}
 			modifiersClassNames={{
-				hidden: "bg-selected-subtle hover:bg-selected-subtle-hovered",
+				hidden: "bg-selected-bold-hovered hover:bg-selected-bold-hovered active:bg-selected-bold-hovered",
 			}}
 			hidden={props.secondarySelected}
-			disabled={props.disabledDays}
+			disabled={disabledDates}
 			onDayClick={!disabled ? onDayClick : undefined}
 			onNextClick={!disabled ? onNextClick : undefined}
 			onPrevClick={!disabled ? onPrevClick : undefined}
@@ -231,9 +232,11 @@ function Day(props: DayProps) {
 	const buttonRef = useRef<HTMLButtonElement>(null)
 	const dayRender = useDayRender(props.date, props.displayMonth, buttonRef)
 
+	// this is the original code, which I had to modify to remove the hidden rendering
 	/*if (dayRender.isHidden) {
 		return <div role="gridcell"></div>;
 	}*/
+	//
 	if (!dayRender.isButton) {
 		return <div {...dayRender.divProps} />
 	}
@@ -244,6 +247,7 @@ type BaseProps = {
 	id?: string
 	testId?: string
 	key?: string
+	/* month is here 1 indexed for convenience purposes, but in JS on a Date object it is 0 indexed */
 	month?: number
 	defaultMonth?: number
 	year?: number
@@ -256,7 +260,7 @@ type BaseProps = {
 	nextMonthLabel?: string
 	previousMonthLabel?: string
 	/* 0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday */
-	weekStartDay?: 0 | 1 | 2 | 3 | 4 | 5 | 6
+	weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
 	/* shows days outside of the month */
 	showOutsideDays?: boolean
 	/* always show 6 weeks, requires show outside day to be true */
@@ -296,18 +300,21 @@ type CalendarRangeProps = BaseProps & {
 	mode: "range"
 	defaultSelected?: { from: DateType; to: DateType }
 	defaultPreviouslySelected?: { from: DateType; to: DateType }
-	selected?: { from: DateType | undefined; to: DateType | undefined }
+	selected?: {
+		from: DateType | undefined | null
+		to: DateType | undefined | null
+	}
 	previouslySelected?: {
-		from: DateType | undefined
-		to: DateType | undefined
+		from: DateType | undefined | null
+		to: DateType | undefined | null
 	}
 	secondarySelected?: {
-		from: DateType | undefined
-		to: DateType | undefined
+		from: DateType | undefined | null
+		to: DateType | undefined | null
 	}
 	onSelectionChanged?: (selected: {
-		from: DateType | undefined
-		to: DateType | undefined
+		from: DateType | undefined | null
+		to: DateType | undefined | null
 	}) => void
 }
 
@@ -347,7 +354,7 @@ function isMultiInFormProps<FormData extends FieldValues>(
 }
 
 function getMonthAndYear(date: Date) {
-	return { month: date.getMonth(), year: date.getFullYear() }
+	return { month: date.getMonth() + 1, year: date.getFullYear() }
 }
 
 export function Calendar(props: CalendarSingleProps): JSX.Element
@@ -704,8 +711,8 @@ function CalendarRange({
 	...props
 }: RangeToBaseProps) {
 	const [selectedDates, setSelectedDates] = useState<{
-		from: DateType | undefined
-		to: DateType | undefined
+		from: DateType | undefined | null
+		to: DateType | undefined | null
 	}>(selected || defaultSelected || { from: undefined, to: undefined })
 
 	if (selected && selected !== selectedDates) {

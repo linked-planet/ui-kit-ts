@@ -23,22 +23,30 @@ function CalendarSingle() {
 	const [selected, setSelected] = useState<DateType | undefined>(
 		formatToDateType(new Date()),
 	)
-	const [secondarySelected, setSecondarySelected] = useState<
-		DateType | undefined
-	>()
-
-	const selectedDate = selected ? dateFromString(selected) : undefined
-	const secondarySelectedDate = secondarySelected
-		? dateFromString(secondarySelected)
-		: undefined
 
 	const defaultMonth = 8
 	const defaultYear = 2022
+	const disabledDate1 = formatToDateType(
+		dayjs()
+			.month(defaultMonth - 1)
+			.year(defaultYear)
+			.add(4, "day"),
+	)
+	const disabledDate2 = formatToDateType(
+		dayjs()
+			.month(defaultMonth - 1)
+			.year(defaultYear)
+			.add(6, "day"),
+	)
+
+	const [secondarySelected, setSecondarySelected] = useState<
+		DateType | undefined
+	>(disabledDate1)
 
 	const minDate = dayjs()
 		.month(defaultMonth - 1)
 		.year(defaultYear)
-		.subtract(3, "days")
+		.subtract(5, "days")
 		.toDate()
 	const minDateDT = formatToDateType(minDate)
 
@@ -53,6 +61,18 @@ function CalendarSingle() {
 		.month(defaultMonth - 1)
 		.year(defaultYear)
 		.toDate()
+
+	const sundayMatcher = (date: Date) => date.getDay() === 0
+
+	const sundayMatcher2 = (date: DateType) => {
+		const dt = dateFromString(date)
+		return dt.getDay() === 0
+	}
+
+	const selectedDate = selected ? dateFromString(selected) : undefined
+	const secondarySelectedDate = secondarySelected
+		? dateFromString(secondarySelected)
+		: undefined
 
 	return (
 		<div className="flex gap-4">
@@ -70,8 +90,9 @@ function CalendarSingle() {
 				toDate={maxDate}
 				defaultMonth={defaultMonthDate}
 				invalid
-				disabledDays={(date) => date.getDay() === 0}
+				disabledDates={sundayMatcher}
 				disabled
+				weekStartsOn={1}
 			/>
 			<Calendar
 				mode="single"
@@ -85,8 +106,11 @@ function CalendarSingle() {
 				maxDate={maxDateDT}
 				defaultMonth={defaultMonth}
 				defaultYear={defaultYear}
+				disabledDateFilter={sundayMatcher2}
+				disabledDates={[disabledDate1, disabledDate2]}
+				weekStartsOn={1}
 			/>
-			<AKCalendar
+			{/*<AKCalendar
 				selected={selected ? [selected] : []}
 				previouslySelected={
 					secondarySelected ? [secondarySelected] : []
@@ -95,7 +119,7 @@ function CalendarSingle() {
 				maxDate={maxDateDT}
 				defaultMonth={defaultMonth}
 				defaultYear={defaultYear}
-			/>
+			/>*/}
 		</div>
 	)
 }
@@ -208,8 +232,8 @@ function CalendarBaseExample() {
 //#region calendar2-range
 function CalendarRange() {
 	const [selected, setSelected] = useState<{
-		from: DateType | undefined
-		to: DateType | undefined
+		from: DateType | undefined | null
+		to: DateType | undefined | null
 	}>({
 		from: formatToDateType(new Date()),
 		to: undefined,

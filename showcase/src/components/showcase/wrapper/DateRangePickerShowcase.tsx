@@ -9,16 +9,20 @@ import {
 	DateType,
 	Input,
 	Label,
-	dateFormat,
+	DateUtils,
 } from "@linked-planet/ui-kit-ts"
 import dayjs from "dayjs"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 //#region date-range-picker
 function Example() {
-	const today = dayjs().format(dateFormat) as DateType
-	const todayPlus2 = dayjs().add(2, "day").format(dateFormat) as DateType
-	const todayPlus10 = dayjs().add(10, "day").format(dateFormat) as DateType
+	const today = dayjs().format(DateUtils.dateFormat) as DateType
+	const todayPlus2 = dayjs()
+		.add(2, "day")
+		.format(DateUtils.dateFormat) as DateType
+	const todayPlus10 = dayjs()
+		.add(10, "day")
+		.format(DateUtils.dateFormat) as DateType
 
 	const [startDate, setStartDate] = useState<DateType>()
 	const [endDate, setEndDate] = useState<DateType>()
@@ -104,12 +108,12 @@ function Example2() {
 		.set("year", 1911)
 		.set("month", 1) //month are 0-indexed in dayjs!
 		.set("date", 11)
-		.format(dateFormat) as DateType
+		.format(DateUtils.dateFormat) as DateType
 	const selectedEndDate = dayjs()
 		.set("year", 1911)
 		.set("month", 1)
 		.set("date", 16)
-		.format(dateFormat) as DateType
+		.format(DateUtils.dateFormat) as DateType
 
 	return (
 		<>

@@ -68,6 +68,7 @@ export default defineConfig({
 				"@atlaskit/theme",
 				"@emotion/styled",
 				"@monaco-editor/react",
+				"react-hook-form",
 			],
 			output: {
 				globals: {

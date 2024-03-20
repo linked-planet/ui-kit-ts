@@ -1310,7 +1310,13 @@ import React, { useCallback, useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { CalendarBase, Calendar, DateType } from "@linked-planet/ui-kit-ts"
+import {
+	CalendarBase,
+	Calendar,
+	DateType,
+	Button,
+	ButtonGroup,
+} from "@linked-planet/ui-kit-ts"
 import { DateRange } from "react-day-picker"
 import AKCalendar from "@atlaskit/calendar"
 import {
@@ -1318,34 +1324,37 @@ import {
 	formatToDateType,
 } from "@linked-planet/ui-kit-ts/utils/DateUtils"
 import dayjs from "dayjs"
-
-//#region calendar2-example
-function CalendarExample() {
-	return <Calendar mode="single" />
-}
-//#endregion calendar2-example
+import { useForm } from "react-hook-form"
 
 //#region calendar2-single
 function CalendarSingle() {
 	const [selected, setSelected] = useState<DateType | undefined>(
 		formatToDateType(new Date()),
 	)
-	const [secondarySelected, setSecondarySelected] = useState<
-		DateType | undefined
-	>()
-
-	const selectedDate = selected ? dateFromString(selected) : undefined
-	const secondarySelectedDate = secondarySelected
-		? dateFromString(secondarySelected)
-		: undefined
 
 	const defaultMonth = 8
 	const defaultYear = 2022
+	const disabledDate1 = formatToDateType(
+		dayjs()
+			.month(defaultMonth - 1)
+			.year(defaultYear)
+			.add(4, "day"),
+	)
+	const disabledDate2 = formatToDateType(
+		dayjs()
+			.month(defaultMonth - 1)
+			.year(defaultYear)
+			.add(6, "day"),
+	)
+
+	const [secondarySelected, setSecondarySelected] = useState<
+		DateType | undefined
+	>(disabledDate1)
 
 	const minDate = dayjs()
 		.month(defaultMonth - 1)
 		.year(defaultYear)
-		.subtract(3, "days")
+		.subtract(5, "days")
 		.toDate()
 	const minDateDT = formatToDateType(minDate)
 
@@ -1361,10 +1370,23 @@ function CalendarSingle() {
 		.year(defaultYear)
 		.toDate()
 
+	const sundayMatcher = (date: Date) => date.getDay() === 0
+
+	const sundayMatcher2 = (date: DateType) => {
+		const dt = dateFromString(date)
+		return dt.getDay() === 0
+	}
+
+	const selectedDate = selected ? dateFromString(selected) : undefined
+	const secondarySelectedDate = secondarySelected
+		? dateFromString(secondarySelected)
+		: undefined
+
 	return (
 		<div className="flex gap-4">
 			<CalendarBase
 				mode="single"
+				testId="test_id"
 				selected={selectedDate}
 				secondarySelected={secondarySelectedDate}
 				onDayClick={(date) => {
@@ -1375,6 +1397,10 @@ function CalendarSingle() {
 				fromDate={minDate}
 				toDate={maxDate}
 				defaultMonth={defaultMonthDate}
+				invalid
+				disabledDates={sundayMatcher}
+				disabled
+				weekStartsOn={1}
 			/>
 			<Calendar
 				mode="single"
@@ -1388,8 +1414,11 @@ function CalendarSingle() {
 				maxDate={maxDateDT}
 				defaultMonth={defaultMonth}
 				defaultYear={defaultYear}
+				disabledDateFilter={sundayMatcher2}
+				disabledDates={[disabledDate1, disabledDate2]}
+				weekStartsOn={1}
 			/>
-			<AKCalendar
+			{/*<AKCalendar
 				selected={selected ? [selected] : []}
 				previouslySelected={
 					secondarySelected ? [secondarySelected] : []
@@ -1398,11 +1427,89 @@ function CalendarSingle() {
 				maxDate={maxDateDT}
 				defaultMonth={defaultMonth}
 				defaultYear={defaultYear}
-			/>
+			/>*/}
 		</div>
 	)
 }
 //#endregion calendar2-single
+
+//#region calendar2-single-form
+function CalendarSingleForm() {
+	const {
+		handleSubmit,
+		control,
+		reset,
+		formState: { isValid },
+	} = useForm<{ date: DateType }>({
+		defaultValues: {
+			date: "2023-12-31",
+		},
+		mode: "all",
+	})
+
+	console.log("IS VALID", isValid)
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={() => reset()}
+		>
+			<Calendar
+				mode="single"
+				name="date"
+				control={control}
+				invalid={!isValid}
+				defaultMonth={12}
+				defaultYear={2023}
+			/>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button type="reset">Reset</Button>
+				<Button appearance="primary" type="submit" disabled={!isValid}>
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion calendar2-single-form
+
+//#region calendar2-multiple-form
+function CalendarMultipleForm() {
+	const {
+		handleSubmit,
+		control,
+		reset,
+		formState: { isValid },
+	} = useForm<{ dates: DateType[] }>({
+		defaultValues: {
+			dates: ["2023-12-31", "2023-12-24", "2023-12-27"],
+		},
+		mode: "all",
+	})
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={() => reset()}
+		>
+			<Calendar
+				mode="multiple"
+				name="dates"
+				control={control}
+				invalid={!isValid}
+				defaultMonth={12}
+				defaultYear={2023}
+			/>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button type="reset">Reset</Button>
+				<Button appearance="primary" type="submit" disabled={!isValid}>
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion calendar2-multiple-form
 
 //#region calendar2-base
 function CalendarBaseExample() {
@@ -1433,8 +1540,8 @@ function CalendarBaseExample() {
 //#region calendar2-range
 function CalendarRange() {
 	const [selected, setSelected] = useState<{
-		from: DateType | undefined
-		to: DateType | undefined
+		from: DateType | undefined | null
+		to: DateType | undefined | null
 	}>({
 		from: formatToDateType(new Date()),
 		to: undefined,
@@ -1469,6 +1576,44 @@ function CalendarRange() {
 }
 //#endregion calendar2-range
 
+//#region calendar2-range-form
+function CalendarRangeForm() {
+	const {
+		handleSubmit,
+		control,
+		reset,
+		formState: { isValid },
+	} = useForm<{ range: { from: DateType; to: DateType } }>({
+		defaultValues: {
+			range: { from: "2023-12-24", to: "2023-12-31" },
+		},
+		mode: "all",
+	})
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={() => reset()}
+		>
+			<Calendar
+				mode="range"
+				name="range"
+				control={control}
+				invalid={!isValid}
+				defaultMonth={12}
+				defaultYear={2023}
+			/>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button type="reset">Reset</Button>
+				<Button appearance="primary" type="submit" disabled={!isValid}>
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion calendar2-range-form
+
 export default function Calendar2Showcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -1483,11 +1628,6 @@ export default function Calendar2Showcase(props: ShowcaseProps) {
 			description="Calendar, date and date range picker components."
 			examples={[
 				{
-					title: "Calendar",
-					example: <CalendarExample />,
-					sourceCodeExampleId: "calendar2-example",
-				},
-				{
 					title: "Calendar Single Day",
 					example: <CalendarSingle />,
 					sourceCodeExampleId: "calendar2-single",
@@ -1501,6 +1641,21 @@ export default function Calendar2Showcase(props: ShowcaseProps) {
 					title: "Base Calendar",
 					example: <CalendarBaseExample />,
 					sourceCodeExampleId: "calendar2-base",
+				},
+				{
+					title: "Calendar Single Form",
+					example: <CalendarSingleForm />,
+					sourceCodeExampleId: "calendar2-single-form",
+				},
+				{
+					title: "Calendar Multiple Form",
+					example: <CalendarMultipleForm />,
+					sourceCodeExampleId: "calendar2-multiple-form",
+				},
+				{
+					title: "Calendar Range Form",
+					example: <CalendarRangeForm />,
+					sourceCodeExampleId: "calendar2-range-form",
 				},
 			]}
 		/>
@@ -2043,16 +2198,20 @@ import {
 	DateType,
 	Input,
 	Label,
-	dateFormat,
+	DateUtils,
 } from "@linked-planet/ui-kit-ts"
 import dayjs from "dayjs"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 //#region date-range-picker
 function Example() {
-	const today = dayjs().format(dateFormat) as DateType
-	const todayPlus2 = dayjs().add(2, "day").format(dateFormat) as DateType
-	const todayPlus10 = dayjs().add(10, "day").format(dateFormat) as DateType
+	const today = dayjs().format(DateUtils.dateFormat) as DateType
+	const todayPlus2 = dayjs()
+		.add(2, "day")
+		.format(DateUtils.dateFormat) as DateType
+	const todayPlus10 = dayjs()
+		.add(10, "day")
+		.format(DateUtils.dateFormat) as DateType
 
 	const [startDate, setStartDate] = useState<DateType>()
 	const [endDate, setEndDate] = useState<DateType>()
@@ -2138,12 +2297,12 @@ function Example2() {
 		.set("year", 1911)
 		.set("month", 1) //month are 0-indexed in dayjs!
 		.set("date", 11)
-		.format(dateFormat) as DateType
+		.format(DateUtils.dateFormat) as DateType
 	const selectedEndDate = dayjs()
 		.set("year", 1911)
 		.set("month", 1)
 		.set("date", 16)
-		.format(dateFormat) as DateType
+		.format(DateUtils.dateFormat) as DateType
 
 	return (
 		<>

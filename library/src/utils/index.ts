@@ -10,4 +10,8 @@ export {
 	getPortal,
 }
 
-export * from "./DateUtils"
+import type { TimeType, DateTimeType, DateType } from "./DateUtils"
+export type { TimeType, DateTimeType, DateType }
+import { isTimeType, isDateTimeType, isDateType } from "./DateUtils"
+export { isTimeType, isDateTimeType, isDateType }
+export * as DateUtils from "./DateUtils"
