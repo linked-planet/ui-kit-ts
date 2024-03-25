@@ -81,7 +81,7 @@ const CardHeaderPrefix = ({
 	testId?: string
 }) => {
 	const _className = twMerge(
-		"text-text-subtlest pr-2 mr-4 text-sm border-border border-r w-16 flex-none font-semibold grid items-center justify-start",
+		"text-text-subtlest pr-2 mr-4 text-xs border-border border-r w-28 flex-none font-semibold grid items-center justify-start",
 		className,
 	)
 	return (
