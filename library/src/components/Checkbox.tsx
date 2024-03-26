@@ -154,7 +154,9 @@ const CheckboxI = (
 					)}
 				>
 					<div
-						className={"absolute flex items-center justify-center"}
+						className={
+							"pointer-events-none absolute flex items-center justify-center"
+						}
 					>
 						{!indeterminate ? (
 							<CheckboxIcon label="" />
@@ -170,7 +172,9 @@ const CheckboxI = (
 						disabled={disabled}
 						checked={!!checked}
 						required={required}
-						className={"mr-2 opacity-0"}
+						className={
+							"absolute box-border h-[20px] w-[20px] appearance-none"
+						}
 						onChange={(e) => {
 							if (checkedProp == undefined) {
 								setChecked(e.target.checked)
