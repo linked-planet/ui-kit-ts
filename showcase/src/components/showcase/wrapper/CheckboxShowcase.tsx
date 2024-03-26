@@ -49,9 +49,7 @@ function FormExample() {
 //#endregion
 
 function CheckboxShowcase(props: ShowcaseProps) {
-	const [isCheckboxActive, setIsCheckboxActive] = useState<
-		boolean | "indeterminate"
-	>(false)
+	const [isCheckboxActive, setIsCheckboxActive] = useState(false)
 
 	const akExample = (
 		<div className="flex gap-4">

@@ -155,14 +155,13 @@ function DataTableExample() {
 					<Checkbox
 						checked={
 							headerprops.table.getIsAllPageRowsSelected() ||
-							(headerprops.table.getIsSomePageRowsSelected() &&
-								"indeterminate")
+							headerprops.table.getIsSomePageRowsSelected()
 						}
 						onCheckedChange={(value) =>
 							headerprops.table.toggleAllPageRowsSelected(!!value)
 						}
 						className="pb-1.5 pl-2"
-						indeterminate
+						indeterminate={headerprops.table.getIsSomePageRowsSelected()}
 					/>
 				),
 				cell: (cellprops) => (

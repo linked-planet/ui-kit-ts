@@ -13,12 +13,10 @@ import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
 import CheckboxIndeterminateIcon from "@atlaskit/icon/glyph/checkbox-indeterminate"
 import { SlidingErrorMessage } from "./inputs/SlidingErrorMessage"
 
-const indeterminateState = "indeterminate" as const
-
 type AdditionalCheckboxPropsWithIndeterminate = {
-	checked?: boolean | typeof indeterminateState
-	defaultChecked?: boolean | typeof indeterminateState
-	onCheckedChange?: (checked: typeof indeterminateState | boolean) => void
+	checked?: boolean
+	defaultChecked?: boolean
+	onCheckedChange?: (checked: boolean) => void
 	indeterminate: true
 }
 
@@ -48,7 +46,8 @@ type CheckboxProps = Omit<
 const checkBoxStyles =
 	"border-border focus:border-selected-border hover:border-selected-bold-hovered box-border flex flex-none h-[14px] w-[14px]  items-center justify-center mr-2 ease-linear transition duration-150 cursor-default rounded-[3px] border-[2.5px] outline-none outline-0 outline-offset-0 focus:border-2"
 
-const disabledStyles = "cursor-not-allowed border-disabled" as const
+const disabledStyles =
+	"cursor-not-allowed border-disabled hover:border-transparent" as const
 
 const checkBoxCheckedStyles =
 	"text-selected-bold hover:text-selected-bold-hovered border-selected-border opacity-100" as const
@@ -70,7 +69,7 @@ const CheckboxI = (
 		required,
 		checked: checkedProp,
 		defaultChecked = false,
-		indeterminate: indeterminateProp,
+		indeterminate,
 		invalid,
 		errorMessage,
 		onChange,
@@ -92,22 +91,22 @@ const CheckboxI = (
 
 	// update from outside
 	if (
-		checkedProp !== undefined &&
+		checkedProp != undefined &&
 		checked !== checkedProp &&
 		inputRef.current
 	) {
-		inputRef.current.checked = !!checkedProp
+		inputRef.current.checked = checkedProp
+		setChecked(checkedProp)
 	}
 
-	const indeterminate = checked === indeterminateState
-
-	// this needs to be in a useEffect to check if the input is checked after react rendered the component, else it will still have the old checked value
-	// this is needed because the input is not controlled by react
+	// this needs to be in a useEffect to check if the input is has the same state after react rendered the component, else the state will still have the old checked value
+	// while something else (i.g. the form handling) has changed the checked value
+	// this is needed because the input itself is not controlled by react
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		const checkedRef = inputRef.current?.checked
-		if (checkedRef != checked) {
-			setChecked(checkedRef ?? false)
+		if (checkedRef !== undefined && checkedRef != checked) {
+			setChecked(checkedRef)
 		}
 	})
 
@@ -173,42 +172,11 @@ const CheckboxI = (
 						required={required}
 						className={"mr-2 opacity-0"}
 						onChange={(e) => {
-							const val = e.target.checked
-							if (indeterminateProp && val) {
-								onCheckedChange?.(indeterminateState)
-								setChecked(indeterminateState)
-							} else {
-								onCheckedChange?.(val)
-								setChecked(val)
+							if (checkedProp == undefined) {
+								setChecked(e.target.checked)
 							}
+							onCheckedChange?.(e.target.checked)
 							onChange?.(e)
-							return
-
-							/*if (!checked) {
-								// unchecked -> checked
-								onCheckedChange?.(true)
-								onChange?.(e)
-								setChecked(true)
-								return
-							}
-
-							// checked -> indeterminate
-							if (
-								checked &&
-								indeterminateProp === true &&
-								checked !== indeterminateState
-							) {
-								onCheckedChange?.(indeterminateState)
-								//onChange?.(e)
-								setChecked(indeterminateState)
-								return
-							} else {
-								// checked -> unchecked
-								onCheckedChange?.(false)
-								onChange?.(e)
-								setChecked(false)
-								return
-							}*/
 						}}
 						{...props}
 					/>
