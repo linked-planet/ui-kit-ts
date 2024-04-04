@@ -139,8 +139,6 @@ function CalendarSingleForm() {
 		mode: "all",
 	})
 
-	console.log("IS VALID", isValid)
-
 	return (
 		<form
 			onSubmit={handleSubmit((data) => console.log(data))}

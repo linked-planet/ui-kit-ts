@@ -79,7 +79,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 
 	// remove any selection in case fundamental time table properties change
 	useEffect(() => {
-		console.log(
+		console.info(
 			"LPTimeTable - clearing selection because the slotsArray, time of the day or weekend interactions changed",
 		)
 		setSelectedTimeSlotsG(undefined)

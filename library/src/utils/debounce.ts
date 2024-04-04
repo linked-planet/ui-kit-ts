@@ -20,7 +20,7 @@ export function debounceHelper() {
 			throw new Error("delay must be positive and above 0")
 		}
 
-		timer = setTimeout(() => {
+		timer = window.setTimeout(() => {
 			cb(...args)
 			timer = null
 		}, delay)

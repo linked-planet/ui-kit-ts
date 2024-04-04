@@ -39,7 +39,7 @@ export function itemsOutsideOfDayRangeORSameStartAndEnd(
 			return false
 		}
 		if (slotsArray.length === 0) {
-			console.log(
+			console.info(
 				"timeTableUtils - itemsOutsideOfDayRange - no slotsArray",
 			)
 			return false
@@ -287,7 +287,7 @@ function calculateTimeSlotPropertiesForHoursView(
 	)
 
 	if (!slotsArray || slotsArray.length === 0) {
-		console.log(
+		console.warn(
 			"timeTableUtils - calculateTimeSlotPropertiesForHoursView - no slotsArray",
 		)
 		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }

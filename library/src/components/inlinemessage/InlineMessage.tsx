@@ -54,7 +54,7 @@ export default function InlineMessage({
 			currentTimeOut.current = undefined
 		}
 		if (message.timeOut && message.text) {
-			currentTimeOut.current = setTimeout(() => {
+			currentTimeOut.current = window.setTimeout(() => {
 				setOpen(false)
 				currentTimeOut.current = undefined
 			}, message.timeOut * 1000)
@@ -75,7 +75,7 @@ export default function InlineMessage({
 				if (!message.text) return
 				if (message.timeOut) {
 					clearTimeout(currentTimeOut.current)
-					currentTimeOut.current = setTimeout(() => {
+					currentTimeOut.current = window.setTimeout(() => {
 						setOpen(false)
 						currentTimeOut.current = undefined
 					}, message.timeOut * 1000)

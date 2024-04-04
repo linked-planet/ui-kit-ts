@@ -475,7 +475,7 @@ function moveNowBar(
 	setMessage: (message: TimeTableMessage) => void,
 ) {
 	if (!tableHeaderRef.current || !tableBodyRef.current) {
-		console.log("LPTimeTable - time table header or body ref not yet set")
+		console.info("LPTimeTable - time table header or body ref not yet set")
 		return
 	}
 
@@ -491,7 +491,7 @@ function moveNowBar(
 			appearance: "danger",
 			messageKey: "timetable.noHeaderTimeSlotRow",
 		})
-		console.log("LPTimeTable - no header time slot row found")
+		console.warn("LPTimeTable - no header time slot row found")
 		return
 	}
 	const headerTimeSlotCells = headerTimeslotRow.children
@@ -516,7 +516,7 @@ function moveNowBar(
 	}
 
 	if (!slotsArray || slotsArray.length === 0) {
-		console.log("LPTimeTable - no time slots found")
+		console.info("LPTimeTable - no time slots found")
 		return
 	}
 
@@ -548,7 +548,7 @@ function moveNowBar(
 		| HTMLDivElement
 		| undefined
 	if (!slotBar) {
-		console.log(
+		console.warn(
 			"LPTimeTable - unable to find time slot column for the now bar: ",
 			startSlot,
 		)

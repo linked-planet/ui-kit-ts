@@ -213,9 +213,9 @@ export function CalendarBase(
 				Day,
 			}}
 			modifiersClassNames={{
-				hidden: "bg-selected-bold-hovered hover:bg-selected-bold-hovered active:bg-selected-bold-hovered",
+				hidden: "bg-selected-bold-hovered hover:bg-selected-bold-hovered active:bg-selected-bold-hovered text-text-inverse",
 			}}
-			hidden={props.secondarySelected}
+			hidden={props.secondarySelected} // hidden is used to render the secondary selected in combination with the Day component
 			disabled={disabledDates}
 			onDayClick={!disabled ? onDayClick : undefined}
 			onNextClick={!disabled ? onNextClick : undefined}

@@ -28,7 +28,7 @@ function debounceHelper(callback: () => void) {
 	if (debounceTimeoutCurrent) {
 		clearTimeout(debounceTimeoutCurrent)
 	}
-	debounceTimeoutCurrent = setTimeout(() => {
+	debounceTimeoutCurrent = window.setTimeout(() => {
 		callback()
 	}, debounceTimeout)
 }

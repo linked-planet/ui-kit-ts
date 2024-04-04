@@ -90,10 +90,6 @@ export default function TimeLineTableSimplified<
 		selectedTimeSlotItem,
 	])
 
-	useEffect(() => {
-		console.log("LPTimeTable - entries changed, rendering rows")
-	}, [entries])
-
 	return <>{tableRows}</>
 }
 
@@ -759,7 +755,7 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 		item: I
 	}[][] = []
 	if (!slotsArray || slotsArray.length === 0) {
-		console.log("LPTimeTable - no slots array, returning empty item rows")
+		console.info("LPTimeTable - no slots array, returning empty item rows")
 		return itemRows
 	}
 	groupItems.forEach((item) => {
@@ -907,7 +903,15 @@ function getLeftAndWidth(
 	}
 	let left = dstartMin / timeSlotMinutes
 	if (left < 0) {
-		console.log("SHOULD NOT BE")
+		console.error(
+			"LPTimeTable - item with negative left found:",
+			left,
+			item,
+			startSlot,
+			endSlot,
+			slotsArray,
+			timeSlotMinutes,
+		)
 		// if the start is before the time slot, we need to set the left to 0
 		left = 0
 	}
@@ -939,7 +943,7 @@ function getLeftAndWidth(
 
 	if (width < 0) {
 		// this should not happen, but if it does, we need to log it to find the error
-		console.log(
+		console.error(
 			"LPTimeTable - item with negative width found:",
 			width,
 			item,

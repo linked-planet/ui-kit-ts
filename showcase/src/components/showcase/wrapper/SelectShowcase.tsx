@@ -180,10 +180,10 @@ function SelectShowcase(props: ShowcaseProps) {
 				isClearable
 				placeholder="Select an option"
 				onChange={(value) => {
-					console.log("VALUE", value)
+					console.log("on change", value)
 				}}
 				onCreateOption={(value) => {
-					console.log("CREATE", value)
+					console.log("on create", value)
 				}}
 				options={[
 					{ label: "First option", value: { test: "first" } },
@@ -199,7 +199,7 @@ function SelectShowcase(props: ShowcaseProps) {
 			<Select<{ test: string }, true>
 				placeholder="Select an option"
 				onChange={(value) => {
-					console.log("VALUE", value)
+					console.log("value", value)
 				}}
 				isMulti
 				options={[

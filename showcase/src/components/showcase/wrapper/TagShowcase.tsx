@@ -12,11 +12,11 @@ function TagShowcase(props: ShowcaseProps) {
 			<AKTagGroup alignment="end">
 				<AKTag
 					onBeforeRemoveAction={() => {
-						console.log("ON BEFORE REMOVE")
+						console.log("on before remove")
 						return true
 					}}
 					onAfterRemoveAction={(str) =>
-						console.log("ON AFTER REMOVE", str)
+						console.log("on after remove", str)
 					}
 					text="Removable Tag"
 				/>
@@ -44,11 +44,11 @@ function TagShowcase(props: ShowcaseProps) {
 		<div className="flex w-full items-center">
 			<Tag
 				onBeforeRemoveAction={() => {
-					console.log("ON BEFORE REMOVE")
+					console.log("on before remove")
 					return false
 				}}
 				onAfterRemoveAction={(str) =>
-					console.log("ON AFTER REMOVE", str)
+					console.log("on after remove", str)
 				}
 			>
 				Removable Tag
@@ -56,11 +56,11 @@ function TagShowcase(props: ShowcaseProps) {
 			<TagGroup>
 				<Tag
 					onBeforeRemoveAction={() => {
-						console.log("ON BEFORE REMOVE")
+						console.log("on before remove")
 						return false
 					}}
 					onAfterRemoveAction={(str) =>
-						console.log("ON AFTER REMOVE", str)
+						console.log("on after remove", str)
 					}
 				>
 					Removable Tag

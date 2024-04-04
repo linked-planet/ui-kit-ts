@@ -202,10 +202,10 @@ function FiltersShowcase(props: ShowcaseProps) {
 		<FilterDropdown
 			filter={filter}
 			onAttributeClick={(cat, attr) => {
-				console.log("CLICK", cat, attr)
+				console.log("on attribute click", cat, attr)
 			}}
 			onSelectedChanged={(cat, attrs) => {
-				console.log("SET", attrs)
+				console.log("on selected changed", attrs)
 				setSelectedValues(attrs)
 			}}
 		/>

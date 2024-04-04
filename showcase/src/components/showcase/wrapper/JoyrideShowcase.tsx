@@ -9,7 +9,6 @@ import { token } from "@atlaskit/tokens"
 function JoyrideShowcase(props: ShowcaseProps) {
 	//#region joyride
 	// fix missing global
-	// @ts-expect-error global is not defined
 	if (!window.global) window.global = window
 
 	const [isJoyrideActive, setIsJoyrideActive] = useState(false)

@@ -31,7 +31,7 @@ function FormExample() {
 
 	return (
 		<form
-			onSubmit={handleSubmit((data) => console.log("DATA:", data))}
+			onSubmit={handleSubmit((data) => console.log("form data:", data))}
 			onReset={(e) => {
 				e.preventDefault()
 				reset()
@@ -69,7 +69,7 @@ function ControlledFormExample() {
 
 	return (
 		<form
-			onSubmit={handleSubmit((data) => console.log("DATA:", data))}
+			onSubmit={handleSubmit((data) => console.log("form data:", data))}
 			onReset={(e) => {
 				e.preventDefault()
 				reset()
