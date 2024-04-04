@@ -4,6 +4,12 @@ import timezone from "dayjs/plugin/timezone"
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
+const unparseableDateError = "dateFromString - unparseable date"
+const isOfDateButMayNotParseError =
+	"dateFromString - date is a of DateType but mayParseDateOnly is false"
+const isDateTimeError =
+	"dateFromString - date is a of DateTimeType but mayParseDateOnly is false"
+
 export function formatToDateType(date: Date | string | Dayjs): DateType {
 	if (typeof date === "string" && isDateType(date)) {
 		return date
@@ -70,38 +76,34 @@ export function formatDate(
 	return formatDateTime(date, timeZone, locale, true)
 }
 
-export function dateFromString(dateString: string, mayParseDateOnly = false) {
-	let dateStr = dateString
+export function dateFromString(dateStr: string, mayParseDateOnly = false) {
 	// this is in case the time zone is attached to the date time string: [Europe/Berlin], but we simply ignore it for now
-	if (dateString.includes("[")) {
-		const dateStrSplit = dateString.split("[")
+	if (dateStr.includes("[")) {
+		const dateStrSplit = dateStr.split("[")
 		dateStr = dateStrSplit[0]
 		/*timeZone = dateStrSplit[1]
 			? dateStrSplit[1].substring(0, dateStrSplit[1].length - 1)
 			: undefined*/
 	}
 
-	// try to parse as ISO date time string
-	let date = new Date(dateStr)
-	if (!isNaN(date.getTime())) {
-		return date
+	if (isDateType(dateStr)) {
+		if (!mayParseDateOnly) {
+			throw new Error(`${isOfDateButMayNotParseError}: ${dateStr}`)
+		}
+		return dayjs(dateStr, dateFormat).toDate()
 	}
 
 	if (isDateTimeType(dateStr)) {
-		throw new Error(
-			"Correct the time type that it is either an ISO format string, or only a date",
-		)
-	} else if (mayParseDateOnly && isDateType(dateStr)) {
-		date = dayjs(dateStr, dateFormat).toDate()
+		throw new Error(`${isDateTimeError}: ${dateStr}`)
 	}
 
+	// try to parse as ISO date time string
+	const date = new Date(dateStr)
 	if (!isNaN(date.getTime())) {
 		return date
 	}
 
-	throw new Error(
-		`dateFromString - could not parse date string: ${dateString}`,
-	)
+	throw new Error(`${unparseableDateError}: ${dateStr}`)
 }
 
 export type TimeType = `${number}:${number}`
