@@ -13,7 +13,7 @@ import { DateRange } from "react-day-picker"
 import AKCalendar from "@atlaskit/calendar"
 import {
 	dateFromString,
-	formatToDateType,
+	toDateType,
 } from "@linked-planet/ui-kit-ts/utils/DateUtils"
 import dayjs from "dayjs"
 import { useForm } from "react-hook-form"
@@ -21,18 +21,18 @@ import { useForm } from "react-hook-form"
 //#region calendar2-single
 function CalendarSingle() {
 	const [selected, setSelected] = useState<DateType | undefined>(
-		formatToDateType(new Date()),
+		toDateType(new Date()),
 	)
 
 	const defaultMonth = 8
 	const defaultYear = 2022
-	const disabledDate1 = formatToDateType(
+	const disabledDate1 = toDateType(
 		dayjs()
 			.month(defaultMonth - 1)
 			.year(defaultYear)
 			.add(4, "day"),
 	)
-	const disabledDate2 = formatToDateType(
+	const disabledDate2 = toDateType(
 		dayjs()
 			.month(defaultMonth - 1)
 			.year(defaultYear)
@@ -48,14 +48,14 @@ function CalendarSingle() {
 		.year(defaultYear)
 		.subtract(5, "days")
 		.toDate()
-	const minDateDT = formatToDateType(minDate)
+	const minDateDT = toDateType(minDate)
 
 	const maxDate = dayjs()
 		.month(defaultMonth - 1)
 		.year(defaultYear)
 		.add(38, "days")
 		.toDate()
-	const maxDateDT = formatToDateType(maxDate)
+	const maxDateDT = toDateType(maxDate)
 
 	const defaultMonthDate = dayjs()
 		.month(defaultMonth - 1)
@@ -82,7 +82,7 @@ function CalendarSingle() {
 				selected={selectedDate}
 				secondarySelected={secondarySelectedDate}
 				onDayClick={(date) => {
-					const dt = formatToDateType(date)
+					const dt = toDateType(date)
 					setSecondarySelected(selected)
 					setSelected(dt)
 				}}
@@ -233,7 +233,7 @@ function CalendarRange() {
 		from: DateType | undefined | null
 		to: DateType | undefined | null
 	}>({
-		from: formatToDateType(new Date()),
+		from: toDateType(new Date()),
 		to: undefined,
 	})
 
@@ -254,10 +254,8 @@ function CalendarRange() {
 				}}
 				onSelect={(range: DateRange | undefined) => {
 					setSelected({
-						from: range?.from
-							? formatToDateType(range.from)
-							: undefined,
-						to: range?.to ? formatToDateType(range.to) : undefined,
+						from: range?.from ? toDateType(range.from) : undefined,
+						to: range?.to ? toDateType(range.to) : undefined,
 					})
 				}}
 			/>

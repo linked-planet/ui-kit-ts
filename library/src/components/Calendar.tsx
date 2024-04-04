@@ -17,11 +17,7 @@ import {
 
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
 import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
-import {
-	type DateType,
-	dateFromString,
-	formatToDateType,
-} from "../utils/DateUtils"
+import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
 import dayjs, { type Dayjs } from "dayjs"
 import { Control, Controller, FieldPath, FieldValues } from "react-hook-form"
 
@@ -414,7 +410,7 @@ export function Calendar<FormData extends FieldValues>(
 				(disabledDates && disabledDates.length > 0) ||
 				disabledDateFilter
 			) {
-				const dateType = formatToDateType(date)
+				const dateType = toDateType(date)
 				if (disabledDates?.includes(dateType)) {
 					return true
 				}
@@ -587,7 +583,7 @@ function CalendarSingle({
 
 	const _onDayClick = useCallback(
 		(_date: Date, activeModifiers: ActiveModifiers) => {
-			const date = formatToDateType(_date)
+			const date = toDateType(_date)
 			onDayClicked?.(date, activeModifiers)
 		},
 		[onDayClicked],
@@ -600,7 +596,7 @@ function CalendarSingle({
 				onSelectionChanged?.(undefined)
 				return
 			}
-			const val = formatToDateType(d)
+			const val = toDateType(d)
 			onSelectionChanged?.(val)
 			setSelectedDate(val)
 		},
@@ -721,7 +717,7 @@ function CalendarRange({
 
 	const _onDayClick = useCallback(
 		(_date: Date, activeModifiers: ActiveModifiers) => {
-			const date = formatToDateType(_date)
+			const date = toDateType(_date)
 			/*setSelectedDates((selectedDate) => {
 				if (selectedDate.from && selectedDate.to) {
 					const updated = { from: date, to: undefined }
@@ -765,8 +761,8 @@ function CalendarRange({
 				onSelectionChanged?.({ from: undefined, to: undefined })
 				return
 			}
-			const from = dr.from ? formatToDateType(dr.from) : undefined
-			const to = dr.to ? formatToDateType(dr.to) : undefined
+			const from = dr.from ? toDateType(dr.from) : undefined
+			const to = dr.to ? toDateType(dr.to) : undefined
 			setSelectedDates({ from, to })
 			onSelectionChanged?.({ from, to })
 		},
@@ -904,7 +900,7 @@ function CalendarMulti({
 
 	const _onDayClick = useCallback(
 		(_date: Date, activeModifiers: ActiveModifiers) => {
-			const date = formatToDateType(_date)
+			const date = toDateType(_date)
 			onDayClicked?.(date, activeModifiers)
 		},
 		[onDayClicked],
@@ -928,7 +924,7 @@ function CalendarMulti({
 				onSelectionChanged?.([])
 				return
 			}
-			const val = dts.map((d) => formatToDateType(d))
+			const val = dts.map((d) => toDateType(d))
 			onSelectionChanged?.(val)
 			setSelectedDates(val)
 		},
