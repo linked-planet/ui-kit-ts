@@ -15,19 +15,6 @@ const cannotConvertTimeTypeToDateTypeError =
 const cannotConvertDateTypeToTimeTypeError =
 	"toTimeType - cannot convert DateType to TimeType"
 
-export function formatToDateType(date: Date | string | Dayjs): DateType {
-	if (typeof date === "string" && isDateType(date)) {
-		return date
-	}
-	if (typeof date === "string" && isDateTimeType(date)) {
-		return date.split(" ")[0] as DateType
-	}
-	if (isDayjs(date)) {
-		return date.format(dateFormat) as DateType
-	}
-	return dayjs(date).format(dateFormat) as DateType
-}
-
 export function formatDateTime(
 	dateTime: string | Date | Dayjs,
 	timeZone?: string, // i.e. "Europe/Berlin"... if not defined the local time zone is used
