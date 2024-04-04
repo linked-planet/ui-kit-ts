@@ -1447,8 +1447,6 @@ function CalendarSingleForm() {
 		mode: "all",
 	})
 
-	console.log("IS VALID", isValid)
-
 	return (
 		<form
 			onSubmit={handleSubmit((data) => console.log(data))}
@@ -2184,7 +2182,7 @@ function FormExample() {
 
 	return (
 		<form
-			onSubmit={handleSubmit((data) => console.log("DATA:", data))}
+			onSubmit={handleSubmit((data) => console.log("form data:", data))}
 			onReset={(e) => {
 				e.preventDefault()
 				reset()
@@ -2222,7 +2220,7 @@ function ControlledFormExample() {
 
 	return (
 		<form
-			onSubmit={handleSubmit((data) => console.log("DATA:", data))}
+			onSubmit={handleSubmit((data) => console.log("form data:", data))}
 			onReset={(e) => {
 				e.preventDefault()
 				reset()
@@ -3107,10 +3105,10 @@ function FiltersShowcase(props: ShowcaseProps) {
 		<FilterDropdown
 			filter={filter}
 			onAttributeClick={(cat, attr) => {
-				console.log("CLICK", cat, attr)
+				console.log("on attribute click", cat, attr)
 			}}
 			onSelectedChanged={(cat, attrs) => {
-				console.log("SET", attrs)
+				console.log("on selected changed", attrs)
 				setSelectedValues(attrs)
 			}}
 		/>
@@ -3863,7 +3861,6 @@ import { token } from "@atlaskit/tokens"
 function JoyrideShowcase(props: ShowcaseProps) {
 	//#region joyride
 	// fix missing global
-	// @ts-expect-error global is not defined
 	if (!window.global) window.global = window
 
 	const [isJoyrideActive, setIsJoyrideActive] = useState(false)
@@ -3999,7 +3996,7 @@ function debounceHelper(callback: () => void) {
 	if (debounceTimeoutCurrent) {
 		clearTimeout(debounceTimeoutCurrent)
 	}
-	debounceTimeoutCurrent = setTimeout(() => {
+	debounceTimeoutCurrent = window.setTimeout(() => {
 		callback()
 	}, debounceTimeout)
 }
@@ -6017,10 +6014,10 @@ function SelectShowcase(props: ShowcaseProps) {
 				isClearable
 				placeholder="Select an option"
 				onChange={(value) => {
-					console.log("VALUE", value)
+					console.log("on change", value)
 				}}
 				onCreateOption={(value) => {
-					console.log("CREATE", value)
+					console.log("on create", value)
 				}}
 				options={[
 					{ label: "First option", value: { test: "first" } },
@@ -6036,7 +6033,7 @@ function SelectShowcase(props: ShowcaseProps) {
 			<Select<{ test: string }, true>
 				placeholder="Select an option"
 				onChange={(value) => {
-					console.log("VALUE", value)
+					console.log("value", value)
 				}}
 				isMulti
 				options={[
@@ -6571,11 +6568,11 @@ function TagShowcase(props: ShowcaseProps) {
 			<AKTagGroup alignment="end">
 				<AKTag
 					onBeforeRemoveAction={() => {
-						console.log("ON BEFORE REMOVE")
+						console.log("on before remove")
 						return true
 					}}
 					onAfterRemoveAction={(str) =>
-						console.log("ON AFTER REMOVE", str)
+						console.log("on after remove", str)
 					}
 					text="Removable Tag"
 				/>
@@ -6603,11 +6600,11 @@ function TagShowcase(props: ShowcaseProps) {
 		<div className="flex w-full items-center">
 			<Tag
 				onBeforeRemoveAction={() => {
-					console.log("ON BEFORE REMOVE")
+					console.log("on before remove")
 					return false
 				}}
 				onAfterRemoveAction={(str) =>
-					console.log("ON AFTER REMOVE", str)
+					console.log("on after remove", str)
 				}
 			>
 				Removable Tag
@@ -6615,11 +6612,11 @@ function TagShowcase(props: ShowcaseProps) {
 			<TagGroup>
 				<Tag
 					onBeforeRemoveAction={() => {
-						console.log("ON BEFORE REMOVE")
+						console.log("on before remove")
 						return false
 					}}
 					onAfterRemoveAction={(str) =>
-						console.log("ON AFTER REMOVE", str)
+						console.log("on after remove", str)
 					}
 				>
 					Removable Tag

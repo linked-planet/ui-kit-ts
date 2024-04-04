@@ -16,7 +16,7 @@
 	],
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build:lib": "tsc --noEmit &6 vitest run && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist",
+		"build:lib": "tsc --noEmit && vitest run && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist",
 		"build:lib:debug": "tsc --noEmit && vite build -c vite.config.lib.ts --mode development --minify false && npm run messages:compile && cp -r ./twThemes dist",
 		"build:sc": "node ./showcase/copySources.js && tsc --noEmit && vite build -c vite.config.showcase.ts && npm run messages:compile && node ./showcase/copyIndexTo404.js",
 		"preview": "vitest run && npm run build:sc && vite preview -c vite.config.showcase.ts",
