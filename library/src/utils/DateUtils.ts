@@ -10,6 +10,11 @@ const isOfDateButMayNotParseError =
 const isDateTimeError =
 	"dateFromString - date is a of DateTimeType but mayParseDateOnly is false"
 
+const cannotConvertTimeTypeToDateTypeError =
+	"toDateType - cannot convert TimeType to DateType"
+const cannotConvertDateTypeToTimeTypeError =
+	"toTimeType - cannot convert DateType to TimeType"
+
 export function formatToDateType(date: Date | string | Dayjs): DateType {
 	if (typeof date === "string" && isDateType(date)) {
 		return date
@@ -115,6 +120,24 @@ export function isTimeType(tt: string | undefined | null): tt is TimeType {
 	return timeRegex.test(tt)
 }
 
+export function toTimeType(date: Date | string | Dayjs) {
+	if (typeof date === "string") {
+		if (isTimeType(date)) {
+			return date
+		}
+		if (isDateTimeType(date)) {
+			return date.split(" ")[1] as TimeType
+		}
+		if (isDateType(date)) {
+			throw new Error(`${cannotConvertDateTypeToTimeTypeError}: ${date}`)
+		}
+	}
+	if (isDayjs(date)) {
+		return date.format(timeFormat) as TimeType
+	}
+	return dayjs(date).format(timeFormat) as TimeType
+}
+
 export type DateType = `${number}-${number}-${number}`
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/ // YYYY-MM-DD
 
@@ -126,6 +149,24 @@ export function isDateType(dt: string | undefined | null): dt is DateType {
 		return false
 	}
 	return dateRegex.test(dt)
+}
+
+export function toDateType(date: Date | string | Dayjs) {
+	if (typeof date === "string") {
+		if (isDateType(date)) {
+			return date
+		}
+		if (isDateTimeType(date)) {
+			return date.split(" ")[0] as DateType
+		}
+		if (isTimeType(date)) {
+			throw new Error(`${cannotConvertTimeTypeToDateTypeError}: ${date}`)
+		}
+	}
+	if (isDayjs(date)) {
+		return date.format(dateFormat) as DateType
+	}
+	return dayjs(date).format(dateFormat) as DateType
 }
 
 export type DateTimeType = `${DateType} ${TimeType}`
