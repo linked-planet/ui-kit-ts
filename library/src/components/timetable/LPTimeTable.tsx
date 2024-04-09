@@ -20,7 +20,7 @@ import {
 	TranslatedTimeTableMessages,
 	useTimeTableMessage,
 } from "./TimeTableMessageContext"
-import { headerDateFormat, LPTimeTableHeader } from "./LPTimeTableHeader"
+import { headerText, LPTimeTableHeader } from "./LPTimeTableHeader"
 import TimeLineTableSimplified from "./TimeLineTableSimplified"
 import { TimeTableConfigProvider } from "./TimeTableConfigContext"
 import { SelectedTimeSlotsProvider } from "./SelectedTimeSlotsContext"
@@ -218,6 +218,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		return { slotsArray, timeFrameDay, timeSlotMinutes }
 	}, [viewType, startDate, endDate, timeStepsMinutes, setMessage])
 	//#endregion
+
+	console.log("LPTimeTable - timeFrameDay", timeFrameDay, slotsArray)
 
 	//#region Message if items of entries are outside of the time frame of the day
 	useEffect(() => {
@@ -616,7 +618,12 @@ function moveNowBar(
 	for (const headerDateCell of headerDateCells) {
 		headerDateCell.classList.remove("text-text-subtle")
 		const textContent = headerDateCell.textContent
-		const nowTextContent = now.format(headerDateFormat)
+		const nowTextContent = headerText(
+			currentTimeSlot,
+			currentTimeSlot.add(timeSlotMinutes, "minutes"),
+			viewType,
+		)
+
 		if (textContent === nowTextContent) {
 			headerDateCell.classList.add("text-text-subtle")
 		}

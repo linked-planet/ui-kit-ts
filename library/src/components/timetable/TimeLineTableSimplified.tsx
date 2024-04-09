@@ -2,7 +2,6 @@ import React, {
 	Fragment,
 	MouseEvent,
 	useCallback,
-	useEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -862,30 +861,50 @@ function getLeftAndWidth(
 	}
 
 	let itemModEnd = item.endDate
-	let timeFrameEndEnd = slotsArray[slotsArray.length - 1]
-		.startOf("day")
-		.add(timeFrameDay.endHour, "hour")
-		.add(timeFrameDay.endMinute, "minutes")
-	if (viewType !== "hours") {
-		timeFrameEndEnd = timeFrameEndEnd.add(1, viewType).subtract(1, "day")
-	}
-	if (itemModEnd.isAfter(timeFrameEndEnd)) {
-		itemModEnd = timeFrameEndEnd
-	} else if (item.endDate.hour() === 0 && item.endDate.minute() === 0) {
-		itemModEnd = itemModEnd.subtract(1, "minute")
-		itemModEnd = itemModEnd
+	if (item.endDate.isBefore(item.startDate)) {
+		console.error(
+			"LPTimeTable - item with end date before start date found:",
+			item,
+			itemModStart,
+			itemModEnd,
+		)
+		itemModEnd = itemModStart
+	} else if (item.endDate.isSame(item.startDate)) {
+		console.error(
+			"LPTimeTable - item with end date same as start date found:",
+			item,
+			itemModStart,
+			itemModEnd,
+		)
+		itemModEnd = itemModStart
+	} else {
+		let timeFrameEndEnd = slotsArray[slotsArray.length - 1]
 			.startOf("day")
 			.add(timeFrameDay.endHour, "hour")
 			.add(timeFrameDay.endMinute, "minutes")
-	} else if (
-		item.endDate.hour() > timeFrameDay.endHour ||
-		(item.endDate.hour() === timeFrameDay.endHour &&
-			item.endDate.minute() > timeFrameDay.endMinute)
-	) {
-		itemModEnd = itemModEnd
-			.startOf("day")
-			.add(timeFrameDay.endHour, "hour")
-			.add(timeFrameDay.endMinute, "minutes")
+		if (viewType !== "hours") {
+			timeFrameEndEnd = timeFrameEndEnd
+				.add(1, viewType)
+				.subtract(1, "day")
+		}
+		if (itemModEnd.isAfter(timeFrameEndEnd)) {
+			itemModEnd = timeFrameEndEnd
+		} else if (item.endDate.hour() === 0 && item.endDate.minute() === 0) {
+			itemModEnd = itemModEnd.subtract(1, "minute")
+			itemModEnd = itemModEnd
+				.startOf("day")
+				.add(timeFrameDay.endHour, "hour")
+				.add(timeFrameDay.endMinute, "minutes")
+		} else if (
+			item.endDate.hour() > timeFrameDay.endHour ||
+			(item.endDate.hour() === timeFrameDay.endHour &&
+				item.endDate.minute() > timeFrameDay.endMinute)
+		) {
+			itemModEnd = itemModEnd
+				.startOf("day")
+				.add(timeFrameDay.endHour, "hour")
+				.add(timeFrameDay.endMinute, "minutes")
+		}
 	}
 
 	const dTimeDay = 24 * 60 - timeFrameDay.oneDayMinutes
@@ -951,6 +970,11 @@ function getLeftAndWidth(
 			endSlot,
 			slotsArray,
 			timeSlotMinutes,
+			timeSpanMin,
+			timeSpanDays,
+			dTimeDay,
+			itemModStart,
+			itemModEnd,
 		)
 	}
 

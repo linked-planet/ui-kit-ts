@@ -378,15 +378,16 @@ export function calculateTimeSlotPropertiesForView(
 
 	const unit = vieWType
 
-	const start = startDate
-	const end = endDate
-	const diff = end.diff(start, unit) + 1
+	const start = startDate.startOf(unit)
+	const end = endDate.endOf(unit)
+	let diff = end.diff(start, unit)
+	if (startDate.add(diff, unit).isBefore(endDate)) {
+		diff++
+	}
+
 	const slotsArray = Array.from({ length: diff }, (x, i) => i).map((i) => {
 		const ret = start.add(i, unit)
-		if (ret.hour() > endHour) ret.set("hour", endHour)
-		if (ret.minute() > endMinute) ret.set("minute", endMinute)
-		return ret.subtract(timeStepsMinute, "minutes")
-		//return dayjs(start).add(i, unit)
+		return ret
 	})
 
 	let oneDayMinutes = dayjs()

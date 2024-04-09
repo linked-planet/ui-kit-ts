@@ -4,8 +4,29 @@ import dayjs, { Dayjs } from "dayjs"
 import { TimeTableViewType } from "./LPTimeTable"
 import { TimeFrameDay } from "./timeTableUtils"
 
-export const headerDateFormat = "ddd,\n DD.MM.YY"
 const headerTimeSlotFormat = "HH:mm"
+
+export function headerText(
+	tsStart: Dayjs,
+	tsEnd: Dayjs,
+	viewType: TimeTableViewType,
+) {
+	if (viewType === "hours") {
+		return tsStart.format("dd, DD.MM.")
+	}
+	if (viewType === "days") {
+		return tsStart.format("dd, DD.MM.")
+	}
+	if (viewType === "weeks") {
+		return `${tsStart.format("DD.MM.")} - ${tsEnd.format("DD.MM.")}`
+	}
+	if (viewType === "months") {
+		return tsStart.format("MM.YY")
+	}
+	if (viewType === "years") {
+		return tsStart.format("YYYY")
+	}
+}
 
 type Props = {
 	slotsArray: Dayjs[]
@@ -93,11 +114,18 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 						}}
 						className={`bg-surface-sunken border-border-bold  sticky left-0 top-0 z-[5] select-none border-2 border-l-0 border-t-0 border-solid px-0 py-3 ${showTimeSlotHeader ? " border-b-border border-b" : "border-b-0"}`}
 					>
-						<div className="flex justify-end pr-4">
+						<div className="flex justify-end pr-4 font-bold">
 							{`${startDate.format("DD.MM.")} - ${endDate.format(
 								"DD.MM.YY",
 							)}`}
 						</div>
+						{!showTimeSlotHeader && (
+							<div className="flex justify-end pr-4 font-normal">
+								{`${startDate.format("HH:mm")} - ${endDate.format(
+									"HH:mm",
+								)}`}
+							</div>
+						)}
 					</th>
 					{/* DAYS */}
 					{daysOrWeeksOrMonths.map((date) => {
@@ -113,7 +141,13 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 											"select-none truncate pl-4 pr-4 text-center"
 										}
 									>
-										{date.format(headerDateFormat)}
+										{headerText(
+											date,
+											date
+												.add(1, viewType)
+												.subtract(1, "minute"), // what we do not start at 00 of the next day of the week, which looks like an overlap (i.e.7.4.-14.4., 14.4.-21.4.)
+											viewType,
+										)}
 									</div>
 								</div>
 							</th>
