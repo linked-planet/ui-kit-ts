@@ -17,6 +17,12 @@ const cannotConvertDateTypeToTimeTypeError =
 //#endregion
 
 describe("DateUtils.dateFromString", () => {
+	test("should parse Iso string with offset correctly", () => {
+		const date = dateFromString("2024-04-09T08:00+02:00[Europe/Berlin]")
+		expect(date).toBeInstanceOf(Date)
+		expect(date.toISOString()).toBe("2024-04-09T06:00:00.000Z")
+	})
+
 	test("should parse ISO date string correctly", () => {
 		const date = dateFromString("2022-03-01T12:00:00Z")
 		expect(date).toBeInstanceOf(Date)

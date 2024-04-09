@@ -70,12 +70,21 @@ export function formatDate(
 
 export function dateFromString(dateStr: string, mayParseDateOnly = false) {
 	// this is in case the time zone is attached to the date time string: [Europe/Berlin], but we simply ignore it for now
-	if (dateStr.includes("[")) {
-		const dateStrSplit = dateStr.split("[")
-		dateStr = dateStrSplit[0]
-		/*timeZone = dateStrSplit[1]
-			? dateStrSplit[1].substring(0, dateStrSplit[1].length - 1)
-			: undefined*/
+	const tzStart = dateStr.indexOf("[")
+	if (tzStart > 0) {
+		const isoDateString = dateStr.substring(0, tzStart)
+		// if there is an offset already given, this parses the date wrong...
+		//i.e.: 2024-04-09T08:00+02:00[Europe/Berlin] calculates the +2 offset twice.
+		// once for +20 in the date string and once for the time zone string
+		// resulting in 2024-04-09T0e:00:00.000Z instead of 2024-04-09T06:00:00.000Z
+		/*const tz = dateStr.substring(tzStart + 1, dateStr.length - 1)
+		const parsed = dayjs.tz(isoDateString, tz)
+		if (parsed.isValid()) {
+			return parsed.toDate()
+		} else {
+			throw new Error(`${unparseableDateError}: ${dateStr}`)
+		}*/
+		return new Date(isoDateString)
 	}
 
 	if (isDateType(dateStr)) {
