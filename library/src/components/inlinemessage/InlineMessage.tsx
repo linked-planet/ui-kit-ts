@@ -67,17 +67,17 @@ export default function InlineMessage({
 		}
 	}, [message])
 
-	const appearanceClassNameStandard =
+	const appearanceClassName =
 		InlineMessageAppearanceColors[message.appearance ?? "default"]
 
-	const interactiveClassName = removable
+	/*const interactiveClassName = removable
 		? InlineMessageInteractiveColors[message.appearance ?? "default"]
 		: ""
 
 	const appearanceClassName = twMerge(
 		appearanceClassNameStandard,
 		interactiveClassName,
-	)
+	)*/
 
 	return (
 		<div
