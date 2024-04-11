@@ -4253,7 +4253,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 				title: "Item 5-2",
 			},
 			{
-				startDate: dayjs().startOf("day").add(1, "day"),
+				startDate: dayjs().startOf("day").add(1, "day"), // 00:00-00:00
 				endDate: dayjs().startOf("day").add(1, "day"),
 				title: "Item 5-3",
 			},

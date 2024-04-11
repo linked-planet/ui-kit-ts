@@ -154,19 +154,22 @@ export function SimpleTag({
 		? TagColors[appearance]
 		: TagAppearanceColors[appearance]
 
+	const _title =
+		title || (typeof children === "string" ? children : undefined)
+
 	return (
 		<div
 			className={twMerge(
 				colors,
 				looks === "default" ? "rounded-[3px]" : "rounded-full",
-				"box-border flex cursor-default select-none items-center px-1 align-middle text-base",
+				"box-border flex flex-1 cursor-default select-none items-center overflow-hidden px-1 align-middle text-base",
 				bold ? "font-bold" : undefined,
 				className,
 			)}
 			style={{
 				...style,
 			}}
-			title={title}
+			title={_title}
 			id={id}
 			data-testid={testId}
 		>
@@ -269,6 +272,7 @@ export function TagGroup({
 	alignment = "start",
 	id,
 	testId,
+	wrap = false,
 }: {
 	className?: string
 	style?: CSSProperties
@@ -276,11 +280,12 @@ export function TagGroup({
 	alignment?: "start" | "end"
 	id?: string
 	testId?: string
+	wrap?: boolean
 }) {
 	return (
 		<div
 			className={twMerge(
-				`flex w-full flex-wrap items-center gap-1.5 py-0.5 ${
+				`flex w-full ${wrap ? "flex-wrap" : ""} items-center gap-1.5 py-0.5 ${
 					alignment === "start" ? "justify-start" : "justify-end"
 				}`,
 				className,
