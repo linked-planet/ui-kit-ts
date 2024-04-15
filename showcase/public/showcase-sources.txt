@@ -6596,17 +6596,6 @@ function TagShowcase(props: ShowcaseProps) {
 	//#region tags
 	const lpExample = (
 		<div className="flex w-full items-center">
-			<Tag
-				onBeforeRemoveAction={() => {
-					console.log("on before remove")
-					return false
-				}}
-				onAfterRemoveAction={(str) =>
-					console.log("on after remove", str)
-				}
-			>
-				Removable Tag
-			</Tag>
 			<TagGroup>
 				<Tag
 					onBeforeRemoveAction={() => {

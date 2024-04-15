@@ -162,7 +162,7 @@ export function SimpleTag({
 			className={twMerge(
 				colors,
 				looks === "default" ? "rounded-[3px]" : "rounded-full",
-				"box-border flex flex-1 cursor-default select-none items-center overflow-hidden px-1 align-middle text-base",
+				"box-border flex max-w-max flex-1 cursor-default select-none items-center overflow-hidden px-1 align-middle text-base",
 				bold ? "font-bold" : undefined,
 				className,
 			)}
@@ -203,7 +203,7 @@ export function Tag({
 
 	const textWithRemoveButton = useMemo(() => {
 		return (
-			<div className="flex w-full items-center">
+			<div className="flex items-center">
 				<div className="truncate">{children}</div>
 
 				<button
