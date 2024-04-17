@@ -1,5 +1,6 @@
 import React, { useState, Dispatch, useEffect, useContext } from "react"
 import type { SetStateAction } from "react"
+import { messageTranslations } from "../components/timetable/TimeTableMessageContext"
 
 export const availableLocales = [
 	{ locale: "en", label: "English" },
@@ -66,7 +67,26 @@ export function LocaleProvider({
 		localStorage.setItem(localeStorageKey, localeUsed)
 		document.documentElement.lang = localeUsed
 		//loadTranslation( localeUsed ).then( setTranslation )
-		fetchTranslation(localeUsed).then(setTranslation)
+		// get translations from the imported modules
+		const translation = messageTranslations[localeUsed]
+		if (translation) {
+			setTranslation(translation)
+			return
+		}
+		console.info(
+			"LocaleProvider - translation not available as module ",
+			localeUsed,
+		)
+		fetchTranslation(localeUsed)
+			.then(setTranslation)
+			.catch(() => {
+				console.error(
+					"LocaleProvider - translation fetch failed",
+					localeUsed,
+				)
+				const englishDefault = messageTranslations["en"]
+				setTranslation(englishDefault)
+			})
 	}, [localeUsed])
 
 	useEffect(() => {

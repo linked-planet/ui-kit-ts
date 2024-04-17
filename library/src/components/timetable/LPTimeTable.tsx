@@ -219,7 +219,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	}, [viewType, startDate, endDate, timeStepsMinutes, setMessage])
 	//#endregion
 
-	console.log("LPTimeTable - timeFrameDay", timeFrameDay, slotsArray)
+	//console.log("LPTimeTable - timeFrameDay", timeFrameDay, slotsArray)
 
 	//#region Message if items of entries are outside of the time frame of the day
 	useEffect(() => {

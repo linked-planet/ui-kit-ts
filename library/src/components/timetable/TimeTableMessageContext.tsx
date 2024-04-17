@@ -9,6 +9,7 @@ import React, {
 import { Message } from "../inlinemessage"
 import type { default as TranslatedTimeTableMessagesJson } from "../../localization/translations-compiled/en.json"
 import IntlMessageFormat from "intl-messageformat"
+import { availableLocales } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 
 export type TranslatedTimeTableMessages = typeof TranslatedTimeTableMessagesJson
 
@@ -20,16 +21,20 @@ export type TranslatedTimeTableMessages = typeof TranslatedTimeTableMessagesJson
 /*const germanMessages = await import(
 	"../../localization/translations-compiled/de.json"
 )*/
-let germanMessages: TranslatedTimeTableMessages
+export const messageTranslations: Record<string, TranslatedTimeTableMessages> =
+	{}
+const defaultLanguage = navigator?.language.substring(0, 2) ?? "en"
 ;(async function main() {
-	// You can use await inside this function block
-	const germanMessagesModule = await import(
-		"../../localization/translations-compiled/de.json"
-	)
-	germanMessages = germanMessagesModule.default
+	const loadMessages = async (language: string) => {
+		const messagesModule = await import(
+			`../../localization/translations-compiled/${language}.json`
+		)
+		messageTranslations[language] = messagesModule.default
+	}
+	for (const language of availableLocales) {
+		await loadMessages(language.locale)
+	}
 })()
-
-//export type TranslatedTimeTableMessages = typeof germanMessages.default
 
 export type TimeTableMessage = Omit<Message, "text"> & {
 	messageKey: keyof TranslatedTimeTableMessages
@@ -47,8 +52,10 @@ const timeTableMessageContext = createContext<
 	| undefined
 >(undefined)
 
+const defaultMessageTranslations =
+	messageTranslations[defaultLanguage] ?? messageTranslations["en"]
 export function TimeTableMessageProvider({
-	messagesTranslations = germanMessages,
+	messagesTranslations = defaultMessageTranslations,
 	children,
 }: {
 	messagesTranslations?: TranslatedTimeTableMessages
