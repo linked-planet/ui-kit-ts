@@ -79,6 +79,9 @@ function PaginationPageHandler<P extends string | number>({
 	onPageIndexChange,
 	onPageChange,
 	maxPageButtons,
+	previousLabel,
+	nextLabel,
+	label,
 }: {
 	pages: P[]
 	currentPage?: P
@@ -88,6 +91,9 @@ function PaginationPageHandler<P extends string | number>({
 	onPageIndexChange?: (pageIndex: number) => void
 	onPageChange?: (page: P) => void
 	maxPageButtons: number
+	previousLabel?: string
+	nextLabel?: string
+	label?: string
 }) {
 	const [_currentPage, setCurrentPage] = useState(
 		currentPage ?? defaultPage ?? pages[0],
@@ -164,7 +170,7 @@ function PaginationPageHandler<P extends string | number>({
 	const currentIdx = pages.indexOf(_currentPage)
 
 	return (
-		<div className="flex">
+		<div className="flex" title={label} aria-label={label}>
 			<button
 				disabled={currentIdx <= 0}
 				className={`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 ${
@@ -178,6 +184,9 @@ function PaginationPageHandler<P extends string | number>({
 					onPageIndexChange?.(currentIndex - 1)
 					onPageChange?.(pages[currentIndex - 1])
 				}}
+				title={previousLabel}
+				aria-label={previousLabel}
+				aria-disabled={currentIdx >= pages.length - 1}
 			>
 				<ChevronLeftLargeIcon size="medium" label="" />
 			</button>
@@ -224,6 +233,9 @@ function PaginationPageHandler<P extends string | number>({
 					onPageChange?.(pages[_currentIndex + 1])
 				}}
 				disabled={currentIdx >= pages.length - 1}
+				title={nextLabel}
+				aria-label={nextLabel}
+				aria-disabled={currentIdx >= pages.length - 1}
 			>
 				<ChevronRightLargeIcon size="medium" label="" />
 			</button>
@@ -248,6 +260,9 @@ export function Pagination<P extends string | number>({
 	className,
 	style,
 	onPageSizeChange,
+	label = "Pagination",
+	previousLabel = "Previous Page",
+	nextLabel = "Next Page",
 	...pageSizeSelectorProps
 }: {
 	totalPages?: number
@@ -267,6 +282,9 @@ export function Pagination<P extends string | number>({
 	pageSizeMenuSide?: DropdownMenuProps["side"]
 	pageSizeMenuAlign?: DropdownMenuProps["align"]
 	pageSizeTitle?: string
+	label?: string
+	previousLabel?: string
+	nextLabel?: string
 	className?: string
 	style?: React.CSSProperties
 }) {
@@ -298,6 +316,9 @@ export function Pagination<P extends string | number>({
 					onPageChange={onPageChange}
 					onPageIndexChange={onPageIndexChange}
 					maxPageButtons={maxPageButtons}
+					previousLabel={previousLabel}
+					nextLabel={nextLabel}
+					label={label}
 				/>
 			</div>
 			{!hidePageSize && (
