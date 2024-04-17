@@ -10,7 +10,6 @@ import {
 	ButtonGroup,
 } from "@linked-planet/ui-kit-ts"
 import { DateRange } from "react-day-picker"
-import AKCalendar from "@atlaskit/calendar"
 import {
 	dateFromString,
 	toDateType,
@@ -65,13 +64,13 @@ function CalendarSingle() {
 	const sundayMatcher = (date: Date) => date.getDay() === 0
 
 	const sundayMatcher2 = (date: DateType) => {
-		const dt = dateFromString(date)
+		const dt = dateFromString(date, true)
 		return dt.getDay() === 0
 	}
 
-	const selectedDate = selected ? dateFromString(selected) : undefined
+	const selectedDate = selected ? dateFromString(selected, true) : undefined
 	const secondarySelectedDate = secondarySelected
-		? dateFromString(secondarySelected)
+		? dateFromString(secondarySelected, true)
 		: undefined
 
 	return (
@@ -248,9 +247,11 @@ function CalendarRange() {
 				mode="range"
 				selected={{
 					from: selected.from
-						? dateFromString(selected.from)
+						? dateFromString(selected.from, true)
 						: undefined,
-					to: selected.to ? dateFromString(selected.to) : undefined,
+					to: selected.to
+						? dateFromString(selected.to, true)
+						: undefined,
 				}}
 				onSelect={(range: DateRange | undefined) => {
 					setSelected({

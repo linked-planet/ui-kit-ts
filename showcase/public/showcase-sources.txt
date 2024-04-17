@@ -6116,6 +6116,8 @@ function SelectShowcase(props: ShowcaseProps) {
 						options: [{ label: "Second option", value: "second" }],
 					},
 				]}
+				dropdownLabel={(isOpen) => (isOpen ? "Close :(" : "Open :)")}
+				clearValuesLabel="Clear values!!!"
 			/>
 		</div>
 	)
