@@ -207,6 +207,10 @@ function SelectShowcase(props: ShowcaseProps) {
 					{ label: "Second option", value: { test: "second" } },
 					{ label: "Third option", value: { test: "third" } },
 				]}
+				/** adding some custom classnames to the styling */
+				classNames={{
+					control: (provided) => "bg-warning",
+				}}
 			/>
 
 			{/*<RadixSelect
@@ -280,6 +284,8 @@ function SelectShowcase(props: ShowcaseProps) {
 						options: [{ label: "Second option", value: "second" }],
 					},
 				]}
+				dropdownLabel={(isOpen) => (isOpen ? "Close :(" : "Open :)")}
+				clearValuesLabel="Clear values!!!"
 			/>
 		</div>
 	)

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import React, { type CSSProperties, useMemo } from "react"
 import { Controller } from "react-hook-form"
 import type { FieldValues, Path, Control } from "react-hook-form"
 import {
@@ -9,6 +9,7 @@ import {
 	type OnChangeValue,
 	type ActionMeta,
 	type CSSObjectWithLabel,
+	type SelectComponentsConfig,
 } from "react-select"
 
 import { getPortal } from "../../utils/getPortal"
@@ -18,15 +19,19 @@ import ReactSelectCreatable, {
 	type CreatableProps,
 } from "react-select/creatable"
 import { SlidingErrorMessage } from "./SlidingErrorMessage"
+import SelectClearIcon from "@atlaskit/icon/glyph/select-clear"
+import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
+import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
+import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 
 //#region styles
 const controlStyles =
 	"border-input-border border-2 box-border rounded ease-in-out transition duration-300"
 
-const menuStyles =
-	"bg-surface-overlay z-10 shadow-overlay rounded overflow-hidden"
+const menuStyles = "bg-surface z-10 shadow-overlay rounded overflow-hidden"
 
-const optionStyles = "py-2 px-3 border-l-2 border-l-transparent"
+const optionStyles =
+	"py-2 px-3 border-l-2 border-l-transparent border-transparent border-solid"
 
 export type OptionType<ValueType> = {
 	label: string
@@ -43,10 +48,14 @@ function useClassNamesConfig<
 	Option = unknown,
 	IsMulti extends boolean = boolean,
 	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
->(): ClassNamesConfig<Option, IsMulti, GroupOptionType> {
+>(
+	classNamesConfig:
+		| ClassNamesConfig<Option, IsMulti, GroupOptionType>
+		| undefined,
+): ClassNamesConfig<Option, IsMulti, GroupOptionType> {
 	return useMemo(
 		() => ({
-			//container: (provided) => "",
+			...classNamesConfig,
 			control: (provided) =>
 				twJoin(
 					"px-2",
@@ -55,32 +64,48 @@ function useClassNamesConfig<
 						? "bg-disabled border-transparent cursor-not-allowed"
 						: "bg-input hover:bg-input-hovered",
 					provided.isFocused && !provided.isDisabled
-						? "bg-input-active border-input-border-focused"
+						? "bg-input-active border-input-border-focused border-solid border-2"
 						: "",
+					classNamesConfig?.control?.(provided),
 				),
-			menu: () => menuStyles,
-			clearIndicator: () =>
-				"w-[14px] h-[14px] flex items-center justify-center" as const,
-			dropdownIndicator: () =>
-				"w-[10.5px] h-[10.5px] flex items-center justify-center" as const,
-			indicatorSeparator: () => "hidden" as const,
-			//input: (provided) => "",
-			placeholder: () =>
-				"text-disabled-text overflow-hidden text-ellipsis whitespace-nowrap" as const,
+			menu: (provided) =>
+				twMerge(menuStyles, classNamesConfig?.menu?.(provided)),
+			clearIndicator: (provided) =>
+				twMerge(
+					"w-[14px] h-[14px] flex items-center justify-center cursor-pointer text-disabled-text hover:text-text" as const,
+					classNamesConfig?.clearIndicator?.(provided),
+				),
+			dropdownIndicator: (provided) =>
+				twMerge(
+					"w-[14px] h-[14px] flex items-center justify-center cursor-pointer text-disabled-text hover:text-text" as const,
+					classNamesConfig?.dropdownIndicator?.(provided),
+				),
+			indicatorSeparator: (provided) =>
+				twMerge(
+					"hidden" as const,
+					classNamesConfig?.indicatorSeparator?.(provided),
+				),
+			placeholder: (provided) =>
+				twMerge(
+					"text-disabled-text overflow-hidden text-ellipsis whitespace-nowrap" as const,
+					classNamesConfig?.placeholder?.(provided),
+				),
 			singleValue: (provided) =>
 				twJoin(
 					provided.isDisabled ? "text-disabled-text" : "text-text",
 					"text-ellipsis whitespace-nowrap",
+					classNamesConfig?.singleValue?.(provided),
 				),
 			multiValue: (provided) => {
 				return twJoin(
 					twMerge(
-						"bg-neutral rounded-sm px-1 mr-2 text-text text-ellipsis",
+						"bg-neutral rounded-sm pl-1 mr-2 text-text text-ellipsis",
 						provided.isDisabled
 							? "bg-disabled text-disabled-text"
 							: undefined,
 					),
 					"text-ellipsis whitespace-nowrap",
+					classNamesConfig?.multiValue?.(provided),
 				)
 			},
 			option: (provided) =>
@@ -95,11 +120,20 @@ function useClassNamesConfig<
 					provided.isDisabled
 						? "text-disabled-text"
 						: "hover:border-l-selected-border hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed",
+					classNamesConfig?.option?.(provided),
 				),
-			groupHeading: () =>
-				"text-text-subtlest text-2xs font-[500] uppercase pt-4 pb-0.5 px-3" as const,
+			groupHeading: (provided) =>
+				twMerge(
+					"text-text-subtlest text-2xs font-[500] uppercase pt-4 pb-0.5 px-3" as const,
+					classNamesConfig?.groupHeading?.(provided),
+				),
+			multiValueRemove: (provided) =>
+				twMerge(
+					"hover:bg-danger-hovered active:bg-danger-pressed px-1 cursor-pointer ml-1 flex items-center rounded-sm" as const,
+					classNamesConfig?.multiValueRemove?.(provided),
+				),
 		}),
-		[],
+		[classNamesConfig],
 	)
 }
 
@@ -107,6 +141,7 @@ function useClassNamesConfig<
 const customStyles = {
 	control: (provided: CSSObjectWithLabel) => ({
 		...provided,
+		cursor: "pointer",
 		minHeight: "2.2rem",
 		//height: "1.83rem",
 	}),
@@ -126,6 +161,9 @@ type InnerProps<
 	isCreateable?: boolean
 	testId?: string
 	innerRef?: React.Ref<SelectInstance<Option, IsMulti, GroupOptionType>>
+	clearValuesLabel?: string
+	removeValueLabel?: string
+	dropdownLabel?: (isOpen: boolean) => string
 }
 
 const SelectInner = <
@@ -138,16 +176,93 @@ const SelectInner = <
 	formatCreateLabel,
 	testId,
 	innerRef,
+	classNames,
+	clearValuesLabel,
+	removeValueLabel,
+	dropdownLabel,
 	...props
 }: InnerProps<ValueType, Option, IsMulti, GroupOptionType>) => {
 	const classNamesConfig = useClassNamesConfig<
 		Option,
 		IsMulti,
 		GroupOptionType
-	>()
+	>(classNames)
 
 	// get the browsers locale
 	const locale = navigator.language
+
+	const components = useMemo(() => {
+		const ret: SelectComponentsConfig<Option, IsMulti, GroupOptionType> = {
+			ClearIndicator: (_props) => (
+				<div
+					{..._props.innerProps}
+					role="button"
+					className={_props.getClassNames("clearIndicator", _props)}
+					style={
+						_props.getStyles("clearIndicator", _props) as
+							| CSSProperties
+							| undefined
+					}
+					title={clearValuesLabel ?? "clear all selected"}
+					aria-label={clearValuesLabel ?? "clear all selected"}
+					aria-hidden="false"
+				>
+					<SelectClearIcon size="small" label="" />
+				</div>
+			),
+
+			MultiValueRemove: (_props) => (
+				<div
+					role="button"
+					{..._props.innerProps}
+					title={removeValueLabel ?? "remove selected"}
+					aria-label={removeValueLabel ?? "remove selected"}
+					aria-hidden="false"
+				>
+					<EditorCloseIcon size="small" label="" />
+				</div>
+			),
+
+			DropdownIndicator: (_props) => (
+				<div
+					{..._props.innerProps}
+					role="button"
+					//aria-disabled={_props.isDisabled}
+					className={_props.getClassNames(
+						"dropdownIndicator",
+						_props,
+					)}
+					style={
+						_props.getStyles("dropdownIndicator", _props) as
+							| CSSProperties
+							| undefined
+					}
+					title={
+						dropdownLabel
+							? dropdownLabel?.(_props.selectProps.menuIsOpen)
+							: _props.selectProps.menuIsOpen
+								? "close the dropdown"
+								: "open the dropdown"
+					}
+					aria-label={
+						dropdownLabel
+							? dropdownLabel?.(_props.selectProps.menuIsOpen)
+							: _props.selectProps.menuIsOpen
+								? "close the dropdown"
+								: "open the dropdown"
+					}
+					aria-hidden="false"
+				>
+					{_props.selectProps.menuIsOpen ? (
+						<ChevronUpIcon size="medium" label="" />
+					) : (
+						<ChevronDownIcon size="medium" label="" />
+					)}
+				</div>
+			),
+		}
+		return ret
+	}, [clearValuesLabel, dropdownLabel, removeValueLabel])
 
 	if (isCreateable) {
 		return (
@@ -181,6 +296,7 @@ const SelectInner = <
 			classNames={classNamesConfig}
 			data-testid={testId}
 			styles={customStyles}
+			components={components}
 			{...props}
 		/>
 	)
@@ -212,7 +328,9 @@ type SelectPropsProto<
 	usePortal?: boolean
 	disabled?: boolean
 	isCreateable?: boolean
-	testId?: string
+	dropdownLabel?: (isOpen: boolean) => string
+	clearValuesLabel?: string
+	removeValueLabel?: string
 }
 
 // extends with the control and fieldName props for react-hook-form.. the fieldName is the normal name prop of react-hook-form
