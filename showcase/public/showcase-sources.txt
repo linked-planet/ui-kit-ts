@@ -6039,6 +6039,10 @@ function SelectShowcase(props: ShowcaseProps) {
 					{ label: "Second option", value: { test: "second" } },
 					{ label: "Third option", value: { test: "third" } },
 				]}
+				/** adding some custom classnames to the styling */
+				classNames={{
+					control: (provided) => "bg-warning",
+				}}
 			/>
 
 			{/*<RadixSelect

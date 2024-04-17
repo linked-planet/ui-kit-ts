@@ -17,7 +17,9 @@ export type TranslatedTimeTableMessages = typeof TranslatedTimeTableMessagesJson
  * which gets extracted by npm run messages:extract
  * and then with npm run messages:compile the translations gets compiled into ../../localization/translations-compiled/[language].json
  */
-//const germanMessages = await import( "../../localization/translations-compiled/de.json" )
+/*const germanMessages = await import(
+	"../../localization/translations-compiled/de.json"
+)*/
 let germanMessages: TranslatedTimeTableMessages
 ;(async function main() {
 	// You can use await inside this function block
@@ -59,13 +61,19 @@ export function TimeTableMessageProvider({
 	>({})
 
 	useEffect(() => {
-		const intlMessageFormatted = Object.fromEntries(
-			Object.entries(messagesTranslations).map(([key, value]) => [
-				key,
-				new IntlMessageFormat(value),
-			]),
+		if (messagesTranslations) {
+			const intlMessageFormatted = Object.fromEntries(
+				Object.entries(messagesTranslations).map(([key, value]) => [
+					key,
+					new IntlMessageFormat(value),
+				]),
+			)
+			setMessagesTranslationsIntl(intlMessageFormatted)
+			return
+		}
+		console.warn(
+			"TimeTableMessageContext - messagesTranslations null or undefined",
 		)
-		setMessagesTranslationsIntl(intlMessageFormatted)
 	}, [messagesTranslations])
 
 	return (
@@ -105,7 +113,7 @@ export function useTimeTableMessage() {
 				? {
 						...ret.message,
 						text: messageTranslation,
-				  }
+					}
 				: undefined,
 		[ret.message, messageTranslation],
 	)

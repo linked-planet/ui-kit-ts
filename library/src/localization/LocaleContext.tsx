@@ -126,7 +126,11 @@ export const useTranslation = () => {
 }*/
 
 async function fetchTranslation(locale: string) {
-	console.info("loading translation for locale", locale)
+	console.info(
+		"loading translation for locale",
+		locale,
+		` from ${translationsPath}/${locale}.json`,
+	)
 	const res = await fetch(`${translationsPath}/${locale}.json`)
 	return res.json()
 }
