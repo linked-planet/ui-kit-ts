@@ -1,7 +1,5 @@
 import React, { useState, Dispatch, useEffect, useContext } from "react"
 import type { SetStateAction } from "react"
-import { messageTranslations } from "../components/timetable/TimeTableMessageContext"
-
 export const availableLocales = [
 	{ locale: "en", label: "English" },
 	{ locale: "de", label: "German" },
@@ -21,6 +19,42 @@ const localizationContext = React.createContext<
 
 const localeStorageKey = "locale"
 const translationsPath = "./translations-compiled"
+
+/**
+ * this is created using the formatJS CLI tool on Messages.tsx. This creates a json file with all the messages in the correct format in ../../localization/translations/en.json
+ * which gets extracted by npm run messages:extract
+ * and then with npm run messages:compile the translations gets compiled into ./translations-compiled/[language].json
+ */
+/*const germanMessages = await import(
+	"./translations-compiled/de.json"
+)*/
+const messageTranslations: Record<string, Record<string, string>> = {}
+export const defaultLanguage = navigator?.language.substring(0, 2) ?? "en"
+// this would load all the message translations immediatly, but we simply use dynamic imports
+/*;(async function main() {
+	const loadMessages = async (language: string) => {
+		const messagesModule = await import(
+			`./translations-compiled/${language}.json`
+		)
+		console.log("Loaded messages for language", language)
+		messageTranslations[language] = messagesModule.default
+	}
+	for (const language of availableLocales) {
+		await loadMessages(language.locale)
+	}
+})()*/
+
+export async function getTranslation(language = defaultLanguage) {
+	if (messageTranslations[language]) {
+		return messageTranslations[language]
+	}
+	const messagesModule = await import(
+		`./translations-compiled/${language}.json`
+	)
+	console.log("Loaded messages for language", language)
+	messageTranslations[language] = messagesModule.default
+	return messageTranslations[language]
+}
 
 /**
  * The Locale Context keeps track of the current set locale, and saves it to localStorage, and fetches the translation for the locale.
@@ -53,40 +87,34 @@ export function LocaleProvider({
 	}, [locale])
 
 	useEffect(() => {
-		const loc = availableLocales.find((it) => it.locale === localeUsed)
-		if (!loc) {
-			console.info(
-				"LocaleProvider - locale not available",
-				localeUsed,
-				", available:",
-				availableLocales,
-			)
-			setLocale(availableLocales[0].locale) // set english as default
-			return
-		}
-		localStorage.setItem(localeStorageKey, localeUsed)
-		document.documentElement.lang = localeUsed
-		//loadTranslation( localeUsed ).then( setTranslation )
-		// get translations from the imported modules
-		const translation = messageTranslations[localeUsed]
-		if (translation) {
-			setTranslation(translation)
-			return
-		}
-		console.info(
-			"LocaleProvider - translation not available as module ",
-			localeUsed,
-		)
-		fetchTranslation(localeUsed)
-			.then(setTranslation)
-			.catch(() => {
-				console.error(
-					"LocaleProvider - translation fetch failed",
+		const doSet = async () => {
+			const loc = availableLocales.find((it) => it.locale === localeUsed)
+			if (!loc) {
+				console.info(
+					"LocaleProvider - locale not available",
 					localeUsed,
+					", available:",
+					availableLocales,
 				)
-				const englishDefault = messageTranslations["en"]
-				setTranslation(englishDefault)
-			})
+				setLocale(availableLocales[0].locale) // set english as default
+				return
+			}
+			localStorage.setItem(localeStorageKey, localeUsed)
+			document.documentElement.lang = localeUsed
+			//loadTranslation( localeUsed ).then( setTranslation )
+			// get translations from the imported modules
+			const translation = await getTranslation(localeUsed)
+			if (translation) {
+				setTranslation(translation)
+				return
+			}
+			console.warn(
+				"LocaleProvider - no translation found for locale",
+				localeUsed,
+			)
+			setTranslation(await getTranslation())
+		}
+		doSet()
 	}, [localeUsed])
 
 	useEffect(() => {

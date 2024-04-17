@@ -9,32 +9,9 @@ import React, {
 import { Message } from "../inlinemessage"
 import type { default as TranslatedTimeTableMessagesJson } from "../../localization/translations-compiled/en.json"
 import IntlMessageFormat from "intl-messageformat"
-import { availableLocales } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
+import { getTranslation } from "../../localization/LocaleContext"
 
 export type TranslatedTimeTableMessages = typeof TranslatedTimeTableMessagesJson
-
-/**
- * this is created using the formatJS CLI tool on Messages.tsx. This creates a json file with all the messages in the correct format in ../../localization/translations/en.json
- * which gets extracted by npm run messages:extract
- * and then with npm run messages:compile the translations gets compiled into ../../localization/translations-compiled/[language].json
- */
-/*const germanMessages = await import(
-	"../../localization/translations-compiled/de.json"
-)*/
-export const messageTranslations: Record<string, TranslatedTimeTableMessages> =
-	{}
-const defaultLanguage = navigator?.language.substring(0, 2) ?? "en"
-;(async function main() {
-	const loadMessages = async (language: string) => {
-		const messagesModule = await import(
-			`../../localization/translations-compiled/${language}.json`
-		)
-		messageTranslations[language] = messagesModule.default
-	}
-	for (const language of availableLocales) {
-		await loadMessages(language.locale)
-	}
-})()
 
 export type TimeTableMessage = Omit<Message, "text"> & {
 	messageKey: keyof TranslatedTimeTableMessages
@@ -53,7 +30,8 @@ const timeTableMessageContext = createContext<
 >(undefined)
 
 const defaultMessageTranslations =
-	messageTranslations[defaultLanguage] ?? messageTranslations["en"]
+	(await getTranslation()) as TranslatedTimeTableMessages
+
 export function TimeTableMessageProvider({
 	messagesTranslations = defaultMessageTranslations,
 	children,
