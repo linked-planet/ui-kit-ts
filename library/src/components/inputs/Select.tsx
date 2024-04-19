@@ -1,34 +1,36 @@
-import React, { type CSSProperties, useMemo } from "react"
+import type React from "react"
+import { type CSSProperties, useMemo } from "react"
 import { Controller } from "react-hook-form"
-import type { FieldValues, Path, Control } from "react-hook-form"
+import type { Control, FieldValues, Path } from "react-hook-form"
 import {
-	default as RSelect,
-	type SelectInstance,
+	type ActionMeta,
+	type CSSObjectWithLabel,
 	type ClassNamesConfig,
 	type GroupBase,
 	type OnChangeValue,
-	type ActionMeta,
-	type CSSObjectWithLabel,
+	default as RSelect,
 	type SelectComponentsConfig,
+	type SelectInstance,
 } from "react-select"
 
 import { getPortal } from "../../utils/getPortal"
 
-import { twJoin, twMerge } from "tailwind-merge"
+import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
+import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
+import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
+import SelectClearIcon from "@atlaskit/icon/glyph/select-clear"
 import ReactSelectCreatable, {
 	type CreatableProps,
 } from "react-select/creatable"
+import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./SlidingErrorMessage"
-import SelectClearIcon from "@atlaskit/icon/glyph/select-clear"
-import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
-import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 
 //#region styles
 const controlStyles =
-	"border-input-border border-2 box-border rounded ease-in-out transition duration-300"
+	"border-input-border border-solid border-2 box-border rounded ease-in-out transition duration-300"
 
-const menuStyles = "bg-surface z-10 shadow-overlay rounded overflow-hidden"
+const menuStyles =
+	"bg-surface min-w-min z-10 shadow-overlay rounded overflow-hidden"
 
 const optionStyles =
 	"py-2 px-3 border-l-2 border-l-transparent border-transparent border-solid"
@@ -64,7 +66,7 @@ function useClassNamesConfig<
 						? "bg-disabled border-transparent cursor-not-allowed"
 						: "bg-input hover:bg-input-hovered",
 					provided.isFocused && !provided.isDisabled
-						? "bg-input-active border-input-border-focused border-solid border-2"
+						? "bg-input-active border-input-border-focused"
 						: "",
 					classNamesConfig?.control?.(provided),
 				),
@@ -143,6 +145,7 @@ const customStyles = {
 		...provided,
 		cursor: "pointer",
 		minHeight: "2.2rem",
+		borderWidth: "2px",
 		//height: "1.83rem",
 	}),
 }
@@ -434,7 +437,8 @@ function SelectInForm<
 							) {
 								valueUsed = opt
 								break
-							} else if (isOptionGroupType(opt)) {
+							}
+							if (isOptionGroupType(opt)) {
 								for (const opt2 of opt.options) {
 									if (opt2.value === field.value) {
 										valueUsed = opt2
