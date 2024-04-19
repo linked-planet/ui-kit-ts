@@ -101,6 +101,32 @@ function ButtonShowcase(props: ShowcaseProps) {
 				>
 					Icon Loading Button
 				</AKLoadingButton>
+
+				<AKButton
+					appearance="subtle-link"
+					onClick={() => console.log("Button pressed")}
+				>
+					Subtle Link Button
+				</AKButton>
+
+				<AKButton
+					appearance="primary"
+					href={"https://www.google.com/"}
+					target="_blank"
+					onClick={() => console.log("Href Button pressed")}
+				>
+					Href Button
+				</AKButton>
+
+				<AKButton
+					appearance="primary"
+					href={"https://pbs.twimg.com/profile_images/1311008414156423170/Kxu_7mQS_400x400.jpg"}
+					target="_blank"
+					download
+					onClick={() => console.log("Href Button pressed")}
+				>
+					Download Button
+				</AKButton>
 			</AKButtonGroup>
 		</>
 	)
@@ -186,6 +212,13 @@ function ButtonShowcase(props: ShowcaseProps) {
 			>
 				Subtle Button
 			</Button>
+
+			<Button
+					appearance="subtle-link"
+					onClick={() => console.log("Button pressed")}
+				>
+					Subtle Link Button
+				</Button>
 
 			<Button
 				appearance="subtle"
@@ -277,6 +310,23 @@ function ButtonShowcase(props: ShowcaseProps) {
 			>
 				Icon Loading Button
 			</LoadingButton>
+
+			<Button
+					appearance="primary"
+					href={"https://www.google.com/"}
+					target="_blank"
+				>
+					Href Button
+				</Button>
+
+				<Button
+					appearance="primary"
+					href={"https://pbs.twimg.com/profile_images/1311008414156423170/Kxu_7mQS_400x400.jpg"}
+					target="_blank"
+					download
+				>
+					Download Button
+				</Button>
 		</ButtonGroup>
 	)
 	//#endregion button

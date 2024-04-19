@@ -1,17 +1,25 @@
-import React, { useMemo, useRef, useState } from "react"
-import * as RDd from "@radix-ui/react-dropdown-menu"
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
-import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
-import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
-import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
-import { Button, type ButtonProps } from "./Button"
-import RadioIcon from "@atlaskit/icon/glyph/radio"
 import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
+import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
+import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
+import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
+import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
+import RadioIcon from "@atlaskit/icon/glyph/radio"
+import * as RDd from "@radix-ui/react-dropdown-menu"
+import type React from "react"
+import {
+	forwardRef,
+	useEffect,
+	useImperativeHandle,
+	useMemo,
+	useRef,
+	useState,
+} from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
+import { Button, type ButtonAppearance, type ButtonProps } from "./Button"
 
 const commonStyles =
-	"pl-1 pr-5 py-2.5 flex items-center outline-none border-l-2 border-l-transparent cursor-default" as const
+	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-none border-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-none focus-visible:border-solid focus-visible:border-selected-border" as const
 const disabledStyles = "text-disabled-text cursor-not-allowed" as const
 const selectedStyles =
 	"bg-selected-subtle hover:bg-selected-subtle-hovered active:bg-selected-subtle-pressed text-selected-subtle-text" as const
@@ -30,6 +38,8 @@ function Item({
 	selected,
 	onClick,
 	children,
+	className,
+	style,
 }: {
 	elemBefore?: React.ReactNode
 	elemAfter?: React.ReactNode
@@ -38,6 +48,8 @@ function Item({
 	selected?: boolean
 	onClick?: () => void
 	children: React.ReactNode
+	className?: string
+	style?: React.CSSProperties
 }) {
 	return (
 		<RDd.Item
@@ -45,21 +57,23 @@ function Item({
 			className={twMerge(
 				commonStyles,
 				!disabled && !selected ? normalStyles : undefined,
-				selected ? `${selectedStyles} border-selected-bold` : undefined,
+				selected
+					? `${selectedStyles} border-l-selected-bold`
+					: undefined,
 				disabled ? disabledStyles : undefined,
+				className,
 			)}
 			onClick={onClick}
+			style={style}
 		>
-			<div className="flex w-full items-center">
-				<div className="flex-none pr-3">{elemBefore}</div>
-				<div className="flex-1">
-					{children}
-					{description && (
-						<div className={descriptionStyle}>{description}</div>
-					)}
-				</div>
-				<div className="flex-none">{elemAfter}</div>
+			<div className="flex-none pr-3">{elemBefore}</div>
+			<div className="flex-1">
+				{children}
+				{description && (
+					<div className={descriptionStyle}>{description}</div>
+				)}
 			</div>
+			<div className="flex-none">{elemAfter}</div>
 		</RDd.Item>
 	)
 }
@@ -71,6 +85,8 @@ function ItemCheckbox({
 	defaultSelected,
 	disabled = false,
 	children,
+	className,
+	style,
 }: {
 	description?: React.ReactNode
 	selected?: boolean
@@ -78,6 +94,8 @@ function ItemCheckbox({
 	disabled?: boolean
 	onClick?: () => void
 	children: React.ReactNode
+	className?: string
+	style?: React.CSSProperties
 }) {
 	return (
 		<RDd.CheckboxItem
@@ -94,7 +112,9 @@ function ItemCheckbox({
 				!disabled && !selected ? normalStyles : undefined,
 				selected ? selectedStyles : undefined,
 				disabled ? disabledStyles : undefined,
+				className,
 			)}
+			style={style}
 		>
 			<div
 				className={twMerge(
@@ -121,14 +141,18 @@ function ItemGroup({
 	title,
 	hasSeparator,
 	children,
+	className,
+	style,
 }: {
 	title?: string
 	hasSeparator?: boolean
 	children: React.ReactNode
+	className?: string
+	style?: React.CSSProperties
 }) {
 	return useMemo(
 		() => (
-			<RDd.Group className="py-3">
+			<RDd.Group className={twMerge("py-3", className)} style={style}>
 				{hasSeparator && (
 					<RDd.Separator className="border-border border-t-2 pb-4" />
 				)}
@@ -140,7 +164,7 @@ function ItemGroup({
 				{children}
 			</RDd.Group>
 		),
-		[children, hasSeparator, title],
+		[children, hasSeparator, title, className, style],
 	)
 }
 
@@ -148,14 +172,21 @@ function ItemRadioGroup({
 	title,
 	hasSeparator,
 	children,
+	className,
+	style,
 }: {
 	title?: string
 	hasSeparator?: boolean
 	children: React.ReactNode
+	className?: string
+	style?: React.CSSProperties
 }) {
 	return useMemo(
 		() => (
-			<RDd.RadioGroup className="py-3">
+			<RDd.RadioGroup
+				className={twMerge("py-3", className)}
+				style={style}
+			>
 				{hasSeparator && (
 					<RDd.Separator className="border-border border-t-2 pb-3" />
 				)}
@@ -167,7 +198,7 @@ function ItemRadioGroup({
 				{children}
 			</RDd.RadioGroup>
 		),
-		[children, hasSeparator, title],
+		[children, hasSeparator, title, className, style],
 	)
 }
 
@@ -178,6 +209,8 @@ function ItemRadio({
 	disabled,
 	value,
 	children,
+	className,
+	style,
 }: {
 	onClick?: () => void
 	description?: React.ReactNode
@@ -185,6 +218,8 @@ function ItemRadio({
 	selected?: boolean
 	value: string
 	children: React.ReactNode
+	className?: string
+	style?: React.CSSProperties
 }) {
 	return (
 		<RDd.RadioItem
@@ -200,7 +235,9 @@ function ItemRadio({
 				!disabled && !selected ? normalStyles : undefined,
 				selected ? selectedStyles : undefined,
 				disabled ? disabledStyles : undefined,
+				className,
 			)}
+			style={style}
 		>
 			<div
 				className={twMerge(
@@ -236,12 +273,20 @@ function SubMenu({
 	chevronSide = "right",
 	open,
 	children,
+	className,
+	style,
+	subClassName,
+	subStyle,
 }: {
 	trigger: React.ReactNode
 	open?: boolean
 	chevronSide?: "right" | "left" | "none"
 	defaultOpen?: boolean
 	children: React.ReactNode
+	className?: string
+	style?: React.CSSProperties
+	subClassName?: string
+	subStyle?: React.CSSProperties
 }) {
 	const triggerNode: React.ReactNode = useMemo(() => {
 		if (typeof trigger === "string") {
@@ -262,11 +307,20 @@ function SubMenu({
 
 	return (
 		<RDd.Sub defaultOpen={defaultOpen} open={open}>
-			<RDd.SubTrigger className="flex w-full">
+			<RDd.SubTrigger
+				className={twMerge("flex w-full", className)}
+				style={style}
+			>
 				{triggerNode}
 			</RDd.SubTrigger>
 			<RDd.Portal>
-				<RDd.SubContent className="bg-surface-overlay shadow-overlay z-50 overflow-auto rounded">
+				<RDd.SubContent
+					className={twMerge(
+						"bg-surface-overlay shadow-overlay overflow-y-auto overflow-x-visible z-50 rounded",
+						subClassName,
+					)}
+					style={subStyle}
+				>
 					{children}
 				</RDd.SubContent>
 			</RDd.Portal>
@@ -291,6 +345,49 @@ export type DropdownMenuProps = {
 	testId?: string
 } & ButtonProps
 
+type TriggerProps = RDd.DropdownMenuTriggerProps &
+	ButtonProps & {
+		triggerClassName?: string // this is named triggerClassName to avoid conflict with RDd.DropdownMenuTriggerProps
+		triggerStyles?: React.CSSProperties
+		"data-state"?: "open" | "closed" // coming from RDd, do not use, only for typechecking
+	}
+
+const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
+	(props: TriggerProps, ref) => {
+		const {
+			children,
+			style,
+			className,
+			triggerClassName,
+			triggerStyles,
+			...rest
+		} = props
+		return (
+			<Button
+				ref={ref}
+				className={twMerge(
+					"flex items-center group justify-between",
+					triggerClassName,
+					className,
+				)}
+				style={{
+					...style,
+					...triggerStyles,
+				}}
+				{...rest}
+			>
+				{children}
+				<div className="h-full hidden items-center group-data-[state=open]:flex">
+					<ChevronUpIcon label="" size="medium" />
+				</div>
+				<div className="h-full hidden items-center group-data-[state=closed]:flex">
+					<ChevronDownIcon label="" size="medium" />
+				</div>
+			</Button>
+		)
+	},
+)
+
 /**
  * Root of the dropdown menu, which contains the trigger and the content
  */
@@ -306,52 +403,20 @@ function Menu({
 	triggerStyle,
 	triggerClassName,
 	usePortal = true,
-	id,
 	testId,
 	...props
 }: DropdownMenuProps) {
 	const contentRef = useRef<HTMLDivElement>(null)
 
-	const [opened, setOpened] = useState(
-		open != null ? open : defaultOpen ?? false,
-	)
-
-	const triggerNode = useMemo(() => {
-		if (
-			typeof trigger === "string" ||
-			typeof trigger === "number" ||
-			typeof trigger === "undefined"
-		) {
-			return (
-				<Button
-					className={triggerClassName}
-					style={triggerStyle}
-					disabled={disabled}
-					aria-label={props["aria-label"]}
-					id={id}
-					{...props}
-				>
-					{trigger}
-					{opened ? (
-						<ChevronUpIcon label="" size="small" />
-					) : (
-						<ChevronDownIcon label="" size="small" />
-					)}
-				</Button>
-			)
-		}
-		return trigger({ opened })
-	}, [disabled, id, opened, props, trigger, triggerClassName, triggerStyle])
-
 	const content = useMemo(
 		() => (
 			<RDd.Content
 				ref={contentRef}
-				className="bg-surface-overlay shadow-overlay z-50 overflow-auto rounded"
+				className="bg-surface-overlay shadow-overlay z-50 rounded overflow-auto max-h-full" // only-x-auto to allow for horizontal scrolling but do not cut off the outline
 				side={side}
 				align={align}
 				onFocusOutside={() => {
-					setOpened(false)
+					//setOpened(false)
 				}}
 				style={{
 					maxHeight:
@@ -366,17 +431,31 @@ function Menu({
 		[align, children, side],
 	)
 
+	const _trigger = useMemo(() => {
+		return (
+			<Trigger
+				disabled={disabled}
+				aria-disabled={disabled}
+				style={triggerStyle}
+				triggerClassName={triggerClassName}
+				triggerStyles={triggerStyle}
+				{...props}
+			>
+				{trigger ?? "trigger"}
+			</Trigger>
+		)
+	}, [trigger, disabled, props, triggerClassName, triggerStyle])
+
 	return (
 		<RDd.Root
-			open={opened}
+			open={open}
 			defaultOpen={defaultOpen}
-			onOpenChange={() => {
-				setOpened(!opened)
-				onOpenChange?.(!opened)
+			onOpenChange={(opened) => {
+				onOpenChange?.(opened)
 			}}
 			data-testid={testId}
 		>
-			<RDd.Trigger asChild>{triggerNode}</RDd.Trigger>
+			<RDd.Trigger asChild>{_trigger}</RDd.Trigger>
 			{usePortal ? (
 				<RDd.Portal container={getPortal(portalDivId)}>
 					{content}

@@ -1,7 +1,3 @@
-import React, { useState } from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKDropdownMenu, {
 	DropdownItemCheckbox as AKDropdownItemCheckbox,
 	DropdownItemGroup as AKDropdownItemGroup,
@@ -10,6 +6,10 @@ import AKDropdownMenu, {
 	DropdownItemRadio as AKDropdownItemRadio,
 	DropdownItemCheckboxGroup as AKDropdownItemCheckboxGroup,
 } from "@atlaskit/dropdown-menu"
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { Dropdown } from "@linked-planet/ui-kit-ts"
 import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons"
@@ -203,13 +203,18 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 		</>
 	)
 
+	const rendercount = 0
+
 	const lpExample2 = (
 		<>
-			<Dropdown.Menu trigger="Dropdown 2" usePortal>
+			<Dropdown.Menu
+				trigger={`Dropdown Menu ${rendercount}`}
+				appearance="danger"
+			>
 				<Dropdown.Item>Test 1</Dropdown.Item>
 				<Dropdown.Item>Test 2</Dropdown.Item>
 			</Dropdown.Menu>
-			<Dropdown.Menu
+			{/*<Dropdown.Menu
 				trigger={({ opened }: { opened: boolean }) => (
 					<div className="hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded bg-transparent p-1.5">
 						trigger{" "}
@@ -220,7 +225,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			>
 				<Dropdown.Item>Test 1</Dropdown.Item>
 				<Dropdown.Item>Test 2</Dropdown.Item>
-			</Dropdown.Menu>
+			</Dropdown.Menu>*/}
 		</>
 	)
 
@@ -228,8 +233,8 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const example = (
 		<div className="flex gap-4">
-			{akExample}
-			{lpExample}
+			{/*akExample}
+			{lpExample*/}
 			{lpExample2}
 		</div>
 	)
