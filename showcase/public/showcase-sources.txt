@@ -1100,6 +1100,32 @@ function ButtonShowcase(props: ShowcaseProps) {
 				>
 					Icon Loading Button
 				</AKLoadingButton>
+
+				<AKButton
+					appearance="subtle-link"
+					onClick={() => console.log("Button pressed")}
+				>
+					Subtle Link Button
+				</AKButton>
+
+				<AKButton
+					appearance="primary"
+					href={"https://www.google.com/"}
+					target="_blank"
+					onClick={() => console.log("Href Button pressed")}
+				>
+					Href Button
+				</AKButton>
+
+				<AKButton
+					appearance="primary"
+					href={"https://pbs.twimg.com/profile_images/1311008414156423170/Kxu_7mQS_400x400.jpg"}
+					target="_blank"
+					download
+					onClick={() => console.log("Href Button pressed")}
+				>
+					Download Button
+				</AKButton>
 			</AKButtonGroup>
 		</>
 	)
@@ -1185,6 +1211,13 @@ function ButtonShowcase(props: ShowcaseProps) {
 			>
 				Subtle Button
 			</Button>
+
+			<Button
+					appearance="subtle-link"
+					onClick={() => console.log("Button pressed")}
+				>
+					Subtle Link Button
+				</Button>
 
 			<Button
 				appearance="subtle"
@@ -1276,6 +1309,23 @@ function ButtonShowcase(props: ShowcaseProps) {
 			>
 				Icon Loading Button
 			</LoadingButton>
+
+			<Button
+					appearance="primary"
+					href={"https://www.google.com/"}
+					target="_blank"
+				>
+					Href Button
+				</Button>
+
+				<Button
+					appearance="primary"
+					href={"https://pbs.twimg.com/profile_images/1311008414156423170/Kxu_7mQS_400x400.jpg"}
+					target="_blank"
+					download
+				>
+					Download Button
+				</Button>
 		</ButtonGroup>
 	)
 	//#endregion button
@@ -2308,10 +2358,6 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 
 export default DateTimePickerShowcase
 
-import React, { useState } from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKDropdownMenu, {
 	DropdownItemCheckbox as AKDropdownItemCheckbox,
 	DropdownItemGroup as AKDropdownItemGroup,
@@ -2320,6 +2366,10 @@ import AKDropdownMenu, {
 	DropdownItemRadio as AKDropdownItemRadio,
 	DropdownItemCheckboxGroup as AKDropdownItemCheckboxGroup,
 } from "@atlaskit/dropdown-menu"
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { Dropdown } from "@linked-planet/ui-kit-ts"
 import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons"
@@ -2513,13 +2563,18 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 		</>
 	)
 
+	const rendercount = 0
+
 	const lpExample2 = (
 		<>
-			<Dropdown.Menu trigger="Dropdown 2" usePortal>
+			<Dropdown.Menu
+				trigger={`Dropdown Menu ${rendercount}`}
+				appearance="danger"
+			>
 				<Dropdown.Item>Test 1</Dropdown.Item>
 				<Dropdown.Item>Test 2</Dropdown.Item>
 			</Dropdown.Menu>
-			<Dropdown.Menu
+			{/*<Dropdown.Menu
 				trigger={({ opened }: { opened: boolean }) => (
 					<div className="hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded bg-transparent p-1.5">
 						trigger{" "}
@@ -2530,7 +2585,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			>
 				<Dropdown.Item>Test 1</Dropdown.Item>
 				<Dropdown.Item>Test 2</Dropdown.Item>
-			</Dropdown.Menu>
+			</Dropdown.Menu>*/}
 		</>
 	)
 
@@ -2538,8 +2593,8 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const example = (
 		<div className="flex gap-4">
-			{akExample}
-			{lpExample}
+			{/*akExample}
+			{lpExample*/}
 			{lpExample2}
 		</div>
 	)
