@@ -8,6 +8,7 @@ import * as RDd from "@radix-ui/react-dropdown-menu"
 import type React from "react"
 import {
 	forwardRef,
+	isValidElement,
 	useEffect,
 	useImperativeHandle,
 	useMemo,
@@ -30,6 +31,32 @@ const descriptionStyle = "text-text-subtlest text-[12px] leading-4 h-4" as const
 
 const portalDivId = "uikts-dropdown" as const
 
+type ItemProps = Pick<
+	RDd.DropdownMenuItemProps,
+	| "aria-label"
+	| "aria-disabled"
+	| "aria-selected"
+	| "onSelect"
+	| "onClick"
+	| "onFocus"
+	| "onBlur"
+	| "onKeyDown"
+	| "onKeyUp"
+	| "onKeyPress"
+	| "style"
+	| "className"
+	| "title"
+	| "children"
+	| "onChange"
+	| "disabled"
+> & {
+	description?: React.ReactNode
+	disabled?: boolean
+	selected?: boolean
+	elemBefore?: React.ReactNode
+	elemAfter?: React.ReactNode
+}
+
 function Item({
 	description,
 	elemBefore,
@@ -40,17 +67,8 @@ function Item({
 	children,
 	className,
 	style,
-}: {
-	elemBefore?: React.ReactNode
-	elemAfter?: React.ReactNode
-	description?: React.ReactNode
-	disabled?: boolean
-	selected?: boolean
-	onClick?: () => void
-	children: React.ReactNode
-	className?: string
-	style?: React.CSSProperties
-}) {
+	...props
+}: ItemProps) {
 	return (
 		<RDd.Item
 			disabled={disabled}
@@ -65,6 +83,7 @@ function Item({
 			)}
 			onClick={onClick}
 			style={style}
+			{...props}
 		>
 			<div className="flex-none pr-3">{elemBefore}</div>
 			<div className="flex-1">
@@ -78,43 +97,62 @@ function Item({
 	)
 }
 
+type CheckboxItemProps = Pick<
+	RDd.DropdownMenuCheckboxItemProps,
+	| "aria-label"
+	| "aria-disabled"
+	| "aria-selected"
+	| "onSelect"
+	| "onClick"
+	| "onFocus"
+	| "onBlur"
+	| "onKeyDown"
+	| "onKeyUp"
+	| "onKeyPress"
+	| "onSelectCapture"
+	| "style"
+	| "className"
+	| "title"
+	| "children"
+	| "defaultChecked"
+	| "checked"
+	| "onChange"
+	| "disabled"
+> & {
+	description?: React.ReactNode
+	disabled?: boolean
+}
+
 function ItemCheckbox({
 	description,
-	selected,
 	onClick,
-	defaultSelected,
+	defaultChecked,
+	checked,
 	disabled = false,
 	children,
 	className,
 	style,
-}: {
-	description?: React.ReactNode
-	selected?: boolean
-	defaultSelected?: boolean
-	disabled?: boolean
-	onClick?: () => void
-	children: React.ReactNode
-	className?: string
-	style?: React.CSSProperties
-}) {
+	...props
+}: CheckboxItemProps) {
 	return (
 		<RDd.CheckboxItem
 			onClick={(e) => {
 				e.preventDefault()
 				if (disabled) return
-				onClick?.()
+				onClick?.(e)
 			}}
 			disabled={disabled}
-			checked={selected}
-			defaultChecked={defaultSelected}
+			checked={checked}
+			defaultChecked={defaultChecked}
 			className={twMerge(
 				commonStyles,
-				!disabled && !selected ? normalStyles : undefined,
-				selected ? selectedStyles : undefined,
+				!disabled && !checked ? normalStyles : undefined,
+				checked ? selectedStyles : undefined,
 				disabled ? disabledStyles : undefined,
 				className,
 			)}
 			style={style}
+			{...props}
 		>
 			<div
 				className={twMerge(
@@ -168,24 +206,34 @@ function ItemGroup({
 	)
 }
 
+type ItemRadioGroupProps = Pick<
+	RDd.DropdownMenuRadioGroupProps,
+	| "aria-label"
+	| "aria-disabled"
+	| "aria-selected"
+	| "onChange"
+	| "style"
+	| "className"
+	| "title"
+	| "children"
+> & {
+	hasSeparator?: boolean
+}
+
 function ItemRadioGroup({
 	title,
 	hasSeparator,
 	children,
 	className,
 	style,
-}: {
-	title?: string
-	hasSeparator?: boolean
-	children: React.ReactNode
-	className?: string
-	style?: React.CSSProperties
-}) {
+	...props
+}: ItemRadioGroupProps) {
 	return useMemo(
 		() => (
 			<RDd.RadioGroup
 				className={twMerge("py-3", className)}
 				style={style}
+				{...props}
 			>
 				{hasSeparator && (
 					<RDd.Separator className="border-border border-t-2 pb-3" />
@@ -198,8 +246,31 @@ function ItemRadioGroup({
 				{children}
 			</RDd.RadioGroup>
 		),
-		[children, hasSeparator, title, className, style],
+		[children, hasSeparator, title, className, style, props],
 	)
+}
+
+type ItemRadioProps = Pick<
+	RDd.DropdownMenuRadioGroupProps,
+	| "aria-label"
+	| "aria-disabled"
+	| "aria-selected"
+	| "onClick"
+	| "onFocus"
+	| "onBlur"
+	| "onKeyDown"
+	| "onKeyUp"
+	| "onKeyPress"
+	| "onChange"
+	| "style"
+	| "className"
+	| "title"
+	| "children"
+> & {
+	description?: React.ReactNode
+	disabled?: boolean
+	selected?: boolean
+	value: string
 }
 
 function ItemRadio({
@@ -211,22 +282,14 @@ function ItemRadio({
 	children,
 	className,
 	style,
-}: {
-	onClick?: () => void
-	description?: React.ReactNode
-	disabled?: boolean
-	selected?: boolean
-	value: string
-	children: React.ReactNode
-	className?: string
-	style?: React.CSSProperties
-}) {
+	...props
+}: ItemRadioProps) {
 	return (
 		<RDd.RadioItem
 			onClick={(e) => {
 				e.preventDefault()
 				if (disabled) return
-				onClick?.()
+				onClick?.(e)
 			}}
 			disabled={disabled}
 			value={value}
@@ -238,6 +301,7 @@ function ItemRadio({
 				className,
 			)}
 			style={style}
+			{...props}
 		>
 			<div
 				className={twMerge(
@@ -267,27 +331,29 @@ function ItemRadio({
 	)
 }
 
+type SubMenuProps = RDd.DropdownMenuSubProps & {
+	trigger: React.ReactNode
+	chevronSide?: "right" | "left" | "none"
+	className?: string
+	style?: React.CSSProperties
+	subClassName?: string
+	subStyle?: React.CSSProperties
+	onSelect?: RDd.DropdownMenuSubContentProps["onSelect"]
+	alignOffset?: RDd.DropdownMenuSubContentProps["alignOffset"]
+}
+
 function SubMenu({
 	trigger,
-	defaultOpen,
 	chevronSide = "right",
-	open,
 	children,
 	className,
 	style,
 	subClassName,
 	subStyle,
-}: {
-	trigger: React.ReactNode
-	open?: boolean
-	chevronSide?: "right" | "left" | "none"
-	defaultOpen?: boolean
-	children: React.ReactNode
-	className?: string
-	style?: React.CSSProperties
-	subClassName?: string
-	subStyle?: React.CSSProperties
-}) {
+	onSelect,
+	alignOffset,
+	...props
+}: SubMenuProps) {
 	const triggerNode: React.ReactNode = useMemo(() => {
 		if (typeof trigger === "string") {
 			return (
@@ -306,7 +372,7 @@ function SubMenu({
 	}, [chevronSide, trigger])
 
 	return (
-		<RDd.Sub defaultOpen={defaultOpen} open={open}>
+		<RDd.Sub {...props}>
 			<RDd.SubTrigger
 				className={twMerge("flex w-full", className)}
 				style={style}
@@ -320,6 +386,8 @@ function SubMenu({
 						subClassName,
 					)}
 					style={subStyle}
+					alignOffset={alignOffset}
+					onSelect={onSelect}
 				>
 					{children}
 				</RDd.SubContent>
@@ -335,7 +403,7 @@ export type DropdownMenuProps = {
 	defaultOpen?: boolean
 	disabled?: boolean
 	onOpenChange?: (open: boolean) => void
-	trigger: (({ opened }: { opened: boolean }) => React.ReactNode) | string
+	trigger: React.ReactNode
 	children: React.ReactNode
 	triggerStyle?: React.CSSProperties
 	triggerClassName?: string
@@ -343,13 +411,19 @@ export type DropdownMenuProps = {
 	"aria-label"?: string
 	id?: string
 	testId?: string
-} & ButtonProps
+	hideChevron?: boolean
+} & ButtonProps &
+	Pick<
+		RDd.DropdownMenuContentProps,
+		"alignOffset" | "onPointerEnter" | "onPointerLeave"
+	>
 
 type TriggerProps = RDd.DropdownMenuTriggerProps &
 	ButtonProps & {
 		triggerClassName?: string // this is named triggerClassName to avoid conflict with RDd.DropdownMenuTriggerProps
 		triggerStyles?: React.CSSProperties
 		"data-state"?: "open" | "closed" // coming from RDd, do not use, only for typechecking
+		hideChevron?: boolean
 	}
 
 const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
@@ -360,6 +434,7 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 			className,
 			triggerClassName,
 			triggerStyles,
+			hideChevron = false,
 			...rest
 		} = props
 		return (
@@ -377,10 +452,18 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 				{...rest}
 			>
 				{children}
-				<div className="h-full hidden items-center group-data-[state=open]:flex">
+				<div
+					className={`h-full hidden items-center ${
+						hideChevron ? "" : "group-data-[state=open]:flex"
+					}`}
+				>
 					<ChevronUpIcon label="" size="medium" />
 				</div>
-				<div className="h-full hidden items-center group-data-[state=closed]:flex">
+				<div
+					className={`h-full hidden items-center ${
+						hideChevron ? "" : "group-data-[state=closed]:flex"
+					}`}
+				>
 					<ChevronDownIcon label="" size="medium" />
 				</div>
 			</Button>
@@ -403,6 +486,10 @@ function Menu({
 	triggerStyle,
 	triggerClassName,
 	usePortal = true,
+	onPointerEnter,
+	onPointerLeave,
+	alignOffset,
+	hideChevron,
 	testId,
 	...props
 }: DropdownMenuProps) {
@@ -424,11 +511,14 @@ function Menu({
 					transformOrigin:
 						"var(--radix-dropdown-menu-content-transform-origin)",
 				}}
+				onPointerEnter={onPointerEnter}
+				onPointerLeave={onPointerLeave}
+				alignOffset={alignOffset}
 			>
 				{children}
 			</RDd.Content>
 		),
-		[align, children, side],
+		[align, children, side, onPointerEnter, onPointerLeave, alignOffset],
 	)
 
 	const _trigger = useMemo(() => {
@@ -439,6 +529,7 @@ function Menu({
 				style={triggerStyle}
 				triggerClassName={triggerClassName}
 				triggerStyles={triggerStyle}
+				hideChevron={hideChevron}
 				{...props}
 			>
 				{trigger ?? "trigger"}

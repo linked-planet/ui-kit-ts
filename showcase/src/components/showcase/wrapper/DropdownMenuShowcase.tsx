@@ -128,21 +128,21 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 				appearance="primary"
 			>
 				<Dropdown.ItemCheckbox
-					selected={checkBoxes.includes("item-1")}
+					checked={checkBoxes.includes("item-1")}
 					description={"test description"}
 					onClick={() => handleCheckboxChange("item-1")}
 				>
 					Dropdown Checkbox Item 1
 				</Dropdown.ItemCheckbox>
 				<Dropdown.ItemCheckbox
-					selected={checkBoxes.includes("item-2")}
+					checked={checkBoxes.includes("item-2")}
 					onClick={() => handleCheckboxChange("item-2")}
 				>
 					Dropdown Checkbox Item 2
 				</Dropdown.ItemCheckbox>
 				<Dropdown.ItemCheckbox
 					disabled={true}
-					selected={checkBoxes.includes("item-3")}
+					checked={checkBoxes.includes("item-3")}
 					onClick={() => handleCheckboxChange("item-3")}
 				>
 					Dropdown Checkbox Item 3
@@ -203,29 +203,31 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 		</>
 	)
 
-	const rendercount = 0
-
 	const lpExample2 = (
 		<>
-			<Dropdown.Menu
-				trigger={`Dropdown Menu ${rendercount}`}
-				appearance="danger"
-			>
+			<Dropdown.Menu trigger="Dropdown Menu" appearance="danger">
 				<Dropdown.Item>Test 1</Dropdown.Item>
 				<Dropdown.Item>Test 2</Dropdown.Item>
 			</Dropdown.Menu>
-			{/*<Dropdown.Menu
-				trigger={({ opened }: { opened: boolean }) => (
-					<div className="hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded bg-transparent p-1.5">
-						trigger{" "}
-						{opened ? <ChevronUpIcon /> : <ChevronDownIcon />}
-					</div>
-				)}
+			<Dropdown.Menu
+				trigger={<p>custom trigger </p>}
 				usePortal
+				hideChevron
 			>
-				<Dropdown.Item>Test 1</Dropdown.Item>
+				<Dropdown.Item
+					onSelect={(e) => {
+						console.log(
+							"on select test 1, preventing from closing",
+							e,
+						)
+						e.preventDefault()
+					}}
+				>
+					Test 1
+				</Dropdown.Item>
 				<Dropdown.Item>Test 2</Dropdown.Item>
-			</Dropdown.Menu>*/}
+				<div className="p-4">No Dropdown Item</div>
+			</Dropdown.Menu>
 		</>
 	)
 
@@ -233,8 +235,8 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const example = (
 		<div className="flex gap-4">
-			{/*akExample}
-			{lpExample*/}
+			{akExample}
+			{lpExample}
 			{lpExample2}
 		</div>
 	)

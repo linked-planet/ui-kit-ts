@@ -1,25 +1,34 @@
-import React, { useCallback, useMemo, useRef, useState } from "react"
+import type React from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 
 import {
+	type ActiveModifiers,
+	Button as DPButton,
+	type DateRange,
 	DayPicker,
+	type DayPickerMultipleProps,
+	type DayPickerProps,
+	type DayPickerRangeProps,
 	//type DayPickerDefaultProps,
 	type DayPickerSingleProps,
-	type DayPickerMultipleProps,
-	type DayPickerRangeProps,
-	type DayPickerProps,
-	ActiveModifiers,
-	Matcher,
-	DateRange,
+	type DayProps,
+	type Matcher,
+	type SelectMultipleEventHandler,
+	type SelectRangeEventHandler,
+	type SelectSingleEventHandler,
 	useDayRender,
-	DayProps,
-	Button as DPButton,
 } from "react-day-picker"
 
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
 import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
-import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
 import dayjs, { type Dayjs } from "dayjs"
-import { Control, Controller, FieldPath, FieldValues } from "react-hook-form"
+import {
+	type Control,
+	Controller,
+	type FieldPath,
+	type FieldValues,
+} from "react-hook-form"
+import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
 
 //import "react-day-picker/dist/style.css" -> is imported in index.ts of the library that it is before TW
 
@@ -58,6 +67,7 @@ type CalendarBaseSingleProps = Pick<
 	invalid?: boolean
 	disabledDates?: Matcher | Matcher[]
 	disabled?: boolean
+	"aria-label"?: string
 }
 
 type CalendarBaseMultipleProps = Pick<
@@ -95,6 +105,7 @@ type CalendarBaseMultipleProps = Pick<
 	required?: boolean
 	disabledDates?: Matcher | Matcher[]
 	disabled?: boolean
+	"aria-label"?: string
 }
 
 type CalendarBaseRangeProps = Pick<
@@ -133,6 +144,7 @@ type CalendarBaseRangeProps = Pick<
 	required?: boolean
 	disabledDates?: Matcher | Matcher[]
 	disabled?: boolean
+	"aria-label"?: string
 }
 
 const captionStyles = "flex justify-center items-center relative w-full"
@@ -188,11 +200,13 @@ export function CalendarBase(
 		onSelect,
 		disabled,
 		disabledDates,
+		"aria-label": ariaLabel,
 		...propsWOEventHandler
 	} = props
 
 	return (
 		<DayPicker
+			aria-label={ariaLabel}
 			data-testid={props.testId}
 			data-invalid={props.invalid}
 			data-disabled={props.disabled ?? false}
@@ -263,6 +277,7 @@ type BaseProps = {
 	fixedWeeks?: boolean
 	invalid?: boolean
 	disabled?: boolean
+	"aria-label"?: string
 
 	onDayClicked?: (date: DateType, activeModifiers: ActiveModifiers) => void
 	onNextMonthClicked?: (month: number, year: number) => void
@@ -480,7 +495,7 @@ export function Calendar<FormData extends FieldValues>(
 	}, [defaultMonth, defaultYear, month, year])
 
 	const _defaultMonth = useMemo(() => {
-		let ret
+		let ret: Dayjs | undefined
 		if (defaultMonth) {
 			ret = dayjs()
 				.month(defaultMonth - 1)
