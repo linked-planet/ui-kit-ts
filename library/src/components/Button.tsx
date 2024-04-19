@@ -1,24 +1,38 @@
-import React, { CSSProperties, forwardRef } from "react"
-import { twJoin, twMerge } from "tailwind-merge"
-import { InteractiveAppearance } from "../utils/appearanceTypes"
-import Spinner from "@atlaskit/spinner"
+import type React from "react";
+import { type CSSProperties, forwardRef, useMemo } from "react";
+import { twJoin, twMerge } from "tailwind-merge";
+import { LoadingSpinner } from "./LoadingSpinner";
+
+export type ButtonAppearance =
+	| "default"
+	| "subtle"
+	| "primary"
+	| "link"
+	| "subtle-link"
+	| "warning"
+	| "danger"
+	| "success"
+	| "information";
 
 export type ButtonProps = {
-	appearance?: InteractiveAppearance
-	label?: string
-	title?: string
-	iconBefore?: React.ReactNode
-	iconAfter?: React.ReactNode
-	disabled?: boolean
-	selected?: boolean
-	autoFocus?: boolean
-	children?: React.ReactNode
-	style?: CSSProperties
-	className?: string
-	inverted?: boolean
-	id?: string
-	"aria-label"?: string
-	testId?: string
+	appearance?: ButtonAppearance;
+	label?: string;
+	title?: string;
+	iconBefore?: React.ReactNode;
+	iconAfter?: React.ReactNode;
+	disabled?: boolean;
+	selected?: boolean;
+	autoFocus?: boolean;
+	children?: React.ReactNode;
+	style?: CSSProperties;
+	className?: string;
+	inverted?: boolean;
+	id?: string;
+	href?: string;
+	download?: string | true;
+	target?: "_blank" | "_self" | "_parent" | "_top";
+	"aria-label"?: string;
+	testId?: string;
 } & Pick<
 	React.ButtonHTMLAttributes<HTMLButtonElement>,
 	| "type"
@@ -26,47 +40,64 @@ export type ButtonProps = {
 	| "onDoubleClick"
 	| "onMouseDown"
 	| "onMouseUp"
+	| "onMouseEnter"
+	| "onMouseLeave"
+	| "onMouseOver"
+	| "onMouseOut"
+	| "onFocus"
+	| "onBlur"
+	| "onKeyDown"
+	| "onKeyPress"
+	| "onKeyUp"
+	| "onPointerDown"
+	| "onTouchStart"
+	| "onTouchEnd"
+	| "onTouchMove"
+	| "onTouchCancel"
 	| "title"
 	| "aria-label"
->
+>;
 
-const ButtonStyles: { [style in InteractiveAppearance]: string } = {
+const ButtonStyles: { [style in ButtonAppearance]: string } = {
 	primary: twJoin(
 		"bg-brand-bold hover:bg-brand-bold-hovered active:bg-brand-bold-pressed text-text-inverse",
 		"data-[inverted]:bg-brand data-[inverted]:hover:bg-brand-hovered data-[inverted]:active:bg-brand-pressed",
-		"data-[inverted]:border-brand-bold data-[inverted]:text-brand-text",
+		"data-[inverted]:border-brand-bold data-[inverted]:text-brand-text data-[inverted]:border-solid",
 	),
 
 	default: twJoin(
 		"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",
-		"data-[inverted]:bg-transparent data-[inverted]:border-neutral-bold data-[inverted]:hover:bg-neutral-hovered data-[inverted]:active:bg-neutral-pressed",
+		"data-[inverted]:bg-transparent data-[inverted]:border-neutral-bold data-[inverted]:border-solid data-[inverted]:hover:bg-neutral-hovered data-[inverted]:active:bg-neutral-pressed",
 	),
-	subtle: "bg-neutral-subtle hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed text-text",
+	subtle:
+		"bg-neutral-subtle hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed text-text",
 	link: "bg-transparent text-link hover:underline",
+	"subtle-link":
+		"bg-transparent text-text-subtlest hover:text-text-subtle hover:underline",
 	warning: twJoin(
 		"bg-warning-bold hover:bg-warning-bold-hovered active:bg-warning-bold-pressed text-text-inverse",
 		"data-[inverted]:bg-warning data-[inverted]:hover:bg-warning-hovered data-[inverted]:active:bg-warning-pressed",
-		"data-[inverted]:border-warning-bold data-[inverted]:text-warning-text",
+		"data-[inverted]:border-warning-bold data-[inverted]:text-warning-text data-[inverted]:border-solid",
 	),
 	danger: twJoin(
 		"bg-danger-bold hover:bg-danger-bold-hovered active:bg-danger-bold-pressed text-text-inverse",
 		"data-[inverted]:bg-danger data-[inverted]:hover:bg-danger-hovered data-[inverted]:active:bg-danger-pressed",
-		"data-[inverted]:border-danger-bold data-[inverted]:text-danger-text",
+		"data-[inverted]:border-danger-bold data-[inverted]:text-danger-text data-[inverted]:border-solid",
 	),
 	success: twJoin(
 		"bg-success-bold hover:bg-success-bold-hovered active:bg-success-bold-pressed text-text-inverse",
 		"data-[inverted]:bg-success data-[inverted]:hover:bg-success-hovered data-[inverted]:active:bg-success-pressed",
-		"data-[inverted]:border-success-bold data-[inverted]:text-success-text",
+		"data-[inverted]:border-success-bold data-[inverted]:text-success-text data-[inverted]:border-solid",
 	),
 	information: twJoin(
 		"bg-information-bold hover:bg-information-bold-hovered active:bg-information-bold-pressed text-text-inverse",
 		"data-[inverted]:bg-information data-[inverted]:hover:bg-information-hovered data-[inverted]:active:bg-information-pressed",
-		"data-[inverted]:border-information-bold data-[inverted]:text-information-text",
+		"data-[inverted]:border-information-bold data-[inverted]:text-information-text data-[inverted]:border-solid",
 	),
-} as const
+} as const;
 
 export const ButtonSelectedStyles =
-	"bg-selected active:bg-selected hover:bg-selected text-selected-text-inverse cursor-pointer" as const
+	"bg-selected active:bg-selected hover:bg-selected text-selected-text-inverse cursor-pointer" as const;
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	(
@@ -85,10 +116,41 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			inverted,
 			id,
 			testId,
+			href,
+			download,
+			target = "_blank",
 			...props
 		}: ButtonProps,
 		ref,
 	) => {
+		const content = useMemo(() => {
+			if (href && !disabled) {
+				return (
+					<a
+						href={href}
+						target={target}
+						rel="noreferrer"
+						style={{
+							color: "inherit",
+							textDecoration: "inherit",
+						}}
+						download={download}
+					>
+						{iconBefore}
+						{children}
+						{iconAfter}
+					</a>
+				);
+			}
+			return (
+				<>
+					{iconBefore}
+					{children}
+					{iconAfter}
+				</>
+			);
+		}, [target, children, iconAfter, iconBefore, href, download, disabled]);
+
 		return (
 			<button
 				ref={ref}
@@ -99,9 +161,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				data-inverted={inverted}
 				id={id}
 				className={twMerge(
-					"relative box-border flex flex-shrink-0 items-center justify-center gap-1 rounded border border-transparent px-3 py-1.5 outline-1 outline-offset-2",
+					"relative cursor-pointer box-border flex flex-shrink-0 items-center justify-center gap-1 rounded border border-transparent px-3 py-1.5 outline-1 outline-offset-2",
 					!disabled ? ButtonStyles[appearance] : undefined,
-					`${appearance !== "subtle" ? "disabled:bg-disabled" : ""} disabled:text-disabled-text data-[inverted]:disabled:border-border disabled:cursor-not-allowed data-[inverted]:disabled:bg-transparent`,
+					`${
+						appearance !== "subtle" ? "disabled:bg-disabled" : ""
+					} disabled:text-disabled-text data-[inverted]:disabled:border-border disabled:cursor-not-allowed data-[inverted]:disabled:bg-transparent`,
 					selected ? ButtonSelectedStyles : undefined,
 					className,
 				)}
@@ -109,16 +173,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				data-testid={testId}
 				{...props}
 			>
-				{iconBefore}
-				{children}
-				{iconAfter}
+				{content}
 			</button>
-		)
+		);
 	},
-)
+);
 
-Button.displayName = "LPButton"
-export { Button }
+Button.displayName = "LPButton";
+export { Button };
 
 export const LoadingButton = ({
 	loading = false,
@@ -136,21 +198,21 @@ export const LoadingButton = ({
 			<div className={loading ? "opacity-0" : undefined}>{children}</div>
 			{loading && (
 				<div className="absolute inset-0 flex items-center justify-center">
-					<Spinner />
+					<LoadingSpinner />
 				</div>
 			)}
 		</Button>
-	)
-}
+	);
+};
 
 export const ButtonGroup = ({
 	children,
 	className,
 	style,
 }: {
-	children: React.ReactNode
-	className?: string
-	style?: CSSProperties
+	children: React.ReactNode;
+	className?: string;
+	style?: CSSProperties;
 }) => {
 	return (
 		<div
@@ -159,5 +221,5 @@ export const ButtonGroup = ({
 		>
 			{children}
 		</div>
-	)
-}
+	);
+};
