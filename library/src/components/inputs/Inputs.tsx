@@ -1,12 +1,12 @@
 import React, {
 	forwardRef,
 	type ComponentPropsWithoutRef,
-	ForwardedRef,
+	type ForwardedRef,
 	type CSSProperties,
 	useImperativeHandle,
 	useRef,
 	useEffect,
-	ReactNode,
+	type ReactNode,
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./SlidingErrorMessage"
@@ -36,7 +36,7 @@ export function Label({
 
 //#region Input
 const inputNormalStyles =
-	"p-1 w-full box-border rounded border-2 border-input-border bg-input ease-in-out transition duration-200"
+	"p-1 w-full box-border rounded border-2 border-solid border-input-border bg-input ease-in-out transition duration-200"
 const inputFocusStyles =
 	"focus:border-input-border-focused focus:bg-input-active outline-none hover:bg-input-hovered"
 const inputDisabledStyles =
@@ -75,7 +75,7 @@ const Input = forwardRef(
 	) => {
 		const internalRef = useRef<HTMLInputElement>(null)
 		const errorRef = useRef<HTMLDivElement>(null)
-		useImperativeHandle(ref, () => internalRef.current!)
+		useImperativeHandle(ref, () => internalRef.current as HTMLInputElement)
 
 		useEffect(() => {
 			const observer = new MutationObserver((mutationsList) => {
@@ -99,8 +99,9 @@ const Input = forwardRef(
 					}
 				}
 			})
-
-			observer.observe(internalRef.current!, { attributes: true })
+			if (internalRef.current) {
+				observer.observe(internalRef.current, { attributes: true })
+			}
 
 			return () => {
 				observer.disconnect()
