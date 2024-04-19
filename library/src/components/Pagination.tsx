@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState } from "react"
-import { twMerge } from "tailwind-merge"
-import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
-import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
-import { type DropdownMenuProps, Dropdown } from "./DropdownMenu"
+import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
+import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
+import type React from "react"
+import { useEffect, useMemo, useState } from "react"
+import { twMerge } from "tailwind-merge"
+import { Dropdown, type DropdownMenuProps } from "./DropdownMenu"
 
 function PageSizeSelector({
 	pageSize,
@@ -82,6 +83,7 @@ function PaginationPageHandler<P extends string | number>({
 	previousLabel,
 	nextLabel,
 	label,
+	pageLabel,
 }: {
 	pages: P[]
 	currentPage?: P
@@ -94,6 +96,7 @@ function PaginationPageHandler<P extends string | number>({
 	previousLabel?: string
 	nextLabel?: string
 	label?: string
+	pageLabel?: string
 }) {
 	const [_currentPage, setCurrentPage] = useState(
 		currentPage ?? defaultPage ?? pages[0],
@@ -187,6 +190,7 @@ function PaginationPageHandler<P extends string | number>({
 				title={previousLabel}
 				aria-label={previousLabel}
 				aria-disabled={currentIdx >= pages.length - 1}
+				type="button"
 			>
 				<ChevronLeftLargeIcon size="medium" label="" />
 			</button>
@@ -207,6 +211,18 @@ function PaginationPageHandler<P extends string | number>({
 								onPageIndexChange?.(currentIndex)
 								onPageChange?.(page as P)
 							}}
+							onKeyUp={(e) => {
+								if (e.key === "Enter") {
+									const currentIndex = pages.indexOf(
+										page as P,
+									)
+									setCurrentPage(page as P)
+									onPageIndexChange?.(currentIndex)
+									onPageChange?.(page as P)
+								}
+							}}
+							aria-label={`${pageLabel} ${page}`}
+							type="button"
 						>
 							{page}
 						</button>
@@ -236,6 +252,7 @@ function PaginationPageHandler<P extends string | number>({
 				title={nextLabel}
 				aria-label={nextLabel}
 				aria-disabled={currentIdx >= pages.length - 1}
+				type="button"
 			>
 				<ChevronRightLargeIcon size="medium" label="" />
 			</button>
@@ -263,6 +280,7 @@ export function Pagination<P extends string | number>({
 	label = "Pagination",
 	previousLabel = "Previous Page",
 	nextLabel = "Next Page",
+	pageLabel = "",
 	...pageSizeSelectorProps
 }: {
 	totalPages?: number
@@ -285,6 +303,7 @@ export function Pagination<P extends string | number>({
 	label?: string
 	previousLabel?: string
 	nextLabel?: string
+	pageLabel?: string
 	className?: string
 	style?: React.CSSProperties
 }) {
