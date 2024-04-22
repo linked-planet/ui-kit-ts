@@ -9,13 +9,9 @@ import {
 	type DayPickerMultipleProps,
 	type DayPickerProps,
 	type DayPickerRangeProps,
-	//type DayPickerDefaultProps,
 	type DayPickerSingleProps,
 	type DayProps,
 	type Matcher,
-	type SelectMultipleEventHandler,
-	type SelectRangeEventHandler,
-	type SelectSingleEventHandler,
 	useDayRender,
 } from "react-day-picker"
 
@@ -44,6 +40,9 @@ type CalendarBaseSingleProps = Pick<
 	| "onPrevClick"
 	| "selected"
 	| "onSelect"
+	| "onDayKeyUp"
+	| "onDayKeyDown"
+	| "onDayFocus"
 	| "today"
 	| "weekStartsOn"
 	| "id"
@@ -81,6 +80,10 @@ type CalendarBaseMultipleProps = Pick<
 	| "onNextClick"
 	| "onPrevClick"
 	| "selected"
+	| "onSelect"
+	| "onDayKeyUp"
+	| "onDayKeyDown"
+	| "onDayFocus"
 	| "onSelect"
 	| "today"
 	| "weekStartsOn"
@@ -121,6 +124,9 @@ type CalendarBaseRangeProps = Pick<
 	| "onPrevClick"
 	| "selected"
 	| "onSelect"
+	| "onDayKeyUp"
+	| "onDayKeyDown"
+	| "onDayFocus"
 	| "today"
 	| "weekStartsOn"
 	| "id"
@@ -200,6 +206,7 @@ export function CalendarBase(
 		onSelect,
 		disabled,
 		disabledDates,
+		className,
 		"aria-label": ariaLabel,
 		...propsWOEventHandler
 	} = props
@@ -213,6 +220,7 @@ export function CalendarBase(
 			classNames={classNames}
 			showOutsideDays={props.showOutsideDays ?? true}
 			fixedWeeks={props.fixedWeeks ?? true}
+			className={className}
 			components={{
 				IconLeft: () => (
 					<ChevronLeftLargeIcon label={previousMonthLabel} />
@@ -278,6 +286,7 @@ type BaseProps = {
 	invalid?: boolean
 	disabled?: boolean
 	"aria-label"?: string
+	className?: string
 
 	onDayClicked?: (date: DateType, activeModifiers: ActiveModifiers) => void
 	onNextMonthClicked?: (month: number, year: number) => void
@@ -472,7 +481,7 @@ export function Calendar<FormData extends FieldValues>(
 	)
 
 	const _month = useMemo(() => {
-		let ret
+		let ret = undefined
 		if (month) {
 			ret = dayjs()
 				.month(month - 1)
