@@ -1,16 +1,16 @@
-import React, { useState } from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { default as AKSelect } from "@atlaskit/select"
 import {
 	Button,
 	ButtonGroup,
 	Label,
-	OptionGroupType,
+	type OptionGroupType,
 	Select,
 } from "@linked-planet/ui-kit-ts"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //#region select2form-uncontrolled
 type FormData = {
@@ -274,6 +274,9 @@ function SelectShowcase(props: ShowcaseProps) {
 			<Select
 				placeholder="Select a value 3"
 				isMulti
+				inputId="input-id-test"
+				instanceId="instance-id-test"
+				id="id-test"
 				options={[
 					{
 						label: "First group",

@@ -183,6 +183,7 @@ const SelectInner = <
 	clearValuesLabel,
 	removeValueLabel,
 	dropdownLabel,
+	inputId,
 	...props
 }: InnerProps<ValueType, Option, IsMulti, GroupOptionType>) => {
 	const classNamesConfig = useClassNamesConfig<
@@ -214,55 +215,56 @@ const SelectInner = <
 				</div>
 			),
 
-			MultiValueRemove: (_props) => (
-				<div
-					role="button"
-					{..._props.innerProps}
-					title={removeValueLabel ?? "remove selected"}
-					aria-label={removeValueLabel ?? "remove selected"}
-					aria-hidden="false"
-				>
-					<EditorCloseIcon size="small" label="" />
-				</div>
-			),
+			MultiValueRemove: (_props) => {
+				const title = `${removeValueLabel ?? "remove"} ${
+					_props.data.label
+				}`
+				return (
+					<div
+						role="button"
+						{..._props.innerProps}
+						title={title}
+						aria-label={title}
+						className={_props.innerProps.className}
+						aria-hidden="false"
+					>
+						<EditorCloseIcon size="small" label="" />
+					</div>
+				)
+			},
 
-			DropdownIndicator: (_props) => (
-				<div
-					{..._props.innerProps}
-					role="button"
-					//aria-disabled={_props.isDisabled}
-					className={_props.getClassNames(
-						"dropdownIndicator",
-						_props,
-					)}
-					style={
-						_props.getStyles("dropdownIndicator", _props) as
-							| CSSProperties
-							| undefined
-					}
-					title={
-						dropdownLabel
-							? dropdownLabel?.(_props.selectProps.menuIsOpen)
-							: _props.selectProps.menuIsOpen
-								? "close the dropdown"
-								: "open the dropdown"
-					}
-					aria-label={
-						dropdownLabel
-							? dropdownLabel?.(_props.selectProps.menuIsOpen)
-							: _props.selectProps.menuIsOpen
-								? "close the dropdown"
-								: "open the dropdown"
-					}
-					aria-hidden="false"
-				>
-					{_props.selectProps.menuIsOpen ? (
-						<ChevronUpIcon size="medium" label="" />
-					) : (
-						<ChevronDownIcon size="medium" label="" />
-					)}
-				</div>
-			),
+			DropdownIndicator: (_props) => {
+				const title =
+					dropdownLabel?.(_props.selectProps.menuIsOpen) ??
+					`${
+						_props.selectProps.menuIsOpen ? "close" : "open"
+					} the dropdown`
+				return (
+					<div
+						{..._props.innerProps}
+						role="button"
+						//aria-disabled={_props.isDisabled}
+						className={_props.getClassNames(
+							"dropdownIndicator",
+							_props,
+						)}
+						style={
+							_props.getStyles("dropdownIndicator", _props) as
+								| CSSProperties
+								| undefined
+						}
+						title={title}
+						aria-label={title}
+						aria-hidden="false"
+					>
+						{_props.selectProps.menuIsOpen ? (
+							<ChevronUpIcon size="medium" label="" />
+						) : (
+							<ChevronDownIcon size="medium" label="" />
+						)}
+					</div>
+				)
+			},
 		}
 		return ret
 	}, [clearValuesLabel, dropdownLabel, removeValueLabel])
@@ -277,6 +279,7 @@ const SelectInner = <
 						: "Select..."
 				}
 				unstyled
+				inputId={inputId}
 				data-testid={testId}
 				classNames={classNamesConfig}
 				formatCreateLabel={
@@ -296,6 +299,7 @@ const SelectInner = <
 		<RSelect<Option, IsMulti, GroupOptionType>
 			placeholder={props.placeholder ?? "Select..."}
 			unstyled
+			inputId={inputId}
 			classNames={classNamesConfig}
 			data-testid={testId}
 			styles={customStyles}
@@ -334,6 +338,7 @@ type SelectPropsProto<
 	dropdownLabel?: (isOpen: boolean) => string
 	clearValuesLabel?: string
 	removeValueLabel?: string
+	inputId?: string
 }
 
 // extends with the control and fieldName props for react-hook-form.. the fieldName is the normal name prop of react-hook-form
