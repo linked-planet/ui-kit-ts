@@ -6,18 +6,10 @@ import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import RadioIcon from "@atlaskit/icon/glyph/radio"
 import * as RDd from "@radix-ui/react-dropdown-menu"
 import type React from "react"
-import {
-	forwardRef,
-	isValidElement,
-	useEffect,
-	useImperativeHandle,
-	useMemo,
-	useRef,
-	useState,
-} from "react"
+import { forwardRef, useMemo, useRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
-import { Button, type ButtonAppearance, type ButtonProps } from "./Button"
+import { Button, type ButtonProps } from "./Button"
 
 const commonStyles =
 	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-none border-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-none focus-visible:border-solid focus-visible:border-selected-border" as const
@@ -412,6 +404,7 @@ export type DropdownMenuProps = {
 	id?: string
 	testId?: string
 	hideChevron?: boolean
+	modal?: boolean
 } & ButtonProps &
 	Pick<
 		RDd.DropdownMenuContentProps,
@@ -453,14 +446,14 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 			>
 				{children}
 				<div
-					className={`h-full hidden items-center ${
+					className={`h-full hidden items-center w-6 ${
 						hideChevron ? "" : "group-data-[state=open]:flex"
 					}`}
 				>
 					<ChevronUpIcon label="" size="medium" />
 				</div>
 				<div
-					className={`h-full hidden items-center ${
+					className={`h-full hidden items-center w-6 ${
 						hideChevron ? "" : "group-data-[state=closed]:flex"
 					}`}
 				>
@@ -491,6 +484,7 @@ function Menu({
 	alignOffset,
 	hideChevron,
 	testId,
+	modal = true,
 	...props
 }: DropdownMenuProps) {
 	const contentRef = useRef<HTMLDivElement>(null)
@@ -499,7 +493,7 @@ function Menu({
 		() => (
 			<RDd.Content
 				ref={contentRef}
-				className="bg-surface-overlay shadow-overlay z-50 rounded overflow-auto max-h-full" // only-x-auto to allow for horizontal scrolling but do not cut off the outline
+				className="bg-surface-overlay shadow-overlay border-border border-solid border z-50 rounded overflow-auto max-h-full" // only-x-auto to allow for horizontal scrolling but do not cut off the outline
 				side={side}
 				align={align}
 				onFocusOutside={() => {
@@ -535,7 +529,7 @@ function Menu({
 				{trigger ?? "trigger"}
 			</Trigger>
 		)
-	}, [trigger, disabled, props, triggerClassName, triggerStyle])
+	}, [trigger, disabled, props, triggerClassName, triggerStyle, hideChevron])
 
 	return (
 		<RDd.Root
@@ -545,6 +539,7 @@ function Menu({
 				onOpenChange?.(opened)
 			}}
 			data-testid={testId}
+			modal={modal}
 		>
 			<RDd.Trigger asChild>{_trigger}</RDd.Trigger>
 			{usePortal ? (
