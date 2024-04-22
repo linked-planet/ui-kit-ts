@@ -12,7 +12,6 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { Dropdown } from "@linked-planet/ui-kit-ts"
-import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons"
 
 function DropDownMenuShowcase(props: ShowcaseProps) {
 	const [radioValue, setRadioValue] = useState("testval1")
@@ -244,6 +243,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Dropdown menu"
+			description="Dropdown menu component, use the different dropdown items to create a dropdown menu. For other complex dropdown content use the Popover component."
 			{...props}
 			packages={[
 				{

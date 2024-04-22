@@ -10,6 +10,7 @@ import { forwardRef, useMemo, useRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
 import { Button, type ButtonProps } from "./Button"
+import { overlayBaseStyle } from "./styleHelper"
 
 const commonStyles =
 	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-none border-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-none focus-visible:border-solid focus-visible:border-selected-border" as const
@@ -389,8 +390,6 @@ function SubMenu({
 }
 
 export type DropdownMenuProps = {
-	side?: RDd.MenuContentProps["side"]
-	align?: RDd.MenuContentProps["align"]
 	open?: boolean
 	defaultOpen?: boolean
 	disabled?: boolean
@@ -400,15 +399,22 @@ export type DropdownMenuProps = {
 	triggerStyle?: React.CSSProperties
 	triggerClassName?: string
 	usePortal?: boolean
-	"aria-label"?: string
-	id?: string
 	testId?: string
 	hideChevron?: boolean
 	modal?: boolean
 } & ButtonProps &
 	Pick<
 		RDd.DropdownMenuContentProps,
-		"alignOffset" | "onPointerEnter" | "onPointerLeave"
+		| "alignOffset"
+		| "onPointerEnter"
+		| "onPointerLeave"
+		| "id"
+		| "aria-label"
+		| "align"
+		| "side"
+		| "onFocusOutside"
+		| "onMouseEnter"
+		| "onMouseLeave"
 	>
 
 type TriggerProps = RDd.DropdownMenuTriggerProps &
@@ -425,7 +431,6 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 			children,
 			style,
 			className,
-			triggerClassName,
 			triggerStyles,
 			hideChevron = false,
 			...rest
@@ -435,7 +440,6 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 				ref={ref}
 				className={twMerge(
 					"flex items-center group justify-between",
-					triggerClassName,
 					className,
 				)}
 				style={{
@@ -476,8 +480,6 @@ function Menu({
 	disabled = false,
 	trigger,
 	children,
-	triggerStyle,
-	triggerClassName,
 	usePortal = true,
 	onPointerEnter,
 	onPointerLeave,
@@ -493,7 +495,7 @@ function Menu({
 		() => (
 			<RDd.Content
 				ref={contentRef}
-				className="bg-surface-overlay shadow-overlay border-border border-solid border z-50 rounded overflow-auto max-h-full" // only-x-auto to allow for horizontal scrolling but do not cut off the outline
+				className={overlayBaseStyle}
 				side={side}
 				align={align}
 				onFocusOutside={() => {
@@ -520,16 +522,13 @@ function Menu({
 			<Trigger
 				disabled={disabled}
 				aria-disabled={disabled}
-				style={triggerStyle}
-				triggerClassName={triggerClassName}
-				triggerStyles={triggerStyle}
 				hideChevron={hideChevron}
 				{...props}
 			>
 				{trigger ?? "trigger"}
 			</Trigger>
 		)
-	}, [trigger, disabled, props, triggerClassName, triggerStyle, hideChevron])
+	}, [trigger, disabled, props, hideChevron])
 
 	return (
 		<RDd.Root
