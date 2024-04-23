@@ -44,6 +44,11 @@ export type OptionType<ValueType> = {
 
 export type OptionGroupType<ValueType> = GroupBase<OptionType<ValueType>>
 
+export type SelectClassNames<
+	V = unknown,
+	IsMulti extends boolean = boolean,
+> = ClassNamesConfig<OptionType<V>, IsMulti, OptionGroupType<V>>
+
 const portalDivId = "uikts-select" as const
 
 function useClassNamesConfig<
@@ -342,7 +347,7 @@ type SelectPropsProto<
 }
 
 // extends with the control and fieldName props for react-hook-form.. the fieldName is the normal name prop of react-hook-form
-type SelectInFormProps<
+export type SelectInFormProps<
 	FormData extends FieldValues,
 	ValueType,
 	Option extends OptionType<ValueType>,
@@ -355,7 +360,7 @@ type SelectInFormProps<
 	invalid?: boolean
 }
 
-type SelectNotInFormProps<
+export type SelectNotInFormProps<
 	ValueType,
 	Option extends OptionType<ValueType>,
 	IsMulti extends boolean,

@@ -28,6 +28,44 @@ import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
 
 //import "react-day-picker/dist/style.css" -> is imported in index.ts of the library that it is before TW
 
+type CalendarExtraProps = {
+	testId?: string
+
+	nextMonthLabel?: string
+	previousMonthLabel?: string
+	todayLabel?: string
+
+	invalid?: boolean
+	required?: boolean
+	"aria-label"?: string
+	locale?: string
+	key?: React.Key
+
+	/* month is here 1 indexed for convenience purposes, but in JS on a Date object it is 0 indexed */
+	year?: number
+	defaultYear?: number
+	/* 0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday */
+	weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
+
+	disabled?: boolean
+
+	/* shows days outside of the month */
+	showOutsideDays?: boolean
+	/* always show 6 weeks, requires show outside day to be true */
+	fixedWeeks?: boolean
+
+	className?: string
+	style?: React.CSSProperties
+}
+
+type CalendarBaseExtraProps = CalendarExtraProps & {
+	minDate?: Date
+	maxDate?: Date
+	disabledDates?: Matcher | Matcher[]
+	month?: Date
+	defaultMonth?: Date
+}
+
 type CalendarBaseSingleProps = Pick<
 	DayPickerSingleProps,
 	| "defaultMonth"
@@ -56,18 +94,11 @@ type CalendarBaseSingleProps = Pick<
 	| "fromDate"
 	| "toDate"
 	| "required"
-> & {
-	mode: "single"
-	testId?: string
-	nextMonthLabel?: string
-	previousMonthLabel?: string
-	todayLabel?: string
-	secondarySelected?: Date
-	invalid?: boolean
-	disabledDates?: Matcher | Matcher[]
-	disabled?: boolean
-	"aria-label"?: string
-}
+> &
+	CalendarBaseExtraProps & {
+		mode: "single"
+		secondarySelected?: Date
+	}
 
 type CalendarBaseMultipleProps = Pick<
 	DayPickerMultipleProps,
@@ -97,19 +128,11 @@ type CalendarBaseMultipleProps = Pick<
 	| "hidden"
 	| "fromDate"
 	| "toDate"
-> & {
-	mode: "multiple"
-	testId?: string
-	nextMonthLabel?: string
-	previousMonthLabel?: string
-	todayLabel?: string
-	secondarySelected?: Date[]
-	invalid?: boolean
-	required?: boolean
-	disabledDates?: Matcher | Matcher[]
-	disabled?: boolean
-	"aria-label"?: string
-}
+> &
+	CalendarBaseExtraProps & {
+		mode: "multiple"
+		secondarySelected?: Date[]
+	}
 
 type CalendarBaseRangeProps = Pick<
 	DayPickerRangeProps,
@@ -139,19 +162,11 @@ type CalendarBaseRangeProps = Pick<
 	| "hidden"
 	| "fromDate"
 	| "toDate"
-> & {
-	mode: "range"
-	testId?: string
-	nextMonthLabel?: string
-	previousMonthLabel?: string
-	todayLabel?: string
-	secondarySelected?: DateRange
-	invalid?: boolean
-	required?: boolean
-	disabledDates?: Matcher | Matcher[]
-	disabled?: boolean
-	"aria-label"?: string
-}
+> &
+	CalendarBaseExtraProps & {
+		mode: "range"
+		secondarySelected?: DateRange
+	}
 
 const captionStyles = "flex justify-center items-center relative w-full"
 const captionLabelStyles = "text-text text-sm font-bold flex justify-center"
@@ -595,6 +610,10 @@ function CalendarSingle({
 	onNextMonthClicked,
 	onPreviousMonthClicked,
 	onMonthChanged,
+	defaultMonth,
+	month,
+	minDate,
+	maxDate,
 	...props
 }: SingleToBaseProps) {
 	const [selectedDate, setSelectedDate] = useState<DateType | undefined>(
@@ -643,8 +662,8 @@ function CalendarSingle({
 	return (
 		<CalendarBase
 			{...props}
-			month={props.month?.toDate()}
-			defaultMonth={props.defaultMonth?.toDate()}
+			month={month?.toDate()}
+			defaultMonth={defaultMonth?.toDate()}
 			selected={_selected}
 			secondarySelected={_secondarySelected}
 			onSelect={_onSelect}
@@ -652,8 +671,8 @@ function CalendarSingle({
 			onNextClick={onNextMonthClicked}
 			onPrevClick={onPreviousMonthClicked}
 			onMonthChange={onMonthChanged}
-			fromDate={props.minDate?.toDate()}
-			toDate={props.maxDate?.toDate()}
+			fromDate={minDate?.toDate()}
+			toDate={maxDate?.toDate()}
 		/>
 	)
 }
@@ -728,6 +747,10 @@ function CalendarRange({
 	onNextMonthClicked,
 	onPreviousMonthClicked,
 	onMonthChanged,
+	month,
+	defaultMonth,
+	minDate,
+	maxDate,
 	...props
 }: RangeToBaseProps) {
 	const [selectedDates, setSelectedDates] = useState<{
@@ -807,8 +830,8 @@ function CalendarRange({
 	return (
 		<CalendarBase
 			{...props}
-			month={props.month?.toDate()}
-			defaultMonth={props.defaultMonth?.toDate()}
+			month={month?.toDate()}
+			defaultMonth={defaultMonth?.toDate()}
 			selected={_selected}
 			secondarySelected={_secondarySelected}
 			onSelect={_onSelect}
@@ -816,8 +839,8 @@ function CalendarRange({
 			onNextClick={onNextMonthClicked}
 			onPrevClick={onPreviousMonthClicked}
 			onMonthChange={onMonthChanged}
-			fromDate={props.minDate?.toDate()}
-			toDate={props.maxDate?.toDate()}
+			fromDate={minDate?.toDate()}
+			toDate={maxDate?.toDate()}
 		/>
 	)
 }
@@ -912,6 +935,10 @@ function CalendarMulti({
 	onNextMonthClicked,
 	onPreviousMonthClicked,
 	onMonthChanged,
+	defaultMonth,
+	month,
+	minDate,
+	maxDate,
 	...props
 }: MultiToBaseProps) {
 	const [selectedDates, setSelectedDates] = useState(
@@ -958,8 +985,8 @@ function CalendarMulti({
 	return (
 		<CalendarBase
 			{...props}
-			month={props.month?.toDate()}
-			defaultMonth={props.defaultMonth?.toDate()}
+			month={month?.toDate()}
+			defaultMonth={defaultMonth?.toDate()}
 			selected={_selected}
 			secondarySelected={_secondarySelected}
 			onSelect={_onSelect}
@@ -967,8 +994,8 @@ function CalendarMulti({
 			onNextClick={onNextMonthClicked}
 			onPrevClick={onPreviousMonthClicked}
 			onMonthChange={onMonthChanged}
-			fromDate={props.minDate?.toDate()}
-			toDate={props.maxDate?.toDate()}
+			fromDate={minDate?.toDate()}
+			toDate={maxDate?.toDate()}
 		/>
 	)
 }

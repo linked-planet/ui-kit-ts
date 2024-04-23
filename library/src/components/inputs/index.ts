@@ -5,4 +5,10 @@ export { DateTimePicker } from "./DateTimePicker"
 export { DatePicker } from "./DateTimePicker"
 export { TimePicker } from "./DateTimePicker"
 
-export { type OptionType, type OptionGroupType } from "./Select"
+export {
+	type OptionType,
+	type OptionGroupType,
+	type SelectNotInFormProps,
+	type SelectInFormProps,
+	type SelectClassNames,
+} from "./Select"
