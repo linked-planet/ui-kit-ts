@@ -2603,6 +2603,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Dropdown menu"
+			description="Dropdown menu component, use the different dropdown items to create a dropdown menu. For other complex dropdown content use the Popover component."
 			{...props}
 			packages={[
 				{
@@ -5836,7 +5837,8 @@ function PaginationShowcase(props: ShowcaseProps) {
 
 export default PaginationShowcase
 
-import { Popover } from "@linked-planet/ui-kit-ts"
+import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
+import { Calendar, Popover } from "@linked-planet/ui-kit-ts"
 import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
@@ -5844,7 +5846,28 @@ import ShowcaseWrapperItem, {
 
 //#region popover-example
 function PopoverExample() {
-	return <Popover.Root trigger="trigger">Content</Popover.Root>
+	return (
+		<>
+			<Popover.Root
+				appearance="primary"
+				side="top"
+				trigger="open popover"
+				closer={<EditorCloseIcon label="Close Popover" />}
+				className="w-96"
+				contentClassName="w-96"
+			>
+				<Calendar mode="single" />
+			</Popover.Root>
+			<Popover.Root
+				trigger={<div className="text-warning-bold">Other Trigger</div>}
+				contentClassName="p-4"
+				side="bottom"
+				align="end"
+			>
+				Content
+			</Popover.Root>
+		</>
+	)
 }
 //#endregion popover-example
 
@@ -5852,6 +5875,7 @@ export default function PopoverShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Popover"
+			description="Popup is a component that displays a floating window that appears on top of the app’s content, similar to a dropdown."
 			{...props}
 			packages={[
 				{
@@ -5869,57 +5893,6 @@ export default function PopoverShowcase(props: ShowcaseProps) {
 		/>
 	)
 }
-
-import React, { useState } from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Popup } from "@atlaskit/popup"
-import Button from "@atlaskit/button"
-
-function PopupShowcase(props: ShowcaseProps) {
-	//#region popup
-	const [isPopupActive, setIsPopupActive] = useState(false)
-	const example = (
-		<Popup
-			isOpen={isPopupActive}
-			placement="top"
-			onClose={() => setIsPopupActive(false)}
-			trigger={() => (
-				<Button
-					onClick={() => setIsPopupActive(true)}
-					isSelected={isPopupActive}
-				>
-					OpenPopup
-				</Button>
-			)}
-			content={() => (
-				<div style={{ padding: "15px 15px" }}>
-					<span>Popup content</span>
-				</div>
-			)}
-		/>
-	)
-	//#endregion popup
-
-	return (
-		<ShowcaseWrapperItem
-			name="Popup"
-			{...props}
-			packages={[
-				{
-					name: "@atlaskit/popup",
-					url: "https://atlassian.design/components/popup/examples",
-				},
-			]}
-			examples={[
-				{ title: "Example", example, sourceCodeExampleId: "popup" },
-			]}
-		/>
-	)
-}
-
-export default PopupShowcase
 
 import { default as AKSelect } from "@atlaskit/select"
 import {

@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef, useState } from "react"
 import {
 	type ActiveModifiers,
 	Button as DPButton,
+	type DateFormatter,
 	type DateRange,
 	DayPicker,
 	type DayPickerMultipleProps,
@@ -38,7 +39,7 @@ type CalendarExtraProps = {
 	invalid?: boolean
 	required?: boolean
 	"aria-label"?: string
-	locale?: string
+	lang?: string
 	key?: React.Key
 
 	/* month is here 1 indexed for convenience purposes, but in JS on a Date object it is 0 indexed */
@@ -71,7 +72,7 @@ type CalendarBaseSingleProps = Pick<
 	| "defaultMonth"
 	| "onMonthChange"
 	| "disableNavigation"
-	| "locale"
+	| "lang"
 	| "month"
 	| "onDayClick"
 	| "onNextClick"
@@ -105,7 +106,7 @@ type CalendarBaseMultipleProps = Pick<
 	| "defaultMonth"
 	| "onMonthChange"
 	| "disableNavigation"
-	| "locale"
+	| "lang"
 	| "month"
 	| "onDayClick"
 	| "onNextClick"
@@ -139,7 +140,7 @@ type CalendarBaseRangeProps = Pick<
 	| "defaultMonth"
 	| "onMonthChange"
 	| "disableNavigation"
-	| "locale"
+	| "lang"
 	| "month"
 	| "defaultMonth"
 	| "onDayClick"
@@ -202,6 +203,19 @@ const classNames: DayPickerProps["classNames"] = {
 	tbody: "border-b-0",
 }
 
+const labelFormat: {
+	lang: string | undefined
+	formatter: Intl.DateTimeFormat
+} = {
+	lang: undefined,
+	formatter: Intl.DateTimeFormat(undefined, {
+		weekday: "long",
+		day: "numeric",
+		month: "numeric",
+		year: "numeric",
+	}),
+}
+
 export function CalendarBase(props: CalendarBaseSingleProps): JSX.Element
 export function CalendarBase(props: CalendarBaseMultipleProps): JSX.Element
 export function CalendarBase(props: CalendarBaseRangeProps): JSX.Element
@@ -223,8 +237,60 @@ export function CalendarBase(
 		disabledDates,
 		className,
 		"aria-label": ariaLabel,
+		lang,
 		...propsWOEventHandler
 	} = props
+
+	if (lang !== labelFormat.lang) {
+		labelFormat.lang = lang
+		labelFormat.formatter = Intl.DateTimeFormat(lang, {
+			weekday: "long",
+			day: "numeric",
+			month: "numeric",
+			year: "numeric",
+		})
+	}
+
+	const formatters = useMemo(() => {
+		const dayFormatter = Intl.DateTimeFormat(lang, {
+			day: "numeric",
+		})
+		const formatDay: DateFormatter = (date: Date) =>
+			dayFormatter.format(date)
+
+		const monthFormatter = Intl.DateTimeFormat(lang, {
+			month: "long",
+		})
+		const formatMonthCaption: DateFormatter = (date: Date) =>
+			monthFormatter.format(date)
+
+		const captionFormatter = Intl.DateTimeFormat(lang, {
+			month: "long",
+			year: "numeric",
+		})
+		const formatCaption: DateFormatter = (date: Date) =>
+			captionFormatter.format(date)
+
+		const yearFormatter = Intl.DateTimeFormat(lang, {
+			year: "numeric",
+		})
+		const formatYearCaption: DateFormatter = (date: Date) =>
+			yearFormatter.format(date)
+
+		const weekdayFormatter = Intl.DateTimeFormat(lang, {
+			weekday: "short",
+		})
+		const formatWeekdayName: DateFormatter = (date: Date) =>
+			weekdayFormatter.format(date).substring(0, 2)
+
+		return {
+			formatDay,
+			formatMonthCaption,
+			formatCaption,
+			formatYearCaption,
+			formatWeekdayName,
+		}
+	}, [lang])
 
 	return (
 		<DayPicker
@@ -236,6 +302,7 @@ export function CalendarBase(
 			showOutsideDays={props.showOutsideDays ?? true}
 			fixedWeeks={props.fixedWeeks ?? true}
 			className={className}
+			lang={lang}
 			components={{
 				IconLeft: () => (
 					<ChevronLeftLargeIcon label={previousMonthLabel} />
@@ -256,6 +323,7 @@ export function CalendarBase(
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			onSelect={!disabled ? (onSelect as any) : undefined}
 			{...propsWOEventHandler}
+			formatters={formatters}
 		/>
 	)
 }
@@ -265,15 +333,26 @@ function Day(props: DayProps) {
 	const buttonRef = useRef<HTMLButtonElement>(null)
 	const dayRender = useDayRender(props.date, props.displayMonth, buttonRef)
 
+	const label = labelFormat.formatter.format(props.date)
+
 	// this is the original code, which I had to modify to remove the hidden rendering
 	/*if (dayRender.isHidden) {
 		return <div role="gridcell"></div>;
 	}*/
 	//
 	if (!dayRender.isButton) {
-		return <div {...dayRender.divProps} />
+		return <div aria-label={label} {...dayRender.divProps} />
 	}
-	return <DPButton name="day" ref={buttonRef} {...dayRender.buttonProps} />
+	return (
+		<DPButton
+			name="day"
+			title={label}
+			aria-label={label}
+			ref={buttonRef}
+			tabIndex={0}
+			{...dayRender.buttonProps}
+		/>
+	)
 }
 
 type BaseProps = {
@@ -287,7 +366,7 @@ type BaseProps = {
 	defaultYear?: number
 	disabledDates?: DateType[]
 	disabledDateFilter?: (date: DateType) => boolean
-	//locale?: string
+
 	minDate?: DateType
 	maxDate?: DateType
 	nextMonthLabel?: string
@@ -302,6 +381,7 @@ type BaseProps = {
 	disabled?: boolean
 	"aria-label"?: string
 	className?: string
+	lang?: string
 
 	onDayClicked?: (date: DateType, activeModifiers: ActiveModifiers) => void
 	onNextMonthClicked?: (month: number, year: number) => void

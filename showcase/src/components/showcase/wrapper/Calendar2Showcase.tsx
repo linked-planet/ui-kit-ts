@@ -1,21 +1,21 @@
-import React, { useCallback, useState } from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
-	CalendarBase,
-	Calendar,
-	DateType,
 	Button,
 	ButtonGroup,
+	Calendar,
+	CalendarBase,
+	type DateType,
 } from "@linked-planet/ui-kit-ts"
-import { DateRange } from "react-day-picker"
 import {
 	dateFromString,
 	toDateType,
 } from "@linked-planet/ui-kit-ts/utils/DateUtils"
 import dayjs from "dayjs"
+import React, { useCallback, useState } from "react"
+import type { DateRange } from "react-day-picker"
 import { useForm } from "react-hook-form"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //#region calendar2-single
 function CalendarSingle() {
@@ -92,6 +92,7 @@ function CalendarSingle() {
 				disabledDates={sundayMatcher}
 				disabled
 				weekStartsOn={1}
+				lang="en"
 			/>
 			<Calendar
 				mode="single"
@@ -108,6 +109,7 @@ function CalendarSingle() {
 				disabledDateFilter={sundayMatcher2}
 				disabledDates={[disabledDate1, disabledDate2]}
 				weekStartsOn={1}
+				lang="de"
 			/>
 			{/*<AKCalendar
 				selected={selected ? [selected] : []}
