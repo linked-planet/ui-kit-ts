@@ -338,6 +338,7 @@ export function Pagination<P extends string | number>({
 					previousLabel={previousLabel}
 					nextLabel={nextLabel}
 					label={label}
+					pageLabel={pageLabel}
 				/>
 			</div>
 			{!hidePageSize && (
