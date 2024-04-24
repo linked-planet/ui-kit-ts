@@ -11,8 +11,6 @@ const portalDivId = "uikts-popover" as const
 
 type TriggerProps = RPo.PopoverTriggerProps &
 	ButtonProps & {
-		triggerClassName?: string // this is named triggerClassName to avoid conflict with RDd.DropdownMenuTriggerProps
-		triggerStyles?: React.CSSProperties
 		"data-state"?: "open" | "closed" // coming from RDd, do not use, only for typechecking
 		hideChevron?: boolean
 	}
@@ -24,8 +22,6 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 			children,
 			style,
 			className,
-			triggerClassName,
-			triggerStyles,
 			hideChevron = false,
 			...rest
 		} = props
@@ -34,12 +30,10 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 				ref={ref}
 				className={twMerge(
 					"flex items-center group justify-between",
-					triggerClassName,
 					className,
 				)}
 				style={{
 					...style,
-					...triggerStyles,
 				}}
 				{...rest}
 			>

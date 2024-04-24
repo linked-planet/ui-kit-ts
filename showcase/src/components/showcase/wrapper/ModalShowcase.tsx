@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import CrossIcon from "@atlaskit/icon/glyph/cross"
 import {
@@ -55,78 +55,71 @@ function AKExample() {
 
 						<AKModalBody>
 							<p>This is the body of the AK modal.</p>
-							<AKSelect options={selectOptions}></AKSelect>
+							<AKSelect options={selectOptions} />
 							<Select
 								placeholder="Choose"
 								options={selectOptions}
 								side="bottom"
 								align="end"
 								className="z-10"
-							></Select>
-							<>
-								Lorem, ipsum dolor sit amet consectetur
-								adipisicing elit. Distinctio ipsam harum rerum
-								quia, nam, autem non, commodi expedita dolore
-								quisquam saepe odit maiores id alias reiciendis.
-								Aut aperiam minus eum. Lorem ipsum dolor sit
-								amet consectetur adipisicing elit. Illum quos
-								dolorum officia id porro illo sit voluptates
-								error doloremque? Iste deserunt amet illo
-								incidunt modi. Facilis reiciendis ratione at
-								veritatis. Lorem ipsum dolor sit amet
-								consectetur, adipisicing elit. Deserunt non,
-								perspiciatis voluptate cumque vel eveniet
-								ratione sequi ullam facilis! Beatae, voluptatem
-								aperiam consequatur assumenda consectetur
-								possimus accusantium maxime similique labore!
-								Lorem ipsum dolor sit amet consectetur,
-								adipisicing elit. Ullam, possimus facere ut odit
-								mollitia vel consectetur earum reiciendis beatae
-								inventore fugiat, quo eaque ipsum soluta facilis
-								doloremque, voluptatibus odio officiis. Lorem
-								ipsum dolor sit amet consectetur adipisicing
-								elit. Laudantium voluptatum aut voluptates
-								distinctio nam neque dolore, maiores autem
-								impedit, doloribus eveniet laborum
-								necessitatibus ex! Possimus odit in commodi
-								nulla architecto. Lorem ipsum dolor sit amet
-								consectetur adipisicing elit. Officia, facere
-								reiciendis incidunt obcaecati aut corrupti
-								tempora commodi nam aspernatur et quas beatae
-								delectus perspiciatis alias quia inventore
-								molestias quis exercitationem? Lorem, ipsum
-								dolor sit amet consectetur adipisicing elit.
-								Blanditiis temporibus doloremque nam molestiae
-								quidem, repellendus eligendi ex magnam quasi.
-								Est doloribus quam accusantium? Consequuntur,
-								vel sapiente alias repudiandae nisi soluta.
-								Lorem ipsum dolor sit amet consectetur
-								adipisicing elit. Reiciendis, quibusdam maxime.
-								Numquam, explicabo! At vero eligendi cupiditate
-								vel molestias eos sint, obcaecati minus suscipit
-								ducimus libero reprehenderit, itaque debitis
-								atque? Lorem ipsum dolor sit amet, consectetur
-								adipisicing elit. Repellendus vero consequatur
-								velit dolores neque distinctio harum tempore.
-								Vitae, doloribus perferendis! Deserunt
-								reprehenderit dolor tempora atque amet officiis
-								ea, velit iste. Lorem ipsum dolor sit, amet
-								consectetur adipisicing elit. Est nemo
-								accusamus, inventore assumenda et nulla. Eius,
-								consequuntur repudiandae ea corrupti eos magni
-								itaque temporibus blanditiis aspernatur, earum
-								quam ut. Laudantium. Lorem ipsum dolor sit amet
-								consectetur adipisicing elit. Doloremque
-								recusandae, distinctio in fuga vero ullam
-								tempora nisi laborum unde architecto, doloribus
-								dicta fugiat itaque voluptatibus dolorum vel
-								aspernatur, inventore nemo? Lorem ipsum dolor
-								sit amet consectetur adipisicing elit. Error,
-								corporis animi. Praesentium voluptate, optio
-								tenetur harum odio sequi eos possimus officiis
-								dignissimos. Laboriosam voluptates fuga est.
-								Deserunt quod officia harum!
-							</>
+							/>
+							Lorem, ipsum dolor sit amet consectetur adipisicing
+							elit. Distinctio ipsam harum rerum quia, nam, autem
+							non, commodi expedita dolore quisquam saepe odit
+							maiores id alias reiciendis. Aut aperiam minus eum.
+							Lorem ipsum dolor sit amet consectetur adipisicing
+							elit. Illum quos dolorum officia id porro illo sit
+							voluptates error doloremque? Iste deserunt amet illo
+							incidunt modi. Facilis reiciendis ratione at
+							veritatis. Lorem ipsum dolor sit amet consectetur,
+							adipisicing elit. Deserunt non, perspiciatis
+							voluptate cumque vel eveniet ratione sequi ullam
+							facilis! Beatae, voluptatem aperiam consequatur
+							assumenda consectetur possimus accusantium maxime
+							similique labore! Lorem ipsum dolor sit amet
+							consectetur, adipisicing elit. Ullam, possimus
+							facere ut odit mollitia vel consectetur earum
+							reiciendis beatae inventore fugiat, quo eaque ipsum
+							soluta facilis doloremque, voluptatibus odio
+							officiis. Lorem ipsum dolor sit amet consectetur
+							adipisicing elit. Laudantium voluptatum aut
+							voluptates distinctio nam neque dolore, maiores
+							autem impedit, doloribus eveniet laborum
+							necessitatibus ex! Possimus odit in commodi nulla
+							architecto. Lorem ipsum dolor sit amet consectetur
+							adipisicing elit. Officia, facere reiciendis
+							incidunt obcaecati aut corrupti tempora commodi nam
+							aspernatur et quas beatae delectus perspiciatis
+							alias quia inventore molestias quis exercitationem?
+							Lorem, ipsum dolor sit amet consectetur adipisicing
+							elit. Blanditiis temporibus doloremque nam molestiae
+							quidem, repellendus eligendi ex magnam quasi. Est
+							doloribus quam accusantium? Consequuntur, vel
+							sapiente alias repudiandae nisi soluta. Lorem ipsum
+							dolor sit amet consectetur adipisicing elit.
+							Reiciendis, quibusdam maxime. Numquam, explicabo! At
+							vero eligendi cupiditate vel molestias eos sint,
+							obcaecati minus suscipit ducimus libero
+							reprehenderit, itaque debitis atque? Lorem ipsum
+							dolor sit amet, consectetur adipisicing elit.
+							Repellendus vero consequatur velit dolores neque
+							distinctio harum tempore. Vitae, doloribus
+							perferendis! Deserunt reprehenderit dolor tempora
+							atque amet officiis ea, velit iste. Lorem ipsum
+							dolor sit, amet consectetur adipisicing elit. Est
+							nemo accusamus, inventore assumenda et nulla. Eius,
+							consequuntur repudiandae ea corrupti eos magni
+							itaque temporibus blanditiis aspernatur, earum quam
+							ut. Laudantium. Lorem ipsum dolor sit amet
+							consectetur adipisicing elit. Doloremque recusandae,
+							distinctio in fuga vero ullam tempora nisi laborum
+							unde architecto, doloribus dicta fugiat itaque
+							voluptatibus dolorum vel aspernatur, inventore nemo?
+							Lorem ipsum dolor sit amet consectetur adipisicing
+							elit. Error, corporis animi. Praesentium voluptate,
+							optio tenetur harum odio sequi eos possimus officiis
+							dignissimos. Laboriosam voluptates fuga est.
+							Deserunt quod officia harum!
 						</AKModalBody>
 
 						<AKModalFooter>
@@ -204,7 +197,7 @@ function ControlledExample() {
 							menuPlacement="top"
 						/>
 						<Dropdown.Menu
-							triggerClassName="w-full"
+							className="w-full"
 							align="end"
 							trigger="Dropdown"
 							usePortal={false}

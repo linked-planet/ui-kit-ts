@@ -397,7 +397,6 @@ export type DropdownMenuProps = {
 	trigger: React.ReactNode
 	children: React.ReactNode
 	triggerStyle?: React.CSSProperties
-	triggerClassName?: string
 	usePortal?: boolean
 	testId?: string
 	hideChevron?: boolean
@@ -419,8 +418,6 @@ export type DropdownMenuProps = {
 
 type TriggerProps = RDd.DropdownMenuTriggerProps &
 	ButtonProps & {
-		triggerClassName?: string // this is named triggerClassName to avoid conflict with RDd.DropdownMenuTriggerProps
-		triggerStyles?: React.CSSProperties
 		"data-state"?: "open" | "closed" // coming from RDd, do not use, only for typechecking
 		hideChevron?: boolean
 	}
@@ -431,7 +428,6 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 			children,
 			style,
 			className,
-			triggerStyles,
 			hideChevron = false,
 			...rest
 		} = props
@@ -444,7 +440,6 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 				)}
 				style={{
 					...style,
-					...triggerStyles,
 				}}
 				{...rest}
 			>
