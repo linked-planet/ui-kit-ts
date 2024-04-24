@@ -13,10 +13,11 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //#region select2form-uncontrolled
+
 type FormData = {
-	singleValue: string
-	multiValues: string[]
-	groupedMultiValues: string[]
+	singleValue: string | null // null because react-hook-form does not support undefined values (doesn't react on them)
+	multiValues: string[] | null
+	groupedMultiValues: string[] | null
 }
 
 function FormExample() {
@@ -44,7 +45,7 @@ function FormExample() {
 		},
 	]
 
-	const { handleSubmit, control, reset } = useForm<FormData>({
+	const { handleSubmit, control, reset, setValue } = useForm<FormData>({
 		defaultValues: {
 			singleValue: availableOptions[0].value,
 			multiValues: [availableOptions[0].value, availableOptions[1].value],
@@ -54,6 +55,29 @@ function FormExample() {
 
 	return (
 		<>
+			<div className="flex gap-2">
+				<Button
+					onClick={() => {
+						setValue("singleValue", null)
+					}}
+				>
+					Reset Single Value
+				</Button>
+				<Button
+					onClick={() => {
+						setValue("multiValues", null)
+					}}
+				>
+					Reset Multi Value
+				</Button>
+				<Button
+					onClick={() => {
+						setValue("groupedMultiValues", null)
+					}}
+				>
+					Reset Grouped Multi Value
+				</Button>
+			</div>
 			<form
 				onSubmit={handleSubmit((data) => console.log(data))}
 				onReset={(e) => {
@@ -178,6 +202,7 @@ function SelectShowcase(props: ShowcaseProps) {
 			<Select
 				isCreateable
 				isClearable
+				tabSelectsValue
 				placeholder="Select an option"
 				onChange={(value) => {
 					console.log("on change", value)
@@ -298,6 +323,17 @@ function SelectShowcase(props: ShowcaseProps) {
 		<ShowcaseWrapperItem
 			name="Select"
 			{...props}
+			description={
+				<>
+					Select component with support for single and multi select,
+					grouped options, custom styling and react-hook-form
+					integration.
+					<br />
+					If used in a form and you want to clear the selected option
+					use <b>NULL</b>, not undefined. React-hook-form does not
+					support undefined values.
+				</>
+			}
 			packages={[
 				{
 					name: "@atlaskit/select",

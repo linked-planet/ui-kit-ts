@@ -1,5 +1,5 @@
-import type React from "react"
-import { type CSSProperties, useMemo } from "react"
+import React from "react"
+import { type CSSProperties, useMemo, useImperativeHandle } from "react"
 import { Controller } from "react-hook-form"
 import type { Control, FieldValues, Path } from "react-hook-form"
 import {
@@ -11,6 +11,7 @@ import {
 	default as RSelect,
 	type SelectComponentsConfig,
 	type SelectInstance,
+	MultiValueRemoveProps,
 } from "react-select"
 
 import { getPortal } from "../../utils/getPortal"
@@ -79,12 +80,12 @@ function useClassNamesConfig<
 				twMerge(menuStyles, classNamesConfig?.menu?.(provided)),
 			clearIndicator: (provided) =>
 				twMerge(
-					"w-[14px] h-[14px] flex items-center justify-center cursor-pointer text-disabled-text hover:text-text" as const,
+					"w-6 h-6 mx-0.5 overflow-hidden flex items-center justify-center cursor-pointer text-disabled-text hover:text-text" as const,
 					classNamesConfig?.clearIndicator?.(provided),
 				),
 			dropdownIndicator: (provided) =>
 				twMerge(
-					"w-[14px] h-[14px] flex items-center justify-center cursor-pointer text-disabled-text hover:text-text" as const,
+					"w-6 h-6 mx-0.5 overflow-hidden flex items-center justify-center cursor-pointer text-disabled-text hover:text-text" as const,
 					classNamesConfig?.dropdownIndicator?.(provided),
 				),
 			indicatorSeparator: (provided) =>
@@ -136,7 +137,7 @@ function useClassNamesConfig<
 				),
 			multiValueRemove: (provided) =>
 				twMerge(
-					"hover:bg-danger-hovered active:bg-danger-pressed px-1 cursor-pointer ml-1 flex items-center rounded-sm" as const,
+					"hover:bg-danger-hovered active:bg-danger-pressed px-1 cursor-pointer ml-1 flex items-center rounded-r-sm " as const,
 					classNamesConfig?.multiValueRemove?.(provided),
 				),
 		}),
@@ -168,7 +169,11 @@ type InnerProps<
 > = CreatableProps<Option, IsMulti, GroupOptionType> & {
 	isCreateable?: boolean
 	testId?: string
-	innerRef?: React.Ref<SelectInstance<Option, IsMulti, GroupOptionType>>
+	innerRef?: React.Ref<SelectInstance<
+		Option,
+		IsMulti,
+		GroupOptionType
+	> | null>
 	clearValuesLabel?: string
 	removeValueLabel?: string
 	dropdownLabel?: (isOpen: boolean) => string
@@ -200,6 +205,12 @@ const SelectInner = <
 	// get the browsers locale
 	const locale = navigator.language
 
+	const locRef =
+		React.useRef<SelectInstance<Option, IsMulti, GroupOptionType>>(null)
+	console.log("INNER REF", locRef)
+
+	useImperativeHandle(innerRef, () => locRef.current, [])
+
 	const components = useMemo(() => {
 		const ret: SelectComponentsConfig<Option, IsMulti, GroupOptionType> = {
 			ClearIndicator: (_props) => (
@@ -215,13 +226,19 @@ const SelectInner = <
 					title={clearValuesLabel ?? "clear all selected"}
 					aria-label={clearValuesLabel ?? "clear all selected"}
 					aria-hidden="false"
+					tabIndex={0}
+					onKeyUp={(e) => {
+						if (e.key === "Enter") {
+							_props.clearValue()
+						}
+					}}
 				>
 					<SelectClearIcon size="small" label="" />
 				</div>
 			),
 
 			MultiValueRemove: (_props) => {
-				const title = `${removeValueLabel ?? "remove"} ${
+				const title = `${removeValueLabel ?? "Remove"} ${
 					_props.data.label
 				}`
 				return (
@@ -230,10 +247,47 @@ const SelectInner = <
 						{..._props.innerProps}
 						title={title}
 						aria-label={title}
-						className={_props.innerProps.className}
 						aria-hidden="false"
+						tabIndex={0}
 					>
 						<EditorCloseIcon size="small" label="" />
+					</div>
+				)
+			},
+
+			MultiValue: (_props) => {
+				const className = _props.getClassNames(
+					"multiValueRemove",
+					_props,
+				)
+				// add the className to the removeProps... else it is undefined
+				_props.removeProps.className = className
+				return (
+					<div
+						{..._props.innerProps}
+						className={_props.getClassNames("multiValue", _props)}
+						style={
+							_props.getStyles("multiValue", _props) as
+								| CSSProperties
+								| undefined
+						}
+						onKeyUp={(e) => {
+							if (e.key === "Enter") {
+								_props.selectOption(_props.data)
+								locRef.current?.focus()
+							}
+						}}
+					>
+						{_props.children}
+						{!_props.data.isFixed && (
+							<_props.components.Remove
+								data={_props.data}
+								innerProps={_props.removeProps}
+								selectProps={_props.selectProps}
+							>
+								{_props.removeProps.children}
+							</_props.components.Remove>
+						)}
 					</div>
 				)
 			},
@@ -243,7 +297,7 @@ const SelectInner = <
 					dropdownLabel?.(_props.selectProps.menuIsOpen) ??
 					`${
 						_props.selectProps.menuIsOpen ? "close" : "open"
-					} the dropdown`
+					} the menu`
 				return (
 					<div
 						{..._props.innerProps}
@@ -277,7 +331,7 @@ const SelectInner = <
 	if (isCreateable) {
 		return (
 			<ReactSelectCreatable<Option, IsMulti, GroupOptionType>
-				ref={innerRef}
+				ref={locRef}
 				placeholder={
 					props.placeholder ?? locale.startsWith("de-")
 						? "Auswahl..."
@@ -303,6 +357,7 @@ const SelectInner = <
 	return (
 		<RSelect<Option, IsMulti, GroupOptionType>
 			placeholder={props.placeholder ?? "Select..."}
+			ref={locRef}
 			unstyled
 			inputId={inputId}
 			classNames={classNamesConfig}
@@ -439,7 +494,7 @@ function SelectInForm<
 
 				// uncontrolled
 				if (!value) {
-					if (!isMulti && options && field.value) {
+					if (!isMulti && options) {
 						for (const opt of options) {
 							if (
 								isOptionType(opt) &&
@@ -457,18 +512,23 @@ function SelectInForm<
 								}
 							}
 						}
-					} else if (isMulti && options && field.value) {
+						if (!valueUsed) {
+							valueUsed = field.value
+						}
+					} else if (isMulti && options) {
 						const multiValueUsed = []
-						for (const opt of options) {
-							if (
-								isOptionType(opt) &&
-								field.value.includes(opt.value)
-							) {
-								multiValueUsed.push(opt)
-							} else if (isOptionGroupType(opt)) {
-								for (const opt2 of opt.options) {
-									if (field.value.includes(opt2.value)) {
-										multiValueUsed.push(opt2)
+						if (field.value) {
+							for (const opt of options) {
+								if (
+									isOptionType(opt) &&
+									field.value.includes(opt.value)
+								) {
+									multiValueUsed.push(opt)
+								} else if (isOptionGroupType(opt)) {
+									for (const opt2 of opt.options) {
+										if (field.value.includes(opt2.value)) {
+											multiValueUsed.push(opt2)
+										}
 									}
 								}
 							}
