@@ -106,7 +106,7 @@ function useClassNamesConfig<
 			multiValue: (provided) => {
 				return twJoin(
 					twMerge(
-						"bg-neutral rounded-sm pl-1 mr-2 text-text text-ellipsis",
+						"bg-neutral rounded-sm pl-1 mr-2 my-0.5 text-text text-ellipsis",
 						provided.isDisabled
 							? "bg-disabled text-disabled-text"
 							: undefined,
@@ -136,8 +136,13 @@ function useClassNamesConfig<
 				),
 			multiValueRemove: (provided) =>
 				twMerge(
-					"hover:bg-danger-hovered active:bg-danger-pressed px-1 cursor-pointer ml-1 flex items-center rounded-r-sm " as const,
+					"hover:bg-danger-hovered active:bg-danger-pressed focus-visible:outline-offset-0 px-1 cursor-pointer ml-1 flex items-center rounded-r-sm " as const,
 					classNamesConfig?.multiValueRemove?.(provided),
+				),
+			valueContainer: (provided) =>
+				twMerge(
+					"overflow-visible",
+					classNamesConfig?.valueContainer?.(provided),
 				),
 		}),
 		[classNamesConfig],
