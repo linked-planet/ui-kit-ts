@@ -11,7 +11,6 @@ import {
 	default as RSelect,
 	type SelectComponentsConfig,
 	type SelectInstance,
-	MultiValueRemoveProps,
 } from "react-select"
 
 import { getPortal } from "../../utils/getPortal"
@@ -207,8 +206,8 @@ const SelectInner = <
 
 	const locRef =
 		React.useRef<SelectInstance<Option, IsMulti, GroupOptionType>>(null)
-	console.log("INNER REF", locRef)
 
+	// required to have access to focus()
 	useImperativeHandle(innerRef, () => locRef.current, [])
 
 	const components = useMemo(() => {
@@ -333,7 +332,7 @@ const SelectInner = <
 			<ReactSelectCreatable<Option, IsMulti, GroupOptionType>
 				ref={locRef}
 				placeholder={
-					props.placeholder ?? locale.startsWith("de-")
+					props.placeholder ?? locale.startsWith("de")
 						? "Auswahl..."
 						: "Select..."
 				}
@@ -344,11 +343,12 @@ const SelectInner = <
 				formatCreateLabel={
 					formatCreateLabel ??
 					((value) =>
-						locale.startsWith("de-")
+						locale.startsWith("de")
 							? `Erstelle "${value}"`
 							: `Create "${value}"`)
 				}
 				styles={customStyles}
+				components={components}
 				{...props}
 			/>
 		)
@@ -356,7 +356,11 @@ const SelectInner = <
 
 	return (
 		<RSelect<Option, IsMulti, GroupOptionType>
-			placeholder={props.placeholder ?? "Select..."}
+			placeholder={
+				props.placeholder ?? locale.startsWith("de")
+					? "Auswahl..."
+					: "Select..."
+			}
 			ref={locRef}
 			unstyled
 			inputId={inputId}
