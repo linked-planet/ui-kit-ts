@@ -79,12 +79,12 @@ function useClassNamesConfig<
 				twMerge(menuStyles, classNamesConfig?.menu?.(provided)),
 			clearIndicator: (provided) =>
 				twMerge(
-					"w-6 h-6 mx-0.5 overflow-hidden flex items-center justify-center cursor-pointer text-disabled-text hover:text-text" as const,
+					"w-4 h-6 overflow-hidden flex items-center justify-center cursor-pointer text-disabled-text hover:text-text self-start pt-2" as const,
 					classNamesConfig?.clearIndicator?.(provided),
 				),
 			dropdownIndicator: (provided) =>
 				twMerge(
-					"w-6 h-6 mx-0.5 overflow-hidden flex items-center justify-center cursor-pointer text-disabled-text hover:text-text" as const,
+					"w-4 h-6 ml-0.5 overflow-hidden flex items-center justify-center cursor-pointer text-disabled-text hover:text-text self-start pt-2" as const,
 					classNamesConfig?.dropdownIndicator?.(provided),
 				),
 			indicatorSeparator: (provided) =>
@@ -106,7 +106,7 @@ function useClassNamesConfig<
 			multiValue: (provided) => {
 				return twJoin(
 					twMerge(
-						"bg-neutral rounded-sm pl-1 mr-2 my-0.5 text-text text-ellipsis",
+						"bg-neutral w-auto rounded-sm pl-1 mr-2 my-0.5 text-text",
 						provided.isDisabled
 							? "bg-disabled text-disabled-text"
 							: undefined,
@@ -115,6 +115,11 @@ function useClassNamesConfig<
 					classNamesConfig?.multiValue?.(provided),
 				)
 			},
+			multiValueRemove: (provided) =>
+				twMerge(
+					"hover:bg-danger-hovered flex-none active:bg-danger-pressed focus-visible:outline-offset-0 px-1 cursor-pointer ml-1 flex items-center rounded-r-sm " as const,
+					classNamesConfig?.multiValueRemove?.(provided),
+				),
 			option: (provided) =>
 				twMerge(
 					optionStyles,
@@ -134,16 +139,11 @@ function useClassNamesConfig<
 					"text-text-subtlest text-2xs font-[500] uppercase pt-4 pb-0.5 px-3" as const,
 					classNamesConfig?.groupHeading?.(provided),
 				),
-			multiValueRemove: (provided) =>
-				twMerge(
-					"hover:bg-danger-hovered active:bg-danger-pressed focus-visible:outline-offset-0 px-1 cursor-pointer ml-1 flex items-center rounded-r-sm " as const,
-					classNamesConfig?.multiValueRemove?.(provided),
-				),
-			valueContainer: (provided) =>
+			/*valueContainer: (provided) =>
 				twMerge(
 					"overflow-visible",
 					classNamesConfig?.valueContainer?.(provided),
-				),
+				),*/
 		}),
 		[classNamesConfig],
 	)
@@ -156,6 +156,7 @@ const customStyles = {
 		cursor: "pointer",
 		minHeight: "2.2rem",
 		borderWidth: "2px",
+		flexWrap: "nowrap" as const,
 		//height: "1.83rem",
 	}),
 }
@@ -282,7 +283,7 @@ const SelectInner = <
 							}
 						}}
 					>
-						{_props.children}
+						<div className="truncate">{_props.children}</div>
 						{!_props.data.isFixed && (
 							<_props.components.Remove
 								data={_props.data}
