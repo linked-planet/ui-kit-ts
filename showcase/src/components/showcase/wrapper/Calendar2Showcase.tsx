@@ -228,8 +228,6 @@ function CalendarBaseExample() {
 }
 //#endregion calendar2-base
 
-className = "items-start"
-
 //#region calendar2-range
 function CalendarRange() {
 	const [selected, setSelected] = useState<{
