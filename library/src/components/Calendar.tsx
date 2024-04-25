@@ -14,6 +14,7 @@ import {
 	type DayProps,
 	type Matcher,
 	useDayRender,
+	type Labels,
 } from "react-day-picker"
 
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
@@ -31,10 +32,6 @@ import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
 
 type CalendarExtraProps = {
 	testId?: string
-
-	nextMonthLabel?: string
-	previousMonthLabel?: string
-	todayLabel?: string
 
 	invalid?: boolean
 	required?: boolean
@@ -95,6 +92,7 @@ type CalendarBaseSingleProps = Pick<
 	| "fromDate"
 	| "toDate"
 	| "required"
+	| "labels"
 > &
 	CalendarBaseExtraProps & {
 		mode: "single"
@@ -129,6 +127,7 @@ type CalendarBaseMultipleProps = Pick<
 	| "hidden"
 	| "fromDate"
 	| "toDate"
+	| "labels"
 > &
 	CalendarBaseExtraProps & {
 		mode: "multiple"
@@ -163,6 +162,7 @@ type CalendarBaseRangeProps = Pick<
 	| "hidden"
 	| "fromDate"
 	| "toDate"
+	| "labels"
 > &
 	CalendarBaseExtraProps & {
 		mode: "range"
@@ -187,12 +187,12 @@ const classNames: DayPickerProps["classNames"] = {
 	caption: captionStyles,
 	day_selected: daySelectedStyles,
 	cell: cellStyles,
-	button: "w-full h-full group-data-[disabled=true]:cursor-not-allowed",
+	button: "h-full w-full group-data-[disabled=true]:cursor-not-allowed",
 	nav: navStyles,
 	nav_button:
 		"p-1 rounded hover:bg-neutral-subtle-hovered flex items-center justify-center",
-	nav_button_previous: "h-max w-max",
-	nav_button_next: "h-max w-max",
+	nav_button_previous: "h-max max-w-max",
+	nav_button_next: "h-max max-w-max",
 	table: "w-auto",
 	head: headStyles,
 	day: "text-sm",
@@ -225,9 +225,6 @@ export function CalendarBase(
 		| CalendarBaseMultipleProps
 		| CalendarBaseRangeProps,
 ): React.ReactNode {
-	const nextMonthLabel = props.nextMonthLabel || "Next Month"
-	const previousMonthLabel = props.previousMonthLabel || "Previous Month"
-
 	const {
 		onDayClick,
 		onNextClick,
@@ -302,14 +299,11 @@ export function CalendarBase(
 			showOutsideDays={props.showOutsideDays ?? true}
 			fixedWeeks={props.fixedWeeks ?? true}
 			className={className}
+			labels={{}}
 			lang={lang}
 			components={{
-				IconLeft: () => (
-					<ChevronLeftLargeIcon label={previousMonthLabel} />
-				),
-				IconRight: () => (
-					<ChevronRightLargeIcon label={nextMonthLabel} />
-				),
+				IconLeft: () => <ChevronLeftLargeIcon label="" />,
+				IconRight: () => <ChevronRightLargeIcon label="" />,
 				Day,
 			}}
 			modifiersClassNames={{
@@ -369,8 +363,6 @@ type BaseProps = {
 
 	minDate?: DateType
 	maxDate?: DateType
-	nextMonthLabel?: string
-	previousMonthLabel?: string
 	/* 0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday */
 	weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
 	/* shows days outside of the month */
@@ -382,6 +374,7 @@ type BaseProps = {
 	"aria-label"?: string
 	className?: string
 	lang?: string
+	labels?: Partial<Labels>
 
 	onDayClicked?: (date: DateType, activeModifiers: ActiveModifiers) => void
 	onNextMonthClicked?: (month: number, year: number) => void
