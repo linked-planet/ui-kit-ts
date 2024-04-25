@@ -69,22 +69,29 @@ function useClassNamesConfig<
 					controlStyles,
 					provided.isDisabled
 						? "bg-disabled border-transparent cursor-not-allowed"
-						: "bg-input hover:bg-input-hovered",
+						: undefined,
 					provided.isFocused && !provided.isDisabled
-						? "bg-input-active border-input-border-focused"
-						: "",
+						? "bg-input-active hover:bg-input-active border-input-border-focused"
+						: undefined,
+					!provided.isFocused && !provided.isDisabled
+						? "bg-input hover:bg-input-hovered"
+						: undefined,
 					classNamesConfig?.control?.(provided),
 				),
 			menu: (provided) =>
 				twMerge(menuStyles, classNamesConfig?.menu?.(provided)),
 			clearIndicator: (provided) =>
 				twMerge(
-					"w-4 h-4 overflow-hidden flex items-center justify-center cursor-pointer text-disabled-text hover:text-text self-start mt-2" as const,
+					"w-4 h-4 overflow-hidden flex items-center justify-center cursor-pointer text-text-subtlest hover:text-text self-start mt-2",
 					classNamesConfig?.clearIndicator?.(provided),
 				),
 			dropdownIndicator: (provided) =>
 				twMerge(
-					"w-4 h-4 ml-0.5 overflow-hidden flex items-center justify-center cursor-pointer text-disabled-text hover:text-text self-start mt-2" as const,
+					`w-4 h-4 ml-0.5 overflow-hidden flex items-center justify-center cursor-pointer ${
+						provided.isDisabled
+							? "text-disabled-text"
+							: "text-text-subtlest  hover:text-text"
+					} self-start mt-2`,
 					classNamesConfig?.dropdownIndicator?.(provided),
 				),
 			indicatorSeparator: (provided) =>
@@ -94,7 +101,11 @@ function useClassNamesConfig<
 				),
 			placeholder: (provided) =>
 				twMerge(
-					"text-disabled-text overflow-hidden text-ellipsis whitespace-nowrap" as const,
+					`${
+						provided.isDisabled
+							? "text-disabled-text"
+							: "text-text-subtlest"
+					} overflow-hidden text-ellipsis whitespace-nowrap`,
 					classNamesConfig?.placeholder?.(provided),
 				),
 			singleValue: (provided) =>
