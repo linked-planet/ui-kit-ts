@@ -1,4 +1,4 @@
-import React, { useState, Dispatch, useEffect, useContext } from "react"
+import React, { useState, type Dispatch, useEffect, useContext } from "react"
 import type { SetStateAction } from "react"
 export const availableLocales = [
 	{ locale: "en", label: "English" },
