@@ -36,7 +36,7 @@ export function Label({
 
 //#region Input
 const inputNormalStyles =
-	"p-1 w-full box-border rounded border-2 border-solid border-input-border bg-input ease-in-out transition duration-200"
+	"p-1 w-full box-border rounded border-2 border-solid border-input-border placeholder:text-text-subtlest bg-input ease-in-out transition duration-200"
 const inputFocusStyles =
 	"focus:border-input-border-focused focus:bg-input-active outline-none hover:bg-input-hovered"
 const inputDisabledStyles =

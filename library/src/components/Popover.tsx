@@ -118,7 +118,7 @@ function Root({
 		return (
 			<RPo.Close
 				className={twMerge(
-					"text-disabled-text hover:text-text",
+					"text-text-subtlest hover:text-text",
 					closerClassName,
 				)}
 				style={closerStyle}
