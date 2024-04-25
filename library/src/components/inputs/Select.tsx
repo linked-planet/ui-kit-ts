@@ -79,12 +79,12 @@ function useClassNamesConfig<
 				twMerge(menuStyles, classNamesConfig?.menu?.(provided)),
 			clearIndicator: (provided) =>
 				twMerge(
-					"w-4 h-6 overflow-hidden flex items-center justify-center cursor-pointer text-disabled-text hover:text-text self-start pt-2" as const,
+					"w-4 h-4 overflow-hidden flex items-center justify-center cursor-pointer text-disabled-text hover:text-text self-start mt-2" as const,
 					classNamesConfig?.clearIndicator?.(provided),
 				),
 			dropdownIndicator: (provided) =>
 				twMerge(
-					"w-4 h-6 ml-0.5 overflow-hidden flex items-center justify-center cursor-pointer text-disabled-text hover:text-text self-start pt-2" as const,
+					"w-4 h-4 ml-0.5 overflow-hidden flex items-center justify-center cursor-pointer text-disabled-text hover:text-text self-start mt-2" as const,
 					classNamesConfig?.dropdownIndicator?.(provided),
 				),
 			indicatorSeparator: (provided) =>
@@ -243,7 +243,7 @@ const SelectInner = <
 			),
 
 			MultiValueRemove: (_props) => {
-				const title = `${removeValueLabel ?? "Remove"} ${
+				const title = `${removeValueLabel ?? "remove"} ${
 					_props.data.label
 				}`
 				return (
