@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKButton, {
 	ButtonGroup as AKButtonGroup,
@@ -120,7 +120,9 @@ function ButtonShowcase(props: ShowcaseProps) {
 
 				<AKButton
 					appearance="primary"
-					href={"https://pbs.twimg.com/profile_images/1311008414156423170/Kxu_7mQS_400x400.jpg"}
+					href={
+						"https://pbs.twimg.com/profile_images/1311008414156423170/Kxu_7mQS_400x400.jpg"
+					}
 					target="_blank"
 					download
 					onClick={() => console.log("Href Button pressed")}
@@ -214,11 +216,11 @@ function ButtonShowcase(props: ShowcaseProps) {
 			</Button>
 
 			<Button
-					appearance="subtle-link"
-					onClick={() => console.log("Button pressed")}
-				>
-					Subtle Link Button
-				</Button>
+				appearance="subtle-link"
+				onClick={() => console.log("Button pressed")}
+			>
+				Subtle Link Button
+			</Button>
 
 			<Button
 				appearance="subtle"
@@ -233,6 +235,10 @@ function ButtonShowcase(props: ShowcaseProps) {
 				onClick={() => console.log("Button pressed")}
 			>
 				Link Button
+			</Button>
+
+			<Button appearance="link" disabled>
+				Disabled Link Button
 			</Button>
 
 			<Button
@@ -312,21 +318,23 @@ function ButtonShowcase(props: ShowcaseProps) {
 			</LoadingButton>
 
 			<Button
-					appearance="primary"
-					href={"https://www.google.com/"}
-					target="_blank"
-				>
-					Href Button
-				</Button>
+				appearance="primary"
+				href={"https://www.google.com/"}
+				target="_blank"
+			>
+				Href Button
+			</Button>
 
-				<Button
-					appearance="primary"
-					href={"https://pbs.twimg.com/profile_images/1311008414156423170/Kxu_7mQS_400x400.jpg"}
-					target="_blank"
-					download
-				>
-					Download Button
-				</Button>
+			<Button
+				appearance="primary"
+				href={
+					"https://pbs.twimg.com/profile_images/1311008414156423170/Kxu_7mQS_400x400.jpg"
+				}
+				target="_blank"
+				download
+			>
+				Download Button
+			</Button>
 		</ButtonGroup>
 	)
 	//#endregion button

@@ -11,9 +11,7 @@
 	"description": "",
 	"module": "dist/ui-kit.es.js",
 	"type": "module",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build:lib": "tsc --noEmit && vitest run && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist",
@@ -30,7 +28,7 @@
 		"messages": "npm run messages:extract && npm run messages:compile",
 		"tsc": "tsc --noEmit",
 		"pack": "vitest run && npm run build:lib:debug && npm pack",
-		"fastpack": "vite build -c vite.config.lib.ts --mode development --minify false && npm pack",
+		"fastpack": "vite build -c vite.config.lib.ts --mode development --minify false && cp -r ./twThemes dist && npm pack",
 		"test": "vitest",
 		"bformat": "biome format ./src/**/*",
 		"blint": "biome lint ./src/**/*",
@@ -47,17 +45,10 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": [
-		"en",
-		"de"
-	],
+	"supportedLocales": ["en", "de"],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
+		"production": [">0.2%", "not dead", "not op_mini all"],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",

@@ -93,6 +93,11 @@ function CalendarSingle() {
 				disabled
 				weekStartsOn={1}
 				lang="en"
+				labels={{
+					labelNext: (date) => dayjs(date).format("MMMM YYYY"),
+					labelPrevious: (date) => dayjs(date).format("MMMM YYYY"),
+					labelWeekday: (date) => dayjs(date).format("dd"),
+				}}
 			/>
 			<Calendar
 				mode="single"
