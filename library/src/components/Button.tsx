@@ -1,7 +1,7 @@
-import type React from "react";
-import { type CSSProperties, forwardRef, useMemo } from "react";
-import { twJoin, twMerge } from "tailwind-merge";
-import { LoadingSpinner } from "./LoadingSpinner";
+import type React from "react"
+import { type CSSProperties, forwardRef, useMemo } from "react"
+import { twJoin, twMerge } from "tailwind-merge"
+import { LoadingSpinner } from "./LoadingSpinner"
 
 export type ButtonAppearance =
 	| "default"
@@ -12,27 +12,27 @@ export type ButtonAppearance =
 	| "warning"
 	| "danger"
 	| "success"
-	| "information";
+	| "information"
 
 export type ButtonProps = {
-	appearance?: ButtonAppearance;
-	label?: string;
-	title?: string;
-	iconBefore?: React.ReactNode;
-	iconAfter?: React.ReactNode;
-	disabled?: boolean;
-	selected?: boolean;
-	autoFocus?: boolean;
-	children?: React.ReactNode;
-	style?: CSSProperties;
-	className?: string;
-	inverted?: boolean;
-	id?: string;
-	href?: string;
-	download?: string | true;
-	target?: "_blank" | "_self" | "_parent" | "_top";
-	"aria-label"?: string;
-	testId?: string;
+	appearance?: ButtonAppearance
+	label?: string
+	title?: string
+	iconBefore?: React.ReactNode
+	iconAfter?: React.ReactNode
+	disabled?: boolean
+	selected?: boolean
+	autoFocus?: boolean
+	children?: React.ReactNode
+	style?: CSSProperties
+	className?: string
+	inverted?: boolean
+	id?: string
+	href?: string
+	download?: string | true
+	target?: "_blank" | "_self" | "_parent" | "_top"
+	"aria-label"?: string
+	testId?: string
 } & Pick<
 	React.ButtonHTMLAttributes<HTMLButtonElement>,
 	| "type"
@@ -56,7 +56,7 @@ export type ButtonProps = {
 	| "onTouchCancel"
 	| "title"
 	| "aria-label"
->;
+>
 
 const ButtonStyles: { [style in ButtonAppearance]: string } = {
 	primary: twJoin(
@@ -69,8 +69,7 @@ const ButtonStyles: { [style in ButtonAppearance]: string } = {
 		"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",
 		"data-[inverted]:bg-transparent data-[inverted]:border-neutral-bold data-[inverted]:border-solid data-[inverted]:hover:bg-neutral-hovered data-[inverted]:active:bg-neutral-pressed",
 	),
-	subtle:
-		"bg-neutral-subtle hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed text-text",
+	subtle: "bg-neutral-subtle hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed text-text",
 	link: "bg-transparent text-link hover:underline",
 	"subtle-link":
 		"bg-transparent text-text-subtlest hover:text-text-subtle hover:underline",
@@ -94,10 +93,10 @@ const ButtonStyles: { [style in ButtonAppearance]: string } = {
 		"data-[inverted]:bg-information data-[inverted]:hover:bg-information-hovered data-[inverted]:active:bg-information-pressed",
 		"data-[inverted]:border-information-bold data-[inverted]:text-information-text data-[inverted]:border-solid",
 	),
-} as const;
+} as const
 
 export const ButtonSelectedStyles =
-	"bg-selected active:bg-selected hover:bg-selected text-selected-text-inverse cursor-pointer" as const;
+	"bg-selected active:bg-selected hover:bg-selected text-selected-text-inverse cursor-pointer" as const
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	(
@@ -140,7 +139,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 						{children}
 						{iconAfter}
 					</a>
-				);
+				)
 			}
 			return (
 				<>
@@ -148,8 +147,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 					{children}
 					{iconAfter}
 				</>
-			);
-		}, [target, children, iconAfter, iconBefore, href, download, disabled]);
+			)
+		}, [target, children, iconAfter, iconBefore, href, download, disabled])
 
 		return (
 			<button
@@ -164,7 +163,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 					"relative cursor-pointer box-border flex flex-shrink-0 items-center justify-center gap-1 rounded border border-transparent px-3 py-1.5 outline-1 outline-offset-2",
 					!disabled ? ButtonStyles[appearance] : undefined,
 					`${
-						appearance !== "subtle" ? "disabled:bg-disabled" : ""
+						appearance !== "subtle" && appearance !== "link"
+							? "disabled:bg-disabled"
+							: ""
 					} disabled:text-disabled-text data-[inverted]:disabled:border-border disabled:cursor-not-allowed data-[inverted]:disabled:bg-transparent`,
 					selected ? ButtonSelectedStyles : undefined,
 					className,
@@ -175,12 +176,12 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			>
 				{content}
 			</button>
-		);
+		)
 	},
-);
+)
 
-Button.displayName = "LPButton";
-export { Button };
+Button.displayName = "LPButton"
+export { Button }
 
 export const LoadingButton = ({
 	loading = false,
@@ -202,17 +203,17 @@ export const LoadingButton = ({
 				</div>
 			)}
 		</Button>
-	);
-};
+	)
+}
 
 export const ButtonGroup = ({
 	children,
 	className,
 	style,
 }: {
-	children: React.ReactNode;
-	className?: string;
-	style?: CSSProperties;
+	children: React.ReactNode
+	className?: string
+	style?: CSSProperties
 }) => {
 	return (
 		<div
@@ -221,5 +222,5 @@ export const ButtonGroup = ({
 		>
 			{children}
 		</div>
-	);
-};
+	)
+}
