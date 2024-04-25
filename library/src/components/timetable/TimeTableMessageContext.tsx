@@ -1,12 +1,13 @@
-import React, {
+import type React from "react"
+import {
 	createContext,
-	Dispatch,
+	type Dispatch,
 	useContext,
 	useEffect,
 	useMemo,
 	useState,
 } from "react"
-import { Message } from "../inlinemessage"
+import type { Message } from "../inlinemessage"
 import type { default as TranslatedTimeTableMessagesJson } from "../../localization/translations-compiled/en.json"
 import IntlMessageFormat from "intl-messageformat"
 import { getTranslation } from "../../localization/LocaleContext"
@@ -29,8 +30,15 @@ const timeTableMessageContext = createContext<
 	| undefined
 >(undefined)
 
-const defaultMessageTranslations =
-	(await getTranslation()) as TranslatedTimeTableMessages
+// this is not a nice way to avoid the top level await. I don't know why the top level await is a problem sometimes.
+let defaultMessageTranslations: TranslatedTimeTableMessages =
+	{} as TranslatedTimeTableMessages
+;(async () => {
+	const defaultMessages =
+		(await getTranslation()) as TranslatedTimeTableMessages
+	defaultMessageTranslations = defaultMessages
+})()
+//(await getTranslation()) as TranslatedTimeTableMessages
 
 export function TimeTableMessageProvider({
 	messagesTranslations = defaultMessageTranslations,

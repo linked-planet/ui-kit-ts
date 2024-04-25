@@ -1,5 +1,5 @@
 import { defineConfig } from "vite"
-import { resolve } from "path"
+import { resolve } from "node:path"
 import react from "@vitejs/plugin-react-swc"
 import dts from "vite-plugin-dts"
 //import nodePolyfills from "rollup-plugin-polyfill-node"
@@ -21,6 +21,7 @@ export default defineConfig({
 		emptyOutDir: false, // without this, the typescript declaration files are going to get deleted, and not recreated when I don't have a change in the types.
 		sourcemap: true,
 		target: "es2022",
+		minify: false,
 		lib: {
 			entry: resolve(__dirname, "library/src/index.ts"),
 			name: "@linked-planet/ui-kit-ts",
