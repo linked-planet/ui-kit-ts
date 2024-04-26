@@ -11,7 +11,9 @@
 	"description": "",
 	"module": "dist/ui-kit.es.js",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build:lib": "tsc --noEmit && vitest run && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist",
@@ -45,10 +47,17 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": ["en", "de"],
+	"supportedLocales": [
+		"en",
+		"de"
+	],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [">0.2%", "not dead", "not op_mini all"],
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -58,7 +67,7 @@
 	"dependencies": {
 		"@atlaskit/button": "^17.14.0",
 		"@atlaskit/checkbox": "^13.1.5",
-		"@atlaskit/dropdown-menu": "^12.9.0",
+		"@atlaskit/dropdown-menu": "^12.9.1",
 		"@atlaskit/page-layout": "^3.1.5",
 		"@atlaskit/tabs": "^14.1.0",
 		"@atlaskit/tag": "^12.0.3",
@@ -91,7 +100,7 @@
 		"use-resize-observer": "^9.1.0"
 	},
 	"devDependencies": {
-		"@atlaskit/eslint-plugin-design-system": "^9.5.1",
+		"@atlaskit/eslint-plugin-design-system": "^9.5.2",
 		"@biomejs/biome": "^1.7.1",
 		"@formatjs/cli": "^6.2.9",
 		"@total-typescript/ts-reset": "^0.5.1",
@@ -105,7 +114,7 @@
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-formatjs": "^4.13.0",
 		"eslint-plugin-react": "^7.34.1",
-		"eslint-plugin-react-hooks": "^4.6.0",
+		"eslint-plugin-react-hooks": "^4.6.1",
 		"eslint-plugin-react-refresh": "^0.4.6",
 		"eslint-plugin-tailwindcss": "^3.15.1",
 		"postcss": "^8.4.38",
@@ -140,11 +149,11 @@
 		"@atlaskit/empty-state": "^7.8.0",
 		"@atlaskit/form": "^9.3.0",
 		"@atlaskit/icon": "^22.1.1",
-		"@atlaskit/lozenge": "^11.6.6",
+		"@atlaskit/lozenge": "^11.7.0",
 		"@atlaskit/menu": "^2.1.12",
 		"@atlaskit/modal-dialog": "^12.11.0",
 		"@atlaskit/page-layout": "^3.1.5",
-		"@atlaskit/pagination": "^14.6.4",
+		"@atlaskit/pagination": "^14.6.5",
 		"@atlaskit/popup": "^1.14.0",
 		"@atlaskit/select": "^17.6.0",
 		"@atlaskit/side-navigation": "^3.0.10",
