@@ -6142,6 +6142,17 @@ function SelectShowcase(props: ShowcaseProps) {
 				}}
 			/>
 
+			<Select<{ test: string }, true>
+				placeholder="Select an option"
+				disabled
+				isMulti
+				options={[
+					{ label: "First option", value: { test: "first" } },
+					{ label: "Second option", value: { test: "second" } },
+					{ label: "Third option", value: { test: "third" } },
+				]}
+			/>
+
 			{/*<RadixSelect
 				placeholder="Select an option"
 				options={[

@@ -1,9 +1,10 @@
-import React, {
+import type React from "react"
+import {
 	type InputHTMLAttributes,
 	forwardRef,
 	useState,
 	type ForwardedRef,
-	ReactNode,
+	type ReactNode,
 	useImperativeHandle,
 	useRef,
 	useEffect,
@@ -43,8 +44,10 @@ type CheckboxProps = Omit<
 		testId?: string
 	}
 
-const checkBoxStyles =
-	"border-border focus:border-selected-border hover:border-selected-bold-hovered box-border flex flex-none h-[14px] w-[14px]  items-center justify-center mr-2 ease-linear transition duration-150 cursor-default rounded-[3px] border-[2.5px] outline-none outline-0 outline-offset-0 focus:border-2"
+const checkBoxSize = "size-[15px] box-border" as const
+const checkBoxClickableSize = "size-[20px] box-border" as const
+
+const checkBoxStyles = `relative border-border focus:border-selected-border hover:border-selected-bold-hovered box-border flex flex-none ${checkBoxSize} items-center justify-center mr-2 ease-linear transition duration-150 cursor-default rounded-[3px] border-[2.5px] outline-none outline-0 outline-offset-0 focus:border-2`
 
 const disabledStyles =
 	"cursor-not-allowed border-disabled hover:border-transparent" as const
@@ -87,14 +90,11 @@ const CheckboxI = (
 	const inputRef = useRef<HTMLInputElement>(null)
 	const errorRef = useRef<HTMLDivElement>(null)
 	// forward the local ref to the forwarded ref
+	// biome-ignore lint/style/noNonNullAssertion: <explanation>
 	useImperativeHandle(ref, () => inputRef.current!)
 
 	// update from outside
-	if (
-		checkedProp != undefined &&
-		checked !== checkedProp &&
-		inputRef.current
-	) {
+	if (checkedProp != null && checked !== checkedProp && inputRef.current) {
 		inputRef.current.checked = checkedProp
 		setChecked(checkedProp)
 	}
@@ -105,7 +105,7 @@ const CheckboxI = (
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		const checkedRef = inputRef.current?.checked
-		if (checkedRef !== undefined && checkedRef != checked) {
+		if (checkedRef !== undefined && checkedRef !== checked) {
 			setChecked(checkedRef)
 		}
 	})
@@ -127,6 +127,7 @@ const CheckboxI = (
 			}
 		})
 
+		// biome-ignore lint/style/noNonNullAssertion: <explanation>
 		observer.observe(inputRef.current!, { attributes: true })
 
 		return () => {
@@ -138,7 +139,7 @@ const CheckboxI = (
 		<>
 			<div
 				className={twMerge(
-					"relative flex items-center justify-start",
+					"flex items-center justify-start",
 					className,
 				)}
 				style={style}
@@ -153,11 +154,7 @@ const CheckboxI = (
 						disabled ? disabledStyles : undefined,
 					)}
 				>
-					<div
-						className={
-							"pointer-events-none absolute flex items-center justify-center"
-						}
-					>
+					<div className="pointer-events-none flex items-center justify-center size-full">
 						{!indeterminate ? (
 							<CheckboxIcon label="" />
 						) : (
@@ -172,11 +169,9 @@ const CheckboxI = (
 						disabled={disabled}
 						checked={!!checked}
 						required={required}
-						className={
-							"absolute box-border h-[20px] w-[20px] appearance-none"
-						}
+						className={`absolute m-0 box-border ${checkBoxClickableSize} appearance-none`}
 						onChange={(e) => {
-							if (checkedProp == undefined) {
+							if (checkedProp == null) {
 								setChecked(e.target.checked)
 							}
 							onCheckedChange?.(e.target.checked)
@@ -199,6 +194,11 @@ const CheckboxI = (
 							e.stopPropagation()
 						}
 						inputRef.current?.click()
+					}}
+					onKeyUp={(e) => {
+						if (e.key === "Enter" && !disabled) {
+							inputRef.current?.click()
+						}
 					}}
 				>
 					{label}
