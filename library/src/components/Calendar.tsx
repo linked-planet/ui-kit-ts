@@ -299,7 +299,6 @@ export function CalendarBase(
 			showOutsideDays={props.showOutsideDays ?? true}
 			fixedWeeks={props.fixedWeeks ?? true}
 			className={className}
-			labels={{}}
 			lang={lang}
 			components={{
 				IconLeft: () => <ChevronLeftLargeIcon label="" />,
