@@ -27,6 +27,15 @@ function PopoverExample() {
 			>
 				Content
 			</Popover.Root>
+			<Popover.Root
+				trigger="disabled"
+				contentClassName="p-4"
+				side="bottom"
+				align="end"
+				disabled
+			>
+				Content
+			</Popover.Root>
 		</>
 	)
 }

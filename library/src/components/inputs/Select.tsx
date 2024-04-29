@@ -44,15 +44,18 @@ export type OptionType<ValueType> = {
 
 export type OptionGroupType<ValueType> = GroupBase<OptionType<ValueType>>
 
-export type SelectClassNames<
-	V = unknown,
-	IsMulti extends boolean = boolean,
-> = ClassNamesConfig<OptionType<V>, IsMulti, OptionGroupType<V>>
+export type SelectClassNamesConfig<
+	V,
+	Option extends OptionType<V>,
+	IsMulti extends boolean,
+	GroupOptionType extends GroupBase<Option>,
+> = ClassNamesConfig<Option, IsMulti, GroupOptionType>
 
 const portalDivId = "uikts-select" as const
 
 function useClassNamesConfig<
-	Option = unknown,
+	V,
+	Option extends OptionType<V> = OptionType<V>,
 	IsMulti extends boolean = boolean,
 	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
 >(
@@ -61,101 +64,109 @@ function useClassNamesConfig<
 		| undefined,
 ): ClassNamesConfig<Option, IsMulti, GroupOptionType> {
 	return useMemo(
-		() => ({
-			...classNamesConfig,
-			control: (provided) =>
-				twJoin(
-					"px-2",
-					controlStyles,
-					provided.isDisabled
-						? "bg-disabled border-transparent cursor-not-allowed"
-						: undefined,
-					provided.isFocused && !provided.isDisabled
-						? "bg-input-active hover:bg-input-active border-input-border-focused"
-						: undefined,
-					!provided.isFocused && !provided.isDisabled
-						? "bg-input hover:bg-input-hovered"
-						: undefined,
-					classNamesConfig?.control?.(provided),
-				),
-			menu: (provided) =>
-				twMerge(menuStyles, classNamesConfig?.menu?.(provided)),
-			clearIndicator: (provided) =>
-				twMerge(
-					"w-4 h-4 overflow-hidden flex items-center justify-center cursor-pointer text-text-subtlest hover:text-text self-start mt-2",
-					classNamesConfig?.clearIndicator?.(provided),
-				),
-			dropdownIndicator: (provided) =>
-				twMerge(
-					`w-4 h-4 ml-0.5 overflow-hidden flex items-center justify-center cursor-pointer ${
+		() =>
+			({
+				...classNamesConfig,
+				control: (provided) =>
+					twJoin(
+						"px-2",
+						controlStyles,
 						provided.isDisabled
-							? "text-disabled-text"
-							: "text-text-subtlest  hover:text-text"
-					} self-start mt-2`,
-					classNamesConfig?.dropdownIndicator?.(provided),
-				),
-			indicatorSeparator: (provided) =>
-				twMerge(
-					"hidden" as const,
-					classNamesConfig?.indicatorSeparator?.(provided),
-				),
-			placeholder: (provided) =>
-				twMerge(
-					`${
-						provided.isDisabled
-							? "text-disabled-text"
-							: "text-text-subtlest"
-					} overflow-hidden text-ellipsis whitespace-nowrap`,
-					classNamesConfig?.placeholder?.(provided),
-				),
-			singleValue: (provided) =>
-				twJoin(
-					provided.isDisabled ? "text-disabled-text" : "text-text",
-					"text-ellipsis whitespace-nowrap",
-					classNamesConfig?.singleValue?.(provided),
-				),
-			multiValue: (provided) => {
-				return twJoin(
-					twMerge(
-						"bg-neutral w-auto rounded-sm pl-1 mr-2 my-0.5 text-text",
-						provided.isDisabled
-							? "bg-disabled text-disabled-text"
+							? "bg-disabled border-transparent cursor-not-allowed"
 							: undefined,
+						provided.isFocused && !provided.isDisabled
+							? "bg-input-active hover:bg-input-active border-input-border-focused"
+							: undefined,
+						!provided.isFocused && !provided.isDisabled
+							? "bg-input hover:bg-input-hovered"
+							: undefined,
+						classNamesConfig?.control?.(provided),
 					),
-					"text-ellipsis whitespace-nowrap",
-					classNamesConfig?.multiValue?.(provided),
-				)
-			},
-			multiValueRemove: (provided) =>
-				twMerge(
-					"hover:bg-danger-hovered flex-none active:bg-danger-pressed focus-visible:outline-offset-0 px-1 cursor-pointer ml-1 flex items-center rounded-r-sm " as const,
-					classNamesConfig?.multiValueRemove?.(provided),
-				),
-			option: (provided) =>
-				twMerge(
-					optionStyles,
-					provided.isSelected
-						? "bg-selected-subtle border-l-selected-border"
-						: undefined,
-					provided.isFocused
-						? "border-l-selected-border bg-surface-overlay-hovered"
-						: undefined,
-					provided.isDisabled
-						? "text-disabled-text"
-						: "hover:border-l-selected-border hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed",
-					classNamesConfig?.option?.(provided),
-				),
-			groupHeading: (provided) =>
-				twMerge(
-					"text-text-subtlest text-2xs font-[500] uppercase pt-4 pb-0.5 px-3" as const,
-					classNamesConfig?.groupHeading?.(provided),
-				),
-			/*valueContainer: (provided) =>
+				menu: (provided) =>
+					twMerge(menuStyles, classNamesConfig?.menu?.(provided)),
+				clearIndicator: (provided) =>
+					twMerge(
+						"w-4 h-4 overflow-hidden flex items-center justify-center cursor-pointer text-text-subtlest hover:text-text self-start mt-2",
+						classNamesConfig?.clearIndicator?.(provided),
+					),
+				dropdownIndicator: (provided) =>
+					twMerge(
+						`w-4 h-4 ml-0.5 overflow-hidden flex items-center justify-center cursor-pointer ${
+							provided.isDisabled
+								? "text-disabled-text"
+								: "text-text-subtlest  hover:text-text"
+						} self-start mt-2`,
+						classNamesConfig?.dropdownIndicator?.(provided),
+					),
+				indicatorSeparator: (provided) =>
+					twMerge(
+						"hidden" as const,
+						classNamesConfig?.indicatorSeparator?.(provided),
+					),
+				placeholder: (provided) =>
+					twMerge(
+						`${
+							provided.isDisabled
+								? "text-disabled-text"
+								: "text-text-subtlest"
+						} overflow-hidden text-ellipsis whitespace-nowrap`,
+						classNamesConfig?.placeholder?.(provided),
+					),
+				singleValue: (provided) =>
+					twJoin(
+						provided.isDisabled
+							? "text-disabled-text"
+							: "text-text",
+						"text-ellipsis whitespace-nowrap",
+						classNamesConfig?.singleValue?.(provided),
+					),
+				multiValue: (provided) => {
+					return twJoin(
+						twMerge(
+							"bg-neutral w-auto rounded-sm pl-1 mr-2 my-0.5 text-text",
+							provided.isDisabled
+								? "bg-disabled text-disabled-text"
+								: undefined,
+						),
+						"text-ellipsis whitespace-nowrap",
+						classNamesConfig?.multiValue?.(provided),
+					)
+				},
+				multiValueRemove: (provided) =>
+					twMerge(
+						"hover:bg-danger-hovered flex-none active:bg-danger-pressed focus-visible:outline-offset-0 px-1 cursor-pointer ml-1 flex items-center rounded-r-sm " as const,
+						classNamesConfig?.multiValueRemove?.(provided),
+					),
+				option: (provided) =>
+					twMerge(
+						optionStyles,
+						provided.isSelected
+							? "bg-selected-subtle border-l-selected-border"
+							: undefined,
+						provided.isFocused
+							? "border-l-selected-border bg-surface-overlay-hovered"
+							: undefined,
+						provided.isDisabled
+							? "text-disabled-text"
+							: "hover:border-l-selected-border hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed",
+						classNamesConfig?.option?.(provided),
+					),
+				groupHeading: (provided) =>
+					twMerge(
+						"text-text-subtlest text-2xs font-[500] uppercase pt-4 pb-0.5 px-3" as const,
+						classNamesConfig?.groupHeading?.(provided),
+					),
+				/*valueContainer: (provided) =>
 				twMerge(
 					"overflow-visible",
 					classNamesConfig?.valueContainer?.(provided),
 				),*/
-		}),
+			}) satisfies SelectClassNamesConfig<
+				V,
+				Option,
+				IsMulti,
+				GroupOptionType
+			>,
 		[classNamesConfig],
 	)
 }
@@ -213,6 +224,7 @@ const SelectInner = <
 	...props
 }: InnerProps<ValueType, Option, IsMulti, GroupOptionType>) => {
 	const classNamesConfig = useClassNamesConfig<
+		ValueType,
 		Option,
 		IsMulti,
 		GroupOptionType

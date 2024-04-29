@@ -10,5 +10,5 @@ export {
 	type OptionGroupType,
 	type SelectNotInFormProps,
 	type SelectInFormProps,
-	type SelectClassNames,
+	type SelectClassNamesConfig,
 } from "./Select"
