@@ -1,4 +1,4 @@
-import React, { ComponentPropsWithoutRef } from "react"
+import React, { type ComponentPropsWithoutRef } from "react"
 import { css } from "@emotion/css"
 import { twMerge } from "tailwind-merge"
 
@@ -13,9 +13,16 @@ export function IconSizeHelper({
 	className,
 	...props
 }: {
-	size: number | string
+	size?: number | string
 } & ComponentPropsWithoutRef<"div">) {
-	const sizeProp = typeof size === "number" ? size + "px" : size
+	const sizeProp = typeof size === "number" ? `${size}px` : size
+
+	const centerHelperClass = css`
+		span {
+			display: inline-flex;
+		}
+	`
+
 	const sizeHelperClass = css`
 		width: ${sizeProp};
 		height: ${sizeProp};
@@ -30,7 +37,12 @@ export function IconSizeHelper({
 
 	return (
 		<div
-			className={twMerge(sizeHelperClass, "flex-none", className)}
+			className={twMerge(
+				centerHelperClass,
+				sizeProp != null ? sizeHelperClass : undefined,
+				"flex-none inline-flex",
+				className,
+			)}
 			style={style}
 			{...props}
 		>
