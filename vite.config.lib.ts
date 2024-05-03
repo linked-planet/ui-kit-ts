@@ -3,6 +3,7 @@ import { resolve } from "node:path"
 import react from "@vitejs/plugin-react-swc"
 import dts from "vite-plugin-dts"
 //import nodePolyfills from "rollup-plugin-polyfill-node"
+import pkg from "./package.json"
 
 // postcss:
 import tailwindcss from "tailwindcss"
@@ -16,73 +17,45 @@ export default defineConfig({
 		},
 	},
 	build: {
-		//minify: false,
 		outDir: "dist",
 		emptyOutDir: false, // without this, the typescript declaration files are going to get deleted, and not recreated when I don't have a change in the types.
 		sourcemap: true,
 		target: "es2022",
 		minify: false,
+		cssCodeSplit: true,
+		// like this rollup is used for the library build, each file is its own module, and a css bundle is build as well
 		lib: {
 			entry: resolve(__dirname, "library/src/index.ts"),
 			name: "@linked-planet/ui-kit-ts",
-			fileName: (format) => `ui-kit.${format}.js`,
 			formats: ["es"],
 		},
 		rollupOptions: {
-			//plugins: [nodePolyfills()],
-			external: [
-				"react",
-				"react-dom",
-				"@atlaskit/atlassian-navigation",
-				"@atlaskit/avatar",
-				"@atlaskit/badge",
-				"@atlaskit/banner",
-				"@atlaskit/button",
-				"@atlaskit/calendar",
-				"@atlaskit/checkbox",
-				"@atlaskit/code",
-				"@atlaskit/css-reset",
-				"@atlaskit/datetime-picker",
-				"@atlaskit/dropdown-menu",
-				"@atlaskit/dynamic-table",
-				"@atlaskit/empty-state",
-				"@atlaskit/flag",
-				"@atlaskit/form",
-				"@atlaskit/icon",
-				"@atlaskit/lozenge",
-				"@atlaskit/menu",
-				"@atlaskit/modal-dialog",
-				"@atlaskit/page-layout",
-				"@atlaskit/pagination",
-				"@atlaskit/panel",
-				"@atlaskit/popup",
-				"@atlaskit/select",
-				"@atlaskit/side-navigation",
-				"@atlaskit/table-tree",
-				"@atlaskit/tabs",
-				"@atlaskit/tag",
-				"@atlaskit/tag-group",
-				"@atlaskit/textarea",
-				"@atlaskit/textfield",
-				"@atlaskit/toggle",
-				"@atlaskit/token",
-				"@atlaskit/theme",
-				"@emotion/styled",
-				"@monaco-editor/react",
-				"react-hook-form",
-			],
+			input: "library/src/index.ts",
+			// required that all the files keep their exports
+			preserveEntrySignatures: "exports-only",
 			output: {
+				dir: "dist",
+				format: "esm",
+				preserveModules: true,
+				preserveModulesRoot: "library/src",
+				// this entryFileNames is important that each file is a module at the end
+				entryFileNames: ({ name: fileName }) => {
+					return `${fileName}.js`
+				},
 				globals: {
 					react: "React",
 					"react-dom": "ReactDOM",
 				},
 			},
+			external: [...Object.keys(pkg.peerDependencies)],
+			//plugins: [nodePolyfills()],
 		},
 	},
 	plugins: [
 		dts({
 			entryRoot: resolve(__dirname, "library/src"),
 			insertTypesEntry: true,
+			tsconfigPath: resolve(__dirname, "tsconfig.lib.json"),
 		}),
 		react(),
 		/*{
