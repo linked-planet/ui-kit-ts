@@ -35,7 +35,7 @@ export default defineConfig({
 		rollupOptions: {
 			//input: "library/src/index.ts",
 			// required that all the files keep their exports
-			preserveEntrySignatures: "exports-only",
+			preserveEntrySignatures: "strict",
 			output: {
 				dir: "dist",
 				format: "esm",

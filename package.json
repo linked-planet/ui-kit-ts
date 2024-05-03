@@ -13,6 +13,7 @@
 	"type": "module",
 	"files": ["dist"],
 	"types": "./dist/index.d.ts",
+	"style": "dist/styles.css",
 	"scripts": {
 		"build:lib": "tsc --noEmit -p tsconfig.lib.json && vitest run && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist",
 		"build:sc": "node ./showcase/copySources.js && tsc --noEmit -p tsconfig.sc.json && vite build -c vite.config.showcase.ts && node ./showcase/copyIndexTo404.js",
