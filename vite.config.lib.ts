@@ -28,9 +28,12 @@ export default defineConfig({
 			entry: resolve(__dirname, "library/src/index.ts"),
 			name: "@linked-planet/ui-kit-ts",
 			formats: ["es"],
+			fileName: (format, entryName) => {
+				return `${entryName}.js`
+			},
 		},
 		rollupOptions: {
-			input: "library/src/index.ts",
+			//input: "library/src/index.ts",
 			// required that all the files keep their exports
 			preserveEntrySignatures: "exports-only",
 			output: {
@@ -39,9 +42,9 @@ export default defineConfig({
 				preserveModules: true,
 				preserveModulesRoot: "library/src",
 				// this entryFileNames is important that each file is a module at the end
-				entryFileNames: ({ name: fileName }) => {
+				/*entryFileNames: ({ name: fileName }) => {
 					return `${fileName}.js`
-				},
+				},*/
 				globals: {
 					react: "React",
 					"react-dom": "ReactDOM",

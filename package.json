@@ -9,11 +9,9 @@
 	},
 	"version": "0.10.0",
 	"description": "",
-	"module": "dist/ui-kit.es.js",
+	"module": "dist/index.js",
 	"type": "module",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "./dist/index.d.ts",
 	"scripts": {
 		"build:lib": "tsc --noEmit -p tsconfig.lib.json && vitest run && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist",
@@ -36,6 +34,7 @@
 		"blint": "biome lint ./src/**/*",
 		"bcheck": "biome check --apply ./src/**/*"
 	},
+	"sideEffects": false,
 	"author": "Markus Toepfer",
 	"contributors": [
 		{
@@ -47,17 +46,10 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": [
-		"en",
-		"de"
-	],
+	"supportedLocales": ["en", "de"],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
+		"production": [">0.2%", "not dead", "not op_mini all"],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -65,6 +57,8 @@
 		]
 	},
 	"dependencies": {
+		"@atlaskit/tokens": "^1.44.1",
+		"@atlaskit/datetime-picker": "^13.3.6",
 		"@emotion/css": "^11.11.2",
 		"@radix-ui/react-accordion": "^1.1.2",
 		"@radix-ui/react-avatar": "^1.0.4",
@@ -138,7 +132,6 @@
 		"@atlaskit/checkbox": "^13.2.0",
 		"@atlaskit/code": "^15.1.2",
 		"@atlaskit/css-reset": "^6.9.0",
-		"@atlaskit/datetime-picker": "^13.3.6",
 		"@atlaskit/dropdown-menu": "^12.9.3",
 		"@atlaskit/dynamic-table": "^14.16.3",
 		"@atlaskit/empty-state": "^7.8.0",
@@ -160,7 +153,6 @@
 		"@atlaskit/textarea": "^5.2.0",
 		"@atlaskit/textfield": "^6.2.0",
 		"@atlaskit/theme": "^12.7.1",
-		"@atlaskit/tokens": "^1.44.1",
 		"@monaco-editor/react": "^4.6.0",
 		"react": "^16.8.0",
 		"react-dom": "^16.8.0",
