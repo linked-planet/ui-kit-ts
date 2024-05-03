@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "es2022",
 		"lib": ["dom", "dom.iterable", "esnext"],
-		"allowJs": true,
+		"allowJs": false,
 		"skipLibCheck": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
@@ -13,17 +13,10 @@
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		//"noEmit": true,
+		"baseUrl": ".",
 		"jsx": "react-jsx",
 		"plugins": [{ "name": "typescript-plugin-css-modules" }],
-		"baseUrl": ".",
-		"paths": {
-			"@linked-planet/ui-kit-ts": ["library/src"],
-			"@linked-planet/ui-kit-ts/*": ["library/src/*"],
-			"@linked-planet/ui-kit-ts/dist/style.css": ["dist/styles.css"]
-		},
 		"types": ["vite/client"]
 	},
-	"include": ["showcase/src", "library/src"],
 	"references": [{ "path": "./tsconfig.node.json" }]
 }

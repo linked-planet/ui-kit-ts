@@ -1,7 +1,7 @@
-import { defineConfig, splitVendorChunkPlugin } from "vite"
+import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react-swc"
-import tsconfigPaths from "vite-tsconfig-paths"
-import checker from "vite-plugin-checker"
+import path from "node:path"
+//import checker from "vite-plugin-checker"
 
 // postcss:
 import tailwindcss from "tailwindcss"
@@ -21,6 +21,14 @@ export default defineConfig({
 			//plugins: [nodePolyfills()],
 		},
 	},
+	resolve: {
+		alias: {
+			"@linked-planet/ui-kit-ts": path.resolve(
+				__dirname,
+				"./library/src",
+			),
+		},
+	},
 	define: {
 		"process.env": {}, // this is necessary because form.js in @atlaskit uses process.env.NODE_ENV
 		//"process.env.NODE_ENV": {}, // this is necessary because form.js in @atlaskit uses process.env.NODE_ENV
@@ -33,9 +41,10 @@ export default defineConfig({
 	publicDir: "showcase/public",
 	plugins: [
 		react(),
-		tsconfigPaths(),
-		splitVendorChunkPlugin(),
-		checker({ typescript: true }),
+		/*tsconfigPaths({
+			configNames: ["./tsconfig.showcase.json"],
+		}),*/
+		//checker({ typescript: true }),
 	],
 	server: {
 		port: 3000,

@@ -1,0 +1,8 @@
+{
+	"compilerOptions": {
+		"noEmit": true,
+		"incremental": false
+	},
+	"extends": "./tsconfig.common.json",
+	"include": ["library/src"]
+}
