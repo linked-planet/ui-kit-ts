@@ -432,6 +432,7 @@ type SelectPropsProto<
 	clearValuesLabel?: string
 	removeValueLabel?: string
 	inputId?: string
+	testId?: string
 }
 
 // extends with the control and fieldName props for react-hook-form.. the fieldName is the normal name prop of react-hook-form
@@ -476,6 +477,7 @@ function SelectInForm<
 	invalid,
 	errorMessage,
 	usePortal = true,
+	testId,
 	...props
 }: SelectInFormProps<FormData, ValueType, Option, IsMulti, GroupOptionType>) {
 	return (
@@ -579,7 +581,7 @@ function SelectInForm<
 				> = {
 					...props,
 					isCreateable: props.isCreateable,
-					testId: props.testId,
+					testId,
 				}
 
 				const { ref: innerRef, ...fieldProps } = field
