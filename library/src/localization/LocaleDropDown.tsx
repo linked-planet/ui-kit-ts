@@ -1,7 +1,7 @@
 import React from "react"
 
 import { availableLocales, useLocale } from "./LocaleContext"
-import { Dropdown } from "../components"
+import { Dropdown } from "../components/DropdownMenu"
 
 export default function LocaleDropDown() {
 	const { locale, setLocale } = useLocale()

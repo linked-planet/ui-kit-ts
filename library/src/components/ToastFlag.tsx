@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react"
+import React, { useRef, type CSSProperties } from "react"
 import { createPortal } from "react-dom"
 
 import { toast, ToastContainer } from "react-toastify"
@@ -9,15 +9,15 @@ import CrossIcon from "@atlaskit/icon/glyph/cross"
 
 import {
 	Flag,
-	FlagActionType,
-	FlagProps,
+	type FlagActionType,
+	type FlagProps,
 	FlagStyles,
 	FlagInvertedStyles,
-	FlagAppearance,
+	type FlagAppearance,
 } from "./Flag"
 import { twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
-import { CloseButtonProps } from "react-toastify/dist/components"
+import type { CloseButtonProps } from "react-toastify/dist/components"
 
 type ToastFlagProps = FlagProps & ToastOptions
 
@@ -65,12 +65,19 @@ function CloseButton({
 	closeToast,
 	inverted,
 }: CloseButtonProps & { inverted: boolean }) {
+	const ref = useRef<HTMLDivElement>(null)
 	return (
 		<div
+			ref={ref}
 			className={`cursor-pointer ${
 				inverted ? "text-text" : "text-text-inverse"
 			}`}
 			onClick={closeToast}
+			onKeyUp={(e) => {
+				if (e.key === "Enter") {
+					ref.current?.click()
+				}
+			}}
 		>
 			<CrossIcon label="Close" size="small" />
 		</div>

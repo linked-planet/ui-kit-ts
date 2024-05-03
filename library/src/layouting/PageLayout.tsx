@@ -1,7 +1,8 @@
 import React, { useMemo } from "react"
 import { twMerge } from "tailwind-merge"
 import MenuIcon from "@atlaskit/icon/glyph/menu"
-import { Button, Dropdown } from "../components"
+import { Button } from "../components/Button"
+import { Dropdown } from "../components/DropdownMenu"
 
 const Page = ({
 	children,

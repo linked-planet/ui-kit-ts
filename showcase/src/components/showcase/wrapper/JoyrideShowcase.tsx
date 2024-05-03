@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import ReactJoyride from "react-joyride"
 import Button, { ButtonGroup } from "@atlaskit/button"
@@ -23,7 +23,7 @@ function JoyrideShowcase(props: ShowcaseProps) {
 			>
 				If you get the error &apos;global is not defined&apos; you have
 				to add the following:
-				<br></br>
+				<br />
 				<div>
 					<pre>if (!window.global) window.global = window</pre>
 				</div>
