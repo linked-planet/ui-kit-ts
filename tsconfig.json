@@ -1,3 +1,4 @@
+/* this is the tsconfig one for the showcase and used by vscode */
 {
 	"compilerOptions": {
 		"paths": {
