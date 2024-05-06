@@ -454,15 +454,15 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 				{...rest}
 			>
 				{children}
-				<div
-					className={`h-full hidden items-center w-6 ${
+				<IconSizeHelper
+					className={`h-full hidden items-center justify-center w-6 ${
 						hideChevron ? "" : "group-data-[state=open]:flex"
 					}`}
 				>
 					<ChevronUpIcon label="" size="medium" />
-				</div>
+				</IconSizeHelper>
 				<IconSizeHelper
-					className={`h-full hidden items-center w-6 ${
+					className={`h-full hidden items-center justify-center w-6 ${
 						hideChevron ? "" : "group-data-[state=closed]:flex"
 					}`}
 				>

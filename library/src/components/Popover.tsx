@@ -6,6 +6,7 @@ import { twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
 import { Button, type ButtonProps } from "./Button"
 import { overlayBaseStyle } from "./styleHelper"
+import { IconSizeHelper } from "./IconSizeHelper"
 
 const portalDivId = "uikts-popover" as const
 
@@ -38,20 +39,20 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 				{...rest}
 			>
 				{children}
-				<div
-					className={`h-full hidden items-center w-6 ${
+				<IconSizeHelper
+					className={`h-full hidden items-center justify-center w-6 ${
 						hideChevron ? "" : "group-data-[state=open]:flex"
 					}`}
 				>
 					<ChevronUpIcon label="" size="medium" />
-				</div>
-				<div
-					className={`h-full hidden items-center w-6 ${
+				</IconSizeHelper>
+				<IconSizeHelper
+					className={`h-full items-center justify-center hidden w-6 ${
 						hideChevron ? "" : "group-data-[state=closed]:flex"
 					}`}
 				>
 					<ChevronDownIcon label="" size="medium" />
-				</div>
+				</IconSizeHelper>
 			</Button>
 		)
 	},
