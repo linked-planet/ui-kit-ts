@@ -1,6 +1,6 @@
-import dayjs, { Dayjs, isDayjs } from "dayjs"
-import utc from "dayjs/plugin/utc"
+import dayjs, { type Dayjs, isDayjs } from "dayjs"
 import timezone from "dayjs/plugin/timezone"
+import utc from "dayjs/plugin/utc"
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -18,8 +18,8 @@ const cannotConvertDateTypeToTimeTypeError =
 export function formatDateTime(
 	dateTime: string | Date | Dayjs,
 	timeZone?: string, // i.e. "Europe/Berlin"... if not defined the local time zone is used
-	locale?: string,
-	onlyDate: boolean = false,
+	_locale?: string,
+	onlyDate = false,
 ) {
 	// if this is a date string, we simply return it
 	if (typeof dateTime === "string" && isDateType(dateTime)) {
@@ -41,6 +41,7 @@ export function formatDateTime(
 	}
 
 	// get browser locale
+	let locale = _locale
 	if (!locale) {
 		locale = navigator.language
 	}
@@ -100,7 +101,7 @@ export function dateFromString(dateStr: string, mayParseDateOnly = false) {
 
 	// try to parse as ISO date time string
 	const date = new Date(dateStr)
-	if (!isNaN(date.getTime())) {
+	if (!Number.isNaN(date.getTime())) {
 		return date
 	}
 
@@ -175,7 +176,7 @@ export function isDateTimeType(dt: string): dt is DateTimeType {
 }
 
 export function calculateDateTime(date: DateType, time: TimeType) {
-	const splitted = time.split(":").map((it) => parseInt(it) ?? 0)
+	const splitted = time.split(":").map((it) => Number.parseInt(it) ?? 0)
 
 	const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 	const dj = dayjs(date)

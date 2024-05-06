@@ -1,6 +1,6 @@
-import React, { Ref } from "react"
 import * as RAccordion from "@radix-ui/react-accordion"
 import { ChevronDownIcon } from "@radix-ui/react-icons"
+import React, { type Ref } from "react"
 import { twMerge } from "tailwind-merge"
 
 type AccordionSingleProps = Pick<

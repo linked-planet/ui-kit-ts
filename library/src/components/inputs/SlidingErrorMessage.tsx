@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react"
+import { forwardRef } from "react"
 
 // make a react component with forward ref
 export const SlidingErrorMessage = forwardRef(

@@ -1,6 +1,6 @@
-import dayjs, { Dayjs } from "dayjs"
-import { TimeSlotBooking, TimeTableViewType } from "./LPTimeTable"
-import { TimeTableMessage } from "./TimeTableMessageContext"
+import dayjs, { type Dayjs } from "dayjs"
+import type { TimeSlotBooking, TimeTableViewType } from "./LPTimeTable"
+import type { TimeTableMessage } from "./TimeTableMessageContext"
 
 export type TimeFrameDay = {
 	startHour: number
@@ -114,7 +114,7 @@ export function getStartAndEndSlot(
 		if (viewType === "hours") {
 			// if the previous timeslot is on a different day, we know item starts before the first time slot of a day
 			if (
-				slotsArray[startSlot].day() != slotsArray[startSlot + 1].day()
+				slotsArray[startSlot].day() !== slotsArray[startSlot + 1].day()
 			) {
 				startSlot++
 			}
@@ -181,7 +181,7 @@ function calculateTimeSlotsHoursView(
 	timeSteps: number,
 	startDate: Dayjs,
 ) {
-	if (!isFinite(timeSlotsPerDay)) {
+	if (!Number.isFinite(timeSlotsPerDay)) {
 		return null
 	}
 
@@ -215,9 +215,10 @@ function calculateTimeSlotsHoursView(
 function calculateTimeSlotPropertiesForHoursView(
 	startDate: Dayjs,
 	endDate: Dayjs,
-	timeStepsMinute: number,
+	_timeStepsMinute: number,
 	setMessage: (message: TimeTableMessage) => void,
 ) {
+	let timeStepsMinute = _timeStepsMinute
 	let timeSlotsPerDay = 0 // how many time slots per day
 	if (startDate.add(timeStepsMinute, "minutes").day() !== startDate.day()) {
 		timeStepsMinute =

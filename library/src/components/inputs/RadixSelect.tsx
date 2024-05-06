@@ -1,11 +1,11 @@
+import * as RSelect from "@radix-ui/react-select"
 import React, {
-	CSSProperties,
-	ForwardedRef,
+	type CSSProperties,
+	type ForwardedRef,
 	forwardRef,
 	useCallback,
 	useMemo,
 } from "react"
-import * as RSelect from "@radix-ui/react-select"
 import { twJoin, twMerge } from "tailwind-merge"
 
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"

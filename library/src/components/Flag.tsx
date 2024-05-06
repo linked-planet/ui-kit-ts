@@ -1,7 +1,8 @@
-import React, { CSSProperties } from "react"
+import type React from "react"
+import type { CSSProperties } from "react"
 
 import Tick from "@atlaskit/icon/glyph/check-circle"
-import Error from "@atlaskit/icon/glyph/error"
+import ErrorIcon from "@atlaskit/icon/glyph/error"
 import Info from "@atlaskit/icon/glyph/info"
 import Warning from "@atlaskit/icon/glyph/warning"
 
@@ -131,7 +132,7 @@ function FlagIcon({
 		case "error": {
 			return (
 				<span className={iconStyle}>
-					<Error label="Error" />
+					<ErrorIcon label="Error" />
 				</span>
 			)
 		}
@@ -167,7 +168,9 @@ export function Flag({
 			}}
 			className={twMerge(
 				appStyle,
-				`grid gap-4 rounded-sm p-4 shadow-md ${inverted ? "border" : ""}`,
+				`grid gap-4 rounded-sm p-4 shadow-md ${
+					inverted ? "border" : ""
+				}`,
 			)}
 			id={id}
 			data-testid={testId}
@@ -183,7 +186,7 @@ export function Flag({
 				<div>
 					{actions?.map((action, i) => (
 						<a
-							key={i}
+							key={`action ${i}`}
 							className="mt-3 inline-block cursor-pointer text-sm"
 							onClick={action.onClick}
 							href={action.href}

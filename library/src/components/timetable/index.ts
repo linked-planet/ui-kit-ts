@@ -2,15 +2,15 @@ import React from "react"
 
 import LPTimeTable from "./LPTimeTable"
 import type {
-	TimeTableEntry,
-	TimeSlotBooking,
-	TimeTableGroup,
 	SelectedTimeSlot,
+	TimeSlotBooking,
+	TimeTableEntry,
+	TimeTableGroup,
 	TimeTableViewType,
 } from "./LPTimeTable"
 
-import type { PlaceholderItemProps } from "./PlaceholderItem"
 import type { RenderItemProps } from "./ItemWrapper"
+import type { PlaceholderItemProps } from "./PlaceholderItem"
 
 const memoized = React.memo(LPTimeTable) as typeof LPTimeTable
 

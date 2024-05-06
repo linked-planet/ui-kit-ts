@@ -1,8 +1,9 @@
-import React, { useCallback, useMemo } from "react"
+import type React from "react"
+import { useCallback, useMemo } from "react"
 import type { MultiValue } from "react-select"
-import { FilterType } from "./FilterCards"
 import { twMerge } from "tailwind-merge"
 import { Select } from "../inputs"
+import type { FilterType } from "./FilterCards"
 
 /**
  * FilterDropdown is a single filter dropdown, if you need multiple filters use FilterDropdowns
@@ -91,7 +92,7 @@ export function FilterDropdown({
 					}
 					value={selected}
 					onChange={onChange}
-					isDisabled={selectables?.length == 0}
+					isDisabled={selectables?.length === 0}
 				/>
 			</div>
 		),
@@ -131,7 +132,7 @@ export function FilterDropdowns({
 	hideNotSelectable?: boolean
 }) {
 	const dropDowns = useMemo(() => {
-		if (!filters || filters.length == 0) {
+		if (!filters || filters.length === 0) {
 			return <div>Keine Filter verfügbar.</div>
 		}
 		return filters.map((filter) => (

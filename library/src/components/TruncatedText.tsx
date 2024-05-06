@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from "react"
-import { Button } from "./Button"
+import type React from "react"
+import { useEffect, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
+import { Button } from "./Button"
 
 const TruncatedText = ({
 	children,
@@ -36,6 +37,7 @@ const TruncatedText = ({
 	const [animating, setAnimating] = useState(false)
 	const [isTruncated, setIsTruncated] = useState(false)
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: this is required to update the isTruncated state if the children are changing
 	useEffect(() => {
 		if (ref.current) {
 			setIsTruncated(
@@ -48,14 +50,24 @@ const TruncatedText = ({
 	return (
 		<div
 			className={twMerge(
-				`flex w-full items-start ${open || animating || lines > 1 ? "flex-col" : "flex-row"}`,
+				`flex w-full items-start ${
+					open || animating || lines > 1 ? "flex-col" : "flex-row"
+				}`,
 				className,
 			)}
 			style={style}
 			data-testid={testId}
 		>
 			<div
-				className={`transition-[grid-template-rows] ease-in-out ${open && animating ? "grid grid-rows-[0fr]" : open ? " grid grid-rows-[1fr]" : animating ? "grid grid-rows-[0fr]" : ""}`}
+				className={`transition-[grid-template-rows] ease-in-out ${
+					open && animating
+						? "grid grid-rows-[0fr]"
+						: open
+							? " grid grid-rows-[1fr]"
+							: animating
+								? "grid grid-rows-[0fr]"
+								: ""
+				}`}
 				style={{
 					transitionDuration: `${duration}ms`,
 				}}

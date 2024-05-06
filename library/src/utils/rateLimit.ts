@@ -13,6 +13,7 @@ export function rateLimitHelper(minDistanceMS: number) {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	return (cb: (...args: any[]) => any, ...args: any[]) => {
 		const now = Date.now()
 

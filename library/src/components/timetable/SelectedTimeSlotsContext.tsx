@@ -1,7 +1,7 @@
 import React, {
 	createContext,
 	useContext,
-	Dispatch,
+	type Dispatch,
 	useReducer,
 	useCallback,
 	useEffect,
@@ -9,9 +9,9 @@ import React, {
 } from "react"
 import type { TimeTableGroup, TimeTableViewType } from "./LPTimeTable"
 
+import type { Dayjs } from "dayjs"
 import { useTimeTableMessage } from "./TimeTableMessageContext"
-import { Dayjs } from "dayjs"
-import { TimeFrameDay } from "./timeTableUtils"
+import type { TimeFrameDay } from "./timeTableUtils"
 
 export type SelectedTimeSlots<G extends TimeTableGroup> = {
 	timeSlots: number[]
@@ -25,7 +25,7 @@ type ContextType<G extends TimeTableGroup> = {
 		timeSlot: number,
 		group: G,
 		interaction: InteractionType,
-	) => void | undefined
+	) => undefined
 
 	multiselectionMode: boolean
 	setMultiselectionMode: Dispatch<boolean>
@@ -53,7 +53,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 	timeSlotMinutes: number // length of 1 slot in minutes (for example if the day starts at 8, and ends at 16, and the time slot is a week, that this means (16-8)*60*7 minutes)
 	onTimeRangeSelected?: (
 		s: { group: G; startDate: Dayjs; endDate: Dayjs } | undefined,
-	) => boolean | void // if return is true, clear selection
+	) => boolean | undefined // if return is true, clear selection
 	// this is a callback that can be used to clear the selected time slots... maybe there is a better way to do this?
 	setClearSelectedTimeRangeCB?: (cb: () => void) => void
 	disableWeekendInteractions?: boolean
@@ -285,7 +285,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 		timeSlot: number,
 		group: TimeTableGroup,
 		interaction: InteractionType,
-	) => void | undefined
+	) => undefined
 
 	return (
 		<selectedTimeSlotsContext.Provider

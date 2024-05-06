@@ -1,6 +1,6 @@
+import MenuIcon from "@atlaskit/icon/glyph/menu"
 import React, { useMemo } from "react"
 import { twMerge } from "tailwind-merge"
-import MenuIcon from "@atlaskit/icon/glyph/menu"
 import { Button } from "../components/Button"
 import { Dropdown } from "../components/DropdownMenu"
 

@@ -11,6 +11,7 @@ export function debounceHelper() {
 	let timer: number | null = null
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	return (cb: (...args: any[]) => void, delay: number, ...args: any[]) => {
 		if (timer) {
 			clearTimeout(timer)

@@ -1,8 +1,8 @@
-import React, {
+import {
 	type HTMLAttributes,
+	type TdHTMLAttributes,
+	type ThHTMLAttributes,
 	forwardRef,
-	TdHTMLAttributes,
-	ThHTMLAttributes,
 } from "react"
 import { twMerge } from "tailwind-merge"
 
@@ -80,7 +80,7 @@ const TableHead = forwardRef<
 ))
 TableHead.displayName = "TableHead"
 
-const TableCell = React.forwardRef<
+const TableCell = forwardRef<
 	HTMLTableCellElement,
 	TdHTMLAttributes<HTMLTableCellElement>
 >(({ className, ...props }, ref) => (

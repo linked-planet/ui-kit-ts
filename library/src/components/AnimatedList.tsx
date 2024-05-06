@@ -1,12 +1,12 @@
-import React, {
-	CSSProperties,
-	ReactNode,
+import {
+	type CSSProperties,
+	type ReactNode,
 	createRef,
 	isValidElement,
 	useMemo,
 } from "react"
-import { TransitionGroup, CSSTransition } from "react-transition-group"
-import { CSSTransitionProps } from "react-transition-group/CSSTransition"
+import { CSSTransition, TransitionGroup } from "react-transition-group"
+import type { CSSTransitionProps } from "react-transition-group/CSSTransition"
 
 export type AnimatedListProps = {
 	/** unmounts list items after it finishes the exit animation */
@@ -80,7 +80,18 @@ export function AnimatedList({
 					</CSSTransition>
 				)
 			}),
-		[children, classNames, timeout, unmountOnExit],
+		[
+			children,
+			classNames,
+			timeout,
+			unmountOnExit,
+			onEnter,
+			onEntering,
+			onEntered,
+			onExit,
+			onExiting,
+			onExited,
+		],
 	)
 
 	return (

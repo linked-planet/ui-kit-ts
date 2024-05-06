@@ -1,12 +1,12 @@
+import type { Dayjs } from "dayjs"
 import React, {
 	Fragment,
-	MouseEvent,
+	type MouseEvent,
 	useCallback,
 	useMemo,
 	useRef,
 	useState,
 } from "react"
-import type { Dayjs } from "dayjs"
 import type {
 	TimeSlotBooking,
 	TimeTableEntry,
@@ -16,21 +16,21 @@ import type {
 
 import { Group } from "./Group"
 
+import ItemWrapper, { type RenderItemProps } from "./ItemWrapper"
 import {
+	type TimeFrameDay,
 	getStartAndEndSlot,
 	isOverlapping,
-	TimeFrameDay,
 } from "./timeTableUtils"
-import ItemWrapper, { RenderItemProps } from "./ItemWrapper"
 
-import { useTimeTableMessage } from "./TimeTableMessageContext"
-import { useTimeTableConfig } from "./TimeTableConfigContext"
+import useResizeObserver, { type ObservedSize } from "use-resize-observer"
+import { PlaceHolderItem } from "./PlaceholderItem"
 import {
 	useMultiSelectionMode,
 	useSelectedTimeSlots,
 } from "./SelectedTimeSlotsContext"
-import { PlaceHolderItem } from "./PlaceholderItem"
-import useResizeObserver, { ObservedSize } from "use-resize-observer"
+import { useTimeTableConfig } from "./TimeTableConfigContext"
+import { useTimeTableMessage } from "./TimeTableMessageContext"
 
 interface TimeLineTableSimplifiedProps<
 	G extends TimeTableGroup,
@@ -69,7 +69,7 @@ export default function TimeLineTableSimplified<
 		if (!entries) return []
 		return entries.map((groupEntry, g) => (
 			<GroupRows<G, I>
-				key={g}
+				key={`${groupEntry.group.title}${g}`}
 				group={groupEntry.group}
 				groupNumber={g}
 				items={groupEntry.items}
@@ -113,8 +113,16 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 			onClick={() => {
 				if (onGroupClick) onGroupClick(group)
 			}}
+			onKeyUp={(e) => {
+				if (e.key === "Enter") {
+					if (onGroupClick) onGroupClick(group)
+				}
+			}}
+			role="button"
 			rowSpan={groupRowMax}
-			className={`border-border-bold border-b-border sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${groupNumber % 2 === 0 ? "bg-surface" : "bg-surface-hovered"}`}
+			className={`border-border-bold border-b-border sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${
+				groupNumber % 2 === 0 ? "bg-surface" : "bg-surface-hovered"
+			}`}
 		>
 			{renderGroup ? renderGroup(group) : <Group group={group} />}
 		</td>
@@ -258,7 +266,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 				return (
 					<ItemWrapper
-						key={i}
+						key={it.item.title}
 						group={group}
 						item={it.item}
 						width={itemWidthInColumn}
@@ -306,7 +314,11 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			}}
 			colSpan={2} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			ref={tableCellRef}
-			className={`border-border relative box-border border-l-0 border-t-0 border-solid p-0 ${isFirstRow ? "pt-2" : ""} ${isLastGroupRow ? "pb-2" : ""} ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
+			className={`border-border relative box-border border-l-0 border-t-0 border-solid p-0 ${
+				isFirstRow ? "pt-2" : ""
+			} ${
+				isLastGroupRow ? "pb-2" : ""
+			} ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
 		>
 			{itemsToRender && itemsToRender.length > 0 && (
 				<>
@@ -501,7 +513,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			timeSlotMinutes,
 			viewType,
 		)
-		const rowCount = itemRows.length > 0 ? itemRows.length : 1 // if there are no rows, we draw an empty one
+		const rowCount = itemRows && itemRows.length > 0 ? itemRows.length : 1 // if there are no rows, we draw an empty one
 
 		const trs: JSX.Element[] = []
 
@@ -558,7 +570,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				timeSlotSelectionDisabled && r === 0
 					? [<Fragment key={-1}>{groupHeader}</Fragment>]
 					: []
-			const itemsOfRow = itemRows[r] ?? null
+			const itemsOfRow = itemRows?.[r] ?? null
 
 			for (
 				let timeSlotNumber = 0;
@@ -757,7 +769,7 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 		console.info("LPTimeTable - no slots array, returning empty item rows")
 		return itemRows
 	}
-	groupItems.forEach((item) => {
+	for (const item of groupItems) {
 		let added = false
 
 		const startEndSlots = getStartAndEndSlot(
@@ -815,12 +827,12 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 			// create new row
 			itemRows.push([ret])
 		}
-	})
+	}
 
 	// sort the rows
-	itemRows.forEach((row) => {
+	for (const row of itemRows) {
 		row.sort((a, b) => a.item.startDate.diff(b.item.startDate))
-	})
+	}
 
 	return itemRows
 }

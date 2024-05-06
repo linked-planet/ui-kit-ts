@@ -1,16 +1,16 @@
-import React, { type CSSProperties, useState, useCallback } from "react"
 import {
 	type ColumnDef,
+	type ColumnFiltersState,
+	type RowSelectionState,
+	type SortingState,
+	type VisibilityState,
 	flexRender,
 	getCoreRowModel,
-	useReactTable,
-	SortingState,
-	getSortedRowModel,
-	ColumnFiltersState,
 	getFilteredRowModel,
-	VisibilityState,
-	RowSelectionState,
+	getSortedRowModel,
+	useReactTable,
 } from "@tanstack/react-table"
+import React, { type CSSProperties, useState, useCallback } from "react"
 import {
 	Table,
 	TableBody,
@@ -59,7 +59,7 @@ interface DataTableProps<TData, TValue> {
 
 // I need to use the default any because the cell values can have an arbitrary type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function DataTable<TData, TValue = any>({
+export function DataTable<TData, TValue>({
 	columns,
 	data,
 	columnFilters: _columnFilters,
@@ -188,6 +188,23 @@ export function DataTable<TData, TValue = any>({
 								header.column.getIsSorted() === "asc",
 							)
 						}
+						onKeyUp={(e) => {
+							if (e.key === "Enter") {
+								header.column.toggleSorting(
+									header.column.getIsSorted() === "asc",
+								)
+							}
+						}}
+						aria-label={`Sort column ${
+							header.column.columnDef.id
+						} ${
+							!header.column.getIsSorted()
+								? "unsorted"
+								: header.column.getIsSorted() === "asc"
+									? "ascending"
+									: "descending"
+						}`}
+						type="button"
 					>
 						<div className="flex items-center px-2">
 							{inner}

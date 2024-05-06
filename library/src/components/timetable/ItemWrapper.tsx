@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react"
+import type React from "react"
+import { useEffect, useRef } from "react"
 import { Item } from "./Item"
 import type { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
 
@@ -77,6 +78,12 @@ export default function ItemWrapper<
 				onClick={() => {
 					if (onTimeSlotItemClick) onTimeSlotItemClick(group, item)
 				}}
+				onKeyUp={(e) => {
+					if (e.key === "Enter" && onTimeSlotItemClick) {
+						onTimeSlotItemClick(group, item)
+					}
+				}}
+				role="button"
 			>
 				{renderTimeSlotItem ? (
 					renderTimeSlotItem({

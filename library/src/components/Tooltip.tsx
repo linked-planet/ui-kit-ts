@@ -1,6 +1,7 @@
-import React, { CSSProperties, useMemo } from "react"
-import { twMerge } from "tailwind-merge"
 import * as RTTp from "@radix-ui/react-tooltip"
+import type React from "react"
+import { type CSSProperties, useMemo } from "react"
+import { twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
 
 const portalDivId = "uikts-tooltip" as const
@@ -56,10 +57,11 @@ export function Tooltip({
 				<>
 					{tooltipHTMLContent && (
 						<div
+							// biome-ignore lint/security/noDangerouslySetInnerHtml: we get the content from jira
 							dangerouslySetInnerHTML={{
 								__html: tooltipHTMLContent,
 							}}
-						></div>
+						/>
 					)}
 					{tooltipContent}
 				</>

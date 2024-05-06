@@ -12,9 +12,9 @@ import {
 	type DayPickerRangeProps,
 	type DayPickerSingleProps,
 	type DayProps,
+	type Labels,
 	type Matcher,
 	useDayRender,
-	type Labels,
 } from "react-day-picker"
 
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"

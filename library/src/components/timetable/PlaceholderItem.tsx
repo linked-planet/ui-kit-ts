@@ -1,7 +1,6 @@
-import React from "react"
 import { token } from "@atlaskit/tokens"
 import type { Dayjs } from "dayjs"
-import { TimeTableGroup } from "./LPTimeTable"
+import type { TimeTableGroup } from "./LPTimeTable"
 
 export type PlaceholderItemProps<G extends TimeTableGroup> = {
 	group: G
@@ -61,6 +60,11 @@ function PlaceHolderItemPlaceHolder<G extends TimeTableGroup>({
 					"rgba(50, 50, 93, 0.3) 0px 1px 2px 1px, rgba(0, 0, 0, 0.1) 0px 2px 2px 1px",
 			}}
 			onClick={clearTimeRangeSelectionCB}
-		></div>
+			onKeyDown={(e) => {
+				if (e.key === "Enter") {
+					clearTimeRangeSelectionCB()
+				}
+			}}
+		/>
 	)
 }

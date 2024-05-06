@@ -1,7 +1,9 @@
-import React, { CSSProperties, useMemo, useState } from "react"
-import { twMerge } from "tailwind-merge"
 import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
+import type React from "react"
+import { type CSSProperties, useCallback, useMemo, useState } from "react"
+import { twMerge } from "tailwind-merge"
 import type { Appearance } from "../utils/appearanceTypes"
+import { IconSizeHelper } from "./IconSizeHelper"
 
 export const TagColorOptions = [
 	"blue",
@@ -201,24 +203,29 @@ export function Tag({
 	const [removed, setRemoved] = useState(false)
 	const [hovered, setHovered] = useState(false)
 
+	const onClick = useCallback(() => {
+		let removed = isRemovable
+		if (onBeforeRemoveAction) {
+			removed = onBeforeRemoveAction()
+		}
+		setRemoved(removed)
+		if (removed && onAfterRemoveAction) {
+			const txt = typeof children === "string" ? children : undefined
+			onAfterRemoveAction(txt)
+		}
+	}, [children, isRemovable, onAfterRemoveAction, onBeforeRemoveAction])
+
 	const textWithRemoveButton = useMemo(() => {
 		return (
 			<div className="flex items-center">
 				<div className="truncate">{children}</div>
 
 				<button
-					onClick={() => {
-						let removed = isRemovable
-						if (onBeforeRemoveAction) {
-							removed = onBeforeRemoveAction()
-						}
-						setRemoved(removed)
-						if (removed && onAfterRemoveAction) {
-							const txt =
-								typeof children === "string"
-									? children
-									: undefined
-							onAfterRemoveAction(txt)
+					type="button"
+					onClick={onClick}
+					onKeyUp={(e) => {
+						if (e.key === "Enter") {
+							onClick()
 						}
 					}}
 					className={`m-0 ml-0.5 flex size-4 flex-none items-center justify-center ${
@@ -227,19 +234,16 @@ export function Tag({
 					aria-label={removeButtonLabel}
 					title={removeButtonLabel}
 					onMouseOver={() => setHovered(true)}
+					onFocus={() => setHovered(true)}
 					onMouseLeave={() => setHovered(false)}
 				>
-					<EditorCloseIcon size="small" label={""} />
+					<IconSizeHelper>
+						<EditorCloseIcon size="small" label={""} />
+					</IconSizeHelper>
 				</button>
 			</div>
 		)
-	}, [
-		isRemovable,
-		onAfterRemoveAction,
-		onBeforeRemoveAction,
-		removeButtonLabel,
-		children,
-	])
+	}, [isRemovable, removeButtonLabel, children, onClick])
 
 	const classNameUsed = hovered
 		? `bg-danger text-danger-text ${className} ${
@@ -285,7 +289,9 @@ export function TagGroup({
 	return (
 		<div
 			className={twMerge(
-				`flex w-full ${wrap ? "flex-wrap" : ""} items-center gap-1.5 py-0.5 ${
+				`flex w-full ${
+					wrap ? "flex-wrap" : ""
+				} items-center gap-1.5 py-0.5 ${
 					alignment === "start" ? "justify-start" : "justify-end"
 				}`,
 				className,

@@ -1,6 +1,7 @@
-import React, {
-	CSSProperties,
-	ElementRef,
+import type React from "react"
+import {
+	type CSSProperties,
+	type ElementRef,
 	useCallback,
 	useRef,
 	useState,
@@ -116,7 +117,7 @@ export function LeftSidebar({
 			`${widthUsedRef.current}px`,
 		)
 	} else {
-		document.documentElement.style.setProperty(widthVariable, `20px`)
+		document.documentElement.style.setProperty(widthVariable, "20px")
 	}
 
 	return (
@@ -150,7 +151,7 @@ export function LeftSidebar({
 						setIsHovered(false)
 					}
 				}}
-			></div>
+			/>
 			{resizeButton ? (
 				<>{resizeButton}</>
 			) : (
@@ -163,11 +164,29 @@ export function LeftSidebar({
 							onCollapsed()
 						if (newState === "expanded" && onExpand) onExpand()
 					}}
+					onKeyUp={(e) => {
+						if (e.key === "Enter" || e.key === " ") {
+							const newState =
+								collapsed === "collapsed"
+									? "expanded"
+									: "collapsed"
+							setCollapsed(newState)
+							if (newState === "collapsed" && onCollapsed)
+								onCollapsed()
+							if (newState === "expanded" && onExpand) onExpand()
+						}
+					}}
+					aria-label={
+						collapsed === "collapsed"
+							? "expand sidebar"
+							: "collapse sidebar"
+					}
 					className={`bg-surface-raised hover:bg-brand-hovered text-text hover:text-text-inverse absolute -right-3 top-8 flex h-6 w-6 items-center justify-center rounded-full hover:opacity-100 ${
 						isHovered || collapsed === "collapsed"
 							? "opacity-100"
 							: "opacity-0"
 					} duration-150`}
+					type="button"
 				>
 					{collapsed === "collapsed" ? (
 						<ChevronRightIcon label="expand" />

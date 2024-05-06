@@ -6,8 +6,8 @@ import { token } from "@atlaskit/tokens"
 
 import { css } from "@emotion/css"
 
-import { Collapsible } from "./Collapsible"
 import { twMerge } from "tailwind-merge"
+import { Collapsible } from "./Collapsible"
 
 const borderColor = token("color.border", "#091e4224")
 
@@ -40,7 +40,7 @@ export const CardBase = forwardRef(
 			closed != null ? !closed : defaultOpen != null ? undefined : true
 
 		const openButtonPos =
-			closed == undefined && defaultOpen == undefined ? "hidden" : "right"
+			closed == null && defaultOpen == null ? "hidden" : "right"
 
 		return (
 			<Collapsible

@@ -1,8 +1,9 @@
-import React, { createContext, useContext } from "react"
 import type { Dayjs } from "dayjs"
+import type React from "react"
+import { createContext, useContext } from "react"
 import type { TimeTableGroup, TimeTableViewType } from "./LPTimeTable"
-import { PlaceholderItemProps } from "./PlaceholderItem"
-import { TimeFrameDay } from "./timeTableUtils"
+import type { PlaceholderItemProps } from "./PlaceholderItem"
+import type { TimeFrameDay } from "./timeTableUtils"
 
 type TimeTableConfig<G extends TimeTableGroup> = {
 	timeFrameDay: TimeFrameDay

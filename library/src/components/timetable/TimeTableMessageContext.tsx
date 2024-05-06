@@ -1,16 +1,16 @@
+import IntlMessageFormat from "intl-messageformat"
 import type React from "react"
 import {
-	createContext,
 	type Dispatch,
+	createContext,
 	useContext,
 	useEffect,
 	useMemo,
 	useState,
 } from "react"
-import type { Message } from "../inlinemessage"
-import type { default as TranslatedTimeTableMessagesJson } from "../../localization/translations-compiled/en.json"
-import IntlMessageFormat from "intl-messageformat"
 import { getTranslation } from "../../localization/LocaleContext"
+import type { default as TranslatedTimeTableMessagesJson } from "../../localization/translations-compiled/en.json"
+import type { Message } from "../inlinemessage"
 
 export type TranslatedTimeTableMessages = typeof TranslatedTimeTableMessagesJson
 

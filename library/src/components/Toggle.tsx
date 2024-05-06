@@ -1,8 +1,8 @@
-import * as Switch from "@radix-ui/react-switch"
-import React from "react"
-import { twMerge } from "tailwind-merge"
-import EditorDoneIcon from "@atlaskit/icon/glyph/editor/done"
 import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
+import EditorDoneIcon from "@atlaskit/icon/glyph/editor/done"
+import * as Switch from "@radix-ui/react-switch"
+import type React from "react"
+import { twMerge } from "tailwind-merge"
 
 export function Toggle({
 	id,

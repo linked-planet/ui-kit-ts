@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react"
+import React, { type CSSProperties } from "react"
 import { twMerge } from "tailwind-merge"
 type Size = "xsmall" | "small" | "medium" | "large" | "xlarge"
 
@@ -41,6 +41,6 @@ export function LoadingSpinner({
 			style={style}
 			id={id}
 			data-testid={testId}
-		></div>
+		/>
 	)
 }

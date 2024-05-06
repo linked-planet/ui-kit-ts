@@ -1,5 +1,5 @@
-import React from "react"
 import * as RTabs from "@radix-ui/react-tabs"
+import React from "react"
 import { twMerge } from "tailwind-merge"
 
 type TabProps = {
@@ -115,7 +115,7 @@ export function TabPanel({
 	style,
 	testId,
 }: TabPanelProps) {
-	if (label == undefined) {
+	if (label === undefined || label === null || label === "") {
 		throw new Error("TabPanel must have a label prop")
 	}
 	return (

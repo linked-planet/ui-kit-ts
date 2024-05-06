@@ -1,8 +1,8 @@
-import React, { forwardRef, useCallback, useState } from "react"
-import * as CollapsibleRUI from "@radix-ui/react-collapsible"
-import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
+import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
+import * as CollapsibleRUI from "@radix-ui/react-collapsible"
+import { forwardRef, useCallback, useState } from "react"
 import { twMerge } from "tailwind-merge"
 
 type CollapsibleProps = {
@@ -43,7 +43,7 @@ export const Collapsible = forwardRef(
 		ref: React.ForwardedRef<HTMLDivElement>,
 	) => {
 		const [open, setOpen] = useState(
-			opened == undefined ? defaultOpen : opened,
+			opened === undefined || opened === null ? defaultOpen : opened,
 		)
 
 		if (opened != null && opened !== open) {

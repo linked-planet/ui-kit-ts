@@ -1,32 +1,32 @@
+import dayjs, { type Dayjs } from "dayjs"
 import React, {
-	MutableRefObject,
+	type MutableRefObject,
 	useCallback,
 	useEffect,
 	useMemo,
 	useRef,
 } from "react"
-import dayjs, { Dayjs } from "dayjs"
 
+import useResizeObserver from "use-resize-observer"
+import { InlineMessage } from "../inlinemessage"
+import type { RenderItemProps } from "./ItemWrapper"
+import { LPTimeTableHeader, headerText } from "./LPTimeTableHeader"
+import type { PlaceholderItemProps } from "./PlaceholderItem"
+import { SelectedTimeSlotsProvider } from "./SelectedTimeSlotsContext"
+import TimeLineTableSimplified from "./TimeLineTableSimplified"
+import { TimeTableConfigProvider } from "./TimeTableConfigContext"
 import {
+	type TimeTableMessage,
+	TimeTableMessageProvider,
+	type TranslatedTimeTableMessages,
+	useTimeTableMessage,
+} from "./TimeTableMessageContext"
+import {
+	type TimeFrameDay,
 	calculateTimeSlotPropertiesForView,
 	getStartAndEndSlot,
 	itemsOutsideOfDayRangeORSameStartAndEnd,
-	TimeFrameDay,
 } from "./timeTableUtils"
-import { InlineMessage } from "../inlinemessage"
-import {
-	TimeTableMessage,
-	TimeTableMessageProvider,
-	TranslatedTimeTableMessages,
-	useTimeTableMessage,
-} from "./TimeTableMessageContext"
-import { headerText, LPTimeTableHeader } from "./LPTimeTableHeader"
-import TimeLineTableSimplified from "./TimeLineTableSimplified"
-import { TimeTableConfigProvider } from "./TimeTableConfigContext"
-import { SelectedTimeSlotsProvider } from "./SelectedTimeSlotsContext"
-import { RenderItemProps } from "./ItemWrapper"
-import { PlaceholderItemProps } from "./PlaceholderItem"
-import useResizeObserver from "use-resize-observer"
 
 export interface TimeSlotBooking {
 	title: string
@@ -82,7 +82,7 @@ export interface LPTimeTableProps<
 	/* this function gets called when a selection was made, i.g. to create a booking. the return value states if the selection should be cleared or not */
 	onTimeRangeSelected?: (
 		s: { group: G; startDate: Dayjs; endDate: Dayjs } | undefined,
-	) => boolean | void
+	) => boolean | undefined
 
 	/* The selected time range context sets this callback to be able for a time table parent component to clear the selected time range from outside */
 	setClearSelectedTimeRangeCB?: (cb: () => void) => void
@@ -431,7 +431,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								viewType={viewType}
 								timeFrameDay={timeFrameDay}
 								showTimeSlotHeader={
-									showTimeSlotHeader == undefined
+									showTimeSlotHeader === undefined ||
+									showTimeSlotHeader === null
 										? viewType === "hours"
 										: showTimeSlotHeader
 								}
@@ -587,7 +588,7 @@ function moveNowBar(
 
 	const diffPerc = diffNow / timeSlotMinutes
 	nowBar.style.left = `${diffPerc * 100}%`
-	nowBar.style.height = tableBody.clientHeight + "px"
+	nowBar.style.height = `${tableBody.clientHeight}px`
 
 	// add orange border
 	const nowTimeSlotCell = headerTimeSlotCells[startSlot + 1]

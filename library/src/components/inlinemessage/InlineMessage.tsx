@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react"
-import { Appearance } from "../../utils/appearanceTypes"
-import { twMerge } from "tailwind-merge"
-import { Button } from "../Button"
 import CrossIcon from "@atlaskit/icon/glyph/cross"
+import type React from "react"
+import { useEffect, useRef, useState } from "react"
+import { twMerge } from "tailwind-merge"
+import type { Appearance } from "../../utils/appearanceTypes"
+import { Button } from "../Button"
 
 export type OpeningDirection = "topdown" | "bottomup"
 

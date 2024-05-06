@@ -1,10 +1,10 @@
-import React from "react"
 import * as RAvatar from "@radix-ui/react-avatar"
+import type React from "react"
 import { twMerge } from "tailwind-merge"
 
-import LockFilledIcon from "@atlaskit/icon/glyph/lock-filled"
-import CrossIcon from "@atlaskit/icon/glyph/cross"
 import CheckIcon from "@atlaskit/icon/glyph/check"
+import CrossIcon from "@atlaskit/icon/glyph/cross"
+import LockFilledIcon from "@atlaskit/icon/glyph/lock-filled"
 import PersonIcon from "@atlaskit/icon/glyph/person"
 
 import { IconSizeHelper } from "./IconSizeHelper"

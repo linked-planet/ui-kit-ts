@@ -14,7 +14,7 @@ export function getPortal(insidePortalContainerID: string) {
 		body.appendChild(portalNode)
 	}
 	let insidePortalNode = portalNode.querySelector(
-		"#" + insidePortalContainerID,
+		`#${insidePortalContainerID}`,
 	) as HTMLElement | null
 	if (!insidePortalNode) {
 		insidePortalNode = document.createElement("div")

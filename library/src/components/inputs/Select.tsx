@@ -1,5 +1,5 @@
 import React from "react"
-import { type CSSProperties, useMemo, useImperativeHandle } from "react"
+import { type CSSProperties, useImperativeHandle, useMemo } from "react"
 import { Controller } from "react-hook-form"
 import type { Control, FieldValues, Path } from "react-hook-form"
 import {
@@ -433,6 +433,7 @@ type SelectPropsProto<
 	removeValueLabel?: string
 	inputId?: string
 	testId?: string
+	ref?: React.Ref<SelectInstance<Option, IsMulti, GroupOptionType> | null>
 }
 
 // extends with the control and fieldName props for react-hook-form.. the fieldName is the normal name prop of react-hook-form
@@ -478,6 +479,7 @@ function SelectInForm<
 	errorMessage,
 	usePortal = true,
 	testId,
+	ref,
 	...props
 }: SelectInFormProps<FormData, ValueType, Option, IsMulti, GroupOptionType>) {
 	return (
@@ -582,6 +584,7 @@ function SelectInForm<
 					...props,
 					isCreateable: props.isCreateable,
 					testId,
+					innerRef: ref,
 				}
 
 				const { ref: innerRef, ...fieldProps } = field
@@ -628,11 +631,13 @@ function SelectNotInForm<
 	usePortal = true,
 	disabled,
 	isDisabled,
+	ref,
 	...props
 }: SelectNotInFormProps<ValueType, Option, IsMulti, GroupOptionType>) {
 	return (
 		<SelectInner<ValueType, Option, IsMulti, GroupOptionType>
 			{...props}
+			innerRef={ref}
 			options={options}
 			menuPortalTarget={usePortal ? getPortal(portalDivId) : undefined}
 			isDisabled={disabled || isDisabled}

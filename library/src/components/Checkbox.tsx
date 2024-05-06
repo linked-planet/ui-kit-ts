@@ -1,17 +1,17 @@
-import type React from "react"
-import {
-	type InputHTMLAttributes,
-	forwardRef,
-	useState,
-	type ForwardedRef,
-	type ReactNode,
-	useImperativeHandle,
-	useRef,
-	useEffect,
-} from "react"
-import { twMerge } from "tailwind-merge"
 import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
 import CheckboxIndeterminateIcon from "@atlaskit/icon/glyph/checkbox-indeterminate"
+import type React from "react"
+import {
+	type ForwardedRef,
+	type InputHTMLAttributes,
+	type ReactNode,
+	forwardRef,
+	useEffect,
+	useImperativeHandle,
+	useRef,
+	useState,
+} from "react"
+import { twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./inputs/SlidingErrorMessage"
 
 type AdditionalCheckboxPropsWithIndeterminate = {

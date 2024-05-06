@@ -1,8 +1,8 @@
 import React from "react"
-import { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
+import type { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
 
 import styles from "./Item.module.css"
-import { RenderItemProps } from "./ItemWrapper"
+import type { RenderItemProps } from "./ItemWrapper"
 
 export function Item({
 	item,
