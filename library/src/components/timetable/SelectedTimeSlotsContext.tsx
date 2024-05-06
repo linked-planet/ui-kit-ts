@@ -53,7 +53,7 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 	timeSlotMinutes: number // length of 1 slot in minutes (for example if the day starts at 8, and ends at 16, and the time slot is a week, that this means (16-8)*60*7 minutes)
 	onTimeRangeSelected?: (
 		s: { group: G; startDate: Dayjs; endDate: Dayjs } | undefined,
-	) => boolean | undefined // if return is true, clear selection
+	) => boolean | undefined | void // if return is true, clear selection
 	// this is a callback that can be used to clear the selected time slots... maybe there is a better way to do this?
 	setClearSelectedTimeRangeCB?: (cb: () => void) => void
 	disableWeekendInteractions?: boolean

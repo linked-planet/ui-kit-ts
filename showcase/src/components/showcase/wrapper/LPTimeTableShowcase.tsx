@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo } from "react"
 import { useState } from "react"
-import dayjs, { Dayjs } from "dayjs"
+import dayjs, { type Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { Button, LPTimeTable } from "@linked-planet/ui-kit-ts"
@@ -18,7 +18,7 @@ import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
-import { TimeTableViewType } from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
+import type { TimeTableViewType } from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -571,7 +571,7 @@ function Example() {
 						min={10}
 						max={1200}
 						onChange={(e) => {
-							const val = parseInt(e.target.value)
+							const val = Number.parseInt(e.target.value)
 							setTimeStepsInputValue(val)
 							debounceHelper(() => setTimeSteps(val))
 						}}
@@ -593,7 +593,7 @@ function Example() {
 						onChange={(e) =>
 							debounceHelper(() =>
 								setGroupHeaderColumnWidth(
-									parseInt(e.target.value),
+									Number.parseInt(e.target.value),
 								),
 							)
 						}
@@ -611,7 +611,7 @@ function Example() {
 						max={1000}
 						onChange={(e) =>
 							debounceHelper(() =>
-								setColumnWidth(parseInt(e.target.value)),
+								setColumnWidth(Number.parseInt(e.target.value)),
 							)
 						}
 						className="mr-1 w-16 text-center"

@@ -82,7 +82,7 @@ export interface LPTimeTableProps<
 	/* this function gets called when a selection was made, i.g. to create a booking. the return value states if the selection should be cleared or not */
 	onTimeRangeSelected?: (
 		s: { group: G; startDate: Dayjs; endDate: Dayjs } | undefined,
-	) => boolean | undefined
+	) => boolean | undefined | void
 
 	/* The selected time range context sets this callback to be able for a time table parent component to clear the selected time range from outside */
 	setClearSelectedTimeRangeCB?: (cb: () => void) => void
