@@ -11,8 +11,9 @@ import {
 	useRef,
 	useState,
 } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./inputs/SlidingErrorMessage"
+import { IconSizeHelper } from "./IconSizeHelper"
 
 type AdditionalCheckboxPropsWithIndeterminate = {
 	checked?: boolean
@@ -47,10 +48,13 @@ type CheckboxProps = Omit<
 const checkBoxSize = "size-[15px] box-border" as const
 const checkBoxClickableSize = "size-[20px] box-border" as const
 
-const checkBoxStyles = `relative border-border focus:border-selected-border hover:border-selected-bold-hovered box-border flex flex-none ${checkBoxSize} items-center justify-center mr-2 ease-linear transition duration-150 cursor-default rounded-[3px] border-[2.5px] outline-none outline-0 outline-offset-0 focus:border-2`
+const checkBoxStyles = twJoin(
+	"relative bg-input hover:bg-input-hovered focus:bg-input-active border-border-bold border-solid border-2 focus:border-selected-bold-hovered hover:border-selected-bold-hovered box-border flex flex-none items-center justify-center mr-2 ease-linear transition duration-150 cursor-default rounded-[3px] outline-none outline-0 outline-offset-0",
+	checkBoxSize,
+)
 
 const disabledStyles =
-	"cursor-not-allowed border-disabled hover:border-transparent" as const
+	"cursor-not-allowed hover:bg-input focus:bg-input border-disabled hover:border-transparent" as const
 
 const checkBoxCheckedStyles =
 	"text-selected-bold hover:text-selected-bold-hovered border-selected-border opacity-100" as const
@@ -154,13 +158,15 @@ const CheckboxI = (
 						disabled ? disabledStyles : undefined,
 					)}
 				>
-					<div className="pointer-events-none flex items-center justify-center size-full">
+					<IconSizeHelper
+						className={`absolute inset-0 justify-center items-center size-full`}
+					>
 						{!indeterminate ? (
-							<CheckboxIcon label="" />
+							<CheckboxIcon label="" size="medium" />
 						) : (
 							<CheckboxIndeterminateIcon label="" />
 						)}
-					</div>
+					</IconSizeHelper>
 					<input
 						type="checkbox"
 						id={id}

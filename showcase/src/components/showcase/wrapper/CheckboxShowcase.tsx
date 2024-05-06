@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKCheckbox from "@atlaskit/checkbox"
 import { Button, ButtonGroup, Checkbox } from "@linked-planet/ui-kit-ts"
