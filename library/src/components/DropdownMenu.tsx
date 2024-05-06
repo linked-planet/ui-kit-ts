@@ -10,6 +10,7 @@ import { twJoin, twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
 import { Button, type ButtonProps } from "./Button"
 import { overlayBaseStyle } from "./styleHelper"
+import { IconSizeHelper } from "./IconSizeHelper"
 
 const commonStyles =
 	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-none border-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-none focus-visible:border-solid focus-visible:border-selected-border" as const
@@ -147,14 +148,14 @@ function ItemCheckbox({
 			{...props}
 		>
 			<div
-				className={twMerge(
-					"border-border relative ml-2 mr-4 flex h-4 w-4 flex-none items-center justify-center rounded border-2",
-				)}
+				className={`${
+					disabled ? "border-border" : "border-border-bold"
+				} relative ml-2 mr-4 flex h-4 w-4 flex-none items-center justify-center rounded border-2`}
 			>
 				<RDd.ItemIndicator asChild>
-					<div className="text-brand-bold flex items-center justify-center">
+					<IconSizeHelper className="text-brand-bold">
 						<CheckboxIcon label="" />
-					</div>
+					</IconSizeHelper>
 				</RDd.ItemIndicator>
 			</div>
 			<div>
@@ -300,17 +301,23 @@ function ItemRadio({
 					`${
 						selected
 							? "border-selected-bold"
-							: "border-border hover:border-selected-bold"
+							: `${
+									disabled
+										? "border-border"
+										: "border-border-bold"
+								} hover:border-selected-bold`
 					} relative ml-2 mr-4 flex h-3 w-3 flex-none items-center justify-center rounded-full border-2`,
 				)}
 			>
 				{selected && (
-					<div className="text-brand-bold absolute inset-0 flex items-center justify-center">
+					<IconSizeHelper className="text-brand-bold absolute inset-0 flex items-center justify-center">
 						<RadioIcon label="" />
-					</div>
+					</IconSizeHelper>
 				)}
 				<RDd.ItemIndicator>
-					<RadioIcon label="" />
+					<IconSizeHelper>
+						<RadioIcon label="" />
+					</IconSizeHelper>
 				</RDd.ItemIndicator>
 			</div>
 			<div>
@@ -350,12 +357,16 @@ function SubMenu({
 		if (typeof trigger === "string") {
 			return (
 				<div className={twJoin(commonStyles, normalStyles, "w-full")}>
-					{chevronSide === "left" && <ChevronLeftIcon label="" />}
+					{chevronSide === "left" && (
+						<IconSizeHelper>
+							<ChevronLeftIcon label="" />
+						</IconSizeHelper>
+					)}
 					{trigger}
 					{chevronSide === "right" && (
-						<span className="ml-auto">
+						<IconSizeHelper>
 							<ChevronRightIcon label="" />
-						</span>
+						</IconSizeHelper>
 					)}
 				</div>
 			)
@@ -450,13 +461,13 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 				>
 					<ChevronUpIcon label="" size="medium" />
 				</div>
-				<div
+				<IconSizeHelper
 					className={`h-full hidden items-center w-6 ${
 						hideChevron ? "" : "group-data-[state=closed]:flex"
 					}`}
 				>
 					<ChevronDownIcon label="" size="medium" />
-				</div>
+				</IconSizeHelper>
 			</Button>
 		)
 	},
