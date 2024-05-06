@@ -54,7 +54,7 @@ const checkBoxStyles = twJoin(
 )
 
 const disabledStyles =
-	"cursor-not-allowed hover:bg-input focus:bg-input border-disabled hover:border-transparent" as const
+	"cursor-not-allowed hover:bg-input hover:border-border focus:bg-input border-disabled" as const
 
 const checkBoxCheckedStyles =
 	"text-selected-bold hover:text-selected-bold-hovered border-selected-border opacity-100" as const
