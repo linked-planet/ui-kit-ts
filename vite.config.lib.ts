@@ -5,6 +5,8 @@ import dts from "vite-plugin-dts"
 //import nodePolyfills from "rollup-plugin-polyfill-node"
 import pkg from "./package.json"
 
+import classPrefixerPlugin from "./classPrefixerPlugin"
+
 // postcss:
 import tailwindcss from "tailwindcss"
 import autoprefixer from "autoprefixer"
@@ -51,7 +53,7 @@ export default defineConfig({
 				},
 			},
 			external: [...Object.keys(pkg.peerDependencies)],
-			//plugins: [nodePolyfills()],
+			plugins: [classPrefixerPlugin()],
 		},
 	},
 	plugins: [

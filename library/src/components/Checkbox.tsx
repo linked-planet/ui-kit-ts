@@ -159,7 +159,9 @@ const CheckboxI = (
 					)}
 				>
 					<IconSizeHelper
-						className={`absolute inset-0 justify-center items-center size-full`}
+						className={
+							"absolute inset-0 justify-center items-center size-full"
+						}
 					>
 						{!indeterminate ? (
 							<CheckboxIcon label="" size="medium" />

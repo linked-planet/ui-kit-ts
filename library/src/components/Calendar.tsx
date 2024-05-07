@@ -314,6 +314,7 @@ export function CalendarBase(
 			onNextClick={!disabled ? onNextClick : undefined}
 			onPrevClick={!disabled ? onPrevClick : undefined}
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 			onSelect={!disabled ? (onSelect as any) : undefined}
 			{...propsWOEventHandler}
 			formatters={formatters}

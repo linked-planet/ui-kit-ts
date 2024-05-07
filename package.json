@@ -11,7 +11,9 @@
 	"description": "",
 	"module": "dist/index.js",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"types": "./dist/index.d.ts",
 	"style": "dist/styles.css",
 	"scripts": {
@@ -49,10 +51,17 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": ["en", "de"],
+	"supportedLocales": [
+		"en",
+		"de"
+	],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [">0.2%", "not dead", "not op_mini all"],
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -129,29 +138,29 @@
 		"vitest": "^1.6.0"
 	},
 	"peerDependencies": {
-		"@atlaskit/atlassian-navigation": "^3.6.0",
-		"@atlaskit/banner": "^12.3.0",
-		"@atlaskit/button": "^17.14.1",
-		"@atlaskit/calendar": "^14.2.0",
+		"@atlaskit/atlassian-navigation": "^3.6.2",
+		"@atlaskit/banner": "^12.3.1",
+		"@atlaskit/button": "^17.14.2",
+		"@atlaskit/calendar": "^14.2.1",
 		"@atlaskit/checkbox": "^13.3.0",
 		"@atlaskit/code": "^15.1.2",
 		"@atlaskit/css-reset": "^6.9.0",
-		"@atlaskit/dropdown-menu": "^12.10.0",
+		"@atlaskit/dropdown-menu": "^12.10.1",
 		"@atlaskit/dynamic-table": "^14.16.3",
 		"@atlaskit/empty-state": "^7.8.0",
-		"@atlaskit/eslint-plugin-design-system": "^9.6.0",
-		"@atlaskit/form": "^9.3.0",
-		"@atlaskit/lozenge": "^11.7.0",
-		"@atlaskit/menu": "^2.2.0",
-		"@atlaskit/modal-dialog": "^12.13.1",
-		"@atlaskit/page-layout": "^3.2.0",
-		"@atlaskit/pagination": "^14.6.5",
-		"@atlaskit/popup": "^1.16.0",
+		"@atlaskit/eslint-plugin-design-system": "^9.7.0",
+		"@atlaskit/form": "^9.3.1",
+		"@atlaskit/lozenge": "^11.7.1",
+		"@atlaskit/menu": "^2.2.1",
+		"@atlaskit/modal-dialog": "^12.13.2",
+		"@atlaskit/page-layout": "^3.2.1",
+		"@atlaskit/pagination": "^14.6.6",
+		"@atlaskit/popup": "^1.17.0",
 		"@atlaskit/select": "^17.8.0",
-		"@atlaskit/side-navigation": "^3.1.0",
+		"@atlaskit/side-navigation": "^3.1.1",
 		"@atlaskit/table-tree": "^9.8.0",
 		"@atlaskit/tabs": "^14.1.0",
-		"@atlaskit/tag": "^12.1.0",
+		"@atlaskit/tag": "^12.2.1",
 		"@atlaskit/tag-group": "^10.3.0",
 		"@atlaskit/textarea": "^5.4.0",
 		"@atlaskit/textfield": "^6.3.0",
