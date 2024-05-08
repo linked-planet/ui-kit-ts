@@ -24,6 +24,7 @@ import ReactSelectCreatable, {
 } from "react-select/creatable"
 import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./SlidingErrorMessage"
+import { IconSizeHelper } from "../IconSizeHelper"
 
 //#region styles
 const controlStyles =
@@ -98,6 +99,7 @@ function useClassNamesConfig<
 						} self-start mt-2`,
 						classNamesConfig?.dropdownIndicator?.(provided),
 					),
+				indicatorsContainer: (provided) => "flex items-center h-full",
 				indicatorSeparator: (provided) =>
 					twMerge(
 						"hidden" as const,
@@ -261,7 +263,9 @@ const SelectInner = <
 						}
 					}}
 				>
-					<SelectClearIcon size="small" label="" />
+					<IconSizeHelper>
+						<SelectClearIcon size="small" label="" />
+					</IconSizeHelper>
 				</div>
 			),
 
@@ -278,7 +282,9 @@ const SelectInner = <
 						aria-hidden="false"
 						tabIndex={0}
 					>
-						<EditorCloseIcon size="small" label="" />
+						<IconSizeHelper>
+							<EditorCloseIcon size="small" label="" />
+						</IconSizeHelper>
 					</div>
 				)
 			},
@@ -344,11 +350,13 @@ const SelectInner = <
 						aria-label={title}
 						aria-hidden="false"
 					>
-						{_props.selectProps.menuIsOpen ? (
-							<ChevronUpIcon size="medium" label="" />
-						) : (
-							<ChevronDownIcon size="medium" label="" />
-						)}
+						<IconSizeHelper>
+							{_props.selectProps.menuIsOpen ? (
+								<ChevronUpIcon size="medium" label="" />
+							) : (
+								<ChevronDownIcon size="medium" label="" />
+							)}
+						</IconSizeHelper>
 					</div>
 				)
 			},

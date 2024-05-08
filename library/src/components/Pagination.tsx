@@ -6,6 +6,7 @@ import type React from "react"
 import { useEffect, useMemo, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Dropdown, type DropdownMenuProps } from "./DropdownMenu"
+import { IconSizeHelper } from "./IconSizeHelper"
 
 function PageSizeSelector({
 	pageSize,
@@ -55,11 +56,13 @@ function PageSizeSelector({
 				trigger={({ opened }: { opened: boolean }) => (
 					<div className="hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded bg-transparent p-1.5">
 						{_pageSize}
-						{opened ? (
-							<ChevronDownIcon size="small" label="" />
-						) : (
-							<ChevronUpIcon size="small" label="" />
-						)}
+						<IconSizeHelper>
+							{opened ? (
+								<ChevronDownIcon size="small" label="" />
+							) : (
+								<ChevronUpIcon size="small" label="" />
+							)}
+						</IconSizeHelper>
 					</div>
 				)}
 				side={pageSizeMenuSide}
@@ -192,7 +195,9 @@ function PaginationPageHandler<P extends string | number>({
 				aria-disabled={currentIdx >= pages.length - 1}
 				type="button"
 			>
-				<ChevronLeftLargeIcon size="medium" label="" />
+				<IconSizeHelper>
+					<ChevronLeftLargeIcon size="medium" label="" />
+				</IconSizeHelper>
 			</button>
 			{visiblePages.map((page, i) => (
 				<div key={page + i.toString()}>
@@ -254,7 +259,9 @@ function PaginationPageHandler<P extends string | number>({
 				aria-disabled={currentIdx >= pages.length - 1}
 				type="button"
 			>
-				<ChevronRightLargeIcon size="medium" label="" />
+				<IconSizeHelper>
+					<ChevronRightLargeIcon size="medium" label="" />
+				</IconSizeHelper>
 			</button>
 		</div>
 	)

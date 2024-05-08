@@ -27,6 +27,7 @@ import {
 	type FieldValues,
 } from "react-hook-form"
 import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
+import { IconSizeHelper } from "./IconSizeHelper"
 
 //import "react-day-picker/dist/style.css" -> is imported in index.ts of the library that it is before TW
 
@@ -301,8 +302,16 @@ export function CalendarBase(
 			className={className}
 			lang={lang}
 			components={{
-				IconLeft: () => <ChevronLeftLargeIcon label="" />,
-				IconRight: () => <ChevronRightLargeIcon label="" />,
+				IconLeft: () => (
+					<IconSizeHelper>
+						<ChevronLeftLargeIcon label="" />
+					</IconSizeHelper>
+				),
+				IconRight: () => (
+					<IconSizeHelper>
+						<ChevronRightLargeIcon label="" />
+					</IconSizeHelper>
+				),
 				Day,
 			}}
 			modifiersClassNames={{
