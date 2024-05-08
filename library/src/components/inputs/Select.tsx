@@ -99,7 +99,11 @@ function useClassNamesConfig<
 						} self-start mt-2`,
 						classNamesConfig?.dropdownIndicator?.(provided),
 					),
-				indicatorsContainer: (provided) => "flex items-center h-full",
+				indicatorsContainer: (provided) =>
+					twMerge(
+						"flex items-center h-full",
+						classNamesConfig?.indicatorsContainer?.(provided),
+					),
 				indicatorSeparator: (provided) =>
 					twMerge(
 						"hidden" as const,
