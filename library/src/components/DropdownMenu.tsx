@@ -406,7 +406,6 @@ export type DropdownMenuProps = {
 	onOpenChange?: (open: boolean) => void
 	trigger: React.ReactNode
 	children: React.ReactNode
-	triggerStyle?: React.CSSProperties
 	usePortal?: boolean
 	testId?: string
 	hideChevron?: boolean
