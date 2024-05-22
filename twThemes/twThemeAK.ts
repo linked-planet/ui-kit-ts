@@ -98,6 +98,7 @@ export const theme = {
 			inverse: `var(--ds-text-inverse, ${N10})`,
 			subtle: `var(--ds-text-subtle, ${N500})`,
 			subtlest: `var(--ds-text-subtlest, ${N200})`,
+			disabled: `var(--ds-text-disabled, ${N70})`, // same as disabled.text
 
 			warning: {
 				DEFAULT: `var(--ds-text-warning, ${Y400})`,

@@ -5,7 +5,13 @@ import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
 import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import RadioIcon from "@atlaskit/icon/glyph/radio"
 import * as RDd from "@radix-ui/react-dropdown-menu"
-import { forwardRef, useMemo, useRef } from "react"
+import {
+	type RefObject,
+	forwardRef,
+	useMemo,
+	useRef,
+	type ForwardedRef,
+} from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
 import { Button, type ButtonProps } from "./Button"
@@ -475,86 +481,99 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 /**
  * Root of the dropdown menu, which contains the trigger and the content
  */
-function Menu({
-	side,
-	align = "start",
-	open,
-	defaultOpen,
-	onOpenChange,
-	disabled = false,
-	trigger,
-	children,
-	usePortal = true,
-	onPointerEnter,
-	onPointerLeave,
-	alignOffset,
-	hideChevron,
-	testId,
-	modal = true,
-	...props
-}: DropdownMenuProps) {
-	const contentRef = useRef<HTMLDivElement>(null)
+const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
+	(
+		{
+			side,
+			align = "start",
+			open,
+			defaultOpen,
+			onOpenChange,
+			disabled = false,
+			trigger,
+			children,
+			usePortal = true,
+			onPointerEnter,
+			onPointerLeave,
+			alignOffset,
+			hideChevron,
+			testId,
+			modal = true,
+			...props
+		}: DropdownMenuProps,
+		ref: ForwardedRef<HTMLButtonElement>,
+	) => {
+		const contentRef = useRef<HTMLDivElement>(null)
 
-	const content = useMemo(
-		() => (
-			<RDd.Content
-				ref={contentRef}
-				className={overlayBaseStyle}
-				side={side}
-				align={align}
-				onFocusOutside={() => {
-					//setOpened(false)
-				}}
-				style={{
-					maxHeight:
-						"var(--radix-dropdown-menu-content-available-height)",
-					transformOrigin:
-						"var(--radix-dropdown-menu-content-transform-origin)",
-				}}
-				onPointerEnter={onPointerEnter}
-				onPointerLeave={onPointerLeave}
-				alignOffset={alignOffset}
-			>
-				{children}
-			</RDd.Content>
-		),
-		[align, children, side, onPointerEnter, onPointerLeave, alignOffset],
-	)
-
-	const _trigger = useMemo(() => {
-		return (
-			<Trigger
-				disabled={disabled}
-				aria-disabled={disabled}
-				hideChevron={hideChevron}
-				{...props}
-			>
-				{trigger ?? "trigger"}
-			</Trigger>
+		const content = useMemo(
+			() => (
+				<RDd.Content
+					ref={contentRef}
+					className={overlayBaseStyle}
+					side={side}
+					align={align}
+					onFocusOutside={() => {
+						//setOpened(false)
+					}}
+					style={{
+						maxHeight:
+							"var(--radix-dropdown-menu-content-available-height)",
+						transformOrigin:
+							"var(--radix-dropdown-menu-content-transform-origin)",
+					}}
+					onPointerEnter={onPointerEnter}
+					onPointerLeave={onPointerLeave}
+					alignOffset={alignOffset}
+				>
+					{children}
+				</RDd.Content>
+			),
+			[
+				align,
+				children,
+				side,
+				onPointerEnter,
+				onPointerLeave,
+				alignOffset,
+			],
 		)
-	}, [trigger, disabled, props, hideChevron])
 
-	return (
-		<RDd.Root
-			open={open}
-			defaultOpen={defaultOpen}
-			onOpenChange={(opened) => {
-				onOpenChange?.(opened)
-			}}
-			data-testid={testId}
-			modal={modal}
-		>
-			<RDd.Trigger asChild>{_trigger}</RDd.Trigger>
-			{usePortal ? (
-				<RDd.Portal container={getPortal(portalDivId)}>
-					{content}
-				</RDd.Portal>
-			) : (
-				content
-			)}
-		</RDd.Root>
-	)
-}
+		const _trigger = useMemo(() => {
+			return (
+				<Trigger
+					disabled={disabled}
+					aria-disabled={disabled}
+					hideChevron={hideChevron}
+					{...props}
+					ref={ref}
+				>
+					{trigger ?? "trigger"}
+				</Trigger>
+			)
+		}, [trigger, disabled, props, hideChevron, ref])
+
+		return (
+			<RDd.Root
+				open={open}
+				defaultOpen={defaultOpen}
+				onOpenChange={(opened) => {
+					onOpenChange?.(opened)
+				}}
+				data-testid={testId}
+				modal={modal}
+			>
+				<RDd.Trigger asChild>{_trigger}</RDd.Trigger>
+				{usePortal ? (
+					<RDd.Portal container={getPortal(portalDivId)}>
+						{content}
+					</RDd.Portal>
+				) : (
+					content
+				)}
+			</RDd.Root>
+		)
+	},
+)
 
 export const Dropdown = {
 	Menu,
