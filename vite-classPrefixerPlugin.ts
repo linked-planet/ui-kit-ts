@@ -1,38 +1,41 @@
-import fs from "node:fs"
+import * as fs from "node:fs"
 import type { Plugin as VPlugin } from "vite"
 
-const cssClassRegex = /(\.)([^{;]+)({\B)/g
-const classNameRegex = /className=["']([^"']+)["']/g
+let classPrefix = ""
+let classesToBePrefix: string[] = []
 
-const classPrefix = "lp-"
-
-const classesToPrefix = ["sticky"]
-
-// give me a regexp that can match 2 classes when they are written like .c1.c2
-//const classRegex = /(\.)([^{]+)(\s*{)/g
-
-//const classRegex = /class(?:Name)?\s*[:=]?\s*["']([^"'\s]+)["']/g
-
-function prefixCSS(code: string) {
-	const regex = new RegExp(`(\\.)(${classesToPrefix.join("|")})\\b`, "g")
-	return code.replace(regex, (match, prefix, classes, suffix) => {
+function prefixCSS(code: string, fileName: string) {
+	const regex = new RegExp(`(\\.)(${classesToBePrefix.join("|")})\\b`, "g")
+	let counter = 0
+	const ret = code.replace(regex, (match, prefix, classes, suffix) => {
 		const prefixed = `${classPrefix}${classes}`
-		console.info("Replacing", match, "with", prefixed)
+		//console.info("Replacing", match, "with", prefixed)
+		counter++
 		return match.replace(classes, prefixed)
 	})
+	if (counter) {
+		console.log("Replaced", counter, "CSS classes in", fileName)
+	}
+	return ret
 }
 
-function prefixJS(code: string) {
+function prefixJS(code: string, fileName: string) {
 	const regex = new RegExp(
-		`(?<![\\w])(${classesToPrefix.join("|")})(?![\\S])\\b`,
+		`(?<![\\w])(${classesToBePrefix.join("|")})(?![\\S])\\b`,
 		"g",
 	)
-	return code.replace(regex, (match, classes) => {
+	let counter = 0
+	const ret = code.replace(regex, (match, classes) => {
 		const prefixed = `${classPrefix}${classes}`
-		console.info("Replacing", match, "with", prefixed)
+		//console.info("Replacing", match, "with", prefixed)
+		counter++
 		const replaced = match.replace(classes, prefixed)
 		return replaced
 	})
+	if (counter) {
+		console.log("Replaced", counter, "JS classes in", fileName)
+	}
+	return ret
 }
 
 // give me a regex that will match "sticky" but not "sticky"" or "sticky-"
@@ -42,9 +45,17 @@ const writeBundle: VPlugin["writeBundle"] = (options, bundle) => {
 	// test if file exists
 	const outputDir = options.dir
 	if (!outputDir) {
-		console.info("No output directory found in options", options)
+		console.error(
+			"\x1b[31m%s\x1b[0m",
+			"[vite-classPrefixerPlugin] - No output directory found in options",
+			options,
+		)
 		return
 	}
+	console.log(
+		"\x1b[32m%s\x1b[0m",
+		"[vite-classPrefixerPlugin] - Prefixing classes...",
+	)
 	for (const fileName in bundle) {
 		if (
 			fileName.startsWith("node_modules/") ||
@@ -52,12 +63,11 @@ const writeBundle: VPlugin["writeBundle"] = (options, bundle) => {
 		) {
 			continue
 		}
-		const file = bundle[fileName]
 		const outputFileName = `${outputDir}/${fileName}`
 		if (fs.existsSync(outputFileName)) {
 			const code = fs.readFileSync(outputFileName, "utf-8")
 			if (fileName.endsWith(".css") || fileName.endsWith(".scss")) {
-				fs.writeFileSync(outputFileName, prefixCSS(code))
+				fs.writeFileSync(outputFileName, prefixCSS(code, fileName))
 			}
 			if (
 				fileName.endsWith(".js") ||
@@ -65,13 +75,26 @@ const writeBundle: VPlugin["writeBundle"] = (options, bundle) => {
 				fileName.endsWith(".ts") ||
 				fileName.endsWith(".tsx")
 			) {
-				fs.writeFileSync(outputFileName, prefixJS(code))
+				fs.writeFileSync(outputFileName, prefixJS(code, fileName))
 			}
 		}
 	}
+	console.log(
+		"\x1b[32m%s\x1b[0m",
+		"[vite-classPrefixerPlugin] - Done prefixing classes.",
+		"color: green;",
+	)
 }
 
-export default function classPrefixerPlugin() {
+export default function classPrefixerPlugin({
+	prefix,
+	classes,
+}: {
+	prefix: string
+	classes: string[]
+}) {
+	classPrefix = prefix
+	classesToBePrefix = classes
 	const ret: VPlugin = {
 		name: "class-prefixer-plugin",
 		writeBundle,

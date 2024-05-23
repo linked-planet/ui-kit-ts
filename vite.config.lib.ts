@@ -5,11 +5,16 @@ import dts from "vite-plugin-dts"
 //import nodePolyfills from "rollup-plugin-polyfill-node"
 import pkg from "./package.json"
 
-import classPrefixerPlugin from "./classPrefixerPlugin"
+import classPrefixerPlugin from "./vite-classPrefixerPlugin"
 
 // postcss:
 import tailwindcss from "tailwindcss"
 import autoprefixer from "autoprefixer"
+//
+
+// list of problematic classes in WP Viewport Theme
+const classesToPrefix = ["sticky"]
+const prefix = "lp-"
 //
 
 export default defineConfig({
@@ -53,7 +58,12 @@ export default defineConfig({
 				},
 			},
 			external: [...Object.keys(pkg.peerDependencies)],
-			plugins: [classPrefixerPlugin()],
+			plugins: [
+				classPrefixerPlugin({
+					prefix, // this is the prefix that is added to the classes
+					classes: classesToPrefix, // these are the classes that are prefixed
+				}),
+			],
 		},
 	},
 	plugins: [

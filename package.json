@@ -11,13 +11,11 @@
 	"description": "",
 	"module": "dist/index.js",
 	"type": "module",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "./dist/index.d.ts",
 	"style": "dist/styles.css",
 	"scripts": {
-		"build:lib": "tsc --noEmit -p tsconfig.lib.json && vitest run && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist",
+		"build:lib": "tsc --noEmit -p tsconfig.lib.json && vitest run && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist && npm run tsc:plugin",
 		"build:sc": "node ./showcase/copySources.js && tsc --noEmit && vite build -c vite.config.showcase.ts && node ./showcase/copyIndexTo404.js",
 		"preview": "vitest run && npm run build:sc && vite preview -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
@@ -31,13 +29,14 @@
 		"tsc:lib": "tsc --noEmit -p tsconfig.lib.json",
 		"tsc:sc": "tsc --noEmit",
 		"pack": "vitest run && npm run build:lib && npm pack",
-		"fastpack": "vite build -c vite.config.lib.ts --mode development --minify false && cp -r ./twThemes dist && npm pack",
+		"fastpack": "vite build -c vite.config.lib.ts --mode development --minify false && cp -r ./twThemes dist && npm run tsc:plugin && npm pack",
 		"test": "vitest",
 		"bformat": "biome format ./src/**/*",
 		"blint:lib": "biome lint ./library/**/*",
 		"bcheck:lib": "biome check --apply ./library/**/*",
 		"bformat:sc": "biome format ./showcase/**/*",
-		"blint:sc": "biome lint ./showcase/**/*"
+		"blint:sc": "biome lint ./showcase/**/*",
+		"tsc:plugin": "tsc --moduleResolution bundler --module es6 --outDir dist/vite-plugin --declaration vite-classPrefixerPlugin.ts"
 	},
 	"sideEffects": false,
 	"author": "Markus Toepfer",
@@ -51,17 +50,10 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": [
-		"en",
-		"de"
-	],
+	"supportedLocales": ["en", "de"],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
+		"production": [">0.2%", "not dead", "not op_mini all"],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -71,7 +63,7 @@
 	"dependencies": {
 		"@atlaskit/datetime-picker": "^13.5.0",
 		"@atlaskit/icon": "^22.3.0",
-		"@atlaskit/tokens": "^1.49.0",
+		"@atlaskit/tokens": "^1.49.1",
 		"@emotion/css": "^11.11.2",
 		"@radix-ui/react-accordion": "^1.1.2",
 		"@radix-ui/react-avatar": "^1.0.4",
@@ -107,7 +99,7 @@
 		"@types/react-dom": "^16.9.24",
 		"@typescript-eslint/eslint-plugin": "^7.10.0",
 		"@typescript-eslint/parser": "^7.10.0",
-		"@vitejs/plugin-react-swc": "^3.6.0",
+		"@vitejs/plugin-react-swc": "^3.7.0",
 		"autoprefixer": "^10.4.19",
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
@@ -140,7 +132,7 @@
 	"peerDependencies": {
 		"@atlaskit/atlassian-navigation": "^3.6.2",
 		"@atlaskit/banner": "^12.3.1",
-		"@atlaskit/button": "^17.14.3",
+		"@atlaskit/button": "^17.15.0",
 		"@atlaskit/calendar": "^14.2.1",
 		"@atlaskit/checkbox": "^13.3.0",
 		"@atlaskit/code": "^15.2.0",

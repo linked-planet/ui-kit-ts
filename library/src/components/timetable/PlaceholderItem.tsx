@@ -1,4 +1,3 @@
-import { token } from "@atlaskit/tokens"
 import type { Dayjs } from "dayjs"
 import type { TimeTableGroup } from "./LPTimeTable"
 
@@ -46,18 +45,9 @@ function PlaceHolderItemPlaceHolder<G extends TimeTableGroup>({
 }: PlaceholderItemProps<G>) {
 	return (
 		<div
+			className="flex justify-end w-full rounded bg-brand-bold shadow-overlay"
 			style={{
-				display: "flex",
-				justifyContent: "end",
-				width: "100%",
-				borderRadius: "0.25rem",
 				height,
-				backgroundColor: token(
-					"color.background.brand.bold",
-					"#0C66E4",
-				),
-				boxShadow:
-					"rgba(50, 50, 93, 0.3) 0px 1px 2px 1px, rgba(0, 0, 0, 0.1) 0px 2px 2px 1px",
 			}}
 			onClick={clearTimeRangeSelectionCB}
 			onKeyDown={(e) => {
