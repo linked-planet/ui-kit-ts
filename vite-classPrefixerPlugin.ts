@@ -8,6 +8,9 @@ let doProcessCSS = true
 let cssFilePostfixes: string[] = []
 let jsFilePostfixes: string[] = []
 
+/* extracts the content after the class keyword in a class string */
+const classRegExStr = /(?<=\b(class(Name)?\s*[=:]\s*['"])\s*)\b(.*)\b(?<!["'])/g
+
 /**
  * Uses a regex to prefix classes in a css/scss file
  */
@@ -30,19 +33,18 @@ function prefixCSS(code: string, fileName: string) {
  * Uses a regex to prefix the classes inside className or class strings
  */
 function prefixJS(code: string, fileName: string) {
-	const regex = new RegExp(
-		`(?<=\\b(class(Name)?\\s*=\\s*['"][^'"]*))\\b(${classesToBePrefix.join(
-			"|",
-		)})\\b(?=[^'"]*['"])`,
+	const classNameRegex = new RegExp(
+		`(?<=["'\\s])\\b(${classesToBePrefix.join("|")})\\b(?=["'\\s])`,
 		"g",
 	)
 	let counter = 0
-	const ret = code.replace(regex, (match, classes) => {
-		const prefixed = `${classPrefix}${classes}`
-		//console.info("Replacing", match, "with", prefixed)
-		counter++
-		const replaced = match.replace(classes, prefixed)
-		return replaced
+	const ret = code.replace(classRegExStr, (match) => {
+		return match.replace(classNameRegex, (cmatch) => {
+			const prefixed = `${classPrefix}${cmatch}`
+			console.info("Replacing", match, "with", prefixed)
+			counter++
+			return prefixed
+		})
 	})
 	if (counter) {
 		console.log("Replaced", counter, "JS classes in", fileName)
@@ -101,7 +103,6 @@ const writeBundle: VPlugin["writeBundle"] = (options, bundle) => {
 	console.log(
 		"\x1b[32m%s\x1b[0m",
 		"[vite-classPrefixerPlugin] - Done prefixing classes.",
-		"color: green;",
 	)
 }
 
@@ -111,7 +112,7 @@ export default function classPrefixerPlugin({
 	processJS = true,
 	processCSS = true,
 	cssFiles = ["css", "scss"],
-	jsFiles = ["js", "jsx", "ts", "tsx"],
+	jsFiles = ["js"],
 }: {
 	prefix: string
 	classes: string[]
