@@ -3,7 +3,17 @@ import type { Plugin as VPlugin } from "vite"
 
 let classPrefix = ""
 let classesToBePrefix: string[] = []
+let doProcessJS = true
+let doProcessCSS = true
+let cssFilePostfixes: string[] = []
+let jsFilePostfixes: string[] = []
 
+/* extracts the content after the class keyword in a class string */
+const classRegExStr = /(?<=\b(class(Name)?\s*[=:]\s*['"])\s*)\b(.*)\b(?<!["'])/g
+
+/**
+ * Uses a regex to prefix classes in a css/scss file
+ */
 function prefixCSS(code: string, fileName: string) {
 	const regex = new RegExp(`(\\.)(${classesToBePrefix.join("|")})\\b`, "g")
 	let counter = 0
@@ -19,18 +29,22 @@ function prefixCSS(code: string, fileName: string) {
 	return ret
 }
 
+/**
+ * Uses a regex to prefix the classes inside className or class strings
+ */
 function prefixJS(code: string, fileName: string) {
-	const regex = new RegExp(
-		`(?<![\\w])(${classesToBePrefix.join("|")})(?![\\S])\\b`,
+	const classNameRegex = new RegExp(
+		`(?<=["'\\s])\\b(${classesToBePrefix.join("|")})\\b(?=["'\\s])`,
 		"g",
 	)
 	let counter = 0
-	const ret = code.replace(regex, (match, classes) => {
-		const prefixed = `${classPrefix}${classes}`
-		//console.info("Replacing", match, "with", prefixed)
-		counter++
-		const replaced = match.replace(classes, prefixed)
-		return replaced
+	const ret = code.replace(classRegExStr, (match) => {
+		return match.replace(classNameRegex, (cmatch) => {
+			const prefixed = `${classPrefix}${cmatch}`
+			console.info("Replacing", match, "with", prefixed)
+			counter++
+			return prefixed
+		})
 	})
 	if (counter) {
 		console.log("Replaced", counter, "JS classes in", fileName)
@@ -65,36 +79,54 @@ const writeBundle: VPlugin["writeBundle"] = (options, bundle) => {
 		}
 		const outputFileName = `${outputDir}/${fileName}`
 		if (fs.existsSync(outputFileName)) {
-			const code = fs.readFileSync(outputFileName, "utf-8")
-			if (fileName.endsWith(".css") || fileName.endsWith(".scss")) {
-				fs.writeFileSync(outputFileName, prefixCSS(code, fileName))
-			}
+			// get the file extension
+			const extension = fileName.split(".").pop()
 			if (
-				fileName.endsWith(".js") ||
-				fileName.endsWith(".jsx") ||
-				fileName.endsWith(".ts") ||
-				fileName.endsWith(".tsx")
+				doProcessJS &&
+				extension &&
+				jsFilePostfixes.includes(extension)
 			) {
+				const code = fs.readFileSync(outputFileName, "utf-8")
 				fs.writeFileSync(outputFileName, prefixJS(code, fileName))
+			}
+
+			if (
+				doProcessCSS &&
+				extension &&
+				cssFilePostfixes.includes(extension)
+			) {
+				const code = fs.readFileSync(outputFileName, "utf-8")
+				fs.writeFileSync(outputFileName, prefixCSS(code, fileName))
 			}
 		}
 	}
 	console.log(
 		"\x1b[32m%s\x1b[0m",
 		"[vite-classPrefixerPlugin] - Done prefixing classes.",
-		"color: green;",
 	)
 }
 
 export default function classPrefixerPlugin({
 	prefix,
 	classes,
+	processJS = true,
+	processCSS = true,
+	cssFiles = ["css", "scss"],
+	jsFiles = ["js"],
 }: {
 	prefix: string
 	classes: string[]
+	processJS?: boolean
+	processCSS?: boolean
+	cssFiles?: string[]
+	jsFiles?: string[]
 }) {
 	classPrefix = prefix
 	classesToBePrefix = classes
+	doProcessJS = processJS
+	doProcessCSS = processCSS
+	cssFilePostfixes = cssFiles
+	jsFilePostfixes = jsFiles
 	const ret: VPlugin = {
 		name: "class-prefixer-plugin",
 		writeBundle,
