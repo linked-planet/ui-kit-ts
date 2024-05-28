@@ -266,6 +266,7 @@ const SelectInner = <
 							_props.clearValue()
 						}
 					}}
+					data-action="clear_all_selected"
 				>
 					<IconSizeHelper>
 						<SelectClearIcon size="small" label="" />
@@ -285,9 +286,9 @@ const SelectInner = <
 						aria-label={title}
 						aria-hidden="false"
 						tabIndex={0}
-						data-action="clear_selected"
+						data-action={`remove_selected_${_props.data.label}`}
 					>
-						<IconSizeHelper>
+						<IconSizeHelper data-action="clear_selected">
 							<EditorCloseIcon size="small" label="" />
 						</IconSizeHelper>
 					</div>
