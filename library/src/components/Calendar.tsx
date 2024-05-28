@@ -15,6 +15,7 @@ import {
 	type Labels,
 	type Matcher,
 	useDayRender,
+	useDayPicker,
 } from "react-day-picker"
 
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
@@ -352,6 +353,8 @@ function Day(props: DayProps) {
 			title={label}
 			aria-label={label}
 			ref={buttonRef}
+			data-today={dayRender.activeModifiers.today}
+			data-selected={dayRender.activeModifiers.selected}
 			tabIndex={0}
 			{...dayRender.buttonProps}
 		/>
