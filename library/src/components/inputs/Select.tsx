@@ -285,6 +285,7 @@ const SelectInner = <
 						aria-label={title}
 						aria-hidden="false"
 						tabIndex={0}
+						data-action="clear_selected"
 					>
 						<IconSizeHelper>
 							<EditorCloseIcon size="small" label="" />
@@ -340,6 +341,7 @@ const SelectInner = <
 					<div
 						{..._props.innerProps}
 						role="button"
+						data-action="open_select"
 						//aria-disabled={_props.isDisabled}
 						className={_props.getClassNames(
 							"dropdownIndicator",
