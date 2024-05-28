@@ -33,7 +33,7 @@ export function LoadingSpinner({
 		<div
 			className={twMerge(
 				//styles.loader,
-				"animate-spin rounded-full border-solid border-transparent",
+				"animate-spin rounded-full border-solid border-l-transparent border-r-transparent border-b-transparent",
 				"border-t-border-bold",
 				sizeStyles[size],
 				className,
