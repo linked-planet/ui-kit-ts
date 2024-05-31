@@ -133,7 +133,7 @@ export const theme = {
 			active: `var(--ds-background-input-pressed, ${N0})`,
 			hovered: `var(--ds-background-input-hovered, ${N30})`,
 			border: {
-				DEFAULT: `var(--ds-border-input, ${N40})`,
+				DEFAULT: `var(--ds-border-input, ${N200})`,
 				focused: `var(--ds-border-focused, ${B200})`,
 			},
 		},
@@ -151,7 +151,7 @@ export const theme = {
 		},
 
 		disabled: {
-			DEFAULT: `var(--ds-background-disabled, ${N20A})`,
+			DEFAULT: `var(--ds-background-disabled, ${N10})`,
 			text: `var(--ds-text-disabled, ${N70})`,
 		},
 

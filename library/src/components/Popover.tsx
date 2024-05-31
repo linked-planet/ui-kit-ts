@@ -60,7 +60,10 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 
 export type PopoverProps = RPo.PopoverProps & {
 	usePortal?: boolean
+	/* trigger replaces the content of the trigger button */
 	trigger?: React.ReactNode
+	/* triggerComponent replaces the the trigger button component */
+	triggerComponent?: React.ReactNode
 	closer?: React.ReactNode
 	closerClassName?: string
 	closerStyle?: React.CSSProperties
@@ -94,6 +97,7 @@ function Root({
 	modal,
 	children,
 	trigger,
+	triggerComponent,
 	closer,
 	closerClassName,
 	contentClassName,
@@ -170,6 +174,9 @@ function Root({
 	)
 
 	const _trigger = useMemo(() => {
+		if (triggerComponent) {
+			return triggerComponent
+		}
 		return (
 			<Trigger
 				disabled={disabled}
@@ -180,7 +187,7 @@ function Root({
 				{trigger ?? "trigger"}
 			</Trigger>
 		)
-	}, [trigger, disabled, props, hideChevron])
+	}, [trigger, triggerComponent, disabled, props, hideChevron])
 
 	return (
 		<RPo.Root

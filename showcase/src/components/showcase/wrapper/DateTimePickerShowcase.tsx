@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
 	Button,
@@ -10,6 +10,7 @@ import {
 	TimePicker,
 	type DateType,
 	type TimeType,
+	DatePicker2,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
@@ -119,8 +120,15 @@ function ControlledFormExample() {
 function DateTimePickerShowcase(props: ShowcaseProps) {
 	//#region datetime-picker
 	const example = (
-		<div className="flex min-w-[300] gap-4">
-			<DateTimePicker />
+		<div className="flex gap-4">
+			<div>
+				<DatePicker />
+				<TimePicker />
+				<DateTimePicker />
+			</div>
+			<div>
+				<DatePicker2 />
+			</div>
 		</div>
 	)
 	//#endregion datetime-picker

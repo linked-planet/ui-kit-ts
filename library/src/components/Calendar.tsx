@@ -394,7 +394,7 @@ type BaseProps = {
 	onMonthChanged?: (month: number, year: number) => void
 }
 
-type CalendarSingleProps = BaseProps & {
+export type CalendarSingleProps = BaseProps & {
 	mode: "single"
 	defaultSelected?: DateType
 	defaultPreviouslySelected?: DateType
@@ -403,7 +403,7 @@ type CalendarSingleProps = BaseProps & {
 	onSelectionChanged?: (selected: DateType | undefined) => void
 }
 
-type CalendarSingleFormProps<FormData extends FieldValues> =
+export type CalendarSingleFormProps<FormData extends FieldValues> =
 	CalendarSingleProps & {
 		name: FieldPath<FormData>
 		control: Control<FormData>
@@ -416,7 +416,7 @@ function isSingleInFormProps<FormData extends FieldValues>(
 	return "control" in props
 }
 
-type CalendarRangeProps = BaseProps & {
+export type CalendarRangeProps = BaseProps & {
 	mode: "range"
 	defaultSelected?: { from: DateType; to: DateType }
 	defaultPreviouslySelected?: { from: DateType; to: DateType }
@@ -438,7 +438,7 @@ type CalendarRangeProps = BaseProps & {
 	}) => void
 }
 
-type CalendarRangeFormProps<FormData extends FieldValues> =
+export type CalendarRangeFormProps<FormData extends FieldValues> =
 	CalendarRangeProps & {
 		name: FieldPath<FormData>
 		control: Control<FormData>
@@ -451,7 +451,7 @@ function isRangeInFormProps<FormData extends FieldValues>(
 	return "control" in props
 }
 
-type CalendarMultiProps = BaseProps & {
+export type CalendarMultiProps = BaseProps & {
 	mode: "multiple"
 	defaultSelected?: DateType[]
 	defaultPreviouslySelected?: DateType[]
@@ -460,7 +460,7 @@ type CalendarMultiProps = BaseProps & {
 	onSelectionChanged?: (selected: DateType[]) => void
 }
 
-type CalendarMultiFormProps<FormData extends FieldValues> =
+export type CalendarMultiFormProps<FormData extends FieldValues> =
 	CalendarMultiProps & {
 		name: FieldPath<FormData>
 		control: Control<FormData>

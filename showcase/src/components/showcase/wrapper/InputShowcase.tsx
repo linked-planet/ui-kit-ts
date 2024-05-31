@@ -1,10 +1,18 @@
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import TextField from "@atlaskit/textfield"
-import { Button, ButtonGroup, Input, Label } from "@linked-planet/ui-kit-ts"
+import {
+	Button,
+	ButtonGroup,
+	IconSizeHelper,
+	Input,
+	Label,
+} from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
+
+import ScheduleIcon from "@atlaskit/icon/glyph/schedule"
 
 //#region input-form-example
 type FormData = {
@@ -77,7 +85,14 @@ export default function InputShowcase(props: ShowcaseProps) {
 		<div className="flex flex-col">
 			<Input minLength={3} helpMessage="This is a help message." />
 			<Input disabled />
-			<Input placeholder="Placeholder" />
+			<Input
+				placeholder="Placeholder"
+				iconAfter={
+					<IconSizeHelper>
+						<ScheduleIcon size="medium" label="calendar" />
+					</IconSizeHelper>
+				}
+			/>
 			<Input
 				invalid={true}
 				value={"invalid"}

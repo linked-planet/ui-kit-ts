@@ -35,20 +35,44 @@ export function Label({
 //#endregion
 
 //#region Input
-const inputNormalStyles =
-	"p-1 w-full box-border rounded border-2 border-solid border-input-border placeholder:text-text-subtlest placeholder:opacity-100 bg-input ease-in-out op transition duration-200"
-const inputFocusStyles =
-	"focus:border-input-border-focused focus:bg-input-active outline-none hover:bg-input-hovered"
-const inputDisabledStyles =
-	"disabled:bg-disabled disabled:text-disabled-text disabled:cursor-not-allowed disabled:border-transparent"
-const invalidInputStyles = "aria-invalid:border-danger-border"
+const inputContainerBorderBeforeStyles =
+	"m-[0.05rem] rounded border border-input-border before:pointer-events-none before:z-10 before:content-[''] before:absolute before:-inset-0.5 before:box-border focus-within:before:border-2 before:border-1 focus-within:before:border-input-border-focused before:rounded"
+const inputActiveContainerBorderBeforeStyles =
+	"data-[active=true]:before:border-2 data-[active=true]:before:border-input-border-focused"
 
-const inputStyles = twJoin(
-	inputNormalStyles,
-	inputFocusStyles,
-	inputDisabledStyles,
+const inputContainerColorDivStyles =
+	"w-full relative bg-input ease-in-out hover:bg-input-hovered hover:focus-within:bg-input-active transition duration-200 focus-within:bg-input-active data-[disabled]:bg-input-disabled p-0"
+const inputContainerActiveColorDivStyles =
+	"data-[active=true]:bg-input-active hover:data-[active=true]:bg-input-active"
+
+const inputNormalStyles =
+	"w-full rounded placeholder:text-text-subtlest placeholder:opacity-100 outline-none bg-transparent"
+
+const inputDisabledStyles =
+	"disabled:text-disabled-text disabled:cursor-not-allowed"
+
+const invalidInputStyles =
+	"data-[invalid=true]:before:border-danger-border data-[invalid=true]:before:border-2"
+
+const inputContainerDivStyles = twJoin(
+	inputContainerBorderBeforeStyles,
+	inputContainerColorDivStyles,
+	"data-[disabled=true]:bg-disabled data-[disabled=true]:border-transparent data-[disabled=true]:cursor-not-allowed",
 	invalidInputStyles,
 )
+
+const inputStyles = twJoin(inputNormalStyles, inputDisabledStyles, "p-1 m-0")
+
+export type InputProps = ComponentPropsWithoutRef<"input"> & {
+	helpMessage?: ReactNode
+	errorMessage?: ReactNode
+	inputClassName?: string
+	invalid?: boolean
+	inputStyle?: CSSProperties
+	testId?: string
+	iconAfter?: ReactNode
+	active?: boolean
+}
 
 const Input = forwardRef(
 	(
@@ -61,16 +85,12 @@ const Input = forwardRef(
 			"aria-invalid": ariaInvalid = false,
 			style,
 			inputStyle,
+			active = false,
 			testId,
+			iconAfter,
+			disabled,
 			...props
-		}: ComponentPropsWithoutRef<"input"> & {
-			helpMessage?: ReactNode
-			errorMessage?: ReactNode
-			inputClassName?: string
-			invalid?: boolean
-			inputStyle?: CSSProperties
-			testId?: string
-		},
+		}: InputProps,
 		ref: ForwardedRef<HTMLInputElement>,
 	) => {
 		const internalRef = useRef<HTMLInputElement>(null)
@@ -110,14 +130,30 @@ const Input = forwardRef(
 
 		return (
 			<div className={className} style={style}>
-				<input
-					ref={internalRef}
-					className={twMerge(inputStyles, inputClassName)}
-					style={inputStyle}
-					aria-invalid={ariaInvalid || invalid}
-					data-testid={testId}
-					{...props}
-				/>
+				<div
+					className={twJoin(
+						"inline-flex",
+						active
+							? inputActiveContainerBorderBeforeStyles
+							: undefined,
+						active ? inputContainerActiveColorDivStyles : undefined,
+						inputContainerDivStyles,
+					)}
+					data-disabled={disabled}
+					data-invalid={invalid}
+					data-active={active}
+				>
+					<input
+						ref={internalRef}
+						className={twMerge(inputStyles, "p-1", inputClassName)}
+						style={inputStyle}
+						aria-invalid={ariaInvalid || invalid}
+						data-testid={testId}
+						disabled={disabled}
+						{...props}
+					/>
+					{iconAfter && iconAfter}
+				</div>
 				{helpMessage && (
 					<p className="text-text-subtle text-2xs m-0 p-0">
 						{helpMessage}
