@@ -6,17 +6,24 @@ import {
 	useState,
 	type ForwardedRef,
 	useMemo,
+	useEffect,
 } from "react"
 import { Input } from "../Inputs"
 import type { TimeType } from "../../../utils/DateUtils"
 import { Dropdown, DropdownMenuProps } from "../../DropdownMenu"
-import { DateUtils } from "@linked-planet/ui-kit-ts/utils"
+import { DateUtils, isTimeType } from "@linked-planet/ui-kit-ts/utils"
 import dayjs from "dayjs"
 import { IconSizeHelper } from "../../IconSizeHelper"
 import { Button } from "../../Button"
 import SelectClearIcon from "@atlaskit/icon/glyph/select-clear"
+import {
+	type FieldValues,
+	type Control,
+	type Path,
+	useController,
+} from "react-hook-form"
 
-type TimePickerProps = Pick<
+export type TimePickerProps = Pick<
 	DropdownMenuProps,
 	| "usePortal"
 	| "modal"
@@ -37,7 +44,7 @@ type TimePickerProps = Pick<
 	placeholder?: string
 	readOnly?: boolean
 	required?: boolean
-	onChange?: (value: TimeType | undefined) => void
+	onChange?: (value: TimeType | null) => void // null because else i could not remove the value from react-hook-form handling
 	className?: string
 	style?: CSSProperties
 	errorMessage?: string
@@ -49,6 +56,26 @@ type TimePickerProps = Pick<
 	interval?: number
 	lang?: string
 	clearButtonLabel?: string
+	name?: string
+}
+
+export type TimePickerInFormProps<FormData extends FieldValues> =
+	TimePickerProps & {
+		control: Control<FormData>
+		name: Path<FormData>
+	}
+
+export function TimePicker(props: TimePickerProps): JSX.Element
+export function TimePicker<FormData extends FieldValues>(
+	props: TimePickerInFormProps<FormData>,
+): JSX.Element
+export function TimePicker<FormData extends FieldValues>(
+	props: TimePickerProps | TimePickerInFormProps<FormData>,
+): JSX.Element {
+	if ("control" in props) {
+		return <TimePickerInForm<FormData> {...props} />
+	}
+	return <TimePickerBase {...props} />
 }
 
 const onInputChange = () => {}
@@ -90,19 +117,19 @@ const TimePickerBase = forwardRef(
 		const [value, setValue] = useState<TimeType | "">(
 			_value ?? defaultValue ?? "",
 		)
+		if (_value !== undefined && _value !== null && _value !== value) {
+			if (isTimeType(_value)) setValue(_value)
+			else console.warn("TimePicker - value is not timeType", _value)
+		}
+		useEffect(() => {
+			if (!_value) setValue("")
+		}, [_value])
+
 		const renderedValue = useMemo(() => {
 			if (!value) return ""
 			return DateUtils.formatTime(value, undefined, lang)
 		}, [value, lang])
 		const [open, setOpen] = useState(_open ?? defaultOpen)
-
-		const onChangeCB = useCallback(
-			(value: TimeType) => {
-				setValue(value)
-				onChange?.(value)
-			},
-			[onChange],
-		)
 
 		const times = useMemo(() => {
 			if (_times) return _times
@@ -157,7 +184,7 @@ const TimePickerBase = forwardRef(
 											e.stopPropagation()
 											setOpen(false)
 											setValue("")
-											onChange?.(undefined)
+											onChange?.(null)
 										}}
 										label={clearButtonLabel}
 									>
@@ -199,11 +226,17 @@ const TimePickerBase = forwardRef(
 				return (
 					<Dropdown.Item
 						key={time}
-						onClick={() => setValue(time)}
+						onClick={() => {
+							setValue(time)
+							setOpen(false)
+							onChange?.(time)
+						}}
 						selected={value === time}
 						onKeyUp={(e) => {
 							if (e.key === "Enter") {
 								setValue(time)
+								setOpen(false)
+								onChange?.(time)
 							}
 						}}
 					>
@@ -237,6 +270,19 @@ const TimePickerBase = forwardRef(
 	},
 )
 
-export function TimePicker(props: TimePickerProps) {
-	return <TimePickerBase {...props} />
+const TimePickerInForm = <FormData extends FieldValues>({
+	control,
+	name,
+	...props
+}: TimePickerInFormProps<FormData>) => {
+	const { field, fieldState } = useController({ name, control, rules: {} })
+	return (
+		<TimePickerBase
+			{...props}
+			{...field}
+			{...fieldState}
+			errorMessage={fieldState.error?.message}
+			onChange={(value) => field.onChange(value)}
+		/>
+	)
 }

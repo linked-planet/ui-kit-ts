@@ -60,7 +60,7 @@ export type DatePickerProps = Pick<
 		placeholder?: string
 		id?: string
 		key?: React.Key
-		onChange?: (date: DateType | undefined) => void
+		onChange?: (date: DateType | null) => void // null because else i could not remove the value from react-hook-form handling
 		onBlur?: React.FocusEventHandler<HTMLInputElement>
 		onFocus?: React.FocusEventHandler<HTMLInputElement>
 		testId?: string
@@ -101,12 +101,12 @@ export function DatePicker(
 	if ("control" in props) {
 		return <DatePickerInForm<FieldValues> {...props} />
 	}
-	return <DatePickerImpl {...props} />
+	return <DatePickerBase {...props} />
 }
 
 const onInputChange = () => {}
 
-const DatePickerImpl = forwardRef(
+const DatePickerBase = forwardRef(
 	(
 		{
 			usePortal,
@@ -160,7 +160,7 @@ const DatePickerImpl = forwardRef(
 			(date: DateType | undefined) => {
 				if (readOnly) return
 				setValue(date ?? "")
-				onChange?.(date)
+				onChange?.(date || null)
 				setOpen(false)
 			},
 			[onChange],
@@ -269,7 +269,7 @@ const DatePickerImpl = forwardRef(
 											e.stopPropagation()
 											setOpen(false)
 											setValue("")
-											onChange?.(undefined)
+											onChange?.(null)
 										}}
 										label={clearButtonLabel}
 									>
@@ -347,19 +347,18 @@ const DatePickerImpl = forwardRef(
 function DatePickerInForm<FormData extends FieldValues>({
 	control,
 	name,
-	required,
 	...props
 }: DatePickerInFormProps<FormData>) {
 	const { field, fieldState } = useController<FormData, typeof name>({
 		control,
 		name,
 		rules: {
-			required,
+			required: props.required,
 		},
 	})
 
 	return (
-		<DatePickerImpl
+		<DatePickerBase
 			{...props}
 			{...field}
 			{...fieldState}

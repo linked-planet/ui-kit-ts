@@ -65,7 +65,7 @@ function FormExample2() {
 		defaultValues: {
 			dateTime: "2023-12-24T10:00+0100",
 			time: "10:10",
-			date: undefined,
+			date: "2024-12-24",
 		},
 	})
 
@@ -79,6 +79,7 @@ function FormExample2() {
 		>
 			<div className="flex flex-col gap-2">
 				<DatePicker2<FormData> control={control} name="date" required />
+				<TimePicker2<FormData> control={control} name="time" required />
 			</div>
 			<ButtonGroup className="mt-4 flex justify-end">
 				<Button appearance="subtle" type="reset">

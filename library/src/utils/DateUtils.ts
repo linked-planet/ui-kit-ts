@@ -88,7 +88,7 @@ export function formatTime(
 	locale?: string,
 ) {
 	let date = time
-	if (typeof time === "string" && isTimeType(date)) {
+	if (typeof time === "string" && isTimeType(time)) {
 		const split = time.split(":").map((it) => Number.parseInt(it) ?? 0)
 		date = new Date()
 		date.setHours(split[0])
