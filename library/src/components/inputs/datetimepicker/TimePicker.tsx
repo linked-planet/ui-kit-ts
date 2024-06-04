@@ -57,6 +57,8 @@ export type TimePickerProps = Pick<
 	lang?: string
 	clearButtonLabel?: string
 	name?: string
+	invalid?: boolean
+	label?: string
 }
 
 export type TimePickerInFormProps<FormData extends FieldValues> =
@@ -102,6 +104,7 @@ const TimePickerBase = forwardRef(
 			defaultOpen = false,
 			errorMessage,
 			className,
+			label = "Time Picker",
 			times: _times,
 			startTime = "00:00",
 			endTime = "00:00",
@@ -109,6 +112,7 @@ const TimePickerBase = forwardRef(
 			lang,
 			clearButtonLabel = "Clear Selection",
 			style,
+			invalid,
 			usePortal = true,
 			modal = false,
 		}: TimePickerProps,
@@ -125,10 +129,6 @@ const TimePickerBase = forwardRef(
 			if (!_value) setValue("")
 		}, [_value])
 
-		const renderedValue = useMemo(() => {
-			if (!value) return ""
-			return DateUtils.formatTime(value, undefined, lang)
-		}, [value, lang])
 		const [open, setOpen] = useState(_open ?? defaultOpen)
 
 		const times = useMemo(() => {
@@ -153,6 +153,12 @@ const TimePickerBase = forwardRef(
 			return slots
 		}, [_times, startTime, endTime, interval])
 
+		const renderedValue = value
+			? DateUtils.formatTime(value, undefined, lang)
+			: ""
+
+		console.log("TIME PICKER INVALID", invalid)
+
 		const trigger = useMemo(() => {
 			return (
 				<Input
@@ -163,15 +169,16 @@ const TimePickerBase = forwardRef(
 					readOnly={readOnly}
 					required={required}
 					inputClassName="cursor-pointer"
+					aria-label={label ?? ariaLabel ?? "date picker"}
 					className={className}
 					style={style}
 					disabled={disabled}
+					invalid={invalid}
 					errorMessage={errorMessage}
 					onChange={onInputChange}
 					active={open}
 					aria-readonly={readOnly}
-					data-testId={testId}
-					aria-label={ariaLabel}
+					testId={testId}
 					id={id}
 					iconAfter={
 						<>
@@ -275,7 +282,26 @@ const TimePickerInForm = <FormData extends FieldValues>({
 	name,
 	...props
 }: TimePickerInFormProps<FormData>) => {
-	const { field, fieldState } = useController({ name, control, rules: {} })
+	const { field, fieldState } = useController({
+		name,
+		control,
+		rules: {
+			required: props.required,
+			validate: (value) => {
+				if (
+					value === null ||
+					value === undefined ||
+					(value === "" && props.required)
+				) {
+					return "Time is required"
+				}
+				if (!isTimeType(value)) {
+					return "Time is not valid"
+				}
+				return true
+			},
+		},
+	})
 	return (
 		<TimePickerBase
 			{...props}

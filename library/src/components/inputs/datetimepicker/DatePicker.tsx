@@ -223,6 +223,7 @@ const DatePickerBase = forwardRef(
 			required,
 			readOnly,
 			clearButtonLabel = "clear date",
+			"aria-label": ariaLabel,
 		} = props
 
 		const trigger = useMemo(() => {
@@ -246,7 +247,7 @@ const DatePickerBase = forwardRef(
 					testId={testId}
 					onFocus={onFocus}
 					onBlur={onBlur}
-					aria-label={label ?? props["aria-label"] ?? "date picker"}
+					aria-label={label ?? ariaLabel ?? "date picker"}
 					placeholder={placeholder}
 					name={name}
 					style={style}
@@ -337,6 +338,7 @@ const DatePickerBase = forwardRef(
 				disabled={disabled}
 				modal={modal}
 				triggerAsChild={true}
+				contentStyle={{ minWidth: "unset" }}
 			>
 				{calendar}
 			</Popover.Root>
@@ -354,6 +356,19 @@ function DatePickerInForm<FormData extends FieldValues>({
 		name,
 		rules: {
 			required: props.required,
+			validate: (value) => {
+				if (
+					value === null ||
+					value === undefined ||
+					(value === "" && props.required)
+				) {
+					return "Date is required"
+				}
+				if (!isDateType(value)) {
+					return "Date is not valid"
+				}
+				return true
+			},
 		},
 	})
 
