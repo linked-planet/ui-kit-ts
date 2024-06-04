@@ -154,8 +154,8 @@ function ControlledFormExample() {
 //#endregion datetime-picker-form-controlled
 
 function DateTimePickerShowcase(props: ShowcaseProps) {
-	const [date, setDate] = useState<DateType>()
-	const [time, setTime] = useState<TimeType>()
+	const [date, setDate] = useState<DateType | null>(null)
+	const [time, setTime] = useState<TimeType | null>(null)
 
 	//#region datetime-picker
 	const example = (

@@ -73,7 +73,7 @@ export type DatePickerProps = Pick<
 		disabled?: boolean
 		label?: string
 		calendarLabels?: Partial<Labels>
-		value?: DateType
+		value?: DateType | null
 		defaultValue?: DateType
 		errorMessage?: ReactNode
 		name?: string

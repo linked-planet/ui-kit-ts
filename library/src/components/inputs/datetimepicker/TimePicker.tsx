@@ -39,7 +39,7 @@ export type TimePickerProps = Pick<
 	| "defaultOpen"
 	| "disabled"
 > & {
-	value?: TimeType
+	value?: TimeType | null
 	defaultValue?: TimeType
 	placeholder?: string
 	readOnly?: boolean
