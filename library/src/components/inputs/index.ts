@@ -5,8 +5,12 @@ export { DateTimePicker } from "./DateTimePicker"
 export { DatePicker } from "./DateTimePicker"
 export { TimePicker } from "./DateTimePicker"
 export { DatePicker as DatePicker2 } from "./datetimepicker/DatePicker"
+export { TimePicker as TimePicker2 } from "./datetimepicker/TimePicker"
 
-export type { DatePickerProps } from "./datetimepicker/DatePicker"
+export type {
+	DatePickerProps,
+	DatePickerInFormProps,
+} from "./datetimepicker/DatePicker"
 
 export {
 	type OptionType,

@@ -15,11 +15,13 @@ const cannotConvertTimeTypeToDateTypeError =
 const cannotConvertDateTypeToTimeTypeError =
 	"toTimeType - cannot convert DateType to TimeType"
 
+/* formats a date (string, dayJS or Date) into a localized string  containing date and optionally time */
 export function formatDateTime(
 	dateTime: string | Date | Dayjs,
 	timeZone?: string, // i.e. "Europe/Berlin"... if not defined the local time zone is used
 	_locale?: string,
 	onlyDate = false,
+	onlyTime = false,
 ) {
 	// if this is a date string, we simply return it
 	if (typeof dateTime === "string" && isDateType(dateTime)) {
@@ -29,9 +31,18 @@ export function formatDateTime(
 	let dateTimeUsed: Date | null = null
 	if (typeof dateTime === "string") {
 		dateTimeUsed = dateFromString(dateTime)
-	}
-	if (!dateTimeUsed && typeof dateTime === "object" && isDayjs(dateTime)) {
+	} else if (
+		!dateTimeUsed &&
+		typeof dateTime === "object" &&
+		isDayjs(dateTime)
+	) {
 		dateTimeUsed = dateTime.toDate()
+	} else if (
+		!dateTimeUsed &&
+		typeof dateTime === "object" &&
+		dateTime instanceof Date
+	) {
+		dateTimeUsed = dateTime
 	}
 
 	if (dateTimeUsed === null) {
@@ -47,12 +58,12 @@ export function formatDateTime(
 	}
 
 	const options: Intl.DateTimeFormatOptions = {
-		year: "numeric",
-		month: "numeric",
-		day: "numeric",
+		year: !onlyTime ? "numeric" : undefined,
+		month: !onlyTime ? "numeric" : undefined,
+		day: !onlyTime ? "numeric" : undefined,
 		hour: !onlyDate ? "numeric" : undefined,
 		minute: !onlyDate ? "numeric" : undefined,
-		weekday: "short",
+		weekday: !onlyDate && !onlyTime ? "short" : undefined,
 		timeZone,
 		localeMatcher: "lookup",
 	}
@@ -61,12 +72,29 @@ export function formatDateTime(
 	return ret
 }
 
+/* formats a date (string, dayJS or Date) into a localized string containing only the date */
 export function formatDate(
 	date: string | Date | Dayjs,
 	timeZone?: string, // i.e. "Europe/Berlin"... if not defined the local time zone is used
 	locale?: string,
 ) {
 	return formatDateTime(date, timeZone, locale, true)
+}
+
+/* formats a date (string, dayJS or Date) into a localized string containing only the time */
+export function formatTime(
+	time: string | Date | Dayjs,
+	timeZone?: string, // i.e. "Europe/Berlin"... if not defined the local time zone is used
+	locale?: string,
+) {
+	let date = time
+	if (typeof time === "string" && isTimeType(date)) {
+		const split = time.split(":").map((it) => Number.parseInt(it) ?? 0)
+		date = new Date()
+		date.setHours(split[0])
+		date.setMinutes(split[1])
+	}
+	return formatDateTime(date, timeZone, locale, false, true)
 }
 
 export function dateFromString(dateStr: string, mayParseDateOnly = false) {
@@ -136,7 +164,7 @@ export function toTimeType(date: Date | string | Dayjs) {
 }
 
 export type DateType = `${number}-${number}-${number}`
-const dateRegex = /^\d{4}-\d{2}-\d{2}$/ // YYYY-MM-DD
+const dateRegex = /^\d{4}-\d{2}-\d{2}$/ // YYYY-MM-DD -> ISO 8601
 
 export function isDateType(dt: string | undefined | null): dt is DateType {
 	if (!dt) {

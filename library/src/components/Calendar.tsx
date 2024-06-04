@@ -201,7 +201,7 @@ const classNames: DayPickerProps["classNames"] = {
 	day_disabled: "text-disabled-text cursor-not-allowed",
 	//day_outside: "text-disabled-text",
 	day_today: dayTodayStyles,
-	root: "group p-1 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2",
+	root: "group pt-4 bg-surface p-3 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2",
 	tbody: "border-b-0",
 }
 

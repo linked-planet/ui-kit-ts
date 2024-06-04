@@ -11,13 +11,14 @@ import {
 	type DateType,
 	type TimeType,
 	DatePicker2,
+	TimePicker2,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
 type FormData = {
 	dateTime: string
 	time: TimeType
-	date: DateType
+	date?: DateType
 }
 
 //#region datetime-picker-form
@@ -57,6 +58,40 @@ function FormExample() {
 	)
 }
 //#endregion datetime-picker-form
+
+//#region datetime-picker-form2
+function FormExample2() {
+	const { handleSubmit, control, reset } = useForm<FormData>({
+		defaultValues: {
+			dateTime: "2023-12-24T10:00+0100",
+			time: "10:10",
+			date: undefined,
+		},
+	})
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log("form data:", data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<div className="flex flex-col gap-2">
+				<DatePicker2<FormData> control={control} name="date" required />
+			</div>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button appearance="subtle" type="reset">
+					Reset
+				</Button>
+				<Button appearance="primary" type="submit">
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion datetime-picker-form2
 
 //#region datetime-picker-form-controlled
 function ControlledFormExample() {
@@ -118,16 +153,20 @@ function ControlledFormExample() {
 //#endregion datetime-picker-form-controlled
 
 function DateTimePickerShowcase(props: ShowcaseProps) {
+	const [date, setDate] = useState<DateType>()
+	const [time, setTime] = useState<TimeType>()
+
 	//#region datetime-picker
 	const example = (
 		<div className="flex gap-4">
 			<div>
-				<DatePicker />
-				<TimePicker />
+				<DatePicker onChange={setDate} value={date} />
+				<TimePicker onChange={setTime} value={time} />
 				<DateTimePicker />
 			</div>
 			<div>
-				<DatePicker2 />
+				<DatePicker2 onChange={setDate} value={date} />
+				<TimePicker2 onChange={setTime} value={time} />
 			</div>
 		</div>
 	)
@@ -153,6 +192,11 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					title: "Form Uncontrolled",
 					example: <FormExample />,
 					sourceCodeExampleId: "datetime-picker-form",
+				},
+				{
+					title: "Form Uncontrolled 2",
+					example: <FormExample2 />,
+					sourceCodeExampleId: "datetime-picker-form2",
 				},
 				{
 					title: "Form Controlled",

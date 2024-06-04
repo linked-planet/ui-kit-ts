@@ -46,7 +46,7 @@ const inputContainerActiveColorDivStyles =
 	"data-[active=true]:bg-input-active hover:data-[active=true]:bg-input-active"
 
 const inputNormalStyles =
-	"w-full rounded placeholder:text-text-subtlest placeholder:opacity-100 outline-none bg-transparent"
+	"w-full text-left rounded placeholder:text-text-subtlest placeholder:opacity-100 outline-none bg-transparent"
 
 const inputDisabledStyles =
 	"disabled:text-disabled-text disabled:cursor-not-allowed"
@@ -89,6 +89,7 @@ const Input = forwardRef(
 			testId,
 			iconAfter,
 			disabled,
+			onClick,
 			...props
 		}: InputProps,
 		ref: ForwardedRef<HTMLInputElement>,
@@ -142,6 +143,7 @@ const Input = forwardRef(
 					data-disabled={disabled}
 					data-invalid={invalid}
 					data-active={active}
+					onClick={onClick}
 				>
 					<input
 						ref={internalRef}
