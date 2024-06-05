@@ -1,17 +1,9 @@
 import type React from "react"
-import {
-	type CSSProperties,
-	forwardRef,
-	useCallback,
-	useState,
-	type ForwardedRef,
-	useMemo,
-	useEffect,
-} from "react"
+import { useCallback, useMemo } from "react"
 import type { TimeType } from "../../../utils/DateUtils"
-import { DateUtils, isTimeType } from "@linked-planet/ui-kit-ts/utils"
+import { DateUtils } from "@linked-planet/ui-kit-ts/utils"
 import dayjs from "dayjs"
-import type { FieldValues, Control, Path } from "react-hook-form"
+import type { FieldValues } from "react-hook-form"
 import { Select, type SelectInFormProps, type SelectProps } from "../Select"
 
 type TimePickerBaseProps = {
