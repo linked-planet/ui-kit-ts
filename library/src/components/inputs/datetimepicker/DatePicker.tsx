@@ -316,7 +316,7 @@ const DatePickerBase = forwardRef(
 			open,
 			lang,
 			formatDisplayLabel,
-			props["aria-label"],
+			ariaLabel,
 			required,
 			readOnly,
 			ref,
