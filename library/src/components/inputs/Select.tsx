@@ -613,12 +613,12 @@ function SelectInForm<
 					usePortal ? getPortal(portalDivId) : undefined
 				}
 				isDisabled={disabled || isDisabled}
-				aria-invalid={ariaInvalid || fsInvalid}
+				aria-invalid={ariaInvalid || fieldState.invalid}
 			/>
 			{errorMessage && (
 				<SlidingErrorMessage
-					invalid={invalid || fsInvalid}
-					aria-invalid={ariaInvalid || fsInvalid}
+					invalid={invalid || fieldState.invalid}
+					aria-invalid={ariaInvalid || fieldState.invalid}
 				>
 					{errorMessage}
 				</SlidingErrorMessage>
