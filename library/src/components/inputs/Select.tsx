@@ -1,6 +1,6 @@
 import React from "react"
 import { type CSSProperties, useImperativeHandle, useMemo } from "react"
-import { Controller } from "react-hook-form"
+import { Controller, useController } from "react-hook-form"
 import type { Control, FieldValues, Path } from "react-hook-form"
 import {
 	type ActionMeta,
@@ -493,144 +493,141 @@ function SelectInForm<
 	errorMessage,
 	usePortal = true,
 	testId,
+	defaultValue,
+	required,
 	ref,
 	...props
 }: SelectInFormProps<FormData, ValueType, IsMulti>) {
+	const {
+		field,
+		fieldState: { invalid: fsInvalid },
+	} = useController<FormData>({
+		control,
+		name,
+		disabled,
+		//defaultValue: defaultValue ? defaultValue.value : undefined,
+		rules: {
+			required,
+		},
+	})
+
+	const onChange = (
+		value: OnChangeValue<OptionType<ValueType>, IsMulti>,
+		actionMeta: ActionMeta<OptionType<ValueType>>,
+	) => {
+		props.onChange?.(value, actionMeta)
+		if (Array.isArray(value)) {
+			return field.onChange(value.map((it) => it.value))
+		}
+		if (isOptionType(value)) {
+			field.onChange(value.value)
+		} else if (value == null) {
+			field.onChange(value)
+		}
+	}
+
+	let valueUsed = value
+
+	// controlled
+	if (value) {
+		if (!isMulti && isOptionType(value) && value.value !== field.value) {
+			field.onChange(value.value)
+		}
+
+		if (isMulti && Array.isArray(value)) {
+			const valueSet = new Set(value.map((it) => it.value))
+			const fieldSet = new Set(field.value)
+			if (valueSet.size !== fieldSet.size) {
+				field.onChange(value.map((it) => it.value))
+			} else {
+				for (const val of valueSet) {
+					if (!fieldSet.has(val)) {
+						field.onChange(value.map((it) => it.value))
+						break
+					}
+				}
+			}
+		}
+	}
+	//
+
+	// uncontrolled
+	if (!value) {
+		if (!isMulti && options) {
+			for (const opt of options) {
+				if (isOptionType(opt) && opt.value === field.value) {
+					valueUsed = opt
+					break
+				}
+				if (isOptionGroupType(opt)) {
+					for (const opt2 of opt.options) {
+						if (opt2.value === field.value) {
+							valueUsed = opt2
+							break
+						}
+					}
+				}
+			}
+			if (!valueUsed) {
+				valueUsed = field.value
+			}
+		} else if (isMulti && options) {
+			const multiValueUsed = []
+			if (field.value) {
+				for (const opt of options) {
+					if (isOptionType(opt) && field.value.includes(opt.value)) {
+						multiValueUsed.push(opt)
+					} else if (isOptionGroupType(opt)) {
+						for (const opt2 of opt.options) {
+							if (field.value.includes(opt2.value)) {
+								multiValueUsed.push(opt2)
+							}
+						}
+					}
+				}
+			}
+			valueUsed = multiValueUsed
+		}
+	}
+	//
+
+	const innerProps: InnerProps<ValueType, IsMulti> = {
+		...props,
+		isCreateable: props.isCreateable,
+		testId,
+		innerRef: ref,
+	}
+
+	console.log("VALUE USED", valueUsed, props.value, field.value)
+
+	const { ref: innerRef, ...fieldProps } = field
+
 	return (
-		<Controller<FormData>
-			control={control}
-			name={name}
-			render={({ field, fieldState: { invalid: fsInvalid } }) => {
-				const onChange = (
-					value: OnChangeValue<OptionType<ValueType>, IsMulti>,
-					actionMeta: ActionMeta<OptionType<ValueType>>,
-				) => {
-					props.onChange?.(value, actionMeta)
-					if (Array.isArray(value)) {
-						return field.onChange(value.map((it) => it.value))
-					}
-					if (isOptionType(value)) {
-						field.onChange(value.value)
-					} else if (value == null) {
-						field.onChange(value)
-					}
+		<>
+			<SelectInner
+				{...innerProps}
+				{...fieldProps}
+				innerRef={innerRef}
+				onChange={onChange}
+				value={valueUsed}
+				name={name}
+				options={options}
+				isMulti={isMulti}
+				menuPortalTarget={
+					usePortal ? getPortal(portalDivId) : undefined
 				}
-
-				let valueUsed = value
-
-				// controlled
-				if (value) {
-					if (
-						!isMulti &&
-						isOptionType(value) &&
-						value.value !== field.value
-					) {
-						field.onChange(value.value)
-					}
-
-					if (isMulti && Array.isArray(value)) {
-						const valueSet = new Set(value.map((it) => it.value))
-						const fieldSet = new Set(field.value)
-						if (valueSet.size !== fieldSet.size) {
-							field.onChange(value.map((it) => it.value))
-						} else {
-							for (const val of valueSet) {
-								if (!fieldSet.has(val)) {
-									field.onChange(value.map((it) => it.value))
-									break
-								}
-							}
-						}
-					}
-				}
-				//
-
-				// uncontrolled
-				if (!value) {
-					if (!isMulti && options) {
-						for (const opt of options) {
-							if (
-								isOptionType(opt) &&
-								opt.value === field.value
-							) {
-								valueUsed = opt
-								break
-							}
-							if (isOptionGroupType(opt)) {
-								for (const opt2 of opt.options) {
-									if (opt2.value === field.value) {
-										valueUsed = opt2
-										break
-									}
-								}
-							}
-						}
-						if (!valueUsed) {
-							valueUsed = field.value
-						}
-					} else if (isMulti && options) {
-						const multiValueUsed = []
-						if (field.value) {
-							for (const opt of options) {
-								if (
-									isOptionType(opt) &&
-									field.value.includes(opt.value)
-								) {
-									multiValueUsed.push(opt)
-								} else if (isOptionGroupType(opt)) {
-									for (const opt2 of opt.options) {
-										if (field.value.includes(opt2.value)) {
-											multiValueUsed.push(opt2)
-										}
-									}
-								}
-							}
-						}
-						valueUsed = multiValueUsed
-					}
-				}
-				//
-
-				const innerProps: InnerProps<ValueType, IsMulti> = {
-					...props,
-					isCreateable: props.isCreateable,
-					testId,
-					innerRef: ref,
-				}
-
-				console.log("VALUE USED", valueUsed, props.value, field.value)
-
-				const { ref: innerRef, ...fieldProps } = field
-
-				return (
-					<>
-						<SelectInner
-							{...innerProps}
-							{...fieldProps}
-							innerRef={innerRef}
-							onChange={onChange}
-							value={valueUsed}
-							name={name}
-							options={options}
-							isMulti={isMulti}
-							menuPortalTarget={
-								usePortal ? getPortal(portalDivId) : undefined
-							}
-							isDisabled={disabled || isDisabled}
-							aria-invalid={ariaInvalid || fsInvalid}
-						/>
-						{errorMessage && (
-							<SlidingErrorMessage
-								invalid={invalid || fsInvalid}
-								aria-invalid={ariaInvalid || fsInvalid}
-							>
-								{errorMessage}
-							</SlidingErrorMessage>
-						)}
-					</>
-				)
-			}}
-		/>
+				isDisabled={disabled || isDisabled}
+				aria-invalid={ariaInvalid || fsInvalid}
+			/>
+			{errorMessage && (
+				<SlidingErrorMessage
+					invalid={invalid || fsInvalid}
+					aria-invalid={ariaInvalid || fsInvalid}
+				>
+					{errorMessage}
+				</SlidingErrorMessage>
+			)}
+		</>
 	)
 }
 
