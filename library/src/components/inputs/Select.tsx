@@ -498,10 +498,7 @@ function SelectInForm<
 	ref,
 	...props
 }: SelectInFormProps<FormData, ValueType, IsMulti>) {
-	const {
-		field,
-		fieldState: { invalid: fsInvalid },
-	} = useController<FormData>({
+	const { field, fieldState } = useController<FormData>({
 		control,
 		name,
 		disabled,
@@ -598,8 +595,6 @@ function SelectInForm<
 		innerRef: ref,
 	}
 
-	console.log("VALUE USED", valueUsed, props.value, field.value)
-
 	const { ref: innerRef, ...fieldProps } = field
 
 	return (
@@ -607,6 +602,7 @@ function SelectInForm<
 			<SelectInner
 				{...innerProps}
 				{...fieldProps}
+				{...fieldState}
 				innerRef={innerRef}
 				onChange={onChange}
 				value={valueUsed}
