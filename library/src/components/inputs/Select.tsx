@@ -168,7 +168,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 					"overflow-visible",
 					classNamesConfig?.valueContainer?.(provided),
 				),*/
-			}) satisfies SelectClassNamesConfig<V, IsMulti>,
+			}) satisfies SelectClassNamesConfig<ValueType, IsMulti>,
 		[classNamesConfig],
 	)
 }
@@ -511,6 +511,8 @@ function SelectInForm<
 					}
 					if (isOptionType(value)) {
 						field.onChange(value.value)
+					} else if (value == null) {
+						field.onChange(value)
 					}
 				}
 
@@ -595,6 +597,8 @@ function SelectInForm<
 					testId,
 					innerRef: ref,
 				}
+
+				console.log("VALUE USED", valueUsed, props.value, field.value)
 
 				const { ref: innerRef, ...fieldProps } = field
 
