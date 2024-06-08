@@ -77,6 +77,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<TextField isInvalid value={"invalid"} />
 			<TextField isReadOnly value={"readonly"} />
 			<TextField type="number" defaultValue={1} />
+			<TextField type="number" defaultValue={1} appearance="subtle" />
 		</div>
 	)
 
@@ -106,6 +107,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			/>
 			<Input readOnly value={"readonly"} />
 			<Input type="number" defaultValue={1} />
+			<Input type="number" defaultValue={1} appearance="subtle" />
 		</div>
 	)
 	//#endregion input

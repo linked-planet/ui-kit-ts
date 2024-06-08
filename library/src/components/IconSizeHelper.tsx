@@ -40,7 +40,7 @@ export function IconSizeHelper({
 			className={twMerge(
 				centerHelperClass,
 				sizeProp != null ? sizeHelperClass : undefined,
-				"flex-none inline-flex",
+				"inline-flex flex-none items-center justify-center",
 				className,
 			)}
 			style={style}

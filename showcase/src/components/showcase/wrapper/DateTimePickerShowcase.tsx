@@ -12,11 +12,19 @@ import {
 	type TimeType,
 	DatePicker2,
 	TimePicker2,
+	DateTimePicker2,
+	DateUtils,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
 type FormData = {
 	dateTime: string
+	time: TimeType
+	date?: DateType
+}
+
+type FormData2 = {
+	dateTime: Date
 	time: TimeType
 	date?: DateType
 }
@@ -61,10 +69,10 @@ function FormExample() {
 
 //#region datetime-picker-form2
 function FormExample2() {
-	const { handleSubmit, control, reset } = useForm<FormData>({
+	const { handleSubmit, control, reset } = useForm<FormData2>({
 		defaultValues: {
-			dateTime: "2023-12-24T10:00+0100",
-			time: "10:10",
+			dateTime: DateUtils.dateFromString("2023-12-24T10:00+0100"),
+			time: "10:30",
 			date: "2024-12-24",
 		},
 	})
@@ -78,8 +86,27 @@ function FormExample2() {
 			}}
 		>
 			<div className="flex flex-col gap-2">
-				<DatePicker2<FormData> control={control} name="date" required />
-				<TimePicker2<FormData> control={control} name="time" required />
+				<DatePicker2<FormData2>
+					control={control}
+					name="date"
+					required
+				/>
+				<TimePicker2<FormData2>
+					control={control}
+					name="time"
+					required
+					startTime="00:00"
+					endTime="00:00"
+					interval={30}
+				/>
+				<DateTimePicker2<FormData2>
+					control={control}
+					name="dateTime"
+					required
+					startTime="00:00"
+					endTime="00:00"
+					interval={30}
+				/>
 			</div>
 			<ButtonGroup className="mt-4 flex justify-end">
 				<Button appearance="subtle" type="reset">
@@ -153,9 +180,63 @@ function ControlledFormExample() {
 }
 //#endregion datetime-picker-form-controlled
 
+//#region datetime-picker-form-controlled2
+function ControlledFormExample2() {
+	const [selectedDate, setSelectedDate] = useState<DateType | null>(
+		"1999-12-23",
+	)
+	const [selectedTime, setSelectedTime] = useState<TimeType | null>("11:00")
+	const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(
+		DateUtils.dateFromString("1999-12-23T10:00+0100"),
+	)
+
+	const { handleSubmit, control, reset } = useForm<FormData>()
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log("form data:", data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<div className="flex flex-col gap-2">
+				<DateTimePicker2
+					control={control}
+					value={selectedDateTime}
+					onChange={setSelectedDateTime}
+					name="dateTime"
+				/>
+				<TimePicker2
+					control={control}
+					value={selectedTime}
+					onChange={setSelectedTime}
+					name="time"
+				/>
+				<DatePicker2
+					control={control}
+					value={selectedDate}
+					onChange={setSelectedDate}
+					name="date"
+				/>
+			</div>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button appearance="subtle" type="reset">
+					Reset
+				</Button>
+				<Button appearance="primary" type="submit">
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion datetime-picker-form-controlled2
+
 function DateTimePickerShowcase(props: ShowcaseProps) {
 	const [date, setDate] = useState<DateType | null>(null)
 	const [time, setTime] = useState<TimeType | null>(null)
+	const [dateTime, setDateTime] = useState<Date | null>(null)
 
 	//#region datetime-picker
 	const example = (
@@ -163,11 +244,34 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 			<div>
 				<DatePicker onChange={setDate} value={date} />
 				<TimePicker onChange={setTime} value={time} />
-				<DateTimePicker />
+				<DateTimePicker
+					onChange={(val) => {
+						const d = val ? DateUtils.dateFromString(val) : null
+						setDateTime(d)
+					}}
+					value={
+						dateTime
+							? DateUtils.dateToJavaDateTimeString(dateTime)
+							: undefined
+					}
+				/>
 			</div>
 			<div>
 				<DatePicker2 onChange={setDate} value={date} />
-				<TimePicker2 onChange={setTime} value={time} />
+				<TimePicker2
+					onChange={setTime}
+					value={time}
+					startTime="00:00"
+					endTime="00:00"
+					interval={30}
+				/>
+				<DateTimePicker2
+					onChange={(d) => {
+						console.log("DateTimePicker2", d)
+						setDateTime(d)
+					}}
+					value={dateTime}
+				/>
 			</div>
 		</div>
 	)
@@ -203,6 +307,11 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					title: "Form Controlled",
 					example: <ControlledFormExample />,
 					sourceCodeExampleId: "datetime-picker-form-controlled",
+				},
+				{
+					title: "Form Controlled 2",
+					example: <ControlledFormExample2 />,
+					sourceCodeExampleId: "datetime-picker-form-controlled2",
 				},
 			]}
 		/>

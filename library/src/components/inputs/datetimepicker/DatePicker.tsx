@@ -67,19 +67,22 @@ export type DatePickerProps = Pick<
 		calendarTestId?: string
 		style?: React.CSSProperties
 		className?: string
+		/* the containerClassName of the trigger Input */
+		containerClassName?: string
 		appearance?: "subtle" | "default" | "none"
 		/* formats the displayed value in the input */
 		formatDisplayLabel?: (date: DateType) => string
 		disabled?: boolean
 		label?: string
 		calendarLabels?: Partial<Labels>
-		value?: DateType | null
+		value?: DateType | null | undefined
 		defaultValue?: DateType
 		errorMessage?: ReactNode
 		name?: string
 		required?: boolean
 		readOnly?: boolean
 		clearButtonLabel?: string
+		hideIcon?: boolean
 	}
 
 //TODO optimize, it renders too often (the input)
@@ -122,6 +125,8 @@ const DatePickerBase = forwardRef(
 			onOpenChange,
 			onChange,
 			disabled,
+			hideIcon = false,
+			containerClassName,
 			...props
 		}: DatePickerProps,
 		ref: ForwardedRef<HTMLInputElement>,
@@ -135,6 +140,7 @@ const DatePickerBase = forwardRef(
 			if (isDateType(_value)) setValue(_value)
 			else console.warn("DatePicker - value is not dateType", _value)
 		}
+
 		useEffect(() => {
 			if (!_value) setValue("")
 		}, [_value])
@@ -252,6 +258,7 @@ const DatePickerBase = forwardRef(
 					name={name}
 					style={style}
 					className={twMerge("min-w-20 cursor-pointer", className)}
+					containerClassName={containerClassName}
 					value={valStr}
 					disabled={disabled}
 					invalid={invalid}
@@ -261,35 +268,42 @@ const DatePickerBase = forwardRef(
 					onChange={onInputChange}
 					iconAfter={
 						<>
-							{value && !readOnly && (
-								<div className="pointer-events-none">
-									<Button
-										appearance="link"
-										className="text-disabled-text hover:text-text pointer-events-auto m-0 h-full w-8 px-1 py-0"
-										onClick={(e) => {
-											e.stopPropagation()
-											setOpen(false)
-											setValue("")
-											onChange?.(null)
-										}}
-										label={clearButtonLabel}
-									>
+							{!hideIcon && (
+								<>
+									{value && !readOnly && (
+										<div className="pointer-events-none">
+											<Button
+												appearance="link"
+												className="text-disabled-text hover:text-text pointer-events-auto m-0 h-full w-8 px-1 py-0"
+												onClick={(e) => {
+													e.stopPropagation()
+													setOpen(false)
+													setValue("")
+													onChange?.(null)
+												}}
+												label={clearButtonLabel}
+											>
+												<IconSizeHelper
+													size="medium"
+													className=""
+												>
+													<SelectClearIcon
+														label=""
+														size="small"
+													/>
+												</IconSizeHelper>
+											</Button>
+										</div>
+									)}
+									{!value && !readOnly && (
 										<IconSizeHelper
 											size="medium"
-											className=""
+											className="w-8"
 										>
-											<SelectClearIcon
-												label=""
-												size="small"
-											/>
+											<CalendarIcon label="calendar" />
 										</IconSizeHelper>
-									</Button>
-								</div>
-							)}
-							{!value && !readOnly && (
-								<IconSizeHelper size="medium" className="w-8">
-									<CalendarIcon label="calendar" />
-								</IconSizeHelper>
+									)}
+								</>
 							)}
 						</>
 					}
@@ -320,6 +334,8 @@ const DatePickerBase = forwardRef(
 			required,
 			readOnly,
 			ref,
+			hideIcon,
+			containerClassName,
 		])
 
 		return (
@@ -339,6 +355,7 @@ const DatePickerBase = forwardRef(
 				modal={modal}
 				triggerAsChild={true}
 				contentStyle={{ minWidth: "unset" }}
+				className="bg-warning-bold flex"
 			>
 				{calendar}
 			</Popover.Root>
@@ -349,6 +366,7 @@ const DatePickerBase = forwardRef(
 function DatePickerInForm<FormData extends FieldValues>({
 	control,
 	name,
+	value,
 	...props
 }: DatePickerInFormProps<FormData>) {
 	const { field, fieldState } = useController<FormData, typeof name>({
@@ -356,15 +374,15 @@ function DatePickerInForm<FormData extends FieldValues>({
 		name,
 		rules: {
 			required: props.required,
-			validate: (value) => {
+			validate: (val) => {
 				if (
-					value === null ||
-					value === undefined ||
-					(value === "" && props.required)
+					val === null ||
+					val === undefined ||
+					(val === "" && props.required)
 				) {
 					return "Date is required"
 				}
-				if (!isDateType(value)) {
+				if (!isDateType(val)) {
 					return "Date is not valid"
 				}
 				return true
@@ -372,10 +390,23 @@ function DatePickerInForm<FormData extends FieldValues>({
 		},
 	})
 
+	if (value !== undefined && value !== field.value) {
+		field.onChange(value)
+	}
+
+	const onChangeCB = useCallback(
+		(d: DateType | null) => {
+			field.onChange(d)
+			props.onChange?.(d)
+		},
+		[field.onChange, props.onChange],
+	)
+
 	return (
 		<DatePickerBase
 			{...props}
 			{...field}
+			onChange={onChangeCB}
 			{...fieldState}
 			errorMessage={fieldState.error?.message}
 		/>

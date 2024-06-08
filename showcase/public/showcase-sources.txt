@@ -2227,6 +2227,8 @@ import {
 	type TimeType,
 	DatePicker2,
 	TimePicker2,
+	DateTimePicker2,
+	DateUtils,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
@@ -2294,7 +2296,22 @@ function FormExample2() {
 		>
 			<div className="flex flex-col gap-2">
 				<DatePicker2<FormData> control={control} name="date" required />
-				<TimePicker2<FormData> control={control} name="time" required />
+				<TimePicker2<FormData>
+					control={control}
+					name="time"
+					required
+					startTime="00:00"
+					endTime="00:00"
+					interval={30}
+				/>
+				<DateTimePicker2<FormData>
+					control={control}
+					name="dateTime"
+					required
+					startTime="00:00"
+					endTime="00:00"
+					interval={30}
+				/>
 			</div>
 			<ButtonGroup className="mt-4 flex justify-end">
 				<Button appearance="subtle" type="reset">
@@ -2371,6 +2388,7 @@ function ControlledFormExample() {
 function DateTimePickerShowcase(props: ShowcaseProps) {
 	const [date, setDate] = useState<DateType | null>(null)
 	const [time, setTime] = useState<TimeType | null>(null)
+	const [dateTime, setDateTime] = useState<Date | null>(null)
 
 	//#region datetime-picker
 	const example = (
@@ -2378,11 +2396,34 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 			<div>
 				<DatePicker onChange={setDate} value={date} />
 				<TimePicker onChange={setTime} value={time} />
-				<DateTimePicker />
+				<DateTimePicker
+					onChange={(val) => {
+						const d = val ? DateUtils.dateFromString(val) : null
+						setDateTime(d)
+					}}
+					value={
+						dateTime
+							? DateUtils.dateToJavaDateTimeString(dateTime)
+							: undefined
+					}
+				/>
 			</div>
 			<div>
 				<DatePicker2 onChange={setDate} value={date} />
-				<TimePicker2 onChange={setTime} value={time} />
+				<TimePicker2
+					onChange={setTime}
+					value={time}
+					startTime="00:00"
+					endTime="00:00"
+					interval={30}
+				/>
+				<DateTimePicker2
+					onChange={(d) => {
+						console.log("DateTimePicker2", d)
+						setDateTime(d)
+					}}
+					value={dateTime}
+				/>
 			</div>
 		</div>
 	)
@@ -3922,6 +3963,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<TextField isInvalid value={"invalid"} />
 			<TextField isReadOnly value={"readonly"} />
 			<TextField type="number" defaultValue={1} />
+			<TextField type="number" defaultValue={1} appearance="subtle" />
 		</div>
 	)
 
@@ -3951,6 +3993,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			/>
 			<Input readOnly value={"readonly"} />
 			<Input type="number" defaultValue={1} />
+			<Input type="number" defaultValue={1} appearance="subtle" />
 		</div>
 	)
 	//#endregion input
@@ -5984,8 +6027,8 @@ import {
 	Button,
 	ButtonGroup,
 	Label,
-	type OptionGroupType,
 	Select,
+	type OptionGroupType,
 } from "@linked-planet/ui-kit-ts"
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -6215,7 +6258,7 @@ function SelectShowcase(props: ShowcaseProps) {
 				]}
 				/** adding some custom classnames to the styling */
 				classNames={{
-					control: (provided) => "bg-warning",
+					control: () => "bg-warning",
 				}}
 			/>
 

@@ -221,3 +221,20 @@ export const dateFormat = "YYYY-MM-DD" as const // produces a DateType
 
 // ! if this format is coming from that backend, correct it in the backend that it is an ISO format string, because we require the time zone offset
 export const dateTimeFormat = "YYYY-MM-DD HH:mm" as const // produces a DateTimeType
+
+export function dateToJavaDateTimeString(date: Date) {
+	const padZero = (num: number) => num.toString().padStart(2, "0")
+
+	const year = date.getFullYear()
+	const month = padZero(date.getMonth() + 1)
+	const day = padZero(date.getDate())
+	const hours = padZero(date.getHours())
+	const minutes = padZero(date.getMinutes())
+
+	const timezoneOffset = -date.getTimezoneOffset()
+	const sign = timezoneOffset >= 0 ? "+" : "-"
+	const timezoneHours = padZero(Math.floor(Math.abs(timezoneOffset) / 60))
+	const timezoneMinutes = padZero(Math.abs(timezoneOffset) % 60)
+
+	return `${year}-${month}-${day}T${hours}:${minutes}${sign}${timezoneHours}${timezoneMinutes}`
+}

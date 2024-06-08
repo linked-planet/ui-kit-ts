@@ -10,6 +10,7 @@ import React, {
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./SlidingErrorMessage"
+import { inputBaseStyle } from "../styleHelper"
 
 //#region Label
 const labelNormalStyles =
@@ -35,16 +36,6 @@ export function Label({
 //#endregion
 
 //#region Input
-const inputContainerBorderBeforeStyles =
-	"m-[0.05rem] rounded border border-input-border before:pointer-events-none before:z-10 before:content-[''] before:absolute before:-inset-0.5 before:box-border focus-within:before:border-2 before:border-1 focus-within:before:border-input-border-focused before:rounded"
-const inputActiveContainerBorderBeforeStyles =
-	"data-[active=true]:before:border-2 data-[active=true]:before:border-input-border-focused"
-
-const inputContainerColorDivStyles =
-	"w-full relative bg-input ease-in-out hover:bg-input-hovered hover:focus-within:bg-input-active transition duration-200 focus-within:bg-input-active data-[disabled]:bg-input-disabled p-0"
-const inputContainerActiveColorDivStyles =
-	"data-[active=true]:bg-input-active hover:data-[active=true]:bg-input-active"
-
 const inputNormalStyles =
 	"w-full text-left rounded placeholder:text-text-subtlest placeholder:opacity-100 outline-none bg-transparent"
 
@@ -54,41 +45,56 @@ const inputDisabledStyles =
 const invalidInputStyles =
 	"data-[invalid=true]:before:border-danger-border data-[invalid=true]:before:border-2"
 
-const inputContainerDivStyles = twJoin(
-	inputContainerBorderBeforeStyles,
-	inputContainerColorDivStyles,
-	"data-[disabled=true]:bg-disabled data-[disabled=true]:border-transparent data-[disabled=true]:cursor-not-allowed",
-	invalidInputStyles,
-)
-
 const inputStyles = twJoin(inputNormalStyles, inputDisabledStyles, "p-1 m-0")
 
 export type InputProps = ComponentPropsWithoutRef<"input"> & {
 	helpMessage?: ReactNode
 	errorMessage?: ReactNode
+	/* inputClassName targets the input element */
 	inputClassName?: string
-	invalid?: boolean
 	inputStyle?: CSSProperties
+	/* containerClassName targets the outer container which includes the error message */
+	containerClassName?: string
+	containerStyle?: CSSProperties
+	/* className targets the div around the input and the icon */
+	className?: string
+	style?: CSSProperties
+	/* helpMessageClassName targets the help message container p element */
+	helpMessageClassName?: string
+	helpMessageStyle?: CSSProperties
+	/* errorMessageClassName targets the error message */
+	errorMessageClassName?: string
+	errorMessageStyle?: CSSProperties
+	invalid?: boolean
 	testId?: string
 	iconAfter?: ReactNode
 	active?: boolean
+	onClick?: () => void
+	appearance?: "default" | "subtle"
 }
 
 const Input = forwardRef(
 	(
 		{
+			containerClassName,
+			containerStyle,
 			className,
+			style,
 			inputClassName,
+			inputStyle,
+			helpMessageClassName,
+			helpMessageStyle,
+			errorMessageClassName,
+			errorMessageStyle,
 			helpMessage,
 			errorMessage,
 			invalid = false,
 			"aria-invalid": ariaInvalid = false,
-			style,
-			inputStyle,
 			active = false,
 			testId,
 			iconAfter,
 			disabled,
+			appearance = "default",
 			onClick,
 			...props
 		}: InputProps,
@@ -130,24 +136,39 @@ const Input = forwardRef(
 		}, [])
 
 		return (
-			<div className={className} style={style}>
+			<div className={containerClassName} style={containerStyle}>
 				<div
 					className={twJoin(
 						"inline-flex",
-						active
-							? inputActiveContainerBorderBeforeStyles
-							: undefined,
-						active ? inputContainerActiveColorDivStyles : undefined,
-						inputContainerDivStyles,
+						inputBaseStyle,
+						appearance !== "subtle"
+							? "border-input-border bg-input"
+							: "border-transparent bg-transparent",
+						"data-[active=true]:bg-input-active hover:data-[active=true]:bg-input-active",
+						"hover:bg-input-hovered hover:focus-within:bg-input-active focus-within:bg-input-active",
+						"data-[disabled=true]:bg-disabled data-[disabled=true]:cursor-not-allowed data-[disabled=true]:border-transparent",
+						invalidInputStyles,
+						className,
 					)}
 					data-disabled={disabled}
 					data-invalid={invalid}
 					data-active={active}
 					onClick={onClick}
+					onKeyUp={(e) => {
+						if (e.key === "Enter") {
+							onClick?.()
+						}
+					}}
+					style={style}
 				>
 					<input
 						ref={internalRef}
-						className={twMerge(inputStyles, "p-1", inputClassName)}
+						className={twMerge(
+							inputNormalStyles,
+							inputDisabledStyles,
+							"m-0 px-1",
+							inputClassName,
+						)}
 						style={inputStyle}
 						aria-invalid={ariaInvalid || invalid}
 						data-testid={testId}
@@ -157,7 +178,13 @@ const Input = forwardRef(
 					{iconAfter && iconAfter}
 				</div>
 				{helpMessage && (
-					<p className="text-text-subtle text-2xs m-0 p-0">
+					<p
+						className={twMerge(
+							"text-text-subtle text-2xs m-0 p-0 pt-1",
+							helpMessageClassName,
+						)}
+						style={helpMessageStyle}
+					>
 						{helpMessage}
 					</p>
 				)}
@@ -167,6 +194,8 @@ const Input = forwardRef(
 						ref={errorRef}
 						invalid={invalid}
 						aria-invalid={ariaInvalid}
+						className={errorMessageClassName}
+						style={errorMessageStyle}
 					>
 						{errorMessage}
 					</SlidingErrorMessage>

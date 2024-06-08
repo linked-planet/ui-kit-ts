@@ -177,21 +177,16 @@ function Root({
 		],
 	)
 
-	const _trigger = useMemo(() => {
-		if (triggerComponent) {
-			return triggerComponent
-		}
-		return (
-			<Trigger
-				disabled={disabled}
-				aria-disabled={disabled}
-				hideChevron={hideChevron}
-				{...props}
-			>
-				{trigger ?? "trigger"}
-			</Trigger>
-		)
-	}, [trigger, triggerComponent, disabled, props, hideChevron])
+	const _trigger = triggerComponent ?? (
+		<Trigger
+			disabled={disabled}
+			aria-disabled={disabled}
+			hideChevron={hideChevron}
+			{...props}
+		>
+			{trigger ?? "trigger"}
+		</Trigger>
+	)
 
 	return (
 		<RPo.Root

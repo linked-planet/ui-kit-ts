@@ -1,6 +1,12 @@
-import React from "react"
-import { type CSSProperties, useImperativeHandle, useMemo } from "react"
-import { Controller, useController } from "react-hook-form"
+import type React from "react"
+import {
+	type CSSProperties,
+	useImperativeHandle,
+	useMemo,
+	useRef,
+	type ReactNode,
+} from "react"
+import { useController } from "react-hook-form"
 import type { Control, FieldValues, Path } from "react-hook-form"
 import {
 	type ActionMeta,
@@ -25,10 +31,11 @@ import ReactSelectCreatable, {
 import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./SlidingErrorMessage"
 import { IconSizeHelper } from "../IconSizeHelper"
+import { inputBaseStyle } from "../styleHelper"
 
 //#region styles
-const controlStyles =
-	"border-input-border border-solid border-2 box-border rounded ease-in-out transition duration-300"
+const controlStyles = inputBaseStyle
+//"border-input-border border-solid border box-border rounded ease-in-out transition duration-300 before:pointer-events-none before:z-10 before:content-[''] before:absolute before:-inset-0.5 before:box-border focus-within:before:border-2 focus-within:before:border-input-border-focused before:rounded"
 
 const menuStyles =
 	"bg-surface min-w-min z-10 shadow-overlay rounded overflow-hidden"
@@ -43,7 +50,7 @@ type OptionType<ValueType> = {
 	isFixed?: boolean // needs to be isFixed because of react-select
 }
 
-type OptionGroupType<ValueType> = GroupBase<OptionType<ValueType>>
+export type OptionGroupType<ValueType> = GroupBase<OptionType<ValueType>>
 
 export type SelectClassNamesConfig<
 	ValueType,
@@ -60,6 +67,8 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 				OptionGroupType<ValueType>
 		  >
 		| undefined,
+	className?: string,
+	invalid?: boolean,
 ): ClassNamesConfig<
 	OptionType<ValueType>,
 	IsMulti,
@@ -71,38 +80,42 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 				...classNamesConfig,
 				control: (provided) =>
 					twJoin(
-						"px-2",
+						"px-2 flex items-center",
 						controlStyles,
 						provided.isDisabled
 							? "bg-disabled border-transparent cursor-not-allowed"
 							: undefined,
+						invalid
+							? "border-danger-border before:border-danger-border before:border-2 focus-within:before:border-danger-border"
+							: undefined,
 						provided.isFocused && !provided.isDisabled
-							? "bg-input-active hover:bg-input-active border-input-border-focused"
+							? `bg-input-active hover:bg-input-active ${invalid ? "border-danger-border" : "border-input-border-focused"}`
 							: undefined,
 						!provided.isFocused && !provided.isDisabled
 							? "bg-input hover:bg-input-hovered"
 							: undefined,
+						className,
 						classNamesConfig?.control?.(provided),
 					),
 				menu: (provided) =>
 					twMerge(menuStyles, classNamesConfig?.menu?.(provided)),
 				clearIndicator: (provided) =>
 					twMerge(
-						"w-4 h-4 overflow-hidden flex items-center justify-center cursor-pointer text-text-subtlest hover:text-text self-start mt-2",
+						"w-4 cursor-pointer text-text-subtlest hover:text-text",
 						classNamesConfig?.clearIndicator?.(provided),
 					),
 				dropdownIndicator: (provided) =>
 					twMerge(
-						`w-4 h-4 ml-0.5 overflow-hidden flex items-center justify-center cursor-pointer ${
+						`w-4 ml-0.5 overflow-hidden flex items-center justify-center cursor-pointer ${
 							provided.isDisabled
 								? "text-disabled-text"
 								: "text-text-subtlest  hover:text-text"
-						} self-start mt-2`,
+						}`,
 						classNamesConfig?.dropdownIndicator?.(provided),
 					),
 				indicatorsContainer: (provided) =>
 					twMerge(
-						"flex items-center h-full",
+						"content-center",
 						classNamesConfig?.indicatorsContainer?.(provided),
 					),
 				indicatorSeparator: (provided) =>
@@ -169,7 +182,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 					classNamesConfig?.valueContainer?.(provided),
 				),*/
 			}) satisfies SelectClassNamesConfig<ValueType, IsMulti>,
-		[classNamesConfig],
+		[classNamesConfig, className, invalid],
 	)
 }
 
@@ -178,8 +191,8 @@ const customStyles = {
 	control: (provided: CSSObjectWithLabel) => ({
 		...provided,
 		cursor: "pointer",
-		minHeight: "2.2rem",
-		borderWidth: "2px",
+		minHeight: "2rem",
+		//borderWidth: "2px",
 		flexWrap: "nowrap" as const,
 		//height: "1.83rem",
 	}),
@@ -202,9 +215,12 @@ type InnerProps<ValueType, IsMulti extends boolean = boolean> = CreatableProps<
 		IsMulti,
 		OptionGroupType<ValueType>
 	> | null>
-	clearValuesLabel?: string
-	removeValueLabel?: string
+	clearValuesButtonLabel?: string
+	removeValueButtonLabel?: string
 	dropdownLabel?: (isOpen: boolean) => string
+	onClearButtonClick?: () => void
+	invalid?: boolean
+	containerClassName?: string
 }
 
 const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
@@ -213,19 +229,29 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 	testId,
 	innerRef,
 	classNames,
-	clearValuesLabel,
-	removeValueLabel,
+	className,
+	containerClassName,
+	style,
+	clearValuesButtonLabel,
+	removeValueButtonLabel,
 	dropdownLabel,
 	inputId,
+	invalid,
+	components: _components,
+	onClearButtonClick,
 	...props
 }: InnerProps<ValueType, IsMulti>) => {
-	const classNamesConfig = useClassNamesConfig<ValueType, IsMulti>(classNames)
+	const classNamesConfig = useClassNamesConfig<ValueType, IsMulti>(
+		classNames,
+		className,
+		invalid,
+	)
 
 	// get the browsers locale
 	const locale = navigator.language
 
 	const locRef =
-		React.useRef<
+		useRef<
 			SelectInstance<
 				OptionType<ValueType>,
 				IsMulti,
@@ -242,35 +268,50 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 			IsMulti,
 			OptionGroupType<ValueType>
 		> = {
-			ClearIndicator: (_props) => (
-				<div
-					{..._props.innerProps}
-					role="button"
-					className={_props.getClassNames("clearIndicator", _props)}
-					style={
-						_props.getStyles("clearIndicator", _props) as
-							| CSSProperties
-							| undefined
-					}
-					title={clearValuesLabel ?? "clear all selected"}
-					aria-label={clearValuesLabel ?? "clear all selected"}
-					aria-hidden="false"
-					tabIndex={0}
-					onKeyUp={(e) => {
-						if (e.key === "Enter") {
-							_props.clearValue()
+			ClearIndicator: (_props) => {
+				return (
+					<div
+						{..._props.innerProps}
+						role="button"
+						className={_props.getClassNames(
+							"clearIndicator",
+							_props,
+						)}
+						style={
+							_props.getStyles("clearIndicator", _props) as
+								| CSSProperties
+								| undefined
 						}
-					}}
-					data-action="clear_all_selected"
-				>
-					<IconSizeHelper>
-						<SelectClearIcon size="small" label="" />
-					</IconSizeHelper>
-				</div>
-			),
+						title={clearValuesButtonLabel ?? "clear all selected"}
+						aria-label={
+							clearValuesButtonLabel ?? "clear all selected"
+						}
+						aria-hidden="false"
+						tabIndex={0}
+						onKeyUp={(e) => {
+							if (e.key === "Enter") {
+								_props.clearValue()
+								onClearButtonClick?.()
+							}
+						}}
+						// onMouseDown is used, not onClick
+						onMouseDown={(e) => {
+							e.preventDefault()
+							e.stopPropagation()
+							_props.clearValue()
+							onClearButtonClick?.()
+						}}
+						data-action="clear_all_selected"
+					>
+						<IconSizeHelper>
+							<SelectClearIcon size="small" label="" />
+						</IconSizeHelper>
+					</div>
+				)
+			},
 
 			MultiValueRemove: (_props) => {
-				const title = `${removeValueLabel ?? "remove"} ${
+				const title = `${removeValueButtonLabel ?? "remove"} ${
 					_props.data.label
 				}`
 				return (
@@ -362,9 +403,16 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 					</div>
 				)
 			},
+			..._components,
 		}
 		return ret
-	}, [clearValuesLabel, dropdownLabel, removeValueLabel])
+	}, [
+		clearValuesButtonLabel,
+		dropdownLabel,
+		removeValueButtonLabel,
+		onClearButtonClick,
+		_components,
+	])
 
 	if (isCreateable) {
 		return (
@@ -411,15 +459,11 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 			data-testid={testId}
 			styles={customStyles}
 			components={components}
+			className={containerClassName}
 			{...props}
 		/>
 	)
 }
-
-/*const SelectInnerFR = React.forwardRef<
-	SelectInstance<OptionType<any>, boolean, GroupBase<OptionType<any>>>,
-	InnerProps<any, OptionType<any>, boolean>
->(SelectInner)*/
 
 function isOptionType<ValueType>(o: unknown): o is OptionType<ValueType> {
 	return typeof o === "object" && o != null && "label" in o && "value" in o
@@ -449,6 +493,7 @@ type SelectPropsProto<
 	removeValueLabel?: string
 	inputId?: string
 	testId?: string
+	onClearButtonClick?: () => void
 	ref?: React.Ref<SelectInstance<
 		OptionType<ValueType>,
 		IsMulti,
@@ -464,7 +509,7 @@ export type SelectInFormProps<
 > = SelectPropsProto<ValueType, IsMulti> & {
 	control: Control<FormData>
 	name: Path<FormData>
-	errorMessage?: string
+	errorMessage?: ReactNode
 	invalid?: boolean
 }
 
@@ -474,6 +519,7 @@ export type SelectProps<ValueType, IsMulti extends boolean> = SelectPropsProto<
 > & {
 	control?: never
 	disabled?: boolean
+	invalid?: boolean
 }
 
 function SelectInForm<
@@ -565,9 +611,9 @@ function SelectInForm<
 					}
 				}
 			}
-			if (!valueUsed) {
+			/*if (!valueUsed) {
 				valueUsed = field.value
-			}
+			}*/
 		} else if (isMulti && options) {
 			const multiValueUsed = []
 			if (field.value) {
@@ -593,6 +639,7 @@ function SelectInForm<
 		isCreateable: props.isCreateable,
 		testId,
 		innerRef: ref,
+		invalid,
 	}
 
 	const { ref: innerRef, ...fieldProps } = field
@@ -613,7 +660,7 @@ function SelectInForm<
 					usePortal ? getPortal(portalDivId) : undefined
 				}
 				isDisabled={disabled || isDisabled}
-				aria-invalid={ariaInvalid || fieldState.invalid}
+				aria-invalid={ariaInvalid || fieldState.invalid || invalid}
 			/>
 			{errorMessage && (
 				<SlidingErrorMessage
@@ -660,21 +707,21 @@ export function Select<
 	ValueType,
 	FormData extends FieldValues,
 	IsMulti extends boolean = boolean,
->(
-	props:
-		| SelectProps<ValueType, IsMulti>
-		| SelectInFormProps<FormData, ValueType, IsMulti>,
-) {
-	if ("control" in props) {
-		return (
-			<SelectInForm<FormData, ValueType, IsMulti>
-				{...(props as SelectInFormProps<FormData, ValueType, IsMulti>)}
-			/>
-		)
+>({
+	name,
+	control,
+	...props
+}:
+	| SelectProps<ValueType, IsMulti>
+	| SelectInFormProps<FormData, ValueType, IsMulti>) {
+	if (control && name) {
+		const sprops: SelectInFormProps<FormData, ValueType, IsMulti> = {
+			name,
+			control,
+			...props,
+		}
+		return <SelectInForm<FormData, ValueType, IsMulti> {...sprops} />
 	}
-	return (
-		<SelectNotInForm<ValueType, IsMulti>
-			{...(props as SelectProps<ValueType, IsMulti>)}
-		/>
-	)
+	const sprops: SelectProps<ValueType, IsMulti> = props
+	return <SelectNotInForm<ValueType, IsMulti> name={name} {...sprops} />
 }
