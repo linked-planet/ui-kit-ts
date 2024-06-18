@@ -1,7 +1,7 @@
 import type React from "react"
 import { type ReactNode, useCallback, useMemo } from "react"
 import type { TimeType } from "../../../utils/DateUtils"
-import { DateUtils } from "@linked-planet/ui-kit-ts/utils"
+import { DateUtils } from "../../../utils"
 import dayjs from "dayjs"
 import type { Control, FieldValues, Path } from "react-hook-form"
 import { Select, type SelectInFormProps, type SelectProps } from "../Select"
