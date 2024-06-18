@@ -6,7 +6,7 @@ import {
 	PageLayout,
 } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function PageLayoutExample() {
@@ -20,33 +20,35 @@ function PageLayoutExample() {
 			<PageLayout.Page>
 				<PageLayout.PageHeader>
 					<PageLayout.PageHeaderTitle
-						titleMenu={[
-							<div key="0">Menu Item 1</div>,
-							<div key="1">Menu Item 2</div>,
-							<Dropdown.SubMenu
-								key="sub"
-								trigger="submenu"
-								chevronSide="left"
-							>
-								<Dropdown.Item>Submenu Entry</Dropdown.Item>
-							</Dropdown.SubMenu>,
-							<Dropdown.ItemGroup key="4" hasSeparator>
-								<Dropdown.ItemCheckbox>
-									Check 1
-								</Dropdown.ItemCheckbox>
-								<Dropdown.ItemCheckbox>
-									Check 2
-								</Dropdown.ItemCheckbox>
-							</Dropdown.ItemGroup>,
-							<Dropdown.ItemRadioGroup key="5" hasSeparator>
-								<Dropdown.ItemRadio value="r1">
-									Radio 1
-								</Dropdown.ItemRadio>
-								<Dropdown.ItemRadio value="r2">
-									Radio 2
-								</Dropdown.ItemRadio>
-							</Dropdown.ItemRadioGroup>,
-						]}
+						titleMenu={
+							<Dropdown.Menu>
+								<Dropdown.Item>Menu Item 1</Dropdown.Item>
+								<Dropdown.Item>Menu Item 2</Dropdown.Item>
+								<Dropdown.SubMenu
+									trigger="submenu"
+									chevronSide="left"
+								>
+									<Dropdown.Item>Submenu Entry</Dropdown.Item>
+								</Dropdown.SubMenu>
+								<Dropdown.ItemGroup key="4" hasSeparator>
+									<Dropdown.ItemCheckbox>
+										Check 1
+									</Dropdown.ItemCheckbox>
+									<Dropdown.ItemCheckbox>
+										Check 2
+									</Dropdown.ItemCheckbox>
+								</Dropdown.ItemGroup>
+								,
+								<Dropdown.ItemRadioGroup key="5" hasSeparator>
+									<Dropdown.ItemRadio value="r1">
+										Radio 1
+									</Dropdown.ItemRadio>
+									<Dropdown.ItemRadio value="r2">
+										Radio 2
+									</Dropdown.ItemRadio>
+								</Dropdown.ItemRadioGroup>
+							</Dropdown.Menu>
+						}
 					>
 						Page Header Title
 					</PageLayout.PageHeaderTitle>
