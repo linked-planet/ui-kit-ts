@@ -17,9 +17,8 @@ const labelNormalStyles =
 	"text-text-subtlest block text-sm pb-1 pt-3 font-semibold"
 const requiredStyles =
 	"aria-required:after:content-['*'] aria-required:after:text-danger-bold aria-required:after:ml-0.5"
-const invalidStyles = "aria-invalid:text-danger-text"
 
-const labelStyles = twJoin(labelNormalStyles, requiredStyles, invalidStyles)
+const labelStyles = twJoin(labelNormalStyles, requiredStyles)
 export function Label({
 	required = false,
 	className,
@@ -37,13 +36,13 @@ export function Label({
 
 //#region Input
 const inputNormalStyles =
-	"w-full text-left rounded placeholder:text-text-subtlest placeholder:opacity-100 outline-none bg-transparent"
+	"w-full text-left rounded border-0 border-transparent placeholder:text-text-subtlest placeholder:opacity-100 outline-none bg-transparent"
 
 const inputDisabledStyles =
 	"disabled:text-disabled-text disabled:cursor-not-allowed"
 
-const invalidInputStyles =
-	"data-[invalid=true]:before:border-danger-border data-[invalid=true]:before:border-2"
+const invalidInputStyles = ""
+//"data-[invalid=true]:before:border-danger-border data-[invalid=true]:before:border-2"
 
 const inputStyles = twJoin(inputNormalStyles, inputDisabledStyles, "p-1 m-0")
 
