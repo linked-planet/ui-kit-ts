@@ -2215,7 +2215,7 @@ export default function LayeringShowcase(props: ShowcaseProps) {
 
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
 	Button,
@@ -2225,13 +2225,23 @@ import {
 	TimePicker,
 	type DateType,
 	type TimeType,
+	DatePicker2,
+	TimePicker2,
+	DateTimePicker2,
+	DateUtils,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
 type FormData = {
 	dateTime: string
 	time: TimeType
-	date: DateType
+	date?: DateType
+}
+
+type FormData2 = {
+	dateTime: Date
+	time: TimeType
+	date?: DateType
 }
 
 //#region datetime-picker-form
@@ -2271,6 +2281,60 @@ function FormExample() {
 	)
 }
 //#endregion datetime-picker-form
+
+//#region datetime-picker-form2
+function FormExample2() {
+	const { handleSubmit, control, reset } = useForm<FormData2>({
+		defaultValues: {
+			dateTime: DateUtils.dateFromString("2023-12-24T10:00+0100"),
+			time: "10:30",
+			date: "2024-12-24",
+		},
+	})
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log("form data:", data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<div className="flex flex-col gap-2">
+				<DatePicker2<FormData2>
+					control={control}
+					name="date"
+					required
+				/>
+				<TimePicker2<FormData2>
+					control={control}
+					name="time"
+					required
+					startTime="00:00"
+					endTime="00:00"
+					interval={30}
+				/>
+				<DateTimePicker2<FormData2>
+					control={control}
+					name="dateTime"
+					required
+					startTime="00:00"
+					endTime="00:00"
+					interval={30}
+				/>
+			</div>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button appearance="subtle" type="reset">
+					Reset
+				</Button>
+				<Button appearance="primary" type="submit">
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion datetime-picker-form2
 
 //#region datetime-picker-form-controlled
 function ControlledFormExample() {
@@ -2331,11 +2395,99 @@ function ControlledFormExample() {
 }
 //#endregion datetime-picker-form-controlled
 
+//#region datetime-picker-form-controlled2
+function ControlledFormExample2() {
+	const [selectedDate, setSelectedDate] = useState<DateType | null>(
+		"1999-12-23",
+	)
+	const [selectedTime, setSelectedTime] = useState<TimeType | null>("11:00")
+	const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(
+		DateUtils.dateFromString("1999-12-23T10:00+0100"),
+	)
+
+	const { handleSubmit, control, reset } = useForm<FormData>()
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log("form data:", data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<div className="flex flex-col gap-2">
+				<DateTimePicker2
+					control={control}
+					value={selectedDateTime}
+					onChange={setSelectedDateTime}
+					name="dateTime"
+				/>
+				<TimePicker2
+					control={control}
+					value={selectedTime}
+					onChange={setSelectedTime}
+					name="time"
+				/>
+				<DatePicker2
+					control={control}
+					value={selectedDate}
+					onChange={setSelectedDate}
+					name="date"
+				/>
+			</div>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button appearance="subtle" type="reset">
+					Reset
+				</Button>
+				<Button appearance="primary" type="submit">
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion datetime-picker-form-controlled2
+
 function DateTimePickerShowcase(props: ShowcaseProps) {
+	const [date, setDate] = useState<DateType | null>(null)
+	const [time, setTime] = useState<TimeType | null>(null)
+	const [dateTime, setDateTime] = useState<Date | null>(null)
+
 	//#region datetime-picker
 	const example = (
-		<div className="flex min-w-[300] gap-4">
-			<DateTimePicker />
+		<div className="flex gap-4">
+			<div>
+				<DatePicker onChange={setDate} value={date} />
+				<TimePicker onChange={setTime} value={time} />
+				<DateTimePicker
+					onChange={(val) => {
+						const d = val ? DateUtils.dateFromString(val) : null
+						setDateTime(d)
+					}}
+					value={
+						dateTime
+							? DateUtils.dateToJavaDateTimeString(dateTime)
+							: undefined
+					}
+				/>
+			</div>
+			<div>
+				<DatePicker2 onChange={setDate} value={date} />
+				<TimePicker2
+					onChange={setTime}
+					value={time}
+					startTime="00:00"
+					endTime="00:00"
+					interval={30}
+				/>
+				<DateTimePicker2
+					onChange={(d) => {
+						console.log("DateTimePicker2", d)
+						setDateTime(d)
+					}}
+					value={dateTime}
+				/>
+			</div>
 		</div>
 	)
 	//#endregion datetime-picker
@@ -2362,9 +2514,19 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					sourceCodeExampleId: "datetime-picker-form",
 				},
 				{
+					title: "Form Uncontrolled 2",
+					example: <FormExample2 />,
+					sourceCodeExampleId: "datetime-picker-form2",
+				},
+				{
 					title: "Form Controlled",
 					example: <ControlledFormExample />,
 					sourceCodeExampleId: "datetime-picker-form-controlled",
+				},
+				{
+					title: "Form Controlled 2",
+					example: <ControlledFormExample2 />,
+					sourceCodeExampleId: "datetime-picker-form-controlled2",
 				},
 			]}
 		/>
@@ -3792,11 +3954,19 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import TextField from "@atlaskit/textfield"
-import { Button, ButtonGroup, Input, Label } from "@linked-planet/ui-kit-ts"
+import {
+	Button,
+	ButtonGroup,
+	IconSizeHelper,
+	Input,
+	Label,
+} from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
+
+import ScheduleIcon from "@atlaskit/icon/glyph/schedule"
 
 //#region input-form-example
 type FormData = {
@@ -3861,6 +4031,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<TextField isInvalid value={"invalid"} />
 			<TextField isReadOnly value={"readonly"} />
 			<TextField type="number" defaultValue={1} />
+			<TextField type="number" defaultValue={1} appearance="subtle" />
 		</div>
 	)
 
@@ -3869,7 +4040,14 @@ export default function InputShowcase(props: ShowcaseProps) {
 		<div className="flex flex-col">
 			<Input minLength={3} helpMessage="This is a help message." />
 			<Input disabled />
-			<Input placeholder="Placeholder" />
+			<Input
+				placeholder="Placeholder"
+				iconAfter={
+					<IconSizeHelper>
+						<ScheduleIcon size="medium" label="calendar" />
+					</IconSizeHelper>
+				}
+			/>
 			<Input
 				invalid={true}
 				value={"invalid"}
@@ -3883,6 +4061,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			/>
 			<Input readOnly value={"readonly"} />
 			<Input type="number" defaultValue={1} />
+			<Input type="number" defaultValue={1} appearance="subtle" />
 		</div>
 	)
 	//#endregion input
@@ -5548,7 +5727,7 @@ import {
 	PageLayout,
 } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function PageLayoutExample() {
@@ -5562,33 +5741,35 @@ function PageLayoutExample() {
 			<PageLayout.Page>
 				<PageLayout.PageHeader>
 					<PageLayout.PageHeaderTitle
-						titleMenu={[
-							<div key="0">Menu Item 1</div>,
-							<div key="1">Menu Item 2</div>,
-							<Dropdown.SubMenu
-								key="sub"
-								trigger="submenu"
-								chevronSide="left"
-							>
-								<Dropdown.Item>Submenu Entry</Dropdown.Item>
-							</Dropdown.SubMenu>,
-							<Dropdown.ItemGroup key="4" hasSeparator>
-								<Dropdown.ItemCheckbox>
-									Check 1
-								</Dropdown.ItemCheckbox>
-								<Dropdown.ItemCheckbox>
-									Check 2
-								</Dropdown.ItemCheckbox>
-							</Dropdown.ItemGroup>,
-							<Dropdown.ItemRadioGroup key="5" hasSeparator>
-								<Dropdown.ItemRadio value="r1">
-									Radio 1
-								</Dropdown.ItemRadio>
-								<Dropdown.ItemRadio value="r2">
-									Radio 2
-								</Dropdown.ItemRadio>
-							</Dropdown.ItemRadioGroup>,
-						]}
+						titleMenu={
+							<Dropdown.Menu>
+								<Dropdown.Item>Menu Item 1</Dropdown.Item>
+								<Dropdown.Item>Menu Item 2</Dropdown.Item>
+								<Dropdown.SubMenu
+									trigger="submenu"
+									chevronSide="left"
+								>
+									<Dropdown.Item>Submenu Entry</Dropdown.Item>
+								</Dropdown.SubMenu>
+								<Dropdown.ItemGroup key="4" hasSeparator>
+									<Dropdown.ItemCheckbox>
+										Check 1
+									</Dropdown.ItemCheckbox>
+									<Dropdown.ItemCheckbox>
+										Check 2
+									</Dropdown.ItemCheckbox>
+								</Dropdown.ItemGroup>
+								,
+								<Dropdown.ItemRadioGroup key="5" hasSeparator>
+									<Dropdown.ItemRadio value="r1">
+										Radio 1
+									</Dropdown.ItemRadio>
+									<Dropdown.ItemRadio value="r2">
+										Radio 2
+									</Dropdown.ItemRadio>
+								</Dropdown.ItemRadioGroup>
+							</Dropdown.Menu>
+						}
 					>
 						Page Header Title
 					</PageLayout.PageHeaderTitle>
@@ -5916,8 +6097,8 @@ import {
 	Button,
 	ButtonGroup,
 	Label,
-	type OptionGroupType,
 	Select,
+	type OptionGroupType,
 } from "@linked-planet/ui-kit-ts"
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -6147,7 +6328,7 @@ function SelectShowcase(props: ShowcaseProps) {
 				]}
 				/** adding some custom classnames to the styling */
 				classNames={{
-					control: (provided) => "bg-warning",
+					control: () => "bg-warning",
 				}}
 			/>
 
@@ -6503,7 +6684,7 @@ export default TableTreeShowcase
 
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKTabs, {
 	Tab as AKTab,
@@ -6536,9 +6717,69 @@ function AutomaticTabsValue() {
 	//#endregion tabs_automatic_value
 }
 
+function TabsSides() {
+	//#region tabs_side
+	return (
+		<div className="flex flex-wrap gap-6">
+			<Tabs>
+				<TabList side="top">
+					<Tab>Tab 1</Tab>
+					<Tab>Tab 2</Tab>
+				</TabList>
+				<TabPanel>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+
+			<Tabs>
+				<TabList side="left">
+					<Tab>Tab 1</Tab>
+					<Tab>Tab 2</Tab>
+				</TabList>
+				<TabPanel>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+
+			<Tabs>
+				<TabList side="right">
+					<Tab>Tab 1</Tab>
+					<Tab>Tab 2</Tab>
+				</TabList>
+				<TabPanel>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+
+			<Tabs>
+				<TabList side="bottom">
+					<Tab>Tab 1</Tab>
+					<Tab>Tab 2</Tab>
+				</TabList>
+				<TabPanel>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+		</div>
+	)
+	//#endregion tabs_side
+}
+
 function ExampleLabels() {
 	const akExample = (
-		<div style={{ minWidth: 300, border: "2px solid orange" }}>
+		<div>
 			{
 				<AKTabs id="tab-example" defaultSelected={1}>
 					<AKTabList>
@@ -6560,7 +6801,7 @@ function ExampleLabels() {
 
 	//#region tabs_labels
 	const lpExample = (
-		<div style={{ minWidth: 300, border: "2px solid orange" }}>
+		<div>
 			<Tabs defaultSelected="tab2">
 				<TabList>
 					<Tab label="Tab 1" />
@@ -6578,10 +6819,11 @@ function ExampleLabels() {
 	//#endregion tabs_labels
 
 	return (
-		<>
+		<div className="bg-surface flex w-full flex-col gap-4">
 			{akExample}
+			<hr />
 			{lpExample}
-		</>
+		</div>
 	)
 }
 
@@ -6592,7 +6834,7 @@ function ExampleControlled() {
 		<div style={{ minWidth: 300, border: "2px solid orange" }}>
 			<Tabs
 				selected={selected}
-				onChange={(t: string) => setSelected(parseInt(t))}
+				onChange={(t: string) => setSelected(Number.parseInt(t))}
 			>
 				<TabList>
 					<Tab label={0}>
@@ -6667,7 +6909,7 @@ function TabsShowcase(props: ShowcaseProps) {
 				</p>
 			}
 			examples={[
-				{
+				/*{
 					title: "Example",
 					example: <AutomaticTabsValue />,
 					sourceCodeExampleId: "tabs_automatic_value",
@@ -6681,6 +6923,11 @@ function TabsShowcase(props: ShowcaseProps) {
 					title: "Example Controlled",
 					example: <ExampleControlled />,
 					sourceCodeExampleId: "tabscontrolled",
+				},*/
+				{
+					title: "Vertical",
+					example: <TabsSides />,
+					sourceCodeExampleId: "tabs_side",
 				},
 			]}
 		/>

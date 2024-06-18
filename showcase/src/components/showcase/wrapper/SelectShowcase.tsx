@@ -3,8 +3,8 @@ import {
 	Button,
 	ButtonGroup,
 	Label,
-	type OptionGroupType,
 	Select,
+	type OptionGroupType,
 } from "@linked-planet/ui-kit-ts"
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -234,7 +234,7 @@ function SelectShowcase(props: ShowcaseProps) {
 				]}
 				/** adding some custom classnames to the styling */
 				classNames={{
-					control: (provided) => "bg-warning",
+					control: () => "bg-warning",
 				}}
 			/>
 

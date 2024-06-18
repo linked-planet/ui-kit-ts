@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKTabs, {
 	Tab as AKTab,
@@ -33,9 +33,69 @@ function AutomaticTabsValue() {
 	//#endregion tabs_automatic_value
 }
 
+function TabsSides() {
+	//#region tabs_side
+	return (
+		<div className="flex flex-wrap gap-6">
+			<Tabs>
+				<TabList side="top">
+					<Tab>Tab 1</Tab>
+					<Tab>Tab 2</Tab>
+				</TabList>
+				<TabPanel>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+
+			<Tabs>
+				<TabList side="left">
+					<Tab>Tab 1</Tab>
+					<Tab>Tab 2</Tab>
+				</TabList>
+				<TabPanel>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+
+			<Tabs>
+				<TabList side="right">
+					<Tab>Tab 1</Tab>
+					<Tab>Tab 2</Tab>
+				</TabList>
+				<TabPanel>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+
+			<Tabs>
+				<TabList side="bottom">
+					<Tab>Tab 1</Tab>
+					<Tab>Tab 2</Tab>
+				</TabList>
+				<TabPanel>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+		</div>
+	)
+	//#endregion tabs_side
+}
+
 function ExampleLabels() {
 	const akExample = (
-		<div style={{ minWidth: 300, border: "2px solid orange" }}>
+		<div>
 			{
 				<AKTabs id="tab-example" defaultSelected={1}>
 					<AKTabList>
@@ -57,7 +117,7 @@ function ExampleLabels() {
 
 	//#region tabs_labels
 	const lpExample = (
-		<div style={{ minWidth: 300, border: "2px solid orange" }}>
+		<div>
 			<Tabs defaultSelected="tab2">
 				<TabList>
 					<Tab label="Tab 1" />
@@ -75,10 +135,11 @@ function ExampleLabels() {
 	//#endregion tabs_labels
 
 	return (
-		<>
+		<div className="bg-surface flex w-full flex-col gap-4">
 			{akExample}
+			<hr />
 			{lpExample}
-		</>
+		</div>
 	)
 }
 
@@ -89,7 +150,7 @@ function ExampleControlled() {
 		<div style={{ minWidth: 300, border: "2px solid orange" }}>
 			<Tabs
 				selected={selected}
-				onChange={(t: string) => setSelected(parseInt(t))}
+				onChange={(t: string) => setSelected(Number.parseInt(t))}
 			>
 				<TabList>
 					<Tab label={0}>
@@ -178,6 +239,11 @@ function TabsShowcase(props: ShowcaseProps) {
 					title: "Example Controlled",
 					example: <ExampleControlled />,
 					sourceCodeExampleId: "tabscontrolled",
+				},
+				{
+					title: "Vertical",
+					example: <TabsSides />,
+					sourceCodeExampleId: "tabs_side",
 				},
 			]}
 		/>

@@ -30,7 +30,7 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 			<Button
 				ref={ref}
 				className={twMerge(
-					"flex items-center group justify-between",
+					"group flex items-center justify-between",
 					className,
 				)}
 				style={{
@@ -40,14 +40,14 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 			>
 				{children}
 				<IconSizeHelper
-					className={`h-full hidden items-center justify-center w-6 ${
+					className={`hidden h-full w-6 items-center justify-center ${
 						hideChevron ? "" : "group-data-[state=open]:flex"
 					}`}
 				>
 					<ChevronUpIcon label="" size="medium" />
 				</IconSizeHelper>
 				<IconSizeHelper
-					className={`h-full items-center justify-center hidden w-6 ${
+					className={`hidden h-full w-6 items-center justify-center ${
 						hideChevron ? "" : "group-data-[state=closed]:flex"
 					}`}
 				>
@@ -60,7 +60,10 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 
 export type PopoverProps = RPo.PopoverProps & {
 	usePortal?: boolean
+	/* trigger replaces the content of the trigger button */
 	trigger?: React.ReactNode
+	/* triggerComponent replaces the the trigger button component */
+	triggerComponent?: React.ReactNode
 	closer?: React.ReactNode
 	closerClassName?: string
 	closerStyle?: React.CSSProperties
@@ -70,6 +73,8 @@ export type PopoverProps = RPo.PopoverProps & {
 	hideChevron?: boolean
 	contentClassName?: string
 	contentStyle?: React.CSSProperties
+	/* when the triggerAsChild is set to true (default) it gets getClick injected to handle the opening or closing of the popover */
+	triggerAsChild?: boolean
 } & ButtonProps &
 	Pick<
 		RPo.PopoverContentProps,
@@ -88,12 +93,13 @@ export type PopoverProps = RPo.PopoverProps & {
 
 // this is a copy of the dropdown menu root
 function Root({
-	usePortal = false,
+	usePortal = true,
 	open,
 	defaultOpen,
 	modal,
 	children,
 	trigger,
+	triggerComponent,
 	closer,
 	closerClassName,
 	contentClassName,
@@ -106,10 +112,11 @@ function Root({
 	onOpenChange,
 	onPointerEnter,
 	onPointerLeave,
-	align,
+	align = "start",
 	side,
-	alignOffset,
+	alignOffset = 2,
 	sideOffset,
+	triggerAsChild = true,
 	...props
 }: PopoverProps) {
 	const contentRef = useRef<HTMLDivElement>(null)
@@ -140,6 +147,7 @@ function Root({
 				align={align}
 				style={{
 					maxHeight: "var(--radix-popover-content-available-height)",
+					minWidth: "var(--radix-popover-trigger-width)",
 					transformOrigin:
 						"var(--radix-popover-content-transform-origin)",
 					...contentStyle,
@@ -150,7 +158,7 @@ function Root({
 				sideOffset={sideOffset}
 			>
 				{_closer && (
-					<div className="w-full flex justify-end">{_closer}</div>
+					<div className="flex w-full justify-end">{_closer}</div>
 				)}
 				{children}
 			</RPo.Content>
@@ -169,18 +177,16 @@ function Root({
 		],
 	)
 
-	const _trigger = useMemo(() => {
-		return (
-			<Trigger
-				disabled={disabled}
-				aria-disabled={disabled}
-				hideChevron={hideChevron}
-				{...props}
-			>
-				{trigger ?? "trigger"}
-			</Trigger>
-		)
-	}, [trigger, disabled, props, hideChevron])
+	const _trigger = triggerComponent ?? (
+		<Trigger
+			disabled={disabled}
+			aria-disabled={disabled}
+			hideChevron={hideChevron}
+			{...props}
+		>
+			{trigger ?? "trigger"}
+		</Trigger>
+	)
 
 	return (
 		<RPo.Root
@@ -190,7 +196,7 @@ function Root({
 			onOpenChange={onOpenChange}
 			data-testid={testId}
 		>
-			<RPo.Trigger asChild>{_trigger}</RPo.Trigger>
+			<RPo.Trigger asChild={triggerAsChild}>{_trigger}</RPo.Trigger>
 			{usePortal ? (
 				<RPo.Portal container={getPortal(portalDivId)}>
 					{content}

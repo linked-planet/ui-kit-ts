@@ -14,6 +14,8 @@ type CollapsibleProps = {
 	triggerStyle?: React.CSSProperties
 	headerContainerStyle?: React.CSSProperties
 	headerContainerClassName?: string
+	contentClassName?: string
+	contentStyle?: React.CSSProperties
 	className?: string
 	style?: React.CSSProperties
 	children: React.ReactNode
@@ -34,6 +36,8 @@ export const Collapsible = forwardRef(
 			triggerStyle,
 			headerContainerStyle,
 			headerContainerClassName,
+			contentClassName,
+			contentStyle,
 			className,
 			style,
 			children,
@@ -116,7 +120,12 @@ export const Collapsible = forwardRef(
 					</div>
 				</CollapsibleRUI.Trigger>
 
-				<CollapsibleRUI.Content>{children}</CollapsibleRUI.Content>
+				<CollapsibleRUI.Content
+					className={contentClassName}
+					style={contentStyle}
+				>
+					{children}
+				</CollapsibleRUI.Content>
 			</CollapsibleRUI.Root>
 		)
 	},

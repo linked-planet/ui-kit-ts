@@ -391,7 +391,7 @@ function SubMenu({
 			<RDd.Portal>
 				<RDd.SubContent
 					className={twMerge(
-						"bg-surface-overlay shadow-overlay overflow-y-auto overflow-x-visible z-50 rounded",
+						"bg-surface-overlay shadow-overlay z-50 overflow-y-auto overflow-x-visible rounded",
 						subClassName,
 					)}
 					style={subStyle}
@@ -410,12 +410,17 @@ export type DropdownMenuProps = {
 	defaultOpen?: boolean
 	disabled?: boolean
 	onOpenChange?: (open: boolean) => void
-	trigger: React.ReactNode
+	trigger?: React.ReactNode
+	triggerComponent?: React.ReactNode
 	children: React.ReactNode
 	usePortal?: boolean
 	testId?: string
 	hideChevron?: boolean
 	modal?: boolean
+	contentClassName?: string
+	contentStyle?: React.CSSProperties
+	/* when the triggerAsChild is set to true (default) it gets getClick injected to handle the opening or closing of the dropdown */
+	triggerAsChild?: boolean
 } & ButtonProps &
 	Pick<
 		RDd.DropdownMenuContentProps,
@@ -429,6 +434,7 @@ export type DropdownMenuProps = {
 		| "onFocusOutside"
 		| "onMouseEnter"
 		| "onMouseLeave"
+		| "sideOffset"
 	>
 
 type TriggerProps = RDd.DropdownMenuTriggerProps &
@@ -450,7 +456,7 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 			<Button
 				ref={ref}
 				className={twMerge(
-					"flex items-center group justify-between",
+					"group flex items-center justify-between",
 					className,
 				)}
 				style={{
@@ -460,14 +466,14 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 			>
 				{children}
 				<IconSizeHelper
-					className={`h-full hidden items-center justify-center w-6 ${
+					className={`hidden h-full w-6 items-center justify-center ${
 						hideChevron ? "" : "group-data-[state=open]:flex"
 					}`}
 				>
 					<ChevronUpIcon label="" size="medium" />
 				</IconSizeHelper>
 				<IconSizeHelper
-					className={`h-full hidden items-center justify-center w-6 ${
+					className={`hidden h-full w-6 items-center justify-center ${
 						hideChevron ? "" : "group-data-[state=closed]:flex"
 					}`}
 				>
@@ -490,15 +496,20 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 			defaultOpen,
 			onOpenChange,
 			disabled = false,
-			trigger,
+			trigger = "trigger",
+			triggerComponent,
 			children,
 			usePortal = true,
 			onPointerEnter,
 			onPointerLeave,
 			alignOffset,
+			sideOffset = 2,
 			hideChevron,
 			testId,
 			modal = true,
+			contentClassName,
+			contentStyle,
+			triggerAsChild = true,
 			...props
 		}: DropdownMenuProps,
 		ref: ForwardedRef<HTMLButtonElement>,
@@ -509,7 +520,7 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 			() => (
 				<RDd.Content
 					ref={contentRef}
-					className={overlayBaseStyle}
+					className={twMerge(overlayBaseStyle, contentClassName)}
 					side={side}
 					align={align}
 					onFocusOutside={() => {
@@ -518,12 +529,15 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 					style={{
 						maxHeight:
 							"var(--radix-dropdown-menu-content-available-height)",
+						minWidth: "var(--radix-dropdown-menu-trigger-width)",
 						transformOrigin:
 							"var(--radix-dropdown-menu-content-transform-origin)",
+						...contentStyle,
 					}}
 					onPointerEnter={onPointerEnter}
 					onPointerLeave={onPointerLeave}
 					alignOffset={alignOffset}
+					sideOffset={sideOffset}
 				>
 					{children}
 				</RDd.Content>
@@ -535,10 +549,14 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 				onPointerEnter,
 				onPointerLeave,
 				alignOffset,
+				sideOffset,
+				contentClassName,
+				contentStyle,
 			],
 		)
 
 		const _trigger = useMemo(() => {
+			if (triggerComponent) return triggerComponent
 			return (
 				<Trigger
 					disabled={disabled}
@@ -550,19 +568,17 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 					{trigger ?? "trigger"}
 				</Trigger>
 			)
-		}, [trigger, disabled, props, hideChevron, ref])
+		}, [trigger, triggerComponent, disabled, props, hideChevron, ref])
 
 		return (
 			<RDd.Root
 				open={open}
 				defaultOpen={defaultOpen}
-				onOpenChange={(opened) => {
-					onOpenChange?.(opened)
-				}}
+				onOpenChange={onOpenChange}
 				data-testid={testId}
 				modal={modal}
 			>
-				<RDd.Trigger asChild>{_trigger}</RDd.Trigger>
+				<RDd.Trigger asChild={triggerAsChild}>{_trigger}</RDd.Trigger>
 				{usePortal ? (
 					<RDd.Portal container={getPortal(portalDivId)}>
 						{content}

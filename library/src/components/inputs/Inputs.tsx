@@ -10,6 +10,7 @@ import React, {
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./SlidingErrorMessage"
+import { inputBaseStyle } from "../styleHelper"
 
 //#region Label
 const labelNormalStyles =
@@ -36,41 +37,67 @@ export function Label({
 
 //#region Input
 const inputNormalStyles =
-	"p-1 w-full box-border rounded border-2 border-solid border-input-border placeholder:text-text-subtlest placeholder:opacity-100 bg-input ease-in-out op transition duration-200"
-const inputFocusStyles =
-	"focus:border-input-border-focused focus:bg-input-active outline-none hover:bg-input-hovered"
-const inputDisabledStyles =
-	"disabled:bg-disabled disabled:text-disabled-text disabled:cursor-not-allowed disabled:border-transparent"
-const invalidInputStyles = "aria-invalid:border-danger-border"
+	"w-full text-left rounded placeholder:text-text-subtlest placeholder:opacity-100 outline-none bg-transparent"
 
-const inputStyles = twJoin(
-	inputNormalStyles,
-	inputFocusStyles,
-	inputDisabledStyles,
-	invalidInputStyles,
-)
+const inputDisabledStyles =
+	"disabled:text-disabled-text disabled:cursor-not-allowed"
+
+const invalidInputStyles =
+	"data-[invalid=true]:before:border-danger-border data-[invalid=true]:before:border-2"
+
+const inputStyles = twJoin(inputNormalStyles, inputDisabledStyles, "p-1 m-0")
+
+export type InputProps = ComponentPropsWithoutRef<"input"> & {
+	helpMessage?: ReactNode
+	errorMessage?: ReactNode
+	/* inputClassName targets the input element */
+	inputClassName?: string
+	inputStyle?: CSSProperties
+	/* containerClassName targets the outer container which includes the error message */
+	containerClassName?: string
+	containerStyle?: CSSProperties
+	/* className targets the div around the input and the icon */
+	className?: string
+	style?: CSSProperties
+	/* helpMessageClassName targets the help message container p element */
+	helpMessageClassName?: string
+	helpMessageStyle?: CSSProperties
+	/* errorMessageClassName targets the error message */
+	errorMessageClassName?: string
+	errorMessageStyle?: CSSProperties
+	invalid?: boolean
+	testId?: string
+	iconAfter?: ReactNode
+	active?: boolean
+	onClick?: () => void
+	appearance?: "default" | "subtle"
+}
 
 const Input = forwardRef(
 	(
 		{
+			containerClassName,
+			containerStyle,
 			className,
+			style,
 			inputClassName,
+			inputStyle,
+			helpMessageClassName,
+			helpMessageStyle,
+			errorMessageClassName,
+			errorMessageStyle,
 			helpMessage,
 			errorMessage,
 			invalid = false,
 			"aria-invalid": ariaInvalid = false,
-			style,
-			inputStyle,
+			active = false,
 			testId,
+			iconAfter,
+			disabled,
+			appearance = "default",
+			onClick,
 			...props
-		}: ComponentPropsWithoutRef<"input"> & {
-			helpMessage?: ReactNode
-			errorMessage?: ReactNode
-			inputClassName?: string
-			invalid?: boolean
-			inputStyle?: CSSProperties
-			testId?: string
-		},
+		}: InputProps,
 		ref: ForwardedRef<HTMLInputElement>,
 	) => {
 		const internalRef = useRef<HTMLInputElement>(null)
@@ -109,17 +136,55 @@ const Input = forwardRef(
 		}, [])
 
 		return (
-			<div className={className} style={style}>
-				<input
-					ref={internalRef}
-					className={twMerge(inputStyles, inputClassName)}
-					style={inputStyle}
-					aria-invalid={ariaInvalid || invalid}
-					data-testid={testId}
-					{...props}
-				/>
+			<div className={containerClassName} style={containerStyle}>
+				<div
+					className={twJoin(
+						"inline-flex",
+						inputBaseStyle,
+						appearance !== "subtle"
+							? "border-input-border bg-input"
+							: "border-transparent bg-transparent",
+						"data-[active=true]:bg-input-active hover:data-[active=true]:bg-input-active",
+						"hover:bg-input-hovered hover:focus-within:bg-input-active focus-within:bg-input-active",
+						"data-[disabled=true]:bg-disabled data-[disabled=true]:cursor-not-allowed data-[disabled=true]:border-transparent",
+						invalidInputStyles,
+						className,
+					)}
+					data-disabled={disabled}
+					data-invalid={invalid}
+					data-active={active}
+					onClick={onClick}
+					onKeyUp={(e) => {
+						if (e.key === "Enter") {
+							onClick?.()
+						}
+					}}
+					style={style}
+				>
+					<input
+						ref={internalRef}
+						className={twMerge(
+							inputNormalStyles,
+							inputDisabledStyles,
+							"m-0 px-1",
+							inputClassName,
+						)}
+						style={inputStyle}
+						aria-invalid={ariaInvalid || invalid}
+						data-testid={testId}
+						disabled={disabled}
+						{...props}
+					/>
+					{iconAfter && iconAfter}
+				</div>
 				{helpMessage && (
-					<p className="text-text-subtle text-2xs m-0 p-0">
+					<p
+						className={twMerge(
+							"text-text-subtle text-2xs m-0 p-0 pt-1",
+							helpMessageClassName,
+						)}
+						style={helpMessageStyle}
+					>
 						{helpMessage}
 					</p>
 				)}
@@ -129,6 +194,8 @@ const Input = forwardRef(
 						ref={errorRef}
 						invalid={invalid}
 						aria-invalid={ariaInvalid}
+						className={errorMessageClassName}
+						style={errorMessageStyle}
 					>
 						{errorMessage}
 					</SlidingErrorMessage>

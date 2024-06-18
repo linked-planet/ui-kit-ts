@@ -1,8 +1,5 @@
-import MenuIcon from "@atlaskit/icon/glyph/menu"
-import React, { useMemo } from "react"
+import type React from "react"
 import { twMerge } from "tailwind-merge"
-import { Button } from "../components/Button"
-import { Dropdown } from "../components/DropdownMenu"
 
 const Page = ({
 	children,
@@ -69,45 +66,9 @@ const PageHeaderTitle = ({
 	id?: string
 	className?: string
 	style?: React.CSSProperties
-	titleMenu?: React.ReactNodeArray
+	titleMenu?: React.ReactNode
 	testId?: string
 }) => {
-	const headerMenu = useMemo(() => {
-		if (!titleMenu || titleMenu.length === 0) return undefined
-		if (titleMenu.length === 1) return titleMenu[0]
-		const dropdownItems = React.Children.map(titleMenu, (it) => {
-			if (React.isValidElement(it)) {
-				if (
-					it.type === Dropdown.Item ||
-					it.type === Dropdown.ItemGroup ||
-					it.type === Dropdown.ItemCheckbox ||
-					it.type === Dropdown.ItemRadio ||
-					it.type === Dropdown.ItemRadioGroup ||
-					it.type === Dropdown.SubMenu
-				) {
-					return it
-				}
-			}
-			return <Dropdown.Item>{it}</Dropdown.Item>
-		})
-
-		return (
-			<Dropdown.Menu
-				trigger={({ opened }: { opened: boolean }) => (
-					<Button
-						appearance={opened ? "primary" : "subtle"}
-						className="mr-2 p-0"
-					>
-						<MenuIcon size="large" label="" />
-					</Button>
-				)}
-				align="end"
-			>
-				{dropdownItems}
-			</Dropdown.Menu>
-		)
-	}, [titleMenu])
-
 	return (
 		<div
 			className={twMerge("mb-2 flex items-center px-8", className)}
@@ -116,7 +77,7 @@ const PageHeaderTitle = ({
 			data-testid={testId}
 		>
 			{typeof children === "string" ? <h1>{children}</h1> : children}
-			{titleMenu && <div className="ml-auto flex-none">{headerMenu}</div>}
+			{titleMenu && <div className="ml-auto flex-none">{titleMenu}</div>}
 		</div>
 	)
 }

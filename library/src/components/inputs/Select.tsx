@@ -1,6 +1,12 @@
-import React from "react"
-import { type CSSProperties, useImperativeHandle, useMemo } from "react"
-import { Controller } from "react-hook-form"
+import type React from "react"
+import {
+	type CSSProperties,
+	useImperativeHandle,
+	useMemo,
+	useRef,
+	type ReactNode,
+} from "react"
+import { useController } from "react-hook-form"
 import type { Control, FieldValues, Path } from "react-hook-form"
 import {
 	type ActionMeta,
@@ -25,10 +31,11 @@ import ReactSelectCreatable, {
 import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./SlidingErrorMessage"
 import { IconSizeHelper } from "../IconSizeHelper"
+import { inputBaseStyle } from "../styleHelper"
 
 //#region styles
-const controlStyles =
-	"border-input-border border-solid border-2 box-border rounded ease-in-out transition duration-300"
+const controlStyles = inputBaseStyle
+//"border-input-border border-solid border box-border rounded ease-in-out transition duration-300 before:pointer-events-none before:z-10 before:content-[''] before:absolute before:-inset-0.5 before:box-border focus-within:before:border-2 focus-within:before:border-input-border-focused before:rounded"
 
 const menuStyles =
 	"bg-surface min-w-min z-10 shadow-overlay rounded overflow-hidden"
@@ -36,7 +43,7 @@ const menuStyles =
 const optionStyles =
 	"py-2 px-3 border-l-2 border-l-transparent border-transparent border-solid"
 
-export type OptionType<ValueType> = {
+type OptionType<ValueType> = {
 	label: string
 	value: ValueType
 	isDisabled?: boolean // needs to be isDisabled because of react-select
@@ -46,62 +53,69 @@ export type OptionType<ValueType> = {
 export type OptionGroupType<ValueType> = GroupBase<OptionType<ValueType>>
 
 export type SelectClassNamesConfig<
-	V,
-	Option extends OptionType<V>,
+	ValueType,
 	IsMulti extends boolean,
-	GroupOptionType extends GroupBase<Option>,
-> = ClassNamesConfig<Option, IsMulti, GroupOptionType>
+> = ClassNamesConfig<OptionType<ValueType>, IsMulti, OptionGroupType<ValueType>>
 
 const portalDivId = "uikts-select" as const
 
-function useClassNamesConfig<
-	V,
-	Option extends OptionType<V> = OptionType<V>,
-	IsMulti extends boolean = boolean,
-	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
->(
+function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 	classNamesConfig:
-		| ClassNamesConfig<Option, IsMulti, GroupOptionType>
+		| ClassNamesConfig<
+				OptionType<ValueType>,
+				IsMulti,
+				OptionGroupType<ValueType>
+		  >
 		| undefined,
-): ClassNamesConfig<Option, IsMulti, GroupOptionType> {
+	className?: string,
+	invalid?: boolean,
+): ClassNamesConfig<
+	OptionType<ValueType>,
+	IsMulti,
+	OptionGroupType<ValueType>
+> {
 	return useMemo(
 		() =>
 			({
 				...classNamesConfig,
 				control: (provided) =>
 					twJoin(
-						"px-2",
+						"px-2 flex items-center",
 						controlStyles,
 						provided.isDisabled
 							? "bg-disabled border-transparent cursor-not-allowed"
 							: undefined,
+						invalid
+							? "border-danger-border before:border-danger-border before:border-2 focus-within:before:border-danger-border"
+							: undefined,
 						provided.isFocused && !provided.isDisabled
-							? "bg-input-active hover:bg-input-active border-input-border-focused"
+							? `bg-input-active hover:bg-input-active ${invalid ? "border-danger-border" : "border-input-border-focused"}`
 							: undefined,
 						!provided.isFocused && !provided.isDisabled
 							? "bg-input hover:bg-input-hovered"
 							: undefined,
+						className,
 						classNamesConfig?.control?.(provided),
 					),
 				menu: (provided) =>
 					twMerge(menuStyles, classNamesConfig?.menu?.(provided)),
 				clearIndicator: (provided) =>
 					twMerge(
-						"w-4 h-4 overflow-hidden flex items-center justify-center cursor-pointer text-text-subtlest hover:text-text self-start mt-2",
+						"w-4 cursor-pointer text-text-subtlest hover:text-text",
 						classNamesConfig?.clearIndicator?.(provided),
 					),
 				dropdownIndicator: (provided) =>
 					twMerge(
-						`w-4 h-4 ml-0.5 overflow-hidden flex items-center justify-center cursor-pointer ${
+						`w-4 ml-0.5 overflow-hidden flex items-center justify-center cursor-pointer ${
 							provided.isDisabled
 								? "text-disabled-text"
 								: "text-text-subtlest  hover:text-text"
-						} self-start mt-2`,
+						}`,
 						classNamesConfig?.dropdownIndicator?.(provided),
 					),
 				indicatorsContainer: (provided) =>
 					twMerge(
-						"flex items-center h-full",
+						"content-center",
 						classNamesConfig?.indicatorsContainer?.(provided),
 					),
 				indicatorSeparator: (provided) =>
@@ -167,13 +181,8 @@ function useClassNamesConfig<
 					"overflow-visible",
 					classNamesConfig?.valueContainer?.(provided),
 				),*/
-			}) satisfies SelectClassNamesConfig<
-				V,
-				Option,
-				IsMulti,
-				GroupOptionType
-			>,
-		[classNamesConfig],
+			}) satisfies SelectClassNamesConfig<ValueType, IsMulti>,
+		[classNamesConfig, className, invalid],
 	)
 }
 
@@ -182,8 +191,8 @@ const customStyles = {
 	control: (provided: CSSObjectWithLabel) => ({
 		...provided,
 		cursor: "pointer",
-		minHeight: "2.2rem",
-		borderWidth: "2px",
+		minHeight: "2rem",
+		//borderWidth: "2px",
 		flexWrap: "nowrap" as const,
 		//height: "1.83rem",
 	}),
@@ -194,88 +203,115 @@ const customStyles = {
 /**
  * Simply a wrapper around react-select that provides some default styles and props.
  */
-type InnerProps<
-	ValueType,
-	Option extends OptionType<ValueType> = OptionType<ValueType>,
-	IsMulti extends boolean = boolean,
-	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
-> = CreatableProps<Option, IsMulti, GroupOptionType> & {
+type InnerProps<ValueType, IsMulti extends boolean = boolean> = CreatableProps<
+	OptionType<ValueType>,
+	IsMulti,
+	OptionGroupType<ValueType>
+> & {
 	isCreateable?: boolean
 	testId?: string
 	innerRef?: React.Ref<SelectInstance<
-		Option,
+		OptionType<ValueType>,
 		IsMulti,
-		GroupOptionType
+		OptionGroupType<ValueType>
 	> | null>
-	clearValuesLabel?: string
-	removeValueLabel?: string
+	clearValuesButtonLabel?: string
+	removeValueButtonLabel?: string
 	dropdownLabel?: (isOpen: boolean) => string
+	onClearButtonClick?: () => void
+	invalid?: boolean
+	containerClassName?: string
 }
 
-const SelectInner = <
-	ValueType,
-	Option extends OptionType<ValueType> = OptionType<ValueType>,
-	IsMulti extends boolean = boolean,
-	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
->({
+const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 	isCreateable,
 	formatCreateLabel,
 	testId,
 	innerRef,
 	classNames,
-	clearValuesLabel,
-	removeValueLabel,
+	className,
+	containerClassName,
+	style,
+	clearValuesButtonLabel,
+	removeValueButtonLabel,
 	dropdownLabel,
 	inputId,
+	invalid,
+	components: _components,
+	onClearButtonClick,
 	...props
-}: InnerProps<ValueType, Option, IsMulti, GroupOptionType>) => {
-	const classNamesConfig = useClassNamesConfig<
-		ValueType,
-		Option,
-		IsMulti,
-		GroupOptionType
-	>(classNames)
+}: InnerProps<ValueType, IsMulti>) => {
+	const classNamesConfig = useClassNamesConfig<ValueType, IsMulti>(
+		classNames,
+		className,
+		invalid,
+	)
 
 	// get the browsers locale
 	const locale = navigator.language
 
 	const locRef =
-		React.useRef<SelectInstance<Option, IsMulti, GroupOptionType>>(null)
+		useRef<
+			SelectInstance<
+				OptionType<ValueType>,
+				IsMulti,
+				OptionGroupType<ValueType>
+			>
+		>(null)
 
 	// required to have access to focus()
 	useImperativeHandle(innerRef, () => locRef.current, [])
 
 	const components = useMemo(() => {
-		const ret: SelectComponentsConfig<Option, IsMulti, GroupOptionType> = {
-			ClearIndicator: (_props) => (
-				<div
-					{..._props.innerProps}
-					role="button"
-					className={_props.getClassNames("clearIndicator", _props)}
-					style={
-						_props.getStyles("clearIndicator", _props) as
-							| CSSProperties
-							| undefined
-					}
-					title={clearValuesLabel ?? "clear all selected"}
-					aria-label={clearValuesLabel ?? "clear all selected"}
-					aria-hidden="false"
-					tabIndex={0}
-					onKeyUp={(e) => {
-						if (e.key === "Enter") {
-							_props.clearValue()
+		const ret: SelectComponentsConfig<
+			OptionType<ValueType>,
+			IsMulti,
+			OptionGroupType<ValueType>
+		> = {
+			ClearIndicator: (_props) => {
+				return (
+					<div
+						{..._props.innerProps}
+						role="button"
+						className={_props.getClassNames(
+							"clearIndicator",
+							_props,
+						)}
+						style={
+							_props.getStyles("clearIndicator", _props) as
+								| CSSProperties
+								| undefined
 						}
-					}}
-					data-action="clear_all_selected"
-				>
-					<IconSizeHelper>
-						<SelectClearIcon size="small" label="" />
-					</IconSizeHelper>
-				</div>
-			),
+						title={clearValuesButtonLabel ?? "clear all selected"}
+						aria-label={
+							clearValuesButtonLabel ?? "clear all selected"
+						}
+						aria-hidden="false"
+						tabIndex={0}
+						onKeyUp={(e) => {
+							if (e.key === "Enter") {
+								_props.clearValue()
+								onClearButtonClick?.()
+							}
+						}}
+						// onMouseDown is used, not onClick
+						onMouseDown={(e) => {
+							e.preventDefault()
+							e.stopPropagation()
+							_props.clearValue()
+							onClearButtonClick?.()
+						}}
+						data-action="clear_all_selected"
+					>
+						<IconSizeHelper>
+							<SelectClearIcon size="small" label="" />
+						</IconSizeHelper>
+					</div>
+				)
+			},
 
 			MultiValueRemove: (_props) => {
-				const title = `${removeValueLabel ?? "remove"} ${
+				const title = `${removeValueButtonLabel ?? "remove"} ${
 					_props.data.label
 				}`
 				return (
@@ -367,13 +403,24 @@ const SelectInner = <
 					</div>
 				)
 			},
+			..._components,
 		}
 		return ret
-	}, [clearValuesLabel, dropdownLabel, removeValueLabel])
+	}, [
+		clearValuesButtonLabel,
+		dropdownLabel,
+		removeValueButtonLabel,
+		onClearButtonClick,
+		_components,
+	])
 
 	if (isCreateable) {
 		return (
-			<ReactSelectCreatable<Option, IsMulti, GroupOptionType>
+			<ReactSelectCreatable<
+				OptionType<ValueType>,
+				IsMulti,
+				OptionGroupType<ValueType>
+			>
 				ref={locRef}
 				placeholder={
 					props.placeholder ?? locale.startsWith("de")
@@ -399,7 +446,7 @@ const SelectInner = <
 	}
 
 	return (
-		<RSelect<Option, IsMulti, GroupOptionType>
+		<RSelect<OptionType<ValueType>, IsMulti, OptionGroupType<ValueType>>
 			placeholder={
 				props.placeholder ?? locale.startsWith("de")
 					? "Auswahl..."
@@ -412,15 +459,11 @@ const SelectInner = <
 			data-testid={testId}
 			styles={customStyles}
 			components={components}
+			className={containerClassName}
 			{...props}
 		/>
 	)
 }
-
-/*const SelectInnerFR = React.forwardRef<
-	SelectInstance<OptionType<any>, boolean, GroupBase<OptionType<any>>>,
-	InnerProps<any, OptionType<any>, boolean>
->(SelectInner)*/
 
 function isOptionType<ValueType>(o: unknown): o is OptionType<ValueType> {
 	return typeof o === "object" && o != null && "label" in o && "value" in o
@@ -436,10 +479,12 @@ function isOptionGroupType<
 // base react-select props + extensions
 type SelectPropsProto<
 	ValueType,
-	Option extends OptionType<ValueType> = OptionType<ValueType>,
 	IsMulti extends boolean = boolean,
-	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
-> = CreatableProps<Option, IsMulti, GroupOptionType> & {
+> = CreatableProps<
+	OptionType<ValueType>,
+	IsMulti,
+	OptionGroupType<ValueType>
+> & {
 	usePortal?: boolean
 	disabled?: boolean
 	isCreateable?: boolean
@@ -448,39 +493,39 @@ type SelectPropsProto<
 	removeValueLabel?: string
 	inputId?: string
 	testId?: string
-	ref?: React.Ref<SelectInstance<Option, IsMulti, GroupOptionType> | null>
+	onClearButtonClick?: () => void
+	ref?: React.Ref<SelectInstance<
+		OptionType<ValueType>,
+		IsMulti,
+		GroupBase<OptionType<ValueType>>
+	> | null>
 }
 
 // extends with the control and fieldName props for react-hook-form.. the fieldName is the normal name prop of react-hook-form
 export type SelectInFormProps<
 	FormData extends FieldValues,
 	ValueType,
-	Option extends OptionType<ValueType>,
 	IsMulti extends boolean,
-	GroupOptionType extends GroupBase<Option>,
-> = SelectPropsProto<ValueType, Option, IsMulti, GroupOptionType> & {
+> = SelectPropsProto<ValueType, IsMulti> & {
 	control: Control<FormData>
 	name: Path<FormData>
-	errorMessage?: string
+	errorMessage?: ReactNode
 	invalid?: boolean
 }
 
-export type SelectNotInFormProps<
+export type SelectProps<ValueType, IsMulti extends boolean> = SelectPropsProto<
 	ValueType,
-	Option extends OptionType<ValueType>,
-	IsMulti extends boolean,
-	GroupOptionType extends GroupBase<Option>,
-> = SelectPropsProto<ValueType, Option, IsMulti, GroupOptionType> & {
+	IsMulti
+> & {
 	control?: never
 	disabled?: boolean
+	invalid?: boolean
 }
 
 function SelectInForm<
 	FormData extends FieldValues,
 	ValueType,
-	Option extends OptionType<ValueType>,
 	IsMulti extends boolean,
-	GroupOptionType extends GroupBase<Option>,
 >({
 	control,
 	name,
@@ -494,163 +539,151 @@ function SelectInForm<
 	errorMessage,
 	usePortal = true,
 	testId,
+	defaultValue,
+	required,
 	ref,
 	...props
-}: SelectInFormProps<FormData, ValueType, Option, IsMulti, GroupOptionType>) {
+}: SelectInFormProps<FormData, ValueType, IsMulti>) {
+	const { field, fieldState } = useController<FormData>({
+		control,
+		name,
+		disabled,
+		//defaultValue: defaultValue ? defaultValue.value : undefined,
+		rules: {
+			required,
+		},
+	})
+
+	const onChange = (
+		value: OnChangeValue<OptionType<ValueType>, IsMulti>,
+		actionMeta: ActionMeta<OptionType<ValueType>>,
+	) => {
+		props.onChange?.(value, actionMeta)
+		if (Array.isArray(value)) {
+			return field.onChange(value.map((it) => it.value))
+		}
+		if (isOptionType(value)) {
+			field.onChange(value.value)
+		} else if (value == null) {
+			field.onChange(value)
+		}
+	}
+
+	let valueUsed = value
+
+	// controlled
+	if (value) {
+		if (!isMulti && isOptionType(value) && value.value !== field.value) {
+			field.onChange(value.value)
+		}
+
+		if (isMulti && Array.isArray(value)) {
+			const valueSet = new Set(value.map((it) => it.value))
+			const fieldSet = new Set(field.value)
+			if (valueSet.size !== fieldSet.size) {
+				field.onChange(value.map((it) => it.value))
+			} else {
+				for (const val of valueSet) {
+					if (!fieldSet.has(val)) {
+						field.onChange(value.map((it) => it.value))
+						break
+					}
+				}
+			}
+		}
+	}
+	//
+
+	// uncontrolled
+	if (!value) {
+		if (!isMulti && options) {
+			for (const opt of options) {
+				if (isOptionType(opt) && opt.value === field.value) {
+					valueUsed = opt
+					break
+				}
+				if (isOptionGroupType(opt)) {
+					for (const opt2 of opt.options) {
+						if (opt2.value === field.value) {
+							valueUsed = opt2
+							break
+						}
+					}
+				}
+			}
+			/*if (!valueUsed) {
+				valueUsed = field.value
+			}*/
+		} else if (isMulti && options) {
+			const multiValueUsed = []
+			if (field.value) {
+				for (const opt of options) {
+					if (isOptionType(opt) && field.value.includes(opt.value)) {
+						multiValueUsed.push(opt)
+					} else if (isOptionGroupType(opt)) {
+						for (const opt2 of opt.options) {
+							if (field.value.includes(opt2.value)) {
+								multiValueUsed.push(opt2)
+							}
+						}
+					}
+				}
+			}
+			valueUsed = multiValueUsed
+		}
+	}
+	//
+
+	const innerProps: InnerProps<ValueType, IsMulti> = {
+		...props,
+		isCreateable: props.isCreateable,
+		testId,
+		innerRef: ref,
+		invalid,
+	}
+
+	const { ref: innerRef, ...fieldProps } = field
+
 	return (
-		<Controller<FormData>
-			control={control}
-			name={name}
-			render={({ field, fieldState: { invalid: fsInvalid } }) => {
-				const onChange = (
-					value: OnChangeValue<Option, IsMulti>,
-					actionMeta: ActionMeta<Option>,
-				) => {
-					props.onChange?.(value, actionMeta)
-					if (Array.isArray(value)) {
-						return field.onChange(value.map((it) => it.value))
-					}
-					if (isOptionType(value)) {
-						field.onChange(value.value)
-					}
+		<>
+			<SelectInner
+				{...innerProps}
+				{...fieldProps}
+				{...fieldState}
+				innerRef={innerRef}
+				onChange={onChange}
+				value={valueUsed}
+				name={name}
+				options={options}
+				isMulti={isMulti}
+				menuPortalTarget={
+					usePortal ? getPortal(portalDivId) : undefined
 				}
-
-				let valueUsed = value
-
-				// controlled
-				if (value) {
-					if (
-						!isMulti &&
-						isOptionType(value) &&
-						value.value !== field.value
-					) {
-						field.onChange(value.value)
-					}
-
-					if (isMulti && Array.isArray(value)) {
-						const valueSet = new Set(value.map((it) => it.value))
-						const fieldSet = new Set(field.value)
-						if (valueSet.size !== fieldSet.size) {
-							field.onChange(value.map((it) => it.value))
-						} else {
-							for (const val of valueSet) {
-								if (!fieldSet.has(val)) {
-									field.onChange(value.map((it) => it.value))
-									break
-								}
-							}
-						}
-					}
-				}
-				//
-
-				// uncontrolled
-				if (!value) {
-					if (!isMulti && options) {
-						for (const opt of options) {
-							if (
-								isOptionType(opt) &&
-								opt.value === field.value
-							) {
-								valueUsed = opt
-								break
-							}
-							if (isOptionGroupType(opt)) {
-								for (const opt2 of opt.options) {
-									if (opt2.value === field.value) {
-										valueUsed = opt2
-										break
-									}
-								}
-							}
-						}
-						if (!valueUsed) {
-							valueUsed = field.value
-						}
-					} else if (isMulti && options) {
-						const multiValueUsed = []
-						if (field.value) {
-							for (const opt of options) {
-								if (
-									isOptionType(opt) &&
-									field.value.includes(opt.value)
-								) {
-									multiValueUsed.push(opt)
-								} else if (isOptionGroupType(opt)) {
-									for (const opt2 of opt.options) {
-										if (field.value.includes(opt2.value)) {
-											multiValueUsed.push(opt2)
-										}
-									}
-								}
-							}
-						}
-						valueUsed = multiValueUsed
-					}
-				}
-				//
-
-				const innerProps: InnerProps<
-					ValueType,
-					Option,
-					IsMulti,
-					GroupOptionType
-				> = {
-					...props,
-					isCreateable: props.isCreateable,
-					testId,
-					innerRef: ref,
-				}
-
-				const { ref: innerRef, ...fieldProps } = field
-
-				return (
-					<>
-						<SelectInner
-							{...innerProps}
-							{...fieldProps}
-							innerRef={innerRef}
-							onChange={onChange}
-							value={valueUsed}
-							name={name}
-							options={options}
-							isMulti={isMulti}
-							menuPortalTarget={
-								usePortal ? getPortal(portalDivId) : undefined
-							}
-							isDisabled={disabled || isDisabled}
-							aria-invalid={ariaInvalid || fsInvalid}
-						/>
-						{errorMessage && (
-							<SlidingErrorMessage
-								invalid={invalid || fsInvalid}
-								aria-invalid={ariaInvalid || fsInvalid}
-							>
-								{errorMessage}
-							</SlidingErrorMessage>
-						)}
-					</>
-				)
-			}}
-		/>
+				isDisabled={disabled || isDisabled}
+				aria-invalid={ariaInvalid || fieldState.invalid || invalid}
+			/>
+			{errorMessage && (
+				<SlidingErrorMessage
+					invalid={invalid || fieldState.invalid}
+					aria-invalid={ariaInvalid || fieldState.invalid}
+				>
+					{errorMessage}
+				</SlidingErrorMessage>
+			)}
+		</>
 	)
 }
 
-function SelectNotInForm<
-	ValueType,
-	Option extends OptionType<ValueType>,
-	IsMulti extends boolean,
-	GroupOptionType extends GroupBase<Option>,
->({
+function SelectNotInForm<ValueType, IsMulti extends boolean>({
 	options,
 	usePortal = true,
 	disabled,
 	isDisabled,
 	ref,
 	...props
-}: SelectNotInFormProps<ValueType, Option, IsMulti, GroupOptionType>) {
+}: SelectProps<ValueType, IsMulti>) {
 	return (
-		<SelectInner<ValueType, Option, IsMulti, GroupOptionType>
+		<SelectInner<ValueType, IsMulti>
 			{...props}
 			innerRef={ref}
 			options={options}
@@ -665,64 +698,30 @@ export function Select<
 	FormData extends FieldValues,
 	ValueType,
 	IsMulti extends boolean = boolean,
-	Option extends OptionType<ValueType> = OptionType<ValueType>,
-	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
->(
-	props: SelectInFormProps<
-		FormData,
-		ValueType,
-		Option,
-		IsMulti,
-		GroupOptionType
-	>,
-): JSX.Element
-export function Select<
-	ValueType,
-	IsMulti extends boolean = boolean,
-	Option extends OptionType<ValueType> = OptionType<ValueType>,
-	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
->(
-	props: SelectNotInFormProps<ValueType, Option, IsMulti, GroupOptionType>,
+>(props: SelectInFormProps<FormData, ValueType, IsMulti>): JSX.Element
+export function Select<ValueType, IsMulti extends boolean = boolean>(
+	props: SelectProps<ValueType, IsMulti>,
 ): JSX.Element
 
 export function Select<
 	ValueType,
 	FormData extends FieldValues,
 	IsMulti extends boolean = boolean,
-	Option extends OptionType<ValueType> = OptionType<ValueType>,
-	GroupOptionType extends GroupBase<Option> = GroupBase<Option>,
->(
-	props:
-		| SelectNotInFormProps<ValueType, Option, IsMulti, GroupOptionType>
-		| SelectInFormProps<
-				FormData,
-				ValueType,
-				Option,
-				IsMulti,
-				GroupOptionType
-		  >,
-) {
-	if ("control" in props) {
-		return (
-			<SelectInForm<FormData, ValueType, Option, IsMulti, GroupOptionType>
-				{...(props as SelectInFormProps<
-					FormData,
-					ValueType,
-					Option,
-					IsMulti,
-					GroupOptionType
-				>)}
-			/>
-		)
+>({
+	name,
+	control,
+	...props
+}:
+	| SelectProps<ValueType, IsMulti>
+	| SelectInFormProps<FormData, ValueType, IsMulti>) {
+	if (control && name) {
+		const sprops: SelectInFormProps<FormData, ValueType, IsMulti> = {
+			name,
+			control,
+			...props,
+		}
+		return <SelectInForm<FormData, ValueType, IsMulti> {...sprops} />
 	}
-	return (
-		<SelectNotInForm<ValueType, Option, IsMulti, GroupOptionType>
-			{...(props as SelectNotInFormProps<
-				ValueType,
-				Option,
-				IsMulti,
-				GroupOptionType
-			>)}
-		/>
-	)
+	const sprops: SelectProps<ValueType, IsMulti> = props
+	return <SelectNotInForm<ValueType, IsMulti> name={name} {...sprops} />
 }
