@@ -72,7 +72,6 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 	IsMulti,
 	OptionGroupType<ValueType>
 > {
-	console.log("INVALID", invalid)
 	return useMemo(
 		() =>
 			({
@@ -305,7 +304,11 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 						data-action="clear_all_selected"
 					>
 						<IconSizeHelper>
-							<SelectClearIcon size="small" label="" />
+							<SelectClearIcon
+								size="small"
+								label=""
+								secondaryColor="var(--ds-surface, #fff)"
+							/>
 						</IconSizeHelper>
 					</div>
 				)
