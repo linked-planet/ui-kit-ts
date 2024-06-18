@@ -17,10 +17,18 @@ const classesToPrefix = ["sticky"]
 const prefix = "lp-"
 //
 
+// check if we want to use tailwind config with important = true
+const twUseImportant = process.env.TAILWIND_IMPORTANT === "true"
+const twConfig = twUseImportant
+	? "./tailwind.config.lib.important.js"
+	: "./tailwind.config.lib.js"
+
+//
+
 export default defineConfig({
 	css: {
 		postcss: {
-			plugins: [tailwindcss("./tailwind.config.lib.js"), autoprefixer],
+			plugins: [tailwindcss(twConfig), autoprefixer],
 		},
 	},
 	build: {
@@ -55,6 +63,12 @@ export default defineConfig({
 				globals: {
 					react: "React",
 					"react-dom": "ReactDOM",
+				},
+				assetFileNames: (chunkInfo) => {
+					if (chunkInfo.name === "styles.css" && twUseImportant) {
+						return "[name]-important[extname]"
+					}
+					return "[name][extname]"
 				},
 			},
 			external: [...Object.keys(pkg.peerDependencies)],

@@ -2238,6 +2238,12 @@ type FormData = {
 	date?: DateType
 }
 
+type FormData2 = {
+	dateTime: Date
+	time: TimeType
+	date?: DateType
+}
+
 //#region datetime-picker-form
 function FormExample() {
 	const { handleSubmit, control, reset } = useForm<FormData>({
@@ -2278,10 +2284,10 @@ function FormExample() {
 
 //#region datetime-picker-form2
 function FormExample2() {
-	const { handleSubmit, control, reset } = useForm<FormData>({
+	const { handleSubmit, control, reset } = useForm<FormData2>({
 		defaultValues: {
-			dateTime: "2023-12-24T10:00+0100",
-			time: "10:10",
+			dateTime: DateUtils.dateFromString("2023-12-24T10:00+0100"),
+			time: "10:30",
 			date: "2024-12-24",
 		},
 	})
@@ -2295,8 +2301,12 @@ function FormExample2() {
 			}}
 		>
 			<div className="flex flex-col gap-2">
-				<DatePicker2<FormData> control={control} name="date" required />
-				<TimePicker2<FormData>
+				<DatePicker2<FormData2>
+					control={control}
+					name="date"
+					required
+				/>
+				<TimePicker2<FormData2>
 					control={control}
 					name="time"
 					required
@@ -2304,7 +2314,7 @@ function FormExample2() {
 					endTime="00:00"
 					interval={30}
 				/>
-				<DateTimePicker2<FormData>
+				<DateTimePicker2<FormData2>
 					control={control}
 					name="dateTime"
 					required
@@ -2385,6 +2395,59 @@ function ControlledFormExample() {
 }
 //#endregion datetime-picker-form-controlled
 
+//#region datetime-picker-form-controlled2
+function ControlledFormExample2() {
+	const [selectedDate, setSelectedDate] = useState<DateType | null>(
+		"1999-12-23",
+	)
+	const [selectedTime, setSelectedTime] = useState<TimeType | null>("11:00")
+	const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(
+		DateUtils.dateFromString("1999-12-23T10:00+0100"),
+	)
+
+	const { handleSubmit, control, reset } = useForm<FormData>()
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log("form data:", data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<div className="flex flex-col gap-2">
+				<DateTimePicker2
+					control={control}
+					value={selectedDateTime}
+					onChange={setSelectedDateTime}
+					name="dateTime"
+				/>
+				<TimePicker2
+					control={control}
+					value={selectedTime}
+					onChange={setSelectedTime}
+					name="time"
+				/>
+				<DatePicker2
+					control={control}
+					value={selectedDate}
+					onChange={setSelectedDate}
+					name="date"
+				/>
+			</div>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button appearance="subtle" type="reset">
+					Reset
+				</Button>
+				<Button appearance="primary" type="submit">
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion datetime-picker-form-controlled2
+
 function DateTimePickerShowcase(props: ShowcaseProps) {
 	const [date, setDate] = useState<DateType | null>(null)
 	const [time, setTime] = useState<TimeType | null>(null)
@@ -2459,6 +2522,11 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					title: "Form Controlled",
 					example: <ControlledFormExample />,
 					sourceCodeExampleId: "datetime-picker-form-controlled",
+				},
+				{
+					title: "Form Controlled 2",
+					example: <ControlledFormExample2 />,
+					sourceCodeExampleId: "datetime-picker-form-controlled2",
 				},
 			]}
 		/>
@@ -5659,7 +5727,7 @@ import {
 	PageLayout,
 } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function PageLayoutExample() {
@@ -5673,33 +5741,35 @@ function PageLayoutExample() {
 			<PageLayout.Page>
 				<PageLayout.PageHeader>
 					<PageLayout.PageHeaderTitle
-						titleMenu={[
-							<div key="0">Menu Item 1</div>,
-							<div key="1">Menu Item 2</div>,
-							<Dropdown.SubMenu
-								key="sub"
-								trigger="submenu"
-								chevronSide="left"
-							>
-								<Dropdown.Item>Submenu Entry</Dropdown.Item>
-							</Dropdown.SubMenu>,
-							<Dropdown.ItemGroup key="4" hasSeparator>
-								<Dropdown.ItemCheckbox>
-									Check 1
-								</Dropdown.ItemCheckbox>
-								<Dropdown.ItemCheckbox>
-									Check 2
-								</Dropdown.ItemCheckbox>
-							</Dropdown.ItemGroup>,
-							<Dropdown.ItemRadioGroup key="5" hasSeparator>
-								<Dropdown.ItemRadio value="r1">
-									Radio 1
-								</Dropdown.ItemRadio>
-								<Dropdown.ItemRadio value="r2">
-									Radio 2
-								</Dropdown.ItemRadio>
-							</Dropdown.ItemRadioGroup>,
-						]}
+						titleMenu={
+							<Dropdown.Menu>
+								<Dropdown.Item>Menu Item 1</Dropdown.Item>
+								<Dropdown.Item>Menu Item 2</Dropdown.Item>
+								<Dropdown.SubMenu
+									trigger="submenu"
+									chevronSide="left"
+								>
+									<Dropdown.Item>Submenu Entry</Dropdown.Item>
+								</Dropdown.SubMenu>
+								<Dropdown.ItemGroup key="4" hasSeparator>
+									<Dropdown.ItemCheckbox>
+										Check 1
+									</Dropdown.ItemCheckbox>
+									<Dropdown.ItemCheckbox>
+										Check 2
+									</Dropdown.ItemCheckbox>
+								</Dropdown.ItemGroup>
+								,
+								<Dropdown.ItemRadioGroup key="5" hasSeparator>
+									<Dropdown.ItemRadio value="r1">
+										Radio 1
+									</Dropdown.ItemRadio>
+									<Dropdown.ItemRadio value="r2">
+										Radio 2
+									</Dropdown.ItemRadio>
+								</Dropdown.ItemRadioGroup>
+							</Dropdown.Menu>
+						}
 					>
 						Page Header Title
 					</PageLayout.PageHeaderTitle>
@@ -6614,7 +6684,7 @@ export default TableTreeShowcase
 
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKTabs, {
 	Tab as AKTab,
@@ -6647,9 +6717,69 @@ function AutomaticTabsValue() {
 	//#endregion tabs_automatic_value
 }
 
+function TabsSides() {
+	//#region tabs_side
+	return (
+		<div className="flex flex-wrap gap-6">
+			<Tabs>
+				<TabList side="top">
+					<Tab>Tab 1</Tab>
+					<Tab>Tab 2</Tab>
+				</TabList>
+				<TabPanel>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+
+			<Tabs>
+				<TabList side="left">
+					<Tab>Tab 1</Tab>
+					<Tab>Tab 2</Tab>
+				</TabList>
+				<TabPanel>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+
+			<Tabs>
+				<TabList side="right">
+					<Tab>Tab 1</Tab>
+					<Tab>Tab 2</Tab>
+				</TabList>
+				<TabPanel>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+
+			<Tabs>
+				<TabList side="bottom">
+					<Tab>Tab 1</Tab>
+					<Tab>Tab 2</Tab>
+				</TabList>
+				<TabPanel>
+					<span>First Content</span>
+				</TabPanel>
+				<TabPanel>
+					<span>Second Content</span>
+				</TabPanel>
+			</Tabs>
+		</div>
+	)
+	//#endregion tabs_side
+}
+
 function ExampleLabels() {
 	const akExample = (
-		<div style={{ minWidth: 300, border: "2px solid orange" }}>
+		<div>
 			{
 				<AKTabs id="tab-example" defaultSelected={1}>
 					<AKTabList>
@@ -6671,7 +6801,7 @@ function ExampleLabels() {
 
 	//#region tabs_labels
 	const lpExample = (
-		<div style={{ minWidth: 300, border: "2px solid orange" }}>
+		<div>
 			<Tabs defaultSelected="tab2">
 				<TabList>
 					<Tab label="Tab 1" />
@@ -6689,10 +6819,11 @@ function ExampleLabels() {
 	//#endregion tabs_labels
 
 	return (
-		<>
+		<div className="bg-surface flex w-full flex-col gap-4">
 			{akExample}
+			<hr />
 			{lpExample}
-		</>
+		</div>
 	)
 }
 
@@ -6703,7 +6834,7 @@ function ExampleControlled() {
 		<div style={{ minWidth: 300, border: "2px solid orange" }}>
 			<Tabs
 				selected={selected}
-				onChange={(t: string) => setSelected(parseInt(t))}
+				onChange={(t: string) => setSelected(Number.parseInt(t))}
 			>
 				<TabList>
 					<Tab label={0}>
@@ -6778,7 +6909,7 @@ function TabsShowcase(props: ShowcaseProps) {
 				</p>
 			}
 			examples={[
-				{
+				/*{
 					title: "Example",
 					example: <AutomaticTabsValue />,
 					sourceCodeExampleId: "tabs_automatic_value",
@@ -6792,6 +6923,11 @@ function TabsShowcase(props: ShowcaseProps) {
 					title: "Example Controlled",
 					example: <ExampleControlled />,
 					sourceCodeExampleId: "tabscontrolled",
+				},*/
+				{
+					title: "Vertical",
+					example: <TabsSides />,
+					sourceCodeExampleId: "tabs_side",
 				},
 			]}
 		/>
