@@ -29,4 +29,8 @@ export {
 	type SelectClassNamesConfig,
 	type OptionGroupType,
 	type OptionType,
+	type SelectAriaOnChange,
+	type SelectAriaOnFilter,
+	type SelectAriaOnFocus,
+	type SelectAriaGuidance,
 } from "./Select"

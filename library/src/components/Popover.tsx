@@ -72,6 +72,7 @@ export type PopoverProps = RPo.PopoverProps & {
 	disabled?: boolean
 	hideChevron?: boolean
 	contentClassName?: string
+	contentLabel?: string
 	contentStyle?: React.CSSProperties
 	/* when the triggerAsChild is set to true (default) it gets getClick injected to handle the opening or closing of the popover */
 	triggerAsChild?: boolean
@@ -109,6 +110,7 @@ function Root({
 	testId,
 	disabled,
 	hideChevron,
+	contentLabel,
 	onOpenChange,
 	onPointerEnter,
 	onPointerLeave,
@@ -156,6 +158,7 @@ function Root({
 				onPointerLeave={onPointerLeave}
 				alignOffset={alignOffset}
 				sideOffset={sideOffset}
+				aria-label={contentLabel}
 			>
 				{_closer && (
 					<div className="flex w-full justify-end">{_closer}</div>
@@ -174,6 +177,7 @@ function Root({
 			_closer,
 			contentClassName,
 			contentStyle,
+			contentLabel,
 		],
 	)
 
