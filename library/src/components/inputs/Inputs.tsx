@@ -41,9 +41,6 @@ const inputNormalStyles =
 const inputDisabledStyles =
 	"disabled:text-disabled-text disabled:cursor-not-allowed"
 
-const invalidInputStyles = ""
-//"data-[invalid=true]:before:border-danger-border data-[invalid=true]:before:border-2"
-
 const inputStyles = twJoin(inputNormalStyles, inputDisabledStyles, "p-1 m-0")
 
 export type InputProps = ComponentPropsWithoutRef<"input"> & {
@@ -146,7 +143,6 @@ const Input = forwardRef(
 						"data-[active=true]:bg-input-active hover:data-[active=true]:bg-input-active",
 						"hover:bg-input-hovered hover:focus-within:bg-input-active focus-within:bg-input-active",
 						"data-[disabled=true]:bg-disabled data-[disabled=true]:cursor-not-allowed data-[disabled=true]:border-transparent",
-						invalidInputStyles,
 						className,
 					)}
 					data-disabled={disabled}
