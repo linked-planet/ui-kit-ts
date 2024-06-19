@@ -181,7 +181,7 @@ function PaginationPageHandler<P extends string | number>({
 
 	return (
 		<nav className={className} style={style} aria-label={label}>
-			<ul className="flex">
+			<ul className="flex list-none">
 				<li>
 					<button
 						disabled={currentIdx <= 0}

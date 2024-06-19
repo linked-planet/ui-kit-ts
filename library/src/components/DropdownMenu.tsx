@@ -227,25 +227,22 @@ function ItemRadioGroup({
 	style,
 	...props
 }: ItemRadioGroupProps) {
-	return useMemo(
-		() => (
-			<RDd.RadioGroup
-				className={twMerge("py-3", className)}
-				style={style}
-				{...props}
-			>
-				{hasSeparator && (
-					<RDd.Separator className="border-border border-t-2 pb-3" />
-				)}
-				{title && (
-					<RDd.Label className="px-4 py-3 text-[11px] font-bold uppercase">
-						{title}
-					</RDd.Label>
-				)}
-				{children}
-			</RDd.RadioGroup>
-		),
-		[children, hasSeparator, title, className, style, props],
+	return (
+		<RDd.RadioGroup
+			className={twMerge("py-3", className)}
+			style={style}
+			{...props}
+		>
+			{hasSeparator && (
+				<RDd.Separator className="border-border border-t-2 pb-3" />
+			)}
+			{title && (
+				<RDd.Label className="px-4 py-3 text-[11px] font-bold uppercase">
+					{title}
+				</RDd.Label>
+			)}
+			{children}
+		</RDd.RadioGroup>
 	)
 }
 
@@ -555,20 +552,17 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 			],
 		)
 
-		const _trigger = useMemo(() => {
-			if (triggerComponent) return triggerComponent
-			return (
-				<Trigger
-					disabled={disabled}
-					aria-disabled={disabled}
-					hideChevron={hideChevron}
-					{...props}
-					ref={ref}
-				>
-					{trigger ?? "trigger"}
-				</Trigger>
-			)
-		}, [trigger, triggerComponent, disabled, props, hideChevron, ref])
+		const _trigger = triggerComponent ?? (
+			<Trigger
+				disabled={disabled}
+				aria-disabled={disabled}
+				hideChevron={hideChevron}
+				{...props}
+				ref={ref}
+			>
+				{trigger ?? "trigger"}
+			</Trigger>
+		)
 
 		return (
 			<RDd.Root
