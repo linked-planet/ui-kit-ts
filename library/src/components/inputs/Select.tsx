@@ -17,7 +17,22 @@ import {
 	default as RSelect,
 	type SelectComponentsConfig,
 	type SelectInstance,
+	components,
+	type AriaOnFocus,
+	type AriaGuidance,
+	type AriaOnChange,
+	type AriaOnFilter,
 } from "react-select"
+
+// usage aria stuff:
+// https://react-select.com/advanced
+export type SelectAriaGuidance = AriaGuidance
+export type SelectAriaOnChange<V, isMulti extends boolean> = AriaOnChange<
+	OptionType<V>,
+	isMulti
+>
+export type SelectAriaOnFilter = AriaOnFilter
+export type SelectAriaOnFocus<V> = AriaOnFocus<OptionType<V>>
 
 import { getPortal } from "../../utils/getPortal"
 
@@ -33,17 +48,13 @@ import { SlidingErrorMessage } from "./SlidingErrorMessage"
 import { IconSizeHelper } from "../IconSizeHelper"
 import { inputBaseStyle } from "../styleHelper"
 
-//#region styles
-const controlStyles = inputBaseStyle
-//"border-input-border border-solid border box-border rounded ease-in-out transition duration-300 before:pointer-events-none before:z-10 before:content-[''] before:absolute before:-inset-0.5 before:box-border focus-within:before:border-2 focus-within:before:border-input-border-focused before:rounded"
-
 const menuStyles =
 	"bg-surface min-w-min z-10 shadow-overlay rounded overflow-hidden"
 
 const optionStyles =
 	"py-2 px-3 border-l-2 border-l-transparent border-transparent border-solid"
 
-type OptionType<ValueType> = {
+export type OptionType<ValueType> = {
 	label: string
 	value: ValueType
 	isDisabled?: boolean // needs to be isDisabled because of react-select
@@ -79,23 +90,25 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 			({
 				...classNamesConfig,
 				control: (provided) =>
-					twJoin(
-						"px-2 flex items-center",
-						controlStyles,
-						provided.isDisabled
-							? "bg-disabled border-transparent cursor-not-allowed"
-							: undefined,
-						invalid
-							? "border-danger-border before:border-danger-border before:border-2 focus-within:before:border-danger-border"
-							: undefined,
-						provided.isFocused && !provided.isDisabled
-							? `bg-input-active hover:bg-input-active ${invalid ? "border-danger-border" : "border-input-border-focused"}`
-							: undefined,
-						!provided.isFocused && !provided.isDisabled
-							? "bg-input hover:bg-input-hovered"
-							: undefined,
-						className,
+					twMerge(
 						classNamesConfig?.control?.(provided),
+						twJoin(
+							inputBaseStyle,
+							"px-2 flex items-center",
+							provided.isDisabled
+								? "bg-disabled border-transparent cursor-not-allowed"
+								: undefined,
+							invalid
+								? "border-danger-border before:border-danger-border focus-within:before:border-danger-border"
+								: undefined,
+							provided.isFocused && !provided.isDisabled
+								? `bg-input-active hover:bg-input-active ${invalid ? "border-danger-border" : "border-input-border-focused"}`
+								: undefined,
+							!provided.isFocused && !provided.isDisabled
+								? "bg-input hover:bg-input-hovered"
+								: undefined,
+						),
+						className,
 					),
 				menu: (provided) =>
 					twMerge(menuStyles, classNamesConfig?.menu?.(provided)),
@@ -304,7 +317,11 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 						data-action="clear_all_selected"
 					>
 						<IconSizeHelper>
-							<SelectClearIcon size="small" label="" />
+							<SelectClearIcon
+								size="small"
+								label=""
+								secondaryColor="var(--ds-surface, #fff)"
+							/>
 						</IconSizeHelper>
 					</div>
 				)
@@ -403,6 +420,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 					</div>
 				)
 			},
+
 			..._components,
 		}
 		return ret
@@ -431,6 +449,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 				inputId={inputId}
 				data-testid={testId}
 				classNames={classNamesConfig}
+				data-invalid={invalid}
 				formatCreateLabel={
 					formatCreateLabel ??
 					((value) =>
@@ -457,6 +476,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 			inputId={inputId}
 			classNames={classNamesConfig}
 			data-testid={testId}
+			data-invalid={invalid}
 			styles={customStyles}
 			components={components}
 			className={containerClassName}
@@ -489,8 +509,8 @@ type SelectPropsProto<
 	disabled?: boolean
 	isCreateable?: boolean
 	dropdownLabel?: (isOpen: boolean) => string
-	clearValuesLabel?: string
-	removeValueLabel?: string
+	clearValuesButtonLabel?: string
+	removeValueButtonLabel?: string
 	inputId?: string
 	testId?: string
 	onClearButtonClick?: () => void

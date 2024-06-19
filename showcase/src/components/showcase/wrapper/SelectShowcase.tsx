@@ -295,6 +295,7 @@ function SelectShowcase(props: ShowcaseProps) {
 
 			<Select
 				placeholder="Select a value 2"
+				invalid
 				options={[
 					{
 						label: "First group",
@@ -324,7 +325,30 @@ function SelectShowcase(props: ShowcaseProps) {
 					},
 				]}
 				dropdownLabel={(isOpen) => (isOpen ? "Close :(" : "Open :)")}
-				clearValuesLabel="Clear values!!!"
+				clearValuesButtonLabel="Clear values!!!"
+				removeValueButtonLabel="Remove value!!!"
+			/>
+
+			<Select
+				placeholder="Select a value 3"
+				isMulti
+				disabled
+				inputId="input-id-test"
+				instanceId="instance-id-test"
+				id="id-test"
+				options={[
+					{
+						label: "First group",
+						options: [{ label: "First option", value: "first" }],
+					},
+					{
+						label: "Second group",
+						options: [{ label: "Second option", value: "second" }],
+					},
+				]}
+				dropdownLabel={(isOpen) => (isOpen ? "Close :(" : "Open :)")}
+				clearValuesButtonLabel="Clear values!!!"
+				removeValueButtonLabel="Remove value!!!"
 			/>
 		</div>
 	)

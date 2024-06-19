@@ -160,7 +160,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				data-inverted={inverted}
 				id={id}
 				className={twMerge(
-					"relative cursor-pointer box-border flex flex-shrink-0 items-center justify-center gap-1 rounded border border-transparent px-3 py-1.5 outline-1 outline-offset-2",
+					"focus-visible:outline-selected-bold relative box-border flex flex-shrink-0 cursor-pointer items-center justify-center gap-1 rounded border-2 border-transparent px-3 py-1 outline-none outline-2 outline-offset-4 focus-visible:outline",
 					!disabled ? ButtonStyles[appearance] : undefined,
 					`${
 						appearance !== "subtle" && appearance !== "link"
@@ -217,7 +217,7 @@ export const ButtonGroup = ({
 }) => {
 	return (
 		<div
-			className={twMerge("inline-flex flex-wrap gap-1", className)}
+			className={twMerge("inline-flex flex-wrap gap-2 p-2", className)} //gap-2 and p-2 are because of the button outlines on focus
 			style={style}
 		>
 			{children}

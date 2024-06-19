@@ -85,7 +85,9 @@ function PaginationPageHandler<P extends string | number>({
 	maxPageButtons,
 	previousLabel,
 	nextLabel,
-	label,
+	label = "Pagination",
+	className,
+	style,
 	pageLabel,
 }: {
 	pages: P[]
@@ -100,6 +102,8 @@ function PaginationPageHandler<P extends string | number>({
 	nextLabel?: string
 	label?: string
 	pageLabel?: string
+	className?: string
+	style?: React.CSSProperties
 }) {
 	const [_currentPage, setCurrentPage] = useState(
 		currentPage ?? defaultPage ?? pages[0],
@@ -176,94 +180,103 @@ function PaginationPageHandler<P extends string | number>({
 	const currentIdx = pages.indexOf(_currentPage)
 
 	return (
-		<div className="flex" title={label} aria-label={label}>
-			<button
-				disabled={currentIdx <= 0}
-				className={`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 ${
-					currentIdx > 0
-						? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
-						: "text-disabled-text"
-				}`}
-				onClick={() => {
-					const currentIndex = pages.indexOf(_currentPage)
-					setCurrentPage(pages[currentIndex - 1])
-					onPageIndexChange?.(currentIndex - 1)
-					onPageChange?.(pages[currentIndex - 1])
-				}}
-				title={previousLabel}
-				aria-label={previousLabel}
-				aria-disabled={currentIdx >= pages.length - 1}
-				type="button"
-			>
-				<IconSizeHelper>
-					<ChevronLeftLargeIcon size="medium" label="" />
-				</IconSizeHelper>
-			</button>
-			{visiblePages.map((page, i) => (
-				<div key={page + i.toString()}>
-					{page !== "..." ? (
-						<button
-							key={page + i.toString()}
-							className={twMerge(
-								"flex h-8 min-w-8 select-none items-center justify-center rounded p-1.5",
-								page === _currentPage
-									? "bg-selected text-selected-text-inverse"
-									: "hover:bg-neutral-hovered active:bg-neutral-pressed",
-							)}
-							onClick={() => {
-								const currentIndex = pages.indexOf(page as P)
-								setCurrentPage(page as P)
-								onPageIndexChange?.(currentIndex)
-								onPageChange?.(page as P)
-							}}
-							onKeyUp={(e) => {
-								if (e.key === "Enter") {
+		<nav className={className} style={style} aria-label={label}>
+			<ul className="flex list-none">
+				<li>
+					<button
+						disabled={currentIdx <= 0}
+						className={`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 ${
+							currentIdx > 0
+								? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
+								: "text-disabled-text"
+						}`}
+						onClick={() => {
+							const currentIndex = pages.indexOf(_currentPage)
+							setCurrentPage(pages[currentIndex - 1])
+							onPageIndexChange?.(currentIndex - 1)
+							onPageChange?.(pages[currentIndex - 1])
+						}}
+						title={previousLabel}
+						aria-label={previousLabel}
+						aria-disabled={currentIdx >= pages.length - 1}
+						type="button"
+					>
+						<IconSizeHelper>
+							<ChevronLeftLargeIcon size="medium" label="" />
+						</IconSizeHelper>
+					</button>
+				</li>
+				{visiblePages.map((page) => (
+					<li key={page} aria-hidden={page === "..."}>
+						{page !== "..." ? (
+							<button
+								className={twMerge(
+									"flex h-8 min-w-8 select-none items-center justify-center rounded p-1.5",
+									page === _currentPage
+										? "bg-selected text-selected-text-inverse"
+										: "hover:bg-neutral-hovered active:bg-neutral-pressed",
+								)}
+								onClick={() => {
 									const currentIndex = pages.indexOf(
 										page as P,
 									)
 									setCurrentPage(page as P)
 									onPageIndexChange?.(currentIndex)
 									onPageChange?.(page as P)
+								}}
+								onKeyUp={(e) => {
+									if (e.key === "Enter") {
+										const currentIndex = pages.indexOf(
+											page as P,
+										)
+										setCurrentPage(page as P)
+										onPageIndexChange?.(currentIndex)
+										onPageChange?.(page as P)
+									}
+								}}
+								aria-label={`${pageLabel} ${page}`}
+								type="button"
+								aria-current={
+									page === _currentPage ? "page" : undefined
 								}
-							}}
-							aria-label={`${pageLabel} ${page}`}
-							type="button"
-						>
-							{page}
-						</button>
-					) : (
-						<div
-							key={page}
-							className="flex h-8 w-8 select-none items-center justify-center rounded p-1.5"
-						>
-							{page}
-						</div>
-					)}
-				</div>
-			))}
-			<button
-				className={`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 ${
-					currentIdx < pages.length - 1
-						? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
-						: "text-disabled-text"
-				}`}
-				onClick={() => {
-					const _currentIndex = pages.indexOf(_currentPage)
-					setCurrentPage(pages[_currentIndex + 1])
-					onPageIndexChange?.(_currentIndex + 1)
-					onPageChange?.(pages[_currentIndex + 1])
-				}}
-				disabled={currentIdx >= pages.length - 1}
-				title={nextLabel}
-				aria-label={nextLabel}
-				aria-disabled={currentIdx >= pages.length - 1}
-				type="button"
-			>
-				<IconSizeHelper>
-					<ChevronRightLargeIcon size="medium" label="" />
-				</IconSizeHelper>
-			</button>
-		</div>
+							>
+								{page}
+							</button>
+						) : (
+							<div
+								key={page}
+								className="flex h-8 w-8 select-none items-center justify-center rounded p-1.5"
+								aria-hidden="true"
+							>
+								{page} {/* is "..." */}
+							</div>
+						)}
+					</li>
+				))}
+				<button
+					className={`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 ${
+						currentIdx < pages.length - 1
+							? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
+							: "text-disabled-text"
+					}`}
+					onClick={() => {
+						const _currentIndex = pages.indexOf(_currentPage)
+						setCurrentPage(pages[_currentIndex + 1])
+						onPageIndexChange?.(_currentIndex + 1)
+						onPageChange?.(pages[_currentIndex + 1])
+					}}
+					disabled={currentIdx >= pages.length - 1}
+					title={nextLabel}
+					aria-label={nextLabel}
+					aria-disabled={currentIdx >= pages.length - 1}
+					type="button"
+				>
+					<IconSizeHelper>
+						<ChevronRightLargeIcon size="medium" label="" />
+					</IconSizeHelper>
+				</button>
+			</ul>
+		</nav>
 	)
 }
 
