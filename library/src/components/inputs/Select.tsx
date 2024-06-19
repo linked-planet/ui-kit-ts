@@ -18,8 +18,21 @@ import {
 	type SelectComponentsConfig,
 	type SelectInstance,
 	components,
-	type ControlProps,
+	type AriaOnFocus,
+	type AriaGuidance,
+	type AriaOnChange,
+	type AriaOnFilter,
 } from "react-select"
+
+// usage aria stuff:
+// https://react-select.com/advanced
+export type SelectAriaGuidance = AriaGuidance
+export type SelectAriaOnChange<V, isMulti extends boolean> = AriaOnChange<
+	OptionType<V>,
+	isMulti
+>
+export type SelectAriaOnFilter = AriaOnFilter
+export type SelectAriaOnFocus<V> = AriaOnFocus<OptionType<V>>
 
 import { getPortal } from "../../utils/getPortal"
 
