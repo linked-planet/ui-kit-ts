@@ -33,4 +33,5 @@ export {
 	type SelectAriaOnFilter,
 	type SelectAriaOnFocus,
 	type SelectAriaGuidance,
+	type SelectAriaLiveMessages,
 } from "./Select"

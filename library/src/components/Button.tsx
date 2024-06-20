@@ -154,7 +154,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			<button
 				ref={ref}
 				title={title}
-				autoFocus={autoFocus}
 				aria-label={label ?? props["aria-label"] ?? ""}
 				style={style}
 				data-inverted={inverted}
