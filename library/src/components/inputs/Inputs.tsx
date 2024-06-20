@@ -16,7 +16,7 @@ import { inputBaseStyle } from "../styleHelper"
 const labelNormalStyles =
 	"text-text-subtlest block text-sm pb-1 pt-3 font-semibold"
 const requiredStyles =
-	"aria-required:after:content-['*'] aria-required:after:text-danger-bold aria-required:after:ml-0.5"
+	"data-[required=true]:after:content-['*'] data-[required=true]:after:text-danger-bold data-[required=true]:after:ml-0.5"
 
 const labelStyles = twJoin(labelNormalStyles, requiredStyles)
 export function Label({
@@ -26,7 +26,7 @@ export function Label({
 }: ComponentPropsWithoutRef<"label"> & { required?: boolean }) {
 	return (
 		<label
-			aria-required={required}
+			data-required={required}
 			className={twMerge(labelStyles, className)}
 			{...props}
 		/>
