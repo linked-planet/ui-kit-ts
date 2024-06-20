@@ -22,10 +22,16 @@ import {
 	type AriaGuidance,
 	type AriaOnChange,
 	type AriaOnFilter,
+	type AriaLiveMessages,
 } from "react-select"
 
 // usage aria stuff:
 // https://react-select.com/advanced
+
+export type SelectAriaLiveMessages<
+	V,
+	isMulti extends boolean,
+> = AriaLiveMessages<OptionType<V>, isMulti, OptionGroupType<V>>
 export type SelectAriaGuidance = AriaGuidance
 export type SelectAriaOnChange<V, isMulti extends boolean> = AriaOnChange<
 	OptionType<V>,
