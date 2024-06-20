@@ -106,6 +106,11 @@ export function Tooltip({
 	)
 }
 
-export function TooltipProvider(props: RTTp.TooltipProviderProps) {
+export function TooltipProvider(props: {
+	delayDuration?: number
+	skipDelayDuration?: number
+	disableHoverableContent?: boolean
+	children: React.ReactNode
+}) {
 	return <RTTp.TooltipProvider {...props} />
 }

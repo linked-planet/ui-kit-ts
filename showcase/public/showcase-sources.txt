@@ -4096,10 +4096,19 @@ export default function InputShowcase(props: ShowcaseProps) {
 	//#region input
 	const exampleLP = (
 		<div className="flex flex-col">
-			<Input minLength={3} helpMessage="This is a help message." />
+			<Label htmlFor="testInput" required>
+				This is a required input label.
+			</Label>
+			<Input
+				minLength={3}
+				id="testInput"
+				helpMessage="This is a help message."
+			/>
 			<Input disabled />
+			<Label htmlFor="testInput2">This is a label.</Label>
 			<Input
 				placeholder="Placeholder"
+				id="testInput2"
 				iconAfter={
 					<IconSizeHelper>
 						<ScheduleIcon size="medium" label="calendar" />
