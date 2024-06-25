@@ -48,6 +48,8 @@ import {
 	R75,
 	G75,
 	N80,
+	N50,
+	N60,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -133,7 +135,7 @@ export const theme = {
 			active: `var(--ds-background-input-pressed, ${N0})`,
 			hovered: `var(--ds-background-input-hovered, ${N30})`,
 			border: {
-				DEFAULT: `var(--ds-border-input, ${N200})`,
+				DEFAULT: `var(--ds-border-input, ${N90})`,
 				focused: `var(--ds-border-focused, ${B200})`,
 			},
 		},

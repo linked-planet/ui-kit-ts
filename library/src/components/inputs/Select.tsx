@@ -97,7 +97,6 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 				...classNamesConfig,
 				control: (provided) =>
 					twMerge(
-						classNamesConfig?.control?.(provided),
 						twJoin(
 							inputBaseStyle,
 							"px-2 flex items-center",
@@ -114,13 +113,14 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 								? "bg-input hover:bg-input-hovered"
 								: undefined,
 						),
+						classNamesConfig?.control?.(provided),
 						className,
 					),
 				menu: (provided) =>
 					twMerge(menuStyles, classNamesConfig?.menu?.(provided)),
 				clearIndicator: (provided) =>
 					twMerge(
-						"w-4 cursor-pointer text-text-subtlest hover:text-text",
+						"w-4 cursor-pointer text-text-subtlest hover:text-text focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline",
 						classNamesConfig?.clearIndicator?.(provided),
 					),
 				dropdownIndicator: (provided) =>
@@ -162,7 +162,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 				multiValue: (provided) => {
 					return twJoin(
 						twMerge(
-							"bg-neutral w-auto rounded-sm pl-1 mr-2 my-0.5 text-text",
+							"bg-neutral w-auto rounded-sm pl-1 mr-2 my-1 text-text",
 							provided.isDisabled
 								? "bg-disabled text-disabled-text"
 								: undefined,
@@ -173,7 +173,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 				},
 				multiValueRemove: (provided) =>
 					twMerge(
-						"hover:bg-danger-hovered flex-none active:bg-danger-pressed focus-visible:outline-offset-0 px-1 cursor-pointer ml-1 flex items-center rounded-r-sm " as const,
+						"hover:bg-danger-hovered flex-none active:bg-danger-pressed focus-visible:outline-offset-0 focus-visible:outline-selected-bold focus-visible:outline focus-visible:outline-2 px-1 cursor-pointer ml-1 flex items-center rounded-r-sm " as const,
 						classNamesConfig?.multiValueRemove?.(provided),
 					),
 				option: (provided) =>
@@ -210,10 +210,8 @@ const customStyles = {
 	control: (provided: CSSObjectWithLabel) => ({
 		...provided,
 		cursor: "pointer",
-		minHeight: "2rem",
-		//borderWidth: "2px",
+		minHeight: "2.25rem", // this is min-h-9 as set in the inputBaseStyle
 		flexWrap: "nowrap" as const,
-		//height: "1.83rem",
 	}),
 }
 
