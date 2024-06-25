@@ -1,6 +1,6 @@
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
 	Button,
@@ -19,6 +19,7 @@ function Example() {
 			<div className="flex p-4">
 				<Input placeholder="Test Input" />
 				<Input disabled placeholder="Test Input Disabled" />
+				<Input placeholder="Test Input 2" />
 				<Select
 					options={[
 						{ label: "Test", value: "test" },
