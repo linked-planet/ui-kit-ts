@@ -161,7 +161,7 @@ const Input = forwardRef(
 						className={twMerge(
 							inputNormalStyles,
 							inputDisabledStyles,
-							"m-0 px-1",
+							"m-0 px-[0.4rem]",
 							inputClassName,
 						)}
 						style={inputStyle}
