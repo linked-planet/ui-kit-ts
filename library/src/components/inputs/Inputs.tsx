@@ -137,9 +137,9 @@ const Input = forwardRef(
 					className={twJoin(
 						"inline-flex",
 						inputBaseStyle,
-						appearance !== "subtle"
-							? "border-input-border bg-input"
-							: "border-transparent bg-transparent",
+						appearance === "subtle"
+							? "border-transparent bg-transparent"
+							: undefined,
 						"data-[active=true]:bg-input-active hover:data-[active=true]:bg-input-active",
 						"hover:bg-input-hovered hover:focus-within:bg-input-active focus-within:bg-input-active",
 						"data-[disabled=true]:bg-disabled data-[disabled=true]:cursor-not-allowed data-[disabled=true]:border-transparent",
