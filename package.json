@@ -21,10 +21,11 @@
 	],
 	"scripts": {
 		"build:lib": "tsc --noEmit -p tsconfig.lib.json && vitest run && vite build -c vite.config.lib.ts && TAILWIND_IMPORTANT=true vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist && npm run tsc:plugin",
-		"build:sc": "node ./showcase/copySources.js && tsc --noEmit && vite build -c vite.config.showcase.ts && node ./showcase/copyIndexTo404.js",
+		"build:sc": "node ./showcase/copySources.js && tsc --noEmit && vite build -c vite.config.applayoutexample.ts && vite build -c vite.config.showcase.ts && node ./showcase/copyIndexTo404.js",
 		"preview": "vitest run && npm run build:sc && vite preview -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
 		"dev:sc": "node ./showcase/copySources.js && npm run messages:compile && vite -c vite.config.showcase.ts --open",
+		"dev:applayout": "vite -c vite.config.applayoutexample.ts --open",
 		"eslint": "eslint **/*.ts*",
 		"stylelint": "stylelint **/*.css",
 		"clean": "rm -rf dist && rm -rf dist-showcase",
@@ -141,9 +142,9 @@
 		"vitest": "^1.6.0"
 	},
 	"peerDependencies": {
-		"@atlaskit/atlassian-navigation": "^3.6.2",
+		"@atlaskit/atlassian-navigation": "^4.1.3",
 		"@atlaskit/banner": "^12.4.1",
-		"@atlaskit/button": "^17.23.0",
+		"@atlaskit/button": "^18.0.0",
 		"@atlaskit/calendar": "^14.3.2",
 		"@atlaskit/checkbox": "^13.5.1",
 		"@atlaskit/code": "^15.3.0",
@@ -167,7 +168,7 @@
 		"@atlaskit/tag-group": "^10.4.0",
 		"@atlaskit/textarea": "^5.5.1",
 		"@atlaskit/textfield": "^6.4.0",
-		"@atlaskit/theme": "^12.11.0",
+		"@atlaskit/theme": "^12.11.1",
 		"@monaco-editor/react": "^4.6.0",
 		"react": "^16.8.0",
 		"react-dom": "^16.8.0",

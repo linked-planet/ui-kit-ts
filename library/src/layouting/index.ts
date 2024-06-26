@@ -1,2 +1,3 @@
 import PageLayout from "./PageLayout"
-export { PageLayout }
+import AppLayout from "./AppLayout"
+export { PageLayout, AppLayout }

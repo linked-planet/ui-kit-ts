@@ -1,4 +1,4 @@
-import { setGlobalTheme, ThemeColorModes } from "@atlaskit/tokens"
+import { setGlobalTheme, type ThemeColorModes } from "@atlaskit/tokens"
 import React from "react"
 import ReactDOM from "react-dom"
 import App from "./App"

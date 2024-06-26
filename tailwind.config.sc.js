@@ -6,6 +6,8 @@ export default {
 		"./showcase/src/**/*.tsx",
 		"./library/src/**/*.tsx",
 		"./library/src/**/*.ts",
+		"./applayoutexample/*.ts",
+		"./applayoutexample/*.tsx",
 		"./index.html",
 	],
 	theme,

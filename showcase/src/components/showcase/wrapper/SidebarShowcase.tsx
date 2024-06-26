@@ -1,15 +1,15 @@
-import React from "react"
+import type React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { LeftSidebar } from "@linked-planet/ui-kit-ts"
+import { AppLayout } from "@linked-planet/ui-kit-ts"
 export function SidebarShowcase(props: ShowcaseProps) {
 	//#region sidebar
 	const example = (
 		<div className="h-[300px]">
-			<LeftSidebar widthVariable="--leftSidebarWidth2">
+			<AppLayout.LeftSidebar widthVariable="--leftSidebarWidth2">
 				<div>Sidebar Entry</div>
-			</LeftSidebar>
+			</AppLayout.LeftSidebar>
 		</div>
 	)
 	//#endregion sidebar

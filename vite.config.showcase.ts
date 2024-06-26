@@ -38,6 +38,7 @@ export default defineConfig({
 		//global: {}, //-> this breaks @atlaskit/tokens build
 	},
 	base: "/ui-kit-ts",
+	root: "./showcase",
 	publicDir: "showcase/public",
 	plugins: [
 		react(),

@@ -8,7 +8,7 @@ import {
 } from "react"
 import { twMerge } from "tailwind-merge"
 
-import { rateLimitHelper } from "../../utils"
+import { rateLimitHelper } from "../utils"
 
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
@@ -19,17 +19,20 @@ const rateLimited = rateLimitHelper(33.3) //30fps
 
 type CollapsedState = "collapsed" | "expanded"
 
+export const leftSideBarVar = "--leftSidebarWidth"
+const leftSideBarFlyoutVar = "--leftSidebarFlyoutWidth"
+
 export function LeftSidebar({
 	id,
 	collapsedState,
 	width,
-	widthVariable = "--leftSidebarWidth",
-	flyoutWidthVariable = "--leftSidebarFlyoutWidth",
+	widthVariable = leftSideBarVar,
+	flyoutWidthVariable = leftSideBarFlyoutVar,
 	onCollapsed,
 	onExpand,
 	onResizeStart,
 	onResizeEnd,
-	isFixed,
+	sticky,
 	valueTextLabel,
 	resizeGrabAreaLabel,
 	className,
@@ -46,7 +49,7 @@ export function LeftSidebar({
 	onExpand?: () => void
 	onResizeStart?: () => void
 	onResizeEnd?: () => void
-	isFixed?: boolean
+	sticky?: boolean
 	valueTextLabel?: string
 	resizeGrabAreaLabel?: string
 	className?: string
@@ -126,7 +129,7 @@ export function LeftSidebar({
 			ref={asideRef}
 			aria-label={valueTextLabel ?? "sidebar"}
 			className={twMerge(
-				`relative z-[11] m-0 h-full transform p-0 ease-in-out ${
+				`bg-surface-overlay relative z-[1] m-0 box-border h-full transform p-2 ease-in-out ${
 					isResizing ? "duration-0" : "duration-300"
 				}`,
 				className,
@@ -137,6 +140,7 @@ export function LeftSidebar({
 			}}
 			data-ds--page-layout--slot="left-sidebar"
 		>
+			{/* resize button and grab handle area */}
 			<div
 				className="hover:border-brand-bold border-border absolute inset-y-0 -right-3 w-3 cursor-col-resize select-none border-l-2 bg-transparent opacity-100 duration-150"
 				aria-label={resizeGrabAreaLabel ?? "resize grab area"}
@@ -195,13 +199,17 @@ export function LeftSidebar({
 					)}
 				</button>
 			)}
-			<div
-				className={`${
-					isFixed ? "fixed inset-0" : "relative"
-				} bg-surface text-text-subtle flex h-full w-full overflow-y-auto overflow-x-hidden`}
+			{/* the actual sidebar */}
+			<section
+				className={`${sticky ? "sticky left-0 h-min" : "relative h-full"} text-text-subtle left-0 top-0 h-min w-full overflow-y-auto overflow-x-hidden`}
+				style={{
+					top: sticky
+						? "calc(var(--_bannerHeight, 0px) + var(--_topNavigationHeight, 0px))"
+						: undefined,
+				}}
 			>
 				{children}
-			</div>
+			</section>
 		</aside>
 	)
 }
