@@ -8,12 +8,12 @@ import {
 } from "react"
 import { twMerge } from "tailwind-merge"
 
+import { bannerHeightVar, topNavigationHeightVar } from "./AppLayout"
+
 import { rateLimitHelper } from "../utils"
 
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
-
-//TODO this is far from finished!
 
 const rateLimited = rateLimitHelper(33.3) //30fps
 
@@ -21,30 +21,13 @@ type CollapsedState = "collapsed" | "expanded"
 
 export const leftSideBarVar = "--leftSidebarWidth"
 const leftSideBarFlyoutVar = "--leftSidebarFlyoutWidth"
+export const rightSideBarVar = "--rightSidebarWidth"
+const rightSideBarFlyoutVar = "--rightSidebarFlyoutWidth"
 
-export function LeftSidebar({
-	id,
-	collapsedState,
-	width,
-	widthVariable = leftSideBarVar,
-	flyoutWidthVariable = leftSideBarFlyoutVar,
-	onCollapsed,
-	onExpand,
-	onResizeStart,
-	onResizeEnd,
-	sticky,
-	valueTextLabel,
-	resizeGrabAreaLabel,
-	className,
-	style,
-	children,
-	resizeButton,
-}: {
+export type SidebarProps = {
 	id?: string
 	collapsedState?: CollapsedState
 	width?: number
-	widthVariable?: string
-	flyoutWidthVariable?: string
 	onCollapsed?: () => void
 	onExpand?: () => void
 	onResizeStart?: () => void
@@ -56,7 +39,55 @@ export function LeftSidebar({
 	style?: CSSProperties
 	children: React.ReactNode
 	resizeButton?: React.ReactNode
-}) {
+}
+
+type PropAdditionals = {
+	position: "left" | "right"
+	widthVariable: string
+	flyoutWidthVariable: string
+}
+
+export function LeftSidebar(props: SidebarProps) {
+	return (
+		<Sidebar
+			{...props}
+			position="left"
+			widthVariable={leftSideBarVar}
+			flyoutWidthVariable={leftSideBarFlyoutVar}
+		/>
+	)
+}
+
+export function RightSidebar(props: SidebarProps) {
+	return (
+		<Sidebar
+			{...props}
+			position="right"
+			widthVariable={rightSideBarVar}
+			flyoutWidthVariable={rightSideBarFlyoutVar}
+		/>
+	)
+}
+
+function Sidebar({
+	id,
+	collapsedState,
+	width,
+	widthVariable,
+	flyoutWidthVariable,
+	onCollapsed,
+	onExpand,
+	onResizeStart,
+	onResizeEnd,
+	sticky,
+	valueTextLabel,
+	resizeGrabAreaLabel,
+	className,
+	style,
+	children,
+	resizeButton,
+	position,
+}: SidebarProps & PropAdditionals) {
 	const asideRef = useRef<ElementRef<"aside">>(null)
 	const mouseUpRef = useRef<(() => void) | undefined>(undefined)
 	const [collapsed, setCollapsed] = useState<CollapsedState>(
@@ -129,20 +160,21 @@ export function LeftSidebar({
 			ref={asideRef}
 			aria-label={valueTextLabel ?? "sidebar"}
 			className={twMerge(
-				`bg-surface-overlay relative z-[1] m-0 box-border h-full transform p-2 ease-in-out ${
+				`bg-surface-overlay relative z-[1] m-0 box-border h-full transform overflow-hidden p-2 ease-in-out ${
 					isResizing ? "duration-0" : "duration-300"
 				}`,
 				className,
 			)}
 			style={{
 				width: `var(${widthVariable})`,
+				gridArea:
+					position === "left" ? "left-sidebar" : "right-sidebar",
 				...style,
 			}}
-			data-ds--page-layout--slot="left-sidebar"
 		>
 			{/* resize button and grab handle area */}
 			<div
-				className="hover:border-brand-bold border-border absolute inset-y-0 -right-3 w-3 cursor-col-resize select-none border-l-2 bg-transparent opacity-100 duration-150"
+				className={`hover:border-brand-bold border-border absolute inset-y-0 ${position === "left" ? "-right-3 border-l-2" : "-left-3 border-r-2"} w-3 cursor-col-resize select-none bg-transparent opacity-100 duration-150 ${sticky ? "bg-warning-bold h-full overflow-scroll" : ""}`}
 				aria-label={resizeGrabAreaLabel ?? "resize grab area"}
 				onMouseDown={resizeCB}
 				onMouseEnter={() => {
@@ -155,21 +187,12 @@ export function LeftSidebar({
 						setIsHovered(false)
 					}
 				}}
-			/>
-			{resizeButton ? (
-				<>{resizeButton}</>
-			) : (
-				<button
-					onClick={() => {
-						const newState =
-							collapsed === "collapsed" ? "expanded" : "collapsed"
-						setCollapsed(newState)
-						if (newState === "collapsed" && onCollapsed)
-							onCollapsed()
-						if (newState === "expanded" && onExpand) onExpand()
-					}}
-					onKeyUp={(e) => {
-						if (e.key === "Enter" || e.key === " ") {
+			>
+				{resizeButton ? (
+					<>{resizeButton}</>
+				) : (
+					<button
+						onClick={() => {
 							const newState =
 								collapsed === "collapsed"
 									? "expanded"
@@ -178,33 +201,54 @@ export function LeftSidebar({
 							if (newState === "collapsed" && onCollapsed)
 								onCollapsed()
 							if (newState === "expanded" && onExpand) onExpand()
+						}}
+						onKeyUp={(e) => {
+							if (e.key === "Enter" || e.key === " ") {
+								const newState =
+									collapsed === "collapsed"
+										? "expanded"
+										: "collapsed"
+								setCollapsed(newState)
+								if (newState === "collapsed" && onCollapsed)
+									onCollapsed()
+								if (newState === "expanded" && onExpand)
+									onExpand()
+							}
+						}}
+						aria-label={
+							collapsed === "collapsed"
+								? "expand sidebar"
+								: "collapse sidebar"
 						}
-					}}
-					aria-label={
-						collapsed === "collapsed"
-							? "expand sidebar"
-							: "collapse sidebar"
-					}
-					className={`bg-surface-raised hover:bg-brand-hovered text-text hover:text-text-inverse absolute -right-3 top-8 flex h-6 w-6 items-center justify-center rounded-full hover:opacity-100 ${
-						isHovered || collapsed === "collapsed"
-							? "opacity-100"
-							: "opacity-0"
-					} duration-150`}
-					type="button"
-				>
-					{collapsed === "collapsed" ? (
-						<ChevronRightIcon label="expand" />
-					) : (
-						<ChevronLeftIcon label="collapse" />
-					)}
-				</button>
-			)}
+						className={`bg-surface-raised shadow-overlay-bold hover:bg-selected-bold active:bg-selected-bold-hovered text-text hover:text-text-inverse absolute ${position === "left" ? "-left-3" : "-right-3"} top-8 box-border flex h-6 w-6 items-center justify-center rounded-full duration-150`}
+						type="button"
+					>
+						{collapsed === "collapsed" ? (
+							<>
+								{position === "right" ? (
+									<ChevronLeftIcon label="expand" />
+								) : (
+									<ChevronRightIcon label="expand" />
+								)}
+							</>
+						) : (
+							<>
+								{position === "right" ? (
+									<ChevronRightIcon label="collapse" />
+								) : (
+									<ChevronLeftIcon label="collapse" />
+								)}
+							</>
+						)}
+					</button>
+				)}
+			</div>
 			{/* the actual sidebar */}
 			<section
-				className={`${sticky ? "sticky left-0 h-min" : "relative h-full"} text-text-subtle left-0 top-0 h-min w-full overflow-y-auto overflow-x-hidden`}
+				className={`${sticky && position === "left" ? "sticky left-0 h-min overflow-auto" : sticky ? "sticky right-0 h-min overflow-scroll" : "relative h-full"} text-text-subtle h-min w-full overflow-y-auto overflow-x-hidden`}
 				style={{
 					top: sticky
-						? "calc(var(--_bannerHeight, 0px) + var(--_topNavigationHeight, 0px))"
+						? `calc(var(${bannerHeightVar}, 0px) + var(${topNavigationHeightVar}, 0px))`
 						: undefined,
 				}}
 			>

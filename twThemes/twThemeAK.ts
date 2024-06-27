@@ -183,9 +183,9 @@ export const theme = {
 			hovered: `var(--ds-background-selected-hovered, ${N600})`,
 			pressed: `var(--ds-background-selected-pressed, ${N500})`,
 			bold: {
-				DEFAULT: `var(--ds-background-selected-bold, ${B300})`,
-				hovered: `var(--ds-background-selected-bold-hovered, ${B400})`,
-				pressed: `var(--ds-background-selected-bold-pressed, ${B500})`,
+				DEFAULT: `var(--ds-background-selected-bold, ${B200})`,
+				hovered: `var(--ds-background-selected-bold-hovered, ${B300})`,
+				pressed: `var(--ds-background-selected-bold-pressed, ${B400})`,
 			},
 			text: {
 				DEFAULT: `var(--ds-text-selected, ${N900})`,

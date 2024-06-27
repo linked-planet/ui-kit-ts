@@ -1,9 +1,15 @@
 import type React from "react"
-import { LeftSidebar as LeftSidebarImpl } from "./LeftSidebar"
+import {
+	LeftSidebar as LeftSidebarImpl,
+	RightSidebar as RightSidebarImpl,
+} from "./LeftSidebar"
 import { twMerge } from "tailwind-merge"
 
 import { leftSideBarVar } from "./LeftSidebar"
 import { useEffect, useImperativeHandle, useRef } from "react"
+
+export const bannerHeightVar = "--bannerHeight"
+export const topNavigationHeightVar = "--topNavigationHeight"
 
 /**
  * The container is the top level container that holds all the other layout elements.
@@ -69,12 +75,12 @@ function Banner({
 		if (height) {
 			const heightVal =
 				typeof height === "number" ? `${height}px` : height
-			root.style.setProperty("--bannerHeight", heightVal)
-			root.style.setProperty("--_bannerHeight", heightVal)
+			root.style.setProperty(bannerHeightVar, heightVal)
+			//root.style.setProperty("--_bannerHeight", heightVal)
 		} else {
 			const h = localRef.current?.clientHeight
 			if (h) {
-				root.style.setProperty("--_bannerHeight", `${h}px`)
+				root.style.setProperty(bannerHeightVar, `${h}px`)
 			}
 		}
 	}, [height])
@@ -128,12 +134,12 @@ function TopNavigation({
 		if (height) {
 			const heightVal =
 				typeof height === "number" ? `${height}px` : height
-			root.style.setProperty("--topNavigationHeight", heightVal)
-			root.style.setProperty("--_topNavigationHeight", heightVal)
+			root.style.setProperty(topNavigationHeightVar, heightVal)
+			//root.style.setProperty("--_topNavigationHeight", heightVal)
 		} else {
 			const h = localRef.current?.clientHeight
 			if (h) {
-				root.style.setProperty("--_topNavigationHeight", `${h}px`)
+				root.style.setProperty(topNavigationHeightVar, `${h}px`)
 			}
 		}
 	}, [height])
@@ -148,9 +154,9 @@ function TopNavigation({
 			data-layout-top-navigation="true"
 			data-testid={testId}
 			style={{
-				height: "var(--topNavigationHeight, min-content)",
+				height: `var(${topNavigationHeightVar}, min-content)`,
 				gridArea: "top-navigation",
-				top: sticky ? "var(--_bannerHeight, 0)" : undefined,
+				top: sticky ? `var(${bannerHeightVar}, 0)` : undefined,
 				/*insetBlockStart: "var(--bannerHeight, auto)",
 				insetInlineEnd: "var(--rightPanelWidth, auto)",
 				insetInlineStart: "var(--leftPanelWidth, auto)",*/
@@ -248,13 +254,15 @@ function Content({
 	return (
 		<section
 			className={twMerge(
-				"bg-warning-bold relative flex h-full min-h-0 w-full",
+				"relative grid h-full min-h-0 w-full",
 				className,
 			)}
 			data-layout-content="true"
 			data-testid={testId}
 			style={{
 				gridArea: "content",
+				gridTemplateAreas: '"left-sidebar main right-sidebar"',
+				gridTemplateColumns: "auto minmax(0, 1fr) auto",
 				...style,
 			}}
 		>
@@ -274,7 +282,7 @@ function Main({
 	return (
 		<main
 			className={twMerge(
-				"bg-surface relative m-0 box-border min-h-0 p-4",
+				"bg-surface relative m-0 box-border min-h-0 w-full p-4",
 				className,
 			)}
 			data-layout-main="true"
@@ -290,6 +298,7 @@ function Main({
  * The left side bar is an (optionally) resizeable bar and should be within the content area.
  */
 const LeftSidebar = LeftSidebarImpl
+const RightSidebar = RightSidebarImpl
 
 const AppLayout = {
 	Container,
@@ -299,6 +308,7 @@ const AppLayout = {
 	RightPanel,
 	Content,
 	LeftSidebar,
+	RightSidebar,
 	Main,
 }
 export default AppLayout
