@@ -25,7 +25,6 @@
 		"preview": "vitest run && npm run build:sc && vite preview -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
 		"dev:sc": "node ./showcase/copySources.js && npm run messages:compile && vite -c vite.config.showcase.ts --open",
-		"dev:applayout": "vite -c vite.config.applayoutexample.ts --open",
 		"eslint": "eslint **/*.ts*",
 		"stylelint": "stylelint **/*.css",
 		"clean": "rm -rf dist && rm -rf dist-showcase",
