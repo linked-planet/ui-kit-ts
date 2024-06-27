@@ -103,19 +103,26 @@ function Sidebar({
 		if (collapsed && onCollapsed) onCollapsed()
 	}
 
-	const resizeCB = useCallback(() => {
+	const resizeCB = () => {
 		if (mouseUpRef.current === undefined && collapsed === "expanded") {
 			const mouseMoveProto = (ev: MouseEvent) => {
 				if (!asideRef.current) return
 				if (ev.clientX < 0) return
-				if (ev.clientX > window.innerWidth - 20) return
-				const leftSidebarWidth =
-					ev.clientX - asideRef.current.getBoundingClientRect().left
-				if (leftSidebarWidth < 20) return
-				widthUsedRef.current = leftSidebarWidth
+				if (position === "left" && ev.clientX > window.innerWidth - 20)
+					return
+				if (position === "right" && ev.clientX < 20) return
+				const sidebarWidth =
+					position === "left"
+						? ev.clientX -
+							asideRef.current.getBoundingClientRect().left
+						: asideRef.current.getBoundingClientRect().right -
+							ev.clientX
+
+				if (sidebarWidth < 20) return
+				widthUsedRef.current = sidebarWidth
 				document.documentElement.style.setProperty(
 					widthVariable,
-					`${leftSidebarWidth}px`,
+					`${sidebarWidth}px`,
 				)
 			}
 			const mouseMove = (e: MouseEvent) => rateLimited(mouseMoveProto, e)
@@ -135,7 +142,7 @@ function Sidebar({
 
 			if (onResizeStart) onResizeStart()
 		}
-	}, [collapsed, widthVariable, onResizeEnd, onResizeStart])
+	}
 
 	// in AK the width sets only the default width
 	/*if (width != null && width !== widthUsedRef.current) {
@@ -176,21 +183,21 @@ function Sidebar({
 			{/* resize button and grab handle area */}
 			<div
 				className={`absolute inset-y-0 h-full ${position === "left" ? "-right-3 border-l-2" : "-left-3 border-r-2"} hover:border-brand-bold border-border w-3 cursor-col-resize select-none bg-transparent`}
+				onMouseDown={resizeCB}
+				onMouseEnter={() => {
+					if (!isResizing && !isHovered) {
+						setIsHovered(true)
+					}
+				}}
+				onMouseLeave={() => {
+					if (!isResizing && isHovered) {
+						setIsHovered(false)
+					}
+				}}
 			>
 				<div
 					className={`${sticky ? "sticky" : "static"} duration-150`}
 					aria-label={resizeGrabAreaLabel ?? "resize grab area"}
-					onMouseDown={resizeCB}
-					onMouseEnter={() => {
-						if (!isResizing && !isHovered) {
-							setIsHovered(true)
-						}
-					}}
-					onMouseLeave={() => {
-						if (!isResizing && isHovered) {
-							setIsHovered(false)
-						}
-					}}
 					style={{
 						top: sticky
 							? `calc(var(${bannerHeightVar}, 0px) + var(${topNavigationHeightVar}, 0px))`

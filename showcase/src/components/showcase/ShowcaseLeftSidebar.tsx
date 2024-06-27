@@ -38,7 +38,7 @@ function ShowcaseLeftSidebar() {
 				scrollAndHighlightElement(showcaseName)
 				return
 			}
-			navigate("/single?component=" + showcaseName)
+			navigate(`/single?component=${showcaseName}`)
 		},
 		[location, navigate],
 	)

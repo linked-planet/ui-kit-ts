@@ -22,7 +22,7 @@ export default function AppLayoutShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts/single#AppLayout",
+					url: "https://linked-planet.github.io/ui-kit-ts/applayoutexample/index.html",
 				},
 			]}
 			examples={[
