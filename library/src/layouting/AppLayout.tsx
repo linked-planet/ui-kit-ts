@@ -5,8 +5,7 @@ import {
 } from "./LeftSidebar"
 import { twMerge } from "tailwind-merge"
 
-import { leftSideBarVar } from "./LeftSidebar"
-import { useEffect, useImperativeHandle, useRef } from "react"
+import { useEffect, useRef } from "react"
 
 export const bannerHeightVar = "--bannerHeight"
 export const topNavigationHeightVar = "--topNavigationHeight"
@@ -42,8 +41,7 @@ function Container({
 				`,
 				gridTemplateColumns:
 					"var(--leftPanelWidth, 0px) minmax(0, 1fr) var(--rightPanelWidth, 0px)",
-				gridTemplateRows:
-					"var(--bannerHeight, min-content) var(--topNavigationHeight, min-content) 1fr",
+				gridTemplateRows: `var(${bannerHeightVar}, min-content) var(${topNavigationHeightVar}, min-content) 1fr`,
 				outline: "none",
 				...style,
 			}}
@@ -76,7 +74,6 @@ function Banner({
 			const heightVal =
 				typeof height === "number" ? `${height}px` : height
 			root.style.setProperty(bannerHeightVar, heightVal)
-			//root.style.setProperty("--_bannerHeight", heightVal)
 		} else {
 			const h = localRef.current?.clientHeight
 			if (h) {
@@ -89,13 +86,13 @@ function Banner({
 		<div
 			ref={localRef}
 			className={twMerge(
-				`bg-surface-overlay z-[2] m-0 box-border min-h-0 ${sticky ? "sticky left-0 right-0 top-0" : "relative"}`,
+				`bg-surface-overlay z-[3] m-0 box-border min-h-0 ${sticky ? "sticky left-0 right-0 top-0" : "relative"}`,
 				className,
 			)}
 			data-layout-banner="true"
 			data-testid={testId}
 			style={{
-				height: "var(--bannerHeight, min-content)",
+				height: `var(${bannerHeightVar}, min-content)`,
 				gridArea: "banner",
 				/*insetBlockStart: 0,
 				insetInlineEnd: fixed
@@ -148,7 +145,7 @@ function TopNavigation({
 		<header
 			ref={localRef}
 			className={twMerge(
-				`bg-surface-overlay z-[2] m-0 box-border min-h-0 ${sticky ? "sticky left-0 right-0" : "relative"}`,
+				`bg-surface-overlay z-[3] m-0 box-border min-h-0 ${sticky ? "sticky left-0 right-0" : "relative"}`,
 				className,
 			)}
 			data-layout-top-navigation="true"
@@ -276,18 +273,26 @@ function Main({
 	className,
 	style,
 	testId,
+	fixedHeight,
 }: React.ComponentPropsWithRef<"main"> & {
 	testId?: string
+	fixedHeight?: boolean
 }) {
 	return (
 		<main
 			className={twMerge(
-				"bg-surface relative m-0 box-border min-h-0 w-full p-4",
+				"relative m-0 box-border min-h-0 w-full",
 				className,
 			)}
 			data-layout-main="true"
 			data-testid={testId}
-			style={style}
+			style={{
+				height: fixedHeight
+					? "calc(100dvh - var(--topNavigationHeight, 0px) - var(--bannerHeight, 0px))"
+					: undefined,
+				overflow: fixedHeight ? "hidden" : undefined,
+				...style,
+			}}
 		>
 			{children}
 		</main>

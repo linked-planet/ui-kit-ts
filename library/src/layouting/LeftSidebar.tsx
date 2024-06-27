@@ -160,7 +160,7 @@ function Sidebar({
 			ref={asideRef}
 			aria-label={valueTextLabel ?? "sidebar"}
 			className={twMerge(
-				`bg-surface-overlay relative z-[1] m-0 box-border h-full transform ease-in-out ${
+				`bg-surface-overlay relative z-[2] m-0 box-border h-full transform ease-in-out ${
 					isResizing ? "duration-0" : "duration-300"
 				}`,
 				className,

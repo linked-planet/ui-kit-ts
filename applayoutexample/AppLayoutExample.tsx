@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { AppLayout, Checkbox } from "@linked-planet/ui-kit-ts"
+import { AppLayout, Checkbox, PageLayout } from "@linked-planet/ui-kit-ts"
 
 import "@atlaskit/css-reset" // sets base styles of AK
 import Fillers from "./Fillers"
@@ -12,6 +12,7 @@ export default function AppLayoutExample() {
 
 	const [leftSidebarSticky, setLeftSidebarSticky] = useState(true)
 	const [rightSidebarSticky, setRightSidebarSticky] = useState(true)
+	const [mainFixedHeight, setMainFixedHeight] = useState(true)
 
 	return (
 		<AppLayout.Container>
@@ -84,9 +85,38 @@ export default function AppLayoutExample() {
 					<Fillers />
 				</AppLayout.RightSidebar>
 
-				<AppLayout.Main>
-					<h1>Main</h1>
-					<Fillers />
+				<AppLayout.Main
+					className="overflow-hidden border-2 border-dotted"
+					fixedHeight={mainFixedHeight}
+				>
+					<div className="bg-warning border-warning-bold absolute right-4 top-0 z-10 border-2 border-solid p-4">
+						<Checkbox
+							checked={mainFixedHeight}
+							onCheckedChange={setMainFixedHeight}
+							label="Fixed Height"
+						/>
+					</div>
+					<PageLayout.Page>
+						<PageLayout.PageHeader shadow={false}>
+							<PageLayout.PageHeaderTitle>
+								Page Layout
+							</PageLayout.PageHeaderTitle>
+							<PageLayout.PageHeaderSubTitle>
+								Subtitle
+							</PageLayout.PageHeaderSubTitle>
+						</PageLayout.PageHeader>
+						<PageLayout.PageBody>
+							<PageLayout.PageBodyHeader>
+								Page Body Header
+							</PageLayout.PageBodyHeader>
+							<PageLayout.PageBodyContent>
+								<Fillers />
+							</PageLayout.PageBodyContent>
+							<PageLayout.PageBodyFooter>
+								Page Body Footer
+							</PageLayout.PageBodyFooter>
+						</PageLayout.PageBody>
+					</PageLayout.Page>
 				</AppLayout.Main>
 			</AppLayout.Content>
 		</AppLayout.Container>

@@ -13,7 +13,7 @@ const Page = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface flex h-full min-h-0 w-full flex-col overflow-hidden",
+			"flex h-full min-h-0 w-full flex-col overflow-hidden",
 			className,
 		)}
 		id={id}
