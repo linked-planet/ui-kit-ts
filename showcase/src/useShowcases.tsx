@@ -45,6 +45,7 @@ import ToggleShowcase from "./components/showcase/wrapper/ToggleShowcase"
 import TooltipShowcase from "./components/showcase/wrapper/TooltipShowcase"
 import TruncatedTextShowcase from "./components/showcase/wrapper/TruncatedTextShowcase"
 import UtilsShowcase from "./components/showcase/wrapper/UtilsShowcase"
+import AppLayoutShowcase from "./components/showcase/wrapper/AppLayoutShowcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -57,6 +58,9 @@ export default function useShowcases({
 			),
 			"Animated List": (
 				<AnimatedListShowcase overallSourceCode={overallSourceCode} />
+			),
+			"App Layout": (
+				<AppLayoutShowcase overallSourceCode={overallSourceCode} />
 			),
 			Avatars: <AvatarShowcase overallSourceCode={overallSourceCode} />,
 			"Awesome Slider": (
