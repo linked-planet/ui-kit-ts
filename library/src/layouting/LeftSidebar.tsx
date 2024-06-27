@@ -19,10 +19,10 @@ const rateLimited = rateLimitHelper(33.3) //30fps
 
 type CollapsedState = "collapsed" | "expanded"
 
-export const leftSideBarVar = "--leftSidebarWidth"
-const leftSideBarFlyoutVar = "--leftSidebarFlyoutWidth"
-export const rightSideBarVar = "--rightSidebarWidth"
-const rightSideBarFlyoutVar = "--rightSidebarFlyoutWidth"
+export const leftSidebarWidthVar = "--leftSidebarWidth"
+const leftSidebarFlyoutVar = "--leftSidebarFlyoutWidth"
+export const rightSidebarWidthVar = "--rightSidebarWidth"
+const rightSidebarFlyoutVar = "--rightSidebarFlyoutWidth"
 
 export type SidebarProps = {
 	id?: string
@@ -39,6 +39,7 @@ export type SidebarProps = {
 	style?: CSSProperties
 	children: React.ReactNode
 	resizeButton?: React.ReactNode
+	widthVariable?: string
 }
 
 type PropAdditionals = {
@@ -52,8 +53,8 @@ export function LeftSidebar(props: SidebarProps) {
 		<Sidebar
 			{...props}
 			position="left"
-			widthVariable={leftSideBarVar}
-			flyoutWidthVariable={leftSideBarFlyoutVar}
+			widthVariable={props.widthVariable ?? leftSidebarWidthVar}
+			flyoutWidthVariable={leftSidebarFlyoutVar}
 		/>
 	)
 }
@@ -63,8 +64,8 @@ export function RightSidebar(props: SidebarProps) {
 		<Sidebar
 			{...props}
 			position="right"
-			widthVariable={rightSideBarVar}
-			flyoutWidthVariable={rightSideBarFlyoutVar}
+			widthVariable={props.widthVariable ?? rightSidebarWidthVar}
+			flyoutWidthVariable={rightSidebarFlyoutVar}
 		/>
 	)
 }

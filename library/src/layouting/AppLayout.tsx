@@ -1,7 +1,9 @@
 import type React from "react"
 import {
 	LeftSidebar as LeftSidebarImpl,
+	leftSidebarWidthVar,
 	RightSidebar as RightSidebarImpl,
+	rightSidebarWidthVar,
 } from "./LeftSidebar"
 import { twMerge } from "tailwind-merge"
 
@@ -9,6 +11,8 @@ import { useEffect, useRef } from "react"
 
 export const bannerHeightVar = "--bannerHeight"
 export const topNavigationHeightVar = "--topNavigationHeight"
+export const leftPanelWidthVar = "--leftPanelWidth"
+export const rightPanelWidthVar = "--rightPanelWidth"
 
 /**
  * The container is the top level container that holds all the other layout elements.
@@ -39,8 +43,7 @@ function Container({
 					"left-panel top-navigation right-panel"
 					"left-panel content right-panel"
 				`,
-				gridTemplateColumns:
-					"var(--leftPanelWidth, 0px) minmax(0, 1fr) var(--rightPanelWidth, 0px)",
+				gridTemplateColumns: `var(${leftPanelWidthVar}, 0px) minmax(0, 1fr) var(${rightPanelWidthVar}, 0px)`,
 				gridTemplateRows: `var(${bannerHeightVar}, min-content) var(${topNavigationHeightVar}, min-content) 1fr`,
 				outline: "none",
 				...style,
@@ -180,7 +183,7 @@ function LeftPanel({
 }) {
 	if (width) {
 		const root = document.documentElement
-		root.style.setProperty("--leftPanelWidth", `${width}px`)
+		root.style.setProperty(leftPanelWidthVar, `${width}px`)
 	}
 
 	return (
@@ -191,7 +194,7 @@ function LeftPanel({
 			)}
 			data-layout-left-panel="true"
 			style={{
-				width: "var(--leftPanelWidth, 0px)",
+				width: `var(${leftPanelWidthVar}, 0px)`,
 				gridArea: "left-panel",
 				...style,
 			}}
@@ -218,7 +221,7 @@ function RightPanel({
 }) {
 	if (width) {
 		const root = document.documentElement
-		root.style.setProperty("--rightPanelWidth", `${width}px`)
+		root.style.setProperty(rightPanelWidthVar, `${width}px`)
 	}
 
 	return (
@@ -230,7 +233,7 @@ function RightPanel({
 			data-layout-right-panel="true"
 			data-testid={testId}
 			style={{
-				width: "var(--rightPanelWidth, 0px)",
+				width: `var(${rightPanelWidthVar}, 0px)`,
 				gridArea: "right-panel",
 				...style,
 			}}
@@ -288,7 +291,7 @@ function Main({
 			data-testid={testId}
 			style={{
 				height: fixedHeight
-					? "calc(100dvh - var(--topNavigationHeight, 0px) - var(--bannerHeight, 0px))"
+					? `calc(100dvh - var(${topNavigationHeightVar}, 0px) - var(${bannerHeightVar}, 0px))`
 					: undefined,
 				overflow: fixedHeight ? "hidden" : undefined,
 				...style,
@@ -315,5 +318,11 @@ const AppLayout = {
 	LeftSidebar,
 	RightSidebar,
 	Main,
+	bannerHeightVar,
+	topNavigationHeightVar,
+	leftPanelWidthVar,
+	rightPanelWidthVar,
+	leftSidebarWidthVar,
+	rightSidebarWidthVar,
 }
 export default AppLayout
