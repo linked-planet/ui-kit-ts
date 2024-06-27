@@ -9,10 +9,10 @@ import { twMerge } from "tailwind-merge"
 
 import { useEffect, useRef } from "react"
 
-export const bannerHeightVar = "--bannerHeight"
-export const topNavigationHeightVar = "--topNavigationHeight"
-export const leftPanelWidthVar = "--leftPanelWidth"
-export const rightPanelWidthVar = "--rightPanelWidth"
+export const bannerHeightVar = "--bannerHeight" as const
+export const topNavigationHeightVar = "--topNavigationHeight" as const
+export const leftPanelWidthVar = "--leftPanelWidth" as const
+export const rightPanelWidthVar = "--rightPanelWidth" as const
 
 /**
  * The container is the top level container that holds all the other layout elements.

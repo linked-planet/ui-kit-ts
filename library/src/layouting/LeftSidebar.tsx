@@ -19,10 +19,10 @@ const rateLimited = rateLimitHelper(33.3) //30fps
 
 type CollapsedState = "collapsed" | "expanded"
 
-export const leftSidebarWidthVar = "--leftSidebarWidth"
-const leftSidebarFlyoutVar = "--leftSidebarFlyoutWidth"
-export const rightSidebarWidthVar = "--rightSidebarWidth"
-const rightSidebarFlyoutVar = "--rightSidebarFlyoutWidth"
+export const leftSidebarWidthVar = "--leftSidebarWidth" as const
+const leftSidebarFlyoutVar = "--leftSidebarFlyoutWidth" as const
+export const rightSidebarWidthVar = "--rightSidebarWidth" as const
+const rightSidebarFlyoutVar = "--rightSidebarFlyoutWidth" as const
 
 export type SidebarProps = {
 	id?: string
