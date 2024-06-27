@@ -4,6 +4,7 @@ import { AppLayout, Checkbox, PageLayout } from "@linked-planet/ui-kit-ts"
 import "@atlaskit/css-reset" // sets base styles of AK
 import Fillers from "./Fillers"
 
+//#region applayoutexample
 export default function AppLayoutExample() {
 	const [bannerSticky, setBannerSticky] = useState(true)
 	const [topNavSticky, setTopNavSticky] = useState(true)
@@ -122,3 +123,4 @@ export default function AppLayoutExample() {
 		</AppLayout.Container>
 	)
 }
+//#endregion applayoutexample

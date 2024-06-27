@@ -4,7 +4,7 @@ import {
 	leftSidebarWidthVar,
 	RightSidebar as RightSidebarImpl,
 	rightSidebarWidthVar,
-} from "./LeftSidebar"
+} from "./Sidebar"
 import { twMerge } from "tailwind-merge"
 
 import { useEffect, useRef } from "react"

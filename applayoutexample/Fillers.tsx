@@ -1,3 +1,4 @@
+import type React from "react"
 export default function Fillers() {
 	const fillers = Array.from({ length: 100 }, (_, i) => (
 		// biome-ignore lint/suspicious/noArrayIndexKey: intentional
