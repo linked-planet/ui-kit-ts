@@ -4,9 +4,9 @@ import {
 	writeFile,
 	existsSync,
 	unlinkSync,
-} from "fs"
-import { resolve, dirname } from "path"
-import { fileURLToPath } from "url"
+} from "node:fs"
+import { resolve, dirname } from "node:path"
+import { fileURLToPath } from "node:url"
 
 const colors = {
 	reset: "\x1b[0m",
@@ -57,17 +57,24 @@ if (existsSync(outFile)) {
 	unlinkSync(outFile)
 }
 
-const content = readdirSync(wrapperDirName)
+let content = readdirSync(wrapperDirName)
 	.map((fileName) => {
 		return readFileSync(
-			wrapperDirName + "/" + fileName,
+			`${wrapperDirName}/${fileName}`,
 			"utf8",
-			function (err, data) {
-				return data
-			},
+			(err, data) => data,
 		)
 	})
 	.join("\n")
+
+const appLayoutExample = readFileSync(
+	"./showcase/applayoutexample/AppLayoutExample.tsx",
+	"utf8",
+	(err, data) => data,
+)
+
+content += "\n"
+content += appLayoutExample
 
 writeFile(outFile, content, (err) => {
 	if (err) {

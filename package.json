@@ -21,7 +21,7 @@
 	],
 	"scripts": {
 		"build:lib": "tsc --noEmit -p tsconfig.lib.json && vitest run && vite build -c vite.config.lib.ts && TAILWIND_IMPORTANT=true vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist && npm run tsc:plugin",
-		"build:sc": "node ./showcase/copySources.js && tsc --noEmit && vite build -c vite.config.applayoutexample.ts && vite build -c vite.config.showcase.ts && node ./showcase/copyIndexTo404.js",
+		"build:sc": "node ./showcase/copySources.js && tsc --noEmit && vite build -c vite.config.showcase.ts && node ./showcase/copyIndexTo404.js",
 		"preview": "vitest run && npm run build:sc && vite preview -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
 		"dev:sc": "node ./showcase/copySources.js && npm run messages:compile && vite -c vite.config.showcase.ts --open",

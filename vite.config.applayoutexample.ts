@@ -1,6 +1,6 @@
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react-swc"
-import path from "node:path"
+import { resolve } from "node:path"
 
 // postcss:
 import tailwindcss from "tailwindcss"
@@ -14,7 +14,7 @@ export default defineConfig({
 		},
 	},
 	build: {
-		outDir: "dist-applayoutexample",
+		outDir: resolve(__dirname, "./dist-applayoutexample"),
 		target: "es2022",
 		rollupOptions: {
 			//plugins: [nodePolyfills()],
@@ -22,10 +22,7 @@ export default defineConfig({
 	},
 	resolve: {
 		alias: {
-			"@linked-planet/ui-kit-ts": path.resolve(
-				__dirname,
-				"./library/src",
-			),
+			"@linked-planet/ui-kit-ts": resolve(__dirname, "./library/src"),
 		},
 	},
 	base: "/applayoutexample",
