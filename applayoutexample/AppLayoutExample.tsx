@@ -15,7 +15,7 @@ export default function AppLayoutExample() {
 
 	return (
 		<AppLayout.Container>
-			{/*<AppLayout.Banner
+			<AppLayout.Banner
 				sticky={bannerSticky}
 				className="flex justify-between gap-4 border-2 border-solid px-4 py-2"
 			>
@@ -36,7 +36,7 @@ export default function AppLayoutExample() {
 					onCheckedChange={setTopNavSticky}
 					label="Top Navigation Sticky"
 				/>
-			</AppLayout.TopNavigation>*/}
+			</AppLayout.TopNavigation>
 			<AppLayout.LeftPanel
 				sticky={leftPanelSticky}
 				className="border-2 border-dashed p-4"
