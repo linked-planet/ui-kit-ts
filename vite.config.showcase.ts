@@ -43,7 +43,7 @@ export default defineConfig({
 	},
 	base: "/ui-kit-ts",
 	root: "./showcase",
-	publicDir: "showcase/public",
+	publicDir: "public",
 	plugins: [
 		react(),
 		/*tsconfigPaths({

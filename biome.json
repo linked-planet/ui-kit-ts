@@ -12,7 +12,12 @@
 	"organizeImports": { "enabled": true },
 	"linter": {
 		"enabled": true,
-		"rules": { "recommended": true },
+		"rules": { 
+			"recommended": true, 
+			"complexity": {
+				"noForEach": "off"
+			}
+		},
 		"ignore": [
 			"node_modules",
 			"dist",
@@ -30,7 +35,6 @@
 		"formatter": {
 			"jsxQuoteStyle": "double",
 			"quoteProperties": "asNeeded",
-			"trailingComma": "all",
 			"semicolons": "asNeeded",
 			"arrowParentheses": "always",
 			"bracketSpacing": true,
