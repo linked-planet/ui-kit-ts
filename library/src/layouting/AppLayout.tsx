@@ -32,7 +32,7 @@ function Container({
 	return (
 		<div
 			className={twMerge(
-				"relative m-0 box-border grid h-full min-h-0 w-full",
+				"relative m-0 box-border grid h-full min-h-dvh w-full",
 				className,
 			)}
 			data-layout-container="true"
@@ -262,7 +262,7 @@ function Content({
 			style={{
 				gridArea: "content",
 				gridTemplateAreas: '"left-sidebar main right-sidebar"',
-				gridTemplateColumns: "auto minmax(0, 1fr) auto",
+				gridTemplateColumns: "auto 1fr auto",
 				...style,
 			}}
 		>
@@ -290,6 +290,7 @@ function Main({
 			data-layout-main="true"
 			data-testid={testId}
 			style={{
+				gridArea: "main",
 				height: fixedHeight
 					? `calc(100dvh - var(${topNavigationHeightVar}, 0px) - var(${bannerHeightVar}, 0px))`
 					: undefined,
