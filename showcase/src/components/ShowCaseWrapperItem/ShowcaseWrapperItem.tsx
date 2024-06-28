@@ -195,7 +195,7 @@ function ShowCaseExample({
 	)
 
 	return (
-		<div className="bg-surface w-full overflow-auto py-4">
+		<div className="bg-surface w-full overflow-hidden py-4">
 			<ButtonGroup>
 				<Button
 					selected={content === "example"}
@@ -211,7 +211,9 @@ function ShowCaseExample({
 				</Button>
 			</ButtonGroup>
 			{content === "example" && (
-				<div className={styles.example}>{example}</div>
+				<div className={`${styles.example} overflow-auto`}>
+					{example}
+				</div>
 			)}
 			{content === "source" && (
 				<div>
