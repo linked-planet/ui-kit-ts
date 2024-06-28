@@ -34,6 +34,10 @@ export type SidebarProps = {
 	style?: CSSProperties
 	children: React.ReactNode
 	resizeButton?: React.ReactNode
+	widthVar?: `--${string}`
+	flyoutVar?: `--${string}`
+	localStorageWidthKey?: string
+	localStorageCollapsedKey?: string
 }
 
 type PropAdditionals = {
@@ -55,63 +59,96 @@ const localStorageKeyRightCollapsed = "rightSidebarCollapsed"
 const defaultWidth = 180 as const
 const collapsedWidth = 20 as const
 
-function setSidebarWidthVars(width: number, position: SidebarPosition) {
+/**
+ * Sets the CSS variables for the sidebar width
+ */
+function setSidebarWidthVars(
+	width: number,
+	position: SidebarPosition,
+	widthVar?: string,
+	flyoutVar?: string,
+	localStorageVar?: string,
+) {
 	if (position === "left") {
 		document.documentElement.style.setProperty(
-			leftSidebarWidthVar,
+			widthVar ?? leftSidebarWidthVar,
 			`${width}px`,
 		)
 		if (width > collapsedWidth) {
 			document.documentElement.style.setProperty(
-				leftSidebarFlyoutVar,
+				flyoutVar ?? leftSidebarFlyoutVar,
 				`${width}px`,
 			)
-			localStorage.setItem(localStorageKeyWidthLeft, width.toString())
+			localStorage.setItem(
+				localStorageVar ?? localStorageKeyWidthLeft,
+				width.toString(),
+			)
 		}
 	} else {
 		document.documentElement.style.setProperty(
-			rightSidebarWidthVar,
+			widthVar ?? rightSidebarWidthVar,
 			`${width}px`,
 		)
 		if (width > collapsedWidth) {
 			document.documentElement.style.setProperty(
-				rightSidebarFlyoutVar,
+				flyoutVar ?? rightSidebarFlyoutVar,
 				`${width}px`,
 			)
-			localStorage.setItem(localStorageKeyWidthRight, width.toString())
+			localStorage.setItem(
+				localStorageVar ?? localStorageKeyWidthRight,
+				width.toString(),
+			)
 		}
 	}
 }
 
-function resetToExpanded(position: SidebarPosition) {
+/**
+ * Resets the sidebar width in the expanded state coming from the collapsed state
+ */
+function resetToExpanded(
+	position: SidebarPosition,
+	widthVar?: string,
+	flyoutVar?: string,
+	localStorageVar?: string,
+) {
 	if (position === "left") {
 		const original =
 			document.documentElement.style.getPropertyValue(
-				leftSidebarFlyoutVar,
+				flyoutVar ?? leftSidebarFlyoutVar,
 			) ?? `${defaultWidth}px`
 		const num = original.substring(0, original.length - 2)
-		localStorage.setItem(localStorageKeyWidthLeft, num.toString())
+		localStorage.setItem(
+			localStorageVar ?? localStorageKeyWidthLeft,
+			num.toString(),
+		)
 		document.documentElement.style.setProperty(
-			leftSidebarWidthVar,
+			widthVar ?? leftSidebarWidthVar,
 			original,
 		)
 	} else {
 		const original =
 			document.documentElement.style.getPropertyValue(
-				rightSidebarFlyoutVar,
+				flyoutVar ?? rightSidebarFlyoutVar,
 			) ?? defaultWidth
-		localStorage.setItem(localStorageKeyWidthRight, original.toString())
+		localStorage.setItem(
+			localStorageVar ?? localStorageKeyWidthRight,
+			original.toString(),
+		)
 		document.documentElement.style.setProperty(
-			rightSidebarWidthVar,
+			widthVar ?? rightSidebarWidthVar,
 			original,
 		)
 	}
 }
 
-function getWidthFromLocalStorage(position: SidebarPosition) {
+function getWidthFromLocalStorage(
+	position: SidebarPosition,
+	localStorageVar?: string,
+) {
 	if (position === "left") {
 		const locVal = Number.parseInt(
-			localStorage.getItem(localStorageKeyWidthLeft) ?? "",
+			localStorage.getItem(localStorageVar ?? localStorageKeyWidthLeft) ??
+				"",
 		)
 		if (!Number.isNaN(locVal)) {
 			return locVal
@@ -119,7 +156,8 @@ function getWidthFromLocalStorage(position: SidebarPosition) {
 		return defaultWidth
 	}
 	const locVal = Number.parseInt(
-		localStorage.getItem(localStorageKeyWidthRight) ?? "",
+		localStorage.getItem(localStorageVar ?? localStorageKeyWidthRight) ??
+			"",
 	)
 	if (!Number.isNaN(locVal)) {
 		return locVal
@@ -143,6 +181,10 @@ function Sidebar({
 	children,
 	resizeButton,
 	position,
+	widthVar,
+	flyoutVar,
+	localStorageWidthKey,
+	localStorageCollapsedKey,
 }: SidebarProps & PropAdditionals) {
 	const asideRef = useRef<ElementRef<"aside">>(null)
 	const mouseUpRef = useRef<(() => void) | undefined>(undefined)
@@ -151,21 +193,39 @@ function Sidebar({
 
 	const collapsedInit =
 		(localStorage.getItem(
-			position === "left"
-				? localStorageKeyLeftCollapsed
-				: localStorageKeyRightCollapsed,
+			localStorageCollapsedKey ??
+				(position === "left"
+					? localStorageKeyLeftCollapsed
+					: localStorageKeyRightCollapsed),
 		) as CollapsedState | null) ??
 		_collapsed ??
 		"expanded"
 
 	const [collapsed, setCollapsed] = useState<CollapsedState>(collapsedInit)
 
-	const widthFromLocalStorage = getWidthFromLocalStorage(position)
-	setSidebarWidthVars(widthFromLocalStorage, position)
+	const widthFromLocalStorage = getWidthFromLocalStorage(
+		position,
+		localStorageWidthKey,
+	)
+	// sets the initial css variables
+	setSidebarWidthVars(
+		widthFromLocalStorage,
+		position,
+		widthVar,
+		flyoutVar,
+		localStorageWidthKey,
+	)
 	const initWidth =
 		collapsed === "expanded" ? widthFromLocalStorage : collapsedWidth
 
-	setSidebarWidthVars(initWidth, position)
+	// handles if collapsed or not
+	setSidebarWidthVars(
+		initWidth,
+		position,
+		widthVar,
+		flyoutVar,
+		localStorageWidthKey,
+	)
 
 	if (_collapsed != null && _collapsed !== collapsed) {
 		setCollapsed(_collapsed)
@@ -188,7 +248,13 @@ function Sidebar({
 							ev.clientX
 
 				if (sidebarWidth < 20) return
-				setSidebarWidthVars(sidebarWidth, position)
+				setSidebarWidthVars(
+					sidebarWidth,
+					position,
+					widthVar,
+					flyoutVar,
+					localStorageWidthKey,
+				)
 			}
 			//const mouseMove = (e: MouseEvent) => rateLimited(mouseMoveProto, e)
 			const mouseMove = mouseMoveProto
@@ -220,17 +286,24 @@ function Sidebar({
 		const newState = collapsed === "collapsed" ? "expanded" : "collapsed"
 		setCollapsed(newState)
 		if (newState === "collapsed") {
-			setSidebarWidthVars(collapsedWidth, position)
+			setSidebarWidthVars(
+				collapsedWidth,
+				position,
+				widthVar,
+				flyoutVar,
+				localStorageWidthKey,
+			)
 			onCollapsed?.()
 		} else {
-			resetToExpanded(position)
+			resetToExpanded(position, widthVar, flyoutVar, localStorageWidthKey)
 			onExpand?.()
 		}
 
 		localStorage.setItem(
-			position === "left"
-				? localStorageKeyLeftCollapsed
-				: localStorageKeyRightCollapsed,
+			localStorageCollapsedKey ??
+				(position === "left"
+					? localStorageKeyLeftCollapsed
+					: localStorageKeyRightCollapsed),
 			newState,
 		)
 	}
@@ -247,7 +320,7 @@ function Sidebar({
 				className,
 			)}
 			style={{
-				width: `var(${position === "left" ? leftSidebarWidthVar : rightSidebarWidthVar}, ${initWidth}px)`,
+				width: `var(${widthVar ?? (position === "left" ? leftSidebarWidthVar : rightSidebarWidthVar)}, ${initWidth}px)`,
 				gridArea:
 					position === "left" ? "left-sidebar" : "right-sidebar",
 				...style,

@@ -7,7 +7,12 @@ export function SidebarShowcase(props: ShowcaseProps) {
 	//#region sidebar
 	const example = (
 		<div className="h-[300px]">
-			<AppLayout.LeftSidebar widthVariable="--leftSidebarWidth2">
+			<AppLayout.LeftSidebar
+				widthVar={"--showcaseSidebarWidth"}
+				flyoutVar={"--showcaseSidebarFlyoutWidth"}
+				localStorageWidthKey={"showcaseLeftSidebarWidth"}
+				localStorageCollapsedKey={"showcaseLeftSidebarCollapsed"}
+			>
 				<div>Sidebar Entry</div>
 			</AppLayout.LeftSidebar>
 		</div>
