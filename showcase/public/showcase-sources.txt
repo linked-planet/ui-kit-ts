@@ -6622,7 +6622,7 @@ export function SidebarShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Sidebar"
-			description="A sidebar component as replacement for the left sidebar of the page layout. WIP"
+			description="A sidebar component as replacement for the sidebar of the page layout. WIP"
 			{...props}
 			packages={[
 				{

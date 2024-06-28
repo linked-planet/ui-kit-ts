@@ -1,5 +1,4 @@
 import React, { useCallback } from "react"
-import { LeftSidebar } from "@atlaskit/page-layout"
 import {
 	ButtonItem,
 	Footer,
@@ -11,6 +10,7 @@ import {
 } from "@atlaskit/side-navigation"
 import useShowcases from "../../useShowcases"
 import { useLocation, useNavigate } from "react-router-dom"
+import { LeftSidebar, RightSidebar } from "@linked-planet/ui-kit-ts"
 
 function scrollAndHighlightElement(id: string) {
 	const element = document.getElementById(id)
@@ -26,7 +26,11 @@ function scrollAndHighlightElement(id: string) {
 	}
 }
 
-function ShowcaseLeftSidebar() {
+function ShowcaseLeftSidebar({
+	position = "left",
+}: {
+	position: "left" | "right"
+}) {
 	//#region leftsidebar
 	const showcases = useShowcases({ overallSourceCode: "" })
 	const location = useLocation()
@@ -43,45 +47,46 @@ function ShowcaseLeftSidebar() {
 		[location, navigate],
 	)
 
-	return (
-		<LeftSidebar>
-			<SideNavigation label="">
-				<NavigationHeader>
-					<Header description="linked-planet">UI-Showcase</Header>
-				</NavigationHeader>
+	const content = (
+		<SideNavigation label="">
+			<NavigationHeader>
+				<Header description="linked-planet">UI-Showcase</Header>
+			</NavigationHeader>
 
-				<NestableNavigationContent>
-					{Object.keys(showcases).map((showcaseName) => {
-						return (
-							<ButtonItem
-								key={showcaseName}
-								onClick={() => clickCB(showcaseName)}
-							>
-								{showcaseName}
-							</ButtonItem>
-						)
-					})}
-				</NestableNavigationContent>
+			<NestableNavigationContent>
+				{Object.keys(showcases).map((showcaseName) => {
+					return (
+						<ButtonItem
+							key={showcaseName}
+							onClick={() => clickCB(showcaseName)}
+						>
+							{showcaseName}
+						</ButtonItem>
+					)
+				})}
+			</NestableNavigationContent>
 
-				<NavigationFooter>
-					<Footer>
-						Made with ❤ by
-						<a href="https://www.linked-planet.com/">
-							{" "}
-							linked-planet
-						</a>
-					</Footer>
-					<Footer>
-						Licensed under
-						<a href="http://www.apache.org/licenses/LICENSE-2.0">
-							{" "}
-							Apache License, Version 2.0
-						</a>
-					</Footer>
-				</NavigationFooter>
-			</SideNavigation>
-		</LeftSidebar>
+			<NavigationFooter>
+				<Footer>
+					Made with ❤ by
+					<a href="https://www.linked-planet.com/"> linked-planet</a>
+				</Footer>
+				<Footer>
+					Licensed under
+					<a href="http://www.apache.org/licenses/LICENSE-2.0">
+						{" "}
+						Apache License, Version 2.0
+					</a>
+				</Footer>
+			</NavigationFooter>
+		</SideNavigation>
 	)
+
+	if (position === "left") {
+		return <LeftSidebar sticky>{content}</LeftSidebar>
+	}
+
+	return <RightSidebar sticky>{content}</RightSidebar>
 	//#endregion leftsidebar
 }
 
