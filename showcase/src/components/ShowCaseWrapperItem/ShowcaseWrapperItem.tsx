@@ -1,6 +1,7 @@
-import React, {
-	ElementRef,
-	ReactNode,
+import type React from "react"
+import {
+	type ElementRef,
+	type ReactNode,
 	useEffect,
 	useMemo,
 	useRef,
@@ -46,8 +47,8 @@ function extractSourceCodeExample(
 	overallSourceCode: string,
 	sourceCodeExampleId: string,
 ) {
-	const exampleCodeStartMarker = "//#region " + sourceCodeExampleId
-	const exampleCodeEndMarker = "//#endregion " + sourceCodeExampleId
+	const exampleCodeStartMarker = `//#region ${sourceCodeExampleId}`
+	const exampleCodeEndMarker = `//#endregion ${sourceCodeExampleId}`
 	if (
 		overallSourceCode.indexOf(exampleCodeStartMarker) &&
 		overallSourceCode.indexOf(exampleCodeEndMarker)
@@ -87,7 +88,7 @@ export default function ShowcaseWrapperItem({
 			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
 					if (ref.current) {
-						window.history.pushState({}, "", "#" + ref.current.id)
+						window.history.pushState({}, "", `#${ref.current.id}`)
 					}
 				}
 			})
@@ -103,7 +104,7 @@ export default function ShowcaseWrapperItem({
 	}, [location.pathname])
 
 	useEffect(() => {
-		if (window.location.hash === "#" + id) {
+		if (window.location.hash === `#${id}`) {
 			if (ref.current) {
 				ref.current.scrollIntoView()
 			}
@@ -116,11 +117,11 @@ export default function ShowcaseWrapperItem({
 
 			<small>
 				<span>Packages: </span>
-				{packages.map((pack, i) => {
+				{packages.map((pack) => {
 					return (
 						<a
 							href={pack.url}
-							key={i}
+							key={pack.name}
 							target="_blank"
 							rel="noreferrer"
 						>
@@ -138,7 +139,7 @@ export default function ShowcaseWrapperItem({
 			</div>
 
 			<Tabs
-				id={name + "-tabs"}
+				id={`${name}-tabs`}
 				selected={example}
 				onChange={(title) => {
 					setExample(title)
@@ -155,9 +156,13 @@ export default function ShowcaseWrapperItem({
 						)
 					})}
 				</TabList>
-				{examples.map((example, i) => {
+				{examples.map((example) => {
 					return (
-						<TabPanel key={i} label={example.title}>
+						<TabPanel
+							key={example.sourceCodeExampleId}
+							label={example.title}
+							className="overflow-hidden"
+						>
 							<ShowCaseExample
 								example={example.example}
 								overallSourceCode={overallSourceCode}
@@ -190,7 +195,7 @@ function ShowCaseExample({
 	)
 
 	return (
-		<div className="bg-surface w-full py-4">
+		<div className="bg-surface w-full overflow-auto py-4">
 			<ButtonGroup>
 				<Button
 					selected={content === "example"}
