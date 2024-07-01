@@ -15,11 +15,13 @@ import {
 	type FlagActionType,
 	type FlagAppearance,
 	FlagInvertedStyles,
+	FlagPaleStyles,
 	type FlagProps,
 	FlagStyles,
 } from "./Flag"
 
-type ToastFlagProps = FlagProps & ToastOptions
+type ToastFlagProps = Omit<FlagProps, "type"> &
+	Omit<ToastOptions, "type"> & { flagType?: FlagProps["type"] }
 
 const defaultSettings: ToastOptions = {
 	position: "bottom-right",
@@ -92,12 +94,14 @@ export function ToastFlagContainer(props: ToastContainerProps) {
 export function showFlagExtended({
 	style,
 	appearance = "default",
-	inverted = false,
+	className: _className,
+	flagType = "inverted",
 	...props
 }: ToastFlagProps) {
-	const progressClassName = inverted
-		? progressInvertedStyles[appearance]
-		: progressStyles[appearance]
+	const progressClassName =
+		flagType === "inverted" || flagType === "pale"
+			? progressInvertedStyles[appearance]
+			: progressStyles[appearance]
 
 	const flagStyle: CSSProperties = {
 		boxShadow: "unset",
@@ -107,22 +111,31 @@ export function showFlagExtended({
 		fontFamily: "unset",
 	}
 
-	const className = inverted
-		? FlagInvertedStyles[appearance]
-		: FlagStyles[appearance]
+	const className = twMerge(
+		flagType === "inverted"
+			? FlagInvertedStyles[appearance]
+			: flagType === "pale"
+				? FlagPaleStyles[appearance]
+				: FlagStyles[appearance],
+		_className,
+	)
 
 	toast(
 		<Flag
 			icon={props.icon}
 			appearance={appearance}
-			inverted={inverted}
+			type={flagType}
 			style={flagStyle}
+			className="bottom-0 bg-transparent p-0 shadow-none"
 			{...props}
 		/>,
 		{
 			...defaultSettings,
 			closeButton: (p: CloseButtonProps) => (
-				<CloseButton inverted={inverted} {...p} />
+				<CloseButton
+					inverted={flagType === "inverted" || flagType === "pale"}
+					{...p}
+				/>
 			),
 			...props,
 			style,
@@ -131,7 +144,12 @@ export function showFlagExtended({
 				"--toastify-color-progress-light": "invalid",
 			} as CSSProperties,
 			progressClassName: progressClassName,
-			className: twMerge(className, inverted ? "border" : undefined),
+			className: twMerge(
+				className,
+				flagType === "inverted" || flagType === "pale"
+					? "border border-solid"
+					: undefined,
+			),
 		},
 	)
 }
@@ -146,12 +164,12 @@ type SimpleFlagProps = {
 	autoClose?: false | number
 	position?: "top-left" | "top-right" | "bottom-left" | "bottom-right"
 	actions?: FlagActionType[]
+	flagType?: FlagProps["type"]
 }
 
 export function showFlag(props: SimpleFlagProps) {
 	showFlagExtended({
 		...props,
-		inverted: true,
 	})
 }
 

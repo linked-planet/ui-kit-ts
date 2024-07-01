@@ -50,6 +50,7 @@ import {
 	N80,
 	N50,
 	N60,
+	P500,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -101,16 +102,6 @@ export const theme = {
 			subtle: `var(--ds-text-subtle, ${N500})`,
 			subtlest: `var(--ds-text-subtlest, ${N200})`,
 			disabled: `var(--ds-text-disabled, ${N70})`, // same as disabled.text
-
-			warning: {
-				DEFAULT: `var(--ds-text-warning, ${Y400})`,
-				inverse: `var(--ds-text-warning-inverse, ${Y500})`,
-			},
-
-			information: {
-				DEFAULT: `var(--ds-text-info, ${B400})`,
-				inverse: `var(--ds-text-info-inverse, ${B400})`,
-			},
 		},
 
 		surface: {
@@ -211,7 +202,8 @@ export const theme = {
 				pressed: `var(--ds-background-brand-bold-pressed, ${B500})`,
 			},
 			text: `var(--ds-text-brand, ${B500})`,
-			border: `var(--ds-border-brand, ${B400})`,
+			border: `var(--ds-border-brand, ${B500})`,
+			icon: `var(--ds-icon-brand, ${B500})`,
 		},
 
 		warning: {
@@ -219,12 +211,13 @@ export const theme = {
 			hovered: `var(--ds-background-warning-hovered, ${Y75})`,
 			pressed: `var(--ds-background-warning-pressed, ${Y100})`,
 			bold: {
-				DEFAULT: `var(--ds-background-warning-bold, ${Y300})`,
-				hovered: `var(--ds-background-warning-bold-hovered, ${Y400})`,
-				pressed: `var(--ds-background-warning-bold-pressed, ${Y500})`,
+				DEFAULT: `var(--ds-background-warning-bold, ${colors.yellow[500]})`,
+				hovered: `var(--ds-background-warning-bold-hovered, ${colors.yellow[600]}})`,
+				pressed: `var(--ds-background-warning-bold-pressed, ${colors.yellow[700]}})`,
 			},
-			text: `var(--ds-text-warning, ${Y500})`,
-			border: `var(--ds-border-warning, ${Y400})`,
+			text: `var(--ds-text-warning, ${colors.amber[700]})`,
+			border: `var(--ds-border-warning, ${Y500})`,
+			icon: `var(--ds-icon-warning, ${colors.amber[800]})`,
 		},
 
 		danger: {
@@ -237,7 +230,8 @@ export const theme = {
 				pressed: `var(--ds-background-danger-bold-pressed, ${R500})`,
 			},
 			text: `var(--ds-text-danger, ${R500})`,
-			border: `var(--ds-border-danger, ${R400})`,
+			border: `var(--ds-border-danger, ${R500})`,
+			icon: `var(--ds-icon-danger, ${R500})`,
 		},
 
 		success: {
@@ -250,7 +244,8 @@ export const theme = {
 				pressed: `var(--ds-background-success-bold-pressed, ${G500})`,
 			},
 			text: `var(--ds-text-success, ${G500})`,
-			border: `var(--ds-border-success, ${G400})`,
+			border: `var(--ds-border-success, ${G500})`,
+			icon: `var(--ds-icon-success, ${G500})`,
 		},
 
 		information: {
@@ -263,7 +258,8 @@ export const theme = {
 				pressed: `var(--ds-background-information-bold-pressed, ${B500})`,
 			},
 			text: `var(--ds-text-information, ${B500})`,
-			border: `var(--ds-border-information, ${B400})`,
+			border: `var(--ds-border-information, ${B500})`,
+			icon: `var(--ds-icon-information, ${B500})`,
 		},
 
 		border: {
@@ -275,11 +271,11 @@ export const theme = {
 			inverse: `var(--ds-icon-inverse, ${N10})`,
 			disabled: `var(--ds-icon-disabled, ${N40})`,
 			subtle: `var(--ds-icon-subtle, ${N90})`,
-			success: `var(--ds-icon-success, ${G300})`,
-			discovery: `var(--ds-icon-discovery, ${P400})`,
-			information: `var(--ds-icon-information, ${B400})`,
-			warning: `var(--ds-icon-warning, ${Y400})`,
-			danger: `var(--ds-icon-danger, ${R400})`,
+			success: `var(--ds-icon-success, ${G500})`,
+			discovery: `var(--ds-icon-discovery, ${P500})`,
+			information: `var(--ds-icon-information, ${B500})`,
+			warning: `var(--ds-icon-warning, ${colors.amber[800]})`,
+			danger: `var(--ds-icon-danger, ${R500})`,
 		},
 
 		white: colors.white,

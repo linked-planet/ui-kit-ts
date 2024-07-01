@@ -17,8 +17,6 @@ export default function ShowcaseApp() {
 		"left",
 	)
 
-	console.log("SIDEBAR POS", sidebarPosition)
-
 	return (
 		<BrowserRouter basename="ui-kit-ts">
 			<LocaleProvider>

@@ -20,10 +20,11 @@ export type FlagProps = {
 	title: string
 	description: string | JSX.Element
 	appearance?: FlagAppearance
-	inverted?: boolean
+	type?: "default" | "inverted" | "pale"
 	icon?: JSX.Element
 	actions?: FlagActionType[]
 	style?: CSSProperties
+	className?: string
 	id?: string
 	testId?: string
 }
@@ -36,7 +37,7 @@ export type FlagActionType = {
 	testId?: string | undefined
 }
 
-const defaultStyle = "bg-text text-text-inverse"
+const defaultStyle = "bg-neutral-full text-text-inverse"
 const warningStyle = "bg-warning-bold text-text-inverse"
 const errorStyle = "bg-danger-bold text-text-inverse"
 const successStyle = "bg-success-bold text-text-inverse"
@@ -65,11 +66,28 @@ export const FlagInvertedStyles: {
 	information: informationInvertedStyle,
 } as const
 
-const defaultIconStyle = "text-text"
-const warningIconStyle = "text-warning-bold"
-const errorIconStyle = "text-danger-bold"
-const successIconStyle = "text-success-bold"
-const informationIconStyle = "text-information-bold"
+const paleDefaultStyle = "bg-neutral text-text border-border"
+const paleWarningStyle = "bg-warning text-warning-text border-warning-border"
+const paleErrorStyle = "bg-danger text-danger-text border-danger-border"
+const paleSuccessStyle = "bg-success text-success-text border-success-border"
+const paleInformationStyle =
+	"bg-information text-information-text border-information-border"
+
+export const FlagPaleStyles: {
+	[style in FlagAppearance]: string
+} = {
+	default: paleDefaultStyle,
+	warning: paleWarningStyle,
+	error: paleErrorStyle,
+	success: paleSuccessStyle,
+	information: paleInformationStyle,
+} as const
+
+const defaultIconStyle = "text-icon"
+const warningIconStyle = "text-warning-icon"
+const errorIconStyle = "text-danger-icon"
+const successIconStyle = "text-success-icon"
+const informationIconStyle = "text-information-icon"
 
 const IconStyles: { [style in FlagAppearance]: string } = {
 	default: defaultIconStyle,
@@ -80,10 +98,10 @@ const IconStyles: { [style in FlagAppearance]: string } = {
 } as const
 
 const defaultIconInvertedStyle = "text-text"
-const warningIconInvertedStyle = "text-warning-bold-hovered"
-const errorIconInvertedStyle = "text-danger-bold-hovered"
-const successIconInvertedStyle = "text-success-bold-hovered"
-const informationIconInvertedStyle = "text-information-bold-hovered"
+const warningIconInvertedStyle = "text-warning-icon"
+const errorIconInvertedStyle = "text-danger-icon"
+const successIconInvertedStyle = "text-success-icon"
+const informationIconInvertedStyle = "text-information-icon"
 
 const IconInvertedStyles: { [style in FlagAppearance]: string } = {
 	default: defaultIconInvertedStyle,
@@ -95,14 +113,15 @@ const IconInvertedStyles: { [style in FlagAppearance]: string } = {
 
 function FlagIcon({
 	appearance = "default",
-	invert,
+	type,
 }: {
 	appearance?: FlagAppearance
-	invert: boolean
+	type: "default" | "inverted" | "pale"
 }) {
-	const iconStyle = invert
-		? IconStyles[appearance]
-		: IconInvertedStyles[appearance]
+	const iconStyle =
+		type === "default" || type === "pale"
+			? IconStyles[appearance]
+			: IconInvertedStyles[appearance]
 
 	switch (appearance) {
 		case "default": {
@@ -146,18 +165,22 @@ export function Flag({
 	description,
 	icon,
 	appearance = "default",
-	inverted = false,
+	type = "default",
 	actions,
 	style,
+	className,
 	id,
 	testId,
 }: FlagProps) {
-	const appStyle = inverted
-		? FlagInvertedStyles[appearance]
-		: FlagStyles[appearance]
+	const appStyle =
+		type === "default"
+			? FlagStyles[appearance]
+			: type === "inverted"
+				? FlagInvertedStyles[appearance]
+				: FlagPaleStyles[appearance]
 
 	if (!icon) {
-		icon = <FlagIcon appearance={appearance} invert={inverted} />
+		icon = <FlagIcon appearance={appearance} type={type} />
 	}
 
 	return (
@@ -169,8 +192,9 @@ export function Flag({
 			className={twMerge(
 				appStyle,
 				`grid gap-4 rounded-sm p-4 shadow-md ${
-					inverted ? "border" : ""
+					type === "inverted" || type === "pale" ? "border" : ""
 				}`,
+				className,
 			)}
 			id={id}
 			data-testid={testId}
