@@ -260,7 +260,7 @@ function ExampleShowFlags() {
 			>
 				Warning
 			</Button>
-			<ToastFlagContainer />
+			<ToastFlagContainer toastWidth={"400px"} />
 		</div>
 	)
 }

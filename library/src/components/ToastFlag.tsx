@@ -86,7 +86,18 @@ function CloseButton({
 	)
 }
 
-export function ToastFlagContainer(props: ToastContainerProps) {
+export function ToastFlagContainer(
+	props: ToastContainerProps & { toastWidth?: number | string },
+) {
+	if (props.toastWidth) {
+		// get ":root"
+		const root = document.documentElement
+		root.style.setProperty(
+			"--toastify-toast-width",
+			props.toastWidth.toString(),
+		)
+	}
+
 	const portalNode = getPortal(portalDivId)
 	return <>{createPortal(<ToastContainer {...props} />, portalNode)}</>
 }
