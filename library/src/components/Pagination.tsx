@@ -89,6 +89,8 @@ function PaginationPageHandler<P extends string | number>({
 	className,
 	style,
 	pageLabel,
+	pageButtonClassName,
+	pageButtonStyle,
 }: {
 	pages: P[]
 	currentPage?: P
@@ -104,6 +106,8 @@ function PaginationPageHandler<P extends string | number>({
 	pageLabel?: string
 	className?: string
 	style?: React.CSSProperties
+	pageButtonClassName?: string
+	pageButtonStyle?: React.CSSProperties
 }) {
 	const [_currentPage, setCurrentPage] = useState(
 		currentPage ?? defaultPage ?? pages[0],
@@ -185,11 +189,14 @@ function PaginationPageHandler<P extends string | number>({
 				<li>
 					<button
 						disabled={currentIdx <= 0}
-						className={`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 ${
-							currentIdx > 0
-								? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
-								: "text-disabled-text"
-						}`}
+						className={twMerge(
+							`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 ${
+								currentIdx > 0
+									? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
+									: "text-disabled-text"
+							}`,
+							pageButtonClassName,
+						)}
 						onClick={() => {
 							const currentIndex = pages.indexOf(_currentPage)
 							setCurrentPage(pages[currentIndex - 1])
@@ -212,9 +219,9 @@ function PaginationPageHandler<P extends string | number>({
 							<button
 								className={twMerge(
 									"flex h-8 min-w-8 select-none items-center justify-center rounded p-1.5",
-									page === _currentPage
-										? "bg-selected text-selected-text-inverse"
-										: "hover:bg-neutral-hovered active:bg-neutral-pressed",
+									"data-[current=true]:bg-selected data-[current=true]:text-selected-text-inverse",
+									"hover:bg-neutral-hovered active:bg-neutral-pressed",
+									pageButtonClassName,
 								)}
 								onClick={() => {
 									const currentIndex = pages.indexOf(
@@ -239,6 +246,8 @@ function PaginationPageHandler<P extends string | number>({
 								aria-current={
 									page === _currentPage ? "page" : undefined
 								}
+								style={pageButtonStyle}
+								data-current={page === _currentPage}
 							>
 								{page}
 							</button>
@@ -254,11 +263,14 @@ function PaginationPageHandler<P extends string | number>({
 					</li>
 				))}
 				<button
-					className={`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 ${
-						currentIdx < pages.length - 1
-							? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
-							: "text-disabled-text"
-					}`}
+					className={twMerge(
+						`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 ${
+							currentIdx < pages.length - 1
+								? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
+								: "text-disabled-text"
+						}`,
+						pageButtonClassName,
+					)}
 					onClick={() => {
 						const _currentIndex = pages.indexOf(_currentPage)
 						setCurrentPage(pages[_currentIndex + 1])
@@ -270,6 +282,7 @@ function PaginationPageHandler<P extends string | number>({
 					aria-label={nextLabel}
 					aria-disabled={currentIdx >= pages.length - 1}
 					type="button"
+					style={pageButtonStyle}
 				>
 					<IconSizeHelper>
 						<ChevronRightLargeIcon size="medium" label="" />
@@ -301,6 +314,8 @@ export function Pagination<P extends string | number>({
 	previousLabel = "Previous Page",
 	nextLabel = "Next Page",
 	pageLabel = "",
+	pageButtonClassName,
+	pageButtonStyle,
 	...pageSizeSelectorProps
 }: {
 	totalPages?: number
@@ -326,6 +341,8 @@ export function Pagination<P extends string | number>({
 	pageLabel?: string
 	className?: string
 	style?: React.CSSProperties
+	pageButtonClassName?: string
+	pageButtonStyle?: React.CSSProperties
 }) {
 	const _pages = useMemo(() => {
 		if (pages) return pages
@@ -359,6 +376,8 @@ export function Pagination<P extends string | number>({
 					nextLabel={nextLabel}
 					label={label}
 					pageLabel={pageLabel}
+					pageButtonClassName={pageButtonClassName}
+					pageButtonStyle={pageButtonStyle}
 				/>
 			</div>
 			{!hidePageSize && (
