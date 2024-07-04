@@ -8,10 +8,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 // therefore we copy the index.html to 404.html, and the react router takes over again
 
 // locate the index.html build by vite in dist-showcase
-const indexHtmlPath = resolve(__dirname, "../dist-showcase/showcase/index.html")
+const indexHtmlPath = resolve(__dirname, "../dist-showcase/index.html")
 //check if it exists
 if (!fs.existsSync(indexHtmlPath)) {
-	throw new Error("dist-showcase/showcase/index.html not found")
+	throw new Error("dist-showcase/index.html not found")
 }
 
 const html404Path = resolve(__dirname, "../dist-showcase/404.html")
