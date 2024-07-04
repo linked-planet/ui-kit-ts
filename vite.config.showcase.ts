@@ -1,6 +1,6 @@
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react-swc"
-import path from "node:path"
+import { resolve } from "node:path"
 //import checker from "vite-plugin-checker"
 
 // postcss:
@@ -15,18 +15,22 @@ export default defineConfig({
 		},
 	},
 	build: {
-		outDir: "dist-showcase",
+		outDir: resolve(__dirname, "./dist-showcase"),
 		target: "es2022",
+		emptyOutDir: true,
 		rollupOptions: {
-			//plugins: [nodePolyfills()],
+			input: {
+				main: resolve(__dirname, "./showcase/index.html"),
+				applayoutexample: resolve(
+					__dirname,
+					"./showcase/applayoutexample/index.html",
+				),
+			},
 		},
 	},
 	resolve: {
 		alias: {
-			"@linked-planet/ui-kit-ts": path.resolve(
-				__dirname,
-				"./library/src",
-			),
+			"@linked-planet/ui-kit-ts": resolve(__dirname, "./library/src"),
 		},
 	},
 	define: {
@@ -38,7 +42,8 @@ export default defineConfig({
 		//global: {}, //-> this breaks @atlaskit/tokens build
 	},
 	base: "/ui-kit-ts",
-	publicDir: "showcase/public",
+	root: "./showcase",
+	publicDir: "public",
 	plugins: [
 		react(),
 		/*tsconfigPaths({

@@ -1,6 +1,6 @@
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 //import Avatar, { AvatarItem } from "@atlaskit/avatar"
 import {

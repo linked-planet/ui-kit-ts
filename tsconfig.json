@@ -8,5 +8,5 @@
 		}
 	},
 	"extends": "./tsconfig.common.json",
-	"include": ["library/src", "showcase/src"]
+	"include": ["library/src", "showcase/src", "applayoutexample"]
 }

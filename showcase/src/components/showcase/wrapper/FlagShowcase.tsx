@@ -1,6 +1,6 @@
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Flag, ToastFlagContainer, showFlag } from "@linked-planet/ui-kit-ts"
 import WarningIcon from "@atlaskit/icon/glyph/warning"
@@ -33,7 +33,14 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Action Flag"
 				actions={[{ content: "Action", onClick: () => {} }]}
-				inverted
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Action Flag"
+				actions={[{ content: "Action", onClick: () => {} }]}
+				type="pale"
 			/>
 
 			<Flag
@@ -46,7 +53,14 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Success Flag"
 				appearance="success"
-				inverted
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Success Flag"
+				appearance="success"
+				type="pale"
 			/>
 
 			<Flag
@@ -59,7 +73,14 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Warning Flag"
 				appearance="warning"
-				inverted
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Warning Flag"
+				appearance="warning"
+				type="pale"
 			/>
 
 			<Flag title="Flag" description="Error Flag" appearance="error" />
@@ -68,14 +89,20 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Error Flag"
 				appearance="error"
-				inverted
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Error Flag"
+				appearance="error"
+				type="pale"
 			/>
 
 			<Flag
 				title="Flag"
 				description="Information Flag"
 				appearance="information"
-				inverted={false}
 				actions={[{ content: "Action", onClick: () => {} }]}
 			/>
 
@@ -83,7 +110,14 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Information Flag"
 				appearance="information"
-				inverted
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Information Flag"
+				appearance="information"
+				type="pale"
 			/>
 			<ToastFlagContainer />
 		</div>

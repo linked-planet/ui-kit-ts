@@ -1,15 +1,20 @@
-import React from "react"
+import type React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { LeftSidebar } from "@linked-planet/ui-kit-ts"
+import { AppLayout } from "@linked-planet/ui-kit-ts"
 export function SidebarShowcase(props: ShowcaseProps) {
 	//#region sidebar
 	const example = (
 		<div className="h-[300px]">
-			<LeftSidebar widthVariable="--leftSidebarWidth2">
+			<AppLayout.LeftSidebar
+				widthVar={"--showcaseSidebarWidth"}
+				flyoutVar={"--showcaseSidebarFlyoutWidth"}
+				localStorageWidthKey={"showcaseLeftSidebarWidth"}
+				localStorageCollapsedKey={"showcaseLeftSidebarCollapsed"}
+			>
 				<div>Sidebar Entry</div>
-			</LeftSidebar>
+			</AppLayout.LeftSidebar>
 		</div>
 	)
 	//#endregion sidebar
@@ -17,7 +22,7 @@ export function SidebarShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Sidebar"
-			description="A sidebar component as replacement for the left sidebar of the page layout. WIP"
+			description="A sidebar component as replacement for the sidebar of the page layout. WIP"
 			{...props}
 			packages={[
 				{

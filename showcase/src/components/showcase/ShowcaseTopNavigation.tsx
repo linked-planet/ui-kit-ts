@@ -1,5 +1,4 @@
-import React from "react"
-import { TopNavigation } from "@atlaskit/page-layout"
+import type React from "react"
 import {
 	AtlassianNavigation,
 	CustomProductHome,
@@ -7,12 +6,19 @@ import {
 	Profile,
 } from "@atlaskit/atlassian-navigation"
 import { useNavigate } from "react-router"
-import { LocaleDropDown, ThemeSwitch } from "@linked-planet/ui-kit-ts"
+import {
+	AppLayout,
+	Label,
+	LocaleDropDown,
+	ThemeSwitch,
+	Toggle,
+} from "@linked-planet/ui-kit-ts"
 import { Avatar } from "@linked-planet/ui-kit-ts/components/Avatar"
 export const ProfileIcon = () => {
 	return (
 		<img
 			src="images/github-logo.png"
+			alt="github logo"
 			style={{
 				borderRadius: "50%",
 				width: 32,
@@ -22,11 +28,43 @@ export const ProfileIcon = () => {
 	)
 }
 
-function ShowcaseTopNavigation() {
+function SidebarToggle({
+	position,
+	setSidebarPosition,
+}: {
+	position: "left" | "right"
+	setSidebarPosition: React.Dispatch<React.SetStateAction<"left" | "right">>
+}) {
+	return (
+		<div className="border-border flex items-center border-r-2 border-solid pr-2">
+			<Label className="p-0">Sidebar:</Label>
+			<div className="">
+				<Toggle
+					defaultChecked={position === "left"}
+					onChange={(checked) => {
+						if (checked) {
+							setSidebarPosition("left")
+						} else {
+							setSidebarPosition("right")
+						}
+					}}
+				/>
+			</div>
+		</div>
+	)
+}
+
+function ShowcaseTopNavigation({
+	sidebarPosition,
+	setSidebarPosition,
+}: {
+	sidebarPosition: "left" | "right"
+	setSidebarPosition: React.Dispatch<React.SetStateAction<"left" | "right">>
+}) {
 	//#region topnavigation
 	const navigation = useNavigate()
 	return (
-		<TopNavigation isFixed>
+		<AppLayout.TopNavigation sticky>
 			<AtlassianNavigation
 				label=""
 				primaryItems={[
@@ -69,6 +107,10 @@ function ShowcaseTopNavigation() {
 				)}
 				renderProfile={() => (
 					<>
+						<SidebarToggle
+							position={sidebarPosition}
+							setSidebarPosition={setSidebarPosition}
+						/>
 						<ThemeSwitch />
 						<Avatar
 							href="https://github.com/linked-planet/ui-kit-ts"
@@ -83,7 +125,7 @@ function ShowcaseTopNavigation() {
 					</>
 				)}
 			/>
-		</TopNavigation>
+		</AppLayout.TopNavigation>
 	)
 	//#endregion topnavigation
 }

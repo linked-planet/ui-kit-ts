@@ -198,7 +198,45 @@ export default function AnimatedListShowcase(props: ShowcaseProps) {
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
+export default function AppLayoutShowcase(props: ShowcaseProps) {
+	const iframe = (
+		<div>
+			<iframe
+				src="/ui-kit-ts/applayoutexample/index.html"
+				title="App Layout"
+				width="1100"
+				height="800"
+			/>
+		</div>
+	)
+
+	return (
+		<ShowcaseWrapperItem
+			name="App Layout"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/applayoutexample/index.html",
+				},
+			]}
+			examples={[
+				{
+					title: "App Layout",
+					example: iframe,
+					sourceCodeExampleId: "applayoutexample",
+				},
+			]}
+		/>
+	)
+}
+
+import React from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 //import Avatar, { AvatarItem } from "@atlaskit/avatar"
 import {
@@ -3487,7 +3525,7 @@ export default FiltersShowcase
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Flag, ToastFlagContainer, showFlag } from "@linked-planet/ui-kit-ts"
 import WarningIcon from "@atlaskit/icon/glyph/warning"
@@ -3520,7 +3558,14 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Action Flag"
 				actions={[{ content: "Action", onClick: () => {} }]}
-				inverted
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Action Flag"
+				actions={[{ content: "Action", onClick: () => {} }]}
+				type="pale"
 			/>
 
 			<Flag
@@ -3533,7 +3578,14 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Success Flag"
 				appearance="success"
-				inverted
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Success Flag"
+				appearance="success"
+				type="pale"
 			/>
 
 			<Flag
@@ -3546,7 +3598,14 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Warning Flag"
 				appearance="warning"
-				inverted
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Warning Flag"
+				appearance="warning"
+				type="pale"
 			/>
 
 			<Flag title="Flag" description="Error Flag" appearance="error" />
@@ -3555,14 +3614,20 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Error Flag"
 				appearance="error"
-				inverted
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Error Flag"
+				appearance="error"
+				type="pale"
 			/>
 
 			<Flag
 				title="Flag"
 				description="Information Flag"
 				appearance="information"
-				inverted={false}
 				actions={[{ content: "Action", onClick: () => {} }]}
 			/>
 
@@ -3570,7 +3635,14 @@ function FlagShowcase(props: ShowcaseProps) {
 				title="Flag"
 				description="Information Flag"
 				appearance="information"
-				inverted
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Information Flag"
+				appearance="information"
+				type="pale"
 			/>
 			<ToastFlagContainer />
 		</div>
@@ -5171,7 +5243,7 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
 	Button,
@@ -5190,6 +5262,7 @@ function Example() {
 			<div className="flex p-4">
 				<Input placeholder="Test Input" />
 				<Input disabled placeholder="Test Input Disabled" />
+				<Input placeholder="Test Input 2" />
 				<Select
 					options={[
 						{ label: "Test", value: "test" },
@@ -6564,18 +6637,23 @@ function SelectShowcase(props: ShowcaseProps) {
 
 export default SelectShowcase
 
-import React from "react"
+import type React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { LeftSidebar } from "@linked-planet/ui-kit-ts"
+import { AppLayout } from "@linked-planet/ui-kit-ts"
 export function SidebarShowcase(props: ShowcaseProps) {
 	//#region sidebar
 	const example = (
 		<div className="h-[300px]">
-			<LeftSidebar widthVariable="--leftSidebarWidth2">
+			<AppLayout.LeftSidebar
+				widthVar={"--showcaseSidebarWidth"}
+				flyoutVar={"--showcaseSidebarFlyoutWidth"}
+				localStorageWidthKey={"showcaseLeftSidebarWidth"}
+				localStorageCollapsedKey={"showcaseLeftSidebarCollapsed"}
+			>
 				<div>Sidebar Entry</div>
-			</LeftSidebar>
+			</AppLayout.LeftSidebar>
 		</div>
 	)
 	//#endregion sidebar
@@ -6583,7 +6661,7 @@ export function SidebarShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Sidebar"
-			description="A sidebar component as replacement for the left sidebar of the page layout. WIP"
+			description="A sidebar component as replacement for the sidebar of the page layout. WIP"
 			{...props}
 			packages={[
 				{
@@ -7335,7 +7413,7 @@ export default TextFieldShowcase
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import {
@@ -7355,13 +7433,14 @@ function ExampleShowExtendedFlag() {
 	return (
 		<div className="flex flex-col gap-3">
 			<Button
-				onClick={() =>
+				onClick={() => {
 					showFlagExtended({
-						title: "1: Whoa a new flag!",
-						description: "This is a standard toast flag.",
-						autoClose: 2000,
+						title: "standard flag",
+						description: "test",
+						autoClose: false,
+						flagType: "default",
 					})
-				}
+				}}
 			>
 				Standard
 			</Button>
@@ -7370,7 +7449,7 @@ function ExampleShowExtendedFlag() {
 					showFlagExtended({
 						title: "1: Whoa a new flag!",
 						description: "This is a standard toast flag.",
-						inverted: true,
+						flagType: "inverted",
 					})
 				}
 			>
@@ -7418,7 +7497,7 @@ function ExampleShowExtendedFlag() {
 						description:
 							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
 						appearance: "information",
-						inverted: true,
+						flagType: "inverted",
 					})
 				}
 			>
@@ -7491,27 +7570,76 @@ function ExampleShowFlags() {
 			>
 				Standard Not Dissapearing Bottom Left
 			</Button>
+
 			<Button
 				onClick={() =>
-					showSuccessFlag({
-						title: "1: Whoa a new flag!",
-						description:
-							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
+					showFlag({
+						title: "Default Style",
+						description: "The default style is rather dark.",
+						flagType: "default",
 					})
 				}
 			>
-				Success
+				Standard Default
+			</Button>
+
+			<Button
+				onClick={() =>
+					showFlag({
+						title: "Pale Style",
+						description: "Pale colored background.",
+						flagType: "pale",
+					})
+				}
+			>
+				Standard Pale
+			</Button>
+			<Button
+				onClick={() =>
+					showSuccessFlag({
+						title: "1: Whoa a new flag! Inverted Style",
+						flagType: "inverted",
+						description:
+							"The inverted style is the default one for the simple flags.",
+					})
+				}
+			>
+				Success Inverted Style
+			</Button>
+			<Button
+				onClick={() =>
+					showSuccessFlag({
+						title: "Default Style",
+						flagType: "default",
+						description:
+							"Using the default flag style (see flags).",
+					})
+				}
+			>
+				Success Default Flag Style
+			</Button>
+
+			<Button
+				onClick={() =>
+					showSuccessFlag({
+						title: "Pale Style",
+						flagType: "pale",
+						description: "Using the pale flag style (see flags).",
+					})
+				}
+			>
+				Success Pale Flag Style
 			</Button>
 			<Button
 				onClick={() =>
 					showInformationFlag({
-						title: "1: Whoa a new information flag!",
-						description:
-							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
+						title: "Information",
+						flagType: "pale",
+						description: "Pale flag style (see flags).",
 					})
 				}
 			>
-				Information
+				Information Pale
 			</Button>
 			<Button
 				onClick={() =>
@@ -7545,7 +7673,7 @@ function ExampleShowFlags() {
 			>
 				Warning
 			</Button>
-			<ToastFlagContainer />
+			<ToastFlagContainer toastWidth={"400px"} />
 		</div>
 	)
 }
@@ -7953,3 +8081,130 @@ export default function UtilsShowCase(props: ShowcaseProps) {
 		/>
 	)
 }
+
+import React, { useState } from "react"
+import { AppLayout, Checkbox, PageLayout } from "@linked-planet/ui-kit-ts"
+
+import "@atlaskit/css-reset" // sets base styles of AK
+import Fillers from "./Fillers"
+
+//#region applayoutexample
+export default function AppLayoutExample() {
+	const [bannerSticky, setBannerSticky] = useState(true)
+	const [topNavSticky, setTopNavSticky] = useState(true)
+	const [leftPanelSticky, setLeftPanelSticky] = useState(true)
+	const [rightPanelSticky, setRightPanelSticky] = useState(true)
+
+	const [leftSidebarSticky, setLeftSidebarSticky] = useState(true)
+	const [rightSidebarSticky, setRightSidebarSticky] = useState(true)
+	const [mainFixedHeight, setMainFixedHeight] = useState(true)
+
+	return (
+		<AppLayout.Container>
+			<AppLayout.Banner
+				sticky={bannerSticky}
+				className="flex justify-between gap-4 border-2 border-solid px-4 py-2"
+			>
+				Sticky Banner
+				<Checkbox
+					checked={bannerSticky}
+					onCheckedChange={setBannerSticky}
+					label="Banner Sticky"
+				/>
+			</AppLayout.Banner>
+			<AppLayout.TopNavigation
+				sticky={topNavSticky}
+				className="flex justify-between gap-4 border-2 border-solid p-4"
+			>
+				Top Navigation
+				<Checkbox
+					checked={topNavSticky}
+					onCheckedChange={setTopNavSticky}
+					label="Top Navigation Sticky"
+				/>
+			</AppLayout.TopNavigation>
+			<AppLayout.LeftPanel
+				sticky={leftPanelSticky}
+				className="border-2 border-dashed p-4"
+			>
+				<h3 className="mb-4">Left Panel</h3>
+				<Checkbox
+					checked={leftPanelSticky}
+					onCheckedChange={setLeftPanelSticky}
+					label="Sticky"
+				/>
+				<hr />
+				<Fillers />
+			</AppLayout.LeftPanel>
+			<AppLayout.RightPanel
+				sticky={rightPanelSticky}
+				className="border-2 border-dashed p-4"
+			>
+				<h3 className="mb-4">Right Panel</h3>
+				<Checkbox
+					checked={rightPanelSticky}
+					onCheckedChange={setRightPanelSticky}
+					label="Sticky"
+				/>
+				<hr />
+				<Fillers />
+			</AppLayout.RightPanel>
+			<AppLayout.Content>
+				<AppLayout.LeftSidebar sticky={leftSidebarSticky}>
+					<h3 className="mb-4">Left Sidebar</h3>
+					<Checkbox
+						checked={leftSidebarSticky}
+						onCheckedChange={setLeftSidebarSticky}
+						label="Left Sidebar Sticky"
+					/>
+					<Fillers />
+				</AppLayout.LeftSidebar>
+
+				<AppLayout.RightSidebar sticky={rightSidebarSticky}>
+					<h3 className="mb-4">Right Sidebar</h3>
+					<Checkbox
+						checked={rightSidebarSticky}
+						onCheckedChange={setRightSidebarSticky}
+						label="Right Sidebar Sticky"
+					/>
+					<Fillers />
+				</AppLayout.RightSidebar>
+
+				<AppLayout.Main
+					className="overflow-hidden border-2 border-dotted"
+					fixedHeight={mainFixedHeight}
+				>
+					<div className="bg-warning border-warning-bold absolute right-4 top-4 z-10 border-2 border-solid p-4">
+						<Checkbox
+							checked={mainFixedHeight}
+							onCheckedChange={setMainFixedHeight}
+							label="Fixed Height"
+						/>
+					</div>
+					<PageLayout.Page>
+						<PageLayout.PageHeader shadow={false}>
+							<PageLayout.PageHeaderTitle>
+								Page Layout
+							</PageLayout.PageHeaderTitle>
+							<PageLayout.PageHeaderSubTitle>
+								Subtitle
+							</PageLayout.PageHeaderSubTitle>
+						</PageLayout.PageHeader>
+						<PageLayout.PageBody>
+							<PageLayout.PageBodyHeader>
+								Page Body Header
+							</PageLayout.PageBodyHeader>
+							<PageLayout.PageBodyContent>
+								<Fillers />
+							</PageLayout.PageBodyContent>
+							<PageLayout.PageBodyFooter>
+								Page Body Footer
+							</PageLayout.PageBodyFooter>
+						</PageLayout.PageBody>
+					</PageLayout.Page>
+				</AppLayout.Main>
+			</AppLayout.Content>
+		</AppLayout.Container>
+	)
+}
+//#endregion applayoutexample

@@ -1,7 +1,7 @@
-import { setGlobalTheme, ThemeColorModes } from "@atlaskit/tokens"
+import { setGlobalTheme, type ThemeColorModes } from "@atlaskit/tokens"
 import React from "react"
 import ReactDOM from "react-dom"
-import App from "./App"
+import ShowcaseApp from "./ShowcaseApp"
 
 // get the saved theme entry from the local storage (in case there is one)
 import { applyTheme, LocalStorageThemeVar } from "@linked-planet/ui-kit-ts"
@@ -20,7 +20,7 @@ setGlobalTheme({
 
 ReactDOM.render(
 	<React.StrictMode>
-		<App />
+		<ShowcaseApp />
 	</React.StrictMode>,
 	document.getElementById("root"),
 )

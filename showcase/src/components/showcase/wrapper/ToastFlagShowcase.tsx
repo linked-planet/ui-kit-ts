@@ -1,6 +1,6 @@
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import {
@@ -20,13 +20,14 @@ function ExampleShowExtendedFlag() {
 	return (
 		<div className="flex flex-col gap-3">
 			<Button
-				onClick={() =>
+				onClick={() => {
 					showFlagExtended({
-						title: "1: Whoa a new flag!",
-						description: "This is a standard toast flag.",
-						autoClose: 2000,
+						title: "standard flag",
+						description: "test",
+						autoClose: false,
+						flagType: "default",
 					})
-				}
+				}}
 			>
 				Standard
 			</Button>
@@ -35,7 +36,7 @@ function ExampleShowExtendedFlag() {
 					showFlagExtended({
 						title: "1: Whoa a new flag!",
 						description: "This is a standard toast flag.",
-						inverted: true,
+						flagType: "inverted",
 					})
 				}
 			>
@@ -83,7 +84,7 @@ function ExampleShowExtendedFlag() {
 						description:
 							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
 						appearance: "information",
-						inverted: true,
+						flagType: "inverted",
 					})
 				}
 			>
@@ -156,27 +157,76 @@ function ExampleShowFlags() {
 			>
 				Standard Not Dissapearing Bottom Left
 			</Button>
+
 			<Button
 				onClick={() =>
-					showSuccessFlag({
-						title: "1: Whoa a new flag!",
-						description:
-							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
+					showFlag({
+						title: "Default Style",
+						description: "The default style is rather dark.",
+						flagType: "default",
 					})
 				}
 			>
-				Success
+				Standard Default
+			</Button>
+
+			<Button
+				onClick={() =>
+					showFlag({
+						title: "Pale Style",
+						description: "Pale colored background.",
+						flagType: "pale",
+					})
+				}
+			>
+				Standard Pale
+			</Button>
+			<Button
+				onClick={() =>
+					showSuccessFlag({
+						title: "1: Whoa a new flag! Inverted Style",
+						flagType: "inverted",
+						description:
+							"The inverted style is the default one for the simple flags.",
+					})
+				}
+			>
+				Success Inverted Style
+			</Button>
+			<Button
+				onClick={() =>
+					showSuccessFlag({
+						title: "Default Style",
+						flagType: "default",
+						description:
+							"Using the default flag style (see flags).",
+					})
+				}
+			>
+				Success Default Flag Style
+			</Button>
+
+			<Button
+				onClick={() =>
+					showSuccessFlag({
+						title: "Pale Style",
+						flagType: "pale",
+						description: "Using the pale flag style (see flags).",
+					})
+				}
+			>
+				Success Pale Flag Style
 			</Button>
 			<Button
 				onClick={() =>
 					showInformationFlag({
-						title: "1: Whoa a new information flag!",
-						description:
-							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
+						title: "Information",
+						flagType: "pale",
+						description: "Pale flag style (see flags).",
 					})
 				}
 			>
-				Information
+				Information Pale
 			</Button>
 			<Button
 				onClick={() =>
@@ -210,7 +260,7 @@ function ExampleShowFlags() {
 			>
 				Warning
 			</Button>
-			<ToastFlagContainer />
+			<ToastFlagContainer toastWidth={"400px"} />
 		</div>
 	)
 }
