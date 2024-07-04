@@ -56,6 +56,8 @@ export type ButtonProps = {
 	| "onTouchCancel"
 	| "title"
 	| "aria-label"
+	| "tabIndex"
+	| "aria-disabled"
 >
 
 const ButtonStyles: { [style in ButtonAppearance]: string } = {
