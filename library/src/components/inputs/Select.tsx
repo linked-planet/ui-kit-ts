@@ -183,11 +183,11 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 							? "bg-selected-subtle border-l-selected-border"
 							: undefined,
 						provided.isFocused
-							? "border-l-selected-border bg-surface-overlay-hovered"
+							? "border-l-selected-border focus-visible:border-l-selected-border bg-surface-overlay-hovered"
 							: undefined,
 						provided.isDisabled
 							? "text-disabled-text"
-							: "hover:border-l-selected-border hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed",
+							: "hover:border-l-selected-border focus-visible:border-l-selected-border hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed",
 						classNamesConfig?.option?.(provided),
 					),
 				groupHeading: (provided) =>
