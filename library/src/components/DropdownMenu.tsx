@@ -5,13 +5,7 @@ import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
 import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import RadioIcon from "@atlaskit/icon/glyph/radio"
 import * as RDd from "@radix-ui/react-dropdown-menu"
-import {
-	type RefObject,
-	forwardRef,
-	useMemo,
-	useRef,
-	type ForwardedRef,
-} from "react"
+import { forwardRef, useMemo, useRef, type ForwardedRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
 import { Button, type ButtonProps } from "./Button"
@@ -22,9 +16,9 @@ const commonStyles =
 	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-none border-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-none focus-visible:border-solid focus-visible:border-selected-border" as const
 const disabledStyles = "text-disabled-text cursor-not-allowed" as const
 const selectedStyles =
-	"bg-selected-subtle hover:bg-selected-subtle-hovered active:bg-selected-subtle-pressed text-selected-subtle-text" as const
+	"data-[selected=true]:bg-selected-subtle data-[selected=true]:hover:bg-selected-subtle-hovered data-[selected=true]:active:bg-selected-subtle-pressed data-[selected=true]:text-selected-subtle-text" as const
 const normalStyles =
-	"hover:bg-surface-overlay-hovered hover:border-l-selected-bold active:bg-surface-overlay-pressed cursor-pointer" as const
+	"hover:bg-surface-overlay-hovered hover:border-l-selected-bold focus-visible:bg-surface-overlay-hovered focus-visible:border-l-selected-bold focus-visible:outline-offset-0 focus-visible:outline-selected-bold focus-visible:outline active:bg-surface-overlay-pressed cursor-pointer" as const
 
 const descriptionStyle = "text-text-subtlest text-[12px] leading-4 h-4" as const
 
@@ -74,13 +68,12 @@ function Item({
 			className={twMerge(
 				commonStyles,
 				!disabled && !selected ? normalStyles : undefined,
-				selected
-					? `${selectedStyles} border-l-selected-bold`
-					: undefined,
+				selected ? `${selectedStyles} border-l-selected` : undefined,
 				disabled ? disabledStyles : undefined,
 				className,
 			)}
 			onClick={onClick}
+			data-selected={selected}
 			style={style}
 			{...props}
 		>
