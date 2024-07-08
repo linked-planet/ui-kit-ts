@@ -13,12 +13,12 @@ import { overlayBaseStyle } from "./styleHelper"
 import { IconSizeHelper } from "./IconSizeHelper"
 
 const commonStyles =
-	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-none border-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-none focus-visible:border-solid focus-visible:border-selected-border" as const
+	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-none border-l-2 border-y-0 border-r-0 focus-visible:border-l-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-none focus-visible:border-selected-border" as const
 const disabledStyles = "text-disabled-text cursor-not-allowed" as const
 const selectedStyles =
-	"data-[selected=true]:bg-selected-subtle data-[selected=true]:hover:bg-selected-subtle-hovered data-[selected=true]:active:bg-selected-subtle-pressed data-[selected=true]:text-selected-subtle-text" as const
+	"data-[selected=true]:bg-selected-subtle data-[selected=true]:hover:bg-selected-subtle-hovered data-[selected=true]:border-l-selected-bold data-[selected=true]:active:bg-selected-subtle-pressed data-[selected=true]:text-selected-subtle-text" as const
 const normalStyles =
-	"hover:bg-surface-overlay-hovered hover:border-l-selected-bold focus-visible:bg-surface-overlay-hovered focus-visible:border-l-selected-bold focus-visible:outline-offset-0 focus-visible:outline-selected-bold focus-visible:outline active:bg-surface-overlay-pressed cursor-pointer" as const
+	"hover:bg-surface-overlay-hovered focus-visible:bg-surface-overlay-hovered hover:border-l-selected-border active:bg-surface-overlay-pressed cursor-pointer" as const
 
 const descriptionStyle = "text-text-subtlest text-[12px] leading-4 h-4" as const
 
@@ -68,7 +68,7 @@ function Item({
 			className={twMerge(
 				commonStyles,
 				!disabled && !selected ? normalStyles : undefined,
-				selected ? `${selectedStyles} border-l-selected` : undefined,
+				selected ? selectedStyles : undefined,
 				disabled ? disabledStyles : undefined,
 				className,
 			)}
