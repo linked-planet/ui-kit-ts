@@ -59,8 +59,6 @@ function AKExample() {
 							<Select
 								placeholder="Choose"
 								options={selectOptions}
-								side="bottom"
-								align="end"
 								className="z-10"
 							/>
 							Lorem, ipsum dolor sit amet consectetur adipisicing

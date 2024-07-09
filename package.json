@@ -73,7 +73,6 @@
 		]
 	},
 	"dependencies": {
-		"@atlaskit/datetime-picker": "^13.7.0",
 		"@atlaskit/icon": "^22.6.0",
 		"@atlaskit/tokens": "^1.53.2",
 		"@emotion/css": "^11.11.2",
@@ -108,8 +107,8 @@
 		"@total-typescript/ts-reset": "^0.5.1",
 		"@types/react": "^16.14.60",
 		"@types/react-dom": "^16.9.24",
-		"@typescript-eslint/eslint-plugin": "^7.15.0",
-		"@typescript-eslint/parser": "^7.15.0",
+		"@typescript-eslint/eslint-plugin": "^7.16.0",
+		"@typescript-eslint/parser": "^7.16.0",
 		"@vitejs/plugin-react-swc": "^3.7.0",
 		"autoprefixer": "^10.4.19",
 		"eslint": "^8.57.0",
@@ -138,14 +137,14 @@
 		"vite": "^5.3.3",
 		"vite-plugin-checker": "^0.6.4",
 		"vite-plugin-dts": "^3.9.1",
-		"vitest": "^1.6.0"
+		"vitest": "^2.0.1"
 	},
 	"peerDependencies": {
 		"@atlaskit/atlassian-navigation": "^4.2.1",
 		"@atlaskit/banner": "^12.4.4",
 		"@atlaskit/button": "^18.2.0",
 		"@atlaskit/calendar": "^14.3.4",
-		"@atlaskit/checkbox": "^13.5.1",
+		"@atlaskit/checkbox": "^13.5.2",
 		"@atlaskit/code": "^15.4.0",
 		"@atlaskit/css-reset": "^6.9.1",
 		"@atlaskit/dropdown-menu": "^12.14.0",

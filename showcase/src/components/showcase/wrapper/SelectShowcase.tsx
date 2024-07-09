@@ -54,71 +54,46 @@ function FormExample() {
 	})
 
 	return (
-		<>
-			<div className="flex gap-2">
-				<Button
-					onClick={() => {
-						setValue("singleValue", null)
-					}}
-				>
-					Reset Single Value
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<Label>Single Uncontrolled</Label>
+			<Select<FormData, string>
+				control={control}
+				name="singleValue"
+				options={availableOptions}
+				usePortal
+				errorMessage="TEST"
+				invalid
+			/>
+			<Label>Multi Uncontrolled</Label>
+			<Select<FormData, string>
+				control={control}
+				isMulti
+				name="multiValues"
+				options={availableOptions}
+				usePortal
+			/>
+			<Label>Grouped Multi</Label>
+			{/* string is the value type, FormData the type of the form data for the control, true is the isMulti flag */}
+			<Select<FormData, string, true>
+				isMulti
+				control={control}
+				name="groupedMultiValues"
+				options={availableGroupOptions}
+				usePortal
+			/>
+			<ButtonGroup className="mt-2 w-full justify-end">
+				<Button type="reset">Reset</Button>
+				<Button type="submit" appearance="primary">
+					Submit
 				</Button>
-				<Button
-					onClick={() => {
-						setValue("multiValues", null)
-					}}
-				>
-					Reset Multi Value
-				</Button>
-				<Button
-					onClick={() => {
-						setValue("groupedMultiValues", null)
-					}}
-				>
-					Reset Grouped Multi Value
-				</Button>
-			</div>
-			<form
-				onSubmit={handleSubmit((data) => console.log(data))}
-				onReset={(e) => {
-					e.preventDefault()
-					reset()
-				}}
-			>
-				<Label>Single Uncontrolled</Label>
-				<Select<FormData, string>
-					control={control}
-					name="singleValue"
-					options={availableOptions}
-					usePortal
-					errorMessage="TEST"
-					invalid
-				/>
-				<Label>Multi Uncontrolled</Label>
-				<Select<FormData, string>
-					control={control}
-					isMulti
-					name="multiValues"
-					options={availableOptions}
-					usePortal
-				/>
-				<Label>Grouped Multi</Label>
-				{/* string is the value type, FormData the type of the form data for the control, true is the isMulti flag */}
-				<Select<FormData, string, true>
-					isMulti
-					control={control}
-					name="groupedMultiValues"
-					options={availableGroupOptions}
-					usePortal
-				/>
-				<ButtonGroup className="mt-2 w-full justify-end">
-					<Button type="reset">Reset</Button>
-					<Button type="submit" appearance="primary">
-						Submit
-					</Button>
-				</ButtonGroup>
-			</form>
-		</>
+			</ButtonGroup>
+		</form>
 	)
 }
 //#endregion select2form-uncontrolled
@@ -137,7 +112,7 @@ function ControlledFormExample() {
 		{ label: "Fourth option", value: "fourth" },
 	]
 
-	const { handleSubmit, control, reset } = useForm<FormDataControlled>()
+	const { handleSubmit, control } = useForm<FormDataControlled>()
 
 	const [selectedControlled, setSelectedControlled] = useState<
 		{ label: string; value: string } | undefined | null
@@ -149,13 +124,7 @@ function ControlledFormExample() {
 
 	return (
 		<>
-			<form
-				onSubmit={handleSubmit((data) => console.log(data))}
-				onReset={(e) => {
-					e.preventDefault()
-					reset()
-				}}
-			>
+			<form onSubmit={handleSubmit((data) => console.log(data))}>
 				<Label htmlFor="controlled">Controlled Single</Label>
 				<Select<FormDataControlled, string, false>
 					id="controlled"

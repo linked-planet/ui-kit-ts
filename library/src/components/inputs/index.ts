@@ -1,12 +1,9 @@
 export { Input, Label } from "./Inputs"
 //export { RadixSelect } from "./RadixSelect"
 export { Select } from "./Select"
-export { DateTimePicker } from "./DateTimePicker"
-export { DatePicker } from "./DateTimePicker"
-export { TimePicker } from "./DateTimePicker"
-export { DatePicker as DatePicker2 } from "./datetimepicker/DatePicker"
-export { TimePicker as TimePicker2 } from "./datetimepicker/TimePicker"
-export { DateTimePicker as DateTimePicker2 } from "./datetimepicker/DateTimePicker"
+export { DatePicker } from "./datetimepicker/DatePicker"
+export { TimePicker } from "./datetimepicker/TimePicker"
+export { DateTimePicker } from "./datetimepicker/DateTimePicker"
 
 export type {
 	DatePickerProps,

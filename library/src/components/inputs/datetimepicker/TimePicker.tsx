@@ -1,9 +1,15 @@
 import type React from "react"
-import { type ReactNode, useCallback, useMemo } from "react"
+import {
+	type Dispatch,
+	type ReactNode,
+	type SetStateAction,
+	useCallback,
+	useMemo,
+} from "react"
 import type { TimeType } from "../../../utils/DateUtils"
 import { DateUtils } from "../../../utils"
 import dayjs from "dayjs"
-import type { Control, FieldValues, Path } from "react-hook-form"
+import type { FieldValues } from "react-hook-form"
 import { Select, type SelectInFormProps, type SelectProps } from "../Select"
 import { twMerge } from "tailwind-merge"
 
@@ -14,7 +20,9 @@ type TimePickerBaseProps = {
 	placeholder?: string
 	readOnly?: boolean
 	required?: boolean
-	onChange?: (value: TimeType | null) => void // null because else i could not remove the value from react-hook-form handling
+	onChange?:
+		| ((value: TimeType | null) => void)
+		| Dispatch<SetStateAction<TimeType | null>> // null because else i could not remove the value from react-hook-form handling
 	errorMessage?: ReactNode
 	lang?: string
 	clearButtonLabel?: string
@@ -25,21 +33,35 @@ type TimePickerBaseProps = {
 	startTime?: string
 	endTime?: string
 	interval?: number
-	style?: React.CSSProperties
 	id?: string
 	testId?: string
 	className?: string
 	containerClassName?: string
+	open?: boolean
+	defaultOpen?: boolean
 }
 
 export type TimePickerProps = TimePickerBaseProps &
-	Omit<SelectProps<TimeType, false>, "value" | "defaultValue" | "onChange">
+	Omit<
+		SelectProps<TimeType, false>,
+		| "value"
+		| "defaultValue"
+		| "onChange"
+		| "options"
+		| "menuIsOpen"
+		| "defaultMenuIsOpen"
+	>
 
 export type TimePickerInFormProps<FormData extends FieldValues> =
 	TimePickerBaseProps &
 		Omit<
 			SelectInFormProps<FormData, TimeType, false>,
-			"value" | "defaultValue" | "onChange"
+			| "value"
+			| "defaultValue"
+			| "onChange"
+			| "options"
+			| "menuIsOpen"
+			| "defaultMenuIsOpen"
 		>
 
 type UseOptionsProps = {
@@ -132,6 +154,8 @@ function useOptions({
 		console.warn("TimePicker - value is not in times", _value, options)
 	}
 
+	console.log("options", options, value, defaultValue)
+
 	return { options, defaultValue, value }
 }
 
@@ -143,7 +167,6 @@ export function TimePicker<FormData extends FieldValues>(
 
 export function TimePicker<FormData extends FieldValues>({
 	invalid,
-	readOnly,
 	required,
 	testId,
 	placeholder,
@@ -152,7 +175,6 @@ export function TimePicker<FormData extends FieldValues>({
 	label,
 	className,
 	containerClassName,
-	style,
 	errorMessage,
 	isClearable,
 	clearButtonLabel,
@@ -178,7 +200,7 @@ export function TimePicker<FormData extends FieldValues>({
 		...optionsProps,
 		lang,
 		value: _value,
-		defaultValue: _defaultValue,
+		defaultValue: _defaultValue ?? control?._defaultValues?.[name],
 	})
 
 	const onOpen = useCallback(() => onOpenChange?.(true), [onOpenChange])
@@ -190,9 +212,45 @@ export function TimePicker<FormData extends FieldValues>({
 		[onChange],
 	)
 
-	const selectProps: SelectProps<TimeType, false> = {
+	if (!control) {
+		const selectProps: SelectProps<TimeType, false> = {
+			invalid,
+			required,
+			testId,
+			options,
+			placeholder,
+			menuIsOpen: _open,
+			onMenuOpen: onOpen,
+			onMenuClose: onClose,
+			defaultMenuIsOpen: defaultOpen,
+			disabled,
+			"aria-label": label ?? ariaLabel ?? "time picker",
+			className: twMerge("min-w-28 cursor-pointer", className),
+			containerClassName: twMerge("flex flex-1", containerClassName),
+			isClearable,
+			name,
+			clearValuesButtonLabel: clearButtonLabel,
+			isMulti: false,
+			onClearButtonClick,
+			id,
+			components: {
+				DropdownIndicator: null, // hide the chevron
+			},
+			onChange: onSelectChange,
+		}
+
+		return (
+			<TimePickerNotInForm
+				{...selectProps}
+				options={options}
+				value={value}
+				defaultValue={defaultValue}
+			/>
+		)
+	}
+
+	const selectProps: SelectInFormProps<FormData, TimeType, false> = {
 		invalid,
-		readOnly,
 		required,
 		testId,
 		options,
@@ -205,11 +263,9 @@ export function TimePicker<FormData extends FieldValues>({
 		"aria-label": label ?? ariaLabel ?? "time picker",
 		className: twMerge("min-w-28 cursor-pointer", className),
 		containerClassName: twMerge("flex flex-1", containerClassName),
-		style,
-		errorMessage,
 		isClearable,
 		name,
-		clearValuesLabel: clearButtonLabel,
+		clearValuesButtonLabel: clearButtonLabel,
 		isMulti: false,
 		onClearButtonClick,
 		id,
@@ -217,41 +273,21 @@ export function TimePicker<FormData extends FieldValues>({
 			DropdownIndicator: null, // hide the chevron
 		},
 		onChange: onSelectChange,
+		control,
 	}
 
-	if (control && name) {
-		return (
-			<TimePickerInForm<FormData>
-				{...selectProps}
-				name={name}
-				control={control}
-				options={options}
-				value={value}
-				defaultValue={defaultValue}
-			/>
-		)
-	}
 	return (
-		<TimePickerNotInForm
+		<TimePickerInForm<FormData>
 			{...selectProps}
 			options={options}
 			value={value}
 			defaultValue={defaultValue}
+			errorMessage={errorMessage}
 		/>
 	)
 }
 
-function TimePickerNotInForm(
-	props: Omit<TimePickerProps, "value" | "defaultValue"> & {
-		onOpen?: () => void
-		onClose?: () => void
-		options: { label: string; value: TimeType }[]
-		value?: { label: string; value: TimeType } | null
-		defaultValue?: { label: string; value: TimeType }
-		control?: never
-		name?: string
-	},
-) {
+function TimePickerNotInForm(props: SelectProps<TimeType, false>) {
 	return <Select<TimeType, false> {...props} />
 }
 
@@ -259,15 +295,7 @@ function TimePickerInForm<FormData extends FieldValues>({
 	name,
 	control,
 	...props
-}: Omit<TimePickerInFormProps<FormData>, "value" | "defaultValue" | "name"> & {
-	onOpen?: () => void
-	onClose?: () => void
-	options: { label: string; value: TimeType }[]
-	value?: { label: string; value: TimeType } | null
-	defaultValue?: { label: string; value: TimeType }
-	name: Path<FormData>
-	control: Control<FormData>
-}) {
+}: SelectInFormProps<FormData, TimeType, false>) {
 	return (
 		<Select<FormData, TimeType, false>
 			{...props}

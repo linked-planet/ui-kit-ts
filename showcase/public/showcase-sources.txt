@@ -2321,9 +2321,6 @@ import {
 	TimePicker,
 	type DateType,
 	type TimeType,
-	DatePicker2,
-	TimePicker2,
-	DateTimePicker2,
 	DateUtils,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
@@ -2345,7 +2342,7 @@ function FormExample() {
 	const { handleSubmit, control, reset } = useForm<FormData>({
 		defaultValues: {
 			dateTime: "2023-12-24T10:00+0100",
-			time: "10:10",
+			time: "10:10", // the value must exist in the times array (or the default created times array)
 			date: "2023-12-24",
 		},
 	})
@@ -2378,110 +2375,45 @@ function FormExample() {
 }
 //#endregion datetime-picker-form
 
-//#region datetime-picker-form2
-function FormExample2() {
-	const { handleSubmit, control, reset } = useForm<FormData2>({
-		defaultValues: {
-			dateTime: DateUtils.dateFromString("2023-12-24T10:00+0100"),
-			time: "10:30",
-			date: "2024-12-24",
-		},
-	})
-
-	return (
-		<form
-			onSubmit={handleSubmit((data) => console.log("form data:", data))}
-			onReset={(e) => {
-				e.preventDefault()
-				reset()
-			}}
-		>
-			<div className="flex flex-col gap-2">
-				<DatePicker2<FormData2>
-					control={control}
-					name="date"
-					required
-				/>
-				<TimePicker2<FormData2>
-					control={control}
-					name="time"
-					required
-					startTime="00:00"
-					endTime="00:00"
-					interval={30}
-				/>
-				<DateTimePicker2<FormData2>
-					control={control}
-					name="dateTime"
-					required
-					startTime="00:00"
-					endTime="00:00"
-					interval={30}
-				/>
-			</div>
-			<ButtonGroup className="mt-4 flex justify-end">
-				<Button appearance="subtle" type="reset">
-					Reset
-				</Button>
-				<Button appearance="primary" type="submit">
-					Submit
-				</Button>
-			</ButtonGroup>
-		</form>
-	)
-}
-//#endregion datetime-picker-form2
-
 //#region datetime-picker-form-controlled
 function ControlledFormExample() {
-	const [selectedDate, setSelectedDate] = useState<DateType>("1999-12-23")
-	const [selectedTime, setSelectedTime] = useState<TimeType>("10:10")
-	const [selectedDateTime, setSelectedDateTime] = useState<string>(
-		"1999-12-23T10:10+0100",
+	const [selectedDate, setSelectedDate] = useState<DateType | null>(
+		"1999-12-23",
+	)
+	const [selectedTime, setSelectedTime] = useState<TimeType | null>("10:10")
+	const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(
+		DateUtils.dateFromString("1999-12-23T10:10+0100"),
 	)
 
-	const { handleSubmit, control, reset } = useForm<FormData>()
+	const { handleSubmit, control } = useForm<FormData>()
 
 	return (
 		<form
 			onSubmit={handleSubmit((data) => console.log("form data:", data))}
-			onReset={(e) => {
-				e.preventDefault()
-				reset()
-			}}
 		>
 			<div className="flex flex-col gap-2">
-				<div className="w-[13.3rem] overflow-hidden">
-					<DateTimePicker
-						control={control}
-						value={selectedDateTime}
-						onChange={setSelectedDateTime}
-						name="dateTime"
-					/>
-				</div>
+				<DateTimePicker
+					control={control}
+					value={selectedDateTime}
+					onChange={setSelectedDateTime}
+					name="dateTime"
+				/>
 				<hr />
-				<div className="w-24 overflow-hidden">
-					<TimePicker
-						control={control}
-						value={selectedTime}
-						onChange={setSelectedTime}
-						name="time"
-					/>
-				</div>
+				<TimePicker
+					control={control}
+					value={selectedTime}
+					onChange={setSelectedTime}
+					name="time"
+				/>
 				<hr />
-				<div className="w-[8.3rem] overflow-hidden">
-					<DatePicker
-						control={control}
-						value={selectedDate}
-						onChange={setSelectedDate}
-						name="date"
-					/>
-				</div>
+				<DatePicker
+					control={control}
+					value={selectedDate}
+					onChange={setSelectedDate}
+					name="date"
+				/>
 			</div>
 			<ButtonGroup className="mt-4 flex justify-end">
-				<Button appearance="subtle" type="reset">
-					Reset
-				</Button>
 				<Button appearance="primary" type="submit">
 					Submit
 				</Button>
@@ -2491,59 +2423,6 @@ function ControlledFormExample() {
 }
 //#endregion datetime-picker-form-controlled
 
-//#region datetime-picker-form-controlled2
-function ControlledFormExample2() {
-	const [selectedDate, setSelectedDate] = useState<DateType | null>(
-		"1999-12-23",
-	)
-	const [selectedTime, setSelectedTime] = useState<TimeType | null>("11:00")
-	const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(
-		DateUtils.dateFromString("1999-12-23T10:00+0100"),
-	)
-
-	const { handleSubmit, control, reset } = useForm<FormData>()
-
-	return (
-		<form
-			onSubmit={handleSubmit((data) => console.log("form data:", data))}
-			onReset={(e) => {
-				e.preventDefault()
-				reset()
-			}}
-		>
-			<div className="flex flex-col gap-2">
-				<DateTimePicker2
-					control={control}
-					value={selectedDateTime}
-					onChange={setSelectedDateTime}
-					name="dateTime"
-				/>
-				<TimePicker2
-					control={control}
-					value={selectedTime}
-					onChange={setSelectedTime}
-					name="time"
-				/>
-				<DatePicker2
-					control={control}
-					value={selectedDate}
-					onChange={setSelectedDate}
-					name="date"
-				/>
-			</div>
-			<ButtonGroup className="mt-4 flex justify-end">
-				<Button appearance="subtle" type="reset">
-					Reset
-				</Button>
-				<Button appearance="primary" type="submit">
-					Submit
-				</Button>
-			</ButtonGroup>
-		</form>
-	)
-}
-//#endregion datetime-picker-form-controlled2
-
 function DateTimePickerShowcase(props: ShowcaseProps) {
 	const [date, setDate] = useState<DateType | null>(null)
 	const [time, setTime] = useState<TimeType | null>(null)
@@ -2552,38 +2431,21 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 	//#region datetime-picker
 	const example = (
 		<div className="flex gap-4">
-			<div>
-				<DatePicker onChange={setDate} value={date} />
-				<TimePicker onChange={setTime} value={time} />
-				<DateTimePicker
-					onChange={(val) => {
-						const d = val ? DateUtils.dateFromString(val) : null
-						setDateTime(d)
-					}}
-					value={
-						dateTime
-							? DateUtils.dateToJavaDateTimeString(dateTime)
-							: undefined
-					}
-				/>
-			</div>
-			<div>
-				<DatePicker2 onChange={setDate} value={date} />
-				<TimePicker2
-					onChange={setTime}
-					value={time}
-					startTime="00:00"
-					endTime="00:00"
-					interval={30}
-				/>
-				<DateTimePicker2
-					onChange={(d) => {
-						console.log("DateTimePicker2", d)
-						setDateTime(d)
-					}}
-					value={dateTime}
-				/>
-			</div>
+			<DatePicker onChange={setDate} value={date} />
+			<TimePicker
+				onChange={setTime}
+				value={time}
+				startTime="00:00"
+				endTime="00:00"
+				interval={30}
+			/>
+			<DateTimePicker
+				onChange={(d) => {
+					console.log("DateTimePicker", d)
+					setDateTime(d)
+				}}
+				value={dateTime}
+			/>
 		</div>
 	)
 	//#endregion datetime-picker
@@ -2610,19 +2472,9 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					sourceCodeExampleId: "datetime-picker-form",
 				},
 				{
-					title: "Form Uncontrolled 2",
-					example: <FormExample2 />,
-					sourceCodeExampleId: "datetime-picker-form2",
-				},
-				{
 					title: "Form Controlled",
 					example: <ControlledFormExample />,
 					sourceCodeExampleId: "datetime-picker-form-controlled",
-				},
-				{
-					title: "Form Controlled 2",
-					example: <ControlledFormExample2 />,
-					sourceCodeExampleId: "datetime-picker-form-controlled2",
 				},
 			]}
 		/>
@@ -5609,8 +5461,6 @@ function AKExample() {
 							<Select
 								placeholder="Choose"
 								options={selectOptions}
-								side="bottom"
-								align="end"
 								className="z-10"
 							/>
 							Lorem, ipsum dolor sit amet consectetur adipisicing
@@ -6288,71 +6138,46 @@ function FormExample() {
 	})
 
 	return (
-		<>
-			<div className="flex gap-2">
-				<Button
-					onClick={() => {
-						setValue("singleValue", null)
-					}}
-				>
-					Reset Single Value
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<Label>Single Uncontrolled</Label>
+			<Select<FormData, string>
+				control={control}
+				name="singleValue"
+				options={availableOptions}
+				usePortal
+				errorMessage="TEST"
+				invalid
+			/>
+			<Label>Multi Uncontrolled</Label>
+			<Select<FormData, string>
+				control={control}
+				isMulti
+				name="multiValues"
+				options={availableOptions}
+				usePortal
+			/>
+			<Label>Grouped Multi</Label>
+			{/* string is the value type, FormData the type of the form data for the control, true is the isMulti flag */}
+			<Select<FormData, string, true>
+				isMulti
+				control={control}
+				name="groupedMultiValues"
+				options={availableGroupOptions}
+				usePortal
+			/>
+			<ButtonGroup className="mt-2 w-full justify-end">
+				<Button type="reset">Reset</Button>
+				<Button type="submit" appearance="primary">
+					Submit
 				</Button>
-				<Button
-					onClick={() => {
-						setValue("multiValues", null)
-					}}
-				>
-					Reset Multi Value
-				</Button>
-				<Button
-					onClick={() => {
-						setValue("groupedMultiValues", null)
-					}}
-				>
-					Reset Grouped Multi Value
-				</Button>
-			</div>
-			<form
-				onSubmit={handleSubmit((data) => console.log(data))}
-				onReset={(e) => {
-					e.preventDefault()
-					reset()
-				}}
-			>
-				<Label>Single Uncontrolled</Label>
-				<Select<FormData, string>
-					control={control}
-					name="singleValue"
-					options={availableOptions}
-					usePortal
-					errorMessage="TEST"
-					invalid
-				/>
-				<Label>Multi Uncontrolled</Label>
-				<Select<FormData, string>
-					control={control}
-					isMulti
-					name="multiValues"
-					options={availableOptions}
-					usePortal
-				/>
-				<Label>Grouped Multi</Label>
-				{/* string is the value type, FormData the type of the form data for the control, true is the isMulti flag */}
-				<Select<FormData, string, true>
-					isMulti
-					control={control}
-					name="groupedMultiValues"
-					options={availableGroupOptions}
-					usePortal
-				/>
-				<ButtonGroup className="mt-2 w-full justify-end">
-					<Button type="reset">Reset</Button>
-					<Button type="submit" appearance="primary">
-						Submit
-					</Button>
-				</ButtonGroup>
-			</form>
-		</>
+			</ButtonGroup>
+		</form>
 	)
 }
 //#endregion select2form-uncontrolled
@@ -6371,7 +6196,7 @@ function ControlledFormExample() {
 		{ label: "Fourth option", value: "fourth" },
 	]
 
-	const { handleSubmit, control, reset } = useForm<FormDataControlled>()
+	const { handleSubmit, control } = useForm<FormDataControlled>()
 
 	const [selectedControlled, setSelectedControlled] = useState<
 		{ label: string; value: string } | undefined | null
@@ -6383,13 +6208,7 @@ function ControlledFormExample() {
 
 	return (
 		<>
-			<form
-				onSubmit={handleSubmit((data) => console.log(data))}
-				onReset={(e) => {
-					e.preventDefault()
-					reset()
-				}}
-			>
+			<form onSubmit={handleSubmit((data) => console.log(data))}>
 				<Label htmlFor="controlled">Controlled Single</Label>
 				<Select<FormDataControlled, string, false>
 					id="controlled"

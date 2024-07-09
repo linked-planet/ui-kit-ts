@@ -49,7 +49,6 @@ type TimePickerPropsPart = Pick<
 	| "errorMessage"
 	| "onOpenChange"
 	| "className"
-	| "style"
 	| "id"
 	| "lang"
 	| "times"
