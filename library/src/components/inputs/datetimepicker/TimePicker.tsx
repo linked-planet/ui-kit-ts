@@ -154,8 +154,6 @@ function useOptions({
 		console.warn("TimePicker - value is not in times", _value, options)
 	}
 
-	console.log("options", options, value, defaultValue)
-
 	return { options, defaultValue, value }
 }
 
