@@ -9,7 +9,7 @@ import {
 } from "react-hook-form"
 import { type DateType, DateUtils, type TimeType } from "../../../utils"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { twJoin } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 
 type DatePickerPropsPart = Omit<
 	DatePickerProps,
@@ -48,7 +48,6 @@ type TimePickerPropsPart = Pick<
 	| "clearButtonLabel"
 	| "errorMessage"
 	| "onOpenChange"
-	| "className"
 	| "id"
 	| "lang"
 	| "times"
@@ -71,6 +70,12 @@ type DateTimePickerAdditionalProps = {
 	defaultTime?: TimeType
 	isClearable?: boolean
 	onClearButtonClick?: () => void
+	className?: string
+	style?: React.CSSProperties
+	datePickerClassName?: string
+	timePickerClassName?: string
+	datePickerStyle?: React.CSSProperties
+	timePickerStyle?: React.CSSProperties
 }
 
 export type DateTimePickerProps = DateTimePickerAdditionalProps &
@@ -122,6 +127,10 @@ function DateTimeNotInFormPicker({
 	defaultYear,
 	className,
 	style,
+	datePickerClassName,
+	datePickerStyle,
+	timePickerClassName,
+	timePickerStyle,
 	disabledDateFilter,
 	disabledDates,
 	interval,
@@ -309,14 +318,20 @@ function DateTimeNotInFormPicker({
 			style={style}
 		>
 			<DatePicker
-				className="rounded-r-none border-r-0 border-r-transparent before:rounded-r-none"
+				className={twMerge(
+					"rounded-r-none border-r-0 border-r-transparent before:rounded-r-none",
+					datePickerClassName,
+				)}
 				containerClassName="flex flex-1"
 				hideIcon
 				value={dateVal}
 				{...datePickerProps}
 			/>
 			<TimePicker
-				className="rounded-l-none border-l-0 border-l-transparent before:rounded-l-none"
+				className={twMerge(
+					"rounded-l-none border-l-0 border-l-transparent before:rounded-l-none",
+					timePickerClassName,
+				)}
 				value={timeVal}
 				{...timePickerProps}
 			/>
