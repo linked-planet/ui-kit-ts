@@ -71,6 +71,15 @@ export default function InlineMessage({
 	const appearanceClassName =
 		InlineMessageAppearanceColors[message.appearance ?? "default"]
 
+	/*const interactiveClassName = removable
+		? InlineMessageInteractiveColors[message.appearance ?? "default"]
+		: ""
+
+	const appearanceClassName = twMerge(
+		appearanceClassNameStandard,
+		interactiveClassName,
+	)*/
+
 	return (
 		<div
 			className="box-border w-full"
