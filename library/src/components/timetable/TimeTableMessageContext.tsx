@@ -10,7 +10,7 @@ import {
 } from "react"
 import { getTranslation } from "../../localization/LocaleContext"
 import type { default as TranslatedTimeTableMessagesJson } from "../../localization/translations-compiled/en.json"
-import type { Message } from "../inlinemessage"
+import type { Message } from "../InlineMessage"
 
 export type TranslatedTimeTableMessages = typeof TranslatedTimeTableMessagesJson
 

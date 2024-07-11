@@ -8,7 +8,7 @@ import React, {
 } from "react"
 
 import useResizeObserver from "use-resize-observer"
-import { InlineMessage } from "../inlinemessage"
+import { InlineMessage } from "../InlineMessage"
 import type { RenderItemProps } from "./ItemWrapper"
 import { LPTimeTableHeader, headerText } from "./LPTimeTableHeader"
 import type { PlaceholderItemProps } from "./PlaceholderItem"
