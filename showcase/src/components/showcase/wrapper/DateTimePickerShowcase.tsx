@@ -20,12 +20,6 @@ type FormData = {
 	date?: DateType
 }
 
-type FormData2 = {
-	dateTime: Date
-	time: TimeType
-	date?: DateType
-}
-
 //#region datetime-picker-form
 function FormExample() {
 	const { handleSubmit, control, reset } = useForm<FormData>({
