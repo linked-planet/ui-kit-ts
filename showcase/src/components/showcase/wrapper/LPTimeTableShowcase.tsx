@@ -5,12 +5,8 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { Button, LPTimeTable } from "@linked-planet/ui-kit-ts"
-import type {
-	TimeSlotBooking,
-	TimeTableEntry,
-	TimeTableGroup,
-} from "@linked-planet/ui-kit-ts"
+import { Button, TimeTable } from "@linked-planet/ui-kit-ts"
+
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
@@ -33,11 +29,11 @@ function debounceHelper(callback: () => void) {
 	}, debounceTimeout)
 }
 
-type ExampleGroup = TimeTableGroup
+type ExampleGroup = TimeTable.TimeTableGroup
 
-type ExampleItem = TimeSlotBooking
+type ExampleItem = TimeTable.TimeSlotBooking
 
-const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
+const exampleEntries: TimeTable.TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 	{
 		group: {
 			title: "Empty Group",
@@ -368,14 +364,14 @@ function createTestItems(
 function createTestEntries(
 	startDate: Dayjs,
 	endDate: Dayjs,
-	currentEntries: TimeTableEntry<ExampleGroup, ExampleItem>[],
+	currentEntries: TimeTable.TimeTableEntry<ExampleGroup, ExampleItem>[],
 ) {
 	if (startDate.isSame(startDateInitial) && endDate.isSame(endDateInitial)) {
 		return exampleEntries
 	}
 
 	const groupWithItems = currentEntries.map((group, g) => {
-		const newGroup: TimeTableEntry<ExampleGroup, ExampleItem> = {
+		const newGroup: TimeTable.TimeTableEntry<ExampleGroup, ExampleItem> = {
 			group: group.group,
 			items: createTestItems(startDate, endDate, g),
 		}
@@ -391,7 +387,7 @@ function createMoreTestGroups(
 	count: number,
 	startCount: number,
 ) {
-	const newGroups: TimeTableEntry<ExampleGroup, ExampleItem>[] = []
+	const newGroups: TimeTable.TimeTableEntry<ExampleGroup, ExampleItem>[] = []
 	for (let i = 0; i < count; i++) {
 		const groupNumber = startCount + i
 		newGroups.push({
@@ -491,7 +487,8 @@ function Example() {
 
 	const [showCreateNewItemModal, setShowCreateNewItemModal] = useState(false)
 	const [selectedTimeRange, setSelectedTimeRange] = useState<
-		{ startDate: Dayjs; endDate: Dayjs; group: TimeTableGroup } | undefined
+		| { startDate: Dayjs; endDate: Dayjs; group: TimeTable.TimeTableGroup }
+		| undefined
 	>()
 	const [clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB] =
 		useState<() => void>()
@@ -499,7 +496,7 @@ function Example() {
 		useState(false)
 
 	const onCreateNewItemConfirmCB = useCallback(
-		(group: TimeTableGroup, item: TimeSlotBooking) => {
+		(group: TimeTable.TimeTableGroup, item: TimeTable.TimeSlotBooking) => {
 			setShowCreateNewItemModal(false)
 			setEntries((prev) => {
 				const groupIndex = prev.findIndex((e) => e.group === group)
@@ -721,7 +718,7 @@ function Example() {
 					height: "600px",
 				}}
 			>
-				<LPTimeTable
+				<TimeTable.LPTimeTable
 					groupHeaderColumnWidth={groupHeaderColumnWidth}
 					columnWidth={columnWidth}
 					startDate={timeFrame.startDate}
@@ -797,7 +794,7 @@ function ExampleCalendar() {
 					height: "600px",
 				}}
 			>
-				<LPTimeTable
+				<TimeTable.LPTimeTable
 					groupHeaderColumnWidth={150}
 					columnWidth={70}
 					startDate={timeFrame.startDate}
@@ -834,7 +831,7 @@ function ExampleMonthCalendar() {
 					height: "600px",
 				}}
 			>
-				<LPTimeTable
+				<TimeTable.LPTimeTable
 					groupHeaderColumnWidth={150}
 					columnWidth={70}
 					startDate={timeFrame.startDate}

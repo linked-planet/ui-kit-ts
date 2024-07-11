@@ -1,13 +1,18 @@
-import React, { CSSProperties, useMemo, useRef, useState } from "react"
-import { BookCard, BookCardComponents, Tag } from "@linked-planet/ui-kit-ts"
+import React, { type CSSProperties, useMemo, useRef, useState } from "react"
+import {
+	BookCard,
+	BookCardComponents,
+	Tag,
+	TagGroup,
+	Badge,
+} from "@linked-planet/ui-kit-ts"
 
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import Button, { ButtonGroup } from "@atlaskit/button"
 import { Fieldset } from "@atlaskit/form"
-import { Badge, SimpleTag, TagGroup } from "@linked-planet/ui-kit-ts"
 import { CSSTransition } from "react-transition-group"
 import { TruncatedText } from "@linked-planet/ui-kit-ts/components/TruncatedText"
 
@@ -168,12 +173,12 @@ function BookCardExample() {
 				actions={
 					<div className="flex items-center">
 						<TagGroup>
-							<SimpleTag key="action" appearance="danger">
+							<Tag key="action" appearance="danger">
 								DAUERAUSLEIHE
-							</SimpleTag>
-							<SimpleTag key="action 1" appearance="greenLight">
+							</Tag>
+							<Tag key="action 1" appearance="greenLight">
 								action item
-							</SimpleTag>
+							</Tag>
 						</TagGroup>
 					</div>
 				}
@@ -201,12 +206,12 @@ function BookCardExample() {
 						<BookCardComponents.CardBodyEntryTitle>
 							Book Entry Title
 						</BookCardComponents.CardBodyEntryTitle>
-						<SimpleTag>
+						<Tag>
 							Lorem ipsum, dolor sit amet consectetur adipisicing
 							elit. Illo cumque eum laborum voluptate ipsa sed
 							consectetur tempore vel quia est quas itaque
 							voluptatem neque odio, maiores ut cum at distinctio?
-						</SimpleTag>
+						</Tag>
 						<Tag>
 							Lorem ipsum, dolor sit amet consectetur adipisicing
 							elit. Illo cumque eum laborum voluptate ipsa sed
