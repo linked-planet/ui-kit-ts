@@ -141,7 +141,7 @@ function isColorOption(color: Appearance | TagColor): color is TagColor {
 	return TagColorOptions.includes(color as TagColor)
 }
 
-export function SimpleTag({
+function SimpleTag({
 	children,
 	appearance = "default",
 	looks = "default",
