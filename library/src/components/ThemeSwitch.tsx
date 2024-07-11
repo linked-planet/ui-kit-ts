@@ -1,15 +1,11 @@
 import React from "react"
-import { switchTheme } from "../../theming"
-import { Button } from "../Button"
+import { switchTheme } from "../theming"
+import { Button } from "./Button"
 
-export default function ThemeSwitch() {
+export function ThemeSwitch() {
 	return (
 		<Button
-			style={{
-				display: "flex",
-				alignItems: "center",
-				justifyContent: "center",
-			}}
+			className="flex items-center justify-center"
 			appearance="subtle"
 			label="Switch theme"
 			onClick={switchTheme}
