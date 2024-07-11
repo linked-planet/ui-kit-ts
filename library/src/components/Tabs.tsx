@@ -22,7 +22,7 @@ type TabsSide = "left" | "top" | "right" | "bottom"
 /**
  * Tab is the TabList tab menu bar entry (not the tab panel)
  */
-export const Tab = forwardRef(
+const Tab = forwardRef(
 	(
 		{
 			label,
@@ -104,7 +104,7 @@ const tabListBottomClassName =
 /**
  * TabList is the container for the Tabs (the menu bar entries)
  */
-export const TabList = forwardRef(
+const TabList = forwardRef(
 	(
 		{ children, className, style, testId, side = "top" }: TabListProps,
 		ref: ForwardedRef<HTMLDivElement>,
@@ -176,7 +176,7 @@ type TabPanelProps = {
 	testId?: string
 }
 
-export const TabPanel = forwardRef(
+const TabPanel = forwardRef(
 	(
 		{ label, children, className, style, testId }: TabPanelProps,
 		ref: ForwardedRef<HTMLDivElement>,
@@ -201,7 +201,7 @@ export const TabPanel = forwardRef(
 /**
  * Container containing the TabList tab menu bar, and Tab panels
  */
-export const Tabs = forwardRef(
+const Container = forwardRef(
 	(
 		{
 			id,
@@ -301,3 +301,10 @@ export const Tabs = forwardRef(
 		)
 	},
 )
+
+export const Tabs = {
+	TabList,
+	TabPanel,
+	Tab,
+	Container,
+}

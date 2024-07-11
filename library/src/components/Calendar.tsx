@@ -15,7 +15,6 @@ import {
 	type Labels,
 	type Matcher,
 	useDayRender,
-	useDayPicker,
 } from "react-day-picker"
 
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"

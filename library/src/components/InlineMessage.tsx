@@ -34,7 +34,7 @@ const InlineMessageInteractiveColors: { [style in Appearance]: string } = {
 	warning: "hover:bg-warning-hovered active:bg-warning-pressed",
 }
 
-export default function InlineMessage({
+export function InlineMessage({
 	message,
 	display = "block",
 	openingDirection = "topdown",
