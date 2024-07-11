@@ -2,8 +2,8 @@ import CrossIcon from "@atlaskit/icon/glyph/cross"
 import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
-import type { Appearance } from "../../utils/appearanceTypes"
-import { Button } from "../Button"
+import type { Appearance } from "../utils/appearanceTypes"
+import { Button } from "./Button"
 
 export type OpeningDirection = "topdown" | "bottomup"
 
@@ -70,15 +70,6 @@ export default function InlineMessage({
 
 	const appearanceClassName =
 		InlineMessageAppearanceColors[message.appearance ?? "default"]
-
-	/*const interactiveClassName = removable
-		? InlineMessageInteractiveColors[message.appearance ?? "default"]
-		: ""
-
-	const appearanceClassName = twMerge(
-		appearanceClassNameStandard,
-		interactiveClassName,
-	)*/
 
 	return (
 		<div
