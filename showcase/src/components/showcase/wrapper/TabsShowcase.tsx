@@ -136,7 +136,7 @@ function ExampleLabels() {
 
 	return (
 		<div className="bg-surface flex w-full flex-col gap-4">
-			{akExample}
+			{/*akExample*/}
 			<hr />
 			{lpExample}
 		</div>

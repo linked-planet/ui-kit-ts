@@ -1,7 +1,7 @@
 import { Accordion } from "@linked-planet/ui-kit-ts"
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //#region accordion-single
@@ -78,7 +78,7 @@ export default function AnimatedListShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts/single#Accordion",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Accordion",
 				},
 			]}
 			examples={[
@@ -704,16 +704,21 @@ function BannerShowcase(props: ShowcaseProps) {
 
 export default BannerShowcase
 
-import React, { CSSProperties, useMemo, useRef, useState } from "react"
-import { BookCard, BookCardComponents, Tag } from "@linked-planet/ui-kit-ts"
+import React, { type CSSProperties, useMemo, useRef, useState } from "react"
+import {
+	BookCard,
+	BookCardComponents,
+	Tag,
+	TagGroup,
+	Badge,
+} from "@linked-planet/ui-kit-ts"
 
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import Button, { ButtonGroup } from "@atlaskit/button"
 import { Fieldset } from "@atlaskit/form"
-import { Badge, SimpleTag, TagGroup } from "@linked-planet/ui-kit-ts"
 import { CSSTransition } from "react-transition-group"
 import { TruncatedText } from "@linked-planet/ui-kit-ts/components/TruncatedText"
 
@@ -874,12 +879,12 @@ function BookCardExample() {
 				actions={
 					<div className="flex items-center">
 						<TagGroup>
-							<SimpleTag key="action" appearance="danger">
+							<Tag key="action" appearance="danger">
 								DAUERAUSLEIHE
-							</SimpleTag>
-							<SimpleTag key="action 1" appearance="greenLight">
+							</Tag>
+							<Tag key="action 1" appearance="greenLight">
 								action item
-							</SimpleTag>
+							</Tag>
 						</TagGroup>
 					</div>
 				}
@@ -907,12 +912,12 @@ function BookCardExample() {
 						<BookCardComponents.CardBodyEntryTitle>
 							Book Entry Title
 						</BookCardComponents.CardBodyEntryTitle>
-						<SimpleTag>
+						<Tag>
 							Lorem ipsum, dolor sit amet consectetur adipisicing
 							elit. Illo cumque eum laborum voluptate ipsa sed
 							consectetur tempore vel quia est quas itaque
 							voluptatem neque odio, maiores ut cum at distinctio?
-						</SimpleTag>
+						</Tag>
 						<Tag>
 							Lorem ipsum, dolor sit amet consectetur adipisicing
 							elit. Illo cumque eum laborum voluptate ipsa sed
@@ -2327,12 +2332,6 @@ import { useForm } from "react-hook-form"
 
 type FormData = {
 	dateTime: string
-	time: TimeType
-	date?: DateType
-}
-
-type FormData2 = {
-	dateTime: Date
 	time: TimeType
 	date?: DateType
 }
@@ -4214,12 +4213,8 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { Button, LPTimeTable } from "@linked-planet/ui-kit-ts"
-import type {
-	TimeSlotBooking,
-	TimeTableEntry,
-	TimeTableGroup,
-} from "@linked-planet/ui-kit-ts"
+import { Button, TimeTable } from "@linked-planet/ui-kit-ts"
+
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
@@ -4242,11 +4237,11 @@ function debounceHelper(callback: () => void) {
 	}, debounceTimeout)
 }
 
-type ExampleGroup = TimeTableGroup
+type ExampleGroup = TimeTable.TimeTableGroup
 
-type ExampleItem = TimeSlotBooking
+type ExampleItem = TimeTable.TimeSlotBooking
 
-const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
+const exampleEntries: TimeTable.TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 	{
 		group: {
 			title: "Empty Group",
@@ -4577,14 +4572,14 @@ function createTestItems(
 function createTestEntries(
 	startDate: Dayjs,
 	endDate: Dayjs,
-	currentEntries: TimeTableEntry<ExampleGroup, ExampleItem>[],
+	currentEntries: TimeTable.TimeTableEntry<ExampleGroup, ExampleItem>[],
 ) {
 	if (startDate.isSame(startDateInitial) && endDate.isSame(endDateInitial)) {
 		return exampleEntries
 	}
 
 	const groupWithItems = currentEntries.map((group, g) => {
-		const newGroup: TimeTableEntry<ExampleGroup, ExampleItem> = {
+		const newGroup: TimeTable.TimeTableEntry<ExampleGroup, ExampleItem> = {
 			group: group.group,
 			items: createTestItems(startDate, endDate, g),
 		}
@@ -4600,7 +4595,7 @@ function createMoreTestGroups(
 	count: number,
 	startCount: number,
 ) {
-	const newGroups: TimeTableEntry<ExampleGroup, ExampleItem>[] = []
+	const newGroups: TimeTable.TimeTableEntry<ExampleGroup, ExampleItem>[] = []
 	for (let i = 0; i < count; i++) {
 		const groupNumber = startCount + i
 		newGroups.push({
@@ -4700,7 +4695,8 @@ function Example() {
 
 	const [showCreateNewItemModal, setShowCreateNewItemModal] = useState(false)
 	const [selectedTimeRange, setSelectedTimeRange] = useState<
-		{ startDate: Dayjs; endDate: Dayjs; group: TimeTableGroup } | undefined
+		| { startDate: Dayjs; endDate: Dayjs; group: TimeTable.TimeTableGroup }
+		| undefined
 	>()
 	const [clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB] =
 		useState<() => void>()
@@ -4708,7 +4704,7 @@ function Example() {
 		useState(false)
 
 	const onCreateNewItemConfirmCB = useCallback(
-		(group: TimeTableGroup, item: TimeSlotBooking) => {
+		(group: TimeTable.TimeTableGroup, item: TimeTable.TimeSlotBooking) => {
 			setShowCreateNewItemModal(false)
 			setEntries((prev) => {
 				const groupIndex = prev.findIndex((e) => e.group === group)
@@ -4930,7 +4926,7 @@ function Example() {
 					height: "600px",
 				}}
 			>
-				<LPTimeTable
+				<TimeTable.LPTimeTable
 					groupHeaderColumnWidth={groupHeaderColumnWidth}
 					columnWidth={columnWidth}
 					startDate={timeFrame.startDate}
@@ -5006,7 +5002,7 @@ function ExampleCalendar() {
 					height: "600px",
 				}}
 			>
-				<LPTimeTable
+				<TimeTable.LPTimeTable
 					groupHeaderColumnWidth={150}
 					columnWidth={70}
 					startDate={timeFrame.startDate}
@@ -5043,7 +5039,7 @@ function ExampleMonthCalendar() {
 					height: "600px",
 				}}
 			>
-				<LPTimeTable
+				<TimeTable.LPTimeTable
 					groupHeaderColumnWidth={150}
 					columnWidth={70}
 					startDate={timeFrame.startDate}
@@ -5330,10 +5326,10 @@ export default LozengeShowcase
 
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { HeadingItem, MenuGroup } from "@atlaskit/menu"
-import { SimpleTag } from "@linked-planet/ui-kit-ts"
+import { Tag } from "@linked-planet/ui-kit-ts"
 import { Badge } from "@linked-planet/ui-kit-ts"
 
 function MenuShowcase(props: ShowcaseProps) {
@@ -5363,7 +5359,7 @@ function MenuShowcase(props: ShowcaseProps) {
 								}
 							}}
 						>
-							<SimpleTag
+							<Tag
 								appearance={
 									selectedItems.includes(item)
 										? "gray"
@@ -5371,7 +5367,7 @@ function MenuShowcase(props: ShowcaseProps) {
 								}
 							>
 								{item}
-							</SimpleTag>
+							</Tag>
 							<Badge appearance="default">0</Badge>
 						</a>
 					)
@@ -6456,6 +6452,213 @@ function SelectShowcase(props: ShowcaseProps) {
 
 export default SelectShowcase
 
+import React from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { IconSizeHelper, SideNavigation } from "@linked-planet/ui-kit-ts"
+import {
+	SideNavigation as AKSideNavigation,
+	NavigationHeader as AKNavigationHeader,
+	NavigationContent as AKNavigationContent,
+	NavigationFooter as AKNavigationFooter,
+	ButtonItem as AKButtonItem,
+	GoBackItem as AKGoBackItem,
+	Section as AKSection,
+	LinkItem as AKLinkItem,
+	SkeletonItem as AKSkeletonItem,
+} from "@atlaskit/side-navigation"
+
+import ActivityIcon from "@atlaskit/icon/glyph/activity"
+
+//#region side-nav-example
+function SideNavExample() {
+	return (
+		<div className="flex gap-8">
+			<div className="h-[350px]">
+				<SideNavigation.Container
+					className="max-w-sm"
+					aria-label="Side navigation"
+				>
+					<SideNavigation.Header>
+						<span>test header</span>
+					</SideNavigation.Header>
+					<SideNavigation.Content>
+						<SideNavigation.ButtonItem
+							description="This is a description which is also waaaaaaaaaaaaaaaaaaaaaay tooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"
+							iconBefore={
+								<IconSizeHelper>
+									<ActivityIcon
+										label="Activity"
+										size="large"
+									/>
+								</IconSizeHelper>
+							}
+						>
+							Button Item 1 with a tooooooooooooooooooooooo long
+							title
+						</SideNavigation.ButtonItem>
+						<SideNavigation.ButtonItem
+							selected
+							description="This is a description"
+							iconBefore={
+								<IconSizeHelper>
+									<ActivityIcon
+										label="Activity"
+										size="large"
+									/>
+								</IconSizeHelper>
+							}
+						>
+							Selected Button Item
+						</SideNavigation.ButtonItem>
+						<SideNavigation.ButtonItem
+							disabled
+							description="This is a description"
+							iconBefore={
+								<IconSizeHelper>
+									<ActivityIcon
+										label="Activity"
+										size="large"
+									/>
+								</IconSizeHelper>
+							}
+						>
+							Disabled Button Item
+						</SideNavigation.ButtonItem>
+
+						<SideNavigation.Section
+							title="Section"
+							hasSeparator
+							isList
+						>
+							<SideNavigation.ButtonItem description="This is a description">
+								Button Item 1
+							</SideNavigation.ButtonItem>
+							<SideNavigation.GoBackItem description="This is a description">
+								Go Back Item
+							</SideNavigation.GoBackItem>
+							<SideNavigation.LinkItem
+								href="https://www.google.com"
+								description={"test link description"}
+							>
+								Link Item
+							</SideNavigation.LinkItem>
+						</SideNavigation.Section>
+						<SideNavigation.SkeletonItem />
+						<SideNavigation.SkeletonItem shimmering={false} />
+						<SideNavigation.SkeletonItem hasIconBefore shimmering />
+						<SideNavigation.SkeletonItem
+							hasAvatarBefore
+							shimmering
+						/>
+					</SideNavigation.Content>
+					<SideNavigation.Footer>
+						<div>test footer</div>
+					</SideNavigation.Footer>
+				</SideNavigation.Container>
+			</div>
+
+			<div className="h-[350px]">
+				<AKSideNavigation label="">
+					<AKNavigationHeader>
+						<span>test header</span>
+					</AKNavigationHeader>
+					<AKNavigationContent>
+						<AKButtonItem
+							iconBefore={
+								<IconSizeHelper>
+									<ActivityIcon
+										label="Activity"
+										size="large"
+									/>
+								</IconSizeHelper>
+							}
+							description={"test description"}
+						>
+							test button
+						</AKButtonItem>
+						<AKButtonItem
+							isSelected
+							iconBefore={
+								<IconSizeHelper>
+									<ActivityIcon
+										label="Activity"
+										size="large"
+									/>
+								</IconSizeHelper>
+							}
+							description={"test description"}
+						>
+							selected button item
+						</AKButtonItem>
+						<AKButtonItem
+							isDisabled
+							iconBefore={
+								<IconSizeHelper>
+									<ActivityIcon
+										label="Activity"
+										size="large"
+									/>
+								</IconSizeHelper>
+							}
+							description={"test description"}
+						>
+							disabled button item
+						</AKButtonItem>
+						<AKSection title="Section" hasSeparator isList>
+							<AKButtonItem description="This is a description">
+								Button Item 1
+							</AKButtonItem>
+							<AKGoBackItem description="test description">
+								Go Back
+							</AKGoBackItem>
+							<AKLinkItem
+								href="https://www.google.com"
+								description={"test link description"}
+							>
+								Link Item
+							</AKLinkItem>
+						</AKSection>
+						<AKSkeletonItem />
+						<AKSkeletonItem isShimmering />
+						<AKSkeletonItem hasIcon />
+						<AKSkeletonItem hasAvatar />*
+					</AKNavigationContent>
+					<AKNavigationFooter>
+						<div>test footer</div>
+					</AKNavigationFooter>
+				</AKSideNavigation>
+			</div>
+		</div>
+	)
+}
+//#endregion side-nav-example
+
+function SideNavigationShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="Side Navigation"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Side%20Navigation",
+				},
+			]}
+			examples={[
+				{
+					title: "Example",
+					example: <SideNavExample />,
+					sourceCodeExampleId: "side-nav-example",
+				},
+			]}
+		/>
+	)
+}
+
+export default SideNavigationShowcase
+
 import type React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
@@ -6674,33 +6877,33 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKTabs, {
+/*import AKTabs, {
 	Tab as AKTab,
 	TabList as AKTabList,
 	TabPanel as AKTabPanel,
-} from "@atlaskit/tabs"
+} from "@atlaskit/tabs"*/
 
-import { Tabs, TabList, TabPanel, Tab, Button } from "@linked-planet/ui-kit-ts"
+import { Tabs, Button } from "@linked-planet/ui-kit-ts"
 
 function AutomaticTabsValue() {
 	//#region tabs_automatic_value
 	return (
-		<Tabs>
-			<TabList>
-				<Tab>Tab 1</Tab>
-				<Tab>Tab 2</Tab>
-				<Tab disabled>Tab 3</Tab>
-			</TabList>
-			<TabPanel>
+		<Tabs.Container>
+			<Tabs.TabList>
+				<Tabs.Tab>Tab 1</Tabs.Tab>
+				<Tabs.Tab>Tab 2</Tabs.Tab>
+				<Tabs.Tab disabled>Tab 3</Tabs.Tab>
+			</Tabs.TabList>
+			<Tabs.TabPanel>
 				<span>First Content</span>
-			</TabPanel>
-			<TabPanel>
+			</Tabs.TabPanel>
+			<Tabs.TabPanel>
 				<span>Second Content</span>
-			</TabPanel>
-			<TabPanel>
+			</Tabs.TabPanel>
+			<Tabs.TabPanel>
 				<span>Third Content</span>
-			</TabPanel>
-		</Tabs>
+			</Tabs.TabPanel>
+		</Tabs.Container>
 	)
 	//#endregion tabs_automatic_value
 }
@@ -6709,64 +6912,64 @@ function TabsSides() {
 	//#region tabs_side
 	return (
 		<div className="flex flex-wrap gap-6">
-			<Tabs>
-				<TabList side="top">
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-				</TabList>
-				<TabPanel>
+			<Tabs.Container>
+				<Tabs.TabList side="top">
+					<Tabs.Tab>Tab 1</Tabs.Tab>
+					<Tabs.Tab>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 
-			<Tabs>
-				<TabList side="left">
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-				</TabList>
-				<TabPanel>
+			<Tabs.Container>
+				<Tabs.TabList side="left">
+					<Tabs.Tab>Tab 1</Tabs.Tab>
+					<Tabs.Tab>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 
-			<Tabs>
-				<TabList side="right">
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-				</TabList>
-				<TabPanel>
+			<Tabs.Container>
+				<Tabs.TabList side="right">
+					<Tabs.Tab>Tab 1</Tabs.Tab>
+					<Tabs.Tab>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 
-			<Tabs>
-				<TabList side="bottom">
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-				</TabList>
-				<TabPanel>
+			<Tabs.Container>
+				<Tabs.TabList side="bottom">
+					<Tabs.Tab>Tab 1</Tabs.Tab>
+					<Tabs.Tab>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 		</div>
 	)
 	//#endregion tabs_side
 }
 
 function ExampleLabels() {
-	const akExample = (
+	/*const akExample = (
 		<div>
 			{
 				<AKTabs id="tab-example" defaultSelected={1}>
@@ -6785,30 +6988,30 @@ function ExampleLabels() {
 				</AKTabs>
 			}
 		</div>
-	)
+	)*/
 
 	//#region tabs_labels
 	const lpExample = (
 		<div>
-			<Tabs defaultSelected="tab2">
-				<TabList>
-					<Tab label="Tab 1" />
-					<Tab label="tab2">Tab 2</Tab>
-				</TabList>
-				<TabPanel label="Tab 1">
+			<Tabs.Container defaultSelected="tab2">
+				<Tabs.TabList>
+					<Tabs.Tab label="Tab 1" />
+					<Tabs.Tab label="tab2">Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel label="Tab 1">
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel label="tab2">
+				</Tabs.TabPanel>
+				<Tabs.TabPanel label="tab2">
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 		</div>
 	)
 	//#endregion tabs_labels
 
 	return (
 		<div className="bg-surface flex w-full flex-col gap-4">
-			{akExample}
+			{/*akExample*/}
 			<hr />
 			{lpExample}
 		</div>
@@ -6820,23 +7023,23 @@ function ExampleControlled() {
 	const [selected, setSelected] = useState(0)
 	const lpExample = (
 		<div style={{ minWidth: 300, border: "2px solid orange" }}>
-			<Tabs
+			<Tabs.Container
 				selected={selected}
 				onChange={(t: string) => setSelected(Number.parseInt(t))}
 			>
-				<TabList>
-					<Tab label={0}>
+				<Tabs.TabList>
+					<Tabs.Tab label={0}>
 						<div>Tab 1</div>
-					</Tab>
-					<Tab label={1}>Tab 2</Tab>
-				</TabList>
-				<TabPanel label={0}>
+					</Tabs.Tab>
+					<Tabs.Tab label={1}>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel label={0}>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel label={1}>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel label={1}>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 		</div>
 	)
 	//#endregion tabscontrolled
@@ -6926,11 +7129,16 @@ export default TabsShowcase
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
 import AKTagGroup from "@atlaskit/tag-group"
-import { TagGroup, SimpleTag, Tag } from "@linked-planet/ui-kit-ts"
+import {
+	TagGroup,
+	Tag,
+	Tooltip,
+	TooltipProvider,
+} from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
@@ -6967,7 +7175,7 @@ function TagShowcase(props: ShowcaseProps) {
 
 	//#region tags
 	const lpExample = (
-		<div className="flex w-full items-center">
+		<div className="flex w-full flex-wrap items-center">
 			<TagGroup>
 				<Tag
 					onBeforeRemoveAction={() => {
@@ -6977,28 +7185,29 @@ function TagShowcase(props: ShowcaseProps) {
 					onAfterRemoveAction={(str) =>
 						console.log("on after remove", str)
 					}
+					removable
 				>
 					Removable Tag
 				</Tag>
-				<Tag isRemovable={false}>Non-removal Tag</Tag>
-				<SimpleTag>Simple Tag</SimpleTag>
-				<SimpleTag looks="rounded">Colored Simple Tag</SimpleTag>
-				<SimpleTag>Colored Simple Tag</SimpleTag>
+				<Tag removable={false}>Non-removal Tag</Tag>
+				<Tag>Simple Tag</Tag>
+				<Tag looks="rounded">Colored Simple Tag</Tag>
+				<Tag>Colored Simple Tag</Tag>
 			</TagGroup>
 			<TagGroup>
-				<SimpleTag appearance="danger">Danger Simple Tag</SimpleTag>
-				<SimpleTag appearance="warning">Warning Simple Tag</SimpleTag>
-				<SimpleTag appearance="brand">Brand Simple Tag</SimpleTag>
-				<SimpleTag appearance="success">Success Simple Tag</SimpleTag>
-				<SimpleTag appearance="discovery">
+				<Tag appearance="danger">Danger Simple Tag</Tag>
+				<Tag appearance="warning">Warning Simple Tag</Tag>
+				<Tag appearance="brand">Brand Simple Tag</Tag>
+				<Tag appearance="success">Success Simple Tag</Tag>
+				<Tag appearance="discovery" truncate>
 					Discovery Simple Tag
-				</SimpleTag>
-				<SimpleTag appearance="information">
+				</Tag>
+				<Tag appearance="information" truncate>
 					Information Simple Tag
-				</SimpleTag>
-				<SimpleTag appearance="discovery">
+				</Tag>
+				<Tag appearance="discovery" truncate>
 					Discovery Simple Tag
-				</SimpleTag>
+				</Tag>
 			</TagGroup>
 		</div>
 	)
@@ -7032,65 +7241,65 @@ function TagShowcase(props: ShowcaseProps) {
 
 	//#region tagscolors
 	const colorTags = (
-		<>
-			<TagGroup>
+		<div className="flex w-full flex-col gap-2 overflow-hidden">
+			<TagGroup wrap>
 				<Tag appearance="blue">blue</Tag>
-				<SimpleTag appearance="green">green</SimpleTag>
-				<SimpleTag appearance="gray">gray</SimpleTag>
-				<SimpleTag appearance="purple">purple</SimpleTag>
-				<SimpleTag appearance="red">red</SimpleTag>
-				<SimpleTag appearance="teal">teal</SimpleTag>
-				<SimpleTag appearance="yellow">yellow</SimpleTag>
-				<SimpleTag appearance="lime">lime</SimpleTag>
-				<SimpleTag appearance="pink">pink</SimpleTag>
-				<SimpleTag appearance="orange">orange</SimpleTag>
-				<SimpleTag appearance="indigo">indigo</SimpleTag>
-				<SimpleTag appearance="cyan">cyan</SimpleTag>
-				<SimpleTag appearance="violet">violet</SimpleTag>
-				<SimpleTag appearance="amber">amber</SimpleTag>
-				<SimpleTag appearance="emerald">emerald</SimpleTag>
-				<SimpleTag appearance="fuchsia">fuchsia</SimpleTag>
-				<SimpleTag appearance="sky">sky</SimpleTag>
+				<Tag appearance="green">green</Tag>
+				<Tag appearance="gray">gray</Tag>
+				<Tag appearance="purple">purple</Tag>
+				<Tag appearance="red">red</Tag>
+				<Tag appearance="teal">teal</Tag>
+				<Tag appearance="yellow">yellow</Tag>
+				<Tag appearance="lime">lime</Tag>
+				<Tag appearance="pink">pink</Tag>
+				<Tag appearance="orange">orange</Tag>
+				<Tag appearance="indigo">indigo</Tag>
+				<Tag appearance="cyan">cyan</Tag>
+				<Tag appearance="violet">violet</Tag>
+				<Tag appearance="amber">amber</Tag>
+				<Tag appearance="emerald">emerald</Tag>
+				<Tag appearance="fuchsia">fuchsia</Tag>
+				<Tag appearance="sky">sky</Tag>
 			</TagGroup>
-			<TagGroup>
+			<TagGroup wrap>
 				<Tag appearance="blueLight">blueLight</Tag>
-				<SimpleTag appearance="greenLight">greenLight</SimpleTag>
-				<SimpleTag appearance="grayLight">greyLight</SimpleTag>
-				<SimpleTag appearance="purpleLight">purpleLight</SimpleTag>
-				<SimpleTag appearance="redLight">redLight</SimpleTag>
-				<SimpleTag appearance="tealLight">tealLight</SimpleTag>
-				<SimpleTag appearance="yellowLight">yellowLight</SimpleTag>
-				<SimpleTag appearance="limeLight">limeLight</SimpleTag>
-				<SimpleTag appearance="pinkLight">pinkLight</SimpleTag>
-				<SimpleTag appearance="orangeLight">orangeLight</SimpleTag>
-				<SimpleTag appearance="indigoLight">indigoLight</SimpleTag>
-				<SimpleTag appearance="cyanLight">cyanLight</SimpleTag>
-				<SimpleTag appearance="violetLight">violetLight</SimpleTag>
-				<SimpleTag appearance="amberLight">amberLight</SimpleTag>
-				<SimpleTag appearance="emeraldLight">emeraldLight</SimpleTag>
-				<SimpleTag appearance="fuchsiaLight">fuchsiaLight</SimpleTag>
-				<SimpleTag appearance="skyLight">skyLight</SimpleTag>
+				<Tag appearance="greenLight">greenLight</Tag>
+				<Tag appearance="grayLight">greyLight</Tag>
+				<Tag appearance="purpleLight">purpleLight</Tag>
+				<Tag appearance="redLight">redLight</Tag>
+				<Tag appearance="tealLight">tealLight</Tag>
+				<Tag appearance="yellowLight">yellowLight</Tag>
+				<Tag appearance="limeLight">limeLight</Tag>
+				<Tag appearance="pinkLight">pinkLight</Tag>
+				<Tag appearance="orangeLight">orangeLight</Tag>
+				<Tag appearance="indigoLight">indigoLight</Tag>
+				<Tag appearance="cyanLight">cyanLight</Tag>
+				<Tag appearance="violetLight">violetLight</Tag>
+				<Tag appearance="amberLight">amberLight</Tag>
+				<Tag appearance="emeraldLight">emeraldLight</Tag>
+				<Tag appearance="fuchsiaLight">fuchsiaLight</Tag>
+				<Tag appearance="skyLight">skyLight</Tag>
 			</TagGroup>
-			<TagGroup>
+			<TagGroup wrap>
 				<Tag appearance="blueBold">blueBold</Tag>
-				<SimpleTag appearance="greenBold">greenBold</SimpleTag>
-				<SimpleTag appearance="grayBold">greyBold</SimpleTag>
-				<SimpleTag appearance="purpleBold">purpleBold</SimpleTag>
-				<SimpleTag appearance="redBold">redBold</SimpleTag>
-				<SimpleTag appearance="tealBold">tealBold</SimpleTag>
-				<SimpleTag appearance="yellowBold">yellowBold</SimpleTag>
-				<SimpleTag appearance="limeBold">limeBold</SimpleTag>
-				<SimpleTag appearance="pinkBold">pinkBold</SimpleTag>
-				<SimpleTag appearance="orangeBold">orangeBold</SimpleTag>
-				<SimpleTag appearance="indigoBold">indigoBold</SimpleTag>
-				<SimpleTag appearance="cyanBold">cyanBold</SimpleTag>
-				<SimpleTag appearance="violetBold">violetBold</SimpleTag>
-				<SimpleTag appearance="amberBold">amberBold</SimpleTag>
-				<SimpleTag appearance="emeraldBold">emeraldBold</SimpleTag>
-				<SimpleTag appearance="fuchsiaBold">fuchsiaBold</SimpleTag>
-				<SimpleTag appearance="skyBold">skyBold</SimpleTag>
+				<Tag appearance="greenBold">greenBold</Tag>
+				<Tag appearance="grayBold">greyBold</Tag>
+				<Tag appearance="purpleBold">purpleBold</Tag>
+				<Tag appearance="redBold">redBold</Tag>
+				<Tag appearance="tealBold">tealBold</Tag>
+				<Tag appearance="yellowBold">yellowBold</Tag>
+				<Tag appearance="limeBold">limeBold</Tag>
+				<Tag appearance="pinkBold">pinkBold</Tag>
+				<Tag appearance="orangeBold">orangeBold</Tag>
+				<Tag appearance="indigoBold">indigoBold</Tag>
+				<Tag appearance="cyanBold">cyanBold</Tag>
+				<Tag appearance="violetBold">violetBold</Tag>
+				<Tag appearance="amberBold">amberBold</Tag>
+				<Tag appearance="emeraldBold">emeraldBold</Tag>
+				<Tag appearance="fuchsiaBold">fuchsiaBold</Tag>
+				<Tag appearance="skyBold">skyBold</Tag>
 			</TagGroup>
-			<TagGroup>
+			<TagGroup wrap>
 				<Tag appearance="default">default</Tag>
 				<Tag appearance="danger">danger</Tag>
 				<Tag appearance="warning">warning</Tag>
@@ -7099,15 +7308,15 @@ function TagShowcase(props: ShowcaseProps) {
 				<Tag appearance="discovery">discovery</Tag>
 				<Tag appearance="brand">brand</Tag>
 			</TagGroup>
-		</>
+		</div>
 	)
 	//#endregion
 
 	const example = (
-		<>
+		<TooltipProvider>
 			{akExample}
 			{lpExample}
-		</>
+		</TooltipProvider>
 	)
 
 	const colors = (

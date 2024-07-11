@@ -51,6 +51,8 @@ import {
 	N50,
 	N60,
 	P500,
+	skeleton,
+	N200A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -265,6 +267,7 @@ export const theme = {
 		border: {
 			DEFAULT: `var(--ds-border, ${N40A})`,
 			bold: `var(--ds-border-bold, ${N500A})`,
+			separator: `var(--ds-menu-seperator-color, var(--ds-border, ${N30}))`,
 		},
 		icon: {
 			DEFAULT: `var(--ds-icon, ${N200})`,
@@ -277,6 +280,8 @@ export const theme = {
 			warning: `var(--ds-icon-warning, ${colors.amber[800]})`,
 			danger: `var(--ds-icon-danger, ${R500})`,
 		},
+
+		skeleton: `var(--ds-skeleton, ${N200A})`,
 
 		white: colors.white,
 		black: colors.black,

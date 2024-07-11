@@ -46,6 +46,7 @@ import TooltipShowcase from "./components/showcase/wrapper/TooltipShowcase"
 import TruncatedTextShowcase from "./components/showcase/wrapper/TruncatedTextShowcase"
 import UtilsShowcase from "./components/showcase/wrapper/UtilsShowcase"
 import AppLayoutShowcase from "./components/showcase/wrapper/AppLayoutShowcase"
+import SideNavigationShowcase from "./components/showcase/wrapper/SideNavigationShowcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -131,6 +132,9 @@ export default function useShowcases({
 			Popover: <PopoverShowcase overallSourceCode={overallSourceCode} />,
 			Select: <SelectShowcase overallSourceCode={overallSourceCode} />,
 			Sidebar: <SidebarShowcase overallSourceCode={overallSourceCode} />,
+			"Side Navigation": (
+				<SideNavigationShowcase overallSourceCode={overallSourceCode} />
+			),
 			Tabs: <TabsShowcase overallSourceCode={overallSourceCode} />,
 			Tag: <TagShowcase overallSourceCode={overallSourceCode} />,
 			"Table Tree": (
