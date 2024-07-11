@@ -1,7 +1,7 @@
 import { Accordion } from "@linked-planet/ui-kit-ts"
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //#region accordion-single
@@ -78,7 +78,7 @@ export default function AnimatedListShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts/single#Accordion",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Accordion",
 				},
 			]}
 			examples={[

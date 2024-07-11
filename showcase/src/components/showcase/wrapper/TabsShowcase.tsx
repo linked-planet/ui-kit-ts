@@ -2,33 +2,33 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKTabs, {
+/*import AKTabs, {
 	Tab as AKTab,
 	TabList as AKTabList,
 	TabPanel as AKTabPanel,
-} from "@atlaskit/tabs"
+} from "@atlaskit/tabs"*/
 
-import { Tabs, TabList, TabPanel, Tab, Button } from "@linked-planet/ui-kit-ts"
+import { Tabs, Button } from "@linked-planet/ui-kit-ts"
 
 function AutomaticTabsValue() {
 	//#region tabs_automatic_value
 	return (
-		<Tabs>
-			<TabList>
-				<Tab>Tab 1</Tab>
-				<Tab>Tab 2</Tab>
-				<Tab disabled>Tab 3</Tab>
-			</TabList>
-			<TabPanel>
+		<Tabs.Container>
+			<Tabs.TabList>
+				<Tabs.Tab>Tab 1</Tabs.Tab>
+				<Tabs.Tab>Tab 2</Tabs.Tab>
+				<Tabs.Tab disabled>Tab 3</Tabs.Tab>
+			</Tabs.TabList>
+			<Tabs.TabPanel>
 				<span>First Content</span>
-			</TabPanel>
-			<TabPanel>
+			</Tabs.TabPanel>
+			<Tabs.TabPanel>
 				<span>Second Content</span>
-			</TabPanel>
-			<TabPanel>
+			</Tabs.TabPanel>
+			<Tabs.TabPanel>
 				<span>Third Content</span>
-			</TabPanel>
-		</Tabs>
+			</Tabs.TabPanel>
+		</Tabs.Container>
 	)
 	//#endregion tabs_automatic_value
 }
@@ -37,64 +37,64 @@ function TabsSides() {
 	//#region tabs_side
 	return (
 		<div className="flex flex-wrap gap-6">
-			<Tabs>
-				<TabList side="top">
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-				</TabList>
-				<TabPanel>
+			<Tabs.Container>
+				<Tabs.TabList side="top">
+					<Tabs.Tab>Tab 1</Tabs.Tab>
+					<Tabs.Tab>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 
-			<Tabs>
-				<TabList side="left">
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-				</TabList>
-				<TabPanel>
+			<Tabs.Container>
+				<Tabs.TabList side="left">
+					<Tabs.Tab>Tab 1</Tabs.Tab>
+					<Tabs.Tab>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 
-			<Tabs>
-				<TabList side="right">
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-				</TabList>
-				<TabPanel>
+			<Tabs.Container>
+				<Tabs.TabList side="right">
+					<Tabs.Tab>Tab 1</Tabs.Tab>
+					<Tabs.Tab>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 
-			<Tabs>
-				<TabList side="bottom">
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-				</TabList>
-				<TabPanel>
+			<Tabs.Container>
+				<Tabs.TabList side="bottom">
+					<Tabs.Tab>Tab 1</Tabs.Tab>
+					<Tabs.Tab>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 		</div>
 	)
 	//#endregion tabs_side
 }
 
 function ExampleLabels() {
-	const akExample = (
+	/*const akExample = (
 		<div>
 			{
 				<AKTabs id="tab-example" defaultSelected={1}>
@@ -113,23 +113,23 @@ function ExampleLabels() {
 				</AKTabs>
 			}
 		</div>
-	)
+	)*/
 
 	//#region tabs_labels
 	const lpExample = (
 		<div>
-			<Tabs defaultSelected="tab2">
-				<TabList>
-					<Tab label="Tab 1" />
-					<Tab label="tab2">Tab 2</Tab>
-				</TabList>
-				<TabPanel label="Tab 1">
+			<Tabs.Container defaultSelected="tab2">
+				<Tabs.TabList>
+					<Tabs.Tab label="Tab 1" />
+					<Tabs.Tab label="tab2">Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel label="Tab 1">
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel label="tab2">
+				</Tabs.TabPanel>
+				<Tabs.TabPanel label="tab2">
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 		</div>
 	)
 	//#endregion tabs_labels
@@ -148,23 +148,23 @@ function ExampleControlled() {
 	const [selected, setSelected] = useState(0)
 	const lpExample = (
 		<div style={{ minWidth: 300, border: "2px solid orange" }}>
-			<Tabs
+			<Tabs.Container
 				selected={selected}
 				onChange={(t: string) => setSelected(Number.parseInt(t))}
 			>
-				<TabList>
-					<Tab label={0}>
+				<Tabs.TabList>
+					<Tabs.Tab label={0}>
 						<div>Tab 1</div>
-					</Tab>
-					<Tab label={1}>Tab 2</Tab>
-				</TabList>
-				<TabPanel label={0}>
+					</Tabs.Tab>
+					<Tabs.Tab label={1}>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel label={0}>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel label={1}>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel label={1}>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 		</div>
 	)
 	//#endregion tabscontrolled

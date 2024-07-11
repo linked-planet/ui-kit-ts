@@ -1,9 +1,9 @@
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { HeadingItem, MenuGroup } from "@atlaskit/menu"
-import { SimpleTag } from "@linked-planet/ui-kit-ts"
+import { Tag } from "@linked-planet/ui-kit-ts"
 import { Badge } from "@linked-planet/ui-kit-ts"
 
 function MenuShowcase(props: ShowcaseProps) {
@@ -33,7 +33,7 @@ function MenuShowcase(props: ShowcaseProps) {
 								}
 							}}
 						>
-							<SimpleTag
+							<Tag
 								appearance={
 									selectedItems.includes(item)
 										? "gray"
@@ -41,7 +41,7 @@ function MenuShowcase(props: ShowcaseProps) {
 								}
 							>
 								{item}
-							</SimpleTag>
+							</Tag>
 							<Badge appearance="default">0</Badge>
 						</a>
 					)
