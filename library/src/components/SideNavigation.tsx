@@ -5,18 +5,18 @@ import ArrowLeftCircleIcon from "@atlaskit/icon/glyph/arrow-left-circle"
 import { IconSizeHelper } from "./IconSizeHelper"
 
 const itemBaseStyles =
-	"hover:bg-neutral-subtle-hovered disabled:bg-neutral-subtle px-2 data-[selected=true]:bg-neutral-subtle-hovered data-[selected=true]:disabled:bg-neutral-subtle active:bg-selected-subtle text-text-subtle group flex w-full cursor-pointer select-none items-center overflow-hidden rounded p-1.5 disabled:cursor-not-allowed" as const
+	"hover:bg-neutral-subtle-hovered disabled:bg-neutral-subtle px-2 data-[selected=true]:bg-neutral-subtle-hovered data-[selected=true]:disabled:bg-neutral-subtle active:bg-selected-subtle text-text-subtle group flex w-full cursor-pointer select-none items-center overflow-hidden rounded p-3 disabled:cursor-not-allowed" as const
 
 const iconBaseStyles =
 	"group-active:text-selected-bold-pressed group-disabled:text-text-subtlest" as const
 
 const titleBaseStyles =
-	"text-text group-active:text-selected-bold-pressed group-data-[selected=true]:text-selected-bold-pressed group-data-[selected=true]:group-hover:text-text group-data-[selected=true]:group-disabled:text-text-subtlest group-disabled:text-text-subtlest truncate text-base" as const
+	"group-active:text-selected-bold-pressed group-data-[selected=true]:text-selected-bold-pressed group-data-[selected=true]:group-hover:text-text group-data-[selected=true]:group-disabled:text-text-subtlest group-disabled:text-text-subtlest truncate text-base" as const
 
 const descriptionBaseStyles =
 	"text-text-subtle group-disabled:text-text-subtlest truncate text-sm" as const
 
-type SideNavigationProps = Pick<
+type SideNavigationContainerProps = Pick<
 	ComponentPropsWithoutRef<"nav">,
 	| "className"
 	| "style"
@@ -35,7 +35,7 @@ function Container({
 	"aria-label": ariaLabel = "Side navigation",
 	role = "navigation",
 	...props
-}: SideNavigationProps) {
+}: SideNavigationContainerProps) {
 	return (
 		<nav
 			className={twMerge(

@@ -1,16 +1,16 @@
 import React, { useCallback } from "react"
-import {
-	ButtonItem,
-	Footer,
-	Header,
-	NavigationFooter,
-	NavigationHeader,
-	NestableNavigationContent,
-	SideNavigation,
-} from "@atlaskit/side-navigation"
 import useShowcases from "../../useShowcases"
 import { useLocation, useNavigate } from "react-router-dom"
-import { LeftSidebar, RightSidebar } from "@linked-planet/ui-kit-ts"
+import {
+	LeftSidebar,
+	RightSidebar,
+	SideNavigation,
+} from "@linked-planet/ui-kit-ts"
+import {
+	Footer,
+	Header,
+	NestableNavigationContent,
+} from "@atlaskit/side-navigation"
 
 function scrollAndHighlightElement(id: string) {
 	const element = document.getElementById(id)
@@ -48,25 +48,25 @@ function ShowcaseLeftSidebar({
 	)
 
 	const content = (
-		<SideNavigation label="">
-			<NavigationHeader>
+		<SideNavigation.Container>
+			<SideNavigation.Header>
 				<Header description="linked-planet">UI-Showcase</Header>
-			</NavigationHeader>
+			</SideNavigation.Header>
 
 			<NestableNavigationContent>
 				{Object.keys(showcases).map((showcaseName) => {
 					return (
-						<ButtonItem
+						<SideNavigation.ButtonItem
 							key={showcaseName}
 							onClick={() => clickCB(showcaseName)}
 						>
 							{showcaseName}
-						</ButtonItem>
+						</SideNavigation.ButtonItem>
 					)
 				})}
 			</NestableNavigationContent>
 
-			<NavigationFooter>
+			<SideNavigation.Footer>
 				<Footer>
 					Made with ❤ by
 					<a href="https://www.linked-planet.com/"> linked-planet</a>
@@ -78,8 +78,8 @@ function ShowcaseLeftSidebar({
 						Apache License, Version 2.0
 					</a>
 				</Footer>
-			</NavigationFooter>
-		</SideNavigation>
+			</SideNavigation.Footer>
+		</SideNavigation.Container>
 	)
 
 	if (position === "left") {

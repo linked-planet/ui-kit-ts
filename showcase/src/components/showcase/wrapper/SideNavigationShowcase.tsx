@@ -13,6 +13,7 @@ import {
 	Section as AKSection,
 	LinkItem as AKLinkItem,
 	SkeletonItem as AKSkeletonItem,
+	Header as AKHeader,
 } from "@atlaskit/side-navigation"
 
 import ActivityIcon from "@atlaskit/icon/glyph/activity"
@@ -108,7 +109,7 @@ function SideNavExample() {
 			<div className="h-[350px]">
 				<AKSideNavigation label="">
 					<AKNavigationHeader>
-						<span>test header</span>
+						<AKHeader>test header</AKHeader>
 					</AKNavigationHeader>
 					<AKNavigationContent>
 						<AKButtonItem

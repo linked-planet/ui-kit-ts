@@ -1,6 +1,6 @@
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import SearchIcon from "@atlaskit/icon/glyph/search"
 import WatchIcon from "@atlaskit/icon/glyph/watch"
