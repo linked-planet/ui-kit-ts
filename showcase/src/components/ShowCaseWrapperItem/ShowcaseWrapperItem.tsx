@@ -7,14 +7,7 @@ import {
 	useRef,
 	useState,
 } from "react"
-import {
-	Tabs,
-	Tab,
-	TabList,
-	TabPanel,
-	Button,
-	ButtonGroup,
-} from "@linked-planet/ui-kit-ts"
+import { Tabs, Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
 import { CodeBlock } from "@atlaskit/code"
 
 import styles from "./ShowCaseWrapperItem.module.css"
@@ -138,7 +131,7 @@ export default function ShowcaseWrapperItem({
 				)}
 			</div>
 
-			<Tabs
+			<Tabs.Container
 				id={`${name}-tabs`}
 				selected={example}
 				onChange={(title) => {
@@ -147,18 +140,18 @@ export default function ShowcaseWrapperItem({
 					setParams(params)
 				}}
 			>
-				<TabList>
+				<Tabs.TabList>
 					{examples.map((example) => {
 						return (
-							<Tab key={example.title} label={example.title}>
+							<Tabs.Tab key={example.title} label={example.title}>
 								{example.title}
-							</Tab>
+							</Tabs.Tab>
 						)
 					})}
-				</TabList>
+				</Tabs.TabList>
 				{examples.map((example) => {
 					return (
-						<TabPanel
+						<Tabs.TabPanel
 							key={example.sourceCodeExampleId}
 							label={example.title}
 							className="overflow-hidden"
@@ -170,10 +163,10 @@ export default function ShowcaseWrapperItem({
 									example.sourceCodeExampleId
 								}
 							/>
-						</TabPanel>
+						</Tabs.TabPanel>
 					)
 				})}
-			</Tabs>
+			</Tabs.Container>
 		</div>
 	)
 }
