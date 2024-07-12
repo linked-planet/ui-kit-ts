@@ -41,11 +41,16 @@ export function switchTheme() {
 
 export function getCurrentTheme() {
 	const html = document.querySelector("html")
-	if (html) {
-		const currentTheme = html.getAttribute("data-color-mode")
-		if (currentTheme && isTheme(currentTheme)) {
-			return currentTheme
-		}
+	if (!html) {
+		return undefined
+	}
+	const currentTheme = html.getAttribute("data-color-mode")
+	if (currentTheme && isTheme(currentTheme)) {
+		return currentTheme
+	}
+	const fromLocalStorage = localStorage.getItem(LocalStorageThemeVar)
+	if (fromLocalStorage && isTheme(fromLocalStorage)) {
+		return fromLocalStorage
 	}
 	return undefined
 }

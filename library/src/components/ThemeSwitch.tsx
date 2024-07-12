@@ -1,16 +1,20 @@
 import React from "react"
-import { switchTheme } from "../theming"
+import { getCurrentTheme, switchTheme } from "../theming"
 import { Button } from "./Button"
 
 export function ThemeSwitch() {
+	const [theme, setTheme] = React.useState(getCurrentTheme())
 	return (
 		<Button
-			className="flex items-center justify-center"
-			appearance="subtle"
+			className="flex w-36 items-center justify-center capitalize"
+			appearance="default"
 			label="Switch theme"
-			onClick={switchTheme}
+			onClick={() => {
+				switchTheme()
+				setTheme(getCurrentTheme())
+			}}
 		>
-			Switch Theme
+			{theme} theme
 		</Button>
 	)
 }
