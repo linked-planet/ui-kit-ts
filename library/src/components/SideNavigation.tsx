@@ -1,8 +1,12 @@
-import React, { useRef } from "react"
+import React, { Fragment, useRef, useState } from "react"
 import type { ComponentPropsWithoutRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import ArrowLeftCircleIcon from "@atlaskit/icon/glyph/arrow-left-circle"
+import ArrowRightCircleIcon from "@atlaskit/icon/glyph/arrow-right-circle"
 import { IconSizeHelper } from "./IconSizeHelper"
+
+import { CSSTransition, TransitionGroup } from "react-transition-group"
+import type { CSSTransitionProps } from "react-transition-group/CSSTransition"
 
 const itemBaseStyles = twJoin(
 	"px-1.5 data-[selected=true]:bg-neutral-subtle-hovered group flex w-full cursor-pointer select-none items-center overflow-hidden rounded",
@@ -12,7 +16,7 @@ const itemBaseStyles = twJoin(
 )
 
 const iconAndTextBaseStyles = twJoin(
-	"group-active:text-text group-disabled:text-text-disabled text-text-subtle",
+	"group-active:text-text group-disabled:text-text-disabled text-text-subtle flex items-center",
 	"group-data-[selected=true]:text-selected-text group-data-[selected=true]:group-hover:text-selected-text group-data-[selected=true]:group-disabled:text-text-subtlest truncate text-base",
 )
 
@@ -162,7 +166,7 @@ function ButtonItem({
 			{...props}
 		>
 			{iconBefore && (
-				<div className={`${iconAndTextBaseStyles} mr-2`}>
+				<div className={`${iconAndTextBaseStyles} mr-2 flex-none`}>
 					{iconBefore}
 				</div>
 			)}
@@ -186,7 +190,7 @@ function ButtonItem({
 				)}
 			</div>
 			{iconAfter && (
-				<div className={`${iconAndTextBaseStyles} ml-2`}>
+				<div className={`${iconAndTextBaseStyles} ml-2 flex-none`}>
 					{iconAfter}
 				</div>
 			)}
@@ -436,6 +440,124 @@ function Header({
 	)
 }
 
+type NestingItemProps = {
+	children: React.ReactNode
+	className?: string
+	style?: React.CSSProperties
+	title: string // title is used to identify the item and as a key
+}
+
+function NestingItem({ children, className, style }: NestingItemProps) {
+	return (
+		<Container className={className} style={style}>
+			{children}
+		</Container>
+	)
+}
+
+const cssLeaveLeftTransitionClassNames: CSSTransitionProps["classNames"] = {
+	enter: "duration-200 ease-in-out -translate-x-full",
+	enterDone: "duration-200 ease-in-out translate-x-0",
+	exit: "duration-200 ease-in-out translate-x-0",
+	exitDone: "duration-200 ease-in-out -translate-x-full",
+}
+
+const cssEnterRightTransitionClassNames: CSSTransitionProps["classNames"] = {
+	enter: "duration-200 ease-in-out translate-x-full",
+	enterDone: "duration-200 ease-in-out translate-x-0",
+	exit: "duration-200 ease-in-out translate-x-full",
+	exitDone: "duration-200 ease-in-out translate-x-0",
+}
+
+function NestableNavigationContent({
+	goBackLabel = "Go Back",
+	children,
+	reserveHeight,
+	defaultOpenTitle,
+}: {
+	goBackLabel?: string
+	children: React.ReactNode
+	reserveHeight?: boolean
+	defaultOpenTitle?: string
+}) {
+	const [isInside, setIsInside] = useState<string | undefined>(
+		defaultOpenTitle,
+	)
+	const insideRef = useRef<HTMLDivElement>(null)
+	const outsideRef = useRef<HTMLDivElement>(null)
+
+	let renderChild: React.ReactElement<NestingItemProps> | null = null
+	const titles = React.Children.map(children, (child) => {
+		if (
+			!React.isValidElement<NestingItemProps>(child) ||
+			child.type !== NestingItem
+		) {
+			throw new Error(
+				"NestableNavigationContent must only contain NestingItem components",
+			)
+		}
+		if (child.props.title === isInside) {
+			renderChild = child
+		}
+		return child.props.title
+	})
+
+	return (
+		<TransitionGroup
+			className={reserveHeight ? "size-full" : "w-full"}
+			enter
+			exit
+		>
+			{isInside && (
+				<CSSTransition
+					classNames={cssEnterRightTransitionClassNames}
+					timeout={200}
+					nodeRef={insideRef}
+				>
+					<div ref={insideRef} className="size-full">
+						<GoBackItem onClick={() => setIsInside(undefined)}>
+							{goBackLabel}
+						</GoBackItem>
+						<div className="border-b-border-separator border-t-border-separator flex size-full border-b-2 border-t-2 border-solid py-2">
+							{renderChild}
+						</div>
+					</div>
+				</CSSTransition>
+			)}
+
+			{!isInside && (
+				<CSSTransition
+					classNames={cssLeaveLeftTransitionClassNames}
+					timeout={200}
+					nodeRef={outsideRef}
+				>
+					<div
+						ref={outsideRef}
+						className={isInside ? "hidden" : "size-full"}
+					>
+						{titles?.map((title) => (
+							<ButtonItem
+								key={title}
+								onClick={() => setIsInside(title)}
+								iconAfter={
+									<IconSizeHelper>
+										<ArrowRightCircleIcon
+											label=""
+											size="medium"
+										/>
+									</IconSizeHelper>
+								}
+							>
+								{title}
+							</ButtonItem>
+						))}
+					</div>
+				</CSSTransition>
+			)}
+		</TransitionGroup>
+	)
+}
+
 export const SideNavigation = {
 	Container,
 	Content,
@@ -446,4 +568,6 @@ export const SideNavigation = {
 	SkeletonItem,
 	Footer,
 	Header,
+	NestingItem,
+	NestableNavigationContent,
 }

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { AnimatedList, Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
