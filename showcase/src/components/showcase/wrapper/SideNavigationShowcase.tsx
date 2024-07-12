@@ -45,6 +45,9 @@ function SideNavExample() {
 							Button Item 1 with a tooooooooooooooooooooooo long
 							title
 						</SideNavigation.ButtonItem>
+						<SideNavigation.ButtonItem>
+							Button Item 1
+						</SideNavigation.ButtonItem>
 						<SideNavigation.ButtonItem
 							selected
 							description="This is a description"
@@ -125,6 +128,7 @@ function SideNavExample() {
 						>
 							test button
 						</AKButtonItem>
+						<AKButtonItem>test button</AKButtonItem>
 						<AKButtonItem
 							isSelected
 							iconBefore={
@@ -170,7 +174,7 @@ function SideNavExample() {
 						<AKSkeletonItem />
 						<AKSkeletonItem isShimmering />
 						<AKSkeletonItem hasIcon />
-						<AKSkeletonItem hasAvatar />*
+						<AKSkeletonItem hasAvatar />
 					</AKNavigationContent>
 					<AKNavigationFooter>
 						<div>test footer</div>

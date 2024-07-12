@@ -446,7 +446,7 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 			<Button
 				ref={ref}
 				className={twMerge(
-					"group flex items-center justify-between",
+					`group flex items-center justify-between py-0 ${!hideChevron ? "pr-2" : ""}`,
 					className,
 				)}
 				style={{
@@ -456,18 +456,18 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 			>
 				{children}
 				<IconSizeHelper
-					className={`hidden h-full w-6 items-center justify-center ${
+					className={`hidden h-4 w-4 items-center justify-center ${
 						hideChevron ? "" : "group-data-[state=open]:flex"
 					}`}
 				>
-					<ChevronUpIcon label="" size="medium" />
+					<ChevronUpIcon label="" size="small" />
 				</IconSizeHelper>
 				<IconSizeHelper
-					className={`hidden h-full w-6 items-center justify-center ${
+					className={`hidden h-4 w-4 items-center justify-center ${
 						hideChevron ? "" : "group-data-[state=closed]:flex"
 					}`}
 				>
-					<ChevronDownIcon label="" size="medium" />
+					<ChevronDownIcon label="" size="small" />
 				</IconSizeHelper>
 			</Button>
 		)

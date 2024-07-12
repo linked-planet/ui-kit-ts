@@ -5,7 +5,7 @@ import ArrowLeftCircleIcon from "@atlaskit/icon/glyph/arrow-left-circle"
 import { IconSizeHelper } from "./IconSizeHelper"
 
 const itemBaseStyles = twJoin(
-	"p-1.5 data-[selected=true]:bg-neutral-subtle-hovered  group flex w-full cursor-pointer select-none items-center overflow-hidden rounded",
+	"px-1.5 data-[selected=true]:bg-neutral-subtle-hovered group flex w-full cursor-pointer select-none items-center overflow-hidden rounded",
 	"hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed",
 	"disabled:bg-neutral-subtle disabled:cursor-not-allowed data-[selected=true]:disabled:bg-neutral-subtle",
 	"data-[selected=true]:bg-selected-subtle data-[selected=true]:hover:bg-selected-subtle-hovered data-[selected=true]:active:bg-selected-subtle-pressed",
@@ -153,7 +153,10 @@ function ButtonItem({
 }: ButtonItemProps) {
 	return (
 		<button
-			className={twMerge(itemBaseStyles, className)}
+			className={twMerge(
+				`${itemBaseStyles} ${description ? "py-2" : "py-3"}`,
+				className,
+			)}
 			role={role}
 			data-selected={selected}
 			{...props}
@@ -372,7 +375,7 @@ function SkeletonItem({
 }: SkeletonItemProps) {
 	return (
 		<div
-			className={twMerge("flex items-center gap-4 p-4", className)}
+			className={twMerge("flex items-center gap-4 px-2 py-4", className)}
 			{...props}
 		>
 			{hasIconBefore && (

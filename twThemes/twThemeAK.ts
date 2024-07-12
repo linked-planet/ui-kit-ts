@@ -53,6 +53,7 @@ import {
 	P500,
 	skeleton,
 	N200A,
+	N10A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -281,7 +282,7 @@ export const theme = {
 			danger: `var(--ds-icon-danger, ${R500})`,
 		},
 
-		skeleton: `var(--ds-skeleton, ${N200A})`,
+		skeleton: `var(--ds-skeleton, ${N30})`,
 
 		white: colors.white,
 		black: colors.black,
