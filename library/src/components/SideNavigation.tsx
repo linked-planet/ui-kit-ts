@@ -1,20 +1,23 @@
-import React, { useEffect, useRef } from "react"
+import React, { useRef } from "react"
 import type { ComponentPropsWithoutRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import ArrowLeftCircleIcon from "@atlaskit/icon/glyph/arrow-left-circle"
 import { IconSizeHelper } from "./IconSizeHelper"
 
-const itemBaseStyles =
-	"hover:bg-neutral-subtle-hovered disabled:bg-neutral-subtle px-2 data-[selected=true]:bg-neutral-subtle-hovered data-[selected=true]:disabled:bg-neutral-subtle active:bg-selected-subtle text-text-subtle group flex w-full cursor-pointer select-none items-center overflow-hidden rounded p-3 disabled:cursor-not-allowed" as const
+const itemBaseStyles = twJoin(
+	"p-1.5 data-[selected=true]:bg-neutral-subtle-hovered  group flex w-full cursor-pointer select-none items-center overflow-hidden rounded",
+	"hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed",
+	"disabled:bg-neutral-subtle disabled:cursor-not-allowed data-[selected=true]:disabled:bg-neutral-subtle",
+	"data-[selected=true]:bg-selected-subtle data-[selected=true]:hover:bg-selected-subtle-hovered data-[selected=true]:active:bg-selected-subtle-pressed",
+)
 
-const iconBaseStyles =
-	"group-active:text-selected-bold-pressed group-disabled:text-text-subtlest" as const
-
-const titleBaseStyles =
-	"group-active:text-selected-bold-pressed group-data-[selected=true]:text-selected-bold-pressed group-data-[selected=true]:group-hover:text-text group-data-[selected=true]:group-disabled:text-text-subtlest group-disabled:text-text-subtlest truncate text-base" as const
+const iconAndTextBaseStyles = twJoin(
+	"group-active:text-text group-disabled:text-text-disabled text-text-subtle",
+	"group-data-[selected=true]:text-selected-text group-data-[selected=true]:group-hover:text-selected-text group-data-[selected=true]:group-disabled:text-text-subtlest truncate text-base",
+)
 
 const descriptionBaseStyles =
-	"text-text-subtle group-disabled:text-text-subtlest truncate text-sm" as const
+	"text-text-subtle group-disabled:text-text-disabled truncate text-sm" as const
 
 type SideNavigationContainerProps = Pick<
 	ComponentPropsWithoutRef<"nav">,
@@ -156,11 +159,13 @@ function ButtonItem({
 			{...props}
 		>
 			{iconBefore && (
-				<div className={`${iconBaseStyles} mr-2`}>{iconBefore}</div>
+				<div className={`${iconAndTextBaseStyles} mr-2`}>
+					{iconBefore}
+				</div>
 			)}
 			<div className="flex w-full flex-col truncate text-start">
 				<div
-					className={twMerge(titleBaseStyles, titleClassName)}
+					className={twMerge(iconAndTextBaseStyles, titleClassName)}
 					style={titleStyle}
 				>
 					{children}
@@ -178,7 +183,9 @@ function ButtonItem({
 				)}
 			</div>
 			{iconAfter && (
-				<div className={`${iconBaseStyles} ml-2`}>{iconAfter}</div>
+				<div className={`${iconAndTextBaseStyles} ml-2`}>
+					{iconAfter}
+				</div>
 			)}
 		</button>
 	)
@@ -254,11 +261,13 @@ function LinkItem({
 			{...props}
 		>
 			{iconBefore && (
-				<div className={`${iconBaseStyles} mr-2`}>{iconBefore}</div>
+				<div className={`${iconAndTextBaseStyles} mr-2`}>
+					{iconBefore}
+				</div>
 			)}
 			<div className="flex w-full flex-col truncate text-start">
 				<div
-					className={twMerge(titleBaseStyles, titleClassName)}
+					className={twMerge(iconAndTextBaseStyles, titleClassName)}
 					style={titleStyle}
 				>
 					{children}
@@ -276,7 +285,9 @@ function LinkItem({
 				)}
 			</div>
 			{iconAfter && (
-				<div className={`${iconBaseStyles} ml-2`}>{iconAfter}</div>
+				<div className={`${iconAndTextBaseStyles} ml-2`}>
+					{iconAfter}
+				</div>
 			)}
 		</a>
 	)
@@ -318,7 +329,7 @@ export function Section({
 		>
 			<h2
 				className={twMerge(
-					"text-text-subtlest mb-2 px-2 pt-4 text-xs font-bold uppercase",
+					"text-text-subtle px-2 pt-4 text-xs font-bold uppercase",
 					titleClassName,
 				)}
 				style={titleStyle}
@@ -411,7 +422,10 @@ function Header({
 }) {
 	return (
 		<div
-			className={twMerge("box-border px-2 py-1.5", className)}
+			className={twMerge(
+				"text-text box-border px-2 py-4 font-semibold",
+				className,
+			)}
 			style={style}
 		>
 			{children}

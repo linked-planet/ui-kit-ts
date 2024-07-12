@@ -181,8 +181,8 @@ export const theme = {
 				pressed: `var(--ds-background-selected-bold-pressed, ${B400})`,
 			},
 			text: {
-				DEFAULT: `var(--ds-text-selected, ${N900})`,
-				inverse: `var(--ds-text-selected, ${N10})`,
+				DEFAULT: `var(--ds-text-selected, ${B400})`,
+				inverse: `var(--ds-text-selected, ${N0})`,
 			},
 			border: `var(--ds-border-selected, ${B200})`,
 			/* subtle only exists as an escape hedge against the difference between theme/no theme, and it provides a light background for selections in unthemed mode */
