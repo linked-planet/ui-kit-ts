@@ -10,7 +10,7 @@ import type { ComponentPropsWithoutRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import ArrowLeftCircleIcon from "@atlaskit/icon/glyph/arrow-left-circle"
 import ArrowRightCircleIcon from "@atlaskit/icon/glyph/arrow-right-circle"
-import { IconSizeHelper } from "../IconSizeHelper"
+import { IconSizeHelper } from "./IconSizeHelper"
 
 import { CSSTransition, TransitionGroup } from "react-transition-group"
 import type { CSSTransitionProps } from "react-transition-group/CSSTransition"
@@ -80,42 +80,44 @@ function Content({
 	const ref = useRef<HTMLDivElement>(null)
 
 	return (
-		<div className="relative flex size-full overflow-hidden">
-			<div
-				onScroll={(e) => {
-					if (!(e.target instanceof HTMLDivElement)) return
-					e.target.removeAttribute("data-separator-top")
-					e.target.removeAttribute("data-separator-bottom")
-					if (e.target.scrollTop > 0) {
-						e.target.setAttribute("data-separator-top", "")
-					}
-					if (
-						e.target.scrollTop <
-						e.target.scrollHeight - e.target.clientHeight - 1
-					) {
-						e.target.setAttribute("data-separator-bottom", "")
-					}
-					e.target.style.setProperty(
-						"--sidenav-separator-width",
-						`calc(${e.target.clientWidth}px - 0.5rem)`,
-					)
-				}}
-				ref={ref}
-				className={twMerge(
-					twJoin(
-						"overflow-auto px-2",
-						"before:border-border-separator before:absolute before:left-0 before:top-0 before:w-[var(--sidenav-separator-width)] before:border-t-2 before:border-solid before:opacity-0 before:content-['']",
-						"before:transition-opacity before:duration-100 data-[separator-top]:before:opacity-100",
-						"after:border-border-separator after:absolute after:bottom-0 after:left-0 after:w-[var(--sidenav-separator-width)] after:border-b-2 after:border-solid after:opacity-0 after:content-['']",
-						"after:transition-opacity after:duration-100 data-[separator-bottom]:after:opacity-100",
-					),
-					className,
-				)}
-				style={style}
-			>
-				{children}
+		<SideNavigationProvider>
+			<div className="relative flex size-full overflow-hidden">
+				<div
+					onScroll={(e) => {
+						if (!(e.target instanceof HTMLDivElement)) return
+						e.target.removeAttribute("data-separator-top")
+						e.target.removeAttribute("data-separator-bottom")
+						if (e.target.scrollTop > 0) {
+							e.target.setAttribute("data-separator-top", "")
+						}
+						if (
+							e.target.scrollTop <
+							e.target.scrollHeight - e.target.clientHeight - 1
+						) {
+							e.target.setAttribute("data-separator-bottom", "")
+						}
+						e.target.style.setProperty(
+							"--sidenav-separator-width",
+							`calc(${e.target.clientWidth}px - 0.5rem)`,
+						)
+					}}
+					ref={ref}
+					className={twMerge(
+						twJoin(
+							"overflow-auto px-2",
+							"before:border-border-separator before:absolute before:left-0 before:top-0 before:w-[var(--sidenav-separator-width)] before:border-t-2 before:border-solid before:opacity-0 before:content-['']",
+							"before:transition-opacity before:duration-100 data-[separator-top]:before:opacity-100",
+							"after:border-border-separator after:absolute after:bottom-0 after:left-0 after:w-[var(--sidenav-separator-width)] after:border-b-2 after:border-solid after:opacity-0 after:content-['']",
+							"after:transition-opacity after:duration-100 data-[separator-bottom]:after:opacity-100",
+						),
+						className,
+					)}
+					style={style}
+				>
+					{children}
+				</div>
 			</div>
-		</div>
+		</SideNavigationProvider>
 	)
 }
 
@@ -463,15 +465,18 @@ function NestingItem({
 	_level,
 	title,
 }: NestingItemProps) {
+	console.log("ITEM LEVEL", title, _level)
 	const childrenWithLevel = React.Children.map(children, (child) => {
 		if (
 			React.isValidElement<NestableNavigationContentProps>(child) &&
 			child.type === NestableNavigationContent
 		) {
-			return React.cloneElement(child, { _level: _level ?? 0 + 1 })
+			console.log("ADDING LEVEL", _level + 1)
+			return React.cloneElement(child, { _level: (_level as number) + 1 })
 		}
 		return child
 	})
+	console.log("CHILDREN WITH LEVEL", childrenWithLevel)
 
 	return (
 		<Container
@@ -604,4 +609,38 @@ export const SideNavigation = {
 	Header,
 	NestingItem,
 	NestableNavigationContent,
+}
+
+type SideNavigationContext = {
+	currentPath: string[]
+}
+
+const navContext = createContext<SideNavigationContext>({
+	currentPath: [],
+})
+
+export function useSideNavigation() {
+	const ctx = useContext(navContext)
+	if (!ctx) {
+		throw new Error(
+			"useSideNavigation must be used within a SideNavigationProvider",
+		)
+	}
+	return ctx
+}
+
+export function SideNavigationProvider({
+	children,
+}: {
+	children: React.ReactNode
+}) {
+	return (
+		<navContext.Provider
+			value={{
+				currentPath: [],
+			}}
+		>
+			{children}
+		</navContext.Provider>
+	)
 }

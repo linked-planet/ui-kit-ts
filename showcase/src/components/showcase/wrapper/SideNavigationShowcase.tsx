@@ -33,12 +33,12 @@ function SideNavExample() {
 						<span>test header</span>
 					</SideNavigation.Header>
 					<SideNavigation.Content>
-						<SideNavigation.NestableNavigationContent defaultOpenTitle="test nesting">
+						<SideNavigation.NestableNavigationContent>
 							<SideNavigation.NestingItem title="test nesting">
 								<SideNavigation.ButtonItem>
 									Test Nested Button
 								</SideNavigation.ButtonItem>
-								<SideNavigation.NestableNavigationContent defaultOpenTitle="inner nesting">
+								<SideNavigation.NestableNavigationContent>
 									<SideNavigation.NestingItem title="inner nesting">
 										<SideNavigation.ButtonItem>
 											Inner Test Nested Button
@@ -47,6 +47,7 @@ function SideNavExample() {
 								</SideNavigation.NestableNavigationContent>
 							</SideNavigation.NestingItem>
 						</SideNavigation.NestableNavigationContent>
+
 						<SideNavigation.ButtonItem
 							description="This is a description which is also waaaaaaaaaaaaaaaaaaaaaay tooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"
 							iconBefore={
