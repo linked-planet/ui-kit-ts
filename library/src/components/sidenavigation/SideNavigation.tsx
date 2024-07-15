@@ -136,6 +136,8 @@ type ButtonItemProps = Pick<
 	| "className"
 	| "style"
 	| "onClick"
+	| "onMouseDown"
+	| "onMouseUp"
 	| "onKeyUp"
 	| "tabIndex"
 	| "role"
