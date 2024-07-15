@@ -6,11 +6,6 @@ import {
 	RightSidebar,
 	SideNavigation,
 } from "@linked-planet/ui-kit-ts"
-import {
-	Footer,
-	Header,
-	NestableNavigationContent,
-} from "@atlaskit/side-navigation"
 
 function scrollAndHighlightElement(id: string) {
 	const element = document.getElementById(id)
@@ -50,10 +45,14 @@ function ShowcaseLeftSidebar({
 	const content = (
 		<SideNavigation.Container>
 			<SideNavigation.Header>
-				<Header description="linked-planet">UI-Showcase</Header>
+				<h2 className="text-text-subtle pb-2 text-sm font-bold">
+					UI-Showcase
+				</h2>
+				<span className="text-text-subtlest text-sm font-[400]">
+					linked-planet
+				</span>
 			</SideNavigation.Header>
-
-			<NestableNavigationContent>
+			<SideNavigation.Content>
 				{Object.keys(showcases).map((showcaseName) => {
 					return (
 						<SideNavigation.ButtonItem
@@ -64,20 +63,20 @@ function ShowcaseLeftSidebar({
 						</SideNavigation.ButtonItem>
 					)
 				})}
-			</NestableNavigationContent>
+			</SideNavigation.Content>
 
-			<SideNavigation.Footer>
-				<Footer>
+			<SideNavigation.Footer className="flex flex-col gap-4">
+				<div className="text-center">
 					Made with ❤ by
 					<a href="https://www.linked-planet.com/"> linked-planet</a>
-				</Footer>
-				<Footer>
+				</div>
+				<div className="text-center">
 					Licensed under
 					<a href="http://www.apache.org/licenses/LICENSE-2.0">
 						{" "}
 						Apache License, Version 2.0
 					</a>
-				</Footer>
+				</div>
 			</SideNavigation.Footer>
 		</SideNavigation.Container>
 	)
