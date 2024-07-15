@@ -14,7 +14,7 @@ import CollapsibleShowcase from "./components/showcase/wrapper/CollapsibleShowca
 import ColorsShowcase from "./components/showcase/wrapper/ColorsShowcase"
 import DateTimePickerShowcase from "./components/showcase/wrapper/DateTimePickerShowcase"
 import DropDownMenuShowcase from "./components/showcase/wrapper/DropdownMenuShowcase"
-import DynamicTableShowcase from "./components/showcase/wrapper/DynamicTableShowcase"
+import DataTableShowcase from "./components/showcase/wrapper/DataTableShowcase"
 import EmptyStateShowcase from "./components/showcase/wrapper/EmptyStateShowcase"
 import FiltersShowcase from "./components/showcase/wrapper/FiltersShowcase"
 import FlagShowcase from "./components/showcase/wrapper/FlagShowcase"
@@ -88,11 +88,11 @@ export default function useShowcases({
 			"Date Time Picker": (
 				<DateTimePickerShowcase overallSourceCode={overallSourceCode} />
 			),
+			"Data Table": (
+				<DataTableShowcase overallSourceCode={overallSourceCode} />
+			),
 			Dropdown: (
 				<DropDownMenuShowcase overallSourceCode={overallSourceCode} />
-			),
-			"Dynamic Table": (
-				<DynamicTableShowcase overallSourceCode={overallSourceCode} />
 			),
 			"Empty State": (
 				<EmptyStateShowcase overallSourceCode={overallSourceCode} />
