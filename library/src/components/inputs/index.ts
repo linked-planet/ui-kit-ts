@@ -4,6 +4,7 @@ export { Select } from "./Select"
 export { DatePicker } from "./datetimepicker/DatePicker"
 export { TimePicker } from "./datetimepicker/TimePicker"
 export { DateTimePicker } from "./datetimepicker/DateTimePicker"
+export { TextField } from "./TextField"
 
 export type {
 	DatePickerProps,

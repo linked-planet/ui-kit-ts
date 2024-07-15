@@ -10,7 +10,15 @@ import React, {
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./SlidingErrorMessage"
-import { inputBaseStyle } from "../styleHelper"
+import { inputBaseStyles } from "../styleHelper"
+
+const inputNormalStyle =
+	"text-left border-0 border-transparent placeholder:text-text-subtlest placeholder:opacity-100 outline-none bg-transparent"
+
+const inputDisabledStyle =
+	"disabled:text-disabled-text disabled:cursor-not-allowed"
+
+const inputStyles = twJoin(inputNormalStyle, inputDisabledStyle, "p-1 m-0")
 
 //#region Label
 const labelNormalStyles =
@@ -35,14 +43,6 @@ export function Label({
 //#endregion
 
 //#region Input
-const inputNormalStyles =
-	"w-full text-left rounded border-0 border-transparent placeholder:text-text-subtlest placeholder:opacity-100 outline-none bg-transparent"
-
-const inputDisabledStyles =
-	"disabled:text-disabled-text disabled:cursor-not-allowed"
-
-const inputStyles = twJoin(inputNormalStyles, inputDisabledStyles, "p-1 m-0")
-
 export type InputProps = ComponentPropsWithoutRef<"input"> & {
 	helpMessage?: ReactNode
 	errorMessage?: ReactNode
@@ -136,17 +136,15 @@ const Input = forwardRef(
 				<div
 					className={twJoin(
 						"inline-flex",
-						inputBaseStyle,
+						inputBaseStyles,
 						appearance === "subtle"
 							? "border-transparent bg-transparent"
 							: undefined,
 						"data-[active=true]:bg-input-active hover:data-[active=true]:bg-input-active",
-						"hover:bg-input-hovered hover:focus-within:bg-input-active focus-within:bg-input-active",
-						"data-[disabled=true]:bg-disabled data-[disabled=true]:cursor-not-allowed data-[disabled=true]:border-transparent",
 						className,
 					)}
 					data-disabled={disabled}
-					data-invalid={invalid}
+					data-invalid={invalid || ariaInvalid || errorMessage}
 					data-active={active}
 					onClick={onClick}
 					onKeyUp={(e) => {
@@ -159,8 +157,7 @@ const Input = forwardRef(
 					<input
 						ref={internalRef}
 						className={twMerge(
-							inputNormalStyles,
-							inputDisabledStyles,
+							inputStyles,
 							"m-0 px-[0.4rem]",
 							inputClassName,
 						)}

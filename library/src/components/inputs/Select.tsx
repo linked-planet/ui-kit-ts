@@ -52,7 +52,7 @@ import ReactSelectCreatable, {
 import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./SlidingErrorMessage"
 import { IconSizeHelper } from "../IconSizeHelper"
-import { inputBaseStyle } from "../styleHelper"
+import { inputBaseStyles } from "../styleHelper"
 import { Input } from "./Inputs"
 
 const menuStyles =
@@ -99,7 +99,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 				control: (provided) =>
 					twMerge(
 						twJoin(
-							inputBaseStyle,
+							inputBaseStyles,
 							"px-2 flex items-center",
 							provided.isDisabled
 								? "bg-disabled border-transparent cursor-not-allowed"
@@ -531,7 +531,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 			>
 				ref={locRef}
 				placeholder={
-					props.placeholder ?? locale.startsWith("de")
+					(props.placeholder ?? locale.startsWith("de"))
 						? "Auswahl..."
 						: "Select..."
 				}
@@ -557,7 +557,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 	return (
 		<RSelect<OptionType<ValueType>, IsMulti, OptionGroupType<ValueType>>
 			placeholder={
-				props.placeholder ?? locale.startsWith("de")
+				(props.placeholder ?? locale.startsWith("de"))
 					? "Auswahl..."
 					: "Select..."
 			}

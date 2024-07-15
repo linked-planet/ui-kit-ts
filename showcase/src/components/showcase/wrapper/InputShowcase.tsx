@@ -2,13 +2,14 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import TextField from "@atlaskit/textfield"
+import AKTextField from "@atlaskit/textfield"
 import {
 	Button,
 	ButtonGroup,
 	IconSizeHelper,
 	Input,
 	Label,
+	TextField,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
@@ -50,6 +51,7 @@ function FormExample() {
 					required: true,
 					minLength: 3,
 				})}
+				placeholder="Placeholder"
 				invalid={!!errors.testInput}
 				errorMessage={
 					errors.testInput?.type === "required"
@@ -71,13 +73,13 @@ function FormExample() {
 export default function InputShowcase(props: ShowcaseProps) {
 	const exampleAK = (
 		<div className="flex flex-col">
-			<TextField />
-			<TextField isDisabled />
-			<TextField placeholder="Placeholder" />
-			<TextField isInvalid value={"invalid"} />
-			<TextField isReadOnly value={"readonly"} />
-			<TextField type="number" defaultValue={1} />
-			<TextField type="number" defaultValue={1} appearance="subtle" />
+			<AKTextField />
+			<AKTextField isDisabled />
+			<AKTextField placeholder="Placeholder" />
+			<AKTextField isInvalid value={"invalid"} />
+			<AKTextField isReadOnly value={"readonly"} />
+			<AKTextField type="number" defaultValue={1} />
+			<AKTextField type="number" defaultValue={1} appearance="subtle" />
 		</div>
 	)
 
@@ -117,6 +119,8 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<Input readOnly value={"readonly"} />
 			<Input type="number" defaultValue={1} />
 			<Input type="number" defaultValue={1} appearance="subtle" />
+			<TextField placeholder="Placeholder" />
+			<TextField placeholder="Placeholder" disabled />
 		</div>
 	)
 	//#endregion input
