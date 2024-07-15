@@ -1,11 +1,4 @@
-import React, {
-	cloneElement,
-	createContext,
-	Fragment,
-	useContext,
-	useRef,
-	useState,
-} from "react"
+import React, { useRef } from "react"
 import type { ComponentPropsWithoutRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import ArrowLeftCircleIcon from "@atlaskit/icon/glyph/arrow-left-circle"
@@ -122,7 +115,7 @@ function Content({
 				ref={ref}
 				className={twMerge(
 					twJoin(
-						"overflow-auto px-2",
+						"size-full overflow-auto px-2",
 						"before:border-border-separator before:absolute before:left-0 before:top-0 before:w-[var(--sidenav-separator-width)] before:border-t-2 before:border-solid before:opacity-0 before:content-['']",
 						"before:transition-opacity before:duration-100 data-[separator-top]:before:opacity-100",
 						"after:border-border-separator after:absolute after:bottom-0 after:left-0 after:w-[var(--sidenav-separator-width)] after:border-b-2 after:border-solid after:opacity-0 after:content-['']",
@@ -436,7 +429,10 @@ function Footer({
 }) {
 	return (
 		<div
-			className={twMerge("box-border px-2 pt-1.5", className)}
+			className={twMerge(
+				"box-border px-4 pb-3 pt-4 text-center text-xs",
+				className,
+			)}
 			style={style}
 		>
 			{children}
@@ -456,7 +452,7 @@ function Header({
 	return (
 		<div
 			className={twMerge(
-				"text-text box-border px-2 py-4 font-semibold",
+				"text-text box-border px-4 py-4 font-semibold",
 				className,
 			)}
 			style={style}

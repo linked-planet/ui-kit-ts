@@ -73,6 +73,7 @@
 		]
 	},
 	"dependencies": {
+		"@atlaskit/form": "^10.4.7",
 		"@atlaskit/icon": "^22.6.0",
 		"@atlaskit/tokens": "^1.54.0",
 		"@emotion/css": "^11.11.2",
@@ -138,7 +139,7 @@
 		"vite": "^5.3.3",
 		"vite-plugin-checker": "^0.6.4",
 		"vite-plugin-dts": "^3.9.1",
-		"vitest": "^2.0.2"
+		"vitest": "^2.0.3"
 	},
 	"peerDependencies": {
 		"@atlaskit/atlassian-navigation": "^4.2.2",
@@ -152,7 +153,6 @@
 		"@atlaskit/dynamic-table": "^14.18.2",
 		"@atlaskit/empty-state": "^7.9.1",
 		"@atlaskit/eslint-plugin-design-system": "^9.7.0",
-		"@atlaskit/form": "^9.3.1",
 		"@atlaskit/lozenge": "^11.9.0",
 		"@atlaskit/menu": "^2.7.4",
 		"@atlaskit/modal-dialog": "^12.14.5",
