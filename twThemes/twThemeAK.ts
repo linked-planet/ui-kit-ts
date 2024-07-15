@@ -297,9 +297,9 @@ export const theme = {
 			hovered: colors.blue[500],
 			pressed: colors.blue[600],
 			subtle: {
-				DEFAULT: colors.blue[200],
-				hovered: colors.blue[300],
-				pressed: colors.blue[400],
+				DEFAULT: colors.blue[100],
+				hovered: colors.blue[200],
+				pressed: colors.blue[300],
 			},
 			subtlest: {
 				DEFAULT: colors.blue[50],
@@ -427,9 +427,9 @@ export const theme = {
 			hovered: colors.yellow[500],
 			pressed: colors.yellow[600],
 			subtle: {
-				DEFAULT: colors.yellow[200],
-				hovered: colors.yellow[300],
-				pressed: colors.yellow[400],
+				DEFAULT: colors.yellow[100],
+				hovered: colors.yellow[200],
+				pressed: colors.yellow[300],
 			},
 			subtlest: {
 				DEFAULT: colors.yellow[50],
@@ -437,9 +437,9 @@ export const theme = {
 				pressed: colors.yellow[200],
 			},
 			bold: {
-				DEFAULT: colors.yellow[600],
-				hovered: colors.yellow[700],
-				pressed: colors.yellow[800],
+				DEFAULT: colors.yellow[700],
+				hovered: colors.yellow[800],
+				pressed: colors.yellow[900],
 			},
 			text: {
 				DEFAULT: colors.yellow[800],
@@ -479,9 +479,9 @@ export const theme = {
 			hovered: colors.green[500],
 			pressed: colors.green[600],
 			subtle: {
-				DEFAULT: colors.green[200],
-				hovered: colors.green[300],
-				pressed: colors.green[400],
+				DEFAULT: colors.green[100],
+				hovered: colors.green[200],
+				pressed: colors.green[300],
 			},
 			subtlest: {
 				DEFAULT: colors.green[50],
@@ -489,9 +489,9 @@ export const theme = {
 				pressed: colors.green[200],
 			},
 			bold: {
-				DEFAULT: colors.green[600],
-				hovered: colors.green[700],
-				pressed: colors.green[800],
+				DEFAULT: colors.green[700],
+				hovered: colors.green[800],
+				pressed: colors.green[900],
 			},
 			text: {
 				DEFAULT: colors.green[800],
@@ -728,7 +728,7 @@ export const theme = {
 				pressed: colors.gray[700],
 			},
 			text: {
-				DEFAULT: colors.gray[800],
+				DEFAULT: colors.gray[600],
 				bold: colors.gray[950],
 				inverse: colors.gray[50],
 			},

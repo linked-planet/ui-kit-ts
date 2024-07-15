@@ -82,7 +82,7 @@ const TagAppearanceColors: { [style in Appearance]: string } = {
 	information: "bg-information-bold text-text-inverse",
 	discovery: "bg-information-bold text-text-inverse",
 	danger: "bg-danger-bold text-text-inverse",
-	warning: "bg-warning-bold text-text-inverse",
+	warning: "bg-warning-bold text-text",
 } as const
 
 const TagColors: { [style in TagColor]: string } = {
@@ -165,7 +165,7 @@ function SimpleTag({
 				twJoin(
 					colors,
 					looks === "default" ? "rounded-[3px]" : "rounded-full",
-					"box-border flex max-w-max flex-1 cursor-default select-none items-center whitespace-nowrap px-1 align-middle text-sm",
+					"box-border inline-flex max-w-max flex-1 cursor-default select-none items-center whitespace-nowrap px-1 align-middle text-sm",
 					bold ? "font-bold" : undefined,
 					truncate ? "overflow-hidden" : undefined,
 				),
