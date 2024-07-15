@@ -4,12 +4,7 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
 import AKTagGroup from "@atlaskit/tag-group"
-import {
-	TagGroup,
-	Tag,
-	Tooltip,
-	TooltipProvider,
-} from "@linked-planet/ui-kit-ts"
+import { TagGroup, Tag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
@@ -184,10 +179,10 @@ function TagShowcase(props: ShowcaseProps) {
 	//#endregion
 
 	const example = (
-		<TooltipProvider>
+		<>
 			{akExample}
 			{lpExample}
-		</TooltipProvider>
+		</>
 	)
 
 	const colors = (
