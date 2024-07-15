@@ -32,7 +32,7 @@ function SideNavExample() {
 					<SideNavigation.Header>
 						<span>test header</span>
 					</SideNavigation.Header>
-					<SideNavigation.Content>
+					<SideNavigation.Content storeIdent="side-nav-store-showcase">
 						<SideNavigation.NestableNavigationContent>
 							<SideNavigation.NestingItem title="test nesting">
 								<SideNavigation.ButtonItem>

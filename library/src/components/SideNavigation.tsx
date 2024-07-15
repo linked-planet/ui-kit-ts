@@ -463,20 +463,17 @@ function NestingItem({
 	className,
 	style,
 	_level,
-	title,
+	title, //  title is used to identify the item and as a key, but not directly here, but in the NestableNavigationContent
 }: NestingItemProps) {
-	console.log("ITEM LEVEL", title, _level)
 	const childrenWithLevel = React.Children.map(children, (child) => {
 		if (
 			React.isValidElement<NestableNavigationContentProps>(child) &&
 			child.type === NestableNavigationContent
 		) {
-			console.log("ADDING LEVEL", _level + 1)
 			return React.cloneElement(child, { _level: (_level as number) + 1 })
 		}
 		return child
 	})
-	console.log("CHILDREN WITH LEVEL", childrenWithLevel)
 
 	return (
 		<Container

@@ -14,6 +14,7 @@ import { IconSizeHelper } from "../IconSizeHelper"
 
 import { CSSTransition, TransitionGroup } from "react-transition-group"
 import type { CSSTransitionProps } from "react-transition-group/CSSTransition"
+import { useSideNavigationStore } from "./SideNavigationStore"
 
 const itemBaseStyles = twJoin(
 	"px-1.5 data-[selected=true]:bg-neutral-subtle-hovered group flex w-full cursor-pointer select-none items-center overflow-hidden rounded",
@@ -41,13 +42,16 @@ type SideNavigationContainerProps = Pick<
 	| "children"
 	| "id"
 	| "aria-label"
->
+> & {
+	storeIdent?: string
+}
 
 function Container({
 	className,
 	children,
 	"aria-label": ariaLabel = "Side navigation",
 	role = "navigation",
+	storeIdent = "side-nav-store",
 	...props
 }: SideNavigationContainerProps) {
 	return (
@@ -69,15 +73,30 @@ function Container({
  * Keeps the content of the side navigation, and makes it scrollable.
  */
 function Content({
-	children,
+	children: _children,
 	className,
 	style,
+	storeIdent = "side-nav-store",
 }: {
 	children: React.ReactNode
 	className?: string
 	style?: React.CSSProperties
+	storeIdent?: string
 }) {
 	const ref = useRef<HTMLDivElement>(null)
+
+	const children = React.Children.map(_children, (child) => {
+		if (
+			React.isValidElement<NestableNavigationContentProps>(child) &&
+			child.type === NestableNavigationContent
+		) {
+			return React.cloneElement(child, {
+				_level: 0,
+				_sideNavStoreIdent: storeIdent,
+			})
+		}
+		return child
+	})
 
 	return (
 		<div className="relative flex size-full overflow-hidden">
@@ -454,21 +473,26 @@ type NestingItemProps = {
 	title: string // title is used to identify the item and as a key
 	/* do not set the _level manually, it is used internally */
 	_level?: number
+	/* do not set the _sideNavStoreIdent manually, it is used internally */
+	_sideNavStoreIdent?: string
 }
 
 function NestingItem({
 	children,
 	className,
 	style,
-	_level,
-	title,
+	_level = 0,
+	_sideNavStoreIdent,
 }: NestingItemProps) {
 	const childrenWithLevel = React.Children.map(children, (child) => {
 		if (
 			React.isValidElement<NestableNavigationContentProps>(child) &&
 			child.type === NestableNavigationContent
 		) {
-			return React.cloneElement(child, { _level: _level ?? 0 + 1 })
+			return React.cloneElement(child, {
+				_level: _level + 1,
+				_sideNavStoreIdent,
+			})
 		}
 		return child
 	})
@@ -502,23 +526,25 @@ type NestableNavigationContentProps = {
 	goBackLabel?: string
 	children: React.ReactNode
 	reserveHeight?: boolean
-	defaultOpenTitle?: string
 	/* do not set the _level manually, it is used internally */
 	_level?: number
+	/* do not set the _sideNavStoreIdent manually, it is used internally */
+	_sideNavStoreIdent?: string
 }
 
 function NestableNavigationContent({
 	goBackLabel = "Go Back",
 	children,
 	reserveHeight,
-	defaultOpenTitle,
+	_sideNavStoreIdent = "side-nav-store",
 	_level = 0,
 }: NestableNavigationContentProps) {
-	const [isInside, setIsInside] = useState<string | undefined>(
-		defaultOpenTitle,
-	)
+	const { setPathElement, getPathElement } =
+		useSideNavigationStore(_sideNavStoreIdent)
+
 	const insideRef = useRef<HTMLDivElement>(null)
 	const outsideRef = useRef<HTMLDivElement>(null)
+	const currentOpenedTitle = getPathElement(_level)
 
 	let renderChild: React.ReactElement<NestingItemProps> | null = null
 	const titles = React.Children.map(children, (child) => {
@@ -530,8 +556,11 @@ function NestableNavigationContent({
 				"NestableNavigationContent must only contain NestingItem components",
 			)
 		}
-		if (child.props.title === isInside) {
-			renderChild = React.cloneElement(child, { _level: _level ?? 0 })
+		if (child.props.title === currentOpenedTitle) {
+			renderChild = React.cloneElement(child, {
+				_level,
+				_sideNavStoreIdent,
+			})
 		}
 		return child.props.title
 	})
@@ -542,14 +571,16 @@ function NestableNavigationContent({
 			enter
 			exit
 		>
-			{isInside && (
+			{currentOpenedTitle && (
 				<CSSTransition
 					classNames={cssEnterRightTransitionClassNames}
 					timeout={200}
 					nodeRef={insideRef}
 				>
 					<div ref={insideRef} className="size-full">
-						<GoBackItem onClick={() => setIsInside(undefined)}>
+						<GoBackItem
+							onClick={() => setPathElement(undefined, _level)}
+						>
 							{goBackLabel} - {_level}
 						</GoBackItem>
 						<div className="border-b-border-separator border-t-border-separator flex size-full border-b-2 border-t-2 border-solid py-2">
@@ -559,7 +590,7 @@ function NestableNavigationContent({
 				</CSSTransition>
 			)}
 
-			{!isInside && (
+			{!currentOpenedTitle && (
 				<CSSTransition
 					classNames={cssLeaveLeftTransitionClassNames}
 					timeout={200}
@@ -567,12 +598,12 @@ function NestableNavigationContent({
 				>
 					<div
 						ref={outsideRef}
-						className={isInside ? "hidden" : "size-full"}
+						className={currentOpenedTitle ? "hidden" : "size-full"}
 					>
 						{titles?.map((title) => (
 							<ButtonItem
 								key={title}
-								onClick={() => setIsInside(title)}
+								onClick={() => setPathElement(title, _level)}
 								iconAfter={
 									<IconSizeHelper>
 										<ArrowRightCircleIcon
