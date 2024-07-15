@@ -150,7 +150,6 @@
 		"@atlaskit/code": "^15.4.1",
 		"@atlaskit/css-reset": "^6.9.1",
 		"@atlaskit/dropdown-menu": "^12.14.1",
-		"@atlaskit/dynamic-table": "^14.18.2",
 		"@atlaskit/empty-state": "^7.9.1",
 		"@atlaskit/eslint-plugin-design-system": "^9.7.0",
 		"@atlaskit/lozenge": "^11.9.0",
