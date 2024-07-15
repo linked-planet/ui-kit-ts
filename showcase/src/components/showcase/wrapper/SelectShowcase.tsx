@@ -340,8 +340,8 @@ function SelectShowcase(props: ShowcaseProps) {
 			}
 			packages={[
 				{
-					name: "@atlaskit/select",
-					url: "https://atlassian.design/components/select/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Select",
 				},
 			]}
 			examples={[
