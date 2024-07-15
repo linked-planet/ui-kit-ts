@@ -1,7 +1,6 @@
 import type React from "react"
 import { Tag, type TagColor } from "./Tag"
 import { twMerge } from "tailwind-merge"
-import type { Appearance } from "../utils/appearanceTypes"
 
 type LozengeAppearance =
 	| "new"
