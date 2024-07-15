@@ -57,7 +57,15 @@ function ShowcaseLeftSidebar({
 					return (
 						<SideNavigation.ButtonItem
 							key={showcaseName}
-							onClick={() => clickCB(showcaseName)}
+							onMouseDown={(e) => {
+								if (e.button === 1) {
+									window.open(
+										`/ui-kit-ts/single?component=${showcaseName}`,
+										"_blank",
+									)
+								}
+							}}
+							onClick={(e) => clickCB(showcaseName)}
 						>
 							{showcaseName}
 						</SideNavigation.ButtonItem>
