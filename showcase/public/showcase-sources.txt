@@ -632,44 +632,37 @@ export default BadgeShowcase
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Banner from "@atlaskit/banner"
+import AKBanner from "@atlaskit/banner"
 import WarningIcon from "@atlaskit/icon/glyph/warning"
 import ErrorIcon from "@atlaskit/icon/glyph/error"
+import CheckCircleOutlineIcon from "@atlaskit/icon/glyph/check-circle-outline"
+import { Banner, IconSizeHelper } from "@linked-planet/ui-kit-ts"
 
 function BannerShowcase(props: ShowcaseProps) {
-	//#region banner1
-	const example = (
-		<Banner appearance="announcement">
-			<span>Content of the banner...</span>
-		</Banner>
+	//#region banner-example
+	const bannerExample = (
+		<div className="flex w-full flex-col gap-4">
+			<Banner appearance="announcement">Announcement Banner</Banner>
+			<Banner appearance="warning">Warning Banner</Banner>
+			<Banner
+				appearance="error"
+				icon={
+					<IconSizeHelper>
+						<ErrorIcon
+							label=""
+							secondaryColor="var(--ds-background-danger-bold, #DE350B)"
+						/>
+					</IconSizeHelper>
+				}
+			>
+				Error Banner
+			</Banner>
+			<Banner appearance="success">Success Banner</Banner>
+			<Banner appearance="information">Information Banner</Banner>
+		</div>
 	)
-	//#endregion banner1
-
-	//#region banner2
-	const example2 = (
-		<Banner appearance="warning" icon={<WarningIcon label="" />}>
-			<span>Content of the banner...</span>
-		</Banner>
-	)
-	//#endregion banner2
-
-	//#region banner3
-	const example3 = (
-		<Banner
-			appearance="error"
-			icon={
-				<ErrorIcon
-					secondaryColor="var(--ds-background-danger-bold, #DE350B)"
-					label=""
-				/>
-			}
-		>
-			<span>Content of the banner...</span>
-		</Banner>
-	)
-	//#endregion banner3
 
 	return (
 		<ShowcaseWrapperItem
@@ -677,25 +670,15 @@ function BannerShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/banner",
-					url: "https://atlassian.design/components/banner/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "single?component=Banner",
 				},
 			]}
 			examples={[
 				{
-					title: "Example 1",
-					example: example,
-					sourceCodeExampleId: "banner1",
-				},
-				{
-					title: "Example 2",
-					example: example2,
-					sourceCodeExampleId: "banner2",
-				},
-				{
-					title: "Example 3",
-					example: example3,
-					sourceCodeExampleId: "banner3",
+					title: "Example",
+					example: bannerExample,
+					sourceCodeExampleId: "banner-example",
 				},
 			]}
 		/>
@@ -3602,6 +3585,7 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKTextField from "@atlaskit/textfield"
+import AKTextArea from "@atlaskit/textarea"
 import {
 	Button,
 	ButtonGroup,
@@ -3679,6 +3663,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<AKTextField isReadOnly value={"readonly"} />
 			<AKTextField type="number" defaultValue={1} />
 			<AKTextField type="number" defaultValue={1} appearance="subtle" />
+			<AKTextArea placeholder="Text Area" />
 		</div>
 	)
 
@@ -3695,15 +3680,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			/>
 			<Input disabled />
 			<Label htmlFor="testInput2">This is a label.</Label>
-			<Input
-				placeholder="Placeholder"
-				id="testInput2"
-				iconAfter={
-					<IconSizeHelper>
-						<ScheduleIcon size="medium" label="calendar" />
-					</IconSizeHelper>
-				}
-			/>
+			<Input placeholder="Placeholder" id="testInput2" />
 			<Input
 				invalid={true}
 				value={"invalid"}
@@ -7116,7 +7093,54 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { TextArea } from "@linked-planet/ui-kit-ts"
+import { Button, ButtonGroup, TextArea } from "@linked-planet/ui-kit-ts"
+import { useForm } from "react-hook-form"
+
+//#region textarea-form-example
+function FormExample() {
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors, isValid },
+	} = useForm<{ testTextArea: string }>({
+		defaultValues: {
+			testTextArea: "default value",
+		},
+		mode: "onChange",
+	})
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<TextArea
+				placeholder="Placeholder"
+				aria-invalid={!!errors.testTextArea}
+				errorMessage={
+					errors.testTextArea?.message === "required"
+						? "Required"
+						: "Min length 3"
+				}
+				{...register("testTextArea", {
+					required: true,
+					minLength: 3,
+				})}
+			/>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button type="reset">Reset</Button>
+				<Button appearance="primary" type="submit" disabled={!isValid}>
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion textarea-form-example
 
 function TextAreaShowcase(props: ShowcaseProps) {
 	//#region textarea
@@ -7149,6 +7173,11 @@ function TextAreaShowcase(props: ShowcaseProps) {
 			]}
 			examples={[
 				{ title: "Example", example, sourceCodeExampleId: "textarea" },
+				{
+					title: "Form Example",
+					example: <FormExample />,
+					sourceCodeExampleId: "textarea-form-example",
+				},
 			]}
 		/>
 	)
