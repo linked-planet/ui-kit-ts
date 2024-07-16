@@ -12,7 +12,7 @@ import {
 	useState,
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
-import { SlidingErrorMessage } from "./inputs/SlidingErrorMessage"
+import { SlidingErrorMessage } from "./inputs/ErrorHelpWrapper"
 import { IconSizeHelper } from "./IconSizeHelper"
 
 type AdditionalCheckboxPropsWithIndeterminate = {
@@ -160,7 +160,7 @@ const CheckboxI = (
 				>
 					<IconSizeHelper
 						className={
-							"absolute inset-0 justify-center items-center size-full"
+							"absolute inset-0 size-full items-center justify-center"
 						}
 					>
 						{!indeterminate ? (
