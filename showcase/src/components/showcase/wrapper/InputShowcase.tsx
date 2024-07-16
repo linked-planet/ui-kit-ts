@@ -9,7 +9,7 @@ import {
 	IconSizeHelper,
 	Input,
 	Label,
-	TextField,
+	TextArea,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
@@ -119,8 +119,8 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<Input readOnly value={"readonly"} />
 			<Input type="number" defaultValue={1} />
 			<Input type="number" defaultValue={1} appearance="subtle" />
-			<TextField placeholder="Placeholder" />
-			<TextField placeholder="Placeholder" disabled />
+			<TextArea placeholder="Placeholder" />
+			<TextArea placeholder="Placeholder" disabled />
 		</div>
 	)
 	//#endregion input
