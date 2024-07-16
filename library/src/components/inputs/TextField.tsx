@@ -3,7 +3,7 @@ import type { ComponentPropsWithRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { inputBaseStyles } from "../styleHelper"
 
-export type TextFieldProps = Pick<
+export type TextAreaProps = Pick<
 	ComponentPropsWithRef<"textarea">,
 	| "aria-label"
 	| "aria-invalid"
@@ -48,9 +48,9 @@ export type TextFieldProps = Pick<
 
 const additionalClassName = "m-0 py-1.5 px-2 outline-input-border-focused"
 
-const TextField = React.forwardRef(
+const TextArea = React.forwardRef(
 	(
-		{ className, disabled, resize, ...props }: TextFieldProps,
+		{ className, disabled, resize, ...props }: TextAreaProps,
 		ref: React.ForwardedRef<HTMLTextAreaElement>,
 	) => {
 		return (
@@ -72,5 +72,5 @@ const TextField = React.forwardRef(
 	},
 )
 
-TextField.displayName = "TextField"
-export { TextField }
+TextArea.displayName = "TextArea"
+export { TextArea }
