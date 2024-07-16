@@ -46,6 +46,7 @@ import TruncatedTextShowcase from "./components/showcase/wrapper/TruncatedTextSh
 import UtilsShowcase from "./components/showcase/wrapper/UtilsShowcase"
 import AppLayoutShowcase from "./components/showcase/wrapper/AppLayoutShowcase"
 import SideNavigationShowcase from "./components/showcase/wrapper/SideNavigationShowcase"
+import BlanketShowcase from "./components/showcase/wrapper/BlanketShowcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -71,6 +72,7 @@ export default function useShowcases({
 			"Book Card": (
 				<BookCardShowcase overallSourceCode={overallSourceCode} />
 			),
+			Blanket: <BlanketShowcase overallSourceCode={overallSourceCode} />,
 			Button: <ButtonShowcase overallSourceCode={overallSourceCode} />,
 			Calendar: (
 				<Calendar2Showcase overallSourceCode={overallSourceCode} />
