@@ -3601,13 +3601,14 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import TextField from "@atlaskit/textfield"
+import AKTextField from "@atlaskit/textfield"
 import {
 	Button,
 	ButtonGroup,
 	IconSizeHelper,
 	Input,
 	Label,
+	TextArea,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
@@ -3649,6 +3650,7 @@ function FormExample() {
 					required: true,
 					minLength: 3,
 				})}
+				placeholder="Placeholder"
 				invalid={!!errors.testInput}
 				errorMessage={
 					errors.testInput?.type === "required"
@@ -3670,13 +3672,13 @@ function FormExample() {
 export default function InputShowcase(props: ShowcaseProps) {
 	const exampleAK = (
 		<div className="flex flex-col">
-			<TextField />
-			<TextField isDisabled />
-			<TextField placeholder="Placeholder" />
-			<TextField isInvalid value={"invalid"} />
-			<TextField isReadOnly value={"readonly"} />
-			<TextField type="number" defaultValue={1} />
-			<TextField type="number" defaultValue={1} appearance="subtle" />
+			<AKTextField />
+			<AKTextField isDisabled />
+			<AKTextField placeholder="Placeholder" />
+			<AKTextField isInvalid value={"invalid"} />
+			<AKTextField isReadOnly value={"readonly"} />
+			<AKTextField type="number" defaultValue={1} />
+			<AKTextField type="number" defaultValue={1} appearance="subtle" />
 		</div>
 	)
 
@@ -3716,6 +3718,8 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<Input readOnly value={"readonly"} />
 			<Input type="number" defaultValue={1} />
 			<Input type="number" defaultValue={1} appearance="subtle" />
+			<TextArea placeholder="Placeholder" />
+			<TextArea placeholder="Placeholder" disabled />
 		</div>
 	)
 	//#endregion input
@@ -4953,22 +4957,52 @@ import { Lozenge } from "@linked-planet/ui-kit-ts"
 function LozengeShowcase(props: ShowcaseProps) {
 	//#region lozenge
 	const example = (
-		<div className="flex gap-8">
-			<div className="flex flex-col gap-2">
+		<div className="flex flex-col gap-8">
+			<div className="">
 				<AKLozenge>First lozenge</AKLozenge>
-				<AKLozenge appearance="new">Colored lozenge</AKLozenge>
-				<AKLozenge appearance="success" isBold>
-					Colored bold lozenge
+				<AKLozenge appearance="new">new</AKLozenge>
+				<AKLozenge appearance="new" isBold>
+					new bold
 				</AKLozenge>
-				<AKLozenge appearance="success" isBold={false}>
-					Colored non-bold lozenge
+				<AKLozenge appearance="success">success</AKLozenge>
+				<AKLozenge appearance="success" isBold>
+					success bold
+				</AKLozenge>
+				<AKLozenge appearance="inprogress">inprogress</AKLozenge>
+				<AKLozenge appearance="inprogress" isBold>
+					inprogress bold
+				</AKLozenge>
+				<AKLozenge appearance="moved">moved</AKLozenge>
+				<AKLozenge appearance="moved" isBold>
+					moved bold
+				</AKLozenge>
+				<AKLozenge appearance="removed">removed</AKLozenge>
+				<AKLozenge appearance="removed" isBold>
+					removed bold
 				</AKLozenge>
 			</div>
 			<div>
 				<Lozenge>First lozenge</Lozenge>
-				{/* <Lozenge appearance="new">Colored lozenge</Lozenge> */}
-				<Lozenge appearance="success">Colored bold lozenge</Lozenge>
-				<Lozenge appearance="success">Colored non-bold lozenge</Lozenge>
+				<Lozenge appearance="new">new</Lozenge>
+				<Lozenge appearance="new" bold>
+					new bold
+				</Lozenge>
+				<Lozenge appearance="success">success</Lozenge>
+				<Lozenge appearance="success" bold>
+					success bold
+				</Lozenge>
+				<Lozenge appearance="inprogress">inprogress</Lozenge>
+				<Lozenge appearance="inprogress" bold>
+					inprogress bold
+				</Lozenge>
+				<Lozenge appearance="moved">moved</Lozenge>
+				<Lozenge appearance="moved" bold>
+					moved bold
+				</Lozenge>
+				<Lozenge appearance="removed">removed</Lozenge>
+				<Lozenge appearance="removed" bold>
+					removed bold
+				</Lozenge>
 			</div>
 		</div>
 	)
@@ -6865,12 +6899,7 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
 import AKTagGroup from "@atlaskit/tag-group"
-import {
-	TagGroup,
-	Tag,
-	Tooltip,
-	TooltipProvider,
-} from "@linked-planet/ui-kit-ts"
+import { TagGroup, Tag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
@@ -7045,10 +7074,10 @@ function TagShowcase(props: ShowcaseProps) {
 	//#endregion
 
 	const example = (
-		<TooltipProvider>
+		<>
 			{akExample}
 			{lpExample}
-		</TooltipProvider>
+		</>
 	)
 
 	const colors = (
@@ -7085,18 +7114,24 @@ export default TagShowcase
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import TextArea from "@atlaskit/textarea"
+import { TextArea } from "@linked-planet/ui-kit-ts"
 
 function TextAreaShowcase(props: ShowcaseProps) {
 	//#region textarea
 	const example = (
-		<div style={{ minWidth: 300 }}>
+		<div className="flex flex-col gap-2">
 			<TextArea
 				placeholder="This is a placeholder."
-				onPointerEnterCapture={() => console.log("pointer capture")}
-				onPointerLeaveCapture={() => console.log("pointer left")}
+				helpMessage="This is a help message."
+			/>
+			<TextArea
+				placeholder="This is a placeholder."
+				helpMessage="This is a help message."
+				errorMessage="This is an error message."
+				aria-invalid={true}
+				minLength={5}
 			/>
 		</div>
 	)
@@ -7108,8 +7143,8 @@ function TextAreaShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/textarea",
-					url: "https://atlassian.design/components/textarea/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single#TextArea",
 				},
 			]}
 			examples={[
@@ -7123,46 +7158,31 @@ export default TextAreaShowcase
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import TextField from "@atlaskit/textfield"
 
 function TextFieldShowcase(props: ShowcaseProps) {
 	//#region textfield
-	const example1 = (
-		<div style={{ minWidth: 300 }}>
-			<TextField defaultValue="Content of text field..." />
-		</div>
-	)
 	//#endregion textfield
-	//#region textfield2
-	const example2 = (
-		<div style={{ minWidth: 300 }}>
-			<TextField defaultValue="Password" type="password" />
-		</div>
-	)
-	//#endregion textfield2
 
 	return (
 		<ShowcaseWrapperItem
 			name="Text field"
+			description="Please use the Input component instead."
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/textfield",
-					url: "https://atlassian.design/components/textfield/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Input",
 				},
 			]}
 			examples={[
 				{
-					title: "Example",
-					example: example1,
+					title: "Input Link",
+					example: (
+						<a href="single?component=Input">Open Input Page</a>
+					),
 					sourceCodeExampleId: "textfield",
-				},
-				{
-					title: "Example 2",
-					example: example2,
-					sourceCodeExampleId: "textfield2",
 				},
 			]}
 		/>

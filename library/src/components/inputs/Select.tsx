@@ -17,7 +17,6 @@ import {
 	default as RSelect,
 	type SelectComponentsConfig,
 	type SelectInstance,
-	components,
 	type AriaOnFocus,
 	type AriaGuidance,
 	type AriaOnChange,
@@ -53,7 +52,6 @@ import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./SlidingErrorMessage"
 import { IconSizeHelper } from "../IconSizeHelper"
 import { inputBaseStyles } from "../styleHelper"
-import { Input } from "./Inputs"
 
 const menuStyles =
 	"bg-surface min-w-min z-10 shadow-overlay rounded overflow-hidden"

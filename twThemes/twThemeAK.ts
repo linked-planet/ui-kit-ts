@@ -749,5 +749,7 @@ export const theme = {
 		"overlay-bold": `0 5px 8px -2px #091E4226, 0px 0px 2px #091E424F`,
 		raised: `var(--ds-shadow-raised, 0px 1px 1px #091E4240, 0px 0px 1px #091E424F)`,
 		strong: `0px 0px 15px #091E4226`,
+		//border: `0 0 0 var(--ds-border-width, 2px) var(--tw-shadow-color, 0 0 #0000)`, // this doesnt work currently, the var(--ds-border-width, 2px) simply vanishes in TW version 3.4.5
+		borderstyle: `0 0 0 0.0625rem var(--tw-shadow-color, 0 0 #0000)`,
 	},
 }

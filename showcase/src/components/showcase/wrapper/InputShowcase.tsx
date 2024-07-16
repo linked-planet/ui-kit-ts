@@ -3,6 +3,7 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKTextField from "@atlaskit/textfield"
+import AKTextArea from "@atlaskit/textarea"
 import {
 	Button,
 	ButtonGroup,
@@ -80,6 +81,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<AKTextField isReadOnly value={"readonly"} />
 			<AKTextField type="number" defaultValue={1} />
 			<AKTextField type="number" defaultValue={1} appearance="subtle" />
+			<AKTextArea placeholder="Text Area" />
 		</div>
 	)
 
@@ -96,15 +98,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			/>
 			<Input disabled />
 			<Label htmlFor="testInput2">This is a label.</Label>
-			<Input
-				placeholder="Placeholder"
-				id="testInput2"
-				iconAfter={
-					<IconSizeHelper>
-						<ScheduleIcon size="medium" label="calendar" />
-					</IconSizeHelper>
-				}
-			/>
+			<Input placeholder="Placeholder" id="testInput2" />
 			<Input
 				invalid={true}
 				value={"invalid"}
