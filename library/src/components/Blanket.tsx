@@ -1,24 +1,36 @@
-import type React from "react"
+import React from "react"
+import ReactDOM from "react-dom"
 import type { ComponentPropsWithoutRef } from "react"
 import { twMerge } from "tailwind-merge"
+import { getPortal } from "../utils"
 
-type BlanketProps = ComponentPropsWithoutRef<"div">
+type BlanketProps = ComponentPropsWithoutRef<"div"> & {
+	usePortal?: boolean
+}
 
-export function Blanket({ children, onClick, className, style }: BlanketProps) {
-	return (
+export function Blanket({
+	children,
+	className,
+	"aria-label": ariaLabel,
+	role,
+	usePortal = true,
+	...props
+}: BlanketProps) {
+	const ele = (
 		// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 		<div
 			className={twMerge(
 				"bg-blanket fixed inset-0 z-50 flex items-center justify-center",
 				className,
 			)}
-			style={style}
-			onClick={onClick}
+			role={role ?? "presentation"}
+			aria-label={ariaLabel ?? "blanket"}
+			{...props}
 		>
 			{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 			<div
-				className="pointer-events-auto"
 				onClick={(e) => {
+					// this is necessary for the click to propagate to the blanket anywhere inside the children
 					e.stopPropagation()
 				}}
 			>
@@ -26,4 +38,8 @@ export function Blanket({ children, onClick, className, style }: BlanketProps) {
 			</div>
 		</div>
 	)
+	if (!usePortal) {
+		return ele
+	}
+	return ReactDOM.createPortal(ele, getPortal("uikts-blanket"))
 }
