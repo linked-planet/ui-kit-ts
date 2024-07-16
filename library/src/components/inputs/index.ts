@@ -1,4 +1,5 @@
-export { Input, Label } from "./Inputs"
+export { Label } from "./Label"
+export { Input } from "./Inputs"
 //export { RadixSelect } from "./RadixSelect"
 export { Select } from "./Select"
 export { DatePicker } from "./datetimepicker/DatePicker"

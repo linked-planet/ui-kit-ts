@@ -49,7 +49,7 @@ import ReactSelectCreatable, {
 	type CreatableProps,
 } from "react-select/creatable"
 import { twJoin, twMerge } from "tailwind-merge"
-import { SlidingErrorMessage } from "./SlidingErrorMessage"
+import { SlidingErrorMessage } from "./ErrorHelpWrapper"
 import { IconSizeHelper } from "../IconSizeHelper"
 import { inputBaseStyles } from "../styleHelper"
 

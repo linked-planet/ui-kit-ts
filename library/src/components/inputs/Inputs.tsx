@@ -19,28 +19,6 @@ const inputDisabledStyle =
 
 const inputStyles = twJoin(inputNormalStyle, inputDisabledStyle, "p-1 m-0")
 
-//#region Label
-const labelNormalStyles =
-	"text-text-subtlest block text-sm pb-1 pt-3 font-semibold"
-const requiredStyles =
-	"data-[required=true]:after:content-['*'] data-[required=true]:after:text-danger-bold data-[required=true]:after:ml-0.5"
-
-const labelStyles = twJoin(labelNormalStyles, requiredStyles)
-export function Label({
-	required = false,
-	className,
-	...props
-}: ComponentPropsWithoutRef<"label"> & { required?: boolean }) {
-	return (
-		<label
-			data-required={required}
-			className={twMerge(labelStyles, className)}
-			{...props}
-		/>
-	)
-}
-//#endregion
-
 //#region Input
 export type InputProps = ComponentPropsWithoutRef<"input"> & {
 	helpMessage?: ReactNode
