@@ -16,7 +16,7 @@ import SelectClearIcon from "@atlaskit/icon/glyph/select-clear"
 
 import { Input } from "../Inputs"
 import { IconSizeHelper } from "../../IconSizeHelper"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import {
 	type FieldValues,
 	type Control,
@@ -67,6 +67,7 @@ export type DatePickerProps = Pick<
 		calendarTestId?: string
 		style?: React.CSSProperties
 		className?: string
+		inputClassName?: string
 		appearance?: "subtle" | "default" | "none"
 		/* formats the displayed value in the input */
 		formatDisplayLabel?: (date: DateType) => string
@@ -222,6 +223,7 @@ const DatePickerBase = forwardRef(
 			name,
 			style,
 			className,
+			inputClassName,
 			formatDisplayLabel,
 			required,
 			readOnly,
@@ -243,7 +245,7 @@ const DatePickerBase = forwardRef(
 			}
 
 			return (
-				<div>
+				<div className={twJoin("group", className)}>
 					<Input
 						type="text"
 						key={key}
@@ -255,14 +257,14 @@ const DatePickerBase = forwardRef(
 						placeholder={placeholder}
 						name={name}
 						style={style}
-						className={twMerge(
-							"min-w-20 cursor-pointer",
-							className,
-						)}
+						className="min-w-20 cursor-pointer"
 						value={valStr}
 						disabled={disabled}
 						invalid={invalid}
-						inputClassName="cursor-pointer rounded-r-none"
+						inputClassName={twMerge(
+							"cursor-pointer group-data-[state=open]:border-input-border-focused group-data-[state=open]:shadow-input-border-focused",
+							inputClassName,
+						)}
 						required={required}
 						readOnly={readOnly}
 						onChange={onInputChange}
@@ -336,6 +338,7 @@ const DatePickerBase = forwardRef(
 			readOnly,
 			ref,
 			hideIcon,
+			inputClassName,
 		])
 
 		return (

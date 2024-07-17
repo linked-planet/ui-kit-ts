@@ -160,10 +160,10 @@ function DateTimeNotInFormPicker({
 }: DateTimePickerProps) {
 	const defaultDate = defaultValue
 		? DateUtils.toDateType(defaultValue)
-		: _defaultDate ?? undefined
+		: (_defaultDate ?? undefined)
 	const defaultTime = defaultValue
 		? DateUtils.toTimeType(defaultValue)
-		: _defaultTime ?? undefined
+		: (_defaultTime ?? undefined)
 	const _dateVal = _value ? DateUtils.toDateType(_value) : undefined
 	const _timeVal = _value ? DateUtils.toTimeType(_value) : undefined
 
@@ -318,11 +318,8 @@ function DateTimeNotInFormPicker({
 			style={style}
 		>
 			<DatePicker
-				className={twMerge(
-					"rounded-r-none border-r-0 border-r-transparent before:rounded-r-none",
-					datePickerClassName,
-				)}
-				containerClassName="flex flex-1"
+				className={datePickerClassName}
+				inputClassName="rounded-r-none"
 				hideIcon
 				value={dateVal}
 				{...datePickerProps}

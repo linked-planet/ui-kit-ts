@@ -2,7 +2,6 @@ import React, { type ReactNode, useMemo } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import DynamicTable from "@atlaskit/dynamic-table"
 import Button from "@atlaskit/button"
 import {
 	type ColumnDef,
