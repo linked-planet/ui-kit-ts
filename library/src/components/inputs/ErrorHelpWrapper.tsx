@@ -73,6 +73,8 @@ export function HelpMessage({
 
 export function ErrorHelpWrapper({
 	children,
+	className,
+	style,
 	helpMessage,
 	errorMessage,
 	errorMessageClassName,
@@ -113,7 +115,10 @@ export function ErrorHelpWrapper({
 	}, [inputRef])
 
 	return (
-		<div className="flex flex-col gap-1">
+		<div
+			className={twMerge("flex flex-col gap-1", className)}
+			style={style}
+		>
 			{children}
 			{helpMessage && (
 				<HelpMessage

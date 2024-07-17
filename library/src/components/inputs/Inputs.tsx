@@ -40,6 +40,8 @@ export type InputProps = ComponentPropsWithoutRef<"input"> & {
 	active?: boolean
 	onClick?: () => void
 	appearance?: "default" | "subtle"
+	iconAfter?: ReactNode
+	iconBefore?: ReactNode
 }
 
 const Input = forwardRef(
@@ -61,12 +63,50 @@ const Input = forwardRef(
 			disabled,
 			appearance = "default",
 			onClick,
+			iconAfter,
+			iconBefore,
 			...props
 		}: InputProps,
 		ref: ForwardedRef<HTMLInputElement>,
 	) => {
 		const inputRef = useRef<HTMLInputElement>(null)
 		useImperativeHandle(ref, () => inputRef.current as HTMLInputElement)
+
+		const content = iconAfter ? (
+			<div
+				className={twJoin(
+					"flex items-center",
+					inputBaseStyles,
+					inputClassName,
+				)}
+			>
+				{iconBefore}
+				<input
+					ref={inputRef}
+					className={twMerge("m-0 px-[0.4rem] outline-none")}
+					style={inputStyle}
+					aria-invalid={ariaInvalid || invalid}
+					data-testid={testId}
+					disabled={disabled}
+					{...props}
+				/>
+				{iconAfter}
+			</div>
+		) : (
+			<input
+				ref={inputRef}
+				className={twMerge(
+					inputBaseStyles,
+					"m-0 px-[0.4rem]",
+					inputClassName,
+				)}
+				style={inputStyle}
+				aria-invalid={ariaInvalid || invalid}
+				data-testid={testId}
+				disabled={disabled}
+				{...props}
+			/>
+		)
 
 		return (
 			<ErrorHelpWrapper
@@ -81,19 +121,7 @@ const Input = forwardRef(
 				helpMessageStyle={helpMessageStyle}
 				style={style}
 			>
-				<input
-					ref={inputRef}
-					className={twMerge(
-						inputBaseStyles,
-						"m-0 px-[0.4rem]",
-						inputClassName,
-					)}
-					style={inputStyle}
-					aria-invalid={ariaInvalid || invalid}
-					data-testid={testId}
-					disabled={disabled}
-					{...props}
-				/>
+				{content}
 			</ErrorHelpWrapper>
 		)
 	},
