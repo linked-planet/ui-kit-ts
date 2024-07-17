@@ -113,6 +113,12 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<Input readOnly value={"readonly"} />
 			<Input type="number" defaultValue={1} />
 			<Input type="number" defaultValue={1} appearance="subtle" />
+			<Input
+				type="text"
+				defaultValue={"default text"}
+				iconAfter={<ScheduleIcon label="" />}
+				iconBefore={<ScheduleIcon label="" />}
+			/>
 			<TextArea placeholder="Placeholder" />
 			<TextArea placeholder="Placeholder" disabled />
 		</div>
