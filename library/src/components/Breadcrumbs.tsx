@@ -1,34 +1,83 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import type { ComponentPropsWithoutRef } from "react"
 import { twMerge } from "tailwind-merge"
 
 type BreadcrumbsProps = ComponentPropsWithoutRef<"div"> & {
 	maxItems?: number
+	ellipsisLabel?: string
+	expanded?: boolean
+	defaultExpanded?: boolean
+	onExpandedChange?: (expanded: boolean) => void
+	itemsBeforeCollapse?: number
+	itemsAfterCollapse?: number
+	testId?: string
 }
 
-export function Breadcrumps({
+export function Breadcrumbs({
 	className,
 	children,
 	maxItems,
+	ellipsisLabel,
+	expanded: _expanded,
+	defaultExpanded = true,
+	onExpandedChange,
+	testId,
+	itemsBeforeCollapse = 1,
+	itemsAfterCollapse = 1,
 	...props
 }: BreadcrumbsProps) {
-	const _children = React.Children.toArray(children)
+	const [expanded, setExpanded] = useState(
+		_expanded ??
+			(maxItems !== undefined &&
+				maxItems >= React.Children.count(children)),
+	)
 
-	const items =
-		!maxItems || maxItems - 1 > _children.length
-			? _children
-			: React.Children.toArray(_children).slice(0, maxItems)
-	if (_children.length > 0) {
-		items.unshift("... / ")
-		items.unshift(_children[_children.length - 1])
+	const childCount = React.Children.count(children)
+
+	useEffect(() => {
+		if (_expanded === undefined && maxItems !== undefined) {
+			setExpanded((expanded) => {
+				const newExpanded = maxItems >= childCount
+				if (expanded !== newExpanded) {
+					onExpandedChange?.(newExpanded)
+				}
+				return newExpanded
+			})
+		}
+	}, [_expanded, maxItems, childCount, onExpandedChange])
+
+	if (_expanded !== undefined && _expanded !== expanded) {
+		setExpanded(_expanded)
+		onExpandedChange?.(_expanded)
+	}
+
+	let items = children
+	if (!expanded && itemsBeforeCollapse + itemsAfterCollapse < childCount) {
+		const _children = React.Children.toArray(children)
+		const before = _children.slice(0, itemsBeforeCollapse)
+		const after = _children.slice(-itemsAfterCollapse)
+
+		items = [
+			...before,
+			<Ellipsis
+				key="ellipsis"
+				ellipsisLabel={ellipsisLabel}
+				onClick={() => {
+					setExpanded(true)
+					onExpandedChange?.(true)
+				}}
+			/>,
+			...after,
+		]
 	}
 
 	return (
 		<div
 			className={twMerge(
-				"text-text-subtle flex items-center space-x-1 px-4 text-sm",
+				"text-text-subtle flex items-center text-sm",
 				className,
 			)}
+			data-testid={testId}
 			{...props}
 		>
 			{items}
@@ -36,9 +85,45 @@ export function Breadcrumps({
 	)
 }
 
+function Ellipsis({
+	onClick,
+	ellipsisLabel = "Show more",
+	className,
+	style,
+}: {
+	onClick?: () => void
+	ellipsisLabel?: string
+	className?: string
+	style?: React.CSSProperties
+}) {
+	return (
+		<span className="flex gap-1 pl-0 pr-1">
+			<span
+				onClick={onClick}
+				onKeyUp={(e) => {
+					if (e.key === "Enter") {
+						onClick?.()
+					}
+				}}
+				title={ellipsisLabel}
+				aria-label={ellipsisLabel}
+				className={twMerge(
+					"cursor-pointer pr-1 hover:underline",
+					className,
+				)}
+				style={style}
+			>
+				...
+			</span>
+			/
+		</span>
+	)
+}
+
 type BreadcrumbsItemProps = ComponentPropsWithoutRef<"a"> & {
 	iconBefore?: React.ReactNode
 	iconAfter?: React.ReactNode
+	testId?: string
 }
 
 function Item({
@@ -46,15 +131,17 @@ function Item({
 	className,
 	iconBefore,
 	iconAfter,
+	testId,
 	...props
 }: BreadcrumbsItemProps) {
 	return (
 		<>
 			<a
 				className={twMerge(
-					"text-text-subtle hover:text-text flex items-center gap-2 text-base",
+					"text-text-subtle hover:text-text-subtle flex items-center",
 					className,
 				)}
+				data-testid={testId}
 				{...props}
 			>
 				{iconBefore && iconBefore}
@@ -62,9 +149,9 @@ function Item({
 				{iconAfter && iconAfter}
 			</a>
 
-			<span className="px-2 last:hidden last:truncate">/</span>
+			<span className="pl-1.5 pr-1 last:hidden last:truncate">/</span>
 		</>
 	)
 }
 
-Breadcrumps.Item = Item
+Breadcrumbs.Item = Item
