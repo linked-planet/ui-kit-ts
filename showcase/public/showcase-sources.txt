@@ -634,8 +634,6 @@ import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKBanner from "@atlaskit/banner"
-import WarningIcon from "@atlaskit/icon/glyph/warning"
 import ErrorIcon from "@atlaskit/icon/glyph/error"
 import CheckCircleOutlineIcon from "@atlaskit/icon/glyph/check-circle-outline"
 import { Banner, IconSizeHelper } from "@linked-planet/ui-kit-ts"
@@ -659,7 +657,16 @@ function BannerShowcase(props: ShowcaseProps) {
 			>
 				Error Banner
 			</Banner>
-			<Banner appearance="success">Success Banner</Banner>
+			<Banner
+				appearance="success"
+				icon={
+					<IconSizeHelper>
+						<CheckCircleOutlineIcon label="" />
+					</IconSizeHelper>
+				}
+			>
+				Success Banner
+			</Banner>
 			<Banner appearance="information">Information Banner</Banner>
 		</div>
 	)
@@ -679,6 +686,60 @@ function BannerShowcase(props: ShowcaseProps) {
 					title: "Example",
 					example: bannerExample,
 					sourceCodeExampleId: "banner-example",
+				},
+			]}
+		/>
+	)
+}
+
+export default BannerShowcase
+
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { Blanket, Button } from "@linked-planet/ui-kit-ts"
+
+function BannerShowcase(props: ShowcaseProps) {
+	//#region blanket-example
+	const [showBlanket, setShowBlanket] = useState(false)
+
+	const blanketExample = (
+		<div className="flex w-full flex-col gap-4">
+			<Button onClick={() => setShowBlanket(true)}>Show Blanket</Button>
+			{showBlanket && (
+				<Blanket onClick={() => setShowBlanket(false)}>
+					<div className="flex size-full items-center justify-center">
+						<div className="bg-surface rounded-md p-8">
+							<h1 className="text-base font-bold">
+								This is a blanket.
+							</h1>
+							<Button onClick={() => setShowBlanket(false)}>
+								Close
+							</Button>
+						</div>
+					</div>
+				</Blanket>
+			)}
+		</div>
+	)
+	//#endregion blanket-example
+
+	return (
+		<ShowcaseWrapperItem
+			name="Blanket"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "single?component=Blanket",
+				},
+			]}
+			examples={[
+				{
+					title: "Example",
+					example: blanketExample,
+					sourceCodeExampleId: "blanket-example",
 				},
 			]}
 		/>
@@ -1022,6 +1083,71 @@ export default function BookCardShowcase(props: ShowcaseProps) {
 		/>
 	)
 }
+
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { BreadCrumps } from "@linked-planet/ui-kit-ts"
+import AddCircleIcon from "@atlaskit/icon/glyph/add-circle"
+
+function BannerShowcase(props: ShowcaseProps) {
+	//#region bread-crumbs-example
+	const example = (
+		<div className="flex flex-col gap-4">
+			<BreadCrumps>
+				<BreadCrumps.Item
+					href="#"
+					iconBefore={<AddCircleIcon label="" />}
+					iconAfter={<AddCircleIcon label="" />}
+				>
+					Home
+				</BreadCrumps.Item>
+				<BreadCrumps.Item href="#">Library</BreadCrumps.Item>
+				<BreadCrumps.Item href="#">Components</BreadCrumps.Item>
+				<BreadCrumps.Item href="#">Readme</BreadCrumps.Item>
+				<BreadCrumps.Item href="#">Showcase</BreadCrumps.Item>
+			</BreadCrumps>
+			<hr />
+			<BreadCrumps maxItems={2}>
+				<BreadCrumps.Item
+					href="#"
+					iconBefore={<AddCircleIcon label="" />}
+					iconAfter={<AddCircleIcon label="" />}
+				>
+					Home
+				</BreadCrumps.Item>
+				<BreadCrumps.Item href="#">Library</BreadCrumps.Item>
+				<BreadCrumps.Item href="#">Components</BreadCrumps.Item>
+				<BreadCrumps.Item href="#">Readme</BreadCrumps.Item>
+				<BreadCrumps.Item href="#">Showcase</BreadCrumps.Item>
+			</BreadCrumps>
+		</div>
+	)
+	//#endregion bread-crumbs-example
+
+	return (
+		<ShowcaseWrapperItem
+			name="Breadcrumbs"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "single?component=BreadCrumbs",
+				},
+			]}
+			examples={[
+				{
+					title: "Example",
+					example: example,
+					sourceCodeExampleId: "bread-crumbs-example",
+				},
+			]}
+		/>
+	)
+}
+
+export default BannerShowcase
 
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
