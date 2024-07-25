@@ -24,7 +24,7 @@ const iconAndTextBaseStyles = twJoin(
 const descriptionBaseStyles =
 	"text-text-subtle group-disabled:text-text-disabled truncate text-sm" as const
 
-type SideNavigationContainerProps = Pick<
+type _ContainerProps = Pick<
 	ComponentPropsWithoutRef<"nav">,
 	| "className"
 	| "style"
@@ -46,7 +46,7 @@ function Container({
 	role = "navigation",
 	storeIdent = "side-nav-store",
 	...props
-}: SideNavigationContainerProps) {
+}: _ContainerProps) {
 	return (
 		<nav
 			className={twMerge(
@@ -80,7 +80,7 @@ function Content({
 
 	const children = React.Children.map(_children, (child) => {
 		if (
-			React.isValidElement<NestableNavigationContentProps>(child) &&
+			React.isValidElement<_NestableNavigationContentProps>(child) &&
 			child.type === NestableNavigationContent
 		) {
 			return React.cloneElement(child, {
@@ -92,7 +92,7 @@ function Content({
 	})
 
 	return (
-		<div className="relative flex size-full overflow-hidden">
+		<div className="relative flex size-full flex-1 overflow-hidden">
 			<div
 				onScroll={(e) => {
 					if (!(e.target instanceof HTMLDivElement)) return
@@ -131,7 +131,7 @@ function Content({
 	)
 }
 
-type ButtonItemProps = Pick<
+type _ButtonItemProps = Pick<
 	ComponentPropsWithoutRef<"button">,
 	| "className"
 	| "style"
@@ -161,7 +161,7 @@ type ButtonItemProps = Pick<
 /**
  * A button item in a side navigation. Use the onClick action.
  */
-function ButtonItem({
+export function ButtonItem({
 	className,
 	description,
 	iconBefore,
@@ -175,7 +175,7 @@ function ButtonItem({
 	testId,
 	children,
 	...props
-}: ButtonItemProps) {
+}: _ButtonItemProps) {
 	return (
 		<button
 			className={twMerge(
@@ -219,7 +219,7 @@ function ButtonItem({
 	)
 }
 
-function GoBackItem({ children, ...props }: Omit<ButtonItemProps, "icon">) {
+function GoBackItem({ children, ...props }: Omit<_ButtonItemProps, "icon">) {
 	return (
 		<ButtonItem
 			iconBefore={
@@ -234,7 +234,7 @@ function GoBackItem({ children, ...props }: Omit<ButtonItemProps, "icon">) {
 	)
 }
 
-type LinkItemProps = Pick<
+type _LinkItemProps = Pick<
 	ComponentPropsWithoutRef<"a">,
 	| "className"
 	| "style"
@@ -279,7 +279,7 @@ function LinkItem({
 	testId,
 	children,
 	...props
-}: LinkItemProps) {
+}: _LinkItemProps) {
 	return (
 		<a
 			className={twMerge(
@@ -321,7 +321,7 @@ function LinkItem({
 	)
 }
 
-type SectionProps = {
+type _SectionProps = {
 	title: React.ReactNode
 	children: React.ReactNode
 	titleClassName?: string
@@ -337,7 +337,7 @@ type SectionProps = {
  * hasSeparator: Whether to add a separator line between the title and the content.
  * isList: Whether to render the content as a list (ul with li elements).
  */
-export function Section({
+function Section({
 	title,
 	children,
 	titleClassName,
@@ -346,7 +346,7 @@ export function Section({
 	style,
 	hasSeparator,
 	isList,
-}: SectionProps) {
+}: _SectionProps) {
 	return (
 		<div
 			className={twMerge(
@@ -377,7 +377,7 @@ export function Section({
 	)
 }
 
-type SkeletonItemProps = Pick<
+type _SkeletonItemProps = Pick<
 	ComponentPropsWithoutRef<"div">,
 	"className" | "style" | "role" | "children" | "id" | "aria-label"
 > & {
@@ -397,7 +397,7 @@ function SkeletonItem({
 	hasAvatarBefore,
 	hasAvatarAfter,
 	...props
-}: SkeletonItemProps) {
+}: _SkeletonItemProps) {
 	return (
 		<div
 			className={twMerge("flex items-center gap-4 px-2 py-4", className)}
@@ -420,7 +420,7 @@ function SkeletonItem({
 	)
 }
 
-function Footer({
+function NavigationFooter({
 	children,
 	className,
 	style,
@@ -442,7 +442,7 @@ function Footer({
 	)
 }
 
-function Header({
+function NavigationHeader({
 	children,
 	className,
 	style,
@@ -464,7 +464,7 @@ function Header({
 	)
 }
 
-type NestingItemProps = {
+type _NestingItemProps = {
 	children: React.ReactNode
 	className?: string
 	style?: React.CSSProperties
@@ -481,10 +481,10 @@ function NestingItem({
 	style,
 	_level = 0,
 	_sideNavStoreIdent,
-}: NestingItemProps) {
+}: _NestingItemProps) {
 	const childrenWithLevel = React.Children.map(children, (child) => {
 		if (
-			React.isValidElement<NestableNavigationContentProps>(child) &&
+			React.isValidElement<_NestableNavigationContentProps>(child) &&
 			child.type === NestableNavigationContent
 		) {
 			return React.cloneElement(child, {
@@ -520,7 +520,7 @@ const cssEnterRightTransitionClassNames: CSSTransitionProps["classNames"] = {
 	exitDone: "duration-200 ease-in-out translate-x-0",
 }
 
-type NestableNavigationContentProps = {
+type _NestableNavigationContentProps = {
 	goBackLabel?: string
 	children: React.ReactNode
 	reserveHeight?: boolean
@@ -536,7 +536,7 @@ function NestableNavigationContent({
 	reserveHeight,
 	_sideNavStoreIdent = "side-nav-store",
 	_level = 0,
-}: NestableNavigationContentProps) {
+}: _NestableNavigationContentProps) {
 	const { setPathElement, getPathElement } =
 		useSideNavigationStore(_sideNavStoreIdent)
 
@@ -544,10 +544,10 @@ function NestableNavigationContent({
 	const outsideRef = useRef<HTMLDivElement>(null)
 	const currentOpenedTitle = getPathElement(_level)
 
-	let renderChild: React.ReactElement<NestingItemProps> | null = null
+	let renderChild: React.ReactElement<_NestingItemProps> | null = null
 	const titles = React.Children.map(children, (child) => {
 		if (
-			!React.isValidElement<NestingItemProps>(child) ||
+			!React.isValidElement<_NestingItemProps>(child) ||
 			child.type !== NestingItem
 		) {
 			throw new Error(
@@ -629,8 +629,18 @@ export const SideNavigation = {
 	LinkItem,
 	Section,
 	SkeletonItem,
-	Footer,
-	Header,
+	NavigationFooter,
+	NavigationHeader,
 	NestingItem,
 	NestableNavigationContent,
+}
+
+export namespace SideNavigation {
+	export type ContainerProps = _ContainerProps
+	export type ButtonItemProps = _ButtonItemProps
+	export type LinkItemProps = _LinkItemProps
+	export type SectionProps = _SectionProps
+	export type SkeletonItemProps = _SkeletonItemProps
+	export type NestingItemProps = _NestingItemProps
+	export type NestableNavigationContentProps = _NestableNavigationContentProps
 }
