@@ -203,10 +203,8 @@ function Sidebar({
 
 	const [collapsed, setCollapsed] = useState<CollapsedState>(collapsedInit)
 
-	const widthFromLocalStorage = getWidthFromLocalStorage(
-		position,
-		localStorageWidthKey,
-	)
+	const widthFromLocalStorage =
+		_width ?? getWidthFromLocalStorage(position, localStorageWidthKey)
 	// sets the initial css variables
 	setSidebarWidthVars(
 		widthFromLocalStorage,
@@ -234,6 +232,7 @@ function Sidebar({
 
 	const onResizeCB = () => {
 		if (mouseUpRef.current === undefined && collapsed === "expanded") {
+			if (_width != null) return
 			const mouseMoveProto = (ev: MouseEvent) => {
 				if (!asideRef.current) return
 				if (ev.clientX < 0) return
@@ -328,7 +327,7 @@ function Sidebar({
 		>
 			{/* resize button and grab handle area */}
 			<div
-				className={`absolute inset-y-0 z-[3] h-full ${position === "left" ? "-right-3 border-l-2" : "-left-3 border-r-2"} ${collapsed === "expanded" ? "hover:border-brand-bold group cursor-col-resize" : ""} border-border w-3 select-none bg-transparent`}
+				className={`absolute inset-y-0 z-[3] h-full ${position === "left" ? "-right-3 border-l-2" : "-left-3 border-r-2"} ${collapsed === "expanded" ? "hover:border-brand-bold group cursor-col-resize" : ""} border-border w-3 select-none border-solid bg-transparent`}
 				onMouseDown={onResizeCB}
 				onMouseEnter={() => {
 					if (!isResizing && !isHovered) {
