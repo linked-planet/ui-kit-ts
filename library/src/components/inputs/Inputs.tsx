@@ -131,3 +131,49 @@ const memoizedInput = React.memo(Input)
 
 export { memoizedInput as Input, inputStyles }
 //#endregion
+
+//#region Fieldset
+export type FieldsetProps = ComponentPropsWithoutRef<"fieldset"> & {
+	legend?: ReactNode
+	children?: ReactNode
+	className?: string
+	style?: CSSProperties
+	legendClassName?: string
+	legendStyle?: CSSProperties
+}
+
+export const Fieldset = ({
+	className,
+	style,
+	legend,
+	children,
+	legendClassName,
+	legendStyle,
+	...props
+}: FieldsetProps) => {
+	return (
+		<fieldset
+			className={twMerge(
+				"m-0 flex flex-col gap-2 border-0 p-0",
+				className,
+			)}
+			style={style}
+			{...props}
+		>
+			{legend && (
+				<legend
+					className={twMerge(
+						"text-text-subtlest text-xs font-semibold",
+						legendClassName,
+					)}
+					style={legendStyle}
+				>
+					{legend}
+				</legend>
+			)}
+			{children}
+		</fieldset>
+	)
+}
+
+//#endregion

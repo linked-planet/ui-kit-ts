@@ -3680,6 +3680,27 @@ function FlagShowcase(props: ShowcaseProps) {
 				appearance="information"
 				type="pale"
 			/>
+
+			<Flag
+				title="Flag"
+				description="Discovery Flag"
+				appearance="discovery"
+				actions={[{ content: "Action", onClick: () => {} }]}
+			/>
+
+			<Flag
+				title="Flag"
+				description="Discovery Flag"
+				appearance="discovery"
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Discovery Flag"
+				appearance="discovery"
+				type="pale"
+			/>
 			<ToastFlagContainer />
 		</div>
 	)
@@ -3902,6 +3923,7 @@ import AKTextArea from "@atlaskit/textarea"
 import {
 	Button,
 	ButtonGroup,
+	Fieldset,
 	IconSizeHelper,
 	Input,
 	Label,
@@ -3982,7 +4004,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 
 	//#region input
 	const exampleLP = (
-		<div className="flex flex-col">
+		<Fieldset legend="Input Example">
 			<Label htmlFor="testInput" required>
 				This is a required input label.
 			</Label>
@@ -4016,7 +4038,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			/>
 			<TextArea placeholder="Placeholder" />
 			<TextArea placeholder="Placeholder" disabled />
-		</div>
+		</Fieldset>
 	)
 	//#endregion input
 
@@ -6087,7 +6109,6 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { SectionMessage } from "@linked-planet/ui-kit-ts"
 import AKSectionMessage from "@atlaskit/section-message"
-import WarningIcon from "@atlaskit/icon/glyph/warning"
 
 function SectionMessageShowcase(props: ShowcaseProps) {
 	//#region section-message
@@ -6109,6 +6130,39 @@ function SectionMessageShowcase(props: ShowcaseProps) {
 				<AKSectionMessage appearance="information">
 					Information Section Message
 				</AKSectionMessage>
+				<AKSectionMessage appearance="discovery">
+					Discovery Section Message
+				</AKSectionMessage>
+			</div>
+			<div className="flex flex-col gap-3">
+				<SectionMessage
+					title="Section Message Title"
+					actions={[
+						{
+							content: "Action",
+						},
+						{
+							content: "Action2",
+						},
+					]}
+				>
+					Default Section Message
+				</SectionMessage>
+				<SectionMessage appearance="success">
+					Success Section Message
+				</SectionMessage>
+				<SectionMessage appearance="warning">
+					Warning Section Message
+				</SectionMessage>
+				<SectionMessage appearance="error">
+					Error Section Message
+				</SectionMessage>
+				<SectionMessage appearance="information">
+					Information Section Message
+				</SectionMessage>
+				<SectionMessage appearance="discovery">
+					Discovery Section Message
+				</SectionMessage>
 			</div>
 		</div>
 	)

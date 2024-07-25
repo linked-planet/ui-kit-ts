@@ -4,9 +4,11 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKTextField from "@atlaskit/textfield"
 import AKTextArea from "@atlaskit/textarea"
+import { Fieldset as AKFieldset } from "@atlaskit/form"
 import {
 	Button,
 	ButtonGroup,
+	Fieldset,
 	IconSizeHelper,
 	Input,
 	Label,
@@ -73,7 +75,7 @@ function FormExample() {
 
 export default function InputShowcase(props: ShowcaseProps) {
 	const exampleAK = (
-		<div className="flex flex-col">
+		<AKFieldset legend="Input Example">
 			<AKTextField />
 			<AKTextField isDisabled />
 			<AKTextField placeholder="Placeholder" />
@@ -82,12 +84,12 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<AKTextField type="number" defaultValue={1} />
 			<AKTextField type="number" defaultValue={1} appearance="subtle" />
 			<AKTextArea placeholder="Text Area" />
-		</div>
+		</AKFieldset>
 	)
 
 	//#region input
 	const exampleLP = (
-		<div className="flex flex-col">
+		<Fieldset legend="Input Example">
 			<Label htmlFor="testInput" required>
 				This is a required input label.
 			</Label>
@@ -121,7 +123,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			/>
 			<TextArea placeholder="Placeholder" />
 			<TextArea placeholder="Placeholder" disabled />
-		</div>
+		</Fieldset>
 	)
 	//#endregion input
 
