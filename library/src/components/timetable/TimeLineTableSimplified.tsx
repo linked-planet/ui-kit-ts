@@ -118,7 +118,6 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 					if (onGroupClick) onGroupClick(group)
 				}
 			}}
-			role="button"
 			rowSpan={groupRowMax}
 			className={`border-border-bold border-b-border sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${
 				groupNumber % 2 === 0 ? "bg-surface" : "bg-surface-hovered"
@@ -324,7 +323,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				<>
 					{beforeCount > 0 && !hideOutOfRangeMarkers && (
 						<div
-							className="bg-lime-bold absolute left-0 top-0 z-[2] h-full h-full w-1 rounded-r-full opacity-50"
+							className="bg-lime-bold absolute left-0 top-0 z-[2] h-full w-1 rounded-r-full opacity-50"
 							title={`${beforeCount} more items`}
 						/>
 					)}
@@ -650,18 +649,20 @@ function useMouseHandlers<G extends TimeTableGroup>(
 	return useMemo(() => {
 		const handleDisabledError = () => {
 			if (isDisabled) {
-				setMessage({
+				setMessage?.({
 					appearance: "information",
 					messageKey: "timetable.cellDisabled",
 					timeOut: 3,
 				})
+				console.info("LPTimeTable - cell disabled")
 				return
 			}
-			setMessage({
+			setMessage?.({
 				appearance: "information",
 				messageKey: "timetable.weekendsDeactivated",
 				timeOut: 3,
 			})
+			console.info("LPTimeTable - weekends deactivated")
 		}
 
 		// the actual mouse handlers

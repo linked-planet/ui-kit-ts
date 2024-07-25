@@ -153,11 +153,16 @@ export function SelectedTimeSlotsProvider<G extends TimeTableGroup>({
 					timeSlotBefore !== undefined &&
 					timeSlotAfter !== undefined
 				) {
-					setMessage({
+					setMessage?.({
 						appearance: "information",
 						messageKey: "timetable.deselectFromOuterBorder",
 						timeOut: 3,
 					})
+					console.info(
+						"LPTimeTable - deselect from outer border",
+						timeSlotBefore,
+						timeSlotAfter,
+					)
 					return
 				}
 				if (

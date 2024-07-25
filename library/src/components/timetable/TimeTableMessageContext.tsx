@@ -78,12 +78,20 @@ export function TimeTableMessageProvider({
 	)
 }
 
-export function useTimeTableMessage() {
+export function useTimeTableMessage(messagesEnabled = true) {
 	const ret = useContext(timeTableMessageContext)
 	if (!ret)
 		throw new Error(
 			"useTimeTableMessage must be used within a TimeTableMessageProvider",
 		)
+
+	if (!messagesEnabled) {
+		return {
+			message: undefined,
+			setMessage: undefined,
+			translatedMessage: undefined,
+		}
+	}
 	let messageTranslation: string | undefined = undefined
 	ret.message
 		? `no translation found for key [${ret.message?.messageKey}]`

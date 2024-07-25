@@ -11,7 +11,11 @@ export function headerText(
 	tsStart: Dayjs,
 	tsEnd: Dayjs,
 	viewType: TimeTableViewType,
+	format?: string, // a dayjs format string
 ) {
+	if (format) {
+		return tsStart.format(format)
+	}
 	if (viewType === "hours") {
 		return tsStart.format("dd, DD.MM.")
 	}
@@ -38,6 +42,8 @@ type Props = {
 	viewType: TimeTableViewType
 	showTimeSlotHeader: boolean
 	timeFrameDay: TimeFrameDay
+	/** a dayjs format string */
+	dateHeaderTextFormat?: string
 }
 
 export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
@@ -50,6 +56,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 		viewType,
 		showTimeSlotHeader,
 		timeFrameDay,
+		dateHeaderTextFormat,
 	}: Props,
 	tableHeaderRef: React.Ref<HTMLTableSectionElement>,
 ) {
@@ -87,9 +94,9 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								: `${groupHeaderColumnWidth}px`,
 					}}
 				/>
-				{slotsArray.map((_, i) => {
+				{slotsArray.map((d, i) => {
 					return (
-						<Fragment key={i * 2}>
+						<Fragment key={`colgroup${d.unix()}`}>
 							<col
 								style={{
 									minWidth:
@@ -113,9 +120,9 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 						style={{
 							width: groupHeaderColumnWidth,
 						}}
-						className={`bg-surface-sunken border-border-bold  sticky left-0 top-0 z-[5] select-none border-2 border-l-0 border-t-0 border-solid px-0 py-3 ${
+						className={`bg-surface border-border-bold sticky left-0 top-0 z-[5] select-none border-2 border-l-0 border-t-0 border-solid px-0 py-3 ${
 							showTimeSlotHeader
-								? " border-b-border border-b"
+								? "border-b-border border-b"
 								: "border-b-0"
 						}`}
 					>
@@ -136,9 +143,9 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 					{daysOrWeeksOrMonths.map((date) => {
 						return (
 							<th
-								key={date.toISOString()}
+								key={`dateheader${date.unix()}`}
 								colSpan={topHeaderColSpan * 2}
-								className={`bg-surface-sunken after:border-border relative select-none border-x-0 border-t-0 border-solid px-0 py-3 after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-l-2 after:border-solid ${
+								className={`bg-surface after:border-border relative select-none border-x-0 border-t-0 border-solid px-0 py-3 after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-l-2 after:border-solid ${
 									showTimeSlotHeader
 										? "border-border border-b"
 										: "border-border-bold border-b-0"
@@ -147,7 +154,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								<div>
 									<div
 										className={
-											"select-none truncate pl-4 pr-4 text-center"
+											"select-none truncate text-center"
 										}
 									>
 										{headerText(
@@ -156,6 +163,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 												.add(1, viewType)
 												.subtract(1, "minute"), // what we do not start at 00 of the next day of the week, which looks like an overlap (i.e.7.4.-14.4., 14.4.-21.4.)
 											viewType,
+											dateHeaderTextFormat,
 										)}
 									</div>
 								</div>
@@ -166,7 +174,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 				{/* TIME SLOTS */}
 				<tr>
 					<th
-						className={`border-border-bold bg-surface-sunken sticky left-0 top-0 z-[5] select-none border-2 border-l-0 border-t-0 border-solid p-0 ${
+						className={`border-border-bold bg-surface sticky left-0 top-0 z-[5] select-none border-2 border-l-0 border-t-0 border-solid p-0 ${
 							showTimeSlotHeader ? "pt-4" : "py-0"
 						}`}
 					>
@@ -190,9 +198,9 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							!slotsArray[i + 1].isSame(slot, "day")
 						return (
 							<th
-								key={i}
+								key={`timeheader${slot.unix()}`}
 								colSpan={2}
-								className={`bg-surface-sunken border-border border-b-border-bold after:border-border relative select-none border-0 border-b-2 border-solid p-0 pl-2 font-bold after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-solid ${
+								className={`bg-surface border-border border-b-border-bold after:border-border relative select-none border-0 border-b-2 border-solid p-0 pl-1 font-bold after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-solid ${
 									isLastOfDay
 										? "after:border-l-2"
 										: "after:border-r"

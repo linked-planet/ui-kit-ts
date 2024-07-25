@@ -123,10 +123,18 @@ export interface LPTimeTableProps<
 	 */
 	showTimeSlotHeader?: boolean
 
+	/** a dayjs format string to format the header text containing the dates */
+	dateHeaderTextFormat?: string
+
 	/**
 	 * Sets the language used for the messages.
 	 */
 	timeTableMessages?: TranslatedTimeTableMessages
+
+	/**
+	 * Disables the messages in the InlineMessage component on top of the time table.
+	 */
+	disableMessages?: boolean
 
 	viewType?: TimeTableViewType
 
@@ -190,13 +198,16 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	showTimeSlotHeader,
 	hideOutOfRangeMarkers = false,
 	nowOverwrite,
+	dateHeaderTextFormat,
+	disableMessages = false,
 }: LPTimeTableProps<G, I>) => {
 	// if we have viewType of days, we need to round the start and end date to the start and end of the day
-	const { setMessage, translatedMessage } = useTimeTableMessage()
+	const { setMessage, translatedMessage } =
+		useTimeTableMessage(!disableMessages)
 
 	// change on viewType
 	useEffect(() => {
-		setMessage(undefined) // clear the message on time frame change
+		setMessage?.(undefined) // clear the message on time frame change
 	}, [viewType, startDate, endDate, setMessage])
 
 	const tableHeaderRef = useRef<HTMLTableSectionElement>(null)
@@ -244,7 +255,11 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			foundItemsOutsideOfDayRangeCount &&
 			!itemsWithSameStartAndEndCount
 		) {
-			setMessage({
+			console.info(
+				"LPTimeTable - found items outside of day range:",
+				foundItemsOutsideOfDayRangeCount,
+			)
+			setMessage?.({
 				appearance: "warning",
 				messageKey: "timetable.bookingsOutsideOfDayRange",
 				messageValues: { itemCount: foundItemsOutsideOfDayRangeCount },
@@ -253,7 +268,11 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			itemsWithSameStartAndEndCount &&
 			!foundItemsOutsideOfDayRangeCount
 		) {
-			setMessage({
+			console.info(
+				"LPTimeTable - items with same start and end:",
+				itemsWithSameStartAndEndCount,
+			)
+			setMessage?.({
 				appearance: "warning",
 				messageKey: "timetable.sameStartAndEndTimeDate",
 				messageValues: { itemCount: itemsWithSameStartAndEndCount },
@@ -262,7 +281,11 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			itemsWithSameStartAndEndCount &&
 			foundItemsOutsideOfDayRangeCount
 		) {
-			setMessage({
+			console.info(
+				"LPTimeTable - found items outside of day range:",
+				foundItemsOutsideOfDayRangeCount,
+			)
+			setMessage?.({
 				appearance: "warning",
 				messageKey: "timetable.sameStartAndEndAndOutsideOfDayRange",
 				messageValues: {
@@ -384,10 +407,12 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	return (
 		<>
 			<div ref={inlineMessageRef}>
-				<InlineMessage
-					message={translatedMessage ?? { text: "" }}
-					openingDirection="bottomup"
-				/>
+				{!disableMessages && (
+					<InlineMessage
+						message={translatedMessage ?? { text: "" }}
+						openingDirection="bottomup"
+					/>
+				)}
 			</div>
 			<TimeTableConfigProvider
 				slotsArray={slotsArray}
@@ -436,6 +461,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 										? viewType === "hours"
 										: showTimeSlotHeader
 								}
+								dateHeaderTextFormat={dateHeaderTextFormat}
 								ref={tableHeaderRef}
 							/>
 							<tbody ref={tableBodyRef} className="table-fixed">
@@ -475,7 +501,7 @@ function moveNowBar(
 	timeFrameDay: TimeFrameDay,
 	timeSlotMinutes: number,
 	viewType: TimeTableViewType,
-	setMessage: (message: TimeTableMessage) => void,
+	setMessage?: (message: TimeTableMessage) => void,
 ) {
 	if (!tableHeaderRef.current || !tableBodyRef.current) {
 		console.info("LPTimeTable - time table header or body ref not yet set")
@@ -490,11 +516,11 @@ function moveNowBar(
 	// remove the orange border from the header cell
 	const headerTimeslotRow = tableHeader.children[1]
 	if (!headerTimeslotRow) {
-		setMessage({
+		setMessage?.({
 			appearance: "danger",
 			messageKey: "timetable.noHeaderTimeSlotRow",
 		})
-		console.warn("LPTimeTable - no header time slot row found")
+		console.info("LPTimeTable - no header time slot row found")
 		return
 	}
 	const headerTimeSlotCells = headerTimeslotRow.children

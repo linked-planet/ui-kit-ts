@@ -7,6 +7,7 @@ import type {
 	TimeTableEntry,
 	TimeTableGroup,
 	TimeTableViewType,
+	LPTimeTableProps,
 } from "./LPTimeTable"
 
 import type { RenderItemProps } from "./ItemWrapper"
@@ -15,6 +16,7 @@ import type { PlaceholderItemProps } from "./PlaceholderItem"
 const memoized = React.memo(LPTimeTable) as typeof LPTimeTable
 
 export { memoized as LPTimeTable }
+//export { LPTimeTable }
 export type {
 	TimeTableEntry,
 	TimeSlotBooking,
@@ -23,4 +25,5 @@ export type {
 	PlaceholderItemProps,
 	RenderItemProps,
 	TimeTableViewType,
+	LPTimeTableProps,
 }

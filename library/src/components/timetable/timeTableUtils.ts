@@ -216,7 +216,7 @@ function calculateTimeSlotPropertiesForHoursView(
 	startDate: Dayjs,
 	endDate: Dayjs,
 	_timeStepsMinute: number,
-	setMessage: (message: TimeTableMessage) => void,
+	setMessage?: (message: TimeTableMessage) => void,
 ) {
 	let timeStepsMinute = _timeStepsMinute
 	let timeSlotsPerDay = 0 // how many time slots per day
@@ -224,13 +224,19 @@ function calculateTimeSlotPropertiesForHoursView(
 		timeStepsMinute =
 			startDate.startOf("day").add(1, "day").diff(startDate, "minutes") -
 			1 // -1 to end at the same day if the time steps are from someplace during the day until
-		setMessage({
+		setMessage?.({
 			appearance: "warning",
 			messageKey: "timetable.unfittingTimeSlotMessage",
 			messageValues: {
 				timeSteps: timeStepsMinute,
 			},
 		})
+		console.info(
+			"LPTimeTable - unfitting time slot",
+			timeStepsMinute,
+			startDate,
+			endDate,
+		)
 	}
 
 	const timeFrameDay: TimeFrameDay = {
@@ -243,10 +249,15 @@ function calculateTimeSlotPropertiesForHoursView(
 
 	let daysDifference = endDate.diff(startDate, "days")
 	if (daysDifference < 0) {
-		setMessage({
+		setMessage?.({
 			appearance: "danger",
 			messageKey: "timetable.endDateAfterStartDate",
 		})
+		console.info(
+			"LPTimeTable - end date after start date",
+			endDate,
+			startDate,
+		)
 		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
 	}
 	if (endDate.hour() > 0 || (endDate.hour() === 0 && endDate.minute() > 0)) {
@@ -254,10 +265,16 @@ function calculateTimeSlotPropertiesForHoursView(
 	}
 
 	if (timeStepsMinute === 0) {
-		setMessage({
+		setMessage?.({
 			appearance: "danger",
 			messageKey: "timetable.timeSlotSizeGreaterZero",
 		})
+		console.info(
+			"LPTimeTable - time slot size must be greater than zero",
+			timeStepsMinute,
+			startDate,
+			endDate,
+		)
 		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
 	}
 
@@ -320,7 +337,7 @@ export function calculateTimeSlotPropertiesForView(
 	endDate: Dayjs,
 	timeStepsMinute: number,
 	vieWType: TimeTableViewType,
-	setMessage: (message: TimeTableMessage) => void,
+	setMessage?: (message: TimeTableMessage) => void,
 ) {
 	const startHour = startDate.hour()
 	const startMinute = startDate.minute()
@@ -328,10 +345,15 @@ export function calculateTimeSlotPropertiesForView(
 	let endMinute = endDate.minute()
 
 	if (endDate.isBefore(startDate)) {
-		setMessage({
+		setMessage?.({
 			appearance: "danger",
 			messageKey: "timetable.endDateAfterStartDate",
 		})
+		console.info(
+			"LPTimeTable - end date after start date",
+			endDate,
+			startDate,
+		)
 		return {
 			timeFrameDay: {
 				startHour,
