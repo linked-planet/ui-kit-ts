@@ -38,6 +38,7 @@ const warningProgressStyles = "bg-warning"
 const errorProgressStyles = "bg-danger"
 const successProgressStyles = "bg-success"
 const informationProgressStyles = "bg-information"
+const discoveryProgressStyles = "bg-discovery"
 
 const progressStyles: { [style in FlagAppearance]: string } = {
 	default: defaultProgressStyles,
@@ -45,6 +46,7 @@ const progressStyles: { [style in FlagAppearance]: string } = {
 	error: errorProgressStyles,
 	success: successProgressStyles,
 	information: informationProgressStyles,
+	discovery: discoveryProgressStyles,
 }
 
 const defaultProgressInvertedStyles = "bg-text"
@@ -52,6 +54,7 @@ const warningProgressInvertedStyles = "bg-warning-bold"
 const errorProgressInvertedStyles = "bg-danger-bold"
 const successProgressInvertedStyles = "bg-success-bold"
 const informationProgressInvertedStyles = "bg-information-bold"
+const discoveryProgressInvertedStyles = "bg-discovery-bold"
 
 const progressInvertedStyles: { [style in FlagAppearance]: string } = {
 	default: defaultProgressInvertedStyles,
@@ -59,6 +62,7 @@ const progressInvertedStyles: { [style in FlagAppearance]: string } = {
 	error: errorProgressInvertedStyles,
 	success: successProgressInvertedStyles,
 	information: informationProgressInvertedStyles,
+	discovery: discoveryProgressInvertedStyles,
 }
 
 const portalDivId = "uikts-toasts" as const
@@ -200,4 +204,8 @@ export function showInformationFlag(
 
 export function showWarningFlag(props: Omit<SimpleFlagProps, "appearance">) {
 	showFlag({ ...props, appearance: "warning" })
+}
+
+export function showDiscoveryFlag(props: Omit<SimpleFlagProps, "appearance">) {
+	showFlag({ ...props, appearance: "discovery" })
 }

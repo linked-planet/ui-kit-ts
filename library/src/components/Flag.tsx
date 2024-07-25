@@ -23,7 +23,7 @@ export type FlagProps = {
 	title: string
 	description: React.ReactNode
 	appearance?: FlagAppearance
-	type?: "default" | "inverted" | "pale"
+	type?: "bold" | "inverted" | "pale"
 	icon?: JSX.Element
 	actions?: FlagActionType[]
 	style?: CSSProperties
@@ -130,10 +130,10 @@ export function FlagIcon({
 	type,
 }: {
 	appearance?: FlagAppearance
-	type: "default" | "inverted" | "pale"
+	type: FlagProps["type"]
 }) {
 	const iconStyle =
-		type === "default" || type === "pale"
+		type === "bold" || type === "pale"
 			? IconStyles[appearance]
 			: IconInvertedStyles[appearance]
 
@@ -186,7 +186,7 @@ export function Flag({
 	description,
 	icon,
 	appearance = "default",
-	type = "default",
+	type = "bold",
 	actions,
 	style,
 	className,
@@ -194,7 +194,7 @@ export function Flag({
 	testId,
 }: FlagProps) {
 	const appStyle =
-		type === "default"
+		type === "bold"
 			? FlagStyles[appearance]
 			: type === "inverted"
 				? FlagInvertedStyles[appearance]
