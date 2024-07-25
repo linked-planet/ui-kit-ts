@@ -1098,22 +1098,56 @@ import AddCircleIcon from "@atlaskit/icon/glyph/add-circle"
 //#region bread-crumbs-max-items-example
 function MaxItemsExample() {
 	const [maxItems, setMaxItems] = useState(5)
+	const [itemsBeforeCollapse, setItemsBeforeCollapse] = useState(1)
+	const [itemsAfterCollapse, setItemsAfterCollapse] = useState(1)
 
 	return (
 		<div>
-			<div className="mb-4">
-				<Label htmlFor="maxItems">Max Items</Label>
-				<Input
-					id="maxItems"
-					type="number"
-					value={maxItems}
-					onChange={(e) =>
-						setMaxItems(Number.parseInt(e.target.value))
-					}
-				/>
+			<div className="mb-4 flex gap-4">
+				<div>
+					<Label htmlFor="maxItems">Max Items</Label>
+					<Input
+						id="maxItems"
+						type="number"
+						value={maxItems}
+						onChange={(e) =>
+							setMaxItems(Number.parseInt(e.target.value))
+						}
+					/>
+				</div>
+				<div>
+					<Label htmlFor="itemsBefore">Items Before Collapse</Label>
+					<Input
+						id="itemsBefore"
+						type="number"
+						value={itemsBeforeCollapse}
+						onChange={(e) =>
+							setItemsBeforeCollapse(
+								Number.parseInt(e.target.value),
+							)
+						}
+					/>
+				</div>
+				<div>
+					<Label htmlFor="itemsAfter">Items After Collapse</Label>
+					<Input
+						id="itemsAfter"
+						type="number"
+						value={itemsAfterCollapse}
+						onChange={(e) =>
+							setItemsAfterCollapse(
+								Number.parseInt(e.target.value),
+							)
+						}
+					/>
+				</div>
 			</div>
 			<div className="flex flex-col gap-4">
-				<AKBreadcrumbs maxItems={maxItems}>
+				<AKBreadcrumbs
+					maxItems={maxItems}
+					itemsAfterCollapse={itemsAfterCollapse}
+					itemsBeforeCollapse={itemsBeforeCollapse}
+				>
 					<AKBreadcrumbsItem
 						href="#"
 						iconBefore={<AddCircleIcon label="" />}
@@ -1127,7 +1161,11 @@ function MaxItemsExample() {
 					<AKBreadcrumbsItem href="#" text="Homepage" />
 				</AKBreadcrumbs>
 				<hr />
-				<Breadcrumbs maxItems={maxItems}>
+				<Breadcrumbs
+					maxItems={maxItems}
+					itemsAfterCollapse={itemsAfterCollapse}
+					itemsBeforeCollapse={itemsBeforeCollapse}
+				>
 					<Breadcrumbs.Item
 						href="#"
 						iconBefore={<AddCircleIcon label="" />}
@@ -1161,7 +1199,7 @@ function ConstrainedExample() {
 				/>
 			</div>
 			<div className="flex flex-col gap-4">
-				<AKBreadcrumbs isExpanded={expanded}>
+				<AKBreadcrumbs isExpanded={expanded} isNavigation>
 					<AKBreadcrumbsItem
 						href="#"
 						iconBefore={<AddCircleIcon label="" />}
@@ -1639,6 +1677,7 @@ import {
 	ButtonGroup,
 	Calendar,
 	CalendarBase,
+	DateUtils,
 	type DateType,
 } from "@linked-planet/ui-kit-ts"
 import {
@@ -1946,6 +1985,32 @@ function CalendarRangeForm() {
 }
 //#endregion calendar2-range-form
 
+//#region calendar2-multi
+function CalendarMulti() {
+	const [selected, setSelected] = useState<DateType[] | undefined>([
+		DateUtils.toDateType(Date()),
+	])
+
+	return (
+		<div className="flex gap-4">
+			<Calendar
+				mode="multiple"
+				defaultSelected={[]}
+				selected={selected}
+				onSelectionChanged={setSelected}
+			/>
+			<CalendarBase
+				mode="multiple"
+				selected={selected?.map((d) => dateFromString(d, true))}
+				onSelect={(dates: Date[] | undefined) => {
+					setSelected(dates?.map((d) => DateUtils.toDateType(d)))
+				}}
+			/>
+		</div>
+	)
+}
+//#endregion calendar2-multi
+
 export default function Calendar2Showcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -1968,6 +2033,11 @@ export default function Calendar2Showcase(props: ShowcaseProps) {
 					title: "Calendar Day Range",
 					example: <CalendarRange />,
 					sourceCodeExampleId: "calendar2-range",
+				},
+				{
+					title: "Calendar Day Multi",
+					example: <CalendarMulti />,
+					sourceCodeExampleId: "calendar2-multi",
 				},
 				{
 					title: "Base Calendar",
@@ -3938,6 +4008,12 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<Input readOnly value={"readonly"} />
 			<Input type="number" defaultValue={1} />
 			<Input type="number" defaultValue={1} appearance="subtle" />
+			<Input
+				type="text"
+				defaultValue={"default text"}
+				iconAfter={<ScheduleIcon label="" />}
+				iconBefore={<ScheduleIcon label="" />}
+			/>
 			<TextArea placeholder="Placeholder" />
 			<TextArea placeholder="Placeholder" disabled />
 		</div>
@@ -6005,6 +6081,63 @@ export default function PopoverShowcase(props: ShowcaseProps) {
 	)
 }
 
+import React from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { SectionMessage } from "@linked-planet/ui-kit-ts"
+import AKSectionMessage from "@atlaskit/section-message"
+import WarningIcon from "@atlaskit/icon/glyph/warning"
+
+function SectionMessageShowcase(props: ShowcaseProps) {
+	//#region section-message
+	const example = (
+		<div className="flex gap-3">
+			<div className="flex flex-col gap-3">
+				<AKSectionMessage title="Section Message Title">
+					Default Section Message
+				</AKSectionMessage>
+				<AKSectionMessage appearance="success">
+					Success Section Message
+				</AKSectionMessage>
+				<AKSectionMessage appearance="warning">
+					Warning Section Message
+				</AKSectionMessage>
+				<AKSectionMessage appearance="error">
+					Error Section Message
+				</AKSectionMessage>
+				<AKSectionMessage appearance="information">
+					Information Section Message
+				</AKSectionMessage>
+			</div>
+		</div>
+	)
+	//#endregion section-message
+
+	return (
+		<ShowcaseWrapperItem
+			name="Section Messsage"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "/single?component=SectionMessage",
+				},
+			]}
+			description="Drop in replacement for the @atlaskit/section-message component. Practically the same as the Flag."
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "section-message",
+				},
+			]}
+		/>
+	)
+}
+
+export default SectionMessageShowcase
+
 import { default as AKSelect } from "@atlaskit/select"
 import {
 	Button,
@@ -6410,9 +6543,9 @@ function SideNavExample() {
 					className="max-w-sm"
 					aria-label="Side navigation"
 				>
-					<SideNavigation.Header>
+					<SideNavigation.NavigationHeader>
 						<span>test header</span>
-					</SideNavigation.Header>
+					</SideNavigation.NavigationHeader>
 					<SideNavigation.Content storeIdent="side-nav-store-showcase">
 						<SideNavigation.NestableNavigationContent>
 							<SideNavigation.NestingItem title="test nesting">
@@ -6501,9 +6634,9 @@ function SideNavExample() {
 							shimmering
 						/>
 					</SideNavigation.Content>
-					<SideNavigation.Footer>
+					<SideNavigation.NavigationFooter>
 						<div>test footer</div>
-					</SideNavigation.Footer>
+					</SideNavigation.NavigationFooter>
 				</SideNavigation.Container>
 			</div>
 

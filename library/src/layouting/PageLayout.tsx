@@ -239,7 +239,7 @@ const PageBodyFooter = ({
 	</div>
 )
 
-const PageLayout = {
+export const PageLayout = {
 	Page,
 	PageHeader,
 	PageHeaderTitle,
@@ -250,4 +250,3 @@ const PageLayout = {
 	PageBodyFooter,
 	PageHeaderLine,
 }
-export default PageLayout

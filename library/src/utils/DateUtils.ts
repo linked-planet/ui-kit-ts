@@ -222,6 +222,10 @@ export const dateFormat = "YYYY-MM-DD" as const // produces a DateType
 // ! if this format is coming from that backend, correct it in the backend that it is an ISO format string, because we require the time zone offset
 export const dateTimeFormat = "YYYY-MM-DD HH:mm" as const // produces a DateTimeType
 
+/**
+ * Formats a date to a Java DateTime string, this is probably not what you want.
+ * Most likely you want to use dayjs.format() instead.
+ */
 export function dateToJavaDateTimeString(date: Date) {
 	const padZero = (num: number) => num.toString().padStart(2, "0")
 
