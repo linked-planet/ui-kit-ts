@@ -4,12 +4,10 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKTextField from "@atlaskit/textfield"
 import AKTextArea from "@atlaskit/textarea"
-import { Fieldset as AKFieldset } from "@atlaskit/form"
 import {
 	Button,
 	ButtonGroup,
 	Fieldset,
-	IconSizeHelper,
 	Input,
 	Label,
 	TextArea,
@@ -75,7 +73,7 @@ function FormExample() {
 
 export default function InputShowcase(props: ShowcaseProps) {
 	const exampleAK = (
-		<AKFieldset legend="Input Example">
+		<Fieldset legend="Input Example">
 			<AKTextField />
 			<AKTextField isDisabled />
 			<AKTextField placeholder="Placeholder" />
@@ -84,7 +82,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<AKTextField type="number" defaultValue={1} />
 			<AKTextField type="number" defaultValue={1} appearance="subtle" />
 			<AKTextArea placeholder="Text Area" />
-		</AKFieldset>
+		</Fieldset>
 	)
 
 	//#region input

@@ -73,7 +73,6 @@
 		]
 	},
 	"dependencies": {
-		"@atlaskit/form": "^10.4.7",
 		"@atlaskit/icon": "^22.7.0",
 		"@atlaskit/tokens": "^1.56.2",
 		"@emotion/css": "^11.13.0",

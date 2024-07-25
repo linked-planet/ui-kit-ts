@@ -5,6 +5,7 @@ import {
 	Tag,
 	TagGroup,
 	Badge,
+	Fieldset,
 } from "@linked-planet/ui-kit-ts"
 
 import ShowcaseWrapperItem, {
@@ -12,7 +13,6 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import Button, { ButtonGroup } from "@atlaskit/button"
-import { Fieldset } from "@atlaskit/form"
 import { CSSTransition } from "react-transition-group"
 import { TruncatedText } from "@linked-planet/ui-kit-ts/components/TruncatedText"
 
