@@ -48,6 +48,7 @@ import AppLayoutShowcase from "./components/showcase/wrapper/AppLayoutShowcase"
 import SideNavigationShowcase from "./components/showcase/wrapper/SideNavigationShowcase"
 import BlanketShowcase from "./components/showcase/wrapper/BlanketShowcase"
 import BreadcrumbsShowcase from "./components/showcase/wrapper/BreadcrumbsShowcase"
+import SectionMessageShowcase from "./components/showcase/wrapper/SectionMessageShowcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -134,6 +135,9 @@ export default function useShowcases({
 				<PaginationShowcase overallSourceCode={overallSourceCode} />
 			),
 			Popover: <PopoverShowcase overallSourceCode={overallSourceCode} />,
+			"Section Message": (
+				<SectionMessageShowcase overallSourceCode={overallSourceCode} />
+			),
 			Select: <SelectShowcase overallSourceCode={overallSourceCode} />,
 			Sidebar: <SidebarShowcase overallSourceCode={overallSourceCode} />,
 			"Side Navigation": (

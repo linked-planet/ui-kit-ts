@@ -29,9 +29,9 @@ function SideNavExample() {
 					className="max-w-sm"
 					aria-label="Side navigation"
 				>
-					<SideNavigation.Header>
+					<SideNavigation.NavigationHeader>
 						<span>test header</span>
-					</SideNavigation.Header>
+					</SideNavigation.NavigationHeader>
 					<SideNavigation.Content storeIdent="side-nav-store-showcase">
 						<SideNavigation.NestableNavigationContent>
 							<SideNavigation.NestingItem title="test nesting">
@@ -120,9 +120,9 @@ function SideNavExample() {
 							shimmering
 						/>
 					</SideNavigation.Content>
-					<SideNavigation.Footer>
+					<SideNavigation.NavigationFooter>
 						<div>test footer</div>
-					</SideNavigation.Footer>
+					</SideNavigation.NavigationFooter>
 				</SideNavigation.Container>
 			</div>
 

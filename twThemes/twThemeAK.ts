@@ -54,6 +54,11 @@ import {
 	skeleton,
 	N200A,
 	N10A,
+	P75,
+	P100,
+	P300,
+	P50,
+	P200,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -189,8 +194,8 @@ export const theme = {
 			/* subtle only exists as an escape hedge against the difference between theme/no theme, and it provides a light background for selections in unthemed mode */
 			subtle: {
 				DEFAULT: `var(--ds-background-selected, ${B50})`,
-				hovered: `var(--ds-background-selected-hovered, ${N30})`,
-				pressed: `var(--ds-background-selected-pressed, ${N40})`,
+				hovered: `var(--ds-background-selected-hovered, ${N40})`,
+				pressed: `var(--ds-background-selected-pressed, ${N50})`,
 				text: `var(--ds-text-selected, ${N900})`,
 			},
 		},
@@ -220,21 +225,21 @@ export const theme = {
 			},
 			text: `var(--ds-text-warning, ${colors.amber[700]})`,
 			border: `var(--ds-border-warning, ${Y500})`,
-			icon: `var(--ds-icon-warning, ${colors.amber[800]})`,
+			icon: `var(--ds-icon-warning, ${colors.amber[600]})`,
 		},
 
 		danger: {
-			DEFAULT: `var(--ds-background-danger, ${R50})`,
-			hovered: `var(--ds-background-danger-hovered, ${R75})`,
-			pressed: `var(--ds-background-danger-pressed, ${R100})`,
+			DEFAULT: `var(--ds-background-danger, ${colors.red[50]})`,
+			hovered: `var(--ds-background-danger-hovered, ${colors.red[75]})`,
+			pressed: `var(--ds-background-danger-pressed, ${colors.red[100]})`,
 			bold: {
-				DEFAULT: `var(--ds-background-danger-bold, ${R400})`,
-				hovered: `var(--ds-background-danger-bold-hovered, ${R300})`,
-				pressed: `var(--ds-background-danger-bold-pressed, ${R500})`,
+				DEFAULT: `var(--ds-background-danger-bold, ${colors.red[500]})`,
+				hovered: `var(--ds-background-danger-bold-hovered, ${colors.red[300]})`,
+				pressed: `var(--ds-background-danger-bold-pressed, ${colors.red[500]})`,
 			},
-			text: `var(--ds-text-danger, ${R500})`,
-			border: `var(--ds-border-danger, ${R500})`,
-			icon: `var(--ds-icon-danger, ${R500})`,
+			text: `var(--ds-text-danger, ${colors.red[800]})`,
+			border: `var(--ds-border-danger, ${colors.red[600]})`,
+			icon: `var(--ds-icon-danger, ${colors.red[800]})`,
 		},
 
 		success: {
@@ -256,7 +261,7 @@ export const theme = {
 			hovered: `var(--ds-background-information-hovered, ${B75})`,
 			pressed: `var(--ds-background-information-pressed, ${B100})`,
 			bold: {
-				DEFAULT: `var(--ds-background-information-bold, ${B200})`,
+				DEFAULT: `var(--ds-background-information-bold, ${B100})`,
 				hovered: `var(--ds-background-information-bold-hovered, ${B300})`,
 				pressed: `var(--ds-background-information-bold-pressed, ${B500})`,
 			},
@@ -265,10 +270,24 @@ export const theme = {
 			icon: `var(--ds-icon-information, ${B500})`,
 		},
 
+		discovery: {
+			DEFAULT: `var(--ds-background-discovery, ${P50})`,
+			hovered: `var(--ds-background-discovery-hovered, ${P75})`,
+			pressed: `var(--ds-background-discovery-pressed, ${P100})`,
+			bold: {
+				DEFAULT: `var(--ds-background-discovery-bold, ${P200})`,
+				hovered: `var(--ds-background-discovery-bold-hovered, ${P400})`,
+				pressed: `var(--ds-background-discovery-bold-pressed, ${P500})`,
+			},
+			text: `var(--ds-text-discovery, ${P500})`,
+			border: `var(--ds-border-discovery, ${P500})`,
+			icon: `var(--ds-icon-discovery, ${P500})`,
+		},
+
 		border: {
-			DEFAULT: `var(--ds-border, ${N40A})`,
-			bold: `var(--ds-border-bold, ${N500A})`,
-			separator: `var(--ds-menu-seperator-color, var(--ds-border, ${N30}))`,
+			DEFAULT: `var(--ds-border, var(--aui-border, ${N40A}))`,
+			bold: `var(--ds-border-bold, var(--aui-border-bold, ${N500A}))`,
+			separator: `var(--ds-menu-separator-color, var(--ds-border, var(--aui-border, ${N30})))`,
 		},
 		icon: {
 			DEFAULT: `var(--ds-icon, ${N200})`,

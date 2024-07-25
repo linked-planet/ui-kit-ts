@@ -119,6 +119,27 @@ function FlagShowcase(props: ShowcaseProps) {
 				appearance="information"
 				type="pale"
 			/>
+
+			<Flag
+				title="Flag"
+				description="Discovery Flag"
+				appearance="discovery"
+				actions={[{ content: "Action", onClick: () => {} }]}
+			/>
+
+			<Flag
+				title="Flag"
+				description="Discovery Flag"
+				appearance="discovery"
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Discovery Flag"
+				appearance="discovery"
+				type="pale"
+			/>
 			<ToastFlagContainer />
 		</div>
 	)

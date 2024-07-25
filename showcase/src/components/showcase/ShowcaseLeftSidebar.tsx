@@ -44,14 +44,14 @@ function ShowcaseLeftSidebar({
 
 	const content = (
 		<SideNavigation.Container>
-			<SideNavigation.Header>
+			<SideNavigation.NavigationHeader>
 				<h2 className="text-text-subtle pb-2 text-sm font-bold">
 					UI-Showcase
 				</h2>
 				<span className="text-text-subtlest text-sm font-[400]">
 					linked-planet
 				</span>
-			</SideNavigation.Header>
+			</SideNavigation.NavigationHeader>
 			<SideNavigation.Content>
 				{Object.keys(showcases).map((showcaseName) => {
 					return (
@@ -73,7 +73,7 @@ function ShowcaseLeftSidebar({
 				})}
 			</SideNavigation.Content>
 
-			<SideNavigation.Footer className="flex flex-col gap-4">
+			<SideNavigation.NavigationFooter className="flex flex-col gap-4">
 				<div className="text-center">
 					Made with ❤ by
 					<a href="https://www.linked-planet.com/"> linked-planet</a>
@@ -85,7 +85,7 @@ function ShowcaseLeftSidebar({
 						Apache License, Version 2.0
 					</a>
 				</div>
-			</SideNavigation.Footer>
+			</SideNavigation.NavigationFooter>
 		</SideNavigation.Container>
 	)
 
