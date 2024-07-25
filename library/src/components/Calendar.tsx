@@ -16,6 +16,7 @@ import {
 	type Matcher,
 	useDayRender,
 } from "react-day-picker"
+//import { default as defaultStyles } from "react-day-picker/dist/style.module.css"; .. all styles are set in the classNames config below
 
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
 import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
@@ -196,7 +197,7 @@ const classNames: DayPickerProps["classNames"] = {
 		"p-1 rounded hover:bg-neutral-subtle-hovered flex items-center justify-center",
 	nav_button_previous: "h-max max-w-max",
 	nav_button_next: "h-max max-w-max",
-	table: "w-auto",
+	table: "w-full",
 	head: headStyles,
 	day: "text-sm",
 	day_disabled: "text-disabled-text cursor-not-allowed",
@@ -317,7 +318,7 @@ export function CalendarBase(
 				Day,
 			}}
 			modifiersClassNames={{
-				hidden: "bg-selected-bold-hovered hover:bg-selected-bold-hovered active:bg-selected-bold-hovered text-text-inverse",
+				hidden: "bg-neutral hover:bg-neutral-hovered active:bg-neutral-hovered text-text",
 			}}
 			hidden={props.secondarySelected} // hidden is used to render the secondary selected in combination with the Day component
 			disabled={disabledDates}
