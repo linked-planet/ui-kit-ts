@@ -38,7 +38,6 @@ export type InputProps = ComponentPropsWithoutRef<"input"> & {
 	invalid?: boolean
 	testId?: string
 	active?: boolean
-	onClick?: () => void
 	appearance?: "default" | "subtle"
 	iconAfter?: ReactNode
 	iconBefore?: ReactNode
