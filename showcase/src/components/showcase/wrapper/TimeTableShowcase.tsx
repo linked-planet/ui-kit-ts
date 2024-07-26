@@ -14,7 +14,6 @@ import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
-import type { TimeTableViewType } from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
 import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
@@ -538,7 +537,7 @@ function Example() {
 		[clearSelectedTimeRangeCB],
 	)
 
-	const [viewType, setViewType] = useState<TimeTableViewType>("hours")
+	const [viewType, setViewType] = useState<TimeTableTypes.TimeTableViewType>("hours")
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
@@ -692,7 +691,7 @@ function Example() {
 					<select
 						name="viewtype"
 						onChange={(e) =>
-							setViewType(e.target.value as TimeTableViewType)
+							setViewType(e.target.value as TimeTableTypes.TimeTableViewType)
 						}
 						value={viewType}
 					>

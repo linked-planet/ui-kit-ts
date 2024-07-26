@@ -23,7 +23,7 @@ import IconSizeHelperShowcase from "./components/showcase/wrapper/IconSizeHelper
 import InlineMessageShowcase from "./components/showcase/wrapper/InlineMessageShowcase"
 import InputShowcase from "./components/showcase/wrapper/InputShowcase"
 import JoyrideShowcase from "./components/showcase/wrapper/JoyrideShowcase"
-import TimeTableShowcase from "./components/showcase/wrapper/LPTimeTableShowcase"
+import TimeTableShowcase from "./components/showcase/wrapper/TimeTableShowcase"
 import LayeringShowcase from "./components/showcase/wrapper/LayeringShowcase"
 import LoadingSpinnerShowcase from "./components/showcase/wrapper/LoadingSpinnerShowcase"
 import LozengeShowcase from "./components/showcase/wrapper/LozengeShowcase"
