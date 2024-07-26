@@ -72,9 +72,9 @@ export const SectionMessage = forwardRef(
 			>
 				{icon && (
 					<div>
-						<p className="flex items-center justify-center">
+						<div className="flex items-center justify-center">
 							{icon}
-						</p>
+						</div>
 					</div>
 				)}
 				<div className="flex flex-col justify-center gap-1">
