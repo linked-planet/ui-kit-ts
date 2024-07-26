@@ -11,6 +11,7 @@ import {
 	type DateType,
 	type TimeType,
 	DateUtils,
+	Fieldset,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
@@ -114,21 +115,28 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 	//#region datetime-picker
 	const example = (
 		<div className="flex gap-4">
-			<DatePicker onChange={setDate} value={date} />
-			<TimePicker
-				onChange={setTime}
-				value={time}
-				startTime="00:00"
-				endTime="00:00"
-				interval={30}
-			/>
-			<DateTimePicker
-				onChange={(d) => {
-					console.log("DateTimePicker", d)
-					setDateTime(d)
-				}}
-				value={dateTime}
-			/>
+			<Fieldset legend="Date Picker">
+				<DatePicker onChange={setDate} value={date} />
+			</Fieldset>
+			<Fieldset legend="Time Picker">
+				<TimePicker
+					onChange={setTime}
+					value={time}
+					startTime="00:00"
+					endTime="00:00"
+					interval={30}
+				/>
+			</Fieldset>
+			<Fieldset legend="Date Time Picker">
+				<DateTimePicker
+					onChange={(d) => {
+						console.log("DateTimePicker", d)
+						setDateTime(d)
+					}}
+					value={dateTime}
+					className="border-warning-bold border-2"
+				/>
+			</Fieldset>
 		</div>
 	)
 	//#endregion datetime-picker
@@ -139,8 +147,8 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/datetime-picker",
-					url: "https://atlassian.design/components/datetime-picker/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "single?component=Date+Time+Picker",
 				},
 			]}
 			examples={[

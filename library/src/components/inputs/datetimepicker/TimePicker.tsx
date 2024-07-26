@@ -36,7 +36,7 @@ type TimePickerBaseProps = {
 	id?: string
 	testId?: string
 	className?: string
-	containerClassName?: string
+	styles?: SelectProps<TimeType, false>["styles"]
 	open?: boolean
 	defaultOpen?: boolean
 }
@@ -163,16 +163,21 @@ export function TimePicker<FormData extends FieldValues>(
 	props: TimePickerInFormProps<FormData>,
 ): JSX.Element
 
+/**
+ * The timepicker is a select that opens a list of times.
+ * @param param0 
+ * @returns 
+ */
 export function TimePicker<FormData extends FieldValues>({
 	invalid,
 	required,
 	testId,
 	placeholder,
 	disabled,
-	"aria-label": ariaLabel,
+	"aria-label": _ariaLabel,
 	label,
 	className,
-	containerClassName,
+	styles,
 	errorMessage,
 	isClearable,
 	clearButtonLabel,
@@ -210,57 +215,25 @@ export function TimePicker<FormData extends FieldValues>({
 		[onChange],
 	)
 
-	if (!control) {
-		const selectProps: SelectProps<TimeType, false> = {
-			invalid,
-			required,
-			testId,
-			options,
-			placeholder,
-			menuIsOpen: _open,
-			onMenuOpen: onOpen,
-			onMenuClose: onClose,
-			defaultMenuIsOpen: defaultOpen,
-			disabled,
-			"aria-label": label ?? ariaLabel ?? "time picker",
-			className: twMerge("min-w-28 cursor-pointer", className),
-			containerClassName: twMerge("flex flex-1", containerClassName),
-			isClearable,
-			name,
-			clearValuesButtonLabel: clearButtonLabel,
-			isMulti: false,
-			onClearButtonClick,
-			id,
-			components: {
-				DropdownIndicator: null, // hide the chevron
-			},
-			onChange: onSelectChange,
-		}
+	const classNameMerged = twMerge("flex flex-1 min-w-28 cursor-pointer", className)
+	const ariaLabel = label ?? _ariaLabel ?? "time picker"
 
-		return (
-			<TimePickerNotInForm
-				{...selectProps}
-				options={options}
-				value={value}
-				defaultValue={defaultValue}
-			/>
-		)
-	}
-
-	const selectProps: SelectInFormProps<FormData, TimeType, false> = {
-		invalid,
-		required,
+	const selectProps: SelectProps<TimeType, false> | SelectInFormProps<FormData, TimeType, false> = {
 		testId,
 		options,
+		"aria-label": ariaLabel,
+		value,
+		defaultValue,
+		className: classNameMerged,
 		placeholder,
+		invalid,
+		required,
 		menuIsOpen: _open,
 		onMenuOpen: onOpen,
 		onMenuClose: onClose,
 		defaultMenuIsOpen: defaultOpen,
 		disabled,
-		"aria-label": label ?? ariaLabel ?? "time picker",
-		className: twMerge("min-w-28 cursor-pointer", className),
-		containerClassName: twMerge("flex flex-1", containerClassName),
+		styles,
 		isClearable,
 		name,
 		clearValuesButtonLabel: clearButtonLabel,
@@ -271,16 +244,21 @@ export function TimePicker<FormData extends FieldValues>({
 			DropdownIndicator: null, // hide the chevron
 		},
 		onChange: onSelectChange,
-		control,
 	}
 
+	if (!control) {
+		selectProps satisfies SelectProps<TimeType, false>
+		return (
+			<TimePickerNotInForm
+				{...selectProps}
+			/>
+		)
+	}
+
+	const selectInFormProps = {...selectProps, control, name} satisfies SelectInFormProps<FormData, TimeType, false>
 	return (
 		<TimePickerInForm<FormData>
-			{...selectProps}
-			options={options}
-			value={value}
-			defaultValue={defaultValue}
-			errorMessage={errorMessage}
+			{...selectInFormProps}
 		/>
 	)
 }
@@ -290,15 +268,11 @@ function TimePickerNotInForm(props: SelectProps<TimeType, false>) {
 }
 
 function TimePickerInForm<FormData extends FieldValues>({
-	name,
-	control,
 	...props
 }: SelectInFormProps<FormData, TimeType, false>) {
 	return (
 		<Select<FormData, TimeType, false>
 			{...props}
-			name={name}
-			control={control}
 		/>
 	)
 }

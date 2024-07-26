@@ -82,8 +82,11 @@ const Input = forwardRef(
 				{iconBefore}
 				<input
 					ref={inputRef}
-					className={twMerge("m-0 px-[0.4rem] outline-none")}
-					style={inputStyle}
+					className={twMerge("m-0 px-[0.4rem] outline-none", inputClassName)}
+					style={{
+						backgroundColor: "inherit",
+						...inputStyle
+					}}
 					aria-invalid={ariaInvalid || invalid}
 					data-testid={testId}
 					disabled={disabled}

@@ -321,7 +321,6 @@ type InnerProps<
 	dropdownLabel?: (isOpen: boolean) => string
 	onClearButtonClick?: () => void
 	invalid?: boolean
-	containerClassName?: string
 	placeholder?: string
 }
 
@@ -332,7 +331,6 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 	innerRef,
 	classNames,
 	className,
-	containerClassName,
 	clearValuesButtonLabel,
 	removeValueButtonLabel,
 	dropdownLabel,
@@ -340,6 +338,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 	invalid,
 	components: _components,
 	onClearButtonClick,
+	styles,
 	...props
 }: InnerProps<ValueType, IsMulti>) => {
 	const classNamesConfig = useClassNamesConfig<ValueType, IsMulti>(
@@ -347,6 +346,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 		className,
 		invalid,
 	)
+
 
 	// get the browsers locale
 	const locale = navigator.language
@@ -545,7 +545,10 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 							? `Erstelle "${value}"`
 							: `Create "${value}"`)
 				}
-				styles={customStyles}
+				styles={{
+					...customStyles,
+					...styles,
+				}}
 				components={components}
 				{...props}
 			/>
@@ -567,7 +570,6 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 			data-invalid={invalid}
 			styles={customStyles}
 			components={components}
-			className={containerClassName}
 			{...props}
 		/>
 	)
