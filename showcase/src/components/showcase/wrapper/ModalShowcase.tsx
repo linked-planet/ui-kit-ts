@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -170,9 +170,12 @@ function ControlledExample() {
 						if (!opened) setIsModalActive(false)
 					}}
 					shouldCloseOnEscapePress={true}
+					accessibleDialogDescription="This is a modal dialog example"
 				>
 					<Modal.Header>
-						<Modal.Title>Sample Modal</Modal.Title>
+						<Modal.Title accessibleDialogTitle="Sample Modal">
+							Sample Modal
+						</Modal.Title>
 						<Button
 							appearance="link"
 							onClick={() => setIsModalActive(false)}

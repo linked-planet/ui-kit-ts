@@ -12,6 +12,7 @@ import React, {
 import { twJoin, twMerge } from "tailwind-merge"
 import { getPortal } from "../utils/getPortal"
 import { overlayBaseStyle } from "./styleHelper"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
 type ModalDialogProps = {
 	open?: boolean
@@ -30,6 +31,8 @@ type ModalDialogProps = {
 	triggerId?: string
 	testId?: string
 	triggerTestId?: string
+	/** The accessible description for the dialog, is visually hidden but announced by screen readers */
+	accessibleDialogDescription: string
 }
 
 const blanketStyles =
@@ -52,6 +55,7 @@ function Container({
 	triggerId,
 	testId,
 	triggerTestId,
+	accessibleDialogDescription,
 }: ModalDialogProps) {
 	const content = useMemo(
 		() => (
@@ -88,6 +92,11 @@ function Container({
 					id={id}
 					data-testid={testId}
 				>
+					<VisuallyHidden>
+						<RDialog.DialogDescription>
+							{accessibleDialogDescription}
+						</RDialog.DialogDescription>
+					</VisuallyHidden>
 					{children}
 				</RDialog.Content>
 			</>
@@ -102,6 +111,7 @@ function Container({
 			style,
 			testId,
 			useModal,
+			accessibleDialogDescription,
 		],
 	)
 
@@ -191,12 +201,15 @@ function Title({
 	style,
 	id,
 	testId,
+	accessibleDialogTitle,
 }: {
 	children: ReactNode
 	className?: string
 	style?: CSSProperties
 	id?: string
 	testId?: string
+	/** The accessible title for the dialog, is visually hidden but announced by screen readers */
+	accessibleDialogTitle: string
 }) {
 	return (
 		<RDialog.Title
@@ -205,6 +218,11 @@ function Title({
 			id={id}
 			data-testid={testId}
 		>
+			<VisuallyHidden>
+				<RDialog.DialogTitle>
+					{accessibleDialogTitle}
+				</RDialog.DialogTitle>
+			</VisuallyHidden>
 			{children}
 		</RDialog.Title>
 	)

@@ -27,7 +27,10 @@ const CreateNewTimeTableItemDialog = function CreateNewTimeTableItemDialog({
 	const [error, setError] = useState("")
 
 	return (
-		<Modal.Container defaultOpen>
+		<Modal.Container
+			defaultOpen
+			accessibleDialogDescription="A dialog to create a new time slot booking."
+		>
 			<form
 				onSubmit={(e) => {
 					e.preventDefault()
@@ -62,7 +65,9 @@ const CreateNewTimeTableItemDialog = function CreateNewTimeTableItemDialog({
 				}}
 			>
 				<Modal.Header>
-					<Modal.Title>{"Create New Booking"}</Modal.Title>
+					<Modal.Title accessibleDialogTitle="Create New Booking">
+						{"Create New Booking"}
+					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<div
