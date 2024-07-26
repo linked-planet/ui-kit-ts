@@ -15,6 +15,7 @@ import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import type { TimeTableViewType } from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
+import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -29,11 +30,14 @@ function debounceHelper(callback: () => void) {
 	}, debounceTimeout)
 }
 
-type ExampleGroup = TimeTable.TimeTableGroup
+type ExampleGroup = TimeTableTypes.TimeTableGroup
 
-type ExampleItem = TimeTable.TimeSlotBooking
+type ExampleItem = TimeTableTypes.TimeSlotBooking
 
-const exampleEntries: TimeTable.TimeTableEntry<ExampleGroup, ExampleItem>[] = [
+const exampleEntries: TimeTableTypes.TimeTableEntry<
+	ExampleGroup,
+	ExampleItem
+>[] = [
 	{
 		group: {
 			title: "Empty Group",
@@ -364,14 +368,17 @@ function createTestItems(
 function createTestEntries(
 	startDate: Dayjs,
 	endDate: Dayjs,
-	currentEntries: TimeTable.TimeTableEntry<ExampleGroup, ExampleItem>[],
+	currentEntries: TimeTableTypes.TimeTableEntry<ExampleGroup, ExampleItem>[],
 ) {
 	if (startDate.isSame(startDateInitial) && endDate.isSame(endDateInitial)) {
 		return exampleEntries
 	}
 
 	const groupWithItems = currentEntries.map((group, g) => {
-		const newGroup: TimeTable.TimeTableEntry<ExampleGroup, ExampleItem> = {
+		const newGroup: TimeTableTypes.TimeTableEntry<
+			ExampleGroup,
+			ExampleItem
+		> = {
 			group: group.group,
 			items: createTestItems(startDate, endDate, g),
 		}
@@ -387,7 +394,10 @@ function createMoreTestGroups(
 	count: number,
 	startCount: number,
 ) {
-	const newGroups: TimeTable.TimeTableEntry<ExampleGroup, ExampleItem>[] = []
+	const newGroups: TimeTableTypes.TimeTableEntry<
+		ExampleGroup,
+		ExampleItem
+	>[] = []
 	for (let i = 0; i < count; i++) {
 		const groupNumber = startCount + i
 		newGroups.push({
@@ -487,7 +497,11 @@ function Example() {
 
 	const [showCreateNewItemModal, setShowCreateNewItemModal] = useState(false)
 	const [selectedTimeRange, setSelectedTimeRange] = useState<
-		| { startDate: Dayjs; endDate: Dayjs; group: TimeTable.TimeTableGroup }
+		| {
+				startDate: Dayjs
+				endDate: Dayjs
+				group: TimeTableTypes.TimeTableGroup
+		  }
 		| undefined
 	>()
 	const [clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB] =
@@ -496,7 +510,10 @@ function Example() {
 		useState(false)
 
 	const onCreateNewItemConfirmCB = useCallback(
-		(group: TimeTable.TimeTableGroup, item: TimeTable.TimeSlotBooking) => {
+		(
+			group: TimeTableTypes.TimeTableGroup,
+			item: TimeTableTypes.TimeSlotBooking,
+		) => {
 			setShowCreateNewItemModal(false)
 			setEntries((prev) => {
 				const groupIndex = prev.findIndex((e) => e.group === group)
@@ -718,7 +735,7 @@ function Example() {
 					height: "600px",
 				}}
 			>
-				<TimeTable.LPTimeTable
+				<TimeTable
 					groupHeaderColumnWidth={groupHeaderColumnWidth}
 					columnWidth={columnWidth}
 					startDate={timeFrame.startDate}
@@ -794,7 +811,7 @@ function ExampleCalendar() {
 					height: "600px",
 				}}
 			>
-				<TimeTable.LPTimeTable
+				<TimeTable
 					groupHeaderColumnWidth={150}
 					columnWidth={70}
 					startDate={timeFrame.startDate}
@@ -831,7 +848,7 @@ function ExampleMonthCalendar() {
 					height: "600px",
 				}}
 			>
-				<TimeTable.LPTimeTable
+				<TimeTable
 					groupHeaderColumnWidth={150}
 					columnWidth={70}
 					startDate={timeFrame.startDate}

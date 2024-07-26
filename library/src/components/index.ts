@@ -1,5 +1,5 @@
 export * from "./Calendar"
-export * as TimeTable from "./timetable"
+export * from "./timetable"
 export * from "./LoadingSpinner"
 export * from "./ThemeSwitch"
 export * from "./InlineMessage"
