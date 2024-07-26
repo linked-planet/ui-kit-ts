@@ -37,7 +37,6 @@ export type InputProps = ComponentPropsWithoutRef<"input"> & {
 	errorMessageStyle?: CSSProperties
 	invalid?: boolean
 	testId?: string
-	active?: boolean
 	appearance?: "default" | "subtle"
 	iconAfter?: ReactNode
 	iconBefore?: ReactNode
@@ -82,10 +81,13 @@ const Input = forwardRef(
 				{iconBefore}
 				<input
 					ref={inputRef}
-					className={twMerge("m-0 px-[0.4rem] outline-none", inputClassName)}
+					className={twMerge(
+						"m-0 px-[0.4rem] outline-none",
+						inputClassName,
+					)}
 					style={{
 						backgroundColor: "inherit",
-						...inputStyle
+						...inputStyle,
 					}}
 					aria-invalid={ariaInvalid || invalid}
 					data-testid={testId}

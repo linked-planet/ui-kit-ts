@@ -94,7 +94,7 @@ export type DatePickerInFormProps<FormData extends FieldValues> =
 
 /**
  * The datepicker is a popover that uses an Input as trigger and opens a calendar to pick a date.
- * @param props 
+ * @param props
  */
 export function DatePicker(
 	props: DatePickerProps & { control?: never },
@@ -249,78 +249,75 @@ const DatePickerBase = forwardRef(
 			valStr = formatter.format(date)
 		}
 
-		
-
 		const trigger = (
-				<div className={twJoin("group", className)} style={style}>
-					<Input
-						type="text"
-						key={key}
-						id={id}
-						testId={testId}
-						onFocus={onFocus}
-						onBlur={onBlur}
-						aria-label={label ?? ariaLabel ?? "date picker"}
-						placeholder={placeholder}
-						name={name}
-						className="min-w-20 cursor-pointer"
-						style={inputStyle}
-						value={valStr}
-						disabled={disabled}
-						invalid={invalid}
-						inputClassName={twMerge(
-							"cursor-pointer group-data-[state=open]:border-input-border-focused group-data-[state=open]:shadow-input-border-focused",
-							inputClassName,
-						)}
-						required={required}
-						readOnly={readOnly}
-						onChange={onInputChange}
-						iconAfter={
-							<>
-								{!hideIcon && (
-									<>
-										{value && !readOnly && (
-											<div className="pointer-events-none">
-												<Button
-													appearance="link"
-													className="text-disabled-text hover:text-text pointer-events-auto m-0 h-full w-8 px-1 py-0"
-													onClick={(e) => {
-														e.stopPropagation()
-														setOpen(false)
-														setValue("")
-														onChange?.(null)
-													}}
-													label={clearButtonLabel}
-												>
-													<IconSizeHelper
-														size="medium"
-														className=""
-													>
-														<SelectClearIcon
-															label=""
-															size="small"
-														/>
-													</IconSizeHelper>
-												</Button>
-											</div>
-										)}
-										{!value && !readOnly && (
-											<IconSizeHelper
-												size="medium"
-												className="w-8"
+			<div className={twJoin("group", className)} style={style}>
+				<Input
+					type="text"
+					key={key}
+					id={id}
+					testId={testId}
+					onFocus={onFocus}
+					onBlur={onBlur}
+					aria-label={label ?? ariaLabel ?? "date picker"}
+					placeholder={placeholder}
+					name={name}
+					className="min-w-20 cursor-pointer"
+					style={inputStyle}
+					value={valStr}
+					disabled={disabled}
+					invalid={invalid}
+					inputClassName={twMerge(
+						"cursor-pointer group-data-[state=open]:border-input-border-focused group-data-[state=open]:shadow-input-border-focused",
+						inputClassName,
+					)}
+					required={required}
+					readOnly={readOnly}
+					onChange={onInputChange}
+					iconAfter={
+						<>
+							{!hideIcon && (
+								<>
+									{value && !readOnly && (
+										<div className="pointer-events-none">
+											<Button
+												appearance="link"
+												className="text-disabled-text hover:text-text pointer-events-auto m-0 h-full w-8 px-1 py-0"
+												onClick={(e) => {
+													e.stopPropagation()
+													setOpen(false)
+													setValue("")
+													onChange?.(null)
+												}}
+												label={clearButtonLabel}
 											>
-												<CalendarIcon label="calendar" />
-											</IconSizeHelper>
-										)}
-									</>
-								)}
-							</>
-						}
-						active={open}
-						ref={ref}
-					/>
-				</div>
-			)
+												<IconSizeHelper
+													size="medium"
+													className=""
+												>
+													<SelectClearIcon
+														label=""
+														size="small"
+													/>
+												</IconSizeHelper>
+											</Button>
+										</div>
+									)}
+									{!value && !readOnly && (
+										<IconSizeHelper
+											size="medium"
+											className="w-8"
+										>
+											<CalendarIcon label="calendar" />
+										</IconSizeHelper>
+									)}
+								</>
+							)}
+						</>
+					}
+					ref={ref}
+				/>
+			</div>
+		)
 
 		return (
 			<Popover.Root
