@@ -1,8 +1,8 @@
 {
 	"$schema": "https://biomejs.dev/schemas/1.7.0/schema.json",
-	"formatter": { 
-		"enabled": false,
-		"formatWithErrors": false,
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": true,
 		"indentStyle": "tab",
 		"indentWidth": 4,
 		"lineEnding": "lf",
@@ -10,12 +10,20 @@
 		"attributePosition": "auto"
 	},
 	"organizeImports": { "enabled": true },
+	"css": {
+		"formatter": {
+			"enabled": true
+		}
+	},
 	"linter": {
 		"enabled": true,
-		"rules": { 
-			"recommended": true, 
+		"rules": {
+			"recommended": true,
 			"complexity": {
 				"noForEach": "off"
+			},
+			"correctness": {
+				"noUnusedImports": "warn"
 			}
 		},
 		"ignore": [

@@ -12,6 +12,7 @@ export function ThemeSwitch() {
 			onClick={() => {
 				switchTheme()
 				setTheme(getCurrentTheme())
+				console.info("switched theme", getCurrentTheme())
 			}}
 		>
 			{theme} theme

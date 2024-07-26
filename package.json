@@ -11,20 +11,15 @@
 	"description": "",
 	"module": "dist/index.js",
 	"type": "module",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "./dist/index.d.ts",
-	"style": [
-		"dist/styles.css",
-		"dist/styles-important.css"
-	],
+	"style": ["dist/styles.css", "dist/styles-important.css"],
 	"scripts": {
 		"build:lib": "tsc --noEmit -p tsconfig.lib.json && vitest run && vite build -c vite.config.lib.ts && TAILWIND_IMPORTANT=true vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist && npm run tsc:plugin",
 		"build:sc": "node ./showcase/copySources.js && tsc --noEmit && vite build -c vite.config.showcase.ts && node ./showcase/copyIndexTo404.js",
 		"preview": "vitest run && npm run build:sc && vite preview -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
-		"dev:sc": "node ./showcase/copySources.js && npm run messages:compile && vite -c vite.config.showcase.ts --open",
+		"dev:sc": "node ./showcase/copySources.js  && npm run messages:compile && vite -c vite.config.showcase.ts --open",
 		"eslint": "eslint **/*.ts*",
 		"stylelint": "stylelint **/*.css",
 		"clean": "rm -rf dist && rm -rf dist-showcase",
@@ -55,17 +50,10 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": [
-		"en",
-		"de"
-	],
+	"supportedLocales": ["en", "de"],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
+		"production": [">0.2%", "not dead", "not op_mini all"],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -87,6 +75,7 @@
 		"@radix-ui/react-switch": "^1.1.0",
 		"@radix-ui/react-tabs": "^1.1.0",
 		"@radix-ui/react-tooltip": "^1.1.2",
+		"@radix-ui/react-visually-hidden": "^1.1.0",
 		"@tanstack/react-table": "^8.19.3",
 		"dayjs": "^1.11.12",
 		"intl-messageformat": "^10.5.0",
