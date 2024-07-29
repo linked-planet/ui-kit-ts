@@ -1,6 +1,7 @@
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
+	type OnChangeFn,
 	type RowSelectionState,
 	type SortingState,
 	type VisibilityState,
@@ -10,7 +11,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table"
-import React, { type CSSProperties, useState, useCallback } from "react"
+import { type CSSProperties, useState, useCallback } from "react"
 import {
 	Table,
 	TableBody,
@@ -105,45 +106,57 @@ export function DataTable<TData, TValue>({
 		setSorting(_sorting ?? [])
 	}
 
-	const onRowSelectionChangeCB = useCallback(
+	const onRowSelectionChangeCB: OnChangeFn<RowSelectionState> = useCallback(
 		(selectionUpdateFn) => {
 			setRowSelection((prev) => {
-				const selection = selectionUpdateFn(prev)
-				onRowSelectionChange?.(selection)
-				return selection
+				if (typeof selectionUpdateFn === "function") {
+					const selection = selectionUpdateFn(prev)
+					onRowSelectionChange?.(selection)
+					return selection
+				}
+				return selectionUpdateFn
 			})
 		},
 		[onRowSelectionChange],
 	)
 
-	const onColumnVisibilityChangeCB = useCallback(
+	const onColumnVisibilityChangeCB: OnChangeFn<VisibilityState> = useCallback(
 		(visibilityUpdateFn) => {
 			setColumnVisibility((prev) => {
-				const newVisibility = visibilityUpdateFn(prev)
-				onColumnVisibilityChange?.(newVisibility)
-				return newVisibility
+				if (typeof visibilityUpdateFn === "function") {
+					const newVisibility = visibilityUpdateFn(prev)
+					onColumnVisibilityChange?.(newVisibility)
+					return newVisibility
+				}
+				return visibilityUpdateFn
 			})
 		},
 		[onColumnVisibilityChange],
 	)
 
-	const onSortingChangeCB = useCallback(
+	const onSortingChangeCB: OnChangeFn<SortingState> = useCallback(
 		(sortingUpdateFn) => {
 			setSorting((prev) => {
-				const newSorting = sortingUpdateFn(prev)
-				onSortingChange?.(newSorting)
-				return newSorting
+				if (typeof sortingUpdateFn === "function") {
+					const newSorting = sortingUpdateFn(prev)
+					onSortingChange?.(newSorting)
+					return newSorting
+				}
+				return sortingUpdateFn
 			})
 		},
 		[onSortingChange],
 	)
 
-	const onColumnFiltersChangeCB = useCallback(
+	const onColumnFiltersChangeCB: OnChangeFn<ColumnFiltersState> = useCallback(
 		(filtersUpdateFn) => {
 			setColumnFilters((prev) => {
-				const filters = filtersUpdateFn(prev)
-				onColumnFiltersChange?.(filters)
-				return filters
+				if (typeof filtersUpdateFn === "function") {
+					const filters = filtersUpdateFn(prev)
+					onColumnFiltersChange?.(filters)
+					return filters
+				}
+				return filtersUpdateFn
 			})
 		},
 		[onColumnFiltersChange],
