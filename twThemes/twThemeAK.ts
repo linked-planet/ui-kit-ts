@@ -28,7 +28,6 @@ import {
 	P400,
 	N90A,
 	N70A,
-	N500A,
 	B200,
 	B100,
 	N400,
@@ -92,15 +91,15 @@ export const theme = {
 	},
 	colors: {
 		text: {
-			DEFAULT: `var(--ds-text, var(--aui-body-text, ${N900}))`,
-			inverse: `var(--ds-text-inverse, var(--aui-button-default-selected-text-color, ${N10}))`,
-			subtle: `var(--ds-text-subtle, var(--aui-lesser-body-text, ${N500}))`,
+			DEFAULT: `var(--ds-text, ${N900})`,
+			inverse: `var(--ds-text-inverse, ${N10})`,
+			subtle: `var(--ds-text-subtle, ${N500})`,
 			subtlest: `var(--ds-text-subtlest, ${N200})`,
-			disabled: `var(--ds-text-disabled, var(--aui-button-default-disabled-text-color, ${N70}))`, // same as disabled.text
+			disabled: `var(--ds-text-disabled, ${N70})`, // same as disabled.text
 		},
 
 		surface: {
-			DEFAULT: `var(--ds-surface, var(--aui-page-background, ${N0}))`,
+			DEFAULT: `var(--ds-surface, ${N0})`,
 			hovered: `var(--ds-surface-hovered, ${N10})`,
 			pressed: `var(--ds-surface-pressed, ${N20})`,
 			overlay: {
@@ -129,26 +128,26 @@ export const theme = {
 		transparent: colors.transparent,
 
 		blanket: {
-			DEFAULT: `var(--ds-blanket, var(--aui-blanket, ${N100A}))`,
+			DEFAULT: `var(--ds-blanket,${N100A})`,
 			subtle: `var(--ds-blanket-subtle, ${N50A})`,
 		},
 
 		link: {
-			DEFAULT: `var(--ds-link, var(--aui-link-color, ${B400}))`,
-			hovered: `var(--ds-link-hovered, var(--aui-link-hover-color, ${B500}))`,
-			pressed: `var(--ds-link-pressed, var(--aui-link-active-color, ${B300}))`,
-			visited: `var(--ds-link-visited, var(--aui-link-visited-color, ${P400}))`,
+			DEFAULT: `var(--ds-link, ${B400})`,
+			hovered: `var(--ds-link-hovered, ${B500})`,
+			pressed: `var(--ds-link-pressed,  ${B300})`,
+			visited: `var(--ds-link-visited,  ${P400})`,
 		},
 
 		disabled: {
-			DEFAULT: `var(--ds-background-disabled, var(--aui-button-default-disabled-bg-color, ${N10}))`,
-			text: `var(--ds-text-disabled, var(--aui-button-default-disabled-text-color, ${N70}))`,
+			DEFAULT: `var(--ds-background-disabled, ${N10})`,
+			text: `var(--ds-text-disabled, ${N70})`,
 		},
 
 		neutral: {
-			DEFAULT: `var(--ds-background-neutral, var(--aui-button-default-bg-color, ${N30A}))`,
-			hovered: `var(--ds-background-neutral-hovered, var(--aui-button-default-hover-bg-color, ${N40A}))`,
-			pressed: `var(--ds-background-neutral-pressed, var(--aui-button-default-active-bg-color, ${N50A}))`,
+			DEFAULT: `var(--ds-background-neutral,  ${N30A})`,
+			hovered: `var(--ds-background-neutral-hovered, ${N40A})`,
+			pressed: `var(--ds-background-neutral-pressed, ${N50A})`,
 			full: {
 				DEFAULT: `var(--ds-background-neutral-bold, ${N200})`,
 				hovered: `var(--ds-background-neutral-bold-hovered, ${N300})`,
@@ -167,16 +166,16 @@ export const theme = {
 		},
 
 		selected: {
-			DEFAULT: `var(--ds-background-selected, var(--aui-button-default-selected-bg-color, ${N700}))`,
+			DEFAULT: `var(--ds-background-selected, ${N700})`,
 			hovered: `var(--ds-background-selected-hovered, ${N600})`,
 			pressed: `var(--ds-background-selected-pressed, ${N500})`,
 			bold: {
-				DEFAULT: `var(--ds-background-selected-bold, var(--aui-button-default-selected-bg-color, ${B200}))`,
-				hovered: `var(--ds-background-selected-bold-hovered, var(--aui-button-selected-hover-bg-color, ${B300}))`,
-				pressed: `var(--ds-background-selected-bold-pressed, var(--aui-button-selected-active-bg-color, ${B400}))`,
+				DEFAULT: `var(--ds-background-selected-bold, ${B200})`,
+				hovered: `var(--ds-background-selected-bold-hovered, ${B300})`,
+				pressed: `var(--ds-background-selected-bold-pressed, ${B400})`,
 			},
 			text: {
-				DEFAULT: `var(--ds-text-selected, var(--aui-button-default-selected-text-color, ${B400}))`,
+				DEFAULT: `var(--ds-text-selected, ${B400})`,
 				inverse: `var(--ds-text-selected, ${N0})`,
 			},
 			border: `var(--ds-border-selected, ${B200})`,
@@ -189,73 +188,73 @@ export const theme = {
 			},
 		},
 		brand: {
-			DEFAULT: `var(--ds-background-brand, var(--aui-button-primary-bg-color, ${B50}))`,
-			hovered: `var(--ds-background-brand-hovered, var(--aui-button-primary-hover-bg-color, ${B75}))`,
-			pressed: `var(--ds-background-brand-pressed, var(--aui-button-primary-active-bg-color, ${B100}))`,
+			DEFAULT: `var(--ds-background-brand, ${B50})`,
+			hovered: `var(--ds-background-brand-hovered, ${B75})`,
+			pressed: `var(--ds-background-brand-pressed, ${B100})`,
 			bold: {
-				DEFAULT: `var(--ds-background-brand-bold, var(--aui-button-primary-bg-color, ${B300}))`,
-				hovered: `var(--ds-background-brand-bold-hovered, var(--aui-button-primary-hover-bg-color, ${B400}))`,
-				pressed: `var(--ds-background-brand-bold-pressed, var(--aui-button-primary-active-bg-color, ${B500}))`,
+				DEFAULT: `var(--ds-background-brand-bold, ${B300})`,
+				hovered: `var(--ds-background-brand-bold-hovered, ${B400})`,
+				pressed: `var(--ds-background-brand-bold-pressed, ${B500})`,
 			},
-			text: `var(--ds-text-brand, var(--aui-button-primary-text-color, ${B500}))`,
-			border: `var(--ds-border-brand, var(--aui-button-default-active-text-color, ${B500}))`,
-			icon: `var(--ds-icon-brand, var(--aui-button-default-active-text-color, ${B500}))`,
+			text: `var(--ds-text-brand, ${B500})`,
+			border: `var(--ds-border-brand, ${B500})`,
+			icon: `var(--ds-icon-brand, ${B500})`,
 		},
 
 		warning: {
-			DEFAULT: `var(--ds-background-warning, var(--aui-message-warning-bg-color, ${Y50}))`,
+			DEFAULT: `var(--ds-background-warning, ${Y50})`,
 			hovered: `var(--ds-background-warning-hovered, ${Y75})`,
 			pressed: `var(--ds-background-warning-pressed, ${Y100})`,
 			bold: {
-				DEFAULT: `var(--ds-background-warning-bold, var(--aui-flag-warning-color, ${colors.yellow[500]}))`,
+				DEFAULT: `var(--ds-background-warning-bold, ${colors.yellow[500]})`,
 				hovered: `var(--ds-background-warning-bold-hovered, ${colors.yellow[600]}})`,
 				pressed: `var(--ds-background-warning-bold-pressed, ${colors.yellow[700]}})`,
 			},
-			text: `var(--ds-text-warning, var(--aui-message-warning-text-color, ${colors.amber[700]}))`,
-			border: `var(--ds-border-warning, var(--aui-message-warning-icon-color, ${Y500}))`,
-			icon: `var(--ds-icon-warning, var(--aui-message-warning-icon-color, ${colors.amber[600]}))`,
+			text: `var(--ds-text-warning, ${colors.amber[700]})`,
+			border: `var(--ds-border-warning, ${Y500})`,
+			icon: `var(--ds-icon-warning,  ${colors.amber[600]})`,
 		},
 
 		danger: {
-			DEFAULT: `var(--ds-background-danger, var(--aui-message-error-bg-color, ${colors.red[50]}))`,
+			DEFAULT: `var(--ds-background-danger, ${colors.red[50]})`,
 			hovered: `var(--ds-background-danger-hovered, ${colors.red[75]})`,
 			pressed: `var(--ds-background-danger-pressed, ${colors.red[100]})`,
 			bold: {
-				DEFAULT: `var(--ds-background-danger-bold, var(--aui-flag-error-color, ${colors.red[500]}))`,
+				DEFAULT: `var(--ds-background-danger-bold, ${colors.red[500]})`,
 				hovered: `var(--ds-background-danger-bold-hovered, ${colors.red[300]})`,
 				pressed: `var(--ds-background-danger-bold-pressed, ${colors.red[500]})`,
 			},
-			text: `var(--ds-text-danger, var(--aui-message-error-text-color, ${colors.red[800]}))`,
-			border: `var(--ds-border-danger, var(--aui-message-error-icon-color, ${colors.red[600]}))`,
-			icon: `var(--ds-icon-danger, var(--aui-message-error-icon-color, ${colors.red[800]}))`,
+			text: `var(--ds-text-danger, ${colors.red[800]})`,
+			border: `var(--ds-border-danger, ${colors.red[600]})`,
+			icon: `var(--ds-icon-danger, ${colors.red[800]})`,
 		},
 
 		success: {
-			DEFAULT: `var(--ds-background-success, var(--aui-message-success-bg-color, ${G50}))`,
+			DEFAULT: `var(--ds-background-success, ${G50})`,
 			hovered: `var(--ds-background-success-hovered, ${G75})`,
 			pressed: `var(--ds-background-success-pressed, ${G100})`,
 			bold: {
-				DEFAULT: `var(--ds-background-success-bold, var(--aui-flag-success-color, ${G300}))`,
+				DEFAULT: `var(--ds-background-success-bold, ${G300})`,
 				hovered: `var(--ds-background-success-bold-hovered, ${G400})`,
 				pressed: `var(--ds-background-success-bold-pressed, ${G500})`,
 			},
-			text: `var(--ds-text-success, var(--aui-message-success-text-color, ${G500}))`,
-			border: `var(--ds-border-success, var(--aui-message-success-icon-color, ${G500}))`,
-			icon: `var(--ds-icon-success, var(--aui-message-success-icon-color, ${G500}))`,
+			text: `var(--ds-text-success, ${G500})`,
+			border: `var(--ds-border-success, ${G500})`,
+			icon: `var(--ds-icon-success, ${G500})`,
 		},
 
 		information: {
-			DEFAULT: `var(--ds-background-information, var(--aui-message-info-bg-color, ${B50}))`,
+			DEFAULT: `var(--ds-background-information, ${B50})`,
 			hovered: `var(--ds-background-information-hovered, ${B75})`,
 			pressed: `var(--ds-background-information-pressed, ${B100})`,
 			bold: {
-				DEFAULT: `var(--ds-background-information-bold, var(--aui-flag-info-color, ${B100}))`,
+				DEFAULT: `var(--ds-background-information-bold, ${B100})`,
 				hovered: `var(--ds-background-information-bold-hovered, ${B300})`,
 				pressed: `var(--ds-background-information-bold-pressed, ${B500})`,
 			},
-			text: `var(--ds-text-information, var(--aui-message-info-text-color, ${B500}))`,
-			border: `var(--ds-border-information, var(--aui-message-info-icon-color, ${B500}))`,
-			icon: `var(--ds-icon-information, var(--aui-message-info-icon-color, ${B500}))`,
+			text: `var(--ds-text-information,  ${B500})`,
+			border: `var(--ds-border-information, ${B500})`,
+			icon: `var(--ds-icon-information, ${B500})`,
 		},
 
 		discovery: {
@@ -273,9 +272,9 @@ export const theme = {
 		},
 
 		border: {
-			DEFAULT: `var(--ds-border, var(--aui-border, ${N40A}))`,
-			bold: `var(--ds-border-bold, var(--aui-border-strong, ${N500A}))`,
-			separator: `var(--ds-menu-separator-color, var(--ds-border, var(--aui-border, ${N30})))`,
+			DEFAULT: `var(--ds-border, ${N40A})`,
+			bold: `var(--ds-border-bold,${N200})`,
+			separator: `var(--ds-menu-separator-color, var(--ds-border, ${N30}))`,
 		},
 		icon: {
 			DEFAULT: `var(--ds-icon, ${N200})`,

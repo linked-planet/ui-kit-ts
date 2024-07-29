@@ -1,7 +1,9 @@
 import { setGlobalTheme, type ThemeColorModes } from "@atlaskit/tokens"
 import React from "react"
-import ReactDOM from "react-dom"
+import ReactDOM from "react-dom/client"
 import ShowcaseApp from "./ShowcaseApp"
+
+import "./tailwind.css"
 
 // get the saved theme entry from the local storage (in case there is one)
 import { applyTheme, LocalStorageThemeVar } from "@linked-planet/ui-kit-ts"
@@ -18,9 +20,13 @@ setGlobalTheme({
 	}
 })
 
-ReactDOM.render(
+const container = document.getElementById("root")
+if (!container) {
+	throw new Error("Could not find root element")
+}
+
+ReactDOM.createRoot(container).render(
 	<React.StrictMode>
 		<ShowcaseApp />
 	</React.StrictMode>,
-	document.getElementById("root"),
 )

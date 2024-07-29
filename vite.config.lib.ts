@@ -65,7 +65,7 @@ export default defineConfig({
 					"react-dom": "ReactDOM",
 				},
 				assetFileNames: (chunkInfo) => {
-					if (chunkInfo.name === "styles.css" && twUseImportant) {
+					if (chunkInfo.name === "tailwind.css" && twUseImportant) {
 						return "[name]-important[extname]"
 					}
 					return "[name][extname]"
