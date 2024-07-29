@@ -1,11 +1,8 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Breadcrumbs, Checkbox, Input, Label } from "@linked-planet/ui-kit-ts"
-import AKBreadcrumbs, {
-	BreadcrumbsItem as AKBreadcrumbsItem,
-} from "@atlaskit/breadcrumbs"
 
 import AddCircleIcon from "@atlaskit/icon/glyph/add-circle"
 
@@ -57,24 +54,6 @@ function MaxItemsExample() {
 				</div>
 			</div>
 			<div className="flex flex-col gap-4">
-				<AKBreadcrumbs
-					maxItems={maxItems}
-					itemsAfterCollapse={itemsAfterCollapse}
-					itemsBeforeCollapse={itemsBeforeCollapse}
-				>
-					<AKBreadcrumbsItem
-						href="#"
-						iconBefore={<AddCircleIcon label="" />}
-						iconAfter={<AddCircleIcon label="" />}
-						text="Home"
-					/>
-					<AKBreadcrumbsItem href="#" text="Library" />
-					<AKBreadcrumbsItem href="#" text="Components" />
-					<AKBreadcrumbsItem href="#" text="Readme" />
-					<AKBreadcrumbsItem href="#" text="Showcase" />
-					<AKBreadcrumbsItem href="#" text="Homepage" />
-				</AKBreadcrumbs>
-				<hr />
 				<Breadcrumbs
 					maxItems={maxItems}
 					itemsAfterCollapse={itemsAfterCollapse}
@@ -113,20 +92,6 @@ function ConstrainedExample() {
 				/>
 			</div>
 			<div className="flex flex-col gap-4">
-				<AKBreadcrumbs isExpanded={expanded} isNavigation>
-					<AKBreadcrumbsItem
-						href="#"
-						iconBefore={<AddCircleIcon label="" />}
-						iconAfter={<AddCircleIcon label="" />}
-						text="Home"
-					/>
-					<AKBreadcrumbsItem href="#" text="Library" />
-					<AKBreadcrumbsItem href="#" text="Components" />
-					<AKBreadcrumbsItem href="#" text="Readme" />
-					<AKBreadcrumbsItem href="#" text="Showcase" />
-					<AKBreadcrumbsItem href="#" text="Homepage" />
-				</AKBreadcrumbs>
-				<hr />
 				<Breadcrumbs
 					expanded={expanded}
 					onExpandedChange={(expandedChanged) =>
@@ -156,19 +121,6 @@ function BannerShowcase(props: ShowcaseProps) {
 	//#region bread-crumbs-example
 	const example = (
 		<div className="flex flex-col gap-4">
-			<AKBreadcrumbs>
-				<AKBreadcrumbsItem
-					href="#"
-					iconBefore={<AddCircleIcon label="" />}
-					iconAfter={<AddCircleIcon label="" />}
-					text="Home"
-				/>
-				<AKBreadcrumbsItem href="#" text="Library" />
-				<AKBreadcrumbsItem href="#" text="Components" />
-				<AKBreadcrumbsItem href="#" text="Readme" />
-				<AKBreadcrumbsItem href="#" text="Showcase" />
-			</AKBreadcrumbs>
-			<hr />
 			<Breadcrumbs>
 				<Breadcrumbs.Item
 					href="#"
