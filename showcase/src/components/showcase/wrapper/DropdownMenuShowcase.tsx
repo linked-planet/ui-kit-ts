@@ -1,12 +1,12 @@
-import AKDropdownMenu, {
+/*import AKDropdownMenu, {
 	DropdownItemCheckbox as AKDropdownItemCheckbox,
 	DropdownItemGroup as AKDropdownItemGroup,
 	DropdownItem as AKDropdownItem,
 	DropdownItemRadioGroup as AKDropdownItemRadioGroup,
 	DropdownItemRadio as AKDropdownItemRadio,
 	DropdownItemCheckboxGroup as AKDropdownItemCheckboxGroup,
-} from "@atlaskit/dropdown-menu"
-import React, { useState } from "react"
+} from "@atlaskit/dropdown-menu"*/
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -31,7 +31,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<>
-			<AKDropdownMenu trigger={"Trigger"}>
+			{/*<AKDropdownMenu trigger={"Trigger"}>
 				<AKDropdownItemCheckbox
 					id="item-1"
 					description={"test description"}
@@ -113,7 +113,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 				{Array.from(Array(100).keys()).map((i) => (
 					<AKDropdownItem key={i}>long test item {i}</AKDropdownItem>
 				))}
-			</AKDropdownMenu>
+			</AKDropdownMenu>*/}
 		</>
 	)
 
@@ -234,7 +234,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const example = (
 		<div className="flex gap-4">
-			{akExample}
+			{/*akExample*/}
 			{lpExample}
 			{lpExample2}
 		</div>
