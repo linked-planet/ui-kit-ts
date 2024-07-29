@@ -1,4 +1,4 @@
-import { default as AKSelect } from "@atlaskit/select"
+//import { default as AKSelect } from "@atlaskit/select"
 import {
 	Button,
 	ButtonGroup,
@@ -6,7 +6,7 @@ import {
 	Select,
 	type OptionGroupType,
 } from "@linked-planet/ui-kit-ts"
-import React, { useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
@@ -161,13 +161,13 @@ function SelectShowcase(props: ShowcaseProps) {
 	//#region select
 	const example1 = (
 		<div className="flex flex-col gap-4">
-			<AKSelect
+			{/*<AKSelect
 				inputId="select-1"
 				options={[
 					{ label: "First option", value: "first" },
 					{ label: "Second option", value: { test: "bla" } },
 				]}
-			/>
+			/>*/}
 			<Select
 				isCreateable
 				isClearable
@@ -233,7 +233,7 @@ function SelectShowcase(props: ShowcaseProps) {
 	//#region select2
 	const example2 = (
 		<div className="flex flex-col gap-4">
-			<AKSelect
+			{/*<AKSelect
 				inputId="select-s"
 				options={[
 					{
@@ -251,7 +251,7 @@ function SelectShowcase(props: ShowcaseProps) {
 						],
 					},
 				]}
-			/>
+			/>*/}
 			{/*<RadixSelect
 				placeholder="Select a value"
 				options={{
