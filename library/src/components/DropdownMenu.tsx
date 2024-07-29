@@ -401,7 +401,7 @@ export type DropdownMenuProps = {
 	disabled?: boolean
 	onOpenChange?: (open: boolean) => void
 	trigger?: React.ReactNode
-	triggerComponent?: React.ReactNode
+	triggerComponent?: React.ReactElement<DropdownTriggerProps>
 	children: React.ReactNode
 	usePortal?: boolean
 	testId?: string
@@ -411,6 +411,8 @@ export type DropdownMenuProps = {
 	contentStyle?: React.CSSProperties
 	/* when the triggerAsChild is set to true (default) it gets getClick injected to handle the opening or closing of the dropdown */
 	triggerAsChild?: boolean
+	triggerClassName?: string
+	triggerStyle?: React.CSSProperties
 } & ButtonProps &
 	Pick<
 		RDd.DropdownMenuContentProps,
@@ -427,14 +429,14 @@ export type DropdownMenuProps = {
 		| "sideOffset"
 	>
 
-type TriggerProps = RDd.DropdownMenuTriggerProps &
+type DropdownTriggerProps = RDd.DropdownMenuTriggerProps &
 	ButtonProps & {
 		"data-state"?: "open" | "closed" // coming from RDd, do not use, only for typechecking
 		hideChevron?: boolean
 	}
 
-const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
-	(props: TriggerProps, ref) => {
+const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
+	(props: DropdownTriggerProps, ref) => {
 		const {
 			children,
 			style,
@@ -488,6 +490,8 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 			disabled = false,
 			trigger = "trigger",
 			triggerComponent,
+			triggerClassName,
+			triggerStyle,
 			children,
 			usePortal = true,
 			onPointerEnter,
@@ -550,6 +554,8 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 				disabled={disabled}
 				aria-disabled={disabled}
 				hideChevron={hideChevron}
+				className={triggerClassName}
+				style={triggerStyle}
 				{...props}
 				ref={ref}
 			>
