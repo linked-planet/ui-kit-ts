@@ -1,15 +1,23 @@
 import * as RTabs from "@radix-ui/react-tabs"
-import React, { type ForwardedRef, forwardRef, RefObject } from "react"
+import React, { type ForwardedRef, forwardRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 
-type TabProps = {
+type TabProps = Pick<
+	RTabs.TabsTriggerProps,
+	| "disabled"
+	| "children"
+	| "className"
+	| "style"
+	| "onClick"
+	| "title"
+	| "onKeyUp"
+	| "aria-selected"
+	| "aria-checked"
+> & {
 	label?: string | number
-	disabled?: boolean
-	children?: React.ReactNode
-	className?: string
-	style?: React.CSSProperties
 	tooltip?: string
 	testId?: string
+	side?: TabsSide
 }
 
 const topTabsClassName = "after:inset-x-0 after:bottom-0 after:h-[1.5px] pb-1"
@@ -32,7 +40,8 @@ const Tab = forwardRef(
 			style,
 			testId,
 			side = "top",
-		}: TabProps & { side?: TabsSide }, // oientation gets injected by the Tabs component
+			...props
+		}: TabProps, // orientation gets injected by the Tabs component
 		ref: ForwardedRef<HTMLButtonElement>,
 	) => {
 		if (!label && !children) {
@@ -77,6 +86,7 @@ const Tab = forwardRef(
 				aria-label={label.toString()}
 				data-testid={testId}
 				ref={ref}
+				{...props}
 			>
 				{children ?? label}
 			</RTabs.Trigger>
