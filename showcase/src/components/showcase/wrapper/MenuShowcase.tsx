@@ -1,10 +1,7 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { HeadingItem, MenuGroup } from "@atlaskit/menu"
-import { Tag } from "@linked-planet/ui-kit-ts"
-import { Badge } from "@linked-planet/ui-kit-ts"
 
 function MenuShowcase(props: ShowcaseProps) {
 	//#region menu
@@ -12,7 +9,7 @@ function MenuShowcase(props: ShowcaseProps) {
 	const [selectedItems, setSelectedItems] = useState(["Menu A"])
 	const example = (
 		<div>
-			<MenuGroup>
+			{/*<MenuGroup>
 				<HeadingItem>
 					<h4>Filter</h4>
 				</HeadingItem>
@@ -46,7 +43,7 @@ function MenuShowcase(props: ShowcaseProps) {
 						</a>
 					)
 				})}
-			</MenuGroup>
+			</MenuGroup>*/}
 		</div>
 	)
 	//#endregion menu

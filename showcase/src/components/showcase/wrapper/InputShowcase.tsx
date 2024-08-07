@@ -1,9 +1,7 @@
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKTextField from "@atlaskit/textfield"
-import AKTextArea from "@atlaskit/textarea"
 import {
 	Button,
 	ButtonGroup,
@@ -81,7 +79,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<AKTextField isReadOnly value={"readonly"} />
 			<AKTextField type="number" defaultValue={1} />
 			<AKTextField type="number" defaultValue={1} appearance="subtle" />
-			<AKTextArea placeholder="Text Area" />
+			{/*<AKTextArea placeholder="Text Area">It wants children</AKTextArea>*/}
 		</Fieldset>
 	)
 

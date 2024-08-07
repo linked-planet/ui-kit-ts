@@ -1,10 +1,9 @@
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import SearchIcon from "@atlaskit/icon/glyph/search"
 import WatchIcon from "@atlaskit/icon/glyph/watch"
-import { Tooltip, TooltipProvider } from "@linked-planet/ui-kit-ts"
+import { Tooltip, TooltipProvider, Button } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
 
@@ -23,7 +22,9 @@ function TooltipShowcase(props: ShowcaseProps) {
 						<SearchIcon label="" />
 					</Tooltip>
 					<Tooltip
-						tooltipHTMLContent={`<span>I&apos;m a <b>top</b> tooltip with stringified HTML</span>`}
+						tooltipHTMLContent={
+							"<span>I&apos;m a <b>top</b> tooltip with stringified HTML</span>"
+						}
 						usePortal={false}
 						side="bottom"
 						align="end"
@@ -65,6 +66,20 @@ function TooltipShowcase(props: ShowcaseProps) {
 						Ältere Pilzkörper bilden im Becherstadium eine Vertiefung in ihrem Hut, in dem sich Regenwasser sammeln kann, der sogenannte Zwergenwein.[5]`}
 					>
 						<WatchIcon label="" />
+					</Tooltip>
+					<Tooltip
+						tooltipContent={
+							<div>
+								Button:
+								<Button>Button</Button>
+							</div>
+						}
+						side="right"
+						align="end"
+					>
+						<div className="bg-brand-bold p-2 rounded text-text-inverse">
+							Button with tooltip
+						</div>
 					</Tooltip>
 				</div>
 			</div>

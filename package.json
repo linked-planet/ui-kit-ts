@@ -11,7 +11,9 @@
 	"description": "",
 	"module": "dist/index.js",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"types": "./dist/index.d.ts",
 	"style": [
 		"dist/styles.css",
@@ -54,10 +56,17 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": ["en", "de"],
+	"supportedLocales": [
+		"en",
+		"de"
+	],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [">0.2%", "not dead", "not op_mini all"],
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -65,8 +74,8 @@
 		]
 	},
 	"dependencies": {
-		"@atlaskit/icon": "^22.7.0",
-		"@atlaskit/tokens": "^1.56.2",
+		"@atlaskit/icon": "^22.10.0",
+		"@atlaskit/tokens": "^1.57.0",
 		"@emotion/css": "^11.13.0",
 		"@radix-ui/react-accordion": "^1.2.0",
 		"@radix-ui/react-avatar": "^1.1.0",
@@ -80,7 +89,7 @@
 		"@radix-ui/react-tabs": "^1.1.0",
 		"@radix-ui/react-tooltip": "^1.1.2",
 		"@radix-ui/react-visually-hidden": "^1.1.0",
-		"@tanstack/react-table": "^8.19.3",
+		"@tanstack/react-table": "^8.20.1",
 		"dayjs": "^1.11.12",
 		"intl-messageformat": "^10.5.0",
 		"mime-types": "^2.1.35",
@@ -90,7 +99,7 @@
 		"react-dom": "~18.2.0",
 		"react-intl": "^6.6.8",
 		"react-joyride": "^2.8.2",
-		"react-router-dom": "^6.25.1",
+		"react-router-dom": "^6.26.0",
 		"react-select": "^5.8.0",
 		"react-toastify": "^10.0.5",
 		"react-transition-group": "^4.4.5",
@@ -98,23 +107,23 @@
 		"valtio": "^1.13.2"
 	},
 	"devDependencies": {
-		"@atlaskit/atlassian-navigation": "^4.3.2",
+		"@atlaskit/atlassian-navigation": "^4.4.0",
 		"@atlaskit/button": "^18.4.1",
-		"@atlaskit/calendar": "^14.4.0",
-		"@atlaskit/checkbox": "^13.5.2",
+		"@atlaskit/calendar": "^14.4.1",
+		"@atlaskit/checkbox": "^13.6.1",
 		"@atlaskit/code": "^15.4.2",
 		"@atlaskit/css-reset": "^6.9.2",
-		"@atlaskit/empty-state": "^7.9.2",
+		"@atlaskit/empty-state": "^7.10.0",
 		"@atlaskit/eslint-plugin-design-system": "^9.7.0",
 		"@atlaskit/lozenge": "^11.9.0",
-		"@atlaskit/pagination": "^14.7.9",
+		"@atlaskit/pagination": "^14.7.10",
 		"@atlaskit/section-message": "^6.5.10",
 		"@atlaskit/side-navigation": "^3.3.5",
-		"@atlaskit/table-tree": "^9.11.0",
-		"@atlaskit/tag": "^12.4.2",
+		"@atlaskit/table-tree": "^9.11.1",
+		"@atlaskit/tag": "^12.4.3",
 		"@atlaskit/tag-group": "^10.4.0",
-		"@atlaskit/textarea": "^5.5.1",
-		"@atlaskit/textfield": "^6.4.2",
+		"@atlaskit/textarea": "^5.5.2",
+		"@atlaskit/textfield": "^6.4.3",
 		"@atlaskit/theme": "^12.11.2",
 		"@biomejs/biome": "^1.8.3",
 		"@formatjs/cli": "^6.2.12",
@@ -122,10 +131,10 @@
 		"@total-typescript/ts-reset": "^0.5.1",
 		"@types/react": "18.2",
 		"@types/react-dom": "18.2",
-		"@typescript-eslint/eslint-plugin": "^7.17.0",
-		"@typescript-eslint/parser": "^7.17.0",
+		"@typescript-eslint/eslint-plugin": "^7.18.0",
+		"@typescript-eslint/parser": "^7.18.0",
 		"@vitejs/plugin-react-swc": "^3.7.0",
-		"autoprefixer": "^10.4.19",
+		"autoprefixer": "^10.4.20",
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-formatjs": "^4.13.3",
@@ -133,13 +142,13 @@
 		"eslint-plugin-react-hooks": "^4.6.2",
 		"eslint-plugin-react-refresh": "^0.4.9",
 		"eslint-plugin-tailwindcss": "^3.17.4",
-		"postcss": "^8.4.40",
+		"postcss": "^8.4.41",
 		"prettier": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.5",
 		"process": "^0.11.10",
 		"rollup-plugin-polyfill-node": "^0.13.0",
 		"rollup-plugin-pure": "^0.2.1",
-		"stylelint": "^16.7.0",
+		"stylelint": "^16.8.1",
 		"stylelint-config-standard": "^36.0.1",
 		"stylelint-config-tailwindcss": "^0.0.7",
 		"stylelint-order": "^6.0.4",
@@ -150,12 +159,12 @@
 		"vite": "^5.3.5",
 		"vite-plugin-checker": "^0.6.4",
 		"vite-plugin-dts": "^3.9.1",
-		"vitest": "^2.0.4"
+		"vitest": "^2.0.5"
 	},
 	"peerDependencies": {
 		"react": "~18.2.0",
 		"react-dom": "~18.2.0",
-		"react-hook-form": "^7.52.1",
+		"react-hook-form": "^7.52.2",
 		"tailwindcss": "^3.4.7"
 	}
 }

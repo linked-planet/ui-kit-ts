@@ -1085,14 +1085,11 @@ export default function BookCardShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Breadcrumbs, Checkbox, Input, Label } from "@linked-planet/ui-kit-ts"
-import AKBreadcrumbs, {
-	BreadcrumbsItem as AKBreadcrumbsItem,
-} from "@atlaskit/breadcrumbs"
 
 import AddCircleIcon from "@atlaskit/icon/glyph/add-circle"
 
@@ -1144,24 +1141,6 @@ function MaxItemsExample() {
 				</div>
 			</div>
 			<div className="flex flex-col gap-4">
-				<AKBreadcrumbs
-					maxItems={maxItems}
-					itemsAfterCollapse={itemsAfterCollapse}
-					itemsBeforeCollapse={itemsBeforeCollapse}
-				>
-					<AKBreadcrumbsItem
-						href="#"
-						iconBefore={<AddCircleIcon label="" />}
-						iconAfter={<AddCircleIcon label="" />}
-						text="Home"
-					/>
-					<AKBreadcrumbsItem href="#" text="Library" />
-					<AKBreadcrumbsItem href="#" text="Components" />
-					<AKBreadcrumbsItem href="#" text="Readme" />
-					<AKBreadcrumbsItem href="#" text="Showcase" />
-					<AKBreadcrumbsItem href="#" text="Homepage" />
-				</AKBreadcrumbs>
-				<hr />
 				<Breadcrumbs
 					maxItems={maxItems}
 					itemsAfterCollapse={itemsAfterCollapse}
@@ -1200,20 +1179,6 @@ function ConstrainedExample() {
 				/>
 			</div>
 			<div className="flex flex-col gap-4">
-				<AKBreadcrumbs isExpanded={expanded} isNavigation>
-					<AKBreadcrumbsItem
-						href="#"
-						iconBefore={<AddCircleIcon label="" />}
-						iconAfter={<AddCircleIcon label="" />}
-						text="Home"
-					/>
-					<AKBreadcrumbsItem href="#" text="Library" />
-					<AKBreadcrumbsItem href="#" text="Components" />
-					<AKBreadcrumbsItem href="#" text="Readme" />
-					<AKBreadcrumbsItem href="#" text="Showcase" />
-					<AKBreadcrumbsItem href="#" text="Homepage" />
-				</AKBreadcrumbs>
-				<hr />
 				<Breadcrumbs
 					expanded={expanded}
 					onExpandedChange={(expandedChanged) =>
@@ -1243,19 +1208,6 @@ function BannerShowcase(props: ShowcaseProps) {
 	//#region bread-crumbs-example
 	const example = (
 		<div className="flex flex-col gap-4">
-			<AKBreadcrumbs>
-				<AKBreadcrumbsItem
-					href="#"
-					iconBefore={<AddCircleIcon label="" />}
-					iconAfter={<AddCircleIcon label="" />}
-					text="Home"
-				/>
-				<AKBreadcrumbsItem href="#" text="Library" />
-				<AKBreadcrumbsItem href="#" text="Components" />
-				<AKBreadcrumbsItem href="#" text="Readme" />
-				<AKBreadcrumbsItem href="#" text="Showcase" />
-			</AKBreadcrumbs>
-			<hr />
 			<Breadcrumbs>
 				<Breadcrumbs.Item
 					href="#"
@@ -2966,15 +2918,15 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 
 export default DateTimePickerShowcase
 
-import AKDropdownMenu, {
+/*import AKDropdownMenu, {
 	DropdownItemCheckbox as AKDropdownItemCheckbox,
 	DropdownItemGroup as AKDropdownItemGroup,
 	DropdownItem as AKDropdownItem,
 	DropdownItemRadioGroup as AKDropdownItemRadioGroup,
 	DropdownItemRadio as AKDropdownItemRadio,
 	DropdownItemCheckboxGroup as AKDropdownItemCheckboxGroup,
-} from "@atlaskit/dropdown-menu"
-import React, { useState } from "react"
+} from "@atlaskit/dropdown-menu"*/
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -2999,7 +2951,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<>
-			<AKDropdownMenu trigger={"Trigger"}>
+			{/*<AKDropdownMenu trigger={"Trigger"}>
 				<AKDropdownItemCheckbox
 					id="item-1"
 					description={"test description"}
@@ -3081,7 +3033,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 				{Array.from(Array(100).keys()).map((i) => (
 					<AKDropdownItem key={i}>long test item {i}</AKDropdownItem>
 				))}
-			</AKDropdownMenu>
+			</AKDropdownMenu>*/}
 		</>
 	)
 
@@ -3202,7 +3154,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const example = (
 		<div className="flex gap-4">
-			{akExample}
+			{/*akExample*/}
 			{lpExample}
 			{lpExample2}
 		</div>
@@ -4474,13 +4426,10 @@ function LozengeShowcase(props: ShowcaseProps) {
 
 export default LozengeShowcase
 
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { HeadingItem, MenuGroup } from "@atlaskit/menu"
-import { Tag } from "@linked-planet/ui-kit-ts"
-import { Badge } from "@linked-planet/ui-kit-ts"
 
 function MenuShowcase(props: ShowcaseProps) {
 	//#region menu
@@ -4488,7 +4437,7 @@ function MenuShowcase(props: ShowcaseProps) {
 	const [selectedItems, setSelectedItems] = useState(["Menu A"])
 	const example = (
 		<div>
-			<MenuGroup>
+			{/*<MenuGroup>
 				<HeadingItem>
 					<h4>Filter</h4>
 				</HeadingItem>
@@ -4522,7 +4471,7 @@ function MenuShowcase(props: ShowcaseProps) {
 						</a>
 					)
 				})}
-			</MenuGroup>
+			</MenuGroup>*/}
 		</div>
 	)
 	//#endregion menu
@@ -4551,23 +4500,22 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import CrossIcon from "@atlaskit/icon/glyph/cross"
-import {
+/*import {
 	default as AKModal,
 	ModalBody as AKModalBody,
 	ModalFooter as AKModalFooter,
 	ModalHeader as AKModalHeader,
 	ModalTitle as AKModalTitle,
 	ModalTransition as AKModalTransition,
-} from "@atlaskit/modal-dialog"
+} from "@atlaskit/modal-dialog"*/
 import {
 	Modal,
 	Select,
 	Button,
-	ButtonGroup,
 	Dropdown,
 	Collapsible,
 } from "@linked-planet/ui-kit-ts"
-import { default as AKSelect } from "@atlaskit/select"
+//import { default as AKSelect } from "@atlaskit/select"
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
 
 function AKExample() {
@@ -4588,7 +4536,7 @@ function AKExample() {
 				Show AK Modal
 			</Button>
 
-			{isAKModalActive && (
+			{/*isAKModalActive && (
 				<AKModalTransition>
 					<AKModal onClose={() => setIsAKModalActive(false)}>
 						<AKModalHeader>
@@ -4681,7 +4629,7 @@ function AKExample() {
 						</AKModalFooter>
 					</AKModal>
 				</AKModalTransition>
-			)}
+			)*/}
 		</>
 	)
 }
@@ -5320,7 +5268,7 @@ function SectionMessageShowcase(props: ShowcaseProps) {
 
 export default SectionMessageShowcase
 
-import { default as AKSelect } from "@atlaskit/select"
+//import { default as AKSelect } from "@atlaskit/select"
 import {
 	Button,
 	ButtonGroup,
@@ -5328,7 +5276,7 @@ import {
 	Select,
 	type OptionGroupType,
 } from "@linked-planet/ui-kit-ts"
-import React, { useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
@@ -5483,13 +5431,13 @@ function SelectShowcase(props: ShowcaseProps) {
 	//#region select
 	const example1 = (
 		<div className="flex flex-col gap-4">
-			<AKSelect
+			{/*<AKSelect
 				inputId="select-1"
 				options={[
 					{ label: "First option", value: "first" },
 					{ label: "Second option", value: { test: "bla" } },
 				]}
-			/>
+			/>*/}
 			<Select
 				isCreateable
 				isClearable
@@ -5555,7 +5503,7 @@ function SelectShowcase(props: ShowcaseProps) {
 	//#region select2
 	const example2 = (
 		<div className="flex flex-col gap-4">
-			<AKSelect
+			{/*<AKSelect
 				inputId="select-s"
 				options={[
 					{
@@ -5573,7 +5521,7 @@ function SelectShowcase(props: ShowcaseProps) {
 						],
 					},
 				]}
-			/>
+			/>*/}
 			{/*<RadixSelect
 				placeholder="Select a value"
 				options={{
@@ -8079,13 +8027,12 @@ function ToggleShowcase(props: ShowcaseProps) {
 
 export default ToggleShowcase
 
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import SearchIcon from "@atlaskit/icon/glyph/search"
 import WatchIcon from "@atlaskit/icon/glyph/watch"
-import { Tooltip, TooltipProvider } from "@linked-planet/ui-kit-ts"
+import { Tooltip, TooltipProvider, Button } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
 
@@ -8104,7 +8051,9 @@ function TooltipShowcase(props: ShowcaseProps) {
 						<SearchIcon label="" />
 					</Tooltip>
 					<Tooltip
-						tooltipHTMLContent={`<span>I&apos;m a <b>top</b> tooltip with stringified HTML</span>`}
+						tooltipHTMLContent={
+							"<span>I&apos;m a <b>top</b> tooltip with stringified HTML</span>"
+						}
 						usePortal={false}
 						side="bottom"
 						align="end"
@@ -8146,6 +8095,20 @@ function TooltipShowcase(props: ShowcaseProps) {
 						Ältere Pilzkörper bilden im Becherstadium eine Vertiefung in ihrem Hut, in dem sich Regenwasser sammeln kann, der sogenannte Zwergenwein.[5]`}
 					>
 						<WatchIcon label="" />
+					</Tooltip>
+					<Tooltip
+						tooltipContent={
+							<div>
+								Button:
+								<Button>Button</Button>
+							</div>
+						}
+						side="right"
+						align="end"
+					>
+						<div className="bg-brand-bold p-2 rounded text-text-inverse">
+							Button with tooltip
+						</div>
 					</Tooltip>
 				</div>
 			</div>

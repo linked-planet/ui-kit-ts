@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import { useState } from "react"
 import dayjs, { type Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -39,12 +39,14 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 >[] = [
 	{
 		group: {
+			id: "group-empty",
 			title: "Empty Group",
 		},
 		items: [],
 	},
 	{
 		group: {
+			id: "group-1",
 			title: "Group 1",
 			subtitle: "Group 1 description",
 		},
@@ -131,6 +133,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	},
 	{
 		group: {
+			id: "group-2",
 			title: "Group 2",
 			subtitle: "Group 2 description",
 		},
@@ -188,6 +191,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	},
 	{
 		group: {
+			id: "group-3",
 			title: "Group 3",
 			subtitle: "Group 3 description",
 		},
@@ -213,6 +217,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	},
 	{
 		group: {
+			id: "group-4",
 			title: "Group 4",
 			subtitle: "Group 4 description",
 		},
@@ -269,6 +274,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	},
 	{
 		group: {
+			id: "group-5",
 			title: "Group 5",
 			subtitle: "Whole Time Frame",
 		},
@@ -294,6 +300,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	},
 	{
 		group: {
+			id: "group-6",
 			title: "Group 6 (Directly Connected)",
 			subtitle: "Whole Time Frame",
 		},
@@ -324,6 +331,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	},
 	{
 		group: {
+			id: "group-7",
 			title: "Group 7 (Full Day)",
 			subtitle: "Whole Time Frame",
 		},
@@ -401,6 +409,7 @@ function createMoreTestGroups(
 		const groupNumber = startCount + i
 		newGroups.push({
 			group: {
+				id: `group-${groupNumber}`,
 				title: `Group ${groupNumber}`,
 				subtitle: "random",
 			},
@@ -537,7 +546,8 @@ function Example() {
 		[clearSelectedTimeRangeCB],
 	)
 
-	const [viewType, setViewType] = useState<TimeTableTypes.TimeTableViewType>("hours")
+	const [viewType, setViewType] =
+		useState<TimeTableTypes.TimeTableViewType>("hours")
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
@@ -691,7 +701,10 @@ function Example() {
 					<select
 						name="viewtype"
 						onChange={(e) =>
-							setViewType(e.target.value as TimeTableTypes.TimeTableViewType)
+							setViewType(
+								e.target
+									.value as TimeTableTypes.TimeTableViewType,
+							)
 						}
 						value={viewType}
 					>
