@@ -1,12 +1,12 @@
-import type React from "react"
 import { useEffect, useRef } from "react"
-import { Item } from "./Item"
 import type { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
 
 import utilStyles from "../../utils.module.css"
-import { useMultiSelectionMode } from "./SelectedTimeSlotsContext"
+import { useTimeSlotItemComponent } from "./TimeTableComponentStore"
+import { useTimeTableIdent } from "./TimeTableIdentContext"
+import { useMultiSelectionMode } from "./TimeTableSelectionStore"
 
-export type RenderItemProps<
+export type TimeTableItemProps<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 > = {
@@ -23,7 +23,6 @@ export default function ItemWrapper<
 	item,
 	selectedTimeSlotItem,
 	onTimeSlotItemClick,
-	renderTimeSlotItem,
 	left,
 	width,
 }: {
@@ -31,9 +30,6 @@ export default function ItemWrapper<
 	item: I
 	selectedTimeSlotItem: I | undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
-	renderTimeSlotItem:
-		| ((props: RenderItemProps<G, I>) => JSX.Element)
-		| undefined
 	left: string
 	width: string
 }) {
@@ -60,7 +56,10 @@ export default function ItemWrapper<
 	}
 	//#endregion
 
-	const { multiSelectionMode } = useMultiSelectionMode()
+	const storeIdent = useTimeTableIdent()
+	const TimeSlotItemComponent = useTimeSlotItemComponent<G, I>(storeIdent)
+
+	const multiSelectionMode = useMultiSelectionMode(storeIdent)
 
 	return (
 		<div
@@ -74,7 +73,7 @@ export default function ItemWrapper<
 		>
 			<div
 				ref={ref}
-				className="animate-fade-in relative z-[1]"
+				className="animate-fade-in relative z-[1] size-full"
 				onClick={() => {
 					if (onTimeSlotItemClick) onTimeSlotItemClick(group, item)
 				}}
@@ -85,19 +84,11 @@ export default function ItemWrapper<
 				}}
 				role="button"
 			>
-				{renderTimeSlotItem ? (
-					renderTimeSlotItem({
-						group,
-						item,
-						selectedItem: selectedTimeSlotItem,
-					})
-				) : (
-					<Item
-						group={group}
-						item={item}
-						selectedItem={selectedTimeSlotItem}
-					/>
-				)}
+				<TimeSlotItemComponent
+					group={group}
+					item={item}
+					selectedItem={selectedTimeSlotItem}
+				/>
 			</div>
 		</div>
 	)

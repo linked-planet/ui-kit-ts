@@ -3,7 +3,7 @@ import type React from "react"
 import { Fragment, forwardRef } from "react"
 
 import type { TimeTableViewType } from "./LPTimeTable"
-import type { TimeFrameDay } from "./timeTableUtils"
+import type { TimeFrameDay } from "./TimeTableConfigStore"
 
 const headerTimeSlotFormat = "HH:mm"
 
@@ -33,8 +33,8 @@ export function headerText(
 	}
 }
 
-type Props = {
-	slotsArray: Dayjs[]
+type TimeTableHeaderProps = {
+	slotsArray: readonly Dayjs[]
 	groupHeaderColumnWidth: number | string
 	columnWidth: number | string
 	startDate: Dayjs
@@ -57,7 +57,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 		showTimeSlotHeader,
 		timeFrameDay,
 		dateHeaderTextFormat,
-	}: Props,
+	}: TimeTableHeaderProps,
 	tableHeaderRef: React.Ref<HTMLTableSectionElement>,
 ) {
 	const viewTypeUnit = viewType === "hours" ? "days" : viewType
@@ -80,7 +80,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 
 	return (
 		<>
-			{/* the colgroup defined the coliumn widths. There are always two column for one visible, one fixed size, and one which can expand if the table is smaller than the parent. */}
+			{/* the colgroup defined the column widths. There are always two column for one visible, one fixed size, and one which can expand if the table is smaller than the parent. */}
 			<colgroup>
 				<col
 					style={{
@@ -120,7 +120,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 						style={{
 							width: groupHeaderColumnWidth,
 						}}
-						className={`bg-surface border-border-bold sticky left-0 top-0 z-[5] select-none border-2 border-l-0 border-t-0 border-solid px-0 py-3 ${
+						className={`bg-surface border-border sticky left-0 top-0 z-[5] select-none border-l-0 border-t-0 border-solid px-0 py-3 ${
 							showTimeSlotHeader
 								? "border-b-border border-b"
 								: "border-b-0"
@@ -132,7 +132,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							)}`}
 						</div>
 						{!showTimeSlotHeader && (
-							<div className="flex justify-end pr-4 font-normal">
+							<div className="flex justify-end items-center pr-4 font-normal">
 								{`${startDate.format(
 									"HH:mm",
 								)} - ${endDate.format("HH:mm")}`}
@@ -148,7 +148,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								className={`bg-surface after:border-border relative select-none border-x-0 border-t-0 border-solid px-0 py-3 after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-l-2 after:border-solid ${
 									showTimeSlotHeader
 										? "border-border border-b"
-										: "border-border-bold border-b-0"
+										: "border-border border-b-0"
 								}`}
 							>
 								<div>
@@ -174,8 +174,8 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 				{/* TIME SLOTS */}
 				<tr>
 					<th
-						className={`border-border-bold bg-surface sticky left-0 top-0 z-[5] select-none border-2 border-l-0 border-t-0 border-solid p-0 ${
-							showTimeSlotHeader ? "pt-4" : "py-0"
+						className={`border-border bg-surface sticky left-0 top-0 z-[5] select-none border-l-0 border-t-0 border-solid p-0 ${
+							showTimeSlotHeader ? "py-3" : "py-0"
 						}`}
 					>
 						{showTimeSlotHeader && (
@@ -200,11 +200,11 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							<th
 								key={`timeheader${slot.unix()}`}
 								colSpan={2}
-								className={`bg-surface border-border border-b-border-bold after:border-border relative select-none border-0 border-b-2 border-solid p-0 pl-1 font-bold after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-solid ${
+								className={`bg-surface border-transparent border-b-border after:border-border relative select-none border-0 border-b-2 border-solid p-0 pl-1 font-bold after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-solid ${
 									isLastOfDay
 										? "after:border-l-2"
 										: "after:border-r"
-								} ${showTimeSlotHeader ? "pb-3 pt-3" : ""}`}
+								} ${showTimeSlotHeader ? "py-3" : ""}`}
 							>
 								{showTimeSlotHeader
 									? slot.format(headerTimeSlotFormat)

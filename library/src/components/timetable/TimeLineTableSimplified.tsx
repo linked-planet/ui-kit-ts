@@ -1,5 +1,5 @@
 import type { Dayjs } from "dayjs"
-import React, {
+import {
 	Fragment,
 	type MouseEvent,
 	useCallback,
@@ -14,23 +14,34 @@ import type {
 	TimeTableViewType,
 } from "./LPTimeTable"
 
-import { Group } from "./Group"
-
-import ItemWrapper, { type RenderItemProps } from "./ItemWrapper"
-import {
-	type TimeFrameDay,
-	getStartAndEndSlot,
-	isOverlapping,
-} from "./timeTableUtils"
+import ItemWrapper from "./ItemWrapper"
+import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
 
 import useResizeObserver, { type ObservedSize } from "use-resize-observer"
-import { PlaceHolderItem } from "./PlaceholderItem"
+import { PlaceHolderItemWrapper } from "./PlaceholderItem"
 import {
-	useMultiSelectionMode,
+	type TimeFrameDay,
+	useTTCColumnWidth,
+	useTTCDisableWeekendInteractions,
+	useTTCHideOutOfRangeMarkers,
+	useTTCIsCellDisabled,
+	useTTCPlaceHolderHeight,
+	useTTCSlotsArray,
+	useTTCTimeFrameOfDay,
+	useTTCTimeSlotMinutes,
+	useTTCTimeSlotSelectionDisabled,
+	useTTCViewType,
+} from "./TimeTableConfigStore"
+import { useTimeTableIdent } from "./TimeTableIdentContext"
+import { useGroupComponent } from "./TimeTableComponentStore"
+import {
+	clearTimeSlotSelection,
+	getMultiSelectionMode,
+	setLastHandledTimeSlot,
+	setMultiSelectionMode,
+	toggleTimeSlotSelected,
 	useSelectedTimeSlots,
-} from "./SelectedTimeSlotsContext"
-import { useTimeTableConfig } from "./TimeTableConfigContext"
-import { useTimeTableMessage } from "./TimeTableMessageContext"
+} from "./TimeTableSelectionStore"
 
 interface TimeLineTableSimplifiedProps<
 	G extends TimeTableGroup,
@@ -40,11 +51,6 @@ interface TimeLineTableSimplifiedProps<
 	entries: TimeTableEntry<G, I>[]
 
 	selectedTimeSlotItem: I | undefined
-
-	renderGroup: ((props: G) => JSX.Element) | undefined
-	renderTimeSlotItem:
-		| ((props: RenderItemProps<G, I>) => JSX.Element)
-		| undefined
 
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 
@@ -61,8 +67,6 @@ export default function TimeLineTableSimplified<
 	entries,
 	onGroupClick,
 	onTimeSlotItemClick,
-	renderGroup,
-	renderTimeSlotItem,
 	selectedTimeSlotItem,
 }: TimeLineTableSimplifiedProps<G, I>) {
 	const tableRows = useMemo(() => {
@@ -75,19 +79,10 @@ export default function TimeLineTableSimplified<
 				items={groupEntry.items}
 				onGroupHeaderClick={onGroupClick}
 				onTimeSlotItemClick={onTimeSlotItemClick}
-				renderGroup={renderGroup}
-				renderTimeSlotItem={renderTimeSlotItem}
 				selectedTimeSlotItem={selectedTimeSlotItem}
 			/>
 		))
-	}, [
-		entries,
-		onGroupClick,
-		onTimeSlotItemClick,
-		renderGroup,
-		renderTimeSlotItem,
-		selectedTimeSlotItem,
-	])
+	}, [entries, onGroupClick, onTimeSlotItemClick, selectedTimeSlotItem])
 
 	return <>{tableRows}</>
 }
@@ -100,14 +95,15 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 	groupNumber,
 	groupRowMax,
 	onGroupClick,
-	renderGroup,
 }: {
 	group: G
 	groupNumber: number
 	groupRowMax: number
 	onGroupClick: ((group: G) => void) | undefined
-	renderGroup: ((props: G) => JSX.Element) | undefined
 }) {
+	const storeIdent = useTimeTableIdent()
+	const GroupComponent = useGroupComponent(storeIdent)
+
 	return (
 		<td
 			onClick={() => {
@@ -119,11 +115,11 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
 				}
 			}}
 			rowSpan={groupRowMax}
-			className={`border-border-bold border-b-border sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${
+			className={`border-border border-b-border sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${
 				groupNumber % 2 === 0 ? "bg-surface" : "bg-surface-hovered"
 			}`}
 		>
-			{renderGroup ? renderGroup(group) : <Group group={group} />}
+			<GroupComponent group={group} />
 		</td>
 	)
 }
@@ -132,7 +128,6 @@ function GroupHeaderTableCell<G extends TimeTableGroup>({
  * The TableCellSimple is the standard cell of the table. The children are the entries that are rendered in the cell.
  */
 function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
-	slotsArray,
 	timeSlotNumber,
 	group,
 	groupNumber,
@@ -140,10 +135,11 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	isLastGroupRow,
 	bookingItemsBeginningInCell,
 	selectedTimeSlotItem,
-	renderTimeSlotItem,
 	onTimeSlotItemClick,
+	slotsArray,
+	timeFrameDay,
+	viewType,
 }: {
-	slotsArray: Dayjs[]
 	timeSlotNumber: number
 	group: G
 	groupNumber: number
@@ -157,12 +153,30 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		  }[]
 		| undefined
 	selectedTimeSlotItem: I | undefined
-	renderTimeSlotItem:
-		| ((props: RenderItemProps<G, I>) => JSX.Element)
-		| undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
+	slotsArray: readonly Dayjs[]
+	timeFrameDay: TimeFrameDay
+	viewType: TimeTableViewType
 }) {
+	const storeIdent = useTimeTableIdent()
+	const disableWeekendInteractions =
+		useTTCDisableWeekendInteractions(storeIdent)
+	const columnWidth = useTTCColumnWidth(storeIdent)
+	const hideOutOfRangeMarkers = useTTCHideOutOfRangeMarkers(storeIdent)
+	const timeSlotSelectionDisabled =
+		useTTCTimeSlotSelectionDisabled(storeIdent)
+	const timeSlotMinutes = useTTCTimeSlotMinutes(storeIdent)
+	const isCellDisabled = useTTCIsCellDisabled(storeIdent)
+
 	const timeSlot = slotsArray[timeSlotNumber]
+	if (!timeSlot) {
+		console.warn(
+			"TimeLineTableSimplified - time slot not found",
+			slotsArray,
+			timeSlotNumber,
+		)
+		return <></>
+	}
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 	const timeSlotAfter =
 		timeSlotNumber < slotsArray.length - 1
@@ -171,17 +185,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const isLastSlotOfTheDay = timeSlotAfter
 		? timeSlotAfter.day() !== timeSlot.day()
 		: true
-
-	const {
-		disableWeekendInteractions,
-		columnWidth,
-		viewType,
-		timeFrameDay,
-		hideOutOfRangeMarkers,
-		timeSlotSelectionDisabled,
-		timeSlotMinutes,
-		isCellDisabled,
-	} = useTimeTableConfig()
 
 	const cellDisabled =
 		isCellDisabled?.(
@@ -272,7 +275,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						left={leftInColumn}
 						selectedTimeSlotItem={selectedTimeSlotItem}
 						onTimeSlotItemClick={onTimeSlotItemClick}
-						renderTimeSlotItem={renderTimeSlotItem}
 					/>
 				)
 			})
@@ -356,33 +358,26 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	timeSlotNumber,
 	viewType,
 	timeSlotMinutes,
+	slotsArray,
 }: {
 	group: G
 	groupNumber: number
 	timeSlotNumber: number
 	viewType: TimeTableViewType
 	timeSlotMinutes: number
+	slotsArray: readonly Dayjs[]
 }) {
-	const { selectedTimeSlots, setSelectedTimeSlots } = useSelectedTimeSlots()
-	const {
-		slotsArray,
-		placeHolderHeight,
-		renderPlaceHolder,
-		isCellDisabled,
-		disableWeekendInteractions,
-	} = useTimeTableConfig()
-
-	const clearTimeRangeSelectionCB = useCallback(() => {
-		setSelectedTimeSlots(undefined)
-	}, [setSelectedTimeSlots])
+	const storeIdent = useTimeTableIdent()
+	const selectedTimeSlots = useSelectedTimeSlots(storeIdent, group)
+	const placeHolderHeight = useTTCPlaceHolderHeight(storeIdent)
+	const isCellDisabled = useTTCIsCellDisabled(storeIdent)
+	const disableWeekendInteractions =
+		useTTCDisableWeekendInteractions(storeIdent)
 
 	const timeSlot = slotsArray[timeSlotNumber]
-	const timeSlotSelectedIndex =
-		selectedTimeSlots && selectedTimeSlots.group === group
-			? selectedTimeSlots.timeSlots.findIndex(
-					(it) => it === timeSlotNumber,
-				)
-			: -1
+	const timeSlotSelectedIndex = selectedTimeSlots
+		? selectedTimeSlots?.findIndex((it) => it === timeSlotNumber)
+		: -1
 	const isFirstOfSelection = timeSlotSelectedIndex === 0
 	const timeSlotAfter =
 		timeSlotNumber < slotsArray.length - 1
@@ -392,20 +387,21 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 		? timeSlotAfter.day() !== timeSlot.day()
 		: true
 
+	const clearTimeSlotSelectionCB = useCallback(() => {
+		clearTimeSlotSelection(storeIdent)
+	}, [storeIdent])
+
 	let placeHolderItem: JSX.Element | undefined = undefined
 	if (isFirstOfSelection && selectedTimeSlots) {
 		placeHolderItem = (
-			<PlaceHolderItem
+			<PlaceHolderItemWrapper
 				group={group}
 				start={timeSlot}
 				end={slotsArray[
-					selectedTimeSlots.timeSlots[
-						selectedTimeSlots.timeSlots.length - 1
-					]
+					selectedTimeSlots[selectedTimeSlots.length - 1]
 				].add(timeSlotMinutes, "minutes")}
 				height={placeHolderHeight}
-				clearTimeRangeSelectionCB={clearTimeRangeSelectionCB}
-				renderPlaceHolder={renderPlaceHolder}
+				clearTimeRangeSelectionCB={clearTimeSlotSelectionCB}
 			/>
 		)
 	}
@@ -457,7 +453,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 			key={timeSlotNumber}
 			colSpan={
 				selectedTimeSlots && isFirstOfSelection
-					? 2 * selectedTimeSlots.timeSlots.length
+					? 2 * selectedTimeSlots.length
 					: 2
 			} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			{...(timeSlotSelectedIndex === -1 ? mouseHandlers : undefined)}
@@ -478,31 +474,25 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	group,
 	groupNumber,
 	items,
-	renderGroup,
 	onGroupHeaderClick,
 	selectedTimeSlotItem,
-	renderTimeSlotItem,
 	onTimeSlotItemClick,
 }: {
 	group: G
 	groupNumber: number
 	items: I[]
-	renderGroup: ((props: G) => JSX.Element) | undefined
 	onGroupHeaderClick: ((group: G) => void) | undefined
 	selectedTimeSlotItem: I | undefined
-	renderTimeSlotItem:
-		| ((props: RenderItemProps<G, I>) => JSX.Element)
-		| undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 }) {
-	const {
-		slotsArray,
-		placeHolderHeight,
-		viewType,
-		timeSlotSelectionDisabled,
-		timeFrameDay,
-		timeSlotMinutes,
-	} = useTimeTableConfig()
+	const storeIdent = useTimeTableIdent()
+	const slotsArray = useTTCSlotsArray(storeIdent)
+	const placeHolderHeight = useTTCPlaceHolderHeight(storeIdent)
+	const viewType = useTTCViewType(storeIdent)
+	const timeSlotSelectionDisabled =
+		useTTCTimeSlotSelectionDisabled(storeIdent)
+	const timeFrameDay = useTTCTimeFrameOfDay(storeIdent)
+	const timeSlotMinutes = useTTCTimeSlotMinutes(storeIdent)
 
 	const trs = useMemo(() => {
 		const itemRows = getGroupItemStack(
@@ -524,7 +514,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				groupRowMax={
 					timeSlotSelectionDisabled ? rowCount : rowCount + 1
 				} // group header spans all rows of the group + the interaction row
-				renderGroup={renderGroup}
 				onGroupClick={onGroupHeaderClick}
 			/>
 		)
@@ -547,6 +536,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						timeSlotNumber={timeSlotNumber}
 						timeSlotMinutes={timeSlotMinutes}
 						viewType={viewType}
+						slotsArray={slotsArray}
 					/>,
 				)
 			}
@@ -583,20 +573,20 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					: undefined
 
 				tds.push(
-					<Fragment key={timeSlotNumber}>
-						<TableCell<G, I>
-							timeSlotNumber={timeSlotNumber}
-							isLastGroupRow={r === rowCount - 1}
-							isFirstRow={r === 0}
-							slotsArray={slotsArray}
-							group={group}
-							groupNumber={groupNumber}
-							bookingItemsBeginningInCell={itemsOfTimeSlot}
-							selectedTimeSlotItem={selectedTimeSlotItem}
-							onTimeSlotItemClick={onTimeSlotItemClick}
-							renderTimeSlotItem={renderTimeSlotItem}
-						/>
-					</Fragment>,
+					<TableCell<G, I>
+						key={`${groupNumber}-${timeSlotNumber}`}
+						timeSlotNumber={timeSlotNumber}
+						isLastGroupRow={r === rowCount - 1}
+						isFirstRow={r === 0}
+						group={group}
+						groupNumber={groupNumber}
+						bookingItemsBeginningInCell={itemsOfTimeSlot}
+						selectedTimeSlotItem={selectedTimeSlotItem}
+						onTimeSlotItemClick={onTimeSlotItemClick}
+						slotsArray={slotsArray}
+						timeFrameDay={timeFrameDay}
+						viewType={viewType}
+					/>,
 				)
 			}
 
@@ -614,14 +604,12 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		group,
 		groupNumber,
 		timeSlotSelectionDisabled,
-		renderGroup,
 		onGroupHeaderClick,
 		placeHolderHeight,
 		timeSlotMinutes,
 		viewType,
 		selectedTimeSlotItem,
 		onTimeSlotItemClick,
-		renderTimeSlotItem,
 	])
 
 	return <>{trs}</>
@@ -641,28 +629,13 @@ function useMouseHandlers<G extends TimeTableGroup>(
 	isWeekendDay: boolean,
 	isWeekendDisabled: boolean,
 ) {
-	const { selectedTimeSlots, toggleTimeSlotCB } = useSelectedTimeSlots()
-	const { multiSelectionMode, setMultiSelectionMode } =
-		useMultiSelectionMode()
-	const { setMessage } = useTimeTableMessage()
+	const storeIdent = useTimeTableIdent()
+	//const selectedTimeSlots = useSelectedTimeSlots(storeIdent, group)
+	//const multiSelectionMode = useMultiSelectionMode(storeIdent)
 
 	return useMemo(() => {
-		const handleDisabledError = () => {
-			if (isDisabled) {
-				setMessage?.({
-					appearance: "information",
-					messageKey: "timetable.cellDisabled",
-					timeOut: 3,
-				})
-				console.info("LPTimeTable - cell disabled")
-				return
-			}
-			setMessage?.({
-				appearance: "information",
-				messageKey: "timetable.weekendsDeactivated",
-				timeOut: 3,
-			})
-			console.info("LPTimeTable - weekends deactivated")
+		if (isDisabled || (isWeekendDay && isWeekendDisabled)) {
+			return
 		}
 
 		// the actual mouse handlers
@@ -672,79 +645,79 @@ function useMouseHandlers<G extends TimeTableGroup>(
 					// we only want to react to left mouse button
 					return
 				}
-				if (isDisabled || (isWeekendDisabled && isWeekendDay)) {
-					handleDisabledError()
-					return
-				}
-				setMultiSelectionMode(true)
-				toggleTimeSlotCB(timeSlotNumber, group, "drag")
+				setMultiSelectionMode(storeIdent, true)
+				toggleTimeSlotSelected(
+					storeIdent,
+					group,
+					timeSlotNumber,
+					"drag",
+				)
 			},
 			onMouseLeave: (e: MouseEvent) => {
 				if (e.buttons !== 1) {
 					// we only want to react to left mouse button
 					// in case we move the mouse out of the table there will be no mouse up called, so we need to reset the multiselect
-					setMultiSelectionMode(false)
+					setMultiSelectionMode(storeIdent, false)
 					return
 				}
-				if (!multiSelectionMode) {
-					return
-				}
-				if (isDisabled || (isWeekendDisabled && isWeekendDay)) {
-					handleDisabledError()
+				if (!getMultiSelectionMode(storeIdent)) {
 					return
 				}
 				mouseLeftTS = timeSlotNumber
-				toggleTimeSlotCB(timeSlotNumber, group, "drag")
+				toggleTimeSlotSelected(
+					storeIdent,
+					group,
+					timeSlotNumber,
+					"drag",
+				)
 			},
 			onMouseEnter: (e: MouseEvent) => {
 				if (e.buttons !== 1) {
 					// we only want to react to left mouse button
-					setMultiSelectionMode(false)
+					setMultiSelectionMode(storeIdent, false)
 					return
 				}
-				if (!multiSelectionMode) {
+				if (!getMultiSelectionMode(storeIdent)) {
 					return
 				}
-				if (isDisabled || (isWeekendDisabled && isWeekendDay)) {
-					handleDisabledError()
-					return
-				}
-				// to remove time slots again when dragging
-				if (
-					mouseLeftTS != null &&
-					(mouseLeftTS === timeSlotNumber + 1 ||
-						mouseLeftTS === timeSlotNumber - 1) &&
-					selectedTimeSlots?.timeSlots.includes(mouseLeftTS)
-				) {
-					toggleTimeSlotCB(mouseLeftTS, group, "remove")
-				}
-				toggleTimeSlotCB(timeSlotNumber, group, "drag")
-				setMultiSelectionMode(true)
-			},
-			onMouseUp: () => {
-				setMultiSelectionMode(false)
-				if (isDisabled || (isWeekendDisabled && isWeekendDay)) {
-					handleDisabledError()
-					return
-				}
-				toggleTimeSlotCB(
-					timeSlotNumber,
+				toggleTimeSlotSelected(
+					storeIdent,
 					group,
-					multiSelectionMode ? "drag" : "click",
+					timeSlotNumber,
+					"drag",
 				)
 			},
+			onMouseUp: () => {
+				const multiSelectionMode = getMultiSelectionMode(storeIdent)
+				toggleTimeSlotSelected(
+					storeIdent,
+					group,
+					timeSlotNumber,
+					multiSelectionMode ? "drag" : "click",
+				)
+				setMultiSelectionMode(storeIdent, false)
+				setLastHandledTimeSlot(storeIdent, null)
+			},
+			/*onMouseClick: (e: MouseEvent) => {
+				if (e.buttons !== 1) {
+					// we only want to react to left mouse button
+					return
+				}
+				toggleTimeSlotSelected(
+					storeIdent,
+					group,
+					timeSlotNumber,
+					"click",
+				)
+			},*/
 		}
 	}, [
 		group,
 		isDisabled,
 		isWeekendDay,
 		isWeekendDisabled,
-		multiSelectionMode,
-		selectedTimeSlots?.timeSlots,
-		setMessage,
-		setMultiSelectionMode,
 		timeSlotNumber,
-		toggleTimeSlotCB,
+		storeIdent,
 	])
 }
 
@@ -755,7 +728,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
  */
 function getGroupItemStack<I extends TimeSlotBooking>(
 	groupItems: I[],
-	slotsArray: Dayjs[],
+	slotsArray: readonly Dayjs[],
 	timeFrameDay: TimeFrameDay,
 	timeSlotMinutes: number,
 	viewType: TimeTableViewType,
@@ -850,7 +823,7 @@ function getLeftAndWidth(
 	item: TimeSlotBooking,
 	startSlot: number,
 	endSlot: number,
-	slotsArray: Dayjs[],
+	slotsArray: readonly Dayjs[],
 	timeFrameDay: TimeFrameDay,
 	viewType: TimeTableViewType,
 	timeSlotMinutes: number,

@@ -1,14 +1,7 @@
 import dayjs, { type Dayjs } from "dayjs"
 import type { TimeSlotBooking, TimeTableViewType } from "./LPTimeTable"
 import type { TimeTableMessage } from "./TimeTableMessageContext"
-
-export type TimeFrameDay = {
-	startHour: number
-	endHour: number
-	startMinute: number
-	endMinute: number
-	oneDayMinutes: number
-}
+import type { TimeFrameDay } from "./TimeTableConfigStore"
 
 export function isOverlapping(
 	item: TimeSlotBooking,
@@ -27,7 +20,7 @@ export function isOverlapping(
 
 export function itemsOutsideOfDayRangeORSameStartAndEnd(
 	items: TimeSlotBooking[],
-	slotsArray: Dayjs[],
+	slotsArray: readonly Dayjs[],
 	timeFrameDay: TimeFrameDay,
 	timeSlotMinutes: number,
 	viewType: TimeTableViewType,
@@ -67,7 +60,7 @@ export function itemsOutsideOfDayRangeORSameStartAndEnd(
  */
 export function getStartAndEndSlot(
 	item: TimeSlotBooking,
-	slotsArray: Dayjs[],
+	slotsArray: readonly Dayjs[],
 	timeFrameDay: TimeFrameDay,
 	timeSlotMinutes: number,
 	viewType: TimeTableViewType,
@@ -320,7 +313,11 @@ function calculateTimeSlotPropertiesForHoursView(
 	timeFrameDay.endMinute = timeSlotEndEnd.minute()
 	timeFrameDay.oneDayMinutes = timeStepsMinute * timeSlotsPerDay
 
-	return { timeFrameDay, slotsArray, timeSlotMinutes: timeStepsMinute }
+	return {
+		timeFrameDay,
+		slotsArray,
+		timeSlotMinutes: timeStepsMinute,
+	}
 }
 
 /**
@@ -336,9 +333,13 @@ export function calculateTimeSlotPropertiesForView(
 	startDate: Dayjs,
 	endDate: Dayjs,
 	timeStepsMinute: number,
-	vieWType: TimeTableViewType,
+	viewType: TimeTableViewType,
 	setMessage?: (message: TimeTableMessage) => void,
-) {
+): {
+	timeFrameDay: TimeFrameDay
+	slotsArray: Dayjs[]
+	timeSlotMinutes: number
+} {
 	const startHour = startDate.hour()
 	const startMinute = startDate.minute()
 	let endHour = endDate.hour()
@@ -367,13 +368,14 @@ export function calculateTimeSlotPropertiesForView(
 		}
 	}
 
-	if (vieWType === "hours") {
-		return calculateTimeSlotPropertiesForHoursView(
+	if (viewType === "hours") {
+		const res = calculateTimeSlotPropertiesForHoursView(
 			startDate,
 			endDate,
 			timeStepsMinute,
 			setMessage,
 		)
+		return Object.freeze(res)
 	}
 
 	// get the actual end time fitting to the time slots
@@ -389,17 +391,17 @@ export function calculateTimeSlotPropertiesForView(
 	endMinute = endDateTime.minute()
 
 	if (
-		vieWType !== "days" &&
-		vieWType !== "weeks" &&
-		vieWType !== "months" &&
-		vieWType !== "years"
+		viewType !== "days" &&
+		viewType !== "weeks" &&
+		viewType !== "months" &&
+		viewType !== "years"
 	) {
 		throw new Error(
 			"Unknown view type, should be 'hours', 'days', 'weeks', 'months' or 'years'",
 		)
 	}
 
-	const unit = vieWType
+	const unit = viewType
 
 	const start = startDate.startOf(unit)
 	const end = endDate.endOf(unit)
@@ -408,10 +410,11 @@ export function calculateTimeSlotPropertiesForView(
 		diff++
 	}
 
-	const slotsArray = Array.from({ length: diff }, (x, i) => i).map((i) => {
+	const slotsArray: Dayjs[] = []
+	for (let i = 0; i < diff; i++) {
 		const ret = start.add(i, unit)
-		return ret
-	})
+		slotsArray.push(ret)
+	}
 
 	let oneDayMinutes = dayjs()
 		.startOf("day")
@@ -437,13 +440,13 @@ export function calculateTimeSlotPropertiesForView(
 		)
 	}
 
-	const timeFrameDay: TimeFrameDay = {
+	const timeFrameDay: TimeFrameDay = Object.freeze({
 		startHour,
 		startMinute,
 		endHour,
 		endMinute,
 		oneDayMinutes,
-	}
+	})
 
 	// how many minutes has 1 time slot
 	const unitDays = dayjs()
@@ -452,5 +455,9 @@ export function calculateTimeSlotPropertiesForView(
 		.diff(dayjs().startOf("day"), "days")
 	const timeSlotMinutes = unitDays * oneDayMinutes
 
-	return { timeFrameDay, slotsArray, timeSlotMinutes }
+	return Object.freeze({
+		timeFrameDay,
+		slotsArray,
+		timeSlotMinutes,
+	})
 }

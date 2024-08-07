@@ -1,20 +1,16 @@
 import dayjs, { type Dayjs } from "dayjs"
-import React, {
-	type MutableRefObject,
-	useCallback,
-	useEffect,
-	useMemo,
-	useRef,
-} from "react"
+import type React from "react"
+import { type MutableRefObject, useCallback, useEffect, useRef } from "react"
 
 import useResizeObserver from "use-resize-observer"
 import { InlineMessage } from "../InlineMessage"
-import type { RenderItemProps } from "./ItemWrapper"
+import type { TimeTableItemProps } from "./ItemWrapper"
 import { LPTimeTableHeader, headerText } from "./LPTimeTableHeader"
-import type { PlaceholderItemProps } from "./PlaceholderItem"
-import { SelectedTimeSlotsProvider } from "./SelectedTimeSlotsContext"
+import {
+	PlaceHolderItemPlaceHolder,
+	type TimeTablePlaceholderItemProps,
+} from "./PlaceholderItem"
 import TimeLineTableSimplified from "./TimeLineTableSimplified"
-import { TimeTableConfigProvider } from "./TimeTableConfigContext"
 import {
 	type TimeTableMessage,
 	TimeTableMessageProvider,
@@ -22,11 +18,21 @@ import {
 	useTimeTableMessage,
 } from "./TimeTableMessageContext"
 import {
-	type TimeFrameDay,
-	calculateTimeSlotPropertiesForView,
 	getStartAndEndSlot,
 	itemsOutsideOfDayRangeORSameStartAndEnd,
 } from "./timeTableUtils"
+import {
+	initAndUpdateTimeTableConfigStore,
+	type TimeFrameDay,
+	useTTCSlotsArray,
+	useTTCTimeFrameOfDay,
+	useTTCTimeSlotMinutes,
+} from "./TimeTableConfigStore"
+import { TimeTableIdentProvider } from "./TimeTableIdentContext"
+import { initAndUpdateTimeTableComponentStore } from "./TimeTableComponentStore"
+import { Group as GroupComponent, type TimeTableGroupProps } from "./Group"
+import { Item as ItemComponent } from "./Item"
+import { initTimeTableSelectionStore } from "./TimeTableSelectionStore"
 
 export interface TimeSlotBooking {
 	title: string
@@ -35,6 +41,7 @@ export interface TimeSlotBooking {
 }
 
 export interface TimeTableGroup {
+	id: string
 	title: string
 	subtitle?: string
 }
@@ -60,6 +67,9 @@ export interface LPTimeTableProps<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 > {
+	/* To have multiple time tables in the same page, you can use this to identify the time table */
+	storeIdent?: string
+
 	/* The start date also defines the time the time slots starts in the morning */
 	startDate: Dayjs
 	/* The end date also defines the time the time slots ends in the evening */
@@ -72,17 +82,18 @@ export interface LPTimeTableProps<
 	selectedTimeSlotItem?: I
 
 	/* overwrite render function for the group (left column) */
-	renderGroup?: (props: G) => JSX.Element
+	groupComponent?: React.ComponentType<TimeTableGroupProps<G>>
 
 	/* overwrite render function for the time slot items */
-	renderTimeSlotItem?: (props: RenderItemProps<G, I>) => JSX.Element
+	timeSlotItemComponent?: React.ComponentType<TimeTableItemProps<G, I>>
 
 	onTimeSlotItemClick?: (group: G, item: I) => void
 
 	/* this function gets called when a selection was made, i.g. to create a booking. the return value states if the selection should be cleared or not */
 	onTimeRangeSelected?: (
 		s: { group: G; startDate: Dayjs; endDate: Dayjs } | undefined,
-	) => boolean | undefined | void
+		// biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
+	) => boolean | undefined | void // if return is true, clear selection
 
 	/* The selected time range context sets this callback to be able for a time table parent component to clear the selected time range from outside */
 	setClearSelectedTimeRangeCB?: (cb: () => void) => void
@@ -103,7 +114,7 @@ export interface LPTimeTableProps<
 	 */
 	placeHolderHeight?: string
 
-	renderPlaceHolder?: (props: PlaceholderItemProps<G>) => JSX.Element
+	placeHolderComponent?: React.ComponentType<TimeTablePlaceholderItemProps<G>>
 
 	/**
 	 * Height sets the max height of the time table. If the content is larger, it will be scrollable.
@@ -176,20 +187,21 @@ export default function LPTimeTable<
  * @returns
  */
 const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
+	storeIdent = "default",
 	startDate,
 	endDate,
 	timeStepsMinutes = 60,
 	entries,
 	selectedTimeSlotItem,
-	renderGroup,
-	renderTimeSlotItem,
-	renderPlaceHolder,
+	groupComponent = GroupComponent,
+	timeSlotItemComponent = ItemComponent,
+	placeHolderComponent = PlaceHolderItemPlaceHolder,
 	onTimeSlotItemClick,
 	onGroupClick,
 	onTimeRangeSelected,
 	setClearSelectedTimeRangeCB,
 	groupHeaderColumnWidth,
-	columnWidth,
+	columnWidth = 70,
 	height = "100%",
 	placeHolderHeight = "1.5rem",
 	viewType = "hours",
@@ -202,35 +214,52 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	disableMessages = false,
 }: LPTimeTableProps<G, I>) => {
 	// if we have viewType of days, we need to round the start and end date to the start and end of the day
-	const { setMessage, translatedMessage } =
-		useTimeTableMessage(!disableMessages)
+	const { setMessage, translatedMessage } = useTimeTableMessage(
+		!disableMessages,
+	)
 
 	// change on viewType
 	useEffect(() => {
 		setMessage?.(undefined) // clear the message on time frame change
-	}, [viewType, startDate, endDate, setMessage])
+	}, [viewType, startDate, endDate, setMessage, timeStepsMinutes])
 
 	const tableHeaderRef = useRef<HTMLTableSectionElement>(null)
 	const tableBodyRef = useRef<HTMLTableSectionElement>(null)
 	const inlineMessageRef = useRef<HTMLDivElement>(null)
 
-	//#region calculate time slots, dates array and the final time steps size in minutes
-	const { slotsArray, timeFrameDay, timeSlotMinutes } = useMemo(() => {
-		// to avoid overflow onto the next day if the time steps are too large
-		const { timeFrameDay, slotsArray, timeSlotMinutes } =
-			calculateTimeSlotPropertiesForView(
-				startDate,
-				endDate,
-				timeStepsMinutes,
-				viewType,
-				setMessage,
-			)
+	initAndUpdateTimeTableComponentStore(
+		storeIdent,
+		placeHolderComponent,
+		timeSlotItemComponent,
+		groupComponent,
+	)
 
-		return { slotsArray, timeFrameDay, timeSlotMinutes }
-	}, [viewType, startDate, endDate, timeStepsMinutes, setMessage])
-	//#endregion
+	initAndUpdateTimeTableConfigStore(
+		storeIdent,
+		startDate,
+		endDate,
+		viewType,
+		timeStepsMinutes,
+		columnWidth,
+		placeHolderHeight,
+		hideOutOfRangeMarkers,
+		disableWeekendInteractions,
+		!onTimeRangeSelected,
+		isCellDisabled,
+	)
+	const timeFrameDay = useTTCTimeFrameOfDay(storeIdent)
+	const timeSlotMinutes = useTTCTimeSlotMinutes(storeIdent)
 
-	//console.log("LPTimeTable - timeFrameDay", timeFrameDay, slotsArray)
+	initTimeTableSelectionStore(storeIdent)
+
+	const slotsArray = useTTCSlotsArray(storeIdent)
+	if (!slotsArray || slotsArray.length === 0) {
+		console.warn(
+			"LPTimeTable - no slots array, or slots array is empty",
+			slotsArray,
+		)
+		return <div>No slots array</div>
+	}
 
 	//#region Message if items of entries are outside of the time frame of the day
 	useEffect(() => {
@@ -414,70 +443,46 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					/>
 				)}
 			</div>
-			<TimeTableConfigProvider
-				slotsArray={slotsArray}
-				timeFrameDay={timeFrameDay}
-				disableWeekendInteractions={disableWeekendInteractions}
-				placeHolderHeight={placeHolderHeight}
-				columnWidth={columnWidth}
-				viewType={viewType}
-				hideOutOfRangeMarkers={hideOutOfRangeMarkers}
-				timeSlotSelectionDisabled={!onTimeRangeSelected}
-				renderPlaceHolder={renderPlaceHolder}
-				isCellDisabled={isCellDisabled}
-				timeSlotMinutes={timeSlotMinutes}
-			>
-				<SelectedTimeSlotsProvider
-					slotsArray={slotsArray}
-					onTimeRangeSelected={onTimeRangeSelected}
-					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
-					disableWeekendInteractions={disableWeekendInteractions}
-					timeFrameDay={timeFrameDay}
-					timeSlotMinutes={timeSlotMinutes}
-					viewType={viewType}
+			<TimeTableIdentProvider ident={storeIdent}>
+				<div
+					className="overflow-auto"
+					style={{
+						height: `calc(${height} - ${inlineMessageRef.current?.clientHeight}px)`,
+					}}
 				>
-					<div
-						className="overflow-auto"
-						style={{
-							height: `calc(${height} - ${inlineMessageRef.current?.clientHeight}px)`,
-						}}
+					<table
+						className={
+							"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
+						}
 					>
-						<table
-							className={
-								"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
+						<LPTimeTableHeader
+							slotsArray={slotsArray}
+							columnWidth={columnWidth}
+							groupHeaderColumnWidth={groupHeaderColumnWidth}
+							startDate={startDate}
+							endDate={endDate}
+							viewType={viewType}
+							timeFrameDay={timeFrameDay}
+							showTimeSlotHeader={
+								showTimeSlotHeader === undefined ||
+								showTimeSlotHeader === null
+									? viewType === "hours"
+									: showTimeSlotHeader
 							}
-						>
-							<LPTimeTableHeader
-								slotsArray={slotsArray}
-								columnWidth={columnWidth}
-								groupHeaderColumnWidth={groupHeaderColumnWidth}
-								startDate={startDate}
-								endDate={endDate}
-								viewType={viewType}
-								timeFrameDay={timeFrameDay}
-								showTimeSlotHeader={
-									showTimeSlotHeader === undefined ||
-									showTimeSlotHeader === null
-										? viewType === "hours"
-										: showTimeSlotHeader
-								}
-								dateHeaderTextFormat={dateHeaderTextFormat}
-								ref={tableHeaderRef}
+							dateHeaderTextFormat={dateHeaderTextFormat}
+							ref={tableHeaderRef}
+						/>
+						<tbody ref={tableBodyRef} className="table-fixed">
+							<TimeLineTableSimplified<G, I>
+								entries={entries}
+								selectedTimeSlotItem={selectedTimeSlotItem}
+								onTimeSlotItemClick={onTimeSlotItemClick}
+								onGroupClick={onGroupClick}
 							/>
-							<tbody ref={tableBodyRef} className="table-fixed">
-								<TimeLineTableSimplified<G, I>
-									entries={entries}
-									selectedTimeSlotItem={selectedTimeSlotItem}
-									renderGroup={renderGroup}
-									renderTimeSlotItem={renderTimeSlotItem}
-									onTimeSlotItemClick={onTimeSlotItemClick}
-									onGroupClick={onGroupClick}
-								/>
-							</tbody>
-						</table>
-					</div>
-				</SelectedTimeSlotsProvider>
-			</TimeTableConfigProvider>
+						</tbody>
+					</table>
+				</div>
+			</TimeTableIdentProvider>
 		</>
 	)
 }
@@ -493,7 +498,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
  * @returns
  */
 function moveNowBar(
-	slotsArray: Dayjs[],
+	slotsArray: readonly Dayjs[],
 	nowRef: MutableRefObject<Dayjs>,
 	nowBarRef: MutableRefObject<HTMLDivElement | undefined>,
 	tableHeaderRef: MutableRefObject<HTMLTableSectionElement | null>,
@@ -531,7 +536,7 @@ function moveNowBar(
 			"border-b-[3px]",
 		)
 		headerTimeSlotCell.classList.add(
-			"border-b-border-bold",
+			"border-b-border",
 			"border-b-2",
 			"font-normal",
 			"select-none",

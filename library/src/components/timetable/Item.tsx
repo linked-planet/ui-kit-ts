@@ -1,13 +1,12 @@
-import React from "react"
 import type { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
 
 import styles from "./Item.module.css"
-import type { RenderItemProps } from "./ItemWrapper"
+import type { TimeTableItemProps } from "./ItemWrapper"
 
 export function Item({
 	item,
 	selectedItem,
-}: RenderItemProps<TimeTableGroup, TimeSlotBooking>): JSX.Element {
+}: TimeTableItemProps<TimeTableGroup, TimeSlotBooking>): JSX.Element {
 	const isSelected = selectedItem === item
 	const title = `${item.title}:\n${item.startDate.format(
 		"HH:mm DD-MM-YY",

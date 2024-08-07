@@ -9,24 +9,15 @@ import type {
 	TimeTableViewType as _TimeTableViewType,
 	LPTimeTableProps,
 } from "./LPTimeTable"
+import type { TimeTablePlaceholderItemProps } from "./PlaceholderItem"
+import type { TimeTableItemProps } from "./ItemWrapper"
 
-import type { RenderItemProps as _RenderItemProps } from "./ItemWrapper"
-import type { PlaceholderItemProps as _PlaceholderItemProps } from "./PlaceholderItem"
+export type { TimeTableItemProps } from "./ItemWrapper"
+export type { TimeTablePlaceholderItemProps } from "./PlaceholderItem"
 
 const memoized = React.memo(LPTimeTable) as typeof LPTimeTable
 
 export { memoized as TimeTable }
-//export { LPTimeTable }
-/*export type {
-	TimeTableEntry,
-	TimeSlotBooking,
-	TimeTableGroup,
-	SelectedTimeSlot,
-	PlaceholderItemProps,
-	RenderItemProps,
-	TimeTableViewType,
-	LPTimeTableProps,
-}*/
 
 export namespace TimeTableTypes {
 	export type TimeSlotBooking = _TimeSlotBooking
@@ -39,11 +30,11 @@ export namespace TimeTableTypes {
 	export type SelectedTimeSlot<G extends TimeTableGroup> =
 		_SelectedTimeSlot<G>
 	export type PlaceholderItemProps<G extends TimeTableGroup> =
-		_PlaceholderItemProps<G>
+		TimeTablePlaceholderItemProps<G>
 	export type RenderItemProps<
 		G extends TimeTableGroup,
 		I extends TimeSlotBooking,
-	> = _RenderItemProps<G, I>
+	> = TimeTableItemProps<G, I>
 	export type TimeTableViewType = _TimeTableViewType
 	export type TimeTableProps<
 		G extends TimeTableGroup,
