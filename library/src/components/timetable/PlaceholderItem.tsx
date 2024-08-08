@@ -1,5 +1,5 @@
 import type { Dayjs } from "dayjs"
-import type { TimeTableGroup } from "./LPTimeTable"
+import type { TimeTableGroup } from "./TimeTable"
 import { usePlaceHolderItemComponent } from "./TimeTableComponentStore"
 import { useTimeTableIdent } from "./TimeTableIdentContext"
 

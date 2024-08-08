@@ -1,4 +1,4 @@
-import type { TimeTableGroup } from "./LPTimeTable"
+import type { TimeTableGroup } from "./TimeTable"
 
 export type TimeTableGroupProps<G extends TimeTableGroup> = {
 	group: G

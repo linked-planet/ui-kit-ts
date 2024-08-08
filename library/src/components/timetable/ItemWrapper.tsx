@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import type { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
+import type { TimeSlotBooking, TimeTableGroup } from "./TimeTable"
 
 import utilStyles from "../../utils.module.css"
 import { useTimeSlotItemComponent } from "./TimeTableComponentStore"

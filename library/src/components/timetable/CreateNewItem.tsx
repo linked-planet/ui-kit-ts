@@ -1,6 +1,6 @@
 import dayjs, { type Dayjs } from "dayjs"
 import { useState } from "react"
-import type { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
+import type { TimeSlotBooking, TimeTableGroup } from "./TimeTable"
 import { Modal } from "../Modal"
 import { Button } from "../Button"
 

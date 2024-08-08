@@ -12,7 +12,7 @@ import type {
 	TimeTableEntry,
 	TimeTableGroup,
 	TimeTableViewType,
-} from "./LPTimeTable"
+} from "./TimeTable"
 
 import ItemWrapper from "./ItemWrapper"
 import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"

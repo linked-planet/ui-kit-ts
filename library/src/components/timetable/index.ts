@@ -1,6 +1,6 @@
 import React from "react"
 
-import LPTimeTable from "./LPTimeTable"
+import TimeTable from "./TimeTable"
 import type {
 	SelectedTimeSlot as _SelectedTimeSlot,
 	TimeSlotBooking as _TimeSlotBooking,
@@ -8,14 +8,14 @@ import type {
 	TimeTableGroup as _TimeTableGroup,
 	TimeTableViewType as _TimeTableViewType,
 	LPTimeTableProps,
-} from "./LPTimeTable"
+} from "./TimeTable"
 import type { TimeTablePlaceholderItemProps } from "./PlaceholderItem"
 import type { TimeTableItemProps } from "./ItemWrapper"
 
 export type { TimeTableItemProps } from "./ItemWrapper"
 export type { TimeTablePlaceholderItemProps } from "./PlaceholderItem"
 
-const memoized = React.memo(LPTimeTable) as typeof LPTimeTable
+const memoized = React.memo(TimeTable) as typeof TimeTable
 
 export { memoized as TimeTable }
 

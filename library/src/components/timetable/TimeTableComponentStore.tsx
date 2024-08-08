@@ -1,5 +1,5 @@
 import { proxy, snapshot } from "valtio"
-import type { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
+import type { TimeSlotBooking, TimeTableGroup } from "./TimeTable"
 import type { TimeTableItemProps } from "./ItemWrapper"
 import type { TimeTableGroupProps } from "./Group"
 import type { TimeTablePlaceholderItemProps } from "./PlaceholderItem"

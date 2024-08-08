@@ -1,5 +1,5 @@
 import { proxy, useSnapshot } from "valtio"
-import type { TimeTableGroup, TimeTableViewType } from "./LPTimeTable"
+import type { TimeTableGroup, TimeTableViewType } from "./TimeTable"
 import { calculateTimeSlotPropertiesForView } from "./timeTableUtils"
 import type { Dayjs } from "dayjs"
 import { clearTimeSlotSelection } from "./TimeTableSelectionStore"

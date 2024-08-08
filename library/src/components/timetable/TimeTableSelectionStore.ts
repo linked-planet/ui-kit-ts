@@ -1,5 +1,5 @@
 import { proxy, snapshot, useSnapshot } from "valtio"
-import type { TimeTableGroup } from "./LPTimeTable"
+import type { TimeTableGroup } from "./TimeTable"
 
 type TimeTableSelectionStore<G extends TimeTableGroup> = {
 	selection: {

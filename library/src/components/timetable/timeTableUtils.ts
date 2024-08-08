@@ -1,5 +1,5 @@
 import dayjs, { type Dayjs } from "dayjs"
-import type { TimeSlotBooking, TimeTableViewType } from "./LPTimeTable"
+import type { TimeSlotBooking, TimeTableViewType } from "./TimeTable"
 import type { TimeTableMessage } from "./TimeTableMessageContext"
 import type { TimeFrameDay } from "./TimeTableConfigStore"
 

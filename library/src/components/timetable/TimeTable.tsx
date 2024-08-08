@@ -5,7 +5,7 @@ import { type MutableRefObject, useCallback, useEffect, useRef } from "react"
 import useResizeObserver from "use-resize-observer"
 import { InlineMessage } from "../InlineMessage"
 import type { TimeTableItemProps } from "./ItemWrapper"
-import { LPTimeTableHeader, headerText } from "./LPTimeTableHeader"
+import { LPTimeTableHeader, headerText } from "./TimeTableHeader"
 import {
 	PlaceHolderItemPlaceHolder,
 	type TimeTablePlaceholderItemProps,

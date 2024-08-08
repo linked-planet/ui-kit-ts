@@ -1,4 +1,4 @@
-import type { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
+import type { TimeSlotBooking, TimeTableGroup } from "./TimeTable"
 
 import styles from "./Item.module.css"
 import type { TimeTableItemProps } from "./ItemWrapper"

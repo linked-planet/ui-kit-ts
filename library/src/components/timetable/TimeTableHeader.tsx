@@ -2,7 +2,7 @@ import dayjs, { type Dayjs } from "dayjs"
 import type React from "react"
 import { Fragment, forwardRef } from "react"
 
-import type { TimeTableViewType } from "./LPTimeTable"
+import type { TimeTableViewType } from "./TimeTable"
 import type { TimeFrameDay } from "./TimeTableConfigStore"
 
 const headerTimeSlotFormat = "HH:mm"
