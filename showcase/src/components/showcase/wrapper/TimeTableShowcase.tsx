@@ -543,6 +543,16 @@ function Example() {
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
 
+	const isCellDisabled = useCallback(
+		(group: TimeTableTypes.TimeTableGroup, start: Dayjs) => {
+			if (group.title === "Group 2") {
+				return start.isBefore(dayjs().startOf("day"))
+			}
+			return false
+		},
+		[],
+	)
+
 	console.log("SELECTED TIME RANGE", selectedTimeRange)
 
 	return (
@@ -770,12 +780,7 @@ function Example() {
 					disableWeekendInteractions={disabledWeekendInteractions}
 					showTimeSlotHeader={showTimeSlotHeader}
 					hideOutOfRangeMarkers={hideOutOfDayRangeMarkers}
-					isCellDisabled={(group, start) => {
-						if (group.title === "Group 2") {
-							return start.isBefore(dayjs().startOf("day"))
-						}
-						return false
-					}}
+					isCellDisabled={isCellDisabled}
 					viewType={viewType}
 				/>
 			</div>

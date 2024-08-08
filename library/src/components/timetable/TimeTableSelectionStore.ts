@@ -99,9 +99,13 @@ export function initAndUpdateTimeTableSelectionStore<G extends TimeTableGroup>(
 	}
 }
 
+/**
+ * returns the selected time slots, but only if the group matches and the time slot is within the selection
+ */
 export function useSelectedTimeSlots<G extends TimeTableGroup>(
 	ident: string,
 	group: G,
+	timeSlotNumber: number,
 ) {
 	const store = getStore<G>(ident)
 	if (!store) {
@@ -110,8 +114,13 @@ export function useSelectedTimeSlots<G extends TimeTableGroup>(
 		)
 	}
 	const selectedTimeSlots = useSnapshot(store.selection)
-	if (!selectedTimeSlots.groupId || selectedTimeSlots.groupId !== group.id) {
-		return null
+	if (
+		!selectedTimeSlots.groupId ||
+		selectedTimeSlots.groupId !== group.id ||
+		selectedTimeSlots.selectedTimeSlots?.length === 0 ||
+		!selectedTimeSlots.selectedTimeSlots?.includes(timeSlotNumber)
+	) {
+		return undefined
 	}
 	return selectedTimeSlots.selectedTimeSlots
 }

@@ -358,6 +358,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	viewType,
 	timeSlotMinutes,
 	slotsArray,
+	//selectedTimeSlots,
 }: {
 	group: G
 	groupNumber: number
@@ -365,9 +366,14 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	viewType: TimeTableViewType
 	timeSlotMinutes: number
 	slotsArray: readonly Dayjs[]
+	//selectedTimeSlots: number[] | undefined
 }) {
 	const storeIdent = useTimeTableIdent()
-	const selectedTimeSlots = useSelectedTimeSlots(storeIdent, group)
+	const selectedTimeSlots = useSelectedTimeSlots(
+		storeIdent,
+		group,
+		timeSlotNumber,
+	)
 	const placeHolderHeight = useTTCPlaceHolderHeight(storeIdent)
 	const isCellDisabled = useTTCIsCellDisabled(storeIdent)
 	const disableWeekendInteractions =
@@ -624,8 +630,6 @@ function useMouseHandlers<G extends TimeTableGroup>(
 	isWeekendDisabled: boolean,
 ) {
 	const storeIdent = useTimeTableIdent()
-	//const selectedTimeSlots = useSelectedTimeSlots(storeIdent, group)
-	//const multiSelectionMode = useMultiSelectionMode(storeIdent)
 
 	return useMemo(() => {
 		if (isDisabled || (isWeekendDay && isWeekendDisabled)) {
