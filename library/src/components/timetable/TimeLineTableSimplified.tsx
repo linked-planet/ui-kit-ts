@@ -35,7 +35,6 @@ import {
 import { useTimeTableIdent } from "./TimeTableIdentContext"
 import { useGroupComponent } from "./TimeTableComponentStore"
 import {
-	clearTimeSlotSelection,
 	getMultiSelectionMode,
 	setLastHandledTimeSlot,
 	setMultiSelectionMode,
@@ -387,10 +386,6 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 		? timeSlotAfter.day() !== timeSlot.day()
 		: true
 
-	const clearTimeSlotSelectionCB = useCallback(() => {
-		clearTimeSlotSelection(storeIdent)
-	}, [storeIdent])
-
 	let placeHolderItem: JSX.Element | undefined = undefined
 	if (isFirstOfSelection && selectedTimeSlots) {
 		placeHolderItem = (
@@ -401,7 +396,6 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 					selectedTimeSlots[selectedTimeSlots.length - 1]
 				].add(timeSlotMinutes, "minutes")}
 				height={placeHolderHeight}
-				clearTimeRangeSelectionCB={clearTimeSlotSelectionCB}
 			/>
 		)
 	}
@@ -687,13 +681,13 @@ function useMouseHandlers<G extends TimeTableGroup>(
 					"drag",
 				)
 			},
-			onMouseUp: () => {
+			onMouseUp: (e: MouseEvent) => {
 				const multiSelectionMode = getMultiSelectionMode(storeIdent)
 				toggleTimeSlotSelected(
 					storeIdent,
 					group,
 					timeSlotNumber,
-					multiSelectionMode ? "drag" : "click",
+					multiSelectionMode ? "drag-end" : "click",
 				)
 				setMultiSelectionMode(storeIdent, false)
 				setLastHandledTimeSlot(storeIdent, null)

@@ -1,4 +1,4 @@
-import { proxy, useSnapshot } from "valtio"
+import { proxy, snapshot, useSnapshot } from "valtio"
 import type { TimeTableGroup, TimeTableViewType } from "./TimeTable"
 import { calculateTimeSlotPropertiesForView } from "./timeTableUtils"
 import type { Dayjs } from "dayjs"
@@ -109,7 +109,7 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 			timeTableConfigStore[ident].basicProperties,
 		)
 
-		clearTimeSlotSelection(ident)
+		clearTimeSlotSelection(ident, true)
 
 		/*if (timeTableConfigStore[ident].viewType !== viewType) {
 			console.info("TimeTable - view type changed")
@@ -165,7 +165,7 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 		timeTableConfigStore[ident].timeSlotSelectionDisabled =
 			timeSlotSelectionDisabled
 		if (timeSlotSelectionDisabled) {
-			clearTimeSlotSelection(ident)
+			clearTimeSlotSelection(ident, true)
 		}
 	}
 
@@ -270,6 +270,10 @@ export function useTTCIsCellDisabled(ident: string) {
 		timeTableConfigStore[ident],
 	).isCellDisabled
 	return isCellDisabled
+}
+
+export function getTTCBasicProperties(ident: string) {
+	return snapshot(timeTableConfigStore[ident].basicProperties)
 }
 
 //#endregion

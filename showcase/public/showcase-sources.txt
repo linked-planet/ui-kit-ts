@@ -3875,12 +3875,10 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AKTextField from "@atlaskit/textfield"
-import AKTextArea from "@atlaskit/textarea"
 import {
 	Button,
 	ButtonGroup,
@@ -3958,7 +3956,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<AKTextField isReadOnly value={"readonly"} />
 			<AKTextField type="number" defaultValue={1} />
 			<AKTextField type="number" defaultValue={1} appearance="subtle" />
-			<AKTextArea placeholder="Text Area" />
+			{/*<AKTextArea placeholder="Text Area">It wants children</AKTextArea>*/}
 		</Fieldset>
 	)
 
@@ -6726,7 +6724,7 @@ function TextFieldShowcase(props: ShowcaseProps) {
 
 export default TextFieldShowcase
 
-import React, { useCallback, useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import { useState } from "react"
 import dayjs, { type Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -6767,12 +6765,14 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 >[] = [
 	{
 		group: {
+			id: "group-empty",
 			title: "Empty Group",
 		},
 		items: [],
 	},
 	{
 		group: {
+			id: "group-1",
 			title: "Group 1",
 			subtitle: "Group 1 description",
 		},
@@ -6859,6 +6859,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	},
 	{
 		group: {
+			id: "group-2",
 			title: "Group 2",
 			subtitle: "Group 2 description",
 		},
@@ -6916,6 +6917,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	},
 	{
 		group: {
+			id: "group-3",
 			title: "Group 3",
 			subtitle: "Group 3 description",
 		},
@@ -6941,6 +6943,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	},
 	{
 		group: {
+			id: "group-4",
 			title: "Group 4",
 			subtitle: "Group 4 description",
 		},
@@ -6997,6 +7000,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	},
 	{
 		group: {
+			id: "group-5",
 			title: "Group 5",
 			subtitle: "Whole Time Frame",
 		},
@@ -7022,6 +7026,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	},
 	{
 		group: {
+			id: "group-6",
 			title: "Group 6 (Directly Connected)",
 			subtitle: "Whole Time Frame",
 		},
@@ -7052,6 +7057,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	},
 	{
 		group: {
+			id: "group-7",
 			title: "Group 7 (Full Day)",
 			subtitle: "Whole Time Frame",
 		},
@@ -7129,6 +7135,7 @@ function createMoreTestGroups(
 		const groupNumber = startCount + i
 		newGroups.push({
 			group: {
+				id: `group-${groupNumber}`,
 				title: `Group ${groupNumber}`,
 				subtitle: "random",
 			},
@@ -7223,16 +7230,11 @@ function Example() {
 	//#endregion
 
 	const [showCreateNewItemModal, setShowCreateNewItemModal] = useState(false)
-	const [selectedTimeRange, setSelectedTimeRange] = useState<
-		| {
-				startDate: Dayjs
-				endDate: Dayjs
-				group: TimeTableTypes.TimeTableGroup
-		  }
-		| undefined
-	>()
-	const [clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB] =
-		useState<() => void>()
+	const [selectedTimeRange, setSelectedTimeRange] = useState<{
+		startDate: Dayjs
+		endDate: Dayjs
+		group: TimeTableTypes.TimeTableGroup
+	} | null>(null)
 	const [disableTimeRangeSelection, setDisableTimeRangeSelection] =
 		useState(false)
 
@@ -7254,21 +7256,20 @@ function Example() {
 				newGroupItems.push(item)
 				newGroup.items = newGroupItems
 				newEntries[groupIndex] = newGroup
-				// clears the selected time range in the table using a callback set by the selected time slots context in the time table
-				if (clearSelectedTimeRangeCB) {
-					clearSelectedTimeRangeCB()
-				}
 				return newEntries
 			})
-			setSelectedTimeRange(undefined)
+			setSelectedTimeRange(null)
 		},
-		[clearSelectedTimeRangeCB],
+		[],
 	)
 
-	const [viewType, setViewType] = useState<TimeTableTypes.TimeTableViewType>("hours")
+	const [viewType, setViewType] =
+		useState<TimeTableTypes.TimeTableViewType>("hours")
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
+
+	console.log("SELECTED TIME RANGE", selectedTimeRange)
 
 	return (
 		<>
@@ -7419,7 +7420,10 @@ function Example() {
 					<select
 						name="viewtype"
 						onChange={(e) =>
-							setViewType(e.target.value as TimeTableTypes.TimeTableViewType)
+							setViewType(
+								e.target
+									.value as TimeTableTypes.TimeTableViewType,
+							)
 						}
 						value={viewType}
 					>
@@ -7470,9 +7474,10 @@ function Example() {
 					timeStepsMinutes={timeSteps}
 					entries={entries}
 					selectedTimeSlotItem={selectedTimeSlotItem}
-					/*renderGroup={ Group }
-					renderTimeSlotItem={ Item }
-					renderPlaceHolder={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
+					selectedTimeRange={selectedTimeRange}
+					/*groupComponent={ Group }
+					timeSlotItemComponent={ Item }
+					placeHolderComponent={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
 						<div
 							style={ { height: props.height, backgroundColor: "rgba(0,0,0,0.1)", textAlign: "center" } }
 							onClick={ () => props.clearTimeRangeSelectionCB() }
@@ -7488,7 +7493,6 @@ function Example() {
 							? setSelectedTimeRange
 							: undefined
 					}
-					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
 					disableWeekendInteractions={disabledWeekendInteractions}
 					showTimeSlotHeader={showTimeSlotHeader}
 					hideOutOfRangeMarkers={hideOutOfDayRangeMarkers}
@@ -7548,6 +7552,9 @@ function ExampleCalendar() {
 					disableWeekendInteractions={true}
 					showTimeSlotHeader={false}
 					viewType={"days"}
+					itemsOutsideOfDayRangeFound={(items) => {
+						console.info("items outside of day range found", items)
+					}}
 				/>
 			</div>
 		</>

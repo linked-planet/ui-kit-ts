@@ -504,16 +504,11 @@ function Example() {
 	//#endregion
 
 	const [showCreateNewItemModal, setShowCreateNewItemModal] = useState(false)
-	const [selectedTimeRange, setSelectedTimeRange] = useState<
-		| {
-				startDate: Dayjs
-				endDate: Dayjs
-				group: TimeTableTypes.TimeTableGroup
-		  }
-		| undefined
-	>()
-	const [clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB] =
-		useState<() => void>()
+	const [selectedTimeRange, setSelectedTimeRange] = useState<{
+		startDate: Dayjs
+		endDate: Dayjs
+		group: TimeTableTypes.TimeTableGroup
+	} | null>(null)
 	const [disableTimeRangeSelection, setDisableTimeRangeSelection] =
 		useState(false)
 
@@ -535,15 +530,11 @@ function Example() {
 				newGroupItems.push(item)
 				newGroup.items = newGroupItems
 				newEntries[groupIndex] = newGroup
-				// clears the selected time range in the table using a callback set by the selected time slots context in the time table
-				if (clearSelectedTimeRangeCB) {
-					clearSelectedTimeRangeCB()
-				}
 				return newEntries
 			})
-			setSelectedTimeRange(undefined)
+			setSelectedTimeRange(null)
 		},
-		[clearSelectedTimeRangeCB],
+		[],
 	)
 
 	const [viewType, setViewType] =
@@ -551,6 +542,8 @@ function Example() {
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
+
+	console.log("SELECTED TIME RANGE", selectedTimeRange)
 
 	return (
 		<>
@@ -755,9 +748,10 @@ function Example() {
 					timeStepsMinutes={timeSteps}
 					entries={entries}
 					selectedTimeSlotItem={selectedTimeSlotItem}
-					/*renderGroup={ Group }
-					renderTimeSlotItem={ Item }
-					renderPlaceHolder={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
+					selectedTimeRange={selectedTimeRange}
+					/*groupComponent={ Group }
+					timeSlotItemComponent={ Item }
+					placeHolderComponent={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
 						<div
 							style={ { height: props.height, backgroundColor: "rgba(0,0,0,0.1)", textAlign: "center" } }
 							onClick={ () => props.clearTimeRangeSelectionCB() }
@@ -773,7 +767,6 @@ function Example() {
 							? setSelectedTimeRange
 							: undefined
 					}
-					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
 					disableWeekendInteractions={disabledWeekendInteractions}
 					showTimeSlotHeader={showTimeSlotHeader}
 					hideOutOfRangeMarkers={hideOutOfDayRangeMarkers}
@@ -833,6 +826,9 @@ function ExampleCalendar() {
 					disableWeekendInteractions={true}
 					showTimeSlotHeader={false}
 					viewType={"days"}
+					itemsOutsideOfDayRangeFound={(items) => {
+						console.info("items outside of day range found", items)
+					}}
 				/>
 			</div>
 		</>

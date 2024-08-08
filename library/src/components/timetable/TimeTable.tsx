@@ -32,7 +32,10 @@ import { TimeTableIdentProvider } from "./TimeTableIdentContext"
 import { initAndUpdateTimeTableComponentStore } from "./TimeTableComponentStore"
 import { Group as GroupComponent, type TimeTableGroupProps } from "./Group"
 import { Item as ItemComponent } from "./Item"
-import { initTimeTableSelectionStore } from "./TimeTableSelectionStore"
+import {
+	initAndUpdateTimeTableSelectionStore,
+	type onTimeRangeSelectedType,
+} from "./TimeTableSelectionStore"
 
 export interface TimeSlotBooking {
 	title: string
@@ -90,13 +93,11 @@ export interface LPTimeTableProps<
 	onTimeSlotItemClick?: (group: G, item: I) => void
 
 	/* this function gets called when a selection was made, i.g. to create a booking. the return value states if the selection should be cleared or not */
-	onTimeRangeSelected?: (
-		s: { group: G; startDate: Dayjs; endDate: Dayjs } | undefined,
-		// biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
-	) => boolean | undefined | void // if return is true, clear selection
+	onTimeRangeSelected?: onTimeRangeSelectedType<G>
 
-	/* The selected time range context sets this callback to be able for a time table parent component to clear the selected time range from outside */
-	setClearSelectedTimeRangeCB?: (cb: () => void) => void
+	/* the time range selected in case this is a controlled component, is null if the selection should be cleared */
+	selectedTimeRange?: { group: G; startDate: Dayjs; endDate: Dayjs } | null
+	defaultSelectedTimeRange?: { group: G; startDate: Dayjs; endDate: Dayjs }
 
 	onGroupClick?: (group: G) => void
 
@@ -115,6 +116,9 @@ export interface LPTimeTableProps<
 	placeHolderHeight?: string
 
 	placeHolderComponent?: React.ComponentType<TimeTablePlaceholderItemProps<G>>
+
+	/** provide a call to get notified if items are outside of the day range */
+	itemsOutsideOfDayRangeFound?: (item: TimeSlotBooking[]) => void
 
 	/**
 	 * Height sets the max height of the time table. If the content is larger, it will be scrollable.
@@ -199,8 +203,10 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	onTimeSlotItemClick,
 	onGroupClick,
 	onTimeRangeSelected,
-	setClearSelectedTimeRangeCB,
+	defaultSelectedTimeRange,
+	selectedTimeRange,
 	groupHeaderColumnWidth,
+	itemsOutsideOfDayRangeFound,
 	columnWidth = 70,
 	height = "100%",
 	placeHolderHeight = "1.5rem",
@@ -250,7 +256,12 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const timeFrameDay = useTTCTimeFrameOfDay(storeIdent)
 	const timeSlotMinutes = useTTCTimeSlotMinutes(storeIdent)
 
-	initTimeTableSelectionStore(storeIdent)
+	initAndUpdateTimeTableSelectionStore(
+		storeIdent,
+		defaultSelectedTimeRange,
+		selectedTimeRange,
+		onTimeRangeSelected,
+	)
 
 	const slotsArray = useTTCSlotsArray(storeIdent)
 	if (!slotsArray || slotsArray.length === 0) {
@@ -266,70 +277,67 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		if (!slotsArray) {
 			return
 		}
-		let foundItemsOutsideOfDayRangeCount = 0
-		let itemsWithSameStartAndEndCount = 0
+		let itemsOutsideOfDayRange: TimeSlotBooking[] | undefined = undefined
+		let itemsWithSameStartAndEnd: TimeSlotBooking[] | undefined = undefined
 		for (const entry of entries) {
-			const { itemsOutsideRange, itemsWithSameStartAndEnd } =
-				itemsOutsideOfDayRangeORSameStartAndEnd(
-					entry.items,
-					slotsArray,
-					timeFrameDay,
-					timeSlotMinutes,
-					viewType,
-				)
-			foundItemsOutsideOfDayRangeCount += itemsOutsideRange.length
-			itemsWithSameStartAndEndCount += itemsWithSameStartAndEnd.length
-		}
-		if (
-			foundItemsOutsideOfDayRangeCount &&
-			!itemsWithSameStartAndEndCount
-		) {
-			console.info(
-				"LPTimeTable - found items outside of day range:",
-				foundItemsOutsideOfDayRangeCount,
+			const {
+				itemsOutsideRange,
+				itemsWithSameStartAndEnd: _itemsWithSameStartAndEnd,
+			} = itemsOutsideOfDayRangeORSameStartAndEnd(
+				entry.items,
+				slotsArray,
+				timeFrameDay,
+				timeSlotMinutes,
+				viewType,
 			)
+			if (!itemsWithSameStartAndEnd) {
+				itemsWithSameStartAndEnd = _itemsWithSameStartAndEnd
+			} else {
+				itemsWithSameStartAndEnd = [
+					...itemsWithSameStartAndEnd,
+					..._itemsWithSameStartAndEnd,
+				]
+			}
+			if (!itemsOutsideOfDayRange) {
+				itemsOutsideOfDayRange = itemsOutsideRange
+			} else {
+				itemsOutsideOfDayRange = [
+					...itemsOutsideOfDayRange,
+					...itemsOutsideRange,
+				]
+			}
+		}
+		if (itemsOutsideOfDayRange?.length) {
+			console.info(
+				"TimeTable - found items outside of day range:",
+				itemsOutsideOfDayRange,
+			)
+			itemsOutsideOfDayRangeFound?.(itemsOutsideOfDayRange)
 			setMessage?.({
 				appearance: "warning",
 				messageKey: "timetable.bookingsOutsideOfDayRange",
-				messageValues: { itemCount: foundItemsOutsideOfDayRangeCount },
+				messageValues: { itemCount: itemsOutsideOfDayRange.length },
 			})
-		} else if (
-			itemsWithSameStartAndEndCount &&
-			!foundItemsOutsideOfDayRangeCount
-		) {
+		}
+		if (itemsWithSameStartAndEnd?.length) {
 			console.info(
-				"LPTimeTable - items with same start and end:",
-				itemsWithSameStartAndEndCount,
+				"TimeTable - items with same start and end:",
+				itemsWithSameStartAndEnd,
 			)
 			setMessage?.({
 				appearance: "warning",
 				messageKey: "timetable.sameStartAndEndTimeDate",
-				messageValues: { itemCount: itemsWithSameStartAndEndCount },
-			})
-		} else if (
-			itemsWithSameStartAndEndCount &&
-			foundItemsOutsideOfDayRangeCount
-		) {
-			console.info(
-				"LPTimeTable - found items outside of day range:",
-				foundItemsOutsideOfDayRangeCount,
-			)
-			setMessage?.({
-				appearance: "warning",
-				messageKey: "timetable.sameStartAndEndAndOutsideOfDayRange",
-				messageValues: {
-					outsideCount: foundItemsOutsideOfDayRangeCount,
-					sameStartAndEndCount: itemsWithSameStartAndEndCount,
-				},
+				messageValues: { itemCount: itemsWithSameStartAndEnd.length },
 			})
 		}
 	}, [
 		entries,
-		setMessage,
 		slotsArray,
 		timeFrameDay,
 		timeSlotMinutes,
 		viewType,
+		itemsOutsideOfDayRangeFound,
+		setMessage,
 	])
 	//#endregion
 

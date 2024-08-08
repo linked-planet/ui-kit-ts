@@ -8,7 +8,6 @@ export type TimeTablePlaceholderItemProps<G extends TimeTableGroup> = {
 	start: Dayjs
 	end: Dayjs
 	height: string
-	clearTimeRangeSelectionCB: () => void
 }
 
 /**
@@ -33,19 +32,12 @@ export function PlaceHolderItemWrapper<G extends TimeTableGroup>(
  */
 export function PlaceHolderItemPlaceHolder<G extends TimeTableGroup>({
 	height,
-	clearTimeRangeSelectionCB,
 }: TimeTablePlaceholderItemProps<G>) {
 	return (
 		<div
 			className="flex justify-end w-full rounded bg-brand-bold shadow-overlay"
 			style={{
 				height,
-			}}
-			onClick={clearTimeRangeSelectionCB}
-			onKeyDown={(e) => {
-				if (e.key === "Enter") {
-					clearTimeRangeSelectionCB()
-				}
 			}}
 		/>
 	)
