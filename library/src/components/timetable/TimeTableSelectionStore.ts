@@ -102,27 +102,14 @@ export function initAndUpdateTimeTableSelectionStore<G extends TimeTableGroup>(
 /**
  * returns the selected time slots, but only if the group matches and the time slot is within the selection
  */
-export function useSelectedTimeSlots<G extends TimeTableGroup>(
-	ident: string,
-	group: G,
-	timeSlotNumber: number,
-) {
+export function useTimeSlotSelection<G extends TimeTableGroup>(ident: string) {
 	const store = getStore<G>(ident)
 	if (!store) {
 		throw new Error(
 			`useSelectedTimeSlots - no time table selection store found for ident: ${ident}`,
 		)
 	}
-	const selectedTimeSlots = useSnapshot(store.selection)
-	if (
-		!selectedTimeSlots.groupId ||
-		selectedTimeSlots.groupId !== group.id ||
-		selectedTimeSlots.selectedTimeSlots?.length === 0 ||
-		!selectedTimeSlots.selectedTimeSlots?.includes(timeSlotNumber)
-	) {
-		return undefined
-	}
-	return selectedTimeSlots.selectedTimeSlots
+	return useSnapshot(store.selection)
 }
 
 export function setTimeSlotSelection<G extends TimeTableGroup>(
