@@ -12,61 +12,35 @@ import type { TimeFrameDay } from "./TimeTableConfigStore"
 /**
  * Contains the items of one group row (one row within one group)
  */
-export type ItemRowEntry<I extends TimeSlotBooking> = {
+export type ItemRowEntry<I extends TimeSlotBooking = TimeSlotBooking> = {
 	item: I
 	startSlot: number
 	endSlot: number
 	status: "before" | "after" | "in" // before: starts and ends before the time slot, after: starts and ends after the time slot, in: overlaps the time slot
 }
 
-type ProxyGroupItemRowEntries<I extends TimeSlotBooking> = {
-	rows: ItemRowEntry<I>[][]
+type ProxyGroupItemRowEntries = {
+	rows: ItemRowEntry[][]
 } // the proxy is only on rows, but the rows value (the array of arrays) is not a proxy
 
-type GroupRowStore<I extends TimeSlotBooking> = {
-	[groupId: string]: ProxyGroupItemRowEntries<I>
+type GroupRowStore = {
+	[storeIdent: string]: {
+		groups: {
+			[groupId: string]: ProxyGroupItemRowEntries
+		}
+		overallRowCount: {
+			value: number
+		}
+	}
 }
 
-const { get, getStore, set, clear } = (() => {
-	const store: { [ident: string]: GroupRowStore<TimeSlotBooking> } = {}
-
-	const getStore = (storeIdent: string) => store[storeIdent]
-
-	const get = <I extends TimeSlotBooking>(
-		storeIdent: string,
-		groupId: string,
-	) => {
-		if (!store[storeIdent]) {
-			return undefined
-		}
-		return store[storeIdent][groupId] as ProxyGroupItemRowEntries<I>
-	}
-
-	const set = <I extends TimeSlotBooking>(
-		storeIdent: string,
-		groupId: string,
-		itemRows: ProxyGroupItemRowEntries<I>,
-	) => {
-		if (!store[storeIdent]) {
-			store[storeIdent] = {}
-		}
-		store[storeIdent][groupId] = itemRows as ProxyGroupItemRowEntries<I>
-	}
-
-	const clear = (storeIdent: string) => {
-		for (const groupId in store[storeIdent]) {
-			delete store[storeIdent][groupId]
-		}
-	}
-
-	return { get, getStore, set, clear }
-})()
+const store: GroupRowStore = proxy<GroupRowStore>({})
 
 /**
  * Clears the complete group row store.
  */
 export function clearGroupRowStore(storeIdent: string) {
-	clear(storeIdent)
+	delete store[storeIdent]
 }
 
 export function initAndUpdateGroupRowStore<
@@ -80,6 +54,14 @@ export function initAndUpdateGroupRowStore<
 	timeSlotMinutes: number,
 	viewType: TimeTableViewType,
 ) {
+	let tableStore = store[storeIdent]
+	if (!tableStore) {
+		tableStore = {
+			groups: proxy({}),
+			overallRowCount: proxy({ value: 0 }),
+		}
+		store[storeIdent] = tableStore
+	}
 	for (const entry of timeTableEntries) {
 		const groupRows = getGroupItemStack<I>(
 			entry.items,
@@ -88,11 +70,11 @@ export function initAndUpdateGroupRowStore<
 			timeSlotMinutes,
 			viewType,
 		)
-		let storeEntry = get<I>(storeIdent, entry.group.id)
+		let storeEntry = tableStore.groups[entry.group.id]
 		if (!storeEntry) {
 			// set initial proxy
 			storeEntry = proxy({ rows: [] })
-			set<I>(storeIdent, entry.group.id, storeEntry)
+			tableStore.groups[entry.group.id] = storeEntry
 		}
 		// check if the entries are the same, and if not, update the proxy
 		let needsUpdate = false
@@ -115,14 +97,6 @@ export function initAndUpdateGroupRowStore<
 						rowItem.status !== newRowItem.status ||
 						!Object.is(rowItem.item, newRowItem.item)
 					) {
-						if (!Object.is(rowItem.item, newRowItem.item)) {
-							console.log(
-								"DIFF ",
-								entry.group.id,
-								rowItem.item,
-								newRowItem.item,
-							)
-						}
 						needsUpdate = true
 						break
 					}
@@ -134,32 +108,30 @@ export function initAndUpdateGroupRowStore<
 		}
 		if (needsUpdate) {
 			// update the proxy
-			//storeEntry.splice(0, Number.POSITIVE_INFINITY, ...groupRows)
 			// on purpose replace the array to no create proxies, which makes item comparision above rowItem.item !== newRowItem.item
 			// always returns true, and triggers a rendering of the whole table
 			storeEntry.rows = ref(groupRows)
-			console.log(
-				"UPDATED GROUP ROWS AFTER",
-				entry.group.id,
-				storeEntry.rows,
-			)
 		}
 	}
 
-	const store = getStore(storeIdent)
-	for (const groupId in store) {
+	// remove the groups that are not in the time table entries
+	let rowCount = 0
+	for (const groupId in tableStore.groups) {
 		if (timeTableEntries.find((it) => it.group.id === groupId)) {
-			continue
+			rowCount += tableStore.groups[groupId].rows.length
+			continue // we need to keep the group
 		}
-		delete store[groupId]
+		delete tableStore.groups[groupId]
 	}
+
+	tableStore.overallRowCount.value = rowCount
 }
 
 export function useGroupRows<I extends TimeSlotBooking>(
 	storeIdent: string,
 	groupId: string,
 ) {
-	const groupRows = get<I>(storeIdent, groupId)
+	const groupRows = store[storeIdent].groups[groupId]
 	if (!groupRows) {
 		throw new Error(
 			`TimeTable - useGroupRows - no group rows found for group id ${groupId}`,
@@ -168,6 +140,16 @@ export function useGroupRows<I extends TimeSlotBooking>(
 	const ret = useSnapshot(groupRows)
 		.rows as readonly (readonly ItemRowEntry<I>[])[]
 	return ret
+}
+
+export function useOverallRowCount(storeIdent: string) {
+	const storeEntry = store[storeIdent]
+	if (!storeEntry) {
+		throw new Error(
+			`TimeTable - useOverallRowCount - no group row store found for storeIdent: ${storeIdent}`,
+		)
+	}
+	return storeEntry.overallRowCount.value
 }
 
 /**

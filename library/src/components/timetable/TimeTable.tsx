@@ -36,7 +36,10 @@ import {
 	initAndUpdateTimeTableSelectionStore,
 	type onTimeRangeSelectedType,
 } from "./TimeTableSelectionStore"
-import { initAndUpdateGroupRowStore } from "./GroupRowsStore"
+import {
+	initAndUpdateGroupRowStore,
+	useOverallRowCount,
+} from "./GroupRowsStore"
 
 export interface TimeSlotBooking {
 	title: string
@@ -352,6 +355,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		timeSlotMinutes,
 		viewType,
 	)
+
+	const overallRowCount = useOverallRowCount(storeIdent)
+	console.log("OVERALL ROW COUNT", overallRowCount)
 	//#endregion
 
 	//#region now bar

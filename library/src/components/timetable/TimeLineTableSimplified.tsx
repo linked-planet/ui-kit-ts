@@ -8,7 +8,7 @@ import type {
 } from "./TimeTable"
 
 import ItemWrapper from "./ItemWrapper"
-import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
+import {} from "./timeTableUtils"
 
 import useResizeObserver, { type ObservedSize } from "use-resize-observer"
 import { PlaceHolderItemWrapper } from "./PlaceholderItem"
@@ -69,7 +69,6 @@ export default function TimeLineTableSimplified<
 				key={`${groupEntry.group.title}${g}`}
 				group={groupEntry.group}
 				groupNumber={g}
-				items={groupEntry.items}
 				onGroupHeaderClick={onGroupClick}
 				onTimeSlotItemClick={onTimeSlotItemClick}
 				selectedTimeSlotItem={selectedTimeSlotItem}
@@ -590,7 +589,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	])
 
 	const groupRows = useMemo(() => {
-		console.log("NEW GROUP ROWS", group.id)
 		const trs: JSX.Element[] = []
 		if (placerHolderRow) {
 			trs.push(
@@ -719,96 +717,6 @@ function useMouseHandlers<G extends TimeTableGroup>(
 		timeSlotNumber,
 		storeIdent,
 	])
-}
-
-/**
- * create the group item stack of all items in a group by looking for overlapping items, and moving them in the next row until there are no overlaps
- * @param groupItems  the items of the group
- * @returns  the items grouped by row that one row has no overlapping items
- */
-function getGroupItemStack<I extends TimeSlotBooking>(
-	groupItems: I[],
-	slotsArray: readonly Dayjs[],
-	timeFrameDay: TimeFrameDay,
-	timeSlotMinutes: number,
-	viewType: TimeTableViewType,
-) {
-	const itemRows: {
-		startSlot: number
-		endSlot: number
-		status: "before" | "after" | "in"
-		item: I
-	}[][] = []
-	if (!slotsArray || slotsArray.length === 0) {
-		console.info("TimeTable - no slots array, returning empty item rows")
-		return itemRows
-	}
-	for (const item of groupItems) {
-		let added = false
-
-		const startEndSlots = getStartAndEndSlot(
-			item,
-			slotsArray,
-			timeFrameDay,
-			timeSlotMinutes,
-			viewType,
-		)
-
-		const ret = {
-			...startEndSlots,
-			item,
-		}
-
-		if (
-			item.startDate.startOf("day") === item.endDate.startOf("day") &&
-			(item.endDate.hour() < timeFrameDay.startHour ||
-				(item.endDate.hour() === timeFrameDay.startHour &&
-					item.endDate.minute() < timeFrameDay.startMinute))
-		) {
-			if (itemRows.length === 0) {
-				itemRows.push([ret])
-			} else {
-				itemRows[0].push(ret)
-			}
-			return
-		}
-
-		if (
-			item.startDate.hour() > timeFrameDay.endHour ||
-			(item.startDate.hour() === timeFrameDay.endHour &&
-				item.startDate.minute() > timeFrameDay.endMinute)
-		) {
-			if (itemRows.length === 0) {
-				itemRows.push([ret])
-			} else {
-				itemRows[0].push(ret)
-			}
-			return
-		}
-
-		for (let r = 0; r < itemRows.length; r++) {
-			const itemRow = itemRows[r]
-			// find collision
-			const collision = itemRow.find((it) => isOverlapping(it.item, item))
-			if (!collision) {
-				// no collision, add to row
-				itemRow.push(ret)
-				added = true
-				break
-			}
-		}
-		if (!added) {
-			// create new row
-			itemRows.push([ret])
-		}
-	}
-
-	// sort the rows
-	for (const row of itemRows) {
-		row.sort((a, b) => a.item.startDate.diff(b.item.startDate))
-	}
-
-	return itemRows
 }
 
 /**
