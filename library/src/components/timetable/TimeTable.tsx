@@ -36,6 +36,7 @@ import {
 	initAndUpdateTimeTableSelectionStore,
 	type onTimeRangeSelectedType,
 } from "./TimeTableSelectionStore"
+import { initAndUpdateGroupRowStore } from "./GroupRowsStore"
 
 export interface TimeSlotBooking {
 	title: string
@@ -229,6 +230,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		setMessage?.(undefined) // clear the message on time frame change
 	}, [viewType, startDate, endDate, setMessage, timeStepsMinutes])
 
+	const tableRef = useRef<HTMLTableElement>(null)
 	const tableHeaderRef = useRef<HTMLTableSectionElement>(null)
 	const tableBodyRef = useRef<HTMLTableSectionElement>(null)
 	const inlineMessageRef = useRef<HTMLDivElement>(null)
@@ -341,6 +343,17 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	])
 	//#endregion
 
+	//#region Group Rows Store
+	initAndUpdateGroupRowStore(
+		storeIdent,
+		entries,
+		slotsArray,
+		timeFrameDay,
+		timeSlotMinutes,
+		viewType,
+	)
+	//#endregion
+
 	//#region now bar
 	const nowBarRef = useRef<HTMLDivElement | undefined>()
 	const nowRef = useRef<Dayjs>(nowOverwrite ?? dayjs())
@@ -414,6 +427,32 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	})
 	//#endregion
 
+	//#region virtualizer
+	/*const rowVirtualizer = useVirtualizer({
+		count: slotsArray.length,
+		getScrollElement: () => tableRef.current,
+		estimateSize: () => slotsArray.length,
+		overscan: 0,
+		scrollToFn: ({ index, align }) => {
+			if (tableRef.current) {
+				tableRef.current.scrollTo({
+					top: index * slotsArray.length,
+					behavior: "smooth",
+				})
+			}
+		},
+		onScroll: ({ scrollOffset }) => {
+			if (tableRef.current) {
+				tableRef.current.style.setProperty(
+					"--scroll-offset",
+					`${scrollOffset}px`,
+				)
+			}
+		},
+	})*/
+
+	//#endregion
+
 	// scroll now bar into view if it exists
 	// TODO fix this, it doesn't work
 	/*useLayoutEffect( () => {
@@ -462,6 +501,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 						className={
 							"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
 						}
+						ref={tableRef}
 					>
 						<LPTimeTableHeader
 							slotsArray={slotsArray}

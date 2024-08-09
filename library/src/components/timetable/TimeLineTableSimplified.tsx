@@ -34,6 +34,7 @@ import {
 	toggleTimeSlotSelected,
 	useTimeSlotSelection,
 } from "./TimeTableSelectionStore"
+import { type ItemRowEntry, useGroupRows } from "./GroupRowsStore"
 
 interface TimeLineTableSimplifiedProps<
 	G extends TimeTableGroup,
@@ -137,13 +138,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	groupNumber: number
 	isFirstRow: boolean
 	isLastGroupRow: boolean
-	bookingItemsBeginningInCell:
-		| {
-				item: I
-				endSlot: number
-				status: "before" | "after" | "in"
-		  }[]
-		| undefined
+	bookingItemsBeginningInCell: readonly ItemRowEntry<I>[] | undefined
 	selectedTimeSlotItem: I | undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 	slotsArray: readonly Dayjs[]
@@ -460,23 +455,18 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	group,
 	groupNumber,
-	items,
 	onGroupHeaderClick,
 	selectedTimeSlotItem,
 	onTimeSlotItemClick,
-	//selectedTimeSlots,
 }: {
 	group: G
 	groupNumber: number
-	items: I[]
 	onGroupHeaderClick: ((group: G) => void) | undefined
 	selectedTimeSlotItem: I | undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
-	//selectedTimeSlots: readonly number[] | null | undefined
 }) {
 	const storeIdent = useTimeTableIdent()
 	const slotsArray = useTTCSlotsArray(storeIdent)
-	const placeHolderHeight = useTTCPlaceHolderHeight(storeIdent)
 	const viewType = useTTCViewType(storeIdent)
 	const timeSlotSelectionDisabled =
 		useTTCTimeSlotSelectionDisabled(storeIdent)
@@ -489,17 +479,8 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			? _selectedTimeSlots.selectedTimeSlots
 			: undefined
 
-	const itemRows = useMemo(
-		() =>
-			getGroupItemStack(
-				items,
-				slotsArray,
-				timeFrameDay,
-				timeSlotMinutes,
-				viewType,
-			),
-		[items, slotsArray, timeFrameDay, timeSlotMinutes, viewType],
-	)
+	const itemRows = useGroupRows<I>(storeIdent, group.id)
+
 	const rowCount = itemRows && itemRows.length > 0 ? itemRows.length : 1 // if there are no rows, we draw an empty one
 
 	const groupHeader = useMemo(() => {
@@ -609,15 +590,12 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	])
 
 	const groupRows = useMemo(() => {
-		if (placerHolderRow) {
-			placerHolderRow.unshift(groupHeader)
-		} else {
-			normalRows[0].unshift(groupHeader)
-		}
+		console.log("NEW GROUP ROWS", group.id)
 		const trs: JSX.Element[] = []
 		if (placerHolderRow) {
 			trs.push(
 				<tr key={-1} className="bg-surface box-border h-4">
+					{groupHeader}
 					{placerHolderRow}
 				</tr>,
 			)
@@ -628,6 +606,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					key={`group-row-${group.id}-${r}`}
 					className="bg-surface box-border h-4"
 				>
+					{!placerHolderRow && r === 0 && groupHeader}
 					{normalRows[r]}
 				</tr>,
 			)
@@ -761,7 +740,7 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 		item: I
 	}[][] = []
 	if (!slotsArray || slotsArray.length === 0) {
-		console.info("LPTimeTable - no slots array, returning empty item rows")
+		console.info("TimeTable - no slots array, returning empty item rows")
 		return itemRows
 	}
 	for (const item of groupItems) {
