@@ -8,19 +8,17 @@ import type {
 } from "./TimeTable"
 
 import ItemWrapper from "./ItemWrapper"
-import {} from "./timeTableUtils"
 
 import useResizeObserver, { type ObservedSize } from "use-resize-observer"
 import { PlaceHolderItemWrapper } from "./PlaceholderItem"
 import {
+	getTTCBasicProperties,
 	type TimeFrameDay,
 	useTTCColumnWidth,
 	useTTCDisableWeekendInteractions,
 	useTTCHideOutOfRangeMarkers,
 	useTTCIsCellDisabled,
 	useTTCPlaceHolderHeight,
-	useTTCSlotsArray,
-	useTTCTimeFrameOfDay,
 	useTTCTimeSlotMinutes,
 	useTTCTimeSlotSelectionDisabled,
 	useTTCViewType,
@@ -34,13 +32,12 @@ import {
 	toggleTimeSlotSelected,
 	useTimeSlotSelection,
 } from "./TimeTableSelectionStore"
-import { type ItemRowEntry, useGroupRows } from "./GroupRowsStore"
+import { type ItemRowEntry, useGroupRows } from "./useGoupRows"
 
 interface TimeLineTableSimplifiedProps<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 > {
-	/* Entries define the groups, and the items in the groups */
 	entries: TimeTableEntry<G, I>[]
 
 	selectedTimeSlotItem: I | undefined
@@ -62,19 +59,36 @@ export default function TimeLineTableSimplified<
 	onTimeSlotItemClick,
 	selectedTimeSlotItem,
 }: TimeLineTableSimplifiedProps<G, I>) {
+	const {
+		groupRows,
+		rowCount,
+		maxRowCountOfSingleGroup,
+		itemsOutsideOfDayRange,
+	} = useGroupRows(entries)
+
 	const tableRows = useMemo(() => {
 		if (!entries) return []
-		return entries.map((groupEntry, g) => (
-			<GroupRows<G, I>
-				key={`${groupEntry.group.title}${g}`}
-				group={groupEntry.group}
-				groupNumber={g}
-				onGroupHeaderClick={onGroupClick}
-				onTimeSlotItemClick={onTimeSlotItemClick}
-				selectedTimeSlotItem={selectedTimeSlotItem}
-			/>
-		))
-	}, [entries, onGroupClick, onTimeSlotItemClick, selectedTimeSlotItem])
+		return entries.map((groupEntry, g) => {
+			const rows = groupRows[groupEntry.group.id]
+			return (
+				<GroupRows<G, I>
+					key={`${groupEntry.group.title}${g}`}
+					group={groupEntry.group}
+					groupNumber={g}
+					itemRows={rows}
+					onGroupHeaderClick={onGroupClick}
+					onTimeSlotItemClick={onTimeSlotItemClick}
+					selectedTimeSlotItem={selectedTimeSlotItem}
+				/>
+			)
+		})
+	}, [
+		groupRows,
+		entries,
+		onGroupClick,
+		onTimeSlotItemClick,
+		selectedTimeSlotItem,
+	])
 
 	return <>{tableRows}</>
 }
@@ -454,31 +468,31 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	group,
 	groupNumber,
+	itemRows,
 	onGroupHeaderClick,
 	selectedTimeSlotItem,
 	onTimeSlotItemClick,
 }: {
 	group: G
 	groupNumber: number
+	itemRows: ItemRowEntry<I>[][]
 	onGroupHeaderClick: ((group: G) => void) | undefined
 	selectedTimeSlotItem: I | undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 }) {
 	const storeIdent = useTimeTableIdent()
-	const slotsArray = useTTCSlotsArray(storeIdent)
+	const { slotsArray, timeFrameDay, timeSlotMinutes } =
+		getTTCBasicProperties(storeIdent)
 	const viewType = useTTCViewType(storeIdent)
 	const timeSlotSelectionDisabled =
 		useTTCTimeSlotSelectionDisabled(storeIdent)
-	const timeFrameDay = useTTCTimeFrameOfDay(storeIdent)
-	const timeSlotMinutes = useTTCTimeSlotMinutes(storeIdent)
-
 	const _selectedTimeSlots = useTimeSlotSelection(storeIdent)
 	const selectedTimeSlots =
 		_selectedTimeSlots.groupId === group.id
 			? _selectedTimeSlots.selectedTimeSlots
 			: undefined
 
-	const itemRows = useGroupRows<I>(storeIdent, group.id)
+	//const itemRows = useGroupRows<I>(storeIdent, group.id)
 
 	const rowCount = itemRows && itemRows.length > 0 ? itemRows.length : 1 // if there are no rows, we draw an empty one
 
@@ -588,7 +602,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		onTimeSlotItemClick,
 	])
 
-	const groupRows = useMemo(() => {
+	const tableRows = useMemo(() => {
 		const trs: JSX.Element[] = []
 		if (placerHolderRow) {
 			trs.push(
@@ -612,7 +626,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		return trs
 	}, [placerHolderRow, normalRows, group.id, groupHeader])
 
-	return <>{groupRows}</>
+	return <>{tableRows}</>
 }
 
 let mouseLeftTS: number | null = null

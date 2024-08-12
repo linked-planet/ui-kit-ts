@@ -18,10 +18,6 @@ import {
 	useTimeTableMessage,
 } from "./TimeTableMessageContext"
 import {
-	getStartAndEndSlot,
-	itemsOutsideOfDayRangeORSameStartAndEnd,
-} from "./timeTableUtils"
-import {
 	initAndUpdateTimeTableConfigStore,
 	type TimeFrameDay,
 	useTTCSlotsArray,
@@ -36,10 +32,7 @@ import {
 	initAndUpdateTimeTableSelectionStore,
 	type onTimeRangeSelectedType,
 } from "./TimeTableSelectionStore"
-import {
-	initAndUpdateGroupRowStore,
-	useOverallRowCount,
-} from "./GroupRowsStore"
+import { getStartAndEndSlot } from "./useGoupRows"
 
 export interface TimeSlotBooking {
 	title: string
@@ -258,6 +251,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		!onTimeRangeSelected,
 		isCellDisabled,
 	)
+
 	const timeFrameDay = useTTCTimeFrameOfDay(storeIdent)
 	const timeSlotMinutes = useTTCTimeSlotMinutes(storeIdent)
 
@@ -278,7 +272,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	}
 
 	//#region Message if items of entries are outside of the time frame of the day
-	useEffect(() => {
+	/*useEffect(() => {
 		if (!slotsArray) {
 			return
 		}
@@ -343,21 +337,18 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		viewType,
 		itemsOutsideOfDayRangeFound,
 		setMessage,
-	])
+	])*/
 	//#endregion
 
 	//#region Group Rows Store
-	initAndUpdateGroupRowStore(
+	/*initAndUpdateGroupRowStore(
 		storeIdent,
 		entries,
 		slotsArray,
 		timeFrameDay,
 		timeSlotMinutes,
 		viewType,
-	)
-
-	const overallRowCount = useOverallRowCount(storeIdent)
-	console.log("OVERALL ROW COUNT", overallRowCount)
+	)*/
 	//#endregion
 
 	//#region now bar
@@ -434,27 +425,13 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	//#endregion
 
 	//#region virtualizer
-	/*const rowVirtualizer = useVirtualizer({
-		count: slotsArray.length,
+	/*const overallRowCount = useOverallRowCount(storeIdent)
+	const rowVirtualizer = useVirtualizer({
+		count: overallRowCount,
 		getScrollElement: () => tableRef.current,
-		estimateSize: () => slotsArray.length,
-		overscan: 0,
-		scrollToFn: ({ index, align }) => {
-			if (tableRef.current) {
-				tableRef.current.scrollTo({
-					top: index * slotsArray.length,
-					behavior: "smooth",
-				})
-			}
-		},
-		onScroll: ({ scrollOffset }) => {
-			if (tableRef.current) {
-				tableRef.current.style.setProperty(
-					"--scroll-offset",
-					`${scrollOffset}px`,
-				)
-			}
-		},
+		estimateSize: (index: number) => 30, // TODO make a prop with a row height?
+		lanes: slotsArray.length,
+		overscan: 3,
 	})*/
 
 	//#endregion

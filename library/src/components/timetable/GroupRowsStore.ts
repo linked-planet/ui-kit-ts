@@ -5,9 +5,10 @@ import type {
 	TimeTableGroup,
 	TimeTableViewType,
 } from "./TimeTable"
-import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
+import { isOverlapping } from "./timeTableUtils"
 import type { Dayjs } from "dayjs"
 import type { TimeFrameDay } from "./TimeTableConfigStore"
+import { getStartAndEndSlot } from "./useGoupRows"
 
 /**
  * Contains the items of one group row (one row within one group)
