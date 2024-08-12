@@ -32,7 +32,7 @@ import {
 	initAndUpdateTimeTableSelectionStore,
 	type onTimeRangeSelectedType,
 } from "./TimeTableSelectionStore"
-import { getStartAndEndSlot } from "./useGoupRows"
+import { getStartAndEndSlot, useGroupRows } from "./useGoupRows"
 
 export interface TimeSlotBooking {
 	title: string
@@ -271,85 +271,52 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		return <div>No slots array</div>
 	}
 
-	//#region Message if items of entries are outside of the time frame of the day
-	/*useEffect(() => {
-		if (!slotsArray) {
-			return
-		}
-		let itemsOutsideOfDayRange: TimeSlotBooking[] | undefined = undefined
-		let itemsWithSameStartAndEnd: TimeSlotBooking[] | undefined = undefined
-		for (const entry of entries) {
-			const {
-				itemsOutsideRange,
-				itemsWithSameStartAndEnd: _itemsWithSameStartAndEnd,
-			} = itemsOutsideOfDayRangeORSameStartAndEnd(
-				entry.items,
-				slotsArray,
-				timeFrameDay,
-				timeSlotMinutes,
-				viewType,
-			)
-			if (!itemsWithSameStartAndEnd) {
-				itemsWithSameStartAndEnd = _itemsWithSameStartAndEnd
-			} else {
-				itemsWithSameStartAndEnd = [
-					...itemsWithSameStartAndEnd,
-					..._itemsWithSameStartAndEnd,
-				]
-			}
-			if (!itemsOutsideOfDayRange) {
-				itemsOutsideOfDayRange = itemsOutsideRange
-			} else {
-				itemsOutsideOfDayRange = [
-					...itemsOutsideOfDayRange,
-					...itemsOutsideRange,
-				]
-			}
-		}
-		if (itemsOutsideOfDayRange?.length) {
+	const {
+		groupRows,
+		rowCount,
+		maxRowCountOfSingleGroup,
+		itemsOutsideOfDayRange,
+		itemsWithSameStartAndEnd,
+	} = useGroupRows(entries)
+
+	useEffect(() => {
+		if (!setMessage) return
+		if (Object.keys(itemsOutsideOfDayRange).length > 0) {
 			console.info(
-				"TimeTable - found items outside of day range:",
+				"LPTimeTable - items outside of day range:",
 				itemsOutsideOfDayRange,
 			)
-			itemsOutsideOfDayRangeFound?.(itemsOutsideOfDayRange)
-			setMessage?.({
-				appearance: "warning",
-				messageKey: "timetable.bookingsOutsideOfDayRange",
-				messageValues: { itemCount: itemsOutsideOfDayRange.length },
-			})
-		}
-		if (itemsWithSameStartAndEnd?.length) {
+			let itemCount = 0
+			for (const groupId in itemsOutsideOfDayRange) {
+				const group = itemsOutsideOfDayRange[groupId]
+				itemCount += group.length
+			}
+			if (itemCount > 0) {
+				setMessage?.({
+					appearance: "warning",
+					messageKey: "timetable.bookingsOutsideOfDayRange",
+					messageValues: { itemCount },
+				})
+			}
+		} else if (Object.keys(itemsWithSameStartAndEnd).length > 0) {
 			console.info(
-				"TimeTable - items with same start and end:",
+				"LPTimeTable - items with same start and end:",
 				itemsWithSameStartAndEnd,
 			)
-			setMessage?.({
-				appearance: "warning",
-				messageKey: "timetable.sameStartAndEndTimeDate",
-				messageValues: { itemCount: itemsWithSameStartAndEnd.length },
-			})
+			let itemCount = 0
+			for (const groupId in itemsWithSameStartAndEnd) {
+				const group = itemsWithSameStartAndEnd[groupId]
+				itemCount += group.length
+			}
+			if (itemCount > 0) {
+				setMessage?.({
+					appearance: "warning",
+					messageKey: "timetable.sameStartAndEndTimeDate",
+					messageValues: { itemCount },
+				})
+			}
 		}
-	}, [
-		entries,
-		slotsArray,
-		timeFrameDay,
-		timeSlotMinutes,
-		viewType,
-		itemsOutsideOfDayRangeFound,
-		setMessage,
-	])*/
-	//#endregion
-
-	//#region Group Rows Store
-	/*initAndUpdateGroupRowStore(
-		storeIdent,
-		entries,
-		slotsArray,
-		timeFrameDay,
-		timeSlotMinutes,
-		viewType,
-	)*/
-	//#endregion
+	}, [itemsOutsideOfDayRange, itemsWithSameStartAndEnd, setMessage])
 
 	//#region now bar
 	const nowBarRef = useRef<HTMLDivElement | undefined>()
@@ -509,6 +476,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								selectedTimeSlotItem={selectedTimeSlotItem}
 								onTimeSlotItemClick={onTimeSlotItemClick}
 								onGroupClick={onGroupClick}
+								groupRows={groupRows}
 							/>
 						</tbody>
 					</table>

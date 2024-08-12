@@ -32,13 +32,15 @@ import {
 	toggleTimeSlotSelected,
 	useTimeSlotSelection,
 } from "./TimeTableSelectionStore"
-import { type ItemRowEntry, useGroupRows } from "./useGoupRows"
+import type { ItemRowEntry } from "./useGoupRows"
 
 interface TimeLineTableSimplifiedProps<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 > {
 	entries: TimeTableEntry<G, I>[]
+
+	groupRows: { [groupId: string]: ItemRowEntry<I>[][] }
 
 	selectedTimeSlotItem: I | undefined
 
@@ -55,17 +57,11 @@ export default function TimeLineTableSimplified<
 	I extends TimeSlotBooking,
 >({
 	entries,
+	groupRows,
 	onGroupClick,
 	onTimeSlotItemClick,
 	selectedTimeSlotItem,
 }: TimeLineTableSimplifiedProps<G, I>) {
-	const {
-		groupRows,
-		rowCount,
-		maxRowCountOfSingleGroup,
-		itemsOutsideOfDayRange,
-	} = useGroupRows(entries)
-
 	const tableRows = useMemo(() => {
 		if (!entries) return []
 		return entries.map((groupEntry, g) => {

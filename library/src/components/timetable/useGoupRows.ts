@@ -39,11 +39,13 @@ export function useGroupRows<
 		rowCount: number
 		maxRowCountOfSingleGroup: number
 		itemsOutsideOfDayRange: { [groupId: string]: I[] }
+		itemsWithSameStartAndEnd: { [groupId: string]: I[] }
 	}>({
 		groupRows: {},
 		rowCount: 0,
 		maxRowCountOfSingleGroup: 0,
 		itemsOutsideOfDayRange: {},
+		itemsWithSameStartAndEnd: {},
 	})
 
 	const currentTimeSlots = useRef(slotsArray)
@@ -61,6 +63,7 @@ export function useGroupRows<
 		let rowCount = 0
 		let maxRowCountOfSingleGroup = 0
 		const itemsOutsideOfDayRange: { [groupId: string]: I[] } = {}
+		const itemsWithSameStartAndEnd: { [groupId: string]: I[] } = {}
 
 		for (const entry of entries) {
 			const oldEntry = currentEntries.current?.find(
@@ -84,6 +87,10 @@ export function useGroupRows<
 					currentGroupRows.current.itemsOutsideOfDayRange[
 						entry.group.id
 					]
+				itemsWithSameStartAndEnd[entry.group.id] =
+					currentGroupRows.current.itemsWithSameStartAndEnd[
+						entry.group.id
+					]
 				continue
 			}
 
@@ -101,9 +108,13 @@ export function useGroupRows<
 			if (itemsOutsideRange.length) {
 				itemsOutsideOfDayRange[entry.group.id] = itemsOutsideRange
 			}
-			const groupItems = entry.items.filter(
-				(it) => !itemsOutsideRange.includes(it),
-			)
+			if (_itemsWithSameStartAndEnd.length) {
+				itemsWithSameStartAndEnd[entry.group.id] =
+					_itemsWithSameStartAndEnd
+			}
+			const groupItems = entry.items
+				.filter((it) => !itemsOutsideRange.includes(it))
+				.filter((it) => !_itemsWithSameStartAndEnd.includes(it))
 
 			const itemRows = getGroupItemStack(
 				groupItems,
@@ -125,6 +136,7 @@ export function useGroupRows<
 			rowCount,
 			maxRowCountOfSingleGroup,
 			itemsOutsideOfDayRange,
+			itemsWithSameStartAndEnd,
 		}
 		currentEntries.current = entries
 		currentTimeSlots.current = slotsArray
@@ -229,7 +241,7 @@ export function itemsOutsideOfDayRangeORSameStartAndEnd<
 	timeSlotMinutes: number,
 	viewType: TimeTableViewType,
 ) {
-	const itemsWithSameStartAndEnd: TimeSlotBooking[] = []
+	const itemsWithSameStartAndEnd: I[] = []
 	const itemsOutsideRange = items.filter((it) => {
 		if (it.startDate.isSame(it.endDate)) {
 			itemsWithSameStartAndEnd.push(it)
