@@ -18,8 +18,11 @@ export type TimeTableConfig<G extends TimeTableGroup> = {
 	// this is the timeSlotMinutes set through the props, which can be different then the one calculated to fit the time slots
 	propTimeSlotMinutes: number
 
-	placeHolderHeight: string
-	columnWidth: number | string
+	dimensions: {
+		placeHolderHeight: number
+		columnWidth: number
+		rowHeight: number
+	}
 
 	//ISO8601 string without fraction seconds e.g. '2024-04-02T08:02:17-05:00'
 	startDate: string
@@ -46,8 +49,9 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 	endDate: Dayjs,
 	viewType: TimeTableViewType,
 	propTimeSlotMinutes: number,
-	columnWidth: number | string,
-	placeHolderHeight: string,
+	columnWidth: number,
+	rowHeight: number,
+	placeHolderHeight: number,
 	hideOutOfRangeMarkers: boolean,
 	disableWeekendInteractions: boolean,
 	timeSlotSelectionDisabled: boolean,
@@ -75,8 +79,11 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 			hideOutOfRangeMarkers,
 			timeSlotSelectionDisabled,
 
-			placeHolderHeight,
-			columnWidth,
+			dimensions: {
+				placeHolderHeight,
+				columnWidth,
+				rowHeight,
+			},
 
 			startDate: startDate.format(),
 			endDate: endDate.format(),
@@ -169,12 +176,18 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 		}
 	}
 
-	if (placeHolderHeight !== timeTableConfigStore[ident].placeHolderHeight) {
-		timeTableConfigStore[ident].placeHolderHeight = placeHolderHeight
+	if (
+		placeHolderHeight !==
+		timeTableConfigStore[ident].dimensions.placeHolderHeight
+	) {
+		timeTableConfigStore[ident].dimensions.placeHolderHeight =
+			placeHolderHeight
 	}
-
-	if (columnWidth !== timeTableConfigStore[ident].columnWidth) {
-		timeTableConfigStore[ident].columnWidth = columnWidth
+	if (columnWidth !== timeTableConfigStore[ident].dimensions.columnWidth) {
+		timeTableConfigStore[ident].dimensions.columnWidth = columnWidth
+	}
+	if (rowHeight !== timeTableConfigStore[ident].dimensions.rowHeight) {
+		timeTableConfigStore[ident].dimensions.rowHeight = rowHeight
 	}
 }
 
@@ -253,14 +266,13 @@ export function useTTCHideOutOfRangeMarkers(ident: string) {
 	return hideOutOfRangeMarkers
 }
 
-export function useTTCColumnWidth(ident: string) {
-	const columnWidth = useSnapshot(timeTableConfigStore[ident]).columnWidth
-	return columnWidth
+export function useTTCCellDimentions(ident: string) {
+	return useSnapshot(timeTableConfigStore[ident].dimensions)
 }
 
 export function useTTCPlaceHolderHeight(ident: string) {
 	const placeHolderHeight = useSnapshot(
-		timeTableConfigStore[ident],
+		timeTableConfigStore[ident].dimensions,
 	).placeHolderHeight
 	return placeHolderHeight
 }

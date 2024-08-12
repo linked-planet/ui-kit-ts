@@ -14,7 +14,7 @@ import { PlaceHolderItemWrapper } from "./PlaceholderItem"
 import {
 	getTTCBasicProperties,
 	type TimeFrameDay,
-	useTTCColumnWidth,
+	useTTCCellDimentions,
 	useTTCDisableWeekendInteractions,
 	useTTCHideOutOfRangeMarkers,
 	useTTCIsCellDisabled,
@@ -157,7 +157,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const storeIdent = useTimeTableIdent()
 	const disableWeekendInteractions =
 		useTTCDisableWeekendInteractions(storeIdent)
-	const columnWidth = useTTCColumnWidth(storeIdent)
+	const dimensions = useTTCCellDimentions(storeIdent)
 	const hideOutOfRangeMarkers = useTTCHideOutOfRangeMarkers(storeIdent)
 	const timeSlotSelectionDisabled =
 		useTTCTimeSlotSelectionDisabled(storeIdent)
@@ -268,6 +268,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						group={group}
 						item={it.item}
 						width={itemWidthInColumn}
+						height={dimensions.rowHeight}
 						left={leftInColumn}
 						selectedTimeSlotItem={selectedTimeSlotItem}
 						onTimeSlotItemClick={onTimeSlotItemClick}
@@ -307,7 +308,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			key={timeSlotNumber}
 			{...mouseHandlersUsed}
 			style={{
-				maxWidth: columnWidth,
+				maxWidth: dimensions.columnWidth,
+				height: dimensions.rowHeight,
 			}}
 			colSpan={2} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			ref={tableCellRef}

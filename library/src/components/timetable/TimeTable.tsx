@@ -105,17 +105,20 @@ export interface LPTimeTableProps<
 	groupHeaderColumnWidth: string | number
 
 	/* columnWidth sets the minimal width of the time slot column. If there is space, the columns will expand. */
-	columnWidth: string | number
+	columnWidth: number
+
+	/* rowHeight sets the height of one row (groups may have multiple rows when items overlap) */
+	rowHeight: number
 
 	/** placeHolderHeight sets the height of the placeholder item
-	 * @default "1.5rem"
+	 * @default "10px"
 	 */
-	placeHolderHeight?: string
+	placeHolderHeight?: number
 
 	placeHolderComponent?: React.ComponentType<TimeTablePlaceholderItemProps<G>>
 
 	/** provide a call to get notified if items are outside of the day range */
-	itemsOutsideOfDayRangeFound?: (item: TimeSlotBooking[]) => void
+	itemsOutsideOfDayRangeFound?: (outside: { [groupdId: string]: I[] }) => void
 
 	/**
 	 * Height sets the max height of the time table. If the content is larger, it will be scrollable.
@@ -205,8 +208,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	groupHeaderColumnWidth,
 	itemsOutsideOfDayRangeFound,
 	columnWidth = 70,
+	rowHeight = 30,
 	height = "100%",
-	placeHolderHeight = "1.5rem",
+	placeHolderHeight = 10,
 	viewType = "hours",
 	isCellDisabled,
 	disableWeekendInteractions = true,
@@ -245,6 +249,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		viewType,
 		timeStepsMinutes,
 		columnWidth,
+		rowHeight,
 		placeHolderHeight,
 		hideOutOfRangeMarkers,
 		disableWeekendInteractions,
@@ -297,6 +302,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					messageKey: "timetable.bookingsOutsideOfDayRange",
 					messageValues: { itemCount },
 				})
+				itemsOutsideOfDayRangeFound?.(itemsOutsideOfDayRange)
 			}
 		} else if (Object.keys(itemsWithSameStartAndEnd).length > 0) {
 			console.info(
@@ -316,7 +322,12 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				})
 			}
 		}
-	}, [itemsOutsideOfDayRange, itemsWithSameStartAndEnd, setMessage])
+	}, [
+		itemsOutsideOfDayRange,
+		itemsWithSameStartAndEnd,
+		setMessage,
+		itemsOutsideOfDayRangeFound,
+	])
 
 	//#region now bar
 	const nowBarRef = useRef<HTMLDivElement | undefined>()
@@ -389,18 +400,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		round: (n: number) => n,
 		onResize: observedSizeChangedCB,
 	})
-	//#endregion
-
-	//#region virtualizer
-	/*const overallRowCount = useOverallRowCount(storeIdent)
-	const rowVirtualizer = useVirtualizer({
-		count: overallRowCount,
-		getScrollElement: () => tableRef.current,
-		estimateSize: (index: number) => 30, // TODO make a prop with a row height?
-		lanes: slotsArray.length,
-		overscan: 3,
-	})*/
-
 	//#endregion
 
 	// scroll now bar into view if it exists

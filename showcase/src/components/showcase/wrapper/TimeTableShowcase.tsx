@@ -429,6 +429,7 @@ function Example() {
 	const [timeStepsInputValue, setTimeStepsInputValue] = useState(110)
 	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
 	const [columnWidth, setColumnWidth] = useState(70)
+	const [rowHeight, setRowHeight] = useState(30)
 	const [disabledWeekendInteractions, setDisabledWeekendInteractions] =
 		useState(true)
 	const [showTimeSlotHeader, setShowTimeSlotHeader] = useState(true)
@@ -631,13 +632,30 @@ function Example() {
 					<input
 						type="number"
 						name="colwidth"
-						value={columnWidth}
-						step={10}
+						defaultValue={columnWidth}
+						step={5}
 						min={10}
 						max={1000}
 						onChange={(e) =>
+							debounceHelper(() => {
+								setColumnWidth(Number.parseInt(e.target.value))
+							})
+						}
+						className="mr-1 w-16 text-center"
+					/>
+					<label className="mr-4" htmlFor="rowheight">
+						Row Height [px]:
+					</label>
+					<input
+						type="number"
+						name="rowheight"
+						defaultValue={rowHeight}
+						step={2}
+						min={10}
+						max={100}
+						onChange={(e) =>
 							debounceHelper(() =>
-								setColumnWidth(Number.parseInt(e.target.value)),
+								setRowHeight(Number.parseInt(e.target.value)),
 							)
 						}
 						className="mr-1 w-16 text-center"
@@ -753,6 +771,7 @@ function Example() {
 				<TimeTable
 					groupHeaderColumnWidth={groupHeaderColumnWidth}
 					columnWidth={columnWidth}
+					rowHeight={rowHeight}
 					startDate={timeFrame.startDate}
 					endDate={timeFrame.endDate}
 					timeStepsMinutes={timeSteps}
@@ -824,6 +843,7 @@ function ExampleCalendar() {
 				<TimeTable
 					groupHeaderColumnWidth={150}
 					columnWidth={70}
+					rowHeight={30}
 					startDate={timeFrame.startDate}
 					endDate={timeFrame.endDate}
 					entries={exampleEntries}
@@ -864,6 +884,7 @@ function ExampleMonthCalendar() {
 				<TimeTable
 					groupHeaderColumnWidth={150}
 					columnWidth={70}
+					rowHeight={30}
 					startDate={timeFrame.startDate}
 					endDate={timeFrame.endDate}
 					entries={exampleEntries}

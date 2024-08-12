@@ -423,7 +423,7 @@ export function useMultiSelectionMode(ident: string) {
 			`useMultiSelectionMode - no time table selection store found for ident: ${ident}`,
 		)
 	}
-	return useSnapshot(store)
+	return useSnapshot(store).multiSelectionMode
 }
 
 export function getMultiSelectionMode(ident: string) {
