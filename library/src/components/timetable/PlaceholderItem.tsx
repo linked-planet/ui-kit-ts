@@ -7,7 +7,7 @@ export type TimeTablePlaceholderItemProps<G extends TimeTableGroup> = {
 	group: G
 	start: Dayjs
 	end: Dayjs
-	height: string
+	height: number
 }
 
 /**

@@ -13,6 +13,7 @@ export type TimeTableItemProps<
 	group: G
 	item: I
 	selectedItem: I | undefined
+	height: number
 }
 
 export default function ItemWrapper<
@@ -25,6 +26,7 @@ export default function ItemWrapper<
 	onTimeSlotItemClick,
 	left,
 	width,
+	height,
 }: {
 	group: G
 	item: I
@@ -32,6 +34,7 @@ export default function ItemWrapper<
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 	left: string
 	width: string
+	height: number
 }) {
 	//#region fade out animation
 	const ref = useRef<HTMLDivElement>(null)
@@ -60,7 +63,6 @@ export default function ItemWrapper<
 	const TimeSlotItemComponent = useTimeSlotItemComponent<G, I>(storeIdent)
 
 	const multiSelectionMode = useMultiSelectionMode(storeIdent)
-
 	return (
 		<div
 			className="relative top-0 box-border"
@@ -68,6 +70,7 @@ export default function ItemWrapper<
 				left,
 				width,
 				pointerEvents: multiSelectionMode ? "none" : "auto",
+				height,
 			}}
 			{...mouseHandler}
 		>
@@ -88,6 +91,7 @@ export default function ItemWrapper<
 					group={group}
 					item={item}
 					selectedItem={selectedTimeSlotItem}
+					height={height}
 				/>
 			</div>
 		</div>
