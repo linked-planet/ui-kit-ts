@@ -765,7 +765,7 @@ function Example() {
 			</div>
 			<div
 				style={{
-					height: "600px",
+					height: "300px",
 				}}
 			>
 				<TimeTable
@@ -778,6 +778,7 @@ function Example() {
 					entries={entries}
 					selectedTimeSlotItem={selectedTimeSlotItem}
 					selectedTimeRange={selectedTimeRange}
+					disableMessages
 					/*groupComponent={ Group }
 					timeSlotItemComponent={ Item }
 					placeHolderComponent={ ( props: PlaceholderItemProps<ExampleGroup> ) => (

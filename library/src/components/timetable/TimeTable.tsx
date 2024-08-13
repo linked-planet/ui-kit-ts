@@ -234,6 +234,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const tableHeaderRef = useRef<HTMLTableSectionElement>(null)
 	const tableBodyRef = useRef<HTMLTableSectionElement>(null)
 	const inlineMessageRef = useRef<HTMLDivElement>(null)
+	const scrollContainerRef = useRef<HTMLDivElement>(null)
 
 	initAndUpdateTimeTableComponentStore(
 		storeIdent,
@@ -445,6 +446,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					style={{
 						height: `calc(${height} - ${inlineMessageRef.current?.clientHeight}px)`,
 					}}
+					ref={scrollContainerRef}
 				>
 					<table
 						className={
@@ -476,6 +478,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								onTimeSlotItemClick={onTimeSlotItemClick}
 								onGroupClick={onGroupClick}
 								groupRows={groupRows}
+								scrollContainerRef={scrollContainerRef}
 							/>
 						</tbody>
 					</table>

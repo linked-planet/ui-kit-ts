@@ -47,6 +47,8 @@ interface TimeLineTableSimplifiedProps<
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 
 	onGroupClick: ((_: G) => void) | undefined
+
+	scrollContainerRef: React.RefObject<HTMLDivElement>
 }
 
 /**
@@ -61,6 +63,7 @@ export default function TimeLineTableSimplified<
 	onGroupClick,
 	onTimeSlotItemClick,
 	selectedTimeSlotItem,
+	scrollContainerRef,
 }: TimeLineTableSimplifiedProps<G, I>) {
 	const tableRows = useMemo(() => {
 		if (!entries) return []
@@ -75,6 +78,7 @@ export default function TimeLineTableSimplified<
 					onGroupHeaderClick={onGroupClick}
 					onTimeSlotItemClick={onTimeSlotItemClick}
 					selectedTimeSlotItem={selectedTimeSlotItem}
+					scrollContainerRef={scrollContainerRef}
 				/>
 			)
 		})
@@ -84,6 +88,7 @@ export default function TimeLineTableSimplified<
 		onGroupClick,
 		onTimeSlotItemClick,
 		selectedTimeSlotItem,
+		scrollContainerRef,
 	])
 
 	return <>{tableRows}</>
@@ -313,11 +318,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			}}
 			colSpan={2} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			ref={tableCellRef}
-			className={`border-border relative box-border border-l-0 border-t-0 border-solid p-0 ${
-				isFirstRow ? "pt-2" : ""
-			} ${
-				isLastGroupRow ? "pb-2" : ""
-			} ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
+			className={`border-border relative box-border border-l-0 border-t-0 border-solid p-0 ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
 		>
 			{itemsToRender && itemsToRender.length > 0 && (
 				<>
@@ -470,6 +471,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	onGroupHeaderClick,
 	selectedTimeSlotItem,
 	onTimeSlotItemClick,
+	scrollContainerRef,
 }: {
 	group: G
 	groupNumber: number
@@ -477,6 +479,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	onGroupHeaderClick: ((group: G) => void) | undefined
 	selectedTimeSlotItem: I | undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
+	scrollContainerRef: React.RefObject<HTMLDivElement>
 }) {
 	const storeIdent = useTimeTableIdent()
 	const { slotsArray, timeFrameDay, timeSlotMinutes } =
@@ -489,35 +492,102 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		_selectedTimeSlots.groupId === group.id
 			? _selectedTimeSlots.selectedTimeSlots
 			: undefined
+	const dimensions = useTTCCellDimentions(storeIdent)
 
-	//const itemRows = useGroupRows<I>(storeIdent, group.id)
+	const [renderCells, setRenderCells] = useState(false)
+
+	//#region interaction observer
+	const groupHeaderRef = useRef<HTMLTableCellElement | null>(null)
+	const groupHeaderIntersectionObserver = useRef<IntersectionObserver>(
+		new IntersectionObserver(
+			(entries) => {
+				if (entries.length === 0) {
+					setRenderCells(false)
+					return
+				}
+				const entry = entries[0]
+				if (entry.isIntersecting) {
+					setRenderCells(true)
+				} else {
+					setRenderCells(false)
+				}
+			},
+			{
+				root: scrollContainerRef.current,
+				rootMargin: "0px",
+				threshold: 0,
+			},
+		),
+	)
+	//#endregion
 
 	const rowCount = itemRows && itemRows.length > 0 ? itemRows.length : 1 // if there are no rows, we draw an empty one
+	const rowSpanGroupHeader = renderCells
+		? timeSlotSelectionDisabled
+			? rowCount
+			: rowCount + 1
+		: 1
+	const GroupComponent = useGroupComponent(storeIdent)
 
 	const groupHeader = useMemo(() => {
 		// create group header
 		const groupHeader = (
-			<GroupHeaderTableCell<G>
-				group={group}
-				groupNumber={groupNumber}
-				groupRowMax={
-					timeSlotSelectionDisabled ? rowCount : rowCount + 1
-				} // group header spans all rows of the group + the interaction row
-				onGroupClick={onGroupHeaderClick}
-			/>
+			<td
+				key={`group-header-${group.id}`}
+				id={`group-header-${group.id}`}
+				ref={(e) => {
+					if (groupHeaderIntersectionObserver.current) {
+						groupHeaderIntersectionObserver.current.disconnect()
+					}
+					groupHeaderRef.current = e
+					if (groupHeaderIntersectionObserver.current && e) {
+						groupHeaderIntersectionObserver.current.observe(e)
+					}
+				}}
+				onClick={
+					renderCells && onGroupHeaderClick
+						? () => onGroupHeaderClick(group)
+						: undefined
+				}
+				onKeyUp={
+					renderCells && onGroupHeaderClick
+						? (e) => {
+								if (e.key === "Enter") {
+									onGroupHeaderClick?.(group)
+								}
+							}
+						: undefined
+				}
+				rowSpan={rowSpanGroupHeader}
+				className={
+					renderCells
+						? `border-border border-b-border sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${
+								groupNumber % 2 === 0
+									? "bg-surface"
+									: "bg-surface-hovered"
+							}`
+						: undefined
+				}
+			>
+				{renderCells && <GroupComponent group={group} />}
+			</td>
 		)
 		return groupHeader
 	}, [
 		group,
 		groupNumber,
-		rowCount,
-		timeSlotSelectionDisabled,
+		rowSpanGroupHeader,
 		onGroupHeaderClick,
+		GroupComponent,
+		renderCells,
 	])
 
 	const placerHolderRow = useMemo(() => {
 		if (timeSlotSelectionDisabled) {
-			return undefined
+			return null
+		}
+		if (!renderCells) {
+			return null
 		}
 		const tds: JSX.Element[] = []
 		for (
@@ -547,10 +617,14 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		timeSlotMinutes,
 		viewType,
 		selectedTimeSlots,
+		renderCells,
 	])
 
 	const normalRows = useMemo(() => {
 		const tdrs: JSX.Element[][] = []
+		if (!renderCells) {
+			return null
+		}
 		// and the normal rows
 		for (let r = 0; r < rowCount; r++) {
 			const tds: JSX.Element[] = []
@@ -598,36 +672,74 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		itemRows,
 		selectedTimeSlotItem,
 		onTimeSlotItemClick,
+		renderCells,
 	])
 
 	const tableRows = useMemo(() => {
+		if (!renderCells) {
+			const height = !timeSlotSelectionDisabled
+				? dimensions.rowHeight * rowCount + dimensions.placeHolderHeight
+				: dimensions.rowHeight * rowCount
+			console.log("UNRENDERED TABLE ROWS", group.id, height)
+			return (
+				<tr
+					style={{
+						height,
+					}}
+					data-test={`unrendered-table-row_${group.id}`}
+				>
+					{groupHeader}
+				</tr>
+			)
+		}
 		const trs: JSX.Element[] = []
 		if (placerHolderRow) {
 			trs.push(
-				<tr key={-1} className="bg-surface box-border h-4">
+				<tr
+					key={-1}
+					className="bg-surface box-border h-4"
+					style={{
+						height: dimensions.placeHolderHeight,
+					}}
+				>
 					{groupHeader}
 					{placerHolderRow}
 				</tr>,
 			)
 		}
-		for (let r = 0; r < normalRows.length; r++) {
-			trs.push(
-				<tr
-					key={`group-row-${group.id}-${r}`}
-					className="bg-surface box-border h-4"
-				>
-					{!placerHolderRow && r === 0 && groupHeader}
-					{normalRows[r]}
-				</tr>,
-			)
+		if (normalRows) {
+			for (let r = 0; r < normalRows.length; r++) {
+				trs.push(
+					<tr
+						key={`group-row-${group.id}-${r}`}
+						className="bg-surface box-border h-4"
+						style={{
+							height: dimensions.rowHeight,
+						}}
+					>
+						{!placerHolderRow && r === 0 && groupHeader}
+						{normalRows[r]}
+					</tr>,
+				)
+			}
 		}
 		return trs
-	}, [placerHolderRow, normalRows, group.id, groupHeader])
+	}, [
+		placerHolderRow,
+		normalRows,
+		group.id,
+		groupHeader,
+		renderCells,
+		dimensions.rowHeight,
+		dimensions.placeHolderHeight,
+		rowCount,
+		timeSlotSelectionDisabled,
+	])
 
 	return <>{tableRows}</>
 }
 
-let mouseLeftTS: number | null = null
+let mouseLeftTS: number | null = null // this is used to detect if the mouse left the table
 
 /**
  * Creates a function which creates the mouse event handler for the table cells (the interaction cell, the first row of each group)
