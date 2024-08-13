@@ -95,43 +95,6 @@ export default function TimeLineTableSimplified<
 }
 
 /**
- * The group header cell spanning all rows of the group.
- */
-function GroupHeaderTableCell<G extends TimeTableGroup>({
-	group,
-	groupNumber,
-	groupRowMax,
-	onGroupClick,
-}: {
-	group: G
-	groupNumber: number
-	groupRowMax: number
-	onGroupClick: ((group: G) => void) | undefined
-}) {
-	const storeIdent = useTimeTableIdent()
-	const GroupComponent = useGroupComponent(storeIdent)
-
-	return (
-		<td
-			onClick={() => {
-				if (onGroupClick) onGroupClick(group)
-			}}
-			onKeyUp={(e) => {
-				if (e.key === "Enter") {
-					if (onGroupClick) onGroupClick(group)
-				}
-			}}
-			rowSpan={groupRowMax}
-			className={`border-border border-b-border sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${
-				groupNumber % 2 === 0 ? "bg-surface" : "bg-surface-hovered"
-			}`}
-		>
-			<GroupComponent group={group} />
-		</td>
-	)
-}
-
-/**
  * The TableCellSimple is the standard cell of the table. The children are the entries that are rendered in the cell.
  */
 function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
