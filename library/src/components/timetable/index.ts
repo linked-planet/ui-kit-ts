@@ -1,5 +1,3 @@
-import React from "react"
-
 import TimeTable from "./TimeTable"
 import type {
 	SelectedTimeSlot as _SelectedTimeSlot,
@@ -15,9 +13,10 @@ import type { TimeTableItemProps } from "./ItemWrapper"
 export type { TimeTableItemProps } from "./ItemWrapper"
 export type { TimeTablePlaceholderItemProps } from "./PlaceholderItem"
 
-const memoized = React.memo(TimeTable) as typeof TimeTable
+//const memoized = React.memo(TimeTable) as typeof TimeTable
 
-export { memoized as TimeTable }
+//export { memoized as TimeTable }
+export { TimeTable }
 
 export namespace TimeTableTypes {
 	export type TimeSlotBooking = _TimeSlotBooking

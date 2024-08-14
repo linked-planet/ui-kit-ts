@@ -3,6 +3,7 @@ import {
 	type MouseEvent,
 	useCallback,
 	useEffect,
+	useLayoutEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -40,6 +41,7 @@ import {
 	useTimeSlotSelection,
 } from "./TimeTableSelectionStore"
 import type { ItemRowEntry } from "./useGoupRows"
+import { flushSync } from "react-dom"
 
 interface TimeLineTableSimplifiedProps<
 	G extends TimeTableGroup,
@@ -58,6 +60,9 @@ interface TimeLineTableSimplifiedProps<
 	intersectionContainerRef: React.RefObject<HTMLDivElement>
 }
 
+const intersectionsStack: Map<string, IntersectionObserverEntry[]> = new Map()
+const intersectionStackDelay = 100
+
 /**
  * Creates the table rows for the given entries.
  */
@@ -72,37 +77,25 @@ export default function TimeLineTableSimplified<
 	selectedTimeSlotItem,
 	intersectionContainerRef,
 }: TimeLineTableSimplifiedProps<G, I>) {
-	const [renderCells, setRenderCells] = useState(
-		{} as Record<string, boolean>,
-	)
+	const [renderCells, setRenderCells] = useState<Set<string>>(new Set())
+	const ident = useTimeTableIdent()
+	const intersectionBatchTimeout = useRef<number>()
 
 	// update the renderCells state if the entries change
-	useEffect(() => {
+	useLayoutEffect(() => {
 		setRenderCells((prev) => {
-			let rebuild = false
-			if (entries.length !== Object.keys(prev).length) {
-				rebuild = true
-			} else {
-				for (const entry of entries) {
-					if (prev[entry.group.id] === undefined) {
-						console.log("ADD", entry.group.id)
-						rebuild = true
-						break
-					}
-				}
-			}
-			if (rebuild) {
+			const entriesSet = new Set(entries.map((e) => e.group.id))
+			const intersectionSet = entriesSet.intersection(prev)
+			if (prev.size === intersectionSet.size) {
 				return prev
 			}
-			return entries.reduce(
-				(newRecord, entry) => {
-					newRecord[entry.group.id] = prev[entry.group.id] ?? false
-					return newRecord
-				},
-				{} as Record<string, boolean>,
-			)
+			return intersectionSet
 		})
 	}, [entries])
+
+	const storeIdent = useTimeTableIdent()
+	const { rowHeight, columnWidth, placeHolderHeight } =
+		useTTCCellDimentions(storeIdent)
 
 	// update the renderCells state if the intersections are changed
 	const updateRenderCellsFromIntersections = useCallback(
@@ -115,43 +108,79 @@ export default function TimeLineTableSimplified<
 				!intersectionEntries[0].rootBounds?.width
 			) {
 				// that means that the intersection observer is not attached to the dom, so we don't need to do anything
+				console.log("INTERSECTION umounted", intersectionEntries)
 				return
 			}
-			setRenderCells((prev) => {
-				const updated = { ...prev }
-				let changed = false
-				for (const entry of intersectionEntries) {
-					const targetGroupId =
-						entry.target.getAttribute("data-group-id")
-					if (!targetGroupId) {
-						console.info(
-							"TimeTable - intersection observed but unknown group id",
-							entry.target,
-						)
-						continue
-					}
-					if (prev[targetGroupId] !== entry.isIntersecting) {
-						changed = true
-						updated[targetGroupId] = entry.isIntersecting
-					}
+			flushSync(() => console.log("FLUSH"))
+			if (!intersectionsStack.has(ident)) {
+				intersectionsStack.set(ident, [])
+			}
+			intersectionsStack.get(ident)?.push(...intersectionEntries)
+			if (intersectionBatchTimeout.current) {
+				clearTimeout(intersectionBatchTimeout.current)
+			}
+			console.log("INTERSECTION", intersectionEntries)
+			intersectionBatchTimeout.current = window.setTimeout(() => {
+				intersectionBatchTimeout.current = undefined
+				const intersectionEntries = intersectionsStack.get(ident)
+				if (!intersectionEntries || intersectionEntries.length === 0) {
+					console.warn(
+						"TimeTable - no entries found in intersectionstack",
+					)
 				}
-				if (!changed) {
-					return prev
-				}
-				return updated
-			})
+				intersectionsStack.set(ident, [])
+				console.log("IENTRIES", intersectionEntries)
+
+				setRenderCells((prev) => {
+					if (
+						!intersectionEntries ||
+						intersectionEntries.length === 0
+					) {
+						return prev
+					}
+					let isUpdated = false
+					const updated = new Set(prev)
+					for (const entry of intersectionEntries) {
+						const targetGroupId =
+							entry.target.getAttribute("data-group-id")
+						if (!targetGroupId) {
+							console.info(
+								"TimeTable - intersection observed but unknown group id",
+								entry.target,
+							)
+							continue
+						}
+						if (!entry.isIntersecting) {
+							if (updated.has(targetGroupId)) {
+								isUpdated = true
+								updated.delete(targetGroupId)
+							}
+						} else {
+							if (!updated.has(targetGroupId)) {
+								isUpdated = true
+								updated.add(targetGroupId)
+							}
+						}
+					}
+					if (!isUpdated) {
+						return prev
+					}
+					return updated
+				})
+			}, intersectionStackDelay)
 		},
-		[],
+		[ident],
 	)
 
 	const groupHeaderIntersectionObserver = useRef<IntersectionObserver>()
 
 	// handle intersection observer, create new observer if the intersectionContainerRef changes
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (!intersectionContainerRef.current) {
 			return
 		}
 		groupHeaderIntersectionObserver.current?.disconnect()
+		console.log("NEW INTERSECTION OBSERVER")
 		groupHeaderIntersectionObserver.current = new IntersectionObserver(
 			updateRenderCellsFromIntersections,
 			{
@@ -201,7 +230,6 @@ export default function TimeLineTableSimplified<
 
 	if (!entries) return []
 
-	console.log("RENDER CELLS", renderCells)
 	return entries.map((groupEntry, g) => {
 		const rows = groupRows[groupEntry.group.id]
 		return (
@@ -213,9 +241,11 @@ export default function TimeLineTableSimplified<
 				onGroupHeaderClick={onGroupClick}
 				onTimeSlotItemClick={onTimeSlotItemClick}
 				selectedTimeSlotItem={selectedTimeSlotItem}
-				intersectionContainerRef={intersectionContainerRef}
 				intersectionObserver={groupHeaderIntersectionObserver.current}
-				renderCells={renderCells[groupEntry.group.id] ?? false}
+				renderCells={renderCells.has(groupEntry.group.id)}
+				columnWidth={columnWidth}
+				rowHeight={rowHeight}
+				placeHolderHeight={placeHolderHeight}
 			/>
 		)
 	})
@@ -563,6 +593,9 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	onTimeSlotItemClick,
 	renderCells,
 	intersectionObserver,
+	columnWidth,
+	rowHeight,
+	placeHolderHeight,
 }: {
 	group: G
 	groupNumber: number
@@ -570,9 +603,11 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	onGroupHeaderClick: ((group: G) => void) | undefined
 	selectedTimeSlotItem: I | undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
-	intersectionContainerRef: React.RefObject<HTMLDivElement>
 	renderCells: boolean
 	intersectionObserver: IntersectionObserver | undefined
+	columnWidth: number
+	rowHeight: number
+	placeHolderHeight: number
 }) {
 	const storeIdent = useTimeTableIdent()
 	const { slotsArray, timeFrameDay, timeSlotMinutes } =
@@ -585,66 +620,25 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		_selectedTimeSlots.groupId === group.id
 			? _selectedTimeSlots.selectedTimeSlots
 			: undefined
-	const dimensions = useTTCCellDimentions(storeIdent)
 
 	const groupHeaderRef = useRef<HTMLTableCellElement | null>(null)
+	const nonRenderPlaceholderRef = useRef<HTMLTableRowElement | null>(null)
 
+	if (nonRenderPlaceholderRef.current && intersectionObserver) {
+		intersectionObserver.observe(nonRenderPlaceholderRef.current)
+	}
 	if (groupHeaderRef.current && intersectionObserver) {
 		intersectionObserver.observe(groupHeaderRef.current)
 	}
-	useEffect(() => {
-		return () => {
-			if (intersectionObserver && groupHeaderRef.current) {
-				intersectionObserver.unobserve(groupHeaderRef.current)
-			}
+	useLayoutEffect(() => {
+		if (nonRenderPlaceholderRef.current && intersectionObserver) {
+			intersectionObserver.observe(nonRenderPlaceholderRef.current)
+			return
+		}
+		if (groupHeaderRef.current) {
+			intersectionObserver?.observe(groupHeaderRef.current)
 		}
 	}, [intersectionObserver])
-
-	/*useEffect(() => {
-		if (intersectionObserver && groupHeaderRef.current) {
-			intersectionObserver.observe(groupHeaderRef.current)
-		}
-	}, [intersectionObserver, groupHeaderRef.current])*/
-
-	//const [renderCells, setRenderCells] = useState(false)
-
-	//#region interaction observer
-	/*const groupHeaderRef = useRef<HTMLTableCellElement | null>(null)
-	const groupHeaderIntersectionObserver = useRef<IntersectionObserver>(
-		new IntersectionObserver(
-			(entries) => {
-				if (entries.length === 0) {
-					setRenderCells(false)
-					return
-				}
-				const entry = entries[0]
-				if (entry.isIntersecting) {
-					setRenderCells(true)
-				} else {
-					setRenderCells(false)
-				}
-			},
-			{
-				root: scrollContainerRef.current,
-				rootMargin: "0px",
-				threshold: 0,
-			},
-		),
-	)*/
-	//#endregion
-
-	/*useEffect(() => {
-		console.log(
-			"OBSERV USEEFFECT",
-			group.id,
-			intersectionObserver,
-			groupHeaderRef.current,
-		)
-		if (groupHeaderRef.current && intersectionObserver) {
-			console.log("OBSERVE", group.id)
-			intersectionObserver.observe(groupHeaderRef.current)
-		}
-	}, [intersectionObserver, groupHeaderRef.current])*/
 
 	const rowCount = itemRows && itemRows.length > 0 ? itemRows.length : 1 // if there are no rows, we draw an empty one
 	const rowSpanGroupHeader = renderCells
@@ -655,11 +649,20 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const GroupComponent = useGroupComponent(storeIdent)
 
 	const groupHeader = useMemo(() => {
+		if (!renderCells) {
+			return null
+		}
 		// create group header
 		const groupHeader = (
 			<td
 				data-group-id={group.id}
-				ref={groupHeaderRef}
+				ref={(n) => {
+					if (n && intersectionObserver) {
+						console.log("OBSERVE header Ref", group.id)
+						intersectionObserver.observe(n)
+					}
+					groupHeaderRef.current = n
+				}}
 				onClick={
 					renderCells && onGroupHeaderClick
 						? () => onGroupHeaderClick(group)
@@ -696,6 +699,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		onGroupHeaderClick,
 		GroupComponent,
 		renderCells,
+		intersectionObserver,
 	])
 
 	const placerHolderRow = useMemo(() => {
@@ -791,67 +795,62 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		renderCells,
 	])
 
-	const tableRows = useMemo(() => {
-		if (!renderCells) {
-			const height = !timeSlotSelectionDisabled
-				? dimensions.rowHeight * rowCount + dimensions.placeHolderHeight
-				: dimensions.rowHeight * rowCount
-			return (
-				<tr
-					style={{
-						height,
-					}}
-					data-test={`unrendered-table-row_${group.id}`}
-				>
-					{groupHeader}
-				</tr>
-			)
-		}
-		const trs: JSX.Element[] = []
-		if (placerHolderRow) {
+	if (!renderCells) {
+		const height = !timeSlotSelectionDisabled
+			? rowHeight * rowCount + placeHolderHeight
+			: rowHeight * rowCount
+		return (
+			<tr
+				style={{
+					height,
+				}}
+				data-group-id={group.id}
+				data-test={`unrendered-table-row_${group.id}`}
+				ref={(n) => {
+					if (n && intersectionObserver) {
+						intersectionObserver.observe(n)
+					}
+					nonRenderPlaceholderRef.current = n
+				}}
+			>
+				{groupHeader}
+			</tr>
+		)
+	}
+	const trs: JSX.Element[] = []
+	if (placerHolderRow) {
+		trs.push(
+			<tr
+				data-group-id={group.id}
+				key={-1}
+				className="bg-surface box-border h-4"
+				style={{
+					height: placeHolderHeight,
+				}}
+			>
+				{groupHeader}
+				{placerHolderRow}
+			</tr>,
+		)
+	}
+	if (normalRows) {
+		for (let r = 0; r < normalRows.length; r++) {
 			trs.push(
 				<tr
-					key={-1}
+					data-group-id={group.id}
+					key={`group-row-${group.id}-${r}`}
 					className="bg-surface box-border h-4"
 					style={{
-						height: dimensions.placeHolderHeight,
+						height: rowHeight,
 					}}
 				>
-					{groupHeader}
-					{placerHolderRow}
+					{!placerHolderRow && r === 0 && groupHeader}
+					{normalRows[r]}
 				</tr>,
 			)
 		}
-		if (normalRows) {
-			for (let r = 0; r < normalRows.length; r++) {
-				trs.push(
-					<tr
-						key={`group-row-${group.id}-${r}`}
-						className="bg-surface box-border h-4"
-						style={{
-							height: dimensions.rowHeight,
-						}}
-					>
-						{!placerHolderRow && r === 0 && groupHeader}
-						{normalRows[r]}
-					</tr>,
-				)
-			}
-		}
-		return trs
-	}, [
-		placerHolderRow,
-		normalRows,
-		group.id,
-		groupHeader,
-		renderCells,
-		dimensions.rowHeight,
-		dimensions.placeHolderHeight,
-		rowCount,
-		timeSlotSelectionDisabled,
-	])
-
-	return <>{tableRows}</>
+	}
+	return trs
 }
 
 let mouseLeftTS: number | null = null // this is used to detect if the mouse left the table
