@@ -482,6 +482,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 									intersectionContainerRef={
 										intersectionContainerRef
 									}
+									headerRef={tableHeaderRef}
 								/>
 							</tbody>
 						</table>

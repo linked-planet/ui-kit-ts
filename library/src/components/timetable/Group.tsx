@@ -2,6 +2,7 @@ import type { TimeTableGroup } from "./TimeTable"
 
 export type TimeTableGroupProps<G extends TimeTableGroup> = {
 	group: G
+	height: number
 }
 
 export function Group<G extends TimeTableGroup>({

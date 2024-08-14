@@ -27,7 +27,6 @@ import {
 	useTTCDisableWeekendInteractions,
 	useTTCHideOutOfRangeMarkers,
 	useTTCIsCellDisabled,
-	useTTCPlaceHolderHeight,
 	useTTCTimeSlotMinutes,
 	useTTCTimeSlotSelectionDisabled,
 	useTTCViewType,
@@ -42,7 +41,6 @@ import {
 	useTimeSlotSelection,
 } from "./TimeTableSelectionStore"
 import type { ItemRowEntry } from "./useGoupRows"
-import { flushSync } from "react-dom"
 
 interface TimeLineTableSimplifiedProps<
 	G extends TimeTableGroup,
@@ -59,9 +57,10 @@ interface TimeLineTableSimplifiedProps<
 	onGroupClick: ((_: G) => void) | undefined
 
 	intersectionContainerRef: React.RefObject<HTMLDivElement>
+	headerRef: React.RefObject<HTMLTableSectionElement>
 }
 
-const intersectionStackDelay = 30
+const intersectionStackDelay = 0
 /**
  * Creates the table rows for the given entries.
  */
@@ -75,6 +74,7 @@ export default function TimeLineTableSimplified<
 	onTimeSlotItemClick,
 	selectedTimeSlotItem,
 	intersectionContainerRef,
+	headerRef,
 }: TimeLineTableSimplifiedProps<G, I>) {
 	const [renderCells, setRenderCells] = useState<Set<string>>(new Set())
 	const intersectionBatchTimeout = useRef<number>()
@@ -83,112 +83,75 @@ export default function TimeLineTableSimplified<
 	const { rowHeight, columnWidth, placeHolderHeight } =
 		useTTCCellDimentions(storeIdent)
 
-	//const groupHeaderIntersectionObserver = useRef<IntersectionObserver>()
 	const refCollection = useRef<React.MutableRefObject<HTMLElement>[]>([])
 	if (refCollection.current.length !== entries.length) {
 		refCollection.current = Array(entries.length)
 	}
 
-	/*useLayoutEffect(() => {
-		setTimeout(() => {
-			flushSync(emptyFlushSync)
-			if (groupHeaderIntersectionObserver.current) {
-				for (const ref of refCollection.current) {
-					if (ref.current) {
-						groupHeaderIntersectionObserver.current?.observe(
-							ref.current,
-						)
-					}
-				}
-			}
-		}, 0)
-	})*/
-
 	// handle intersection is called after intersectionStackDelay ms to avoid too many calls
 	// and checks which groups are intersecting with the intersection container.
 	// those are rendered, others are only rendered as placeholder (1 div per group, instead of multiple rows and cells)
 	const handleIntersections = useCallback(() => {
+		if (!intersectionContainerRef.current || !headerRef.current) {
+			console.warn("TimeTable - intersection container not found")
+			return
+		}
+		const intersectionbb =
+			intersectionContainerRef.current.getBoundingClientRect()
+		const headerbb = headerRef.current.getBoundingClientRect()
+		const top = headerbb.bottom
+		const bottom = intersectionbb.bottom
+		const newRenderCells = new Set<string>()
+		for (const ref of refCollection.current) {
+			if (ref.current) {
+				const rowbb = ref.current.getBoundingClientRect()
+				// test if the bounding boxes are overlapping
+				if (rowbb.top > bottom || rowbb.bottom < top) {
+					continue
+				}
+				const groupId = ref.current.getAttribute("data-group-id")
+				if (!groupId) {
+					console.warn("TimeTable - intersection group id not found")
+					continue
+				}
+				newRenderCells.add(groupId)
+			}
+		}
+		setRenderCells(newRenderCells)
+	}, [intersectionContainerRef.current, headerRef.current])
+
+	const handleIntersectionsDebounced = useCallback(() => {
 		if (intersectionBatchTimeout.current) {
 			clearTimeout(intersectionBatchTimeout.current)
 		}
-		intersectionBatchTimeout.current = window.setTimeout(() => {
-			if (!intersectionContainerRef.current) {
-				console.warn("TimeTable - intersection container not found")
-				return
-			}
-			flushSync(() => {
-				const newRenderCells = new Set<string>()
-				for (const ref of refCollection.current) {
-					if (ref.current && intersectionContainerRef.current) {
-						const groupId =
-							ref.current.getAttribute("data-group-id")
-						if (!groupId) {
-							console.warn(
-								"TimeTable - intersection group id not found",
-							)
-							continue
-						}
-						const intersectionbb =
-							ref.current.getBoundingClientRect()
-						const rowbb =
-							intersectionContainerRef.current.getBoundingClientRect()
-						// test if the bounding boxes are overlapping
-						if (
-							intersectionbb.top > rowbb.bottom ||
-							intersectionbb.bottom < rowbb.top
-						) {
-							continue
-						}
-						newRenderCells.add(groupId)
-					}
-				}
-				setRenderCells(newRenderCells)
-			})
-		}, intersectionStackDelay)
-	}, [intersectionContainerRef.current])
+		intersectionBatchTimeout.current = window.setTimeout(
+			handleIntersections,
+			intersectionStackDelay,
+		)
+	}, [handleIntersections])
+
+	// initial run
+	useLayoutEffect(handleIntersections, [])
 
 	// handle intersection observer, create new observer if the intersectionContainerRef changes
 	useLayoutEffect(() => {
-		//flushSync(emptyFlushSync)
 		if (!intersectionContainerRef.current) {
 			return
 		}
-
-		// intersection observer
-		/*groupHeaderIntersectionObserver.current?.disconnect()
-		groupHeaderIntersectionObserver.current = new IntersectionObserver(
-			handleIntersections,
-			{
-				root: intersectionContainerRef.current,
-				rootMargin: "0px",
-				threshold: 0,
-			},
-		)*/
-
 		// scroll event handler
-		let scrollEventListener: EventListener | undefined = undefined
-		scrollEventListener = () => {
-			handleIntersections()
-			//console.log("SCROLL")
-			/*const intersectionEntries =
-				groupHeaderIntersectionObserver.current?.takeRecords()
-			if (intersectionEntries?.length) {
-				//updateRenderCellsFromIntersections(intersectionEntries)
-			}*/
-		}
 		intersectionContainerRef.current.addEventListener(
 			"scroll",
-			handleIntersections,
+			handleIntersectionsDebounced,
 		)
 
 		return () => {
 			//groupHeaderIntersectionObserver.current?.disconnect()
 			intersectionContainerRef.current?.removeEventListener(
 				"scroll",
-				scrollEventListener,
+				handleIntersectionsDebounced,
 			)
 		}
-	}, [handleIntersections, intersectionContainerRef.current])
+	}, [handleIntersectionsDebounced, intersectionContainerRef.current])
 
 	if (!entries) return []
 	return entries.map((groupEntry, g) => {
@@ -405,7 +368,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			}}
 			colSpan={2} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			ref={tableCellRef}
-			className={`border-border relative box-border border-l-0 border-t-0 border-solid p-0 ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
+			className={`border-border relative box-border border-l-0 border-t-0 border-solid m-0 p-0 ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
 		>
 			{itemsToRender && itemsToRender.length > 0 && (
 				<>
@@ -446,6 +409,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	timeSlotMinutes,
 	slotsArray,
 	selectedTimeSlots, // this will be only with value when the current time slot is selected
+	placeHolderHeight,
 }: {
 	group: G
 	groupNumber: number
@@ -454,9 +418,9 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	timeSlotMinutes: number
 	slotsArray: readonly Dayjs[]
 	selectedTimeSlots: readonly number[] | undefined
+	placeHolderHeight: number
 }) {
 	const storeIdent = useTimeTableIdent()
-	const placeHolderHeight = useTTCPlaceHolderHeight(storeIdent)
 	const isCellDisabled = useTTCIsCellDisabled(storeIdent)
 	const disableWeekendInteractions =
 		useTTCDisableWeekendInteractions(storeIdent)
@@ -538,7 +502,10 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 					: 2
 			} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			{...(timeSlotSelectedIndex === -1 ? mouseHandlers : undefined)}
-			className={`border-border relative box-border ${cursorStyle} border-b-0 border-l-0 border-t-0 border-solid ${brStyle} ${bgStyle} p-0 align-top`}
+			className={`border-border relative box-border ${cursorStyle} m-0 p-0 border-b-0 border-l-0 border-t-0 border-solid ${brStyle} ${bgStyle} p-0 align-top`}
+			style={{
+				height: placeHolderHeight,
+			}}
 		>
 			{placeHolderItem}
 		</td>
@@ -596,6 +563,9 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			? rowCount
 			: rowCount + 1
 		: 1
+	const groupHeaderHeight =
+		rowHeight * rowCount +
+		(timeSlotSelectionDisabled ? 0 : placeHolderHeight)
 	const GroupComponent = useGroupComponent(storeIdent)
 
 	const groupHeader = useMemo(() => {
@@ -628,15 +598,20 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				rowSpan={rowSpanGroupHeader}
 				className={
 					renderCells
-						? `border-border border-b-border sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${
+						? `border-border border-b-border m-0 p-0 sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${
 								groupNumber % 2 === 0
 									? "bg-surface"
 									: "bg-surface-hovered"
 							}`
 						: undefined
 				}
+				style={{
+					height: groupHeaderHeight,
+				}}
 			>
-				{renderCells && <GroupComponent group={group} />}
+				{renderCells && (
+					<GroupComponent group={group} height={groupHeaderHeight} />
+				)}
 			</td>
 		)
 		return groupHeader
@@ -647,6 +622,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		onGroupHeaderClick,
 		GroupComponent,
 		renderCells,
+		groupHeaderHeight,
 		mref,
 	])
 
@@ -673,6 +649,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					viewType={viewType}
 					slotsArray={slotsArray}
 					selectedTimeSlots={selectedTimeSlots ?? undefined}
+					placeHolderHeight={placeHolderHeight}
 				/>,
 			)
 		}
@@ -686,6 +663,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		viewType,
 		selectedTimeSlots,
 		renderCells,
+		placeHolderHeight,
 	])
 
 	const normalRows = useMemo(() => {
@@ -744,17 +722,16 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	])
 
 	if (!renderCells) {
-		const height = !timeSlotSelectionDisabled
-			? rowHeight * rowCount + placeHolderHeight
-			: rowHeight * rowCount
+		// render a placeholder in row height
 		return (
 			<tr
 				style={{
-					height,
+					height: groupHeaderHeight,
 				}}
 				data-group-id={group.id}
 				data-test={`unrendered-table-row_${group.id}`}
 				ref={mref as React.Ref<HTMLTableRowElement>}
+				className="box-border m-0"
 			>
 				{groupHeader}
 			</tr>
@@ -766,7 +743,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			<tr
 				data-group-id={group.id}
 				key={-1}
-				className="bg-surface box-border h-4"
+				className="bg-surface box-border m-0"
 				style={{
 					height: placeHolderHeight,
 				}}
@@ -782,7 +759,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				<tr
 					data-group-id={group.id}
 					key={`group-row-${group.id}-${r}`}
-					className="bg-surface box-border h-4"
+					className="bg-surface box-border m-0"
 					style={{
 						height: rowHeight,
 					}}
