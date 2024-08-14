@@ -61,6 +61,7 @@ interface TimeLineTableSimplifiedProps<
 }
 
 const intersectionStackDelay = 0
+const rowsMargin = 3
 /**
  * Creates the table rows for the given entries.
  */
@@ -92,6 +93,9 @@ export default function TimeLineTableSimplified<
 	// and checks which groups are intersecting with the intersection container.
 	// those are rendered, others are only rendered as placeholder (1 div per group, instead of multiple rows and cells)
 	const handleIntersections = useCallback(() => {
+		if (!refCollection.current.length) {
+			return
+		}
 		if (!intersectionContainerRef.current || !headerRef.current) {
 			console.warn("TimeTable - intersection container not found")
 			return
@@ -99,15 +103,40 @@ export default function TimeLineTableSimplified<
 		const intersectionbb =
 			intersectionContainerRef.current.getBoundingClientRect()
 		const headerbb = headerRef.current.getBoundingClientRect()
-		const top = headerbb.bottom
-		const bottom = intersectionbb.bottom
+		const top = headerbb.bottom - rowsMargin * rowHeight
+		const bottom = intersectionbb.bottom + rowsMargin * rowHeight
+
+		const firstRef =
+			refCollection.current[0].current.getBoundingClientRect()
+		const firstRefDistance = Math.abs(firstRef.y - intersectionbb.y)
+		const lastRef =
+			refCollection.current[
+				refCollection.current.length - 1
+			].current.getBoundingClientRect()
+		const lastRefDistance = Math.abs(lastRef.y - intersectionbb.y)
+		const startFromFirst = firstRefDistance < lastRefDistance
+
+		const startIdx = startFromFirst ? 0 : refCollection.current.length - 1
+		const endIdx = startFromFirst ? refCollection.current.length : -1
+		const di = startFromFirst ? 1 : -1
+
 		const newRenderCells = new Set<string>()
-		for (const ref of refCollection.current) {
+		for (let i = startIdx; i !== endIdx; i += di) {
+			const ref = refCollection.current[i]
 			if (ref.current) {
 				const rowbb = ref.current.getBoundingClientRect()
 				// test if the bounding boxes are overlapping
-				if (rowbb.top > bottom || rowbb.bottom < top) {
-					continue
+				if (rowbb.bottom < top) {
+					if (startFromFirst) {
+						continue
+					}
+					break
+				}
+				if (rowbb.top > bottom) {
+					if (!startFromFirst) {
+						continue
+					}
+					break
 				}
 				const groupId = ref.current.getAttribute("data-group-id")
 				if (!groupId) {
@@ -118,7 +147,7 @@ export default function TimeLineTableSimplified<
 			}
 		}
 		setRenderCells(newRenderCells)
-	}, [intersectionContainerRef.current, headerRef.current])
+	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
 
 	const handleIntersectionsDebounced = useCallback(() => {
 		if (intersectionBatchTimeout.current) {
