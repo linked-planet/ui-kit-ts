@@ -1,5 +1,12 @@
 import type { Dayjs } from "dayjs"
-import { type MouseEvent, useCallback, useMemo, useRef, useState } from "react"
+import {
+	type MouseEvent,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react"
 import type {
 	TimeSlotBooking,
 	TimeTableEntry,
@@ -48,7 +55,7 @@ interface TimeLineTableSimplifiedProps<
 
 	onGroupClick: ((_: G) => void) | undefined
 
-	scrollContainerRef: React.RefObject<HTMLDivElement>
+	intersectionContainerRef: React.RefObject<HTMLDivElement>
 }
 
 /**
@@ -63,35 +70,155 @@ export default function TimeLineTableSimplified<
 	onGroupClick,
 	onTimeSlotItemClick,
 	selectedTimeSlotItem,
-	scrollContainerRef,
+	intersectionContainerRef,
 }: TimeLineTableSimplifiedProps<G, I>) {
-	const tableRows = useMemo(() => {
-		if (!entries) return []
-		return entries.map((groupEntry, g) => {
-			const rows = groupRows[groupEntry.group.id]
-			return (
-				<GroupRows<G, I>
-					key={`${groupEntry.group.title}${g}`}
-					group={groupEntry.group}
-					groupNumber={g}
-					itemRows={rows}
-					onGroupHeaderClick={onGroupClick}
-					onTimeSlotItemClick={onTimeSlotItemClick}
-					selectedTimeSlotItem={selectedTimeSlotItem}
-					scrollContainerRef={scrollContainerRef}
-				/>
+	const [renderCells, setRenderCells] = useState(
+		{} as Record<string, boolean>,
+	)
+
+	// update the renderCells state if the entries change
+	useEffect(() => {
+		setRenderCells((prev) => {
+			let rebuild = false
+			if (entries.length !== Object.keys(prev).length) {
+				rebuild = true
+			} else {
+				for (const entry of entries) {
+					if (prev[entry.group.id] === undefined) {
+						console.log("ADD", entry.group.id)
+						rebuild = true
+						break
+					}
+				}
+			}
+			if (rebuild) {
+				return prev
+			}
+			return entries.reduce(
+				(newRecord, entry) => {
+					newRecord[entry.group.id] = prev[entry.group.id] ?? false
+					return newRecord
+				},
+				{} as Record<string, boolean>,
 			)
 		})
-	}, [
-		groupRows,
-		entries,
-		onGroupClick,
-		onTimeSlotItemClick,
-		selectedTimeSlotItem,
-		scrollContainerRef,
-	])
+	}, [entries])
 
-	return <>{tableRows}</>
+	// update the renderCells state if the intersections are changed
+	const updateRenderCellsFromIntersections = useCallback(
+		(intersectionEntries: IntersectionObserverEntry[]) => {
+			if (!intersectionEntries.length) {
+				return
+			}
+			if (
+				!intersectionEntries[0].rootBounds?.height &&
+				!intersectionEntries[0].rootBounds?.width
+			) {
+				// that means that the intersection observer is not attached to the dom, so we don't need to do anything
+				return
+			}
+			setRenderCells((prev) => {
+				const updated = { ...prev }
+				let changed = false
+				for (const entry of intersectionEntries) {
+					const targetGroupId =
+						entry.target.getAttribute("data-group-id")
+					if (!targetGroupId) {
+						console.info(
+							"TimeTable - intersection observed but unknown group id",
+							entry.target,
+						)
+						continue
+					}
+					if (prev[targetGroupId] !== entry.isIntersecting) {
+						changed = true
+						updated[targetGroupId] = entry.isIntersecting
+					}
+				}
+				if (!changed) {
+					return prev
+				}
+				return updated
+			})
+		},
+		[],
+	)
+
+	const groupHeaderIntersectionObserver = useRef<IntersectionObserver>()
+
+	// handle intersection observer, create new observer if the intersectionContainerRef changes
+	useEffect(() => {
+		if (!intersectionContainerRef.current) {
+			return
+		}
+		groupHeaderIntersectionObserver.current?.disconnect()
+		groupHeaderIntersectionObserver.current = new IntersectionObserver(
+			updateRenderCellsFromIntersections,
+			{
+				root: intersectionContainerRef.current,
+				rootMargin: "0px",
+				threshold: 0,
+			},
+		)
+		return () => {
+			groupHeaderIntersectionObserver.current?.disconnect()
+		}
+	}, [intersectionContainerRef.current, updateRenderCellsFromIntersections])
+
+	// cleanup
+	useEffect(() => {
+		return () => {
+			groupHeaderIntersectionObserver.current?.disconnect()
+		}
+	}, [])
+
+	// handle scroll events on the intersection container
+	useEffect(() => {
+		let scrollEventListener: EventListener | undefined = undefined
+		if (intersectionContainerRef.current) {
+			scrollEventListener = () => {
+				//console.log("SCROLL")
+				const intersectionEntries =
+					groupHeaderIntersectionObserver.current?.takeRecords()
+				if (intersectionEntries?.length) {
+					updateRenderCellsFromIntersections(intersectionEntries)
+				}
+			}
+			intersectionContainerRef.current.addEventListener(
+				"scroll",
+				scrollEventListener,
+			)
+		}
+		return () => {
+			if (scrollEventListener) {
+				intersectionContainerRef.current?.removeEventListener(
+					"scroll",
+					scrollEventListener,
+				)
+			}
+		}
+	}, [intersectionContainerRef.current, updateRenderCellsFromIntersections])
+
+	if (!entries) return []
+
+	console.log("RENDER CELLS", renderCells)
+	return entries.map((groupEntry, g) => {
+		const rows = groupRows[groupEntry.group.id]
+		return (
+			<GroupRows<G, I>
+				key={`${groupEntry.group.title}${g}`}
+				group={groupEntry.group}
+				groupNumber={g}
+				itemRows={rows}
+				onGroupHeaderClick={onGroupClick}
+				onTimeSlotItemClick={onTimeSlotItemClick}
+				selectedTimeSlotItem={selectedTimeSlotItem}
+				intersectionContainerRef={intersectionContainerRef}
+				intersectionObserver={groupHeaderIntersectionObserver.current}
+				renderCells={renderCells[groupEntry.group.id] ?? false}
+			/>
+		)
+	})
 }
 
 /**
@@ -434,7 +561,8 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	onGroupHeaderClick,
 	selectedTimeSlotItem,
 	onTimeSlotItemClick,
-	scrollContainerRef,
+	renderCells,
+	intersectionObserver,
 }: {
 	group: G
 	groupNumber: number
@@ -442,7 +570,9 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	onGroupHeaderClick: ((group: G) => void) | undefined
 	selectedTimeSlotItem: I | undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
-	scrollContainerRef: React.RefObject<HTMLDivElement>
+	intersectionContainerRef: React.RefObject<HTMLDivElement>
+	renderCells: boolean
+	intersectionObserver: IntersectionObserver | undefined
 }) {
 	const storeIdent = useTimeTableIdent()
 	const { slotsArray, timeFrameDay, timeSlotMinutes } =
@@ -457,10 +587,29 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			: undefined
 	const dimensions = useTTCCellDimentions(storeIdent)
 
-	const [renderCells, setRenderCells] = useState(false)
+	const groupHeaderRef = useRef<HTMLTableCellElement | null>(null)
+
+	if (groupHeaderRef.current && intersectionObserver) {
+		intersectionObserver.observe(groupHeaderRef.current)
+	}
+	useEffect(() => {
+		return () => {
+			if (intersectionObserver && groupHeaderRef.current) {
+				intersectionObserver.unobserve(groupHeaderRef.current)
+			}
+		}
+	}, [intersectionObserver])
+
+	/*useEffect(() => {
+		if (intersectionObserver && groupHeaderRef.current) {
+			intersectionObserver.observe(groupHeaderRef.current)
+		}
+	}, [intersectionObserver, groupHeaderRef.current])*/
+
+	//const [renderCells, setRenderCells] = useState(false)
 
 	//#region interaction observer
-	const groupHeaderRef = useRef<HTMLTableCellElement | null>(null)
+	/*const groupHeaderRef = useRef<HTMLTableCellElement | null>(null)
 	const groupHeaderIntersectionObserver = useRef<IntersectionObserver>(
 		new IntersectionObserver(
 			(entries) => {
@@ -481,8 +630,21 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				threshold: 0,
 			},
 		),
-	)
+	)*/
 	//#endregion
+
+	/*useEffect(() => {
+		console.log(
+			"OBSERV USEEFFECT",
+			group.id,
+			intersectionObserver,
+			groupHeaderRef.current,
+		)
+		if (groupHeaderRef.current && intersectionObserver) {
+			console.log("OBSERVE", group.id)
+			intersectionObserver.observe(groupHeaderRef.current)
+		}
+	}, [intersectionObserver, groupHeaderRef.current])*/
 
 	const rowCount = itemRows && itemRows.length > 0 ? itemRows.length : 1 // if there are no rows, we draw an empty one
 	const rowSpanGroupHeader = renderCells
@@ -496,17 +658,8 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		// create group header
 		const groupHeader = (
 			<td
-				key={`group-header-${group.id}`}
-				id={`group-header-${group.id}`}
-				ref={(e) => {
-					if (groupHeaderIntersectionObserver.current) {
-						groupHeaderIntersectionObserver.current.disconnect()
-					}
-					groupHeaderRef.current = e
-					if (groupHeaderIntersectionObserver.current && e) {
-						groupHeaderIntersectionObserver.current.observe(e)
-					}
-				}}
+				data-group-id={group.id}
+				ref={groupHeaderRef}
 				onClick={
 					renderCells && onGroupHeaderClick
 						? () => onGroupHeaderClick(group)
@@ -643,7 +796,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			const height = !timeSlotSelectionDisabled
 				? dimensions.rowHeight * rowCount + dimensions.placeHolderHeight
 				: dimensions.rowHeight * rowCount
-			console.log("UNRENDERED TABLE ROWS", group.id, height)
 			return (
 				<tr
 					style={{

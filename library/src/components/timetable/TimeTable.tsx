@@ -234,7 +234,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const tableHeaderRef = useRef<HTMLTableSectionElement>(null)
 	const tableBodyRef = useRef<HTMLTableSectionElement>(null)
 	const inlineMessageRef = useRef<HTMLDivElement>(null)
-	const scrollContainerRef = useRef<HTMLDivElement>(null)
+	const intersectionContainerRef = useRef<HTMLDivElement>(null)
 
 	initAndUpdateTimeTableComponentStore(
 		storeIdent,
@@ -440,50 +440,54 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					/>
 				)}
 			</div>
-			<TimeTableIdentProvider ident={storeIdent}>
-				<div
-					className="overflow-auto"
-					style={{
-						height: `calc(${height} - ${inlineMessageRef.current?.clientHeight}px)`,
-					}}
-					ref={scrollContainerRef}
-				>
-					<table
-						className={
-							"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
-						}
-						ref={tableRef}
+			<div className="size-full relative">
+				<TimeTableIdentProvider ident={storeIdent}>
+					<div
+						className="overflow-auto relative"
+						style={{
+							height: `calc(${height} - ${inlineMessageRef.current?.clientHeight}px)`,
+						}}
+						ref={intersectionContainerRef}
 					>
-						<LPTimeTableHeader
-							slotsArray={slotsArray}
-							columnWidth={columnWidth}
-							groupHeaderColumnWidth={groupHeaderColumnWidth}
-							startDate={startDate}
-							endDate={endDate}
-							viewType={viewType}
-							timeFrameDay={timeFrameDay}
-							showTimeSlotHeader={
-								showTimeSlotHeader === undefined ||
-								showTimeSlotHeader === null
-									? viewType === "hours"
-									: showTimeSlotHeader
+						<table
+							className={
+								"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
 							}
-							dateHeaderTextFormat={dateHeaderTextFormat}
-							ref={tableHeaderRef}
-						/>
-						<tbody ref={tableBodyRef} className="table-fixed">
-							<TimeLineTableSimplified<G, I>
-								entries={entries}
-								selectedTimeSlotItem={selectedTimeSlotItem}
-								onTimeSlotItemClick={onTimeSlotItemClick}
-								onGroupClick={onGroupClick}
-								groupRows={groupRows}
-								scrollContainerRef={scrollContainerRef}
+							ref={tableRef}
+						>
+							<LPTimeTableHeader
+								slotsArray={slotsArray}
+								columnWidth={columnWidth}
+								groupHeaderColumnWidth={groupHeaderColumnWidth}
+								startDate={startDate}
+								endDate={endDate}
+								viewType={viewType}
+								timeFrameDay={timeFrameDay}
+								showTimeSlotHeader={
+									showTimeSlotHeader === undefined ||
+									showTimeSlotHeader === null
+										? viewType === "hours"
+										: showTimeSlotHeader
+								}
+								dateHeaderTextFormat={dateHeaderTextFormat}
+								ref={tableHeaderRef}
 							/>
-						</tbody>
-					</table>
-				</div>
-			</TimeTableIdentProvider>
+							<tbody ref={tableBodyRef} className="table-fixed">
+								<TimeLineTableSimplified<G, I>
+									entries={entries}
+									selectedTimeSlotItem={selectedTimeSlotItem}
+									onTimeSlotItemClick={onTimeSlotItemClick}
+									onGroupClick={onGroupClick}
+									groupRows={groupRows}
+									intersectionContainerRef={
+										intersectionContainerRef
+									}
+								/>
+							</tbody>
+						</table>
+					</div>
+				</TimeTableIdentProvider>
+			</div>
 		</>
 	)
 }
