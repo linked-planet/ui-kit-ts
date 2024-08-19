@@ -10,7 +10,7 @@ import {
 	PlaceHolderItemPlaceHolder,
 	type TimeTablePlaceholderItemProps,
 } from "./PlaceholderItem"
-import TimeLineTableSimplified from "./TimeLineTableSimplified"
+import TimeTableRows from "./TimeTableRows"
 import {
 	type TimeTableMessage,
 	TimeTableMessageProvider,
@@ -473,7 +473,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								ref={tableHeaderRef}
 							/>
 							<tbody ref={tableBodyRef} className="table-fixed">
-								<TimeLineTableSimplified<G, I>
+								<TimeTableRows<G, I>
 									entries={entries}
 									selectedTimeSlotItem={selectedTimeSlotItem}
 									onTimeSlotItemClick={onTimeSlotItemClick}

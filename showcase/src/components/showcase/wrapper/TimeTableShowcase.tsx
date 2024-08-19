@@ -765,7 +765,7 @@ function Example() {
 			</div>
 			<div
 				style={{
-					height: "300px",
+					height: "600px",
 				}}
 			>
 				<TimeTable

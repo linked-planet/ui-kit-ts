@@ -42,7 +42,7 @@ import {
 } from "./TimeTableSelectionStore"
 import type { ItemRowEntry } from "./useGoupRows"
 
-interface TimeTableRowsProps<
+interface TimeLineTableSimplifiedProps<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 > {
@@ -65,7 +65,7 @@ const rowsMargin = 3
 /**
  * Creates the table rows for the given entries.
  */
-export default function TimeTableRows<
+export default function TimeLineTableSimplified<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 >({
@@ -76,7 +76,7 @@ export default function TimeTableRows<
 	selectedTimeSlotItem,
 	intersectionContainerRef,
 	headerRef,
-}: TimeTableRowsProps<G, I>) {
+}: TimeLineTableSimplifiedProps<G, I>) {
 	const [renderCells, setRenderCells] = useState<Set<string>>(new Set())
 	const intersectionBatchTimeout = useRef<number>()
 
