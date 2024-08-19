@@ -66,8 +66,9 @@ interface DataTableProps<TData, TValue> {
 	testId?: string
 }
 
-// I need to use the default any because the cell values can have an arbitrary type
+// I need to use the default any because the cell values can have an arbitrary type and not all the same
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function DataTable<TData, TValue = any>({
 	columns,
 	data,
