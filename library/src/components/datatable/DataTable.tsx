@@ -1,6 +1,9 @@
 import {
+	type AccessorColumnDef,
 	type ColumnDef,
 	type ColumnFiltersState,
+	type DisplayColumnDef,
+	type GroupColumnDef,
 	type OnChangeFn,
 	type RowSelectionState,
 	type SortingState,
@@ -22,7 +25,12 @@ import {
 } from "./DataTableComponents"
 
 interface DataTableProps<TData, TValue> {
-	columns: ColumnDef<TData, TValue>[]
+	columns: (
+		| ColumnDef<TData, TValue>
+		| AccessorColumnDef<TData, TValue>
+		| DisplayColumnDef<TData, TValue>
+		| GroupColumnDef<TData, TValue>
+	)[]
 	data: TData[]
 
 	columnFilters?: ColumnFiltersState
@@ -60,7 +68,7 @@ interface DataTableProps<TData, TValue> {
 
 // I need to use the default any because the cell values can have an arbitrary type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function DataTable<TData, TValue>({
+export function DataTable<TData, TValue = any>({
 	columns,
 	data,
 	columnFilters: _columnFilters,
