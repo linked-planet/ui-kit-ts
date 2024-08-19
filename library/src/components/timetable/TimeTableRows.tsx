@@ -191,6 +191,7 @@ export default function TimeTableRows<
 				createRef<HTMLTableRowElement>() as React.MutableRefObject<HTMLElement>
 			refCollection.current[g] = mref
 		}
+
 		return (
 			<GroupRows<G, I>
 				key={`${groupEntry.group.title}${g}`}
@@ -399,14 +400,14 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			ref={tableCellRef}
 			className={`border-border relative box-border border-l-0 border-t-0 border-solid m-0 p-0 ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
 		>
+			{beforeCount > 0 && !hideOutOfRangeMarkers && (
+				<div
+					className="bg-lime-bold absolute left-0 top-0 z-[2] h-full w-1 rounded-r-full opacity-50"
+					title={`${beforeCount} more items`}
+				/>
+			)}
 			{itemsToRender && itemsToRender.length > 0 && (
 				<>
-					{beforeCount > 0 && !hideOutOfRangeMarkers && (
-						<div
-							className="bg-lime-bold absolute left-0 top-0 z-[2] h-full w-1 rounded-r-full opacity-50"
-							title={`${beforeCount} more items`}
-						/>
-					)}
 					<div
 						className="box-border grid"
 						style={{
@@ -415,13 +416,13 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					>
 						{itemsToRender}
 					</div>
-					{afterCount > 0 && !hideOutOfRangeMarkers && (
-						<div
-							className="bg-lime-bold absolute right-0 top-0 z-[2] h-full w-1 translate-x-0 translate-y-0 rounded-l-full opacity-50"
-							title={`${afterCount} more items`}
-						/>
-					)}
 				</>
+			)}
+			{afterCount > 0 && !hideOutOfRangeMarkers && (
+				<div
+					className="bg-lime-bold absolute right-0 top-0 z-[2] h-full w-1 translate-x-0 translate-y-0 rounded-l-full opacity-50"
+					title={`${afterCount} more items`}
+				/>
 			)}
 		</td>
 	)
@@ -751,7 +752,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	])
 
 	if (!renderCells) {
-		// render a placeholder in row height
+		// render a placeholder in group height when the group is not visible
 		return (
 			<tr
 				style={{

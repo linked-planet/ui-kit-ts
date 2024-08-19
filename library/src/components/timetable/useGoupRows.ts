@@ -112,9 +112,10 @@ export function useGroupRows<
 				itemsWithSameStartAndEnd[entry.group.id] =
 					_itemsWithSameStartAndEnd
 			}
-			const groupItems = entry.items
-				.filter((it) => !itemsOutsideRange.includes(it))
-				.filter((it) => !_itemsWithSameStartAndEnd.includes(it))
+			const groupItems = entry.items.filter(
+				(it) => !_itemsWithSameStartAndEnd.includes(it),
+			)
+			//.filter((it) => !itemsOutsideRange.includes(it))
 
 			const itemRows = getGroupItemStack(
 				groupItems,
@@ -143,6 +144,7 @@ export function useGroupRows<
 		currentTimeFrameDay.current = timeFrameDay
 		currentTimeSlotMinutes.current = timeSlotMinutes
 	}
+
 	return currentGroupRows.current
 }
 

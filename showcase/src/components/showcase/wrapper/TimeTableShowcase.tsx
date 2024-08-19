@@ -426,7 +426,7 @@ function Example() {
 	//#region timetable
 
 	const [timeSteps, setTimeSteps] = useState(60)
-	const [timeStepsInputValue, setTimeStepsInputValue] = useState(110)
+	const [timeStepsInputValue, setTimeStepsInputValue] = useState(timeSteps)
 	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
 	const [columnWidth, setColumnWidth] = useState(70)
 	const [rowHeight, setRowHeight] = useState(30)
@@ -553,8 +553,6 @@ function Example() {
 		},
 		[],
 	)
-
-	console.log("SELECTED TIME RANGE", selectedTimeRange)
 
 	return (
 		<>

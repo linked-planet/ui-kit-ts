@@ -2708,7 +2708,7 @@ function DataTableExample() {
 				onCheckedChange={setHideState}
 			/>
 			<div className="bg-surface h-96 overflow-hidden">
-				<DataTable.Table
+				<DataTable.Table<RowData>
 					data={rows}
 					columns={columns}
 					columnFilters={filters}
@@ -2744,6 +2744,7 @@ function DataTableColumnDefHelperExample() {
 
 	// make the columns
 	const columns = useMemo(() => {
+		// display column to show the select state and the checkbox using the cell function (without the cell, it would be display string)
 		const selectCol = columnHelper.display({
 			id: "select", // either header or ID should be present
 			header: (headerProps) => (
@@ -2768,12 +2769,15 @@ function DataTableColumnDefHelperExample() {
 			),
 		})
 
-		const fullNameCol = columnHelper.display({
-			header: "Full Name", // either header or ID should be present
-			cell: (cellcontext) =>
-				`${cellcontext.row.original.firstName} ${cellcontext.row.original.lastName}`,
-		})
+		// accessor column using accessor function
+		const fullNameCol = columnHelper.accessor(
+			(row) => `${row.firstName} ${row.lastName}`,
+			{
+				header: "Full Name", // either header or ID should be present
+			},
+		)
 
+		// accessor column using accessor key
 		const cityCol = columnHelper.accessor("city", {
 			header: "City",
 			enableGrouping: true,
@@ -2793,9 +2797,11 @@ function DataTableColumnDefHelperExample() {
 			invertSorting: true,
 		})
 
-		const buttonCol = columnHelper.display({
+		// display column using accessor key, but avoid the toString() of the element
+		const buttonCol = columnHelper.accessor("button", {
 			header: "Button",
-			//cell: (cellProps) => cellProps.getValue(),
+			id: "button",
+			cell: (cellProps) => cellProps.getValue<Element>(),
 		})
 
 		return [selectCol, fullNameCol, cityCol, zipCol, stateCol, buttonCol]
@@ -2807,7 +2813,7 @@ function DataTableColumnDefHelperExample() {
 		React.useState<DataTableTypes.ColumnFilter>()
 	const [hideState, setHideState] = React.useState<boolean>(false)
 
-	const filters = []
+	const filters: DataTableTypes.ColumnFilter[] = []
 	if (fullNameFilter) filters.push(fullNameFilter)
 	if (cityFilter) filters.push(cityFilter)
 
@@ -7634,7 +7640,7 @@ function Example() {
 			</div>
 			<div
 				style={{
-					height: "300px",
+					height: "600px",
 				}}
 			>
 				<TimeTable
