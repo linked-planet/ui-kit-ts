@@ -225,8 +225,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		!disableMessages,
 	)
 
-	console.log("TIMESTEPSMINUTES", timeStepsMinutes)
-
 	// change on viewType
 	useEffect(() => {
 		setMessage?.(undefined) // clear the message on time frame change
