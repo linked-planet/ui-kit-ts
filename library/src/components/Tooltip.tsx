@@ -93,9 +93,7 @@ export function Tooltip({
 				data-testid={triggerTestId}
 				id={triggerId}
 			>
-				<div className={className} style={style}>
-					{children}
-				</div>
+				{children}
 			</RTTp.Trigger>
 			{usePortal ? (
 				<RTTp.Portal container={getPortal(portalDivId)}>
