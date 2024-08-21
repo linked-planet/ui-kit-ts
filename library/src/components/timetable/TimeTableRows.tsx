@@ -635,12 +635,17 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 							}`
 						: undefined
 				}
-				style={{
-					height: groupHeaderHeight,
-				}}
 			>
 				{renderCells && (
-					<GroupComponent group={group} height={groupHeaderHeight} />
+					<div
+						className="overflow-hidden"
+						style={{
+							height: groupHeaderHeight,
+							maxHeight: groupHeaderHeight,
+						}}
+					>
+						<GroupComponent {...group} height={groupHeaderHeight} />
+					</div>
 				)}
 			</td>
 		)

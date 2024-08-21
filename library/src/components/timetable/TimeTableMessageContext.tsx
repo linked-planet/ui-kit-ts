@@ -85,13 +85,6 @@ export function useTimeTableMessage(messagesEnabled = true) {
 			"useTimeTableMessage must be used within a TimeTableMessageProvider",
 		)
 
-	if (!messagesEnabled) {
-		return {
-			message: undefined,
-			setMessage: undefined,
-			translatedMessage: undefined,
-		}
-	}
 	let messageTranslation: string | undefined = undefined
 	ret.message
 		? `no translation found for key [${ret.message?.messageKey}]`
@@ -110,14 +103,22 @@ export function useTimeTableMessage(messagesEnabled = true) {
 
 	const translatedMessage: Message | undefined = useMemo(
 		() =>
-			ret.message && messageTranslation
+			messagesEnabled && ret.message && messageTranslation
 				? {
 						...ret.message,
 						text: messageTranslation,
 					}
 				: undefined,
-		[ret.message, messageTranslation],
+		[ret.message, messageTranslation, messagesEnabled],
 	)
+
+	if (!messagesEnabled) {
+		return {
+			message: undefined,
+			setMessage: undefined,
+			translatedMessage: undefined,
+		}
+	}
 
 	return { ...ret, translatedMessage }
 }

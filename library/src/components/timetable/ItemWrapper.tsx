@@ -65,12 +65,13 @@ export default function ItemWrapper<
 	const multiSelectionMode = useMultiSelectionMode(storeIdent)
 	return (
 		<div
-			className="relative top-0 box-border"
+			className="relative top-0 box-border overflow-hidden"
 			style={{
 				left,
 				width,
 				pointerEvents: multiSelectionMode ? "none" : "auto",
 				height,
+				maxHeight: height,
 			}}
 			{...mouseHandler}
 		>

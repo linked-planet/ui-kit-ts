@@ -97,9 +97,12 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 		return
 	}
 
+	const startDateString = startDate.format()
+	const endDateString = endDate.format()
+
 	if (
-		timeTableConfigStore[ident].startDate !== startDate.format() ||
-		timeTableConfigStore[ident].endDate !== endDate.format() ||
+		timeTableConfigStore[ident].startDate !== startDateString ||
+		timeTableConfigStore[ident].endDate !== endDateString ||
 		timeTableConfigStore[ident].propTimeSlotMinutes !==
 			propTimeSlotMinutes ||
 		timeTableConfigStore[ident].viewType !== viewType
@@ -114,6 +117,21 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 			"TimeTable - basic properties updated:",
 			basicProperties,
 			timeTableConfigStore[ident].basicProperties,
+			"start date updated",
+			timeTableConfigStore[ident].startDate !== startDate.format(),
+			timeTableConfigStore[ident].startDate !== startDate.format()
+				? `${timeTableConfigStore[ident].startDate} !== ${startDate.format()}`
+				: "",
+			"end date updated",
+			timeTableConfigStore[ident].endDate !== endDate.format(),
+			timeTableConfigStore[ident].endDate !== endDate.format()
+				? `${timeTableConfigStore[ident].endDate} !== ${endDate.format()}`
+				: "",
+			"time slot minutes updated",
+			timeTableConfigStore[ident].propTimeSlotMinutes !==
+				propTimeSlotMinutes,
+			"view type updated",
+			timeTableConfigStore[ident].viewType !== viewType,
 		)
 
 		clearTimeSlotSelection(ident, true)
@@ -137,6 +155,10 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 		timeTableConfigStore[ident].basicProperties = basicProperties
 		timeTableConfigStore[ident].viewType = viewType
 		timeTableConfigStore[ident].propTimeSlotMinutes = propTimeSlotMinutes
+		timeTableConfigStore[ident].startDate = startDateString
+		timeTableConfigStore[ident].endDate = endDateString
+		timeTableConfigStore[ident].propTimeSlotMinutes = propTimeSlotMinutes
+		timeTableConfigStore[ident].viewType = viewType
 	}
 
 	if (isCellDisabled !== timeTableConfigStore[ident].isCellDisabled) {

@@ -42,7 +42,7 @@ export interface TimeSlotBooking {
 
 export interface TimeTableGroup {
 	id: string
-	title: string
+	title?: string
 	subtitle?: string
 }
 
