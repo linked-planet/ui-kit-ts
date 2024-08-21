@@ -271,6 +271,7 @@ const Container = forwardRef(
 			// set automatically the label in case it is not set by the user
 			const withLabel = React.cloneElement(childTyped, {
 				label,
+				key: label,
 			})
 			tabPanels.push(withLabel)
 		})
