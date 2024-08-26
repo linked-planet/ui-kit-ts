@@ -166,6 +166,11 @@ export interface LPTimeTableProps<
 		timeSlotStart: Dayjs,
 		timeSlotEnd: Dayjs,
 	) => boolean
+
+	/**
+	 * For those who require to start the week on Sunday, this can be set to true.
+	 */
+	weekStartsOnSunday?: boolean
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -218,6 +223,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	hideOutOfRangeMarkers = false,
 	nowOverwrite,
 	dateHeaderTextFormat,
+	weekStartsOnSunday = false,
 	disableMessages = false,
 }: LPTimeTableProps<G, I>) => {
 	// if we have viewType of days, we need to round the start and end date to the start and end of the day
@@ -255,6 +261,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		hideOutOfRangeMarkers,
 		disableWeekendInteractions,
 		!onTimeRangeSelected,
+		weekStartsOnSunday,
 		isCellDisabled,
 	)
 
@@ -284,8 +291,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		itemsOutsideOfDayRange,
 		itemsWithSameStartAndEnd,
 	} = useGroupRows(entries)
-
-	console.log("GROUP ROWS", groupRows, itemsOutsideOfDayRange)
 
 	useEffect(() => {
 		if (!setMessage) return
@@ -472,6 +477,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 										: showTimeSlotHeader
 								}
 								dateHeaderTextFormat={dateHeaderTextFormat}
+								weekStartsOnSunday={weekStartsOnSunday}
 								ref={tableHeaderRef}
 							/>
 							<tbody ref={tableBodyRef} className="table-fixed">

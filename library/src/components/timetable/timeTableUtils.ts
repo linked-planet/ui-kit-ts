@@ -1,4 +1,6 @@
 import dayjs, { type Dayjs } from "dayjs"
+import isoWeek from "dayjs/plugin/isoWeek"
+dayjs.extend(isoWeek)
 import type { TimeSlotBooking, TimeTableViewType } from "./TimeTable"
 import type { TimeTableMessage } from "./TimeTableMessageContext"
 import type { TimeFrameDay } from "./TimeTableConfigStore"
@@ -192,6 +194,7 @@ export function calculateTimeSlotPropertiesForView(
 	endDate: Dayjs,
 	timeStepsMinute: number,
 	viewType: TimeTableViewType,
+	weekStartsOnSunday: boolean,
 	setMessage?: (message: TimeTableMessage) => void,
 ): {
 	timeFrameDay: TimeFrameDay
@@ -261,8 +264,12 @@ export function calculateTimeSlotPropertiesForView(
 
 	const unit = viewType
 
-	const start = startDate.startOf(unit)
-	const end = endDate.endOf(unit)
+	const start = startDate.startOf(
+		unit === "weeks" && !weekStartsOnSunday ? "isoWeek" : unit,
+	)
+	const end = endDate.endOf(
+		unit === "weeks" && !weekStartsOnSunday ? "isoWeek" : unit,
+	)
 	let diff = end.diff(start, unit)
 	if (startDate.add(diff, unit).isBefore(endDate)) {
 		diff++

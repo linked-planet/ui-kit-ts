@@ -112,13 +112,5 @@ export function useTimeTableMessage(messagesEnabled = true) {
 		[ret.message, messageTranslation, messagesEnabled],
 	)
 
-	if (!messagesEnabled) {
-		return {
-			message: undefined,
-			setMessage: undefined,
-			translatedMessage: undefined,
-		}
-	}
-
 	return { ...ret, translatedMessage }
 }
