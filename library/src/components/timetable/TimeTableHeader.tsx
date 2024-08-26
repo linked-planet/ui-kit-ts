@@ -1,4 +1,8 @@
 import dayjs, { type Dayjs } from "dayjs"
+import weekOfYear from "dayjs/plugin/weekOfYear"
+import weekYear from "dayjs/plugin/weekYear"
+dayjs.extend(weekOfYear)
+dayjs.extend(weekYear)
 import type React from "react"
 import { Fragment, forwardRef } from "react"
 
@@ -23,7 +27,7 @@ export function headerText(
 		return tsStart.format("dd, DD.MM.")
 	}
 	if (viewType === "weeks") {
-		return `${tsStart.format("DD.MM.")} - ${tsEnd.format("DD.MM.")}`
+		return `${tsStart.format("DD.MM.")} - ${tsEnd.format("DD.MM.")} / ${tsStart.week()}`
 	}
 	if (viewType === "months") {
 		return tsStart.format("MM.YY")
@@ -44,6 +48,7 @@ type TimeTableHeaderProps = {
 	timeFrameDay: TimeFrameDay
 	/** a dayjs format string */
 	dateHeaderTextFormat?: string
+	weekStartsOnSunday: boolean
 }
 
 export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
@@ -57,12 +62,23 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 		showTimeSlotHeader,
 		timeFrameDay,
 		dateHeaderTextFormat,
+		weekStartsOnSunday,
 	}: TimeTableHeaderProps,
 	tableHeaderRef: React.Ref<HTMLTableSectionElement>,
 ) {
 	const viewTypeUnit = viewType === "hours" ? "days" : viewType
 	const daysOrWeeksOrMonths = [
-		...new Set(slotsArray.map((it) => it.startOf(viewTypeUnit).format())),
+		...new Set(
+			slotsArray.map((it) =>
+				it
+					.startOf(
+						viewTypeUnit === "weeks" && !weekStartsOnSunday
+							? "isoWeek"
+							: viewTypeUnit,
+					)
+					.format(),
+			),
+		),
 	].map((it) => dayjs(it))
 
 	let untilUnitChange = 1
@@ -120,13 +136,11 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 						style={{
 							width: groupHeaderColumnWidth,
 						}}
-						className={`bg-surface border-border sticky left-0 top-0 z-[5] select-none border-l-0 border-t-0 border-solid px-0 py-3 ${
-							showTimeSlotHeader
-								? "border-b-border border-b"
-								: "border-b-0"
-						}`}
+						className={
+							"bg-surface border-border sticky left-0 top-0 z-[5] select-none border-l-0 border-t-0 border-b-0 border-solid px-0 pt-1"
+						}
 					>
-						<div className="flex justify-end pr-4 font-bold">
+						<div className="flex justify-end pr-4 font-semibold text-lg">
 							{`${startDate.format("DD.MM.")} - ${endDate.format(
 								"DD.MM.YY",
 							)}`}
@@ -145,16 +159,14 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 							<th
 								key={`dateheader${date.unix()}`}
 								colSpan={topHeaderColSpan * 2}
-								className={`bg-surface after:border-border relative select-none border-x-0 border-t-0 border-solid px-0 py-3 after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-l-2 after:border-solid ${
-									showTimeSlotHeader
-										? "border-border border-b"
-										: "border-border border-b-0"
-								}`}
+								className={
+									"bg-surface after:border-border align-bottom relative select-none border-0 border-solid px-0 pt-1 after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-l-2 after:border-solid"
+								}
 							>
 								<div>
 									<div
 										className={
-											"select-none truncate text-center"
+											"select-none truncate text-center font-semibold text-lg"
 										}
 									>
 										{headerText(
@@ -175,7 +187,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 				<tr>
 					<th
 						className={`border-border bg-surface sticky left-0 top-0 z-[5] select-none border-l-0 border-t-0 border-solid p-0 ${
-							showTimeSlotHeader ? "py-3" : "py-0"
+							showTimeSlotHeader ? "pt-1" : "py-0"
 						}`}
 					>
 						{showTimeSlotHeader && (
@@ -201,10 +213,8 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								key={`timeheader${slot.unix()}`}
 								colSpan={2}
 								className={`bg-surface border-transparent border-b-border after:border-border relative select-none border-0 border-b-2 border-solid p-0 pl-1 font-bold after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-solid ${
-									isLastOfDay
-										? "after:border-l-2"
-										: "after:border-r"
-								} ${showTimeSlotHeader ? "py-3" : ""}`}
+									isLastOfDay ? "after:border-l-2" : ""
+								} ${showTimeSlotHeader ? "pt-1" : ""}`}
 							>
 								{showTimeSlotHeader
 									? slot.format(headerTimeSlotFormat)

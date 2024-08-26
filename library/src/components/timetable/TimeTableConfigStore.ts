@@ -55,6 +55,7 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 	hideOutOfRangeMarkers: boolean,
 	disableWeekendInteractions: boolean,
 	timeSlotSelectionDisabled: boolean,
+	weekStartsOnSunday: boolean,
 	isCellDisabled?: (
 		group: G,
 		timeSlotStart: Dayjs,
@@ -67,6 +68,7 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 			endDate,
 			propTimeSlotMinutes,
 			viewType,
+			weekStartsOnSunday,
 		)
 
 		timeTableConfigStore[ident] = proxy<TimeTableConfig<G>>({
@@ -112,6 +114,7 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 			endDate,
 			propTimeSlotMinutes,
 			viewType,
+			weekStartsOnSunday,
 		)
 		console.info(
 			"TimeTable - basic properties updated:",
