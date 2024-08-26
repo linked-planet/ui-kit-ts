@@ -749,7 +749,7 @@ function BannerShowcase(props: ShowcaseProps) {
 
 export default BannerShowcase
 
-import React, { type CSSProperties, useMemo, useRef, useState } from "react"
+import { type CSSProperties, useMemo, useRef, useState } from "react"
 import {
 	BookCard,
 	BookCardComponents,
@@ -757,13 +757,14 @@ import {
 	TagGroup,
 	Badge,
 	Fieldset,
+	Button,
+	ButtonGroup,
 } from "@linked-planet/ui-kit-ts"
 
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import Button, { ButtonGroup } from "@atlaskit/button"
 import { CSSTransition } from "react-transition-group"
 import { TruncatedText } from "@linked-planet/ui-kit-ts/components/TruncatedText"
 
@@ -983,19 +984,19 @@ function BookCardExample() {
 				<Fieldset legend="Book Card Collapsible">
 					<ButtonGroup>
 						<Button
-							isSelected={isClosed === false}
+							selected={isClosed === false}
 							onClick={() => setIsClosed(false)}
 						>
 							Opened
 						</Button>
 						<Button
-							isSelected={isClosed === true}
+							selected={isClosed === true}
 							onClick={() => setIsClosed(true)}
 						>
 							Closed
 						</Button>
 						<Button
-							isSelected={isClosed === undefined}
+							selected={isClosed === undefined}
 							onClick={() => setIsClosed(undefined)}
 						>
 							Closed Undefined
@@ -1005,19 +1006,19 @@ function BookCardExample() {
 				<Fieldset legend="Book Card Body Layout">
 					<ButtonGroup>
 						<Button
-							isSelected={bodyLayout === "row"}
+							selected={bodyLayout === "row"}
 							onClick={() => setBodyLayout("row")}
 						>
 							Row
 						</Button>
 						<Button
-							isSelected={bodyLayout === "grid"}
+							selected={bodyLayout === "grid"}
 							onClick={() => setBodyLayout("grid")}
 						>
 							Grid
 						</Button>
 						<Button
-							isSelected={bodyLayout === "column"}
+							selected={bodyLayout === "column"}
 							onClick={() => setBodyLayout("column")}
 						>
 							Column
@@ -1258,14 +1259,14 @@ function BannerShowcase(props: ShowcaseProps) {
 
 export default BannerShowcase
 
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKButton, {
+/*import AKButton, {
 	ButtonGroup as AKButtonGroup,
 	LoadingButton as AKLoadingButton,
-} from "@atlaskit/button"
+} from "@atlaskit/button"*/
 import { Button, LoadingButton, ButtonGroup } from "@linked-planet/ui-kit-ts"
 import SearchIcon from "@atlaskit/icon/glyph/search"
 
@@ -1274,7 +1275,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<>
-			<AKButtonGroup>
+			{/*<AKButtonGroup>
 				<AKButton
 					appearance="default"
 					onClick={() => console.log("Button pressed")}
@@ -1389,7 +1390,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 				>
 					Download Button
 				</AKButton>
-			</AKButtonGroup>
+			</AKButtonGroup>*/}
 		</>
 	)
 
@@ -2568,13 +2569,13 @@ import React, { type ReactNode, useMemo } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Button from "@atlaskit/button"
 import {
 	DataTable,
 	type DataTableTypes,
 	Input,
 	Label,
 	Checkbox,
+	Button,
 } from "@linked-planet/ui-kit-ts"
 
 //#region datatable-example
@@ -3333,12 +3334,11 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 export default DropDownMenuShowcase
 
-import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Button from "@atlaskit/button"
 import EmptyState from "@atlaskit/empty-state"
+import { Button } from "@linked-planet/ui-kit-ts"
 
 function EmptyStateShowcase(props: ShowcaseProps) {
 	//#region empty-state
@@ -4183,13 +4183,13 @@ export default function InputShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import ReactJoyride from "react-joyride"
-import Button, { ButtonGroup } from "@atlaskit/button"
 import { token } from "@atlaskit/tokens"
+import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
 
 function JoyrideShowcase(props: ShowcaseProps) {
 	//#region joyride
@@ -4216,7 +4216,7 @@ function JoyrideShowcase(props: ShowcaseProps) {
 			<div>
 				<ButtonGroup>
 					<Button
-						isSelected={isJoyrideActive}
+						selected={isJoyrideActive}
 						onClick={() => setIsJoyrideActive(true)}
 					>
 						Start Tour
@@ -5326,19 +5326,18 @@ export default function PopoverShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { SectionMessage } from "@linked-planet/ui-kit-ts"
-import AKSectionMessage from "@atlaskit/section-message"
+//import AKSectionMessage from "@atlaskit/section-message"
 
 function SectionMessageShowcase(props: ShowcaseProps) {
 	//#region section-message
 	const example = (
 		<div className="flex gap-3">
 			<div className="flex flex-col gap-3">
-				<AKSectionMessage title="Section Message Title">
+				{/*<AKSectionMessage title="Section Message Title">
 					Default Section Message
 				</AKSectionMessage>
 				<AKSectionMessage appearance="success">
@@ -5355,7 +5354,7 @@ function SectionMessageShowcase(props: ShowcaseProps) {
 				</AKSectionMessage>
 				<AKSectionMessage appearance="discovery">
 					Discovery Section Message
-				</AKSectionMessage>
+				</AKSectionMessage>*/}
 			</div>
 			<div className="flex flex-col gap-3">
 				<SectionMessage
@@ -7301,10 +7300,10 @@ function Example() {
 	//#region timetable
 
 	const [timeSteps, setTimeSteps] = useState(60)
-	const [timeStepsInputValue, setTimeStepsInputValue] = useState(110)
+	const [timeStepsInputValue, setTimeStepsInputValue] = useState(timeSteps)
 	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
 	const [columnWidth, setColumnWidth] = useState(70)
-	const [rowHeight, setRowHeight] = useState(30)
+	const [rowHeight, setRowHeight] = useState(40)
 	const [disabledWeekendInteractions, setDisabledWeekendInteractions] =
 		useState(true)
 	const [showTimeSlotHeader, setShowTimeSlotHeader] = useState(true)
@@ -7428,8 +7427,6 @@ function Example() {
 		},
 		[],
 	)
-
-	console.log("SELECTED TIME RANGE", selectedTimeRange)
 
 	return (
 		<>
@@ -8215,6 +8212,9 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import SearchIcon from "@atlaskit/icon/glyph/search"
 import WatchIcon from "@atlaskit/icon/glyph/watch"
+import ActivityIcon from "@atlaskit/icon/glyph/activity"
+import CameraIcon from "@atlaskit/icon/glyph/camera"
+import TaskIcon from "@atlaskit/icon/glyph/task"
 import { Tooltip, TooltipProvider, Button } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
@@ -8231,7 +8231,9 @@ function TooltipShowcase(props: ShowcaseProps) {
 						usePortal
 						align="start"
 					>
-						<SearchIcon label="" />
+						<div>
+							<SearchIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						tooltipHTMLContent={
@@ -8241,14 +8243,18 @@ function TooltipShowcase(props: ShowcaseProps) {
 						side="bottom"
 						align="end"
 					>
-						<SearchIcon label="" />
+						<div>
+							<ActivityIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						side="top"
 						defaultOpen
 						tooltipContent={"I'm a top tooltip"}
 					>
-						<SearchIcon label="" />
+						<div>
+							<CameraIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						side="bottom"
@@ -8260,7 +8266,9 @@ function TooltipShowcase(props: ShowcaseProps) {
 							</p>
 						}
 					>
-						<SearchIcon label="" />
+						<div>
+							<TaskIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						tooltipContent={`Der Fliegenpilz ist mit seinem auffälligen roten, weiß gepunkteten Hut weit und gut zu sehen. Er hat einen Durchmesser von 5 bis über 15 Zentimeter, ist jung kugelig oder halbkugelig geschlossen, dann konvex, schließlich scheibenförmig mit etwas herabgebogenem, gestreiftem Rand. Jung ist er durch sehr dicht stehende Warzen und Schuppen noch fast weiß mit schwachem orangen oder rötlichem Schimmer, dann tief rot und mit grauweißen kegelförmigen Warzen, zum Teil auch breiten Schuppen – den charakteristischen weißen „Punkten“ – besetzt, die leicht abgewischt werden können. Sie sind Reste einer Gesamthülle (Velum universale), die den jungen Pilz anfangs schützend umschließt.
@@ -8277,7 +8285,9 @@ function TooltipShowcase(props: ShowcaseProps) {
 						
 						Ältere Pilzkörper bilden im Becherstadium eine Vertiefung in ihrem Hut, in dem sich Regenwasser sammeln kann, der sogenannte Zwergenwein.[5]`}
 					>
-						<WatchIcon label="" />
+						<div>
+							<WatchIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						tooltipContent={
@@ -8314,6 +8324,10 @@ function TooltipShowcase(props: ShowcaseProps) {
 					<br />
 					The variant defines the color of the tooltip - if it is not
 					defined, it is unstyled.
+					<br />
+					<b>Important:</b> The tooltip component's child must be
+					ref-able, otherwise the tooltip will not work (i.g. use a
+					div around an icon).
 				</p>
 			}
 			{...props}
