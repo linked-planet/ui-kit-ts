@@ -2,13 +2,13 @@ import React, { type ReactNode, useMemo } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Button from "@atlaskit/button"
 import {
 	DataTable,
 	type DataTableTypes,
 	Input,
 	Label,
 	Checkbox,
+	Button,
 } from "@linked-planet/ui-kit-ts"
 
 //#region datatable-example

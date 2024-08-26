@@ -1,10 +1,10 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import ReactJoyride from "react-joyride"
-import Button, { ButtonGroup } from "@atlaskit/button"
 import { token } from "@atlaskit/tokens"
+import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
 
 function JoyrideShowcase(props: ShowcaseProps) {
 	//#region joyride
@@ -31,7 +31,7 @@ function JoyrideShowcase(props: ShowcaseProps) {
 			<div>
 				<ButtonGroup>
 					<Button
-						isSelected={isJoyrideActive}
+						selected={isJoyrideActive}
 						onClick={() => setIsJoyrideActive(true)}
 					>
 						Start Tour
