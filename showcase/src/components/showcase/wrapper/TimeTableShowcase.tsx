@@ -429,7 +429,7 @@ function Example() {
 	const [timeStepsInputValue, setTimeStepsInputValue] = useState(timeSteps)
 	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
 	const [columnWidth, setColumnWidth] = useState(70)
-	const [rowHeight, setRowHeight] = useState(30)
+	const [rowHeight, setRowHeight] = useState(40)
 	const [disabledWeekendInteractions, setDisabledWeekendInteractions] =
 		useState(true)
 	const [showTimeSlotHeader, setShowTimeSlotHeader] = useState(true)
