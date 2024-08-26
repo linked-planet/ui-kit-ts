@@ -3,6 +3,9 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import SearchIcon from "@atlaskit/icon/glyph/search"
 import WatchIcon from "@atlaskit/icon/glyph/watch"
+import ActivityIcon from "@atlaskit/icon/glyph/activity"
+import CameraIcon from "@atlaskit/icon/glyph/camera"
+import TaskIcon from "@atlaskit/icon/glyph/task"
 import { Tooltip, TooltipProvider, Button } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
@@ -19,7 +22,9 @@ function TooltipShowcase(props: ShowcaseProps) {
 						usePortal
 						align="start"
 					>
-						<SearchIcon label="" />
+						<div>
+							<SearchIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						tooltipHTMLContent={
@@ -29,14 +34,18 @@ function TooltipShowcase(props: ShowcaseProps) {
 						side="bottom"
 						align="end"
 					>
-						<SearchIcon label="" />
+						<div>
+							<ActivityIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						side="top"
 						defaultOpen
 						tooltipContent={"I'm a top tooltip"}
 					>
-						<SearchIcon label="" />
+						<div>
+							<CameraIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						side="bottom"
@@ -48,7 +57,9 @@ function TooltipShowcase(props: ShowcaseProps) {
 							</p>
 						}
 					>
-						<SearchIcon label="" />
+						<div>
+							<TaskIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						tooltipContent={`Der Fliegenpilz ist mit seinem auffälligen roten, weiß gepunkteten Hut weit und gut zu sehen. Er hat einen Durchmesser von 5 bis über 15 Zentimeter, ist jung kugelig oder halbkugelig geschlossen, dann konvex, schließlich scheibenförmig mit etwas herabgebogenem, gestreiftem Rand. Jung ist er durch sehr dicht stehende Warzen und Schuppen noch fast weiß mit schwachem orangen oder rötlichem Schimmer, dann tief rot und mit grauweißen kegelförmigen Warzen, zum Teil auch breiten Schuppen – den charakteristischen weißen „Punkten“ – besetzt, die leicht abgewischt werden können. Sie sind Reste einer Gesamthülle (Velum universale), die den jungen Pilz anfangs schützend umschließt.
@@ -65,7 +76,9 @@ function TooltipShowcase(props: ShowcaseProps) {
 						
 						Ältere Pilzkörper bilden im Becherstadium eine Vertiefung in ihrem Hut, in dem sich Regenwasser sammeln kann, der sogenannte Zwergenwein.[5]`}
 					>
-						<WatchIcon label="" />
+						<div>
+							<WatchIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						tooltipContent={
@@ -102,6 +115,10 @@ function TooltipShowcase(props: ShowcaseProps) {
 					<br />
 					The variant defines the color of the tooltip - if it is not
 					defined, it is unstyled.
+					<br />
+					<b>Important:</b> The tooltip component's child must be
+					ref-able, otherwise the tooltip will not work (i.g. use a
+					div around an icon).
 				</p>
 			}
 			{...props}
