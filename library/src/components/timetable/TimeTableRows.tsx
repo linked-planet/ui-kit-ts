@@ -160,7 +160,7 @@ export default function TimeTableRows<
 	}, [handleIntersections])
 
 	// initial run
-	useLayoutEffect(handleIntersections, [])
+	useLayoutEffect(handleIntersections, [groupRows])
 
 	// handle intersection observer, create new observer if the intersectionContainerRef changes
 	useLayoutEffect(() => {
