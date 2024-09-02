@@ -4,10 +4,7 @@ import react from "@vitejs/plugin-react-swc"
 //import nodePolyfills from "rollup-plugin-polyfill-node"
 import pkg from "./package.json"
 
-import {
-	classPrefixerPlugin,
-	postcssClassPrefixerPlugin,
-} from "./rollup-class-prefixer-plugin"
+import { classPrefixerPlugin } from "./rollup-class-prefixer-plugin"
 
 // postcss:
 import tailwindcss from "tailwindcss"
@@ -33,10 +30,10 @@ export default defineConfig({
 			plugins: [
 				tailwindcss(twConfig),
 				autoprefixer,
-				postcssClassPrefixerPlugin({
+				/*postcssClassPrefixerPlugin({
 					prefix,
 					classes: classesToPrefix,
-				}),
+				}),*/
 			],
 		},
 	},

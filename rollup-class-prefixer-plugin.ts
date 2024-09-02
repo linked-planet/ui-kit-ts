@@ -3,47 +3,29 @@ import { default as traverse } from "@babel/traverse"
 import { parse } from "@babel/parser"
 
 import * as t from "@babel/types"
-import fs from "node:fs/promises"
+import type { OutputAsset, Plugin } from "rollup"
+import postcss from "postcss"
 import { existsSync } from "node:fs"
-import type { Plugin } from "rollup"
-import type postcss from "postcss"
+import fs from "node:fs/promises"
 
 let classPrefix = ""
 let classesToBePrefix: string[] = []
 let jsFilePostfixes: string[] = []
-let classesToPrefixRegex: RegExp = new RegExp(
-	`(${classesToBePrefix.join("|")})`,
-	"g",
-)
 
-export function postcssClassPrefixerPlugin({
-	prefix,
-	classes,
-}: {
-	prefix: string
-	classes: string[]
-}) {
-	const classesToPrefixRegex = new RegExp(`(${classes.join("|")})`, "g")
-	const ret: postcss.Plugin = {
-		postcssPlugin: "css-class-prefixer",
-		Rule: (rule) => {
-			rule.selectors = rule.selectors.map((selector) => {
-				return selector.replace(classesToPrefixRegex, (match) => {
-					return `${prefix}${match}`
-				})
-			})
-		},
-	}
-	return ret
-}
+//JS:
+let classesToPrefixRegexJS: RegExp
 
-/*async function prefixCSS(code: string, fileName: string) {
+//CSS:
+let classesToPrefixRegexCSS: RegExp
+
+// the css prefixing is done by postcss
+async function prefixCSS(code: string, fileName: string) {
 	const pcssPrefixerPlugin: postcss.Plugin = {
 		postcssPlugin: "css-class-prefixer",
 		Rule: (rule) => {
 			rule.selectors = rule.selectors.map((selector) => {
-				return selector.replace(classesToPrefixRegex, (match) => {
-					return `${classPrefix}${match}`
+				return selector.replace(classesToPrefixRegexCSS, (match) => {
+					return `.${classPrefix}${match.substring(1)}`
 				})
 			})
 		},
@@ -52,7 +34,7 @@ export function postcssClassPrefixerPlugin({
 	const processor = postcss([pcssPrefixerPlugin])
 	const result = (await processor.process(code)).content
 	return result
-}*/
+}
 
 /**
  * Uses a regex to prefix the classes inside className or class strings
@@ -62,7 +44,7 @@ async function prefixJSX(code: string, fileName: string) {
 
 	const prefixFunc = (stringVal: string, shouldCount = true) => {
 		let _replacements = 0
-		const replaced = stringVal.replace(classesToPrefixRegex, (match) => {
+		const replaced = stringVal.replace(classesToPrefixRegexJS, (match) => {
 			_replacements++
 			return `${classPrefix}${match}`
 		})
@@ -155,17 +137,27 @@ export function classPrefixerPlugin({
 	prefix,
 	classes,
 	jsFiles = ["js", "jsx", "ts", "tsx"],
+	cssFiles = ["css", "scss"],
 }: {
 	prefix: string
 	classes: string[]
 	jsFiles?: string[]
+	cssFiles?: string[]
 }) {
 	classPrefix = prefix
 	classesToBePrefix = classes
 	jsFilePostfixes = jsFiles
-	classesToPrefixRegex = new RegExp(`(${classesToBePrefix.join("|")})`, "g")
+	classesToPrefixRegexJS = new RegExp(
+		`\b(${classesToBePrefix.join("|")})\b`,
+		"g",
+	)
+	classesToPrefixRegexCSS = new RegExp(
+		`\\.(${classesToBePrefix.join("|")})(?![a-zA-Z0-9_-])`,
+		"g",
+	)
 	const ret: Plugin = {
 		name: "class-prefixer-plugin",
+		// prefixes .js, .ts, .tsx, .jsx files in the load step, but tailwindcss has not build yet the classes at this point
 		async load(id) {
 			if (!existsSync(id)) {
 				return null
@@ -179,6 +171,19 @@ export function classPrefixerPlugin({
 			}
 
 			return null
+		},
+
+		// this prefixes the css files in the generateBundle step
+		async generateBundle(options, bundle) {
+			for (const fileName of Object.keys(bundle)) {
+				const fileEnd = fileName.split(".").pop()
+				if (fileEnd && cssFiles.includes(fileEnd)) {
+					const asset = bundle[fileName] as OutputAsset
+					const code = asset.source as string
+					const prefixed = await prefixCSS(code, fileName)
+					asset.source = prefixed
+				}
+			}
 		},
 	}
 	return ret

@@ -104,7 +104,7 @@
 		"valtio": "^1.13.2"
 	},
 	"devDependencies": {
-		"@atlaskit/atlassian-navigation": "^4.5.2",
+		"@atlaskit/atlassian-navigation": "^4.6.0",
 		"@atlaskit/calendar": "^14.5.2",
 		"@atlaskit/checkbox": "^13.7.1",
 		"@atlaskit/code": "^15.6.0",
