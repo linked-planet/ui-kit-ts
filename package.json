@@ -11,9 +11,7 @@
 	"description": "",
 	"module": "dist/index.js",
 	"type": "module",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "./dist/index.d.ts",
 	"style": [
 		"dist/styles.css",
@@ -34,15 +32,15 @@
 		"messages": "npm run messages:extract && npm run messages:compile",
 		"tsc:lib": "tsc --noEmit -p tsconfig.lib.json",
 		"tsc:sc": "tsc --noEmit",
-		"pack": "npm run build:lib && npm pack",
-		"fastpack": "vite build -c vite.config.lib.ts --mode development --minify false && cp -r ./twThemes dist && npm run tsc:plugin",
+		"pack": "vitest run && npm run build:lib && npm pack",
+		"fastpack": "vite build -c vite.config.lib.ts --mode development --minify false && cp -r ./twThemes dist && npm run tsc:plugin && npm pack",
 		"test": "vitest",
 		"bformat": "biome format ./src/**/*",
 		"blint:lib": "biome lint ./library/**/*",
 		"bcheck:lib": "biome check --apply ./library/**/*",
 		"bformat:sc": "biome format ./showcase/**/*",
 		"blint:sc": "biome lint ./showcase/**/*",
-		"tsc:plugin": "tsc --moduleResolution bundler --module es2022 --outDir dist/vite-plugin --declaration rollup-class-prefixer-plugin.ts"
+		"tsc:plugin": "tsc --moduleResolution bundler --module es2022 --outDir dist/bundler-plugins --declaration bundler_plugins/rollup_class_prefixer-plugin.ts bundler_plugins/postcss_prefix_classname-plugin.ts"
 	},
 	"sideEffects": false,
 	"author": "Markus Toepfer",
@@ -56,17 +54,10 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": [
-		"en",
-		"de"
-	],
+	"supportedLocales": ["en", "de"],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
+		"production": [">0.2%", "not dead", "not op_mini all"],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
