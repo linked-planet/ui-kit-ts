@@ -9,8 +9,8 @@ let cssFilePostfixes: string[] = []
 let jsFilePostfixes: string[] = []
 
 /* extracts the content after the class keyword in a class string */
-const classRegExStr = /(?<=\b(class(Name)?\s*[=:]\s*['"])\s*)\b(.*)\b(?<!["'])/g
-
+//const classRegExStr = /(?<=\b(class(Name)?\s*[=:]\s*['"])\s*)\b(.*)\b(?<!["'])/g
+const classRegExStr = /(?<=\b(class(Name)?[=:]{?\s*['"`]))[^"']+(?=["'`])/g
 /**
  * Uses a regex to prefix classes in a css/scss file
  */
@@ -33,15 +33,36 @@ function prefixCSS(code: string, fileName: string) {
  * Uses a regex to prefix the classes inside className or class strings
  */
 function prefixJS(code: string, fileName: string) {
-	const classNameRegex = new RegExp(
-		`(?<=["'\\s])\\b(${classesToBePrefix.join("|")})\\b(?=["'\\s])`,
+	/*const classNameRegex = new RegExp(
+		`(?<=["'\`\\s])\\b(${classesToBePrefix.join("|")})\\b(?=["'\`\\s])`,
 		"g",
-	)
+	)*/
+	const classNameRegex = /(sticky)/g
 	let counter = 0
 	const ret = code.replace(classRegExStr, (match) => {
+		if (match.includes("sticky")) {
+			console.log("CODE", code)
+			console.log(
+				"MATCH",
+				match,
+				"file:",
+				fileName,
+				match,
+				classNameRegex.exec(match),
+			)
+		}
 		return match.replace(classNameRegex, (cmatch) => {
 			const prefixed = `${classPrefix}${cmatch}`
-			console.info("Replacing", match, "with", prefixed)
+			/*console.info(
+				"Replacing",
+				cmatch,
+				"with",
+				prefixed,
+				"match:",
+				match,
+				"file:",
+				fileName,
+			)*/
 			counter++
 			return prefixed
 		})

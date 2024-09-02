@@ -1,11 +1,13 @@
 import { defineConfig } from "vite"
 import { resolve } from "node:path"
 import react from "@vitejs/plugin-react-swc"
-import dts from "vite-plugin-dts"
 //import nodePolyfills from "rollup-plugin-polyfill-node"
 import pkg from "./package.json"
 
-import classPrefixerPlugin from "./vite-classPrefixerPlugin"
+import {
+	classPrefixerPlugin,
+	postcssClassPrefixerPlugin,
+} from "./rollup-class-prefixer-plugin"
 
 // postcss:
 import tailwindcss from "tailwindcss"
@@ -28,7 +30,14 @@ const twConfig = twUseImportant
 export default defineConfig({
 	css: {
 		postcss: {
-			plugins: [tailwindcss(twConfig), autoprefixer],
+			plugins: [
+				tailwindcss(twConfig),
+				autoprefixer,
+				postcssClassPrefixerPlugin({
+					prefix,
+					classes: classesToPrefix,
+				}),
+			],
 		},
 	},
 	build: {
@@ -81,11 +90,11 @@ export default defineConfig({
 		},
 	},
 	plugins: [
-		dts({
+		/*dts({
 			entryRoot: resolve(__dirname, "library/src"),
 			insertTypesEntry: true,
 			tsconfigPath: resolve(__dirname, "tsconfig.lib.json"),
-		}),
+		}),*/
 		react(),
 		/*{
 			// this is for emotion (need to test if it's still needed)
