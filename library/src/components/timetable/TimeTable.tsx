@@ -159,6 +159,12 @@ export interface LPTimeTableProps<
 	hideOutOfRangeMarkers?: boolean
 
 	/**
+	 * The locale to use for the dayjs library
+	 * @default "en"
+	 **/
+	locale?: "en" | "de"
+
+	/**
 	 * If defined this is called by each cell to check if it is disabled
 	 */
 	isCellDisabled?: (
@@ -222,6 +228,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	showTimeSlotHeader,
 	hideOutOfRangeMarkers = false,
 	nowOverwrite,
+	locale = "en",
 	dateHeaderTextFormat,
 	weekStartsOnSunday = false,
 	disableMessages = false,
@@ -478,6 +485,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								}
 								dateHeaderTextFormat={dateHeaderTextFormat}
 								weekStartsOnSunday={weekStartsOnSunday}
+								locale={locale}
 								ref={tableHeaderRef}
 							/>
 							<tbody ref={tableBodyRef} className="table-fixed">
