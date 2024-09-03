@@ -4,7 +4,10 @@ import react from "@vitejs/plugin-react-swc"
 //import nodePolyfills from "rollup-plugin-polyfill-node"
 import pkg from "./package.json"
 
-//import { classPrefixerPlugin } from "./bundler_plugins/rollup_class_prefixer-plugin"
+// types
+import dts from "vite-plugin-dts"
+
+//import classPrefixerPlugin from "./bundler_plugins/rollup_class_prefixer-plugin"
 
 // postcss:
 import tailwindcss from "tailwindcss"
@@ -79,6 +82,7 @@ export default defineConfig({
 			},
 			external: [...Object.keys(pkg.peerDependencies)],
 			plugins: [
+				// this would be just to test!
 				/*classPrefixerPlugin({
 					prefix, // this is the prefix that is added to the classes
 					classes: classesToPrefix, // these are the classes that are prefixed
@@ -87,11 +91,11 @@ export default defineConfig({
 		},
 	},
 	plugins: [
-		/*dts({
+		dts({
 			entryRoot: resolve(__dirname, "library/src"),
 			insertTypesEntry: true,
 			tsconfigPath: resolve(__dirname, "tsconfig.lib.json"),
-		}),*/
+		}),
 		react(),
 		/*{
 			// this is for emotion (need to test if it's still needed)

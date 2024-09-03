@@ -1,4 +1,4 @@
-import React, { useRef, type CSSProperties } from "react"
+import { useRef, type CSSProperties } from "react"
 import { createPortal } from "react-dom"
 
 import { ToastContainer, toast } from "react-toastify"
@@ -141,7 +141,7 @@ export function showFlagExtended({
 			appearance={appearance}
 			type={flagType}
 			style={flagStyle}
-			className="bottom-0 bg-transparent p-0 shadow-none"
+			className="bottom-0 bg-transparent p-0"
 			{...props}
 		/>,
 		{
