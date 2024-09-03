@@ -1,26 +1,42 @@
-import React from "react"
-
-import LPTimeTable from "./LPTimeTable"
+import TimeTable from "./TimeTable"
 import type {
-	SelectedTimeSlot,
-	TimeSlotBooking,
-	TimeTableEntry,
-	TimeTableGroup,
-	TimeTableViewType,
-} from "./LPTimeTable"
+	SelectedTimeSlot as _SelectedTimeSlot,
+	TimeSlotBooking as _TimeSlotBooking,
+	TimeTableEntry as _TimeTableEntry,
+	TimeTableGroup as _TimeTableGroup,
+	TimeTableViewType as _TimeTableViewType,
+	LPTimeTableProps,
+} from "./TimeTable"
+import type { TimeTablePlaceholderItemProps } from "./PlaceholderItem"
+import type { TimeTableItemProps } from "./ItemWrapper"
 
-import type { RenderItemProps } from "./ItemWrapper"
-import type { PlaceholderItemProps } from "./PlaceholderItem"
+export type { TimeTableItemProps } from "./ItemWrapper"
+export type { TimeTablePlaceholderItemProps } from "./PlaceholderItem"
 
-const memoized = React.memo(LPTimeTable) as typeof LPTimeTable
+//const memoized = React.memo(TimeTable) as typeof TimeTable
 
-export { memoized as LPTimeTable }
-export type {
-	TimeTableEntry,
-	TimeSlotBooking,
-	TimeTableGroup,
-	SelectedTimeSlot,
-	PlaceholderItemProps,
-	RenderItemProps,
-	TimeTableViewType,
+//export { memoized as TimeTable }
+export { TimeTable }
+
+export namespace TimeTableTypes {
+	export type TimeSlotBooking = _TimeSlotBooking
+	export type TimeTableGroup = _TimeTableGroup
+
+	export type TimeTableEntry<
+		G extends TimeTableGroup,
+		I extends TimeSlotBooking,
+	> = _TimeTableEntry<G, I>
+	export type SelectedTimeSlot<G extends TimeTableGroup> =
+		_SelectedTimeSlot<G>
+	export type PlaceholderItemProps<G extends TimeTableGroup> =
+		TimeTablePlaceholderItemProps<G>
+	export type RenderItemProps<
+		G extends TimeTableGroup,
+		I extends TimeSlotBooking,
+	> = TimeTableItemProps<G, I>
+	export type TimeTableViewType = _TimeTableViewType
+	export type TimeTableProps<
+		G extends TimeTableGroup,
+		I extends TimeSlotBooking,
+	> = LPTimeTableProps<G, I>
 }

@@ -10,7 +10,7 @@ import {
 } from "react"
 import { getTranslation } from "../../localization/LocaleContext"
 import type { default as TranslatedTimeTableMessagesJson } from "../../localization/translations-compiled/en.json"
-import type { Message } from "../inlinemessage"
+import type { Message } from "../InlineMessage"
 
 export type TranslatedTimeTableMessages = typeof TranslatedTimeTableMessagesJson
 
@@ -78,12 +78,13 @@ export function TimeTableMessageProvider({
 	)
 }
 
-export function useTimeTableMessage() {
+export function useTimeTableMessage(messagesEnabled = true) {
 	const ret = useContext(timeTableMessageContext)
 	if (!ret)
 		throw new Error(
 			"useTimeTableMessage must be used within a TimeTableMessageProvider",
 		)
+
 	let messageTranslation: string | undefined = undefined
 	ret.message
 		? `no translation found for key [${ret.message?.messageKey}]`
@@ -102,13 +103,13 @@ export function useTimeTableMessage() {
 
 	const translatedMessage: Message | undefined = useMemo(
 		() =>
-			ret.message && messageTranslation
+			messagesEnabled && ret.message && messageTranslation
 				? {
 						...ret.message,
 						text: messageTranslation,
 					}
 				: undefined,
-		[ret.message, messageTranslation],
+		[ret.message, messageTranslation, messagesEnabled],
 	)
 
 	return { ...ret, translatedMessage }

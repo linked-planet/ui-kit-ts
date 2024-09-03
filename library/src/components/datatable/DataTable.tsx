@@ -1,6 +1,10 @@
 import {
+	type AccessorColumnDef,
 	type ColumnDef,
 	type ColumnFiltersState,
+	type DisplayColumnDef,
+	type GroupColumnDef,
+	type OnChangeFn,
 	type RowSelectionState,
 	type SortingState,
 	type VisibilityState,
@@ -10,7 +14,7 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table"
-import React, { type CSSProperties, useState, useCallback } from "react"
+import { type CSSProperties, useState, useCallback } from "react"
 import {
 	Table,
 	TableBody,
@@ -21,7 +25,12 @@ import {
 } from "./DataTableComponents"
 
 interface DataTableProps<TData, TValue> {
-	columns: ColumnDef<TData, TValue>[]
+	columns: (
+		| ColumnDef<TData, TValue>
+		| AccessorColumnDef<TData, TValue>
+		| DisplayColumnDef<TData, TValue>
+		| GroupColumnDef<TData, TValue>
+	)[]
 	data: TData[]
 
 	columnFilters?: ColumnFiltersState
@@ -57,9 +66,10 @@ interface DataTableProps<TData, TValue> {
 	testId?: string
 }
 
-// I need to use the default any because the cell values can have an arbitrary type
+// I need to use the default any because the cell values can have an arbitrary type and not all the same
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function DataTable<TData, TValue>({
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export function DataTable<TData, TValue = any>({
 	columns,
 	data,
 	columnFilters: _columnFilters,
@@ -105,45 +115,57 @@ export function DataTable<TData, TValue>({
 		setSorting(_sorting ?? [])
 	}
 
-	const onRowSelectionChangeCB = useCallback(
+	const onRowSelectionChangeCB: OnChangeFn<RowSelectionState> = useCallback(
 		(selectionUpdateFn) => {
 			setRowSelection((prev) => {
-				const selection = selectionUpdateFn(prev)
-				onRowSelectionChange?.(selection)
-				return selection
+				if (typeof selectionUpdateFn === "function") {
+					const selection = selectionUpdateFn(prev)
+					onRowSelectionChange?.(selection)
+					return selection
+				}
+				return selectionUpdateFn
 			})
 		},
 		[onRowSelectionChange],
 	)
 
-	const onColumnVisibilityChangeCB = useCallback(
+	const onColumnVisibilityChangeCB: OnChangeFn<VisibilityState> = useCallback(
 		(visibilityUpdateFn) => {
 			setColumnVisibility((prev) => {
-				const newVisibility = visibilityUpdateFn(prev)
-				onColumnVisibilityChange?.(newVisibility)
-				return newVisibility
+				if (typeof visibilityUpdateFn === "function") {
+					const newVisibility = visibilityUpdateFn(prev)
+					onColumnVisibilityChange?.(newVisibility)
+					return newVisibility
+				}
+				return visibilityUpdateFn
 			})
 		},
 		[onColumnVisibilityChange],
 	)
 
-	const onSortingChangeCB = useCallback(
+	const onSortingChangeCB: OnChangeFn<SortingState> = useCallback(
 		(sortingUpdateFn) => {
 			setSorting((prev) => {
-				const newSorting = sortingUpdateFn(prev)
-				onSortingChange?.(newSorting)
-				return newSorting
+				if (typeof sortingUpdateFn === "function") {
+					const newSorting = sortingUpdateFn(prev)
+					onSortingChange?.(newSorting)
+					return newSorting
+				}
+				return sortingUpdateFn
 			})
 		},
 		[onSortingChange],
 	)
 
-	const onColumnFiltersChangeCB = useCallback(
+	const onColumnFiltersChangeCB: OnChangeFn<ColumnFiltersState> = useCallback(
 		(filtersUpdateFn) => {
 			setColumnFilters((prev) => {
-				const filters = filtersUpdateFn(prev)
-				onColumnFiltersChange?.(filters)
-				return filters
+				if (typeof filtersUpdateFn === "function") {
+					const filters = filtersUpdateFn(prev)
+					onColumnFiltersChange?.(filters)
+					return filters
+				}
+				return filtersUpdateFn
 			})
 		},
 		[onColumnFiltersChange],

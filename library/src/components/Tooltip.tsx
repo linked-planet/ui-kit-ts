@@ -40,6 +40,7 @@ export function Tooltip({
 	defaultOpen,
 	open,
 	onOpenChange,
+	...rest
 }: TooltipProps) {
 	const content = useMemo(() => {
 		return (
@@ -83,6 +84,7 @@ export function Tooltip({
 			open={open}
 			defaultOpen={defaultOpen}
 			onOpenChange={onOpenChange}
+			{...rest}
 		>
 			<RTTp.Trigger
 				className={className}
@@ -91,9 +93,7 @@ export function Tooltip({
 				data-testid={triggerTestId}
 				id={triggerId}
 			>
-				<div className={className} style={style}>
-					{children}
-				</div>
+				{children}
 			</RTTp.Trigger>
 			{usePortal ? (
 				<RTTp.Portal container={getPortal(portalDivId)}>

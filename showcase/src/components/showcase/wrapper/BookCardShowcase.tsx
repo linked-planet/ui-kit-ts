@@ -1,13 +1,19 @@
-import React, { CSSProperties, useMemo, useRef, useState } from "react"
-import { BookCard, BookCardComponents, Tag } from "@linked-planet/ui-kit-ts"
+import { type CSSProperties, useMemo, useRef, useState } from "react"
+import {
+	BookCard,
+	BookCardComponents,
+	Tag,
+	TagGroup,
+	Badge,
+	Fieldset,
+	Button,
+	ButtonGroup,
+} from "@linked-planet/ui-kit-ts"
 
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import Button, { ButtonGroup } from "@atlaskit/button"
-import { Fieldset } from "@atlaskit/form"
-import { Badge, SimpleTag, TagGroup } from "@linked-planet/ui-kit-ts"
 import { CSSTransition } from "react-transition-group"
 import { TruncatedText } from "@linked-planet/ui-kit-ts/components/TruncatedText"
 
@@ -168,12 +174,12 @@ function BookCardExample() {
 				actions={
 					<div className="flex items-center">
 						<TagGroup>
-							<SimpleTag key="action" appearance="danger">
+							<Tag key="action" appearance="danger">
 								DAUERAUSLEIHE
-							</SimpleTag>
-							<SimpleTag key="action 1" appearance="greenLight">
+							</Tag>
+							<Tag key="action 1" appearance="greenLight">
 								action item
-							</SimpleTag>
+							</Tag>
 						</TagGroup>
 					</div>
 				}
@@ -201,12 +207,12 @@ function BookCardExample() {
 						<BookCardComponents.CardBodyEntryTitle>
 							Book Entry Title
 						</BookCardComponents.CardBodyEntryTitle>
-						<SimpleTag>
+						<Tag>
 							Lorem ipsum, dolor sit amet consectetur adipisicing
 							elit. Illo cumque eum laborum voluptate ipsa sed
 							consectetur tempore vel quia est quas itaque
 							voluptatem neque odio, maiores ut cum at distinctio?
-						</SimpleTag>
+						</Tag>
 						<Tag>
 							Lorem ipsum, dolor sit amet consectetur adipisicing
 							elit. Illo cumque eum laborum voluptate ipsa sed
@@ -227,19 +233,19 @@ function BookCardExample() {
 				<Fieldset legend="Book Card Collapsible">
 					<ButtonGroup>
 						<Button
-							isSelected={isClosed === false}
+							selected={isClosed === false}
 							onClick={() => setIsClosed(false)}
 						>
 							Opened
 						</Button>
 						<Button
-							isSelected={isClosed === true}
+							selected={isClosed === true}
 							onClick={() => setIsClosed(true)}
 						>
 							Closed
 						</Button>
 						<Button
-							isSelected={isClosed === undefined}
+							selected={isClosed === undefined}
 							onClick={() => setIsClosed(undefined)}
 						>
 							Closed Undefined
@@ -249,19 +255,19 @@ function BookCardExample() {
 				<Fieldset legend="Book Card Body Layout">
 					<ButtonGroup>
 						<Button
-							isSelected={bodyLayout === "row"}
+							selected={bodyLayout === "row"}
 							onClick={() => setBodyLayout("row")}
 						>
 							Row
 						</Button>
 						<Button
-							isSelected={bodyLayout === "grid"}
+							selected={bodyLayout === "grid"}
 							onClick={() => setBodyLayout("grid")}
 						>
 							Grid
 						</Button>
 						<Button
-							isSelected={bodyLayout === "column"}
+							selected={bodyLayout === "column"}
 							onClick={() => setBodyLayout("column")}
 						>
 							Column

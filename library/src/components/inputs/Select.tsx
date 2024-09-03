@@ -17,7 +17,6 @@ import {
 	default as RSelect,
 	type SelectComponentsConfig,
 	type SelectInstance,
-	components,
 	type AriaOnFocus,
 	type AriaGuidance,
 	type AriaOnChange,
@@ -50,9 +49,9 @@ import ReactSelectCreatable, {
 	type CreatableProps,
 } from "react-select/creatable"
 import { twJoin, twMerge } from "tailwind-merge"
-import { SlidingErrorMessage } from "./SlidingErrorMessage"
+import { SlidingErrorMessage } from "./ErrorHelpWrapper"
 import { IconSizeHelper } from "../IconSizeHelper"
-import { inputBaseStyle } from "../styleHelper"
+import { inputBaseStyles } from "../styleHelper"
 
 const menuStyles =
 	"bg-surface min-w-min z-10 shadow-overlay rounded overflow-hidden"
@@ -98,7 +97,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 				control: (provided) =>
 					twMerge(
 						twJoin(
-							inputBaseStyle,
+							inputBaseStyles,
 							"px-2 flex items-center",
 							provided.isDisabled
 								? "bg-disabled border-transparent cursor-not-allowed"
@@ -217,14 +216,99 @@ const customStyles = {
 
 //#endregion styles
 
+// this are basically all the props that are passed to the react-select component... except for the ones that are not needed
+type PickedCreateableProps<ValueType, IsMulti extends boolean = boolean> = Pick<
+	CreatableProps<OptionType<ValueType>, IsMulti, OptionGroupType<ValueType>>,
+	//| "isCreateable"
+	| "aria-errormessage"
+	| "aria-invalid"
+	| "aria-label"
+	| "aria-labelledby"
+	| "aria-live"
+	| "ariaLiveMessages"
+	| "autoFocus"
+	| "backspaceRemovesValue"
+	| "blurInputOnSelect"
+	| "captureMenuScroll"
+	| "className"
+	| "classNamePrefix"
+	| "classNames"
+	| "closeMenuOnSelect"
+	| "closeMenuOnScroll"
+	| "components"
+	| "controlShouldRenderValue"
+	| "delimiter"
+	| "escapeClearsValue"
+	| "filterOption"
+	| "formatGroupLabel"
+	| "formatOptionLabel"
+	| "getOptionLabel"
+	| "getOptionValue"
+	| "hideSelectedOptions"
+	| "id"
+	| "inputValue"
+	| "inputId"
+	| "instanceId"
+	| "isClearable"
+	| "isDisabled"
+	| "isLoading"
+	| "isOptionDisabled"
+	| "isOptionSelected"
+	| "isMulti"
+	| "isRtl"
+	| "isSearchable"
+	| "loadingMessage"
+	| "minMenuHeight"
+	| "maxMenuHeight"
+	| "menuIsOpen"
+	| "menuPlacement"
+	| "menuPosition"
+	| "menuPortalTarget"
+	| "menuShouldBlockScroll"
+	| "menuShouldScrollIntoView"
+	| "name"
+	| "noOptionsMessage"
+	| "onBlur"
+	| "onChange"
+	| "onFocus"
+	| "onInputChange"
+	| "onKeyDown"
+	| "onMenuOpen"
+	| "onMenuClose"
+	| "onMenuScrollToTop"
+	| "onMenuScrollToBottom"
+	| "openMenuOnFocus"
+	| "openMenuOnClick"
+	| "options"
+	| "pageSize"
+	//| "placeholder"
+	| "screenReaderStatus"
+	| "styles"
+	//| "theme"
+	| "tabIndex"
+	| "tabSelectsValue"
+	//| "unstyled"
+	| "value"
+	//| "form"
+	| "required"
+	| "defaultInputValue"
+	| "defaultMenuIsOpen"
+	| "defaultValue"
+	| "allowCreateWhileLoading"
+	| "createOptionPosition"
+	| "formatCreateLabel"
+	| "isValidNewOption"
+	| "getNewOptionData"
+	| "onCreateOption"
+>
+
 /**
  * Simply a wrapper around react-select that provides some default styles and props.
  */
-type InnerProps<ValueType, IsMulti extends boolean = boolean> = CreatableProps<
-	OptionType<ValueType>,
-	IsMulti,
-	OptionGroupType<ValueType>
-> & {
+type InnerProps<
+	ValueType,
+	IsMulti extends boolean = boolean,
+> = PickedCreateableProps<ValueType, IsMulti> & {
 	isCreateable?: boolean
 	testId?: string
 	innerRef?: React.Ref<SelectInstance<
@@ -237,7 +321,7 @@ type InnerProps<ValueType, IsMulti extends boolean = boolean> = CreatableProps<
 	dropdownLabel?: (isOpen: boolean) => string
 	onClearButtonClick?: () => void
 	invalid?: boolean
-	containerClassName?: string
+	placeholder?: string
 }
 
 const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
@@ -247,8 +331,6 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 	innerRef,
 	classNames,
 	className,
-	containerClassName,
-	style,
 	clearValuesButtonLabel,
 	removeValueButtonLabel,
 	dropdownLabel,
@@ -256,6 +338,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 	invalid,
 	components: _components,
 	onClearButtonClick,
+	styles,
 	...props
 }: InnerProps<ValueType, IsMulti>) => {
 	const classNamesConfig = useClassNamesConfig<ValueType, IsMulti>(
@@ -263,6 +346,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 		className,
 		invalid,
 	)
+
 
 	// get the browsers locale
 	const locale = navigator.language
@@ -445,7 +529,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 			>
 				ref={locRef}
 				placeholder={
-					props.placeholder ?? locale.startsWith("de")
+					(props.placeholder ?? locale.startsWith("de"))
 						? "Auswahl..."
 						: "Select..."
 				}
@@ -461,7 +545,10 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 							? `Erstelle "${value}"`
 							: `Create "${value}"`)
 				}
-				styles={customStyles}
+				styles={{
+					...customStyles,
+					...styles,
+				}}
 				components={components}
 				{...props}
 			/>
@@ -471,7 +558,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 	return (
 		<RSelect<OptionType<ValueType>, IsMulti, OptionGroupType<ValueType>>
 			placeholder={
-				props.placeholder ?? locale.startsWith("de")
+				(props.placeholder ?? locale.startsWith("de"))
 					? "Auswahl..."
 					: "Select..."
 			}
@@ -483,7 +570,6 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 			data-invalid={invalid}
 			styles={customStyles}
 			components={components}
-			className={containerClassName}
 			{...props}
 		/>
 	)
@@ -500,23 +586,35 @@ function isOptionGroupType<
 	return typeof o === "object" && o != null && "label" in o && "options" in o
 }
 
+type SelectPropsProto<ValueType, IsMulti extends boolean = boolean> = Omit<
+	InnerProps<ValueType, IsMulti>,
+	"innerRef"
+> & {
+	usePortal?: boolean
+	disabled?: boolean
+	inputId?: string
+	ref?: React.Ref<SelectInstance<
+		OptionType<ValueType>,
+		IsMulti,
+		GroupBase<OptionType<ValueType>>
+	> | null>
+}
+
 // base react-select props + extensions
-type SelectPropsProto<
+type SelectPropsProtoOld<
 	ValueType,
 	IsMulti extends boolean = boolean,
-> = CreatableProps<
-	OptionType<ValueType>,
-	IsMulti,
-	OptionGroupType<ValueType>
-> & {
+> = PickedCreateableProps<ValueType, IsMulti> & {
 	usePortal?: boolean
 	disabled?: boolean
 	isCreateable?: boolean
 	dropdownLabel?: (isOpen: boolean) => string
 	clearValuesButtonLabel?: string
 	removeValueButtonLabel?: string
+	placeholder?: string
 	inputId?: string
 	testId?: string
+	readOnly?: boolean
 	onClearButtonClick?: () => void
 	ref?: React.Ref<SelectInstance<
 		OptionType<ValueType>,

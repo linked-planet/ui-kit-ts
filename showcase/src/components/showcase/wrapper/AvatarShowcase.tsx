@@ -225,6 +225,7 @@ function AvatarShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Avatar"
+			description="Avatars are only the round avatar, while AvatarItem is rectangular and has username, and email."
 			{...props}
 			packages={[
 				{

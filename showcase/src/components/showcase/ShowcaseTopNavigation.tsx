@@ -3,7 +3,6 @@ import {
 	AtlassianNavigation,
 	CustomProductHome,
 	PrimaryButton,
-	Profile,
 } from "@atlaskit/atlassian-navigation"
 import { useNavigate } from "react-router"
 import {

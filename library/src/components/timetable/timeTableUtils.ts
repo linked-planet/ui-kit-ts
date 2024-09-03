@@ -1,14 +1,9 @@
 import dayjs, { type Dayjs } from "dayjs"
-import type { TimeSlotBooking, TimeTableViewType } from "./LPTimeTable"
+import isoWeek from "dayjs/plugin/isoWeek"
+dayjs.extend(isoWeek)
+import type { TimeSlotBooking, TimeTableViewType } from "./TimeTable"
 import type { TimeTableMessage } from "./TimeTableMessageContext"
-
-export type TimeFrameDay = {
-	startHour: number
-	endHour: number
-	startMinute: number
-	endMinute: number
-	oneDayMinutes: number
-}
+import type { TimeFrameDay } from "./TimeTableConfigStore"
 
 export function isOverlapping(
 	item: TimeSlotBooking,
@@ -23,148 +18,6 @@ export function isOverlapping(
 		return false
 	}
 	return true
-}
-
-export function itemsOutsideOfDayRangeORSameStartAndEnd(
-	items: TimeSlotBooking[],
-	slotsArray: Dayjs[],
-	timeFrameDay: TimeFrameDay,
-	timeSlotMinutes: number,
-	viewType: TimeTableViewType,
-) {
-	const itemsWithSameStartAndEnd: TimeSlotBooking[] = []
-	const itemsOutsideRange = items.filter((it) => {
-		if (it.startDate.isSame(it.endDate)) {
-			itemsWithSameStartAndEnd.push(it)
-			return false
-		}
-		if (slotsArray.length === 0) {
-			console.info(
-				"timeTableUtils - itemsOutsideOfDayRange - no slotsArray",
-			)
-			return false
-		}
-		const startAndEndSlot = getStartAndEndSlot(
-			it,
-			slotsArray,
-			timeFrameDay,
-			timeSlotMinutes,
-			viewType,
-		)
-		return (
-			startAndEndSlot.status === "after" ||
-			startAndEndSlot.status === "before"
-		)
-	})
-	return { itemsOutsideRange, itemsWithSameStartAndEnd }
-}
-
-/**
- * find the start and time slot of an item. If the item starts before the time slot of the day, the first time slot of the day is returned.
- * respective if the item end after the last time slot of the day, the last time slot of the day is returned.
- * @param item
- * @param slotsArray
- */
-export function getStartAndEndSlot(
-	item: TimeSlotBooking,
-	slotsArray: Dayjs[],
-	timeFrameDay: TimeFrameDay,
-	timeSlotMinutes: number,
-	viewType: TimeTableViewType,
-): {
-	startSlot: number
-	endSlot: number
-	status: "before" | "after" | "in"
-} {
-	let timeFrameStart = slotsArray[0]
-	if (viewType !== "hours") {
-		timeFrameStart = timeFrameStart
-			.add(timeFrameDay.startHour, "hours")
-			.add(timeFrameDay.startMinute, "minutes")
-	}
-	let timeFrameEnd = slotsArray[slotsArray.length - 1]
-		.startOf("day")
-		.add(timeFrameDay.endHour, "hours")
-		.add(timeFrameDay.endMinute, "minutes")
-	if (viewType !== "hours") {
-		timeFrameEnd = timeFrameEnd.add(1, viewType).subtract(1, "day")
-	}
-	if (
-		item.endDate.isBefore(timeFrameStart) ||
-		item.endDate.isSame(timeFrameStart)
-	) {
-		return { startSlot: 0, endSlot: 0, status: "before" }
-	}
-	if (
-		item.startDate.isAfter(timeFrameEnd) ||
-		item.startDate.isSame(timeFrameEnd)
-	) {
-		return {
-			startSlot: slotsArray.length - 1,
-			endSlot: slotsArray.length - 1,
-			status: "after",
-		}
-	}
-
-	let startSlot = slotsArray.findIndex((slot) => slot.isAfter(item.startDate))
-	if (startSlot > 0) {
-		// if the item starts in the middle of a slot, we need to go back one slot to get the start slot
-		// but only if the time slot before is on the same day, else it means that the booking starts before the time frame range of the day
-		startSlot--
-		if (viewType === "hours") {
-			// if the previous timeslot is on a different day, we know item starts before the first time slot of a day
-			if (
-				slotsArray[startSlot].day() !== slotsArray[startSlot + 1].day()
-			) {
-				startSlot++
-			}
-		}
-	}
-	if (startSlot === -1) {
-		startSlot = 0
-	}
-
-	let endSlot = slotsArray.findIndex((slot) => slot.isAfter(item.endDate))
-	if (endSlot === -1) {
-		endSlot = slotsArray.length - 1
-	} else {
-		// if the item end after the last time slot of the day, we still set the end slot to the last time slot of the day
-		if (slotsArray[endSlot].date() !== slotsArray[endSlot - 1].date()) {
-			endSlot--
-		}
-	}
-
-	// if endSlot < startSlot its before the range of the day
-	if (endSlot < startSlot) {
-		return { startSlot: startSlot, endSlot: startSlot, status: "before" }
-	}
-
-	let startSlotStart = slotsArray[startSlot]
-	if (viewType !== "hours") {
-		startSlotStart = startSlotStart
-			.add(timeFrameDay.startHour, "hours")
-			.add(timeFrameDay.startMinute, "minutes")
-	}
-
-	if (item.endDate.isBefore(startSlotStart)) {
-		return { startSlot: startSlot, endSlot: startSlot, status: "before" }
-	}
-
-	let endSlotEnd = slotsArray[endSlot]
-	if (viewType === "hours") {
-		endSlotEnd = endSlotEnd.add(timeSlotMinutes, "minutes")
-	} else {
-		endSlotEnd = endSlotEnd
-			.add(timeFrameDay.endHour, "hours")
-			.add(timeFrameDay.endMinute, "minutes")
-			.add(1, viewType)
-			.subtract(1, "day")
-	}
-	if (item.startDate.isAfter(endSlotEnd)) {
-		return { startSlot: endSlot, endSlot: endSlot, status: "after" }
-	}
-
-	return { startSlot, endSlot, status: "in" }
 }
 
 /**
@@ -216,7 +69,7 @@ function calculateTimeSlotPropertiesForHoursView(
 	startDate: Dayjs,
 	endDate: Dayjs,
 	_timeStepsMinute: number,
-	setMessage: (message: TimeTableMessage) => void,
+	setMessage?: (message: TimeTableMessage) => void,
 ) {
 	let timeStepsMinute = _timeStepsMinute
 	let timeSlotsPerDay = 0 // how many time slots per day
@@ -224,13 +77,19 @@ function calculateTimeSlotPropertiesForHoursView(
 		timeStepsMinute =
 			startDate.startOf("day").add(1, "day").diff(startDate, "minutes") -
 			1 // -1 to end at the same day if the time steps are from someplace during the day until
-		setMessage({
+		setMessage?.({
 			appearance: "warning",
 			messageKey: "timetable.unfittingTimeSlotMessage",
 			messageValues: {
 				timeSteps: timeStepsMinute,
 			},
 		})
+		console.info(
+			"LPTimeTable - unfitting time slot",
+			timeStepsMinute,
+			startDate,
+			endDate,
+		)
 	}
 
 	const timeFrameDay: TimeFrameDay = {
@@ -243,10 +102,15 @@ function calculateTimeSlotPropertiesForHoursView(
 
 	let daysDifference = endDate.diff(startDate, "days")
 	if (daysDifference < 0) {
-		setMessage({
+		setMessage?.({
 			appearance: "danger",
 			messageKey: "timetable.endDateAfterStartDate",
 		})
+		console.info(
+			"LPTimeTable - end date after start date",
+			endDate,
+			startDate,
+		)
 		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
 	}
 	if (endDate.hour() > 0 || (endDate.hour() === 0 && endDate.minute() > 0)) {
@@ -254,10 +118,16 @@ function calculateTimeSlotPropertiesForHoursView(
 	}
 
 	if (timeStepsMinute === 0) {
-		setMessage({
+		setMessage?.({
 			appearance: "danger",
 			messageKey: "timetable.timeSlotSizeGreaterZero",
 		})
+		console.info(
+			"LPTimeTable - time slot size must be greater than zero",
+			timeStepsMinute,
+			startDate,
+			endDate,
+		)
 		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
 	}
 
@@ -303,7 +173,11 @@ function calculateTimeSlotPropertiesForHoursView(
 	timeFrameDay.endMinute = timeSlotEndEnd.minute()
 	timeFrameDay.oneDayMinutes = timeStepsMinute * timeSlotsPerDay
 
-	return { timeFrameDay, slotsArray, timeSlotMinutes: timeStepsMinute }
+	return {
+		timeFrameDay,
+		slotsArray,
+		timeSlotMinutes: timeStepsMinute,
+	}
 }
 
 /**
@@ -319,19 +193,29 @@ export function calculateTimeSlotPropertiesForView(
 	startDate: Dayjs,
 	endDate: Dayjs,
 	timeStepsMinute: number,
-	vieWType: TimeTableViewType,
-	setMessage: (message: TimeTableMessage) => void,
-) {
+	viewType: TimeTableViewType,
+	weekStartsOnSunday: boolean,
+	setMessage?: (message: TimeTableMessage) => void,
+): {
+	timeFrameDay: TimeFrameDay
+	slotsArray: Dayjs[]
+	timeSlotMinutes: number
+} {
 	const startHour = startDate.hour()
 	const startMinute = startDate.minute()
 	let endHour = endDate.hour()
 	let endMinute = endDate.minute()
 
 	if (endDate.isBefore(startDate)) {
-		setMessage({
+		setMessage?.({
 			appearance: "danger",
 			messageKey: "timetable.endDateAfterStartDate",
 		})
+		console.info(
+			"LPTimeTable - end date after start date",
+			endDate,
+			startDate,
+		)
 		return {
 			timeFrameDay: {
 				startHour,
@@ -345,13 +229,14 @@ export function calculateTimeSlotPropertiesForView(
 		}
 	}
 
-	if (vieWType === "hours") {
-		return calculateTimeSlotPropertiesForHoursView(
+	if (viewType === "hours") {
+		const res = calculateTimeSlotPropertiesForHoursView(
 			startDate,
 			endDate,
 			timeStepsMinute,
 			setMessage,
 		)
+		return Object.freeze(res)
 	}
 
 	// get the actual end time fitting to the time slots
@@ -367,29 +252,34 @@ export function calculateTimeSlotPropertiesForView(
 	endMinute = endDateTime.minute()
 
 	if (
-		vieWType !== "days" &&
-		vieWType !== "weeks" &&
-		vieWType !== "months" &&
-		vieWType !== "years"
+		viewType !== "days" &&
+		viewType !== "weeks" &&
+		viewType !== "months" &&
+		viewType !== "years"
 	) {
 		throw new Error(
 			"Unknown view type, should be 'hours', 'days', 'weeks', 'months' or 'years'",
 		)
 	}
 
-	const unit = vieWType
+	const unit = viewType
 
-	const start = startDate.startOf(unit)
-	const end = endDate.endOf(unit)
+	const start = startDate.startOf(
+		unit === "weeks" && !weekStartsOnSunday ? "isoWeek" : unit,
+	)
+	const end = endDate.endOf(
+		unit === "weeks" && !weekStartsOnSunday ? "isoWeek" : unit,
+	)
 	let diff = end.diff(start, unit)
 	if (startDate.add(diff, unit).isBefore(endDate)) {
 		diff++
 	}
 
-	const slotsArray = Array.from({ length: diff }, (x, i) => i).map((i) => {
+	const slotsArray: Dayjs[] = []
+	for (let i = 0; i < diff; i++) {
 		const ret = start.add(i, unit)
-		return ret
-	})
+		slotsArray.push(ret)
+	}
 
 	let oneDayMinutes = dayjs()
 		.startOf("day")
@@ -415,13 +305,13 @@ export function calculateTimeSlotPropertiesForView(
 		)
 	}
 
-	const timeFrameDay: TimeFrameDay = {
+	const timeFrameDay: TimeFrameDay = Object.freeze({
 		startHour,
 		startMinute,
 		endHour,
 		endMinute,
 		oneDayMinutes,
-	}
+	})
 
 	// how many minutes has 1 time slot
 	const unitDays = dayjs()
@@ -430,5 +320,9 @@ export function calculateTimeSlotPropertiesForView(
 		.diff(dayjs().startOf("day"), "days")
 	const timeSlotMinutes = unitDays * oneDayMinutes
 
-	return { timeFrameDay, slotsArray, timeSlotMinutes }
+	return Object.freeze({
+		timeFrameDay,
+		slotsArray,
+		timeSlotMinutes,
+	})
 }

@@ -1,9 +1,8 @@
-import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Button from "@atlaskit/button"
 import EmptyState from "@atlaskit/empty-state"
+import { Button } from "@linked-planet/ui-kit-ts"
 
 function EmptyStateShowcase(props: ShowcaseProps) {
 	//#region empty-state

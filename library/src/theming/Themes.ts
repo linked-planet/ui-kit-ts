@@ -1,14 +1,25 @@
 //import { setGlobalTheme } from "@atlaskit/tokens" //-> when we import this, the whole theming is exported as bundles, we do not want that.
 
-export const themesAvailable = ["dark", "light", "original"] as const // original is the use of fallback colors in jira, no --ds-* variables are set
-
-export type Theme = (typeof themesAvailable)[number]
-
-export function isTheme(theme: string): theme is Theme {
-	return themesAvailable.includes(theme as Theme)
+type ThemeType = {
+	css?: string
 }
 
-export const LocalStorageThemeVar = "atlassian-theme"
+const themeDefinitions = {
+	dark: { css: undefined }, // AK-theming theme (--ds-* variables)
+	auto: { css: undefined }, // AK-theming theme auto theme selection ( --ds-* variables)
+	light: { css: undefined }, // AK-theming theme (--ds-* variables)
+	fallback: { css: undefined }, // fallback colors
+	"aui-light": { css: "themes/aui-light.css" }, // AUI-theming theme (--aui-* variables)
+} as const
+
+export type Theme = keyof typeof themeDefinitions
+export const themesAvailable = Object.keys(themeDefinitions) as Theme[]
+
+export function isTheme(theme: string): theme is Theme {
+	return themesAvailable.includes(theme as Theme) === true
+}
+
+export const LocalStorageThemeVar = "lp-theme"
 
 export function applyTheme(theme: Theme | "auto") {
 	localStorage.setItem(LocalStorageThemeVar, theme)
@@ -21,6 +32,23 @@ export function applyTheme(theme: Theme | "auto") {
 	/*setGlobalTheme({
 		colorMode: theme,
 	})*/
+	const themeDefinition = themeDefinitions[theme]
+	if (!themeDefinition) {
+		console.warn("invalid theme - no theme definition for", theme)
+		return
+	}
+	const oldThemeStyle = document.getElementById("lp-theme")
+	if (oldThemeStyle) {
+		oldThemeStyle.remove()
+	}
+	if (themeDefinition.css) {
+		const css = themeDefinition.css
+		const link = document.createElement("link")
+		link.rel = "stylesheet"
+		link.href = css
+		link.id = "lp-theme"
+		document.head.appendChild(link)
+	}
 	html.setAttribute("data-color-mode", theme)
 }
 export function switchTheme() {
@@ -41,12 +69,20 @@ export function switchTheme() {
 
 export function getCurrentTheme() {
 	const html = document.querySelector("html")
-	if (html) {
-		const currentTheme = html.getAttribute("data-color-mode")
-		if (currentTheme && isTheme(currentTheme)) {
-			return currentTheme
-		}
+	if (!html) {
+		console.warn("no html element found")
+		return undefined
 	}
+	const currentTheme = html.getAttribute("data-color-mode")
+	if (currentTheme && isTheme(currentTheme)) {
+		return currentTheme
+	}
+	const fromLocalStorage = localStorage.getItem(LocalStorageThemeVar)
+
+	if (fromLocalStorage && isTheme(fromLocalStorage)) {
+		return fromLocalStorage
+	}
+	console.log("no theme found")
 	return undefined
 }
 

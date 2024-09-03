@@ -1,25 +1,24 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import CrossIcon from "@atlaskit/icon/glyph/cross"
-import {
+/*import {
 	default as AKModal,
 	ModalBody as AKModalBody,
 	ModalFooter as AKModalFooter,
 	ModalHeader as AKModalHeader,
 	ModalTitle as AKModalTitle,
 	ModalTransition as AKModalTransition,
-} from "@atlaskit/modal-dialog"
+} from "@atlaskit/modal-dialog"*/
 import {
 	Modal,
 	Select,
 	Button,
-	ButtonGroup,
 	Dropdown,
 	Collapsible,
 } from "@linked-planet/ui-kit-ts"
-import { default as AKSelect } from "@atlaskit/select"
+//import { default as AKSelect } from "@atlaskit/select"
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
 
 function AKExample() {
@@ -40,7 +39,7 @@ function AKExample() {
 				Show AK Modal
 			</Button>
 
-			{isAKModalActive && (
+			{/*isAKModalActive && (
 				<AKModalTransition>
 					<AKModal onClose={() => setIsAKModalActive(false)}>
 						<AKModalHeader>
@@ -59,8 +58,6 @@ function AKExample() {
 							<Select
 								placeholder="Choose"
 								options={selectOptions}
-								side="bottom"
-								align="end"
 								className="z-10"
 							/>
 							Lorem, ipsum dolor sit amet consectetur adipisicing
@@ -135,7 +132,7 @@ function AKExample() {
 						</AKModalFooter>
 					</AKModal>
 				</AKModalTransition>
-			)}
+			)*/}
 		</>
 	)
 }
@@ -172,9 +169,12 @@ function ControlledExample() {
 						if (!opened) setIsModalActive(false)
 					}}
 					shouldCloseOnEscapePress={true}
+					accessibleDialogDescription="This is a modal dialog example"
 				>
 					<Modal.Header>
-						<Modal.Title>Sample Modal</Modal.Title>
+						<Modal.Title accessibleDialogTitle="Sample Modal">
+							Sample Modal
+						</Modal.Title>
 						<Button
 							appearance="link"
 							onClick={() => setIsModalActive(false)}

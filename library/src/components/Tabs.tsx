@@ -1,15 +1,23 @@
 import * as RTabs from "@radix-ui/react-tabs"
-import React, { type ForwardedRef, forwardRef, RefObject } from "react"
+import React, { type ForwardedRef, forwardRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 
-type TabProps = {
+type TabProps = Pick<
+	RTabs.TabsTriggerProps,
+	| "disabled"
+	| "children"
+	| "className"
+	| "style"
+	| "onClick"
+	| "title"
+	| "onKeyUp"
+	| "aria-selected"
+	| "aria-checked"
+> & {
 	label?: string | number
-	disabled?: boolean
-	children?: React.ReactNode
-	className?: string
-	style?: React.CSSProperties
 	tooltip?: string
 	testId?: string
+	side?: TabsSide
 }
 
 const topTabsClassName = "after:inset-x-0 after:bottom-0 after:h-[1.5px] pb-1"
@@ -22,7 +30,7 @@ type TabsSide = "left" | "top" | "right" | "bottom"
 /**
  * Tab is the TabList tab menu bar entry (not the tab panel)
  */
-export const Tab = forwardRef(
+const Tab = forwardRef(
 	(
 		{
 			label,
@@ -32,7 +40,8 @@ export const Tab = forwardRef(
 			style,
 			testId,
 			side = "top",
-		}: TabProps & { side?: TabsSide }, // oientation gets injected by the Tabs component
+			...props
+		}: TabProps, // orientation gets injected by the Tabs component
 		ref: ForwardedRef<HTMLButtonElement>,
 	) => {
 		if (!label && !children) {
@@ -77,6 +86,7 @@ export const Tab = forwardRef(
 				aria-label={label.toString()}
 				data-testid={testId}
 				ref={ref}
+				{...props}
 			>
 				{children ?? label}
 			</RTabs.Trigger>
@@ -104,7 +114,7 @@ const tabListBottomClassName =
 /**
  * TabList is the container for the Tabs (the menu bar entries)
  */
-export const TabList = forwardRef(
+const TabList = forwardRef(
 	(
 		{ children, className, style, testId, side = "top" }: TabListProps,
 		ref: ForwardedRef<HTMLDivElement>,
@@ -176,7 +186,7 @@ type TabPanelProps = {
 	testId?: string
 }
 
-export const TabPanel = forwardRef(
+const TabPanel = forwardRef(
 	(
 		{ label, children, className, style, testId }: TabPanelProps,
 		ref: ForwardedRef<HTMLDivElement>,
@@ -201,7 +211,7 @@ export const TabPanel = forwardRef(
 /**
  * Container containing the TabList tab menu bar, and Tab panels
  */
-export const Tabs = forwardRef(
+const Container = forwardRef(
 	(
 		{
 			id,
@@ -261,6 +271,7 @@ export const Tabs = forwardRef(
 			// set automatically the label in case it is not set by the user
 			const withLabel = React.cloneElement(childTyped, {
 				label,
+				key: label,
 			})
 			tabPanels.push(withLabel)
 		})
@@ -301,3 +312,10 @@ export const Tabs = forwardRef(
 		)
 	},
 )
+
+export const Tabs = {
+	TabList,
+	TabPanel,
+	Tab,
+	Container,
+}

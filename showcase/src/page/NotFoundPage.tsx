@@ -1,7 +1,6 @@
-import React from "react"
 import EmptyState from "@atlaskit/empty-state"
-import Button from "@atlaskit/button"
 import { useNavigate } from "react-router"
+import { Button } from "@linked-planet/ui-kit-ts"
 
 function NotFoundPage() {
 	const navigation = useNavigate()

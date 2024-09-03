@@ -14,17 +14,16 @@ import CollapsibleShowcase from "./components/showcase/wrapper/CollapsibleShowca
 import ColorsShowcase from "./components/showcase/wrapper/ColorsShowcase"
 import DateTimePickerShowcase from "./components/showcase/wrapper/DateTimePickerShowcase"
 import DropDownMenuShowcase from "./components/showcase/wrapper/DropdownMenuShowcase"
-import DynamicTableShowcase from "./components/showcase/wrapper/DynamicTableShowcase"
+import DataTableShowcase from "./components/showcase/wrapper/DataTableShowcase"
 import EmptyStateShowcase from "./components/showcase/wrapper/EmptyStateShowcase"
 import FiltersShowcase from "./components/showcase/wrapper/FiltersShowcase"
 import FlagShowcase from "./components/showcase/wrapper/FlagShowcase"
-import FormShowcase from "./components/showcase/wrapper/FormShowcase"
 import IconShowcase from "./components/showcase/wrapper/IconShowcase"
 import IconSizeHelperShowcase from "./components/showcase/wrapper/IconSizeHelperShowcase"
 import InlineMessageShowcase from "./components/showcase/wrapper/InlineMessageShowcase"
 import InputShowcase from "./components/showcase/wrapper/InputShowcase"
 import JoyrideShowcase from "./components/showcase/wrapper/JoyrideShowcase"
-import TimeTableShowcase from "./components/showcase/wrapper/LPTimeTableShowcase"
+import TimeTableShowcase from "./components/showcase/wrapper/TimeTableShowcase"
 import LayeringShowcase from "./components/showcase/wrapper/LayeringShowcase"
 import LoadingSpinnerShowcase from "./components/showcase/wrapper/LoadingSpinnerShowcase"
 import LozengeShowcase from "./components/showcase/wrapper/LozengeShowcase"
@@ -46,6 +45,10 @@ import TooltipShowcase from "./components/showcase/wrapper/TooltipShowcase"
 import TruncatedTextShowcase from "./components/showcase/wrapper/TruncatedTextShowcase"
 import UtilsShowcase from "./components/showcase/wrapper/UtilsShowcase"
 import AppLayoutShowcase from "./components/showcase/wrapper/AppLayoutShowcase"
+import SideNavigationShowcase from "./components/showcase/wrapper/SideNavigationShowcase"
+import BlanketShowcase from "./components/showcase/wrapper/BlanketShowcase"
+import BreadcrumbsShowcase from "./components/showcase/wrapper/BreadcrumbsShowcase"
+import SectionMessageShowcase from "./components/showcase/wrapper/SectionMessageShowcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -71,6 +74,10 @@ export default function useShowcases({
 			"Book Card": (
 				<BookCardShowcase overallSourceCode={overallSourceCode} />
 			),
+			Blanket: <BlanketShowcase overallSourceCode={overallSourceCode} />,
+			Breadcrumbs: (
+				<BreadcrumbsShowcase overallSourceCode={overallSourceCode} />
+			),
 			Button: <ButtonShowcase overallSourceCode={overallSourceCode} />,
 			Calendar: (
 				<Calendar2Showcase overallSourceCode={overallSourceCode} />
@@ -88,18 +95,17 @@ export default function useShowcases({
 			"Date Time Picker": (
 				<DateTimePickerShowcase overallSourceCode={overallSourceCode} />
 			),
+			"Data Table": (
+				<DataTableShowcase overallSourceCode={overallSourceCode} />
+			),
 			Dropdown: (
 				<DropDownMenuShowcase overallSourceCode={overallSourceCode} />
-			),
-			"Dynamic Table": (
-				<DynamicTableShowcase overallSourceCode={overallSourceCode} />
 			),
 			"Empty State": (
 				<EmptyStateShowcase overallSourceCode={overallSourceCode} />
 			),
 			Flag: <FlagShowcase overallSourceCode={overallSourceCode} />,
 			Filters: <FiltersShowcase overallSourceCode={overallSourceCode} />,
-			Form: <FormShowcase overallSourceCode={overallSourceCode} />,
 			Icon: <IconShowcase overallSourceCode={overallSourceCode} />,
 			"Icon Size Helper": (
 				<IconSizeHelperShowcase overallSourceCode={overallSourceCode} />
@@ -129,8 +135,14 @@ export default function useShowcases({
 				<PaginationShowcase overallSourceCode={overallSourceCode} />
 			),
 			Popover: <PopoverShowcase overallSourceCode={overallSourceCode} />,
+			"Section Message": (
+				<SectionMessageShowcase overallSourceCode={overallSourceCode} />
+			),
 			Select: <SelectShowcase overallSourceCode={overallSourceCode} />,
 			Sidebar: <SidebarShowcase overallSourceCode={overallSourceCode} />,
+			"Side Navigation": (
+				<SideNavigationShowcase overallSourceCode={overallSourceCode} />
+			),
 			Tabs: <TabsShowcase overallSourceCode={overallSourceCode} />,
 			Tag: <TagShowcase overallSourceCode={overallSourceCode} />,
 			"Table Tree": (

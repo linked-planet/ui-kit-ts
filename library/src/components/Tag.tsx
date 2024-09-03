@@ -1,9 +1,10 @@
 import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
 import type React from "react"
 import { type CSSProperties, useCallback, useMemo, useState } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import type { Appearance } from "../utils/appearanceTypes"
 import { IconSizeHelper } from "./IconSizeHelper"
+import { Tooltip } from "./Tooltip"
 
 export const TagColorOptions = [
 	"blue",
@@ -71,16 +72,17 @@ export type SimpleTagProps = {
 	title?: string
 	id?: string
 	testId?: string
+	truncate?: boolean
 }
 
 const TagAppearanceColors: { [style in Appearance]: string } = {
 	brand: "bg-brand-bold text-text-inverse",
-	default: "bg-neutral-bold text-text-inverse",
+	default: "bg-neutral text-text",
 	success: "bg-success-bold text-text-inverse",
 	information: "bg-information-bold text-text-inverse",
 	discovery: "bg-information-bold text-text-inverse",
 	danger: "bg-danger-bold text-text-inverse",
-	warning: "bg-warning-bold text-text-inverse",
+	warning: "bg-warning-bold text-text",
 } as const
 
 const TagColors: { [style in TagColor]: string } = {
@@ -141,7 +143,7 @@ function isColorOption(color: Appearance | TagColor): color is TagColor {
 	return TagColorOptions.includes(color as TagColor)
 }
 
-export function SimpleTag({
+function SimpleTag({
 	children,
 	appearance = "default",
 	looks = "default",
@@ -150,38 +152,38 @@ export function SimpleTag({
 	style,
 	className,
 	id,
+	truncate,
 	testId,
 }: SimpleTagProps) {
 	const colors = isColorOption(appearance)
 		? TagColors[appearance]
 		: TagAppearanceColors[appearance]
 
-	const _title =
-		title || (typeof children === "string" ? children : undefined)
-
 	return (
 		<div
 			className={twMerge(
-				colors,
-				looks === "default" ? "rounded-[3px]" : "rounded-full",
-				"box-border flex max-w-max flex-1 cursor-default select-none items-center overflow-hidden px-1 align-middle text-base",
-				bold ? "font-bold" : undefined,
+				twJoin(
+					colors,
+					looks === "default" ? "rounded-[3px]" : "rounded-full",
+					"box-border inline-flex max-w-max flex-1 cursor-default select-none items-center whitespace-nowrap px-1 align-middle text-sm",
+					bold ? "font-bold" : undefined,
+					truncate ? "overflow-hidden" : undefined,
+				),
 				className,
 			)}
-			style={{
-				...style,
-			}}
-			title={_title}
+			role="status"
+			style={style}
+			title={title}
 			id={id}
 			data-testid={testId}
 		>
-			<div className="truncate">{children}</div>
+			<div className={truncate ? "truncate" : undefined}>{children}</div>
 		</div>
 	)
 }
 
 export type TagProps = SimpleTagProps & {
-	isRemovable?: boolean
+	removable?: boolean
 	onAfterRemoveAction?: (text: string | undefined) => void
 	onBeforeRemoveAction?: () => boolean
 	removeButtonLabel?: string
@@ -194,28 +196,32 @@ export function Tag({
 	children,
 	removeButtonLabel,
 	className,
+	title,
 	style,
 	onAfterRemoveAction,
 	onBeforeRemoveAction,
-	isRemovable = true,
+	removable,
 	...simpleTagProps
 }: TagProps) {
 	const [removed, setRemoved] = useState(false)
 	const [hovered, setHovered] = useState(false)
 
 	const onClick = useCallback(() => {
-		let removed = isRemovable
+		let removed = removable
 		if (onBeforeRemoveAction) {
 			removed = onBeforeRemoveAction()
 		}
-		setRemoved(removed)
+		setRemoved(removed ?? false)
 		if (removed && onAfterRemoveAction) {
 			const txt = typeof children === "string" ? children : undefined
 			onAfterRemoveAction(txt)
 		}
-	}, [children, isRemovable, onAfterRemoveAction, onBeforeRemoveAction])
+	}, [children, removable, onAfterRemoveAction, onBeforeRemoveAction])
 
 	const textWithRemoveButton = useMemo(() => {
+		if (!removable) {
+			return children
+		}
 		return (
 			<div className="flex items-center">
 				<div className="truncate">{children}</div>
@@ -229,7 +235,7 @@ export function Tag({
 						}
 					}}
 					className={`m-0 ml-0.5 flex size-4 flex-none items-center justify-center ${
-						!isRemovable ? "hidden" : ""
+						!removable ? "hidden" : ""
 					}`}
 					aria-label={removeButtonLabel}
 					title={removeButtonLabel}
@@ -243,16 +249,19 @@ export function Tag({
 				</button>
 			</div>
 		)
-	}, [isRemovable, removeButtonLabel, children, onClick])
+	}, [removable, removeButtonLabel, children, onClick])
 
 	const classNameUsed = hovered
 		? `bg-danger text-danger-text ${className} ${
-				isRemovable ? "pr-0" : "pr-1"
+				removable ? "pr-0" : "pr-1"
 			}`
-		: `${className} ${isRemovable ? "pr-0" : "pr-1"}`
+		: `${className} ${removable ? "pr-0" : "pr-1"}`
 	const styleUsed = hovered
 		? { backgroundColor: undefined, textColor: undefined, ...style }
 		: style
+
+	const _title =
+		title || (typeof children === "string" ? children : undefined)
 
 	return (
 		<>
@@ -260,6 +269,7 @@ export function Tag({
 				<SimpleTag
 					className={classNameUsed}
 					style={styleUsed}
+					title={_title}
 					{...simpleTagProps}
 				>
 					{textWithRemoveButton}

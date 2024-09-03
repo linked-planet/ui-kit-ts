@@ -5,25 +5,19 @@ import {
 	N30,
 	N20,
 	N10,
-	Y400,
-	Y300,
 	Y500,
 	Y100,
-	R400,
 	R500,
-	R100,
 	G500,
 	G400,
 	G100,
 	B50,
 	B75,
 	G50,
-	R50,
 	Y50,
 	N40,
 	N70,
 	N30A,
-	N20A,
 	N40A,
 	N0,
 	N700,
@@ -34,7 +28,6 @@ import {
 	P400,
 	N90A,
 	N70A,
-	N500A,
 	B200,
 	B100,
 	N400,
@@ -42,15 +35,16 @@ import {
 	N50A,
 	N600,
 	N500,
-	R300,
 	N100A,
 	Y75,
-	R75,
 	G75,
 	N80,
 	N50,
-	N60,
 	P500,
+	P75,
+	P100,
+	P50,
+	P200,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -134,13 +128,15 @@ export const theme = {
 		transparent: colors.transparent,
 
 		blanket: {
-			DEFAULT: `var(--ds-blanket, ${N100A})`,
+			DEFAULT: `var(--ds-blanket,${N100A})`,
 			subtle: `var(--ds-blanket-subtle, ${N50A})`,
 		},
 
 		link: {
 			DEFAULT: `var(--ds-link, ${B400})`,
-			pressed: `var(--ds-link-pressed, ${B300})`,
+			hovered: `var(--ds-link-hovered, ${B500})`,
+			pressed: `var(--ds-link-pressed,  ${B300})`,
+			visited: `var(--ds-link-visited,  ${P400})`,
 		},
 
 		disabled: {
@@ -149,7 +145,7 @@ export const theme = {
 		},
 
 		neutral: {
-			DEFAULT: `var(--ds-background-neutral, ${N30A})`,
+			DEFAULT: `var(--ds-background-neutral,  ${N30A})`,
 			hovered: `var(--ds-background-neutral-hovered, ${N40A})`,
 			pressed: `var(--ds-background-neutral-pressed, ${N50A})`,
 			full: {
@@ -179,19 +175,18 @@ export const theme = {
 				pressed: `var(--ds-background-selected-bold-pressed, ${B400})`,
 			},
 			text: {
-				DEFAULT: `var(--ds-text-selected, ${N900})`,
-				inverse: `var(--ds-text-selected, ${N10})`,
+				DEFAULT: `var(--ds-text-selected, ${B400})`,
+				inverse: `var(--ds-text-selected, ${N0})`,
 			},
 			border: `var(--ds-border-selected, ${B200})`,
 			/* subtle only exists as an escape hedge against the difference between theme/no theme, and it provides a light background for selections in unthemed mode */
 			subtle: {
 				DEFAULT: `var(--ds-background-selected, ${B50})`,
-				hovered: `var(--ds-background-selected-hovered, ${N30})`,
-				pressed: `var(--ds-background-selected-pressed, ${N40})`,
+				hovered: `var(--ds-background-selected-hovered, ${N40})`,
+				pressed: `var(--ds-background-selected-pressed, ${N50})`,
 				text: `var(--ds-text-selected, ${N900})`,
 			},
 		},
-
 		brand: {
 			DEFAULT: `var(--ds-background-brand, ${B50})`,
 			hovered: `var(--ds-background-brand-hovered, ${B75})`,
@@ -217,21 +212,21 @@ export const theme = {
 			},
 			text: `var(--ds-text-warning, ${colors.amber[700]})`,
 			border: `var(--ds-border-warning, ${Y500})`,
-			icon: `var(--ds-icon-warning, ${colors.amber[800]})`,
+			icon: `var(--ds-icon-warning,  ${colors.amber[600]})`,
 		},
 
 		danger: {
-			DEFAULT: `var(--ds-background-danger, ${R50})`,
-			hovered: `var(--ds-background-danger-hovered, ${R75})`,
-			pressed: `var(--ds-background-danger-pressed, ${R100})`,
+			DEFAULT: `var(--ds-background-danger, ${colors.red[50]})`,
+			hovered: `var(--ds-background-danger-hovered, ${colors.red[75]})`,
+			pressed: `var(--ds-background-danger-pressed, ${colors.red[100]})`,
 			bold: {
-				DEFAULT: `var(--ds-background-danger-bold, ${R400})`,
-				hovered: `var(--ds-background-danger-bold-hovered, ${R300})`,
-				pressed: `var(--ds-background-danger-bold-pressed, ${R500})`,
+				DEFAULT: `var(--ds-background-danger-bold, ${colors.red[500]})`,
+				hovered: `var(--ds-background-danger-bold-hovered, ${colors.red[300]})`,
+				pressed: `var(--ds-background-danger-bold-pressed, ${colors.red[500]})`,
 			},
-			text: `var(--ds-text-danger, ${R500})`,
-			border: `var(--ds-border-danger, ${R500})`,
-			icon: `var(--ds-icon-danger, ${R500})`,
+			text: `var(--ds-text-danger, ${colors.red[800]})`,
+			border: `var(--ds-border-danger, ${colors.red[600]})`,
+			icon: `var(--ds-icon-danger, ${colors.red[800]})`,
 		},
 
 		success: {
@@ -253,18 +248,33 @@ export const theme = {
 			hovered: `var(--ds-background-information-hovered, ${B75})`,
 			pressed: `var(--ds-background-information-pressed, ${B100})`,
 			bold: {
-				DEFAULT: `var(--ds-background-information-bold, ${B200})`,
+				DEFAULT: `var(--ds-background-information-bold, ${B100})`,
 				hovered: `var(--ds-background-information-bold-hovered, ${B300})`,
 				pressed: `var(--ds-background-information-bold-pressed, ${B500})`,
 			},
-			text: `var(--ds-text-information, ${B500})`,
+			text: `var(--ds-text-information,  ${B500})`,
 			border: `var(--ds-border-information, ${B500})`,
 			icon: `var(--ds-icon-information, ${B500})`,
 		},
 
+		discovery: {
+			DEFAULT: `var(--ds-background-discovery, ${P50})`,
+			hovered: `var(--ds-background-discovery-hovered, ${P75})`,
+			pressed: `var(--ds-background-discovery-pressed, ${P100})`,
+			bold: {
+				DEFAULT: `var(--ds-background-discovery-bold, ${P200})`,
+				hovered: `var(--ds-background-discovery-bold-hovered, ${P400})`,
+				pressed: `var(--ds-background-discovery-bold-pressed, ${P500})`,
+			},
+			text: `var(--ds-text-discovery, ${P500})`,
+			border: `var(--ds-border-discovery, ${P500})`,
+			icon: `var(--ds-icon-discovery, ${P500})`,
+		},
+
 		border: {
 			DEFAULT: `var(--ds-border, ${N40A})`,
-			bold: `var(--ds-border-bold, ${N500A})`,
+			bold: `var(--ds-border-bold,${N200})`,
+			separator: `var(--ds-menu-separator-color, var(--ds-border, ${N30}))`,
 		},
 		icon: {
 			DEFAULT: `var(--ds-icon, ${N200})`,
@@ -277,6 +287,8 @@ export const theme = {
 			warning: `var(--ds-icon-warning, ${colors.amber[800]})`,
 			danger: `var(--ds-icon-danger, ${R500})`,
 		},
+
+		skeleton: `var(--ds-skeleton, ${N30})`,
 
 		white: colors.white,
 		black: colors.black,
@@ -291,9 +303,9 @@ export const theme = {
 			hovered: colors.blue[500],
 			pressed: colors.blue[600],
 			subtle: {
-				DEFAULT: colors.blue[200],
-				hovered: colors.blue[300],
-				pressed: colors.blue[400],
+				DEFAULT: colors.blue[100],
+				hovered: colors.blue[200],
+				pressed: colors.blue[300],
 			},
 			subtlest: {
 				DEFAULT: colors.blue[50],
@@ -421,9 +433,9 @@ export const theme = {
 			hovered: colors.yellow[500],
 			pressed: colors.yellow[600],
 			subtle: {
-				DEFAULT: colors.yellow[200],
-				hovered: colors.yellow[300],
-				pressed: colors.yellow[400],
+				DEFAULT: colors.yellow[100],
+				hovered: colors.yellow[200],
+				pressed: colors.yellow[300],
 			},
 			subtlest: {
 				DEFAULT: colors.yellow[50],
@@ -431,9 +443,9 @@ export const theme = {
 				pressed: colors.yellow[200],
 			},
 			bold: {
-				DEFAULT: colors.yellow[600],
-				hovered: colors.yellow[700],
-				pressed: colors.yellow[800],
+				DEFAULT: colors.yellow[700],
+				hovered: colors.yellow[800],
+				pressed: colors.yellow[900],
 			},
 			text: {
 				DEFAULT: colors.yellow[800],
@@ -473,9 +485,9 @@ export const theme = {
 			hovered: colors.green[500],
 			pressed: colors.green[600],
 			subtle: {
-				DEFAULT: colors.green[200],
-				hovered: colors.green[300],
-				pressed: colors.green[400],
+				DEFAULT: colors.green[100],
+				hovered: colors.green[200],
+				pressed: colors.green[300],
 			},
 			subtlest: {
 				DEFAULT: colors.green[50],
@@ -483,9 +495,9 @@ export const theme = {
 				pressed: colors.green[200],
 			},
 			bold: {
-				DEFAULT: colors.green[600],
-				hovered: colors.green[700],
-				pressed: colors.green[800],
+				DEFAULT: colors.green[700],
+				hovered: colors.green[800],
+				pressed: colors.green[900],
 			},
 			text: {
 				DEFAULT: colors.green[800],
@@ -722,7 +734,7 @@ export const theme = {
 				pressed: colors.gray[700],
 			},
 			text: {
-				DEFAULT: colors.gray[800],
+				DEFAULT: colors.gray[600],
 				bold: colors.gray[950],
 				inverse: colors.gray[50],
 			},
@@ -743,5 +755,7 @@ export const theme = {
 		"overlay-bold": `0 5px 8px -2px #091E4226, 0px 0px 2px #091E424F`,
 		raised: `var(--ds-shadow-raised, 0px 1px 1px #091E4240, 0px 0px 1px #091E424F)`,
 		strong: `0px 0px 15px #091E4226`,
+		//border: `0 0 0 var(--ds-border-width, 2px) var(--tw-shadow-color, 0 0 #0000)`, // this doesnt work currently, the var(--ds-border-width, 2px) simply vanishes in TW version 3.4.5
+		borderstyle: `0 0 0 0.0625rem var(--tw-shadow-color, 0 0 #0000)`,
 	},
 }

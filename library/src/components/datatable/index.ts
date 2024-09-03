@@ -1,13 +1,10 @@
-export { DataTable } from "./DataTable"
+import { DataTable as Table } from "./DataTable"
 
-export { createColumnHelper } from "@tanstack/react-table"
+import { createColumnHelper } from "@tanstack/react-table"
 
-export type {
-	ColumnDef,
-	ColumnFiltersState,
-	ColumnFilter,
-	VisibilityState,
-	RowSelectionState,
-	SortingState,
-	SortDirection,
-} from "@tanstack/react-table"
+export const DataTable = {
+	Table,
+	createColumnHelper,
+}
+
+export type * as DataTableTypes from "@tanstack/react-table"

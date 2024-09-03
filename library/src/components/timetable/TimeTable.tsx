@@ -1,20 +1,16 @@
 import dayjs, { type Dayjs } from "dayjs"
-import React, {
-	type MutableRefObject,
-	useCallback,
-	useEffect,
-	useMemo,
-	useRef,
-} from "react"
+import type React from "react"
+import { type MutableRefObject, useCallback, useEffect, useRef } from "react"
 
 import useResizeObserver from "use-resize-observer"
-import { InlineMessage } from "../inlinemessage"
-import type { RenderItemProps } from "./ItemWrapper"
-import { LPTimeTableHeader, headerText } from "./LPTimeTableHeader"
-import type { PlaceholderItemProps } from "./PlaceholderItem"
-import { SelectedTimeSlotsProvider } from "./SelectedTimeSlotsContext"
-import TimeLineTableSimplified from "./TimeLineTableSimplified"
-import { TimeTableConfigProvider } from "./TimeTableConfigContext"
+import { InlineMessage } from "../InlineMessage"
+import type { TimeTableItemProps } from "./ItemWrapper"
+import { LPTimeTableHeader, headerText } from "./TimeTableHeader"
+import {
+	PlaceHolderItemPlaceHolder,
+	type TimeTablePlaceholderItemProps,
+} from "./PlaceholderItem"
+import TimeTableRows from "./TimeTableRows"
 import {
 	type TimeTableMessage,
 	TimeTableMessageProvider,
@@ -22,11 +18,21 @@ import {
 	useTimeTableMessage,
 } from "./TimeTableMessageContext"
 import {
+	initAndUpdateTimeTableConfigStore,
 	type TimeFrameDay,
-	calculateTimeSlotPropertiesForView,
-	getStartAndEndSlot,
-	itemsOutsideOfDayRangeORSameStartAndEnd,
-} from "./timeTableUtils"
+	useTTCSlotsArray,
+	useTTCTimeFrameOfDay,
+	useTTCTimeSlotMinutes,
+} from "./TimeTableConfigStore"
+import { TimeTableIdentProvider } from "./TimeTableIdentContext"
+import { initAndUpdateTimeTableComponentStore } from "./TimeTableComponentStore"
+import { Group as GroupComponent, type TimeTableGroupProps } from "./Group"
+import { Item as ItemComponent } from "./Item"
+import {
+	initAndUpdateTimeTableSelectionStore,
+	type onTimeRangeSelectedType,
+} from "./TimeTableSelectionStore"
+import { getStartAndEndSlot, useGroupRows } from "./useGoupRows"
 
 export interface TimeSlotBooking {
 	title: string
@@ -35,7 +41,8 @@ export interface TimeSlotBooking {
 }
 
 export interface TimeTableGroup {
-	title: string
+	id: string
+	title?: string
 	subtitle?: string
 }
 
@@ -60,6 +67,9 @@ export interface LPTimeTableProps<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 > {
+	/* To have multiple time tables in the same page, you can use this to identify the time table */
+	storeIdent?: string
+
 	/* The start date also defines the time the time slots starts in the morning */
 	startDate: Dayjs
 	/* The end date also defines the time the time slots ends in the evening */
@@ -72,20 +82,19 @@ export interface LPTimeTableProps<
 	selectedTimeSlotItem?: I
 
 	/* overwrite render function for the group (left column) */
-	renderGroup?: (props: G) => JSX.Element
+	groupComponent?: React.ComponentType<TimeTableGroupProps<G>>
 
 	/* overwrite render function for the time slot items */
-	renderTimeSlotItem?: (props: RenderItemProps<G, I>) => JSX.Element
+	timeSlotItemComponent?: React.ComponentType<TimeTableItemProps<G, I>>
 
 	onTimeSlotItemClick?: (group: G, item: I) => void
 
 	/* this function gets called when a selection was made, i.g. to create a booking. the return value states if the selection should be cleared or not */
-	onTimeRangeSelected?: (
-		s: { group: G; startDate: Dayjs; endDate: Dayjs } | undefined,
-	) => boolean | undefined | void
+	onTimeRangeSelected?: onTimeRangeSelectedType<G>
 
-	/* The selected time range context sets this callback to be able for a time table parent component to clear the selected time range from outside */
-	setClearSelectedTimeRangeCB?: (cb: () => void) => void
+	/* the time range selected in case this is a controlled component, is null if the selection should be cleared */
+	selectedTimeRange?: { group: G; startDate: Dayjs; endDate: Dayjs } | null
+	defaultSelectedTimeRange?: { group: G; startDate: Dayjs; endDate: Dayjs }
 
 	onGroupClick?: (group: G) => void
 
@@ -96,14 +105,20 @@ export interface LPTimeTableProps<
 	groupHeaderColumnWidth: string | number
 
 	/* columnWidth sets the minimal width of the time slot column. If there is space, the columns will expand. */
-	columnWidth: string | number
+	columnWidth: number
+
+	/* rowHeight sets the height of one row (groups may have multiple rows when items overlap) */
+	rowHeight: number
 
 	/** placeHolderHeight sets the height of the placeholder item
-	 * @default "1.5rem"
+	 * @default "10px"
 	 */
-	placeHolderHeight?: string
+	placeHolderHeight?: number
 
-	renderPlaceHolder?: (props: PlaceholderItemProps<G>) => JSX.Element
+	placeHolderComponent?: React.ComponentType<TimeTablePlaceholderItemProps<G>>
+
+	/** provide a call to get notified if items are outside of the day range */
+	itemsOutsideOfDayRangeFound?: (outside: { [groupdId: string]: I[] }) => void
 
 	/**
 	 * Height sets the max height of the time table. If the content is larger, it will be scrollable.
@@ -123,10 +138,18 @@ export interface LPTimeTableProps<
 	 */
 	showTimeSlotHeader?: boolean
 
+	/** a dayjs format string to format the header text containing the dates */
+	dateHeaderTextFormat?: string
+
 	/**
 	 * Sets the language used for the messages.
 	 */
 	timeTableMessages?: TranslatedTimeTableMessages
+
+	/**
+	 * Disables the messages in the InlineMessage component on top of the time table.
+	 */
+	disableMessages?: boolean
 
 	viewType?: TimeTableViewType
 
@@ -143,6 +166,11 @@ export interface LPTimeTableProps<
 		timeSlotStart: Dayjs,
 		timeSlotEnd: Dayjs,
 	) => boolean
+
+	/**
+	 * For those who require to start the week on Sunday, this can be set to true.
+	 */
+	weekStartsOnSunday?: boolean
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -168,118 +196,146 @@ export default function LPTimeTable<
  * @returns
  */
 const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
+	storeIdent = "default",
 	startDate,
 	endDate,
 	timeStepsMinutes = 60,
 	entries,
 	selectedTimeSlotItem,
-	renderGroup,
-	renderTimeSlotItem,
-	renderPlaceHolder,
+	groupComponent = GroupComponent,
+	timeSlotItemComponent = ItemComponent,
+	placeHolderComponent = PlaceHolderItemPlaceHolder,
 	onTimeSlotItemClick,
 	onGroupClick,
 	onTimeRangeSelected,
-	setClearSelectedTimeRangeCB,
+	defaultSelectedTimeRange,
+	selectedTimeRange,
 	groupHeaderColumnWidth,
-	columnWidth,
+	itemsOutsideOfDayRangeFound,
+	columnWidth = 70,
+	rowHeight = 30,
 	height = "100%",
-	placeHolderHeight = "1.5rem",
+	placeHolderHeight = 10,
 	viewType = "hours",
 	isCellDisabled,
 	disableWeekendInteractions = true,
 	showTimeSlotHeader,
 	hideOutOfRangeMarkers = false,
 	nowOverwrite,
+	dateHeaderTextFormat,
+	weekStartsOnSunday = false,
+	disableMessages = false,
 }: LPTimeTableProps<G, I>) => {
 	// if we have viewType of days, we need to round the start and end date to the start and end of the day
-	const { setMessage, translatedMessage } = useTimeTableMessage()
+	const { setMessage, translatedMessage } = useTimeTableMessage(
+		!disableMessages,
+	)
 
 	// change on viewType
 	useEffect(() => {
-		setMessage(undefined) // clear the message on time frame change
-	}, [viewType, startDate, endDate, setMessage])
+		setMessage?.(undefined) // clear the message on time frame change
+	}, [viewType, startDate, endDate, setMessage, timeStepsMinutes])
 
+	const tableRef = useRef<HTMLTableElement>(null)
 	const tableHeaderRef = useRef<HTMLTableSectionElement>(null)
 	const tableBodyRef = useRef<HTMLTableSectionElement>(null)
 	const inlineMessageRef = useRef<HTMLDivElement>(null)
+	const intersectionContainerRef = useRef<HTMLDivElement>(null)
 
-	//#region calculate time slots, dates array and the final time steps size in minutes
-	const { slotsArray, timeFrameDay, timeSlotMinutes } = useMemo(() => {
-		// to avoid overflow onto the next day if the time steps are too large
-		const { timeFrameDay, slotsArray, timeSlotMinutes } =
-			calculateTimeSlotPropertiesForView(
-				startDate,
-				endDate,
-				timeStepsMinutes,
-				viewType,
-				setMessage,
-			)
+	initAndUpdateTimeTableComponentStore(
+		storeIdent,
+		placeHolderComponent,
+		timeSlotItemComponent,
+		groupComponent,
+	)
 
-		return { slotsArray, timeFrameDay, timeSlotMinutes }
-	}, [viewType, startDate, endDate, timeStepsMinutes, setMessage])
-	//#endregion
+	initAndUpdateTimeTableConfigStore(
+		storeIdent,
+		startDate,
+		endDate,
+		viewType,
+		timeStepsMinutes,
+		columnWidth,
+		rowHeight,
+		placeHolderHeight,
+		hideOutOfRangeMarkers,
+		disableWeekendInteractions,
+		!onTimeRangeSelected,
+		weekStartsOnSunday,
+		isCellDisabled,
+	)
 
-	//console.log("LPTimeTable - timeFrameDay", timeFrameDay, slotsArray)
+	const timeFrameDay = useTTCTimeFrameOfDay(storeIdent)
+	const timeSlotMinutes = useTTCTimeSlotMinutes(storeIdent)
 
-	//#region Message if items of entries are outside of the time frame of the day
+	initAndUpdateTimeTableSelectionStore(
+		storeIdent,
+		defaultSelectedTimeRange,
+		selectedTimeRange,
+		onTimeRangeSelected,
+	)
+
+	const slotsArray = useTTCSlotsArray(storeIdent)
+	if (!slotsArray || slotsArray.length === 0) {
+		console.warn(
+			"LPTimeTable - no slots array, or slots array is empty",
+			slotsArray,
+		)
+		return <div>No slots array</div>
+	}
+
+	const {
+		groupRows,
+		rowCount,
+		maxRowCountOfSingleGroup,
+		itemsOutsideOfDayRange,
+		itemsWithSameStartAndEnd,
+	} = useGroupRows(entries)
+
 	useEffect(() => {
-		if (!slotsArray) {
-			return
-		}
-		let foundItemsOutsideOfDayRangeCount = 0
-		let itemsWithSameStartAndEndCount = 0
-		for (const entry of entries) {
-			const { itemsOutsideRange, itemsWithSameStartAndEnd } =
-				itemsOutsideOfDayRangeORSameStartAndEnd(
-					entry.items,
-					slotsArray,
-					timeFrameDay,
-					timeSlotMinutes,
-					viewType,
-				)
-			foundItemsOutsideOfDayRangeCount += itemsOutsideRange.length
-			itemsWithSameStartAndEndCount += itemsWithSameStartAndEnd.length
-		}
-		if (
-			foundItemsOutsideOfDayRangeCount &&
-			!itemsWithSameStartAndEndCount
-		) {
-			setMessage({
-				appearance: "warning",
-				messageKey: "timetable.bookingsOutsideOfDayRange",
-				messageValues: { itemCount: foundItemsOutsideOfDayRangeCount },
-			})
-		} else if (
-			itemsWithSameStartAndEndCount &&
-			!foundItemsOutsideOfDayRangeCount
-		) {
-			setMessage({
-				appearance: "warning",
-				messageKey: "timetable.sameStartAndEndTimeDate",
-				messageValues: { itemCount: itemsWithSameStartAndEndCount },
-			})
-		} else if (
-			itemsWithSameStartAndEndCount &&
-			foundItemsOutsideOfDayRangeCount
-		) {
-			setMessage({
-				appearance: "warning",
-				messageKey: "timetable.sameStartAndEndAndOutsideOfDayRange",
-				messageValues: {
-					outsideCount: foundItemsOutsideOfDayRangeCount,
-					sameStartAndEndCount: itemsWithSameStartAndEndCount,
-				},
-			})
+		if (!setMessage) return
+		if (Object.keys(itemsOutsideOfDayRange).length > 0) {
+			console.info(
+				"LPTimeTable - items outside of day range:",
+				itemsOutsideOfDayRange,
+			)
+			let itemCount = 0
+			for (const groupId in itemsOutsideOfDayRange) {
+				const group = itemsOutsideOfDayRange[groupId]
+				itemCount += group.length
+			}
+			if (itemCount > 0) {
+				setMessage?.({
+					appearance: "warning",
+					messageKey: "timetable.bookingsOutsideOfDayRange",
+					messageValues: { itemCount },
+				})
+				itemsOutsideOfDayRangeFound?.(itemsOutsideOfDayRange)
+			}
+		} else if (Object.keys(itemsWithSameStartAndEnd).length > 0) {
+			console.info(
+				"LPTimeTable - items with same start and end:",
+				itemsWithSameStartAndEnd,
+			)
+			let itemCount = 0
+			for (const groupId in itemsWithSameStartAndEnd) {
+				const group = itemsWithSameStartAndEnd[groupId]
+				itemCount += group.length
+			}
+			if (itemCount > 0) {
+				setMessage?.({
+					appearance: "warning",
+					messageKey: "timetable.sameStartAndEndTimeDate",
+					messageValues: { itemCount },
+				})
+			}
 		}
 	}, [
-		entries,
+		itemsOutsideOfDayRange,
+		itemsWithSameStartAndEnd,
 		setMessage,
-		slotsArray,
-		timeFrameDay,
-		timeSlotMinutes,
-		viewType,
+		itemsOutsideOfDayRangeFound,
 	])
-	//#endregion
 
 	//#region now bar
 	const nowBarRef = useRef<HTMLDivElement | undefined>()
@@ -384,43 +440,27 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	return (
 		<>
 			<div ref={inlineMessageRef}>
-				<InlineMessage
-					message={translatedMessage ?? { text: "" }}
-					openingDirection="bottomup"
-				/>
+				{!disableMessages && (
+					<InlineMessage
+						message={translatedMessage ?? { text: "" }}
+						openingDirection="bottomup"
+					/>
+				)}
 			</div>
-			<TimeTableConfigProvider
-				slotsArray={slotsArray}
-				timeFrameDay={timeFrameDay}
-				disableWeekendInteractions={disableWeekendInteractions}
-				placeHolderHeight={placeHolderHeight}
-				columnWidth={columnWidth}
-				viewType={viewType}
-				hideOutOfRangeMarkers={hideOutOfRangeMarkers}
-				timeSlotSelectionDisabled={!onTimeRangeSelected}
-				renderPlaceHolder={renderPlaceHolder}
-				isCellDisabled={isCellDisabled}
-				timeSlotMinutes={timeSlotMinutes}
-			>
-				<SelectedTimeSlotsProvider
-					slotsArray={slotsArray}
-					onTimeRangeSelected={onTimeRangeSelected}
-					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
-					disableWeekendInteractions={disableWeekendInteractions}
-					timeFrameDay={timeFrameDay}
-					timeSlotMinutes={timeSlotMinutes}
-					viewType={viewType}
-				>
+			<div className="size-full relative">
+				<TimeTableIdentProvider ident={storeIdent}>
 					<div
-						className="overflow-auto"
+						className="overflow-auto relative"
 						style={{
 							height: `calc(${height} - ${inlineMessageRef.current?.clientHeight}px)`,
 						}}
+						ref={intersectionContainerRef}
 					>
 						<table
 							className={
 								"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
 							}
+							ref={tableRef}
 						>
 							<LPTimeTableHeader
 								slotsArray={slotsArray}
@@ -436,22 +476,27 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 										? viewType === "hours"
 										: showTimeSlotHeader
 								}
+								dateHeaderTextFormat={dateHeaderTextFormat}
+								weekStartsOnSunday={weekStartsOnSunday}
 								ref={tableHeaderRef}
 							/>
 							<tbody ref={tableBodyRef} className="table-fixed">
-								<TimeLineTableSimplified<G, I>
+								<TimeTableRows<G, I>
 									entries={entries}
 									selectedTimeSlotItem={selectedTimeSlotItem}
-									renderGroup={renderGroup}
-									renderTimeSlotItem={renderTimeSlotItem}
 									onTimeSlotItemClick={onTimeSlotItemClick}
 									onGroupClick={onGroupClick}
+									groupRows={groupRows}
+									intersectionContainerRef={
+										intersectionContainerRef
+									}
+									headerRef={tableHeaderRef}
 								/>
 							</tbody>
 						</table>
 					</div>
-				</SelectedTimeSlotsProvider>
-			</TimeTableConfigProvider>
+				</TimeTableIdentProvider>
+			</div>
 		</>
 	)
 }
@@ -467,7 +512,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
  * @returns
  */
 function moveNowBar(
-	slotsArray: Dayjs[],
+	slotsArray: readonly Dayjs[],
 	nowRef: MutableRefObject<Dayjs>,
 	nowBarRef: MutableRefObject<HTMLDivElement | undefined>,
 	tableHeaderRef: MutableRefObject<HTMLTableSectionElement | null>,
@@ -475,7 +520,7 @@ function moveNowBar(
 	timeFrameDay: TimeFrameDay,
 	timeSlotMinutes: number,
 	viewType: TimeTableViewType,
-	setMessage: (message: TimeTableMessage) => void,
+	setMessage?: (message: TimeTableMessage) => void,
 ) {
 	if (!tableHeaderRef.current || !tableBodyRef.current) {
 		console.info("LPTimeTable - time table header or body ref not yet set")
@@ -490,11 +535,11 @@ function moveNowBar(
 	// remove the orange border from the header cell
 	const headerTimeslotRow = tableHeader.children[1]
 	if (!headerTimeslotRow) {
-		setMessage({
+		setMessage?.({
 			appearance: "danger",
 			messageKey: "timetable.noHeaderTimeSlotRow",
 		})
-		console.warn("LPTimeTable - no header time slot row found")
+		console.info("LPTimeTable - no header time slot row found")
 		return
 	}
 	const headerTimeSlotCells = headerTimeslotRow.children
@@ -505,7 +550,7 @@ function moveNowBar(
 			"border-b-[3px]",
 		)
 		headerTimeSlotCell.classList.add(
-			"border-b-border-bold",
+			"border-b-border",
 			"border-b-2",
 			"font-normal",
 			"select-none",

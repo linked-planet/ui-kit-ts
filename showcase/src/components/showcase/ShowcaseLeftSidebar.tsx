@@ -1,16 +1,11 @@
 import React, { useCallback } from "react"
-import {
-	ButtonItem,
-	Footer,
-	Header,
-	NavigationFooter,
-	NavigationHeader,
-	NestableNavigationContent,
-	SideNavigation,
-} from "@atlaskit/side-navigation"
 import useShowcases from "../../useShowcases"
 import { useLocation, useNavigate } from "react-router-dom"
-import { LeftSidebar, RightSidebar } from "@linked-planet/ui-kit-ts"
+import {
+	LeftSidebar,
+	RightSidebar,
+	SideNavigation,
+} from "@linked-planet/ui-kit-ts"
 
 function scrollAndHighlightElement(id: string) {
 	const element = document.getElementById(id)
@@ -48,38 +43,50 @@ function ShowcaseLeftSidebar({
 	)
 
 	const content = (
-		<SideNavigation label="">
-			<NavigationHeader>
-				<Header description="linked-planet">UI-Showcase</Header>
-			</NavigationHeader>
-
-			<NestableNavigationContent>
+		<SideNavigation.Container>
+			<SideNavigation.NavigationHeader>
+				<h2 className="text-text-subtle pb-2 text-sm font-bold">
+					UI-Showcase
+				</h2>
+				<span className="text-text-subtlest text-sm font-[400]">
+					linked-planet
+				</span>
+			</SideNavigation.NavigationHeader>
+			<SideNavigation.Content>
 				{Object.keys(showcases).map((showcaseName) => {
 					return (
-						<ButtonItem
+						<SideNavigation.ButtonItem
 							key={showcaseName}
-							onClick={() => clickCB(showcaseName)}
+							onMouseDown={(e) => {
+								if (e.button === 1) {
+									window.open(
+										`/ui-kit-ts/single?component=${showcaseName}`,
+										"_blank",
+									)
+								}
+							}}
+							onClick={(e) => clickCB(showcaseName)}
 						>
 							{showcaseName}
-						</ButtonItem>
+						</SideNavigation.ButtonItem>
 					)
 				})}
-			</NestableNavigationContent>
+			</SideNavigation.Content>
 
-			<NavigationFooter>
-				<Footer>
+			<SideNavigation.NavigationFooter className="flex flex-col gap-4">
+				<div className="text-center">
 					Made with ❤ by
 					<a href="https://www.linked-planet.com/"> linked-planet</a>
-				</Footer>
-				<Footer>
+				</div>
+				<div className="text-center">
 					Licensed under
 					<a href="http://www.apache.org/licenses/LICENSE-2.0">
 						{" "}
 						Apache License, Version 2.0
 					</a>
-				</Footer>
-			</NavigationFooter>
-		</SideNavigation>
+				</div>
+			</SideNavigation.NavigationFooter>
+		</SideNavigation.Container>
 	)
 
 	if (position === "left") {

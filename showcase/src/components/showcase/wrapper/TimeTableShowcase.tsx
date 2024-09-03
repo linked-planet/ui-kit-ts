@@ -1,16 +1,12 @@
-import React, { useCallback, useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import { useState } from "react"
 import dayjs, { type Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { Button, LPTimeTable } from "@linked-planet/ui-kit-ts"
-import type {
-	TimeSlotBooking,
-	TimeTableEntry,
-	TimeTableGroup,
-} from "@linked-planet/ui-kit-ts"
+import { Button, TimeTable } from "@linked-planet/ui-kit-ts"
+
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
@@ -18,7 +14,7 @@ import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
-import type { TimeTableViewType } from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
+import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -33,19 +29,24 @@ function debounceHelper(callback: () => void) {
 	}, debounceTimeout)
 }
 
-type ExampleGroup = TimeTableGroup
+type ExampleGroup = TimeTableTypes.TimeTableGroup
 
-type ExampleItem = TimeSlotBooking
+type ExampleItem = TimeTableTypes.TimeSlotBooking
 
-const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
+const exampleEntries: TimeTableTypes.TimeTableEntry<
+	ExampleGroup,
+	ExampleItem
+>[] = [
 	{
 		group: {
+			id: "group-empty",
 			title: "Empty Group",
 		},
 		items: [],
 	},
 	{
 		group: {
+			id: "group-1",
 			title: "Group 1",
 			subtitle: "Group 1 description",
 		},
@@ -132,6 +133,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 	},
 	{
 		group: {
+			id: "group-2",
 			title: "Group 2",
 			subtitle: "Group 2 description",
 		},
@@ -189,6 +191,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 	},
 	{
 		group: {
+			id: "group-3",
 			title: "Group 3",
 			subtitle: "Group 3 description",
 		},
@@ -214,6 +217,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 	},
 	{
 		group: {
+			id: "group-4",
 			title: "Group 4",
 			subtitle: "Group 4 description",
 		},
@@ -270,6 +274,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 	},
 	{
 		group: {
+			id: "group-5",
 			title: "Group 5",
 			subtitle: "Whole Time Frame",
 		},
@@ -295,6 +300,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 	},
 	{
 		group: {
+			id: "group-6",
 			title: "Group 6 (Directly Connected)",
 			subtitle: "Whole Time Frame",
 		},
@@ -325,6 +331,7 @@ const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
 	},
 	{
 		group: {
+			id: "group-7",
 			title: "Group 7 (Full Day)",
 			subtitle: "Whole Time Frame",
 		},
@@ -368,14 +375,17 @@ function createTestItems(
 function createTestEntries(
 	startDate: Dayjs,
 	endDate: Dayjs,
-	currentEntries: TimeTableEntry<ExampleGroup, ExampleItem>[],
+	currentEntries: TimeTableTypes.TimeTableEntry<ExampleGroup, ExampleItem>[],
 ) {
 	if (startDate.isSame(startDateInitial) && endDate.isSame(endDateInitial)) {
 		return exampleEntries
 	}
 
 	const groupWithItems = currentEntries.map((group, g) => {
-		const newGroup: TimeTableEntry<ExampleGroup, ExampleItem> = {
+		const newGroup: TimeTableTypes.TimeTableEntry<
+			ExampleGroup,
+			ExampleItem
+		> = {
 			group: group.group,
 			items: createTestItems(startDate, endDate, g),
 		}
@@ -391,11 +401,15 @@ function createMoreTestGroups(
 	count: number,
 	startCount: number,
 ) {
-	const newGroups: TimeTableEntry<ExampleGroup, ExampleItem>[] = []
+	const newGroups: TimeTableTypes.TimeTableEntry<
+		ExampleGroup,
+		ExampleItem
+	>[] = []
 	for (let i = 0; i < count; i++) {
 		const groupNumber = startCount + i
 		newGroups.push({
 			group: {
+				id: `group-${groupNumber}`,
 				title: `Group ${groupNumber}`,
 				subtitle: "random",
 			},
@@ -412,9 +426,10 @@ function Example() {
 	//#region timetable
 
 	const [timeSteps, setTimeSteps] = useState(60)
-	const [timeStepsInputValue, setTimeStepsInputValue] = useState(110)
+	const [timeStepsInputValue, setTimeStepsInputValue] = useState(timeSteps)
 	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
 	const [columnWidth, setColumnWidth] = useState(70)
+	const [rowHeight, setRowHeight] = useState(40)
 	const [disabledWeekendInteractions, setDisabledWeekendInteractions] =
 		useState(true)
 	const [showTimeSlotHeader, setShowTimeSlotHeader] = useState(true)
@@ -490,16 +505,19 @@ function Example() {
 	//#endregion
 
 	const [showCreateNewItemModal, setShowCreateNewItemModal] = useState(false)
-	const [selectedTimeRange, setSelectedTimeRange] = useState<
-		{ startDate: Dayjs; endDate: Dayjs; group: TimeTableGroup } | undefined
-	>()
-	const [clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB] =
-		useState<() => void>()
+	const [selectedTimeRange, setSelectedTimeRange] = useState<{
+		startDate: Dayjs
+		endDate: Dayjs
+		group: TimeTableTypes.TimeTableGroup
+	} | null>(null)
 	const [disableTimeRangeSelection, setDisableTimeRangeSelection] =
 		useState(false)
 
 	const onCreateNewItemConfirmCB = useCallback(
-		(group: TimeTableGroup, item: TimeSlotBooking) => {
+		(
+			group: TimeTableTypes.TimeTableGroup,
+			item: TimeTableTypes.TimeSlotBooking,
+		) => {
 			setShowCreateNewItemModal(false)
 			setEntries((prev) => {
 				const groupIndex = prev.findIndex((e) => e.group === group)
@@ -513,21 +531,28 @@ function Example() {
 				newGroupItems.push(item)
 				newGroup.items = newGroupItems
 				newEntries[groupIndex] = newGroup
-				// clears the selected time range in the table using a callback set by the selected time slots context in the time table
-				if (clearSelectedTimeRangeCB) {
-					clearSelectedTimeRangeCB()
-				}
 				return newEntries
 			})
-			setSelectedTimeRange(undefined)
+			setSelectedTimeRange(null)
 		},
-		[clearSelectedTimeRangeCB],
+		[],
 	)
 
-	const [viewType, setViewType] = useState<TimeTableViewType>("hours")
+	const [viewType, setViewType] =
+		useState<TimeTableTypes.TimeTableViewType>("hours")
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
+
+	const isCellDisabled = useCallback(
+		(group: TimeTableTypes.TimeTableGroup, start: Dayjs) => {
+			if (group.title === "Group 2") {
+				return start.isBefore(dayjs().startOf("day"))
+			}
+			return false
+		},
+		[],
+	)
 
 	return (
 		<>
@@ -605,13 +630,30 @@ function Example() {
 					<input
 						type="number"
 						name="colwidth"
-						value={columnWidth}
-						step={10}
+						defaultValue={columnWidth}
+						step={5}
 						min={10}
 						max={1000}
 						onChange={(e) =>
+							debounceHelper(() => {
+								setColumnWidth(Number.parseInt(e.target.value))
+							})
+						}
+						className="mr-1 w-16 text-center"
+					/>
+					<label className="mr-4" htmlFor="rowheight">
+						Row Height [px]:
+					</label>
+					<input
+						type="number"
+						name="rowheight"
+						defaultValue={rowHeight}
+						step={2}
+						min={10}
+						max={100}
+						onChange={(e) =>
 							debounceHelper(() =>
-								setColumnWidth(Number.parseInt(e.target.value)),
+								setRowHeight(Number.parseInt(e.target.value)),
 							)
 						}
 						className="mr-1 w-16 text-center"
@@ -678,7 +720,10 @@ function Example() {
 					<select
 						name="viewtype"
 						onChange={(e) =>
-							setViewType(e.target.value as TimeTableViewType)
+							setViewType(
+								e.target
+									.value as TimeTableTypes.TimeTableViewType,
+							)
 						}
 						value={viewType}
 					>
@@ -721,17 +766,20 @@ function Example() {
 					height: "600px",
 				}}
 			>
-				<LPTimeTable
+				<TimeTable
 					groupHeaderColumnWidth={groupHeaderColumnWidth}
 					columnWidth={columnWidth}
+					rowHeight={rowHeight}
 					startDate={timeFrame.startDate}
 					endDate={timeFrame.endDate}
 					timeStepsMinutes={timeSteps}
 					entries={entries}
 					selectedTimeSlotItem={selectedTimeSlotItem}
-					/*renderGroup={ Group }
-					renderTimeSlotItem={ Item }
-					renderPlaceHolder={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
+					selectedTimeRange={selectedTimeRange}
+					disableMessages
+					/*groupComponent={ Group }
+					timeSlotItemComponent={ Item }
+					placeHolderComponent={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
 						<div
 							style={ { height: props.height, backgroundColor: "rgba(0,0,0,0.1)", textAlign: "center" } }
 							onClick={ () => props.clearTimeRangeSelectionCB() }
@@ -747,16 +795,10 @@ function Example() {
 							? setSelectedTimeRange
 							: undefined
 					}
-					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
 					disableWeekendInteractions={disabledWeekendInteractions}
 					showTimeSlotHeader={showTimeSlotHeader}
 					hideOutOfRangeMarkers={hideOutOfDayRangeMarkers}
-					isCellDisabled={(group, start) => {
-						if (group.title === "Group 2") {
-							return start.isBefore(dayjs().startOf("day"))
-						}
-						return false
-					}}
+					isCellDisabled={isCellDisabled}
 					viewType={viewType}
 				/>
 			</div>
@@ -797,9 +839,10 @@ function ExampleCalendar() {
 					height: "600px",
 				}}
 			>
-				<LPTimeTable
+				<TimeTable
 					groupHeaderColumnWidth={150}
 					columnWidth={70}
+					rowHeight={30}
 					startDate={timeFrame.startDate}
 					endDate={timeFrame.endDate}
 					entries={exampleEntries}
@@ -807,6 +850,9 @@ function ExampleCalendar() {
 					disableWeekendInteractions={true}
 					showTimeSlotHeader={false}
 					viewType={"days"}
+					itemsOutsideOfDayRangeFound={(items) => {
+						console.info("items outside of day range found", items)
+					}}
 				/>
 			</div>
 		</>
@@ -834,9 +880,10 @@ function ExampleMonthCalendar() {
 					height: "600px",
 				}}
 			>
-				<LPTimeTable
+				<TimeTable
 					groupHeaderColumnWidth={150}
 					columnWidth={70}
+					rowHeight={30}
 					startDate={timeFrame.startDate}
 					endDate={timeFrame.endDate}
 					entries={exampleEntries}

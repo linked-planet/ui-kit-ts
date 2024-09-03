@@ -1,10 +1,10 @@
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
 import AKTagGroup from "@atlaskit/tag-group"
-import { TagGroup, SimpleTag, Tag } from "@linked-planet/ui-kit-ts"
+import { TagGroup, Tag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
@@ -41,7 +41,7 @@ function TagShowcase(props: ShowcaseProps) {
 
 	//#region tags
 	const lpExample = (
-		<div className="flex w-full items-center">
+		<div className="flex w-full flex-wrap items-center">
 			<TagGroup>
 				<Tag
 					onBeforeRemoveAction={() => {
@@ -51,28 +51,29 @@ function TagShowcase(props: ShowcaseProps) {
 					onAfterRemoveAction={(str) =>
 						console.log("on after remove", str)
 					}
+					removable
 				>
 					Removable Tag
 				</Tag>
-				<Tag isRemovable={false}>Non-removal Tag</Tag>
-				<SimpleTag>Simple Tag</SimpleTag>
-				<SimpleTag looks="rounded">Colored Simple Tag</SimpleTag>
-				<SimpleTag>Colored Simple Tag</SimpleTag>
+				<Tag removable={false}>Non-removal Tag</Tag>
+				<Tag>Simple Tag</Tag>
+				<Tag looks="rounded">Colored Simple Tag</Tag>
+				<Tag>Colored Simple Tag</Tag>
 			</TagGroup>
 			<TagGroup>
-				<SimpleTag appearance="danger">Danger Simple Tag</SimpleTag>
-				<SimpleTag appearance="warning">Warning Simple Tag</SimpleTag>
-				<SimpleTag appearance="brand">Brand Simple Tag</SimpleTag>
-				<SimpleTag appearance="success">Success Simple Tag</SimpleTag>
-				<SimpleTag appearance="discovery">
+				<Tag appearance="danger">Danger Simple Tag</Tag>
+				<Tag appearance="warning">Warning Simple Tag</Tag>
+				<Tag appearance="brand">Brand Simple Tag</Tag>
+				<Tag appearance="success">Success Simple Tag</Tag>
+				<Tag appearance="discovery" truncate>
 					Discovery Simple Tag
-				</SimpleTag>
-				<SimpleTag appearance="information">
+				</Tag>
+				<Tag appearance="information" truncate>
 					Information Simple Tag
-				</SimpleTag>
-				<SimpleTag appearance="discovery">
+				</Tag>
+				<Tag appearance="discovery" truncate>
 					Discovery Simple Tag
-				</SimpleTag>
+				</Tag>
 			</TagGroup>
 		</div>
 	)
@@ -106,65 +107,65 @@ function TagShowcase(props: ShowcaseProps) {
 
 	//#region tagscolors
 	const colorTags = (
-		<>
-			<TagGroup>
+		<div className="flex w-full flex-col gap-2 overflow-hidden">
+			<TagGroup wrap>
 				<Tag appearance="blue">blue</Tag>
-				<SimpleTag appearance="green">green</SimpleTag>
-				<SimpleTag appearance="gray">gray</SimpleTag>
-				<SimpleTag appearance="purple">purple</SimpleTag>
-				<SimpleTag appearance="red">red</SimpleTag>
-				<SimpleTag appearance="teal">teal</SimpleTag>
-				<SimpleTag appearance="yellow">yellow</SimpleTag>
-				<SimpleTag appearance="lime">lime</SimpleTag>
-				<SimpleTag appearance="pink">pink</SimpleTag>
-				<SimpleTag appearance="orange">orange</SimpleTag>
-				<SimpleTag appearance="indigo">indigo</SimpleTag>
-				<SimpleTag appearance="cyan">cyan</SimpleTag>
-				<SimpleTag appearance="violet">violet</SimpleTag>
-				<SimpleTag appearance="amber">amber</SimpleTag>
-				<SimpleTag appearance="emerald">emerald</SimpleTag>
-				<SimpleTag appearance="fuchsia">fuchsia</SimpleTag>
-				<SimpleTag appearance="sky">sky</SimpleTag>
+				<Tag appearance="green">green</Tag>
+				<Tag appearance="gray">gray</Tag>
+				<Tag appearance="purple">purple</Tag>
+				<Tag appearance="red">red</Tag>
+				<Tag appearance="teal">teal</Tag>
+				<Tag appearance="yellow">yellow</Tag>
+				<Tag appearance="lime">lime</Tag>
+				<Tag appearance="pink">pink</Tag>
+				<Tag appearance="orange">orange</Tag>
+				<Tag appearance="indigo">indigo</Tag>
+				<Tag appearance="cyan">cyan</Tag>
+				<Tag appearance="violet">violet</Tag>
+				<Tag appearance="amber">amber</Tag>
+				<Tag appearance="emerald">emerald</Tag>
+				<Tag appearance="fuchsia">fuchsia</Tag>
+				<Tag appearance="sky">sky</Tag>
 			</TagGroup>
-			<TagGroup>
+			<TagGroup wrap>
 				<Tag appearance="blueLight">blueLight</Tag>
-				<SimpleTag appearance="greenLight">greenLight</SimpleTag>
-				<SimpleTag appearance="grayLight">greyLight</SimpleTag>
-				<SimpleTag appearance="purpleLight">purpleLight</SimpleTag>
-				<SimpleTag appearance="redLight">redLight</SimpleTag>
-				<SimpleTag appearance="tealLight">tealLight</SimpleTag>
-				<SimpleTag appearance="yellowLight">yellowLight</SimpleTag>
-				<SimpleTag appearance="limeLight">limeLight</SimpleTag>
-				<SimpleTag appearance="pinkLight">pinkLight</SimpleTag>
-				<SimpleTag appearance="orangeLight">orangeLight</SimpleTag>
-				<SimpleTag appearance="indigoLight">indigoLight</SimpleTag>
-				<SimpleTag appearance="cyanLight">cyanLight</SimpleTag>
-				<SimpleTag appearance="violetLight">violetLight</SimpleTag>
-				<SimpleTag appearance="amberLight">amberLight</SimpleTag>
-				<SimpleTag appearance="emeraldLight">emeraldLight</SimpleTag>
-				<SimpleTag appearance="fuchsiaLight">fuchsiaLight</SimpleTag>
-				<SimpleTag appearance="skyLight">skyLight</SimpleTag>
+				<Tag appearance="greenLight">greenLight</Tag>
+				<Tag appearance="grayLight">greyLight</Tag>
+				<Tag appearance="purpleLight">purpleLight</Tag>
+				<Tag appearance="redLight">redLight</Tag>
+				<Tag appearance="tealLight">tealLight</Tag>
+				<Tag appearance="yellowLight">yellowLight</Tag>
+				<Tag appearance="limeLight">limeLight</Tag>
+				<Tag appearance="pinkLight">pinkLight</Tag>
+				<Tag appearance="orangeLight">orangeLight</Tag>
+				<Tag appearance="indigoLight">indigoLight</Tag>
+				<Tag appearance="cyanLight">cyanLight</Tag>
+				<Tag appearance="violetLight">violetLight</Tag>
+				<Tag appearance="amberLight">amberLight</Tag>
+				<Tag appearance="emeraldLight">emeraldLight</Tag>
+				<Tag appearance="fuchsiaLight">fuchsiaLight</Tag>
+				<Tag appearance="skyLight">skyLight</Tag>
 			</TagGroup>
-			<TagGroup>
+			<TagGroup wrap>
 				<Tag appearance="blueBold">blueBold</Tag>
-				<SimpleTag appearance="greenBold">greenBold</SimpleTag>
-				<SimpleTag appearance="grayBold">greyBold</SimpleTag>
-				<SimpleTag appearance="purpleBold">purpleBold</SimpleTag>
-				<SimpleTag appearance="redBold">redBold</SimpleTag>
-				<SimpleTag appearance="tealBold">tealBold</SimpleTag>
-				<SimpleTag appearance="yellowBold">yellowBold</SimpleTag>
-				<SimpleTag appearance="limeBold">limeBold</SimpleTag>
-				<SimpleTag appearance="pinkBold">pinkBold</SimpleTag>
-				<SimpleTag appearance="orangeBold">orangeBold</SimpleTag>
-				<SimpleTag appearance="indigoBold">indigoBold</SimpleTag>
-				<SimpleTag appearance="cyanBold">cyanBold</SimpleTag>
-				<SimpleTag appearance="violetBold">violetBold</SimpleTag>
-				<SimpleTag appearance="amberBold">amberBold</SimpleTag>
-				<SimpleTag appearance="emeraldBold">emeraldBold</SimpleTag>
-				<SimpleTag appearance="fuchsiaBold">fuchsiaBold</SimpleTag>
-				<SimpleTag appearance="skyBold">skyBold</SimpleTag>
+				<Tag appearance="greenBold">greenBold</Tag>
+				<Tag appearance="grayBold">greyBold</Tag>
+				<Tag appearance="purpleBold">purpleBold</Tag>
+				<Tag appearance="redBold">redBold</Tag>
+				<Tag appearance="tealBold">tealBold</Tag>
+				<Tag appearance="yellowBold">yellowBold</Tag>
+				<Tag appearance="limeBold">limeBold</Tag>
+				<Tag appearance="pinkBold">pinkBold</Tag>
+				<Tag appearance="orangeBold">orangeBold</Tag>
+				<Tag appearance="indigoBold">indigoBold</Tag>
+				<Tag appearance="cyanBold">cyanBold</Tag>
+				<Tag appearance="violetBold">violetBold</Tag>
+				<Tag appearance="amberBold">amberBold</Tag>
+				<Tag appearance="emeraldBold">emeraldBold</Tag>
+				<Tag appearance="fuchsiaBold">fuchsiaBold</Tag>
+				<Tag appearance="skyBold">skyBold</Tag>
 			</TagGroup>
-			<TagGroup>
+			<TagGroup wrap>
 				<Tag appearance="default">default</Tag>
 				<Tag appearance="danger">danger</Tag>
 				<Tag appearance="warning">warning</Tag>
@@ -173,7 +174,7 @@ function TagShowcase(props: ShowcaseProps) {
 				<Tag appearance="discovery">discovery</Tag>
 				<Tag appearance="brand">brand</Tag>
 			</TagGroup>
-		</>
+		</div>
 	)
 	//#endregion
 

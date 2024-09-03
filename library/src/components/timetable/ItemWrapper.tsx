@@ -1,18 +1,19 @@
-import type React from "react"
 import { useEffect, useRef } from "react"
-import { Item } from "./Item"
-import type { TimeSlotBooking, TimeTableGroup } from "./LPTimeTable"
+import type { TimeSlotBooking, TimeTableGroup } from "./TimeTable"
 
 import utilStyles from "../../utils.module.css"
-import { useMultiSelectionMode } from "./SelectedTimeSlotsContext"
+import { useTimeSlotItemComponent } from "./TimeTableComponentStore"
+import { useTimeTableIdent } from "./TimeTableIdentContext"
+import { useMultiSelectionMode } from "./TimeTableSelectionStore"
 
-export type RenderItemProps<
+export type TimeTableItemProps<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 > = {
 	group: G
 	item: I
 	selectedItem: I | undefined
+	height: number
 }
 
 export default function ItemWrapper<
@@ -23,19 +24,17 @@ export default function ItemWrapper<
 	item,
 	selectedTimeSlotItem,
 	onTimeSlotItemClick,
-	renderTimeSlotItem,
 	left,
 	width,
+	height,
 }: {
 	group: G
 	item: I
 	selectedTimeSlotItem: I | undefined
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
-	renderTimeSlotItem:
-		| ((props: RenderItemProps<G, I>) => JSX.Element)
-		| undefined
 	left: string
 	width: string
+	height: number
 }) {
 	//#region fade out animation
 	const ref = useRef<HTMLDivElement>(null)
@@ -60,21 +59,25 @@ export default function ItemWrapper<
 	}
 	//#endregion
 
-	const { multiSelectionMode } = useMultiSelectionMode()
+	const storeIdent = useTimeTableIdent()
+	const TimeSlotItemComponent = useTimeSlotItemComponent<G, I>(storeIdent)
 
+	const multiSelectionMode = useMultiSelectionMode(storeIdent)
 	return (
 		<div
-			className="relative top-0 box-border"
+			className="relative top-0 box-border overflow-hidden"
 			style={{
 				left,
 				width,
 				pointerEvents: multiSelectionMode ? "none" : "auto",
+				height,
+				maxHeight: height,
 			}}
 			{...mouseHandler}
 		>
 			<div
 				ref={ref}
-				className="animate-fade-in relative z-[1]"
+				className="animate-fade-in relative z-[1] size-full"
 				onClick={() => {
 					if (onTimeSlotItemClick) onTimeSlotItemClick(group, item)
 				}}
@@ -85,19 +88,12 @@ export default function ItemWrapper<
 				}}
 				role="button"
 			>
-				{renderTimeSlotItem ? (
-					renderTimeSlotItem({
-						group,
-						item,
-						selectedItem: selectedTimeSlotItem,
-					})
-				) : (
-					<Item
-						group={group}
-						item={item}
-						selectedItem={selectedTimeSlotItem}
-					/>
-				)}
+				<TimeSlotItemComponent
+					group={group}
+					item={item}
+					selectedItem={selectedTimeSlotItem}
+					height={height}
+				/>
 			</div>
 		</div>
 	)

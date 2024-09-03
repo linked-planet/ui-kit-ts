@@ -6,6 +6,7 @@ import ShowcaseWrapperItem, {
 import {
 	Button,
 	ToastFlagContainer,
+	showDiscoveryFlag,
 	showErrorFlag,
 	showFlag,
 	showFlagExtended,
@@ -25,7 +26,7 @@ function ExampleShowExtendedFlag() {
 						title: "standard flag",
 						description: "test",
 						autoClose: false,
-						flagType: "default",
+						flagType: "bold",
 					})
 				}}
 			>
@@ -104,6 +105,17 @@ function ExampleShowExtendedFlag() {
 			<Button
 				onClick={() =>
 					showFlagExtended({
+						title: "discovery flag",
+						description: "This is a discovery toast flag.",
+						appearance: "discovery",
+					})
+				}
+			>
+				Discovery
+			</Button>
+			<Button
+				onClick={() =>
+					showFlagExtended({
 						title: "warning flag",
 						description: (
 							<div>
@@ -155,7 +167,7 @@ function ExampleShowFlags() {
 					})
 				}
 			>
-				Standard Not Dissapearing Bottom Left
+				Standard Not Disappearing Bottom Left
 			</Button>
 
 			<Button
@@ -163,11 +175,11 @@ function ExampleShowFlags() {
 					showFlag({
 						title: "Default Style",
 						description: "The default style is rather dark.",
-						flagType: "default",
+						flagType: "bold",
 					})
 				}
 			>
-				Standard Default
+				Standard Bold
 			</Button>
 
 			<Button
@@ -197,7 +209,7 @@ function ExampleShowFlags() {
 				onClick={() =>
 					showSuccessFlag({
 						title: "Default Style",
-						flagType: "default",
+						flagType: "bold",
 						description:
 							"Using the default flag style (see flags).",
 					})
@@ -227,6 +239,40 @@ function ExampleShowFlags() {
 				}
 			>
 				Information Pale
+			</Button>
+			<Button
+				onClick={() =>
+					showDiscoveryFlag({
+						title: "Discovery",
+						description: "This is a bold discovery toast.",
+						flagType: "bold",
+					})
+				}
+			>
+				Discovery
+			</Button>
+			<Button
+				onClick={() =>
+					showDiscoveryFlag({
+						title: "Discovery",
+						description: "This is a pale discovery toast.",
+						flagType: "pale",
+					})
+				}
+			>
+				Discovery Pale
+			</Button>
+			<Button
+				onClick={() =>
+					showDiscoveryFlag({
+						title: "Discovery",
+						description:
+							"This is a inverted (default) discovery toast.",
+						flagType: "inverted",
+					})
+				}
+			>
+				Discovery Inverted
 			</Button>
 			<Button
 				onClick={() =>

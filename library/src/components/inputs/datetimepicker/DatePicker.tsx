@@ -16,7 +16,7 @@ import SelectClearIcon from "@atlaskit/icon/glyph/select-clear"
 
 import { Input } from "../Inputs"
 import { IconSizeHelper } from "../../IconSizeHelper"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import {
 	type FieldValues,
 	type Control,
@@ -67,8 +67,8 @@ export type DatePickerProps = Pick<
 		calendarTestId?: string
 		style?: React.CSSProperties
 		className?: string
-		/* the containerClassName of the trigger Input */
-		containerClassName?: string
+		inputClassName?: string
+		inputStyle?: React.CSSProperties
 		appearance?: "subtle" | "default" | "none"
 		/* formats the displayed value in the input */
 		formatDisplayLabel?: (date: DateType) => string
@@ -92,6 +92,10 @@ export type DatePickerInFormProps<FormData extends FieldValues> =
 		name: Path<FormData>
 	}
 
+/**
+ * The datepicker is a popover that uses an Input as trigger and opens a calendar to pick a date.
+ * @param props
+ */
 export function DatePicker(
 	props: DatePickerProps & { control?: never },
 ): JSX.Element
@@ -126,7 +130,6 @@ const DatePickerBase = forwardRef(
 			onChange,
 			disabled,
 			hideIcon = false,
-			containerClassName,
 			...props
 		}: DatePickerProps,
 		ref: ForwardedRef<HTMLInputElement>,
@@ -223,29 +226,31 @@ const DatePickerBase = forwardRef(
 			label,
 			placeholder = "Select a date",
 			name,
-			style,
-			className,
+			inputClassName,
+			inputStyle,
 			formatDisplayLabel,
 			required,
 			readOnly,
 			clearButtonLabel = "clear date",
 			"aria-label": ariaLabel,
+			className,
+			style,
 		} = props
 
-		const trigger = useMemo(() => {
-			let valStr: string = value
-			if (value && formatDisplayLabel) {
-				valStr = formatDisplayLabel(value)
-			} else if (value) {
-				const locale = lang ?? navigator.language
-				const formatter = Intl.DateTimeFormat(locale, {
-					dateStyle: "short",
-				})
-				const date = DateUtils.dateFromString(value, true)
-				valStr = formatter.format(date)
-			}
+		let valStr: string = value
+		if (value && formatDisplayLabel) {
+			valStr = formatDisplayLabel(value)
+		} else if (value) {
+			const locale = lang ?? navigator.language
+			const formatter = Intl.DateTimeFormat(locale, {
+				dateStyle: "short",
+			})
+			const date = DateUtils.dateFromString(value, true)
+			valStr = formatter.format(date)
+		}
 
-			return (
+		const trigger = (
+			<div className={twJoin("group", className)} style={style}>
 				<Input
 					type="text"
 					key={key}
@@ -256,13 +261,15 @@ const DatePickerBase = forwardRef(
 					aria-label={label ?? ariaLabel ?? "date picker"}
 					placeholder={placeholder}
 					name={name}
-					style={style}
-					className={twMerge("min-w-20 cursor-pointer", className)}
-					containerClassName={containerClassName}
+					className="min-w-20 cursor-pointer"
+					style={inputStyle}
 					value={valStr}
 					disabled={disabled}
 					invalid={invalid}
-					inputClassName="cursor-pointer"
+					inputClassName={twMerge(
+						"cursor-pointer group-data-[state=open]:border-input-border-focused group-data-[state=open]:shadow-input-border-focused",
+						inputClassName,
+					)}
 					required={required}
 					readOnly={readOnly}
 					onChange={onInputChange}
@@ -307,36 +314,10 @@ const DatePickerBase = forwardRef(
 							)}
 						</>
 					}
-					active={open}
 					ref={ref}
 				/>
-			)
-		}, [
-			key,
-			name,
-			label,
-			placeholder,
-			testId,
-			id,
-			value,
-			invalid,
-			disabled,
-			style,
-			onFocus,
-			onBlur,
-			onChange,
-			clearButtonLabel,
-			className,
-			open,
-			lang,
-			formatDisplayLabel,
-			ariaLabel,
-			required,
-			readOnly,
-			ref,
-			hideIcon,
-			containerClassName,
-		])
+			</div>
+		)
 
 		return (
 			<Popover.Root

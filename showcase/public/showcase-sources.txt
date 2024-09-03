@@ -1,7 +1,7 @@
 import { Accordion } from "@linked-planet/ui-kit-ts"
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //#region accordion-single
@@ -78,7 +78,7 @@ export default function AnimatedListShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts/single#Accordion",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Accordion",
 				},
 			]}
 			examples={[
@@ -100,7 +100,7 @@ export default function AnimatedListShowcase(props: ShowcaseProps) {
 import React, { useState } from "react"
 
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { AnimatedList, Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
@@ -461,6 +461,7 @@ function AvatarShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Avatar"
+			description="Avatars are only the round avatar, while AvatarItem is rectangular and has username, and email."
 			{...props}
 			packages={[
 				{
@@ -632,44 +633,44 @@ export default BadgeShowcase
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Banner from "@atlaskit/banner"
-import WarningIcon from "@atlaskit/icon/glyph/warning"
 import ErrorIcon from "@atlaskit/icon/glyph/error"
+import CheckCircleOutlineIcon from "@atlaskit/icon/glyph/check-circle-outline"
+import { Banner, IconSizeHelper } from "@linked-planet/ui-kit-ts"
 
 function BannerShowcase(props: ShowcaseProps) {
-	//#region banner1
-	const example = (
-		<Banner appearance="announcement">
-			<span>Content of the banner...</span>
-		</Banner>
+	//#region banner-example
+	const bannerExample = (
+		<div className="flex w-full flex-col gap-4">
+			<Banner appearance="announcement">Announcement Banner</Banner>
+			<Banner appearance="warning">Warning Banner</Banner>
+			<Banner
+				appearance="error"
+				icon={
+					<IconSizeHelper>
+						<ErrorIcon
+							label=""
+							secondaryColor="var(--ds-background-danger-bold, #DE350B)"
+						/>
+					</IconSizeHelper>
+				}
+			>
+				Error Banner
+			</Banner>
+			<Banner
+				appearance="success"
+				icon={
+					<IconSizeHelper>
+						<CheckCircleOutlineIcon label="" />
+					</IconSizeHelper>
+				}
+			>
+				Success Banner
+			</Banner>
+			<Banner appearance="information">Information Banner</Banner>
+		</div>
 	)
-	//#endregion banner1
-
-	//#region banner2
-	const example2 = (
-		<Banner appearance="warning" icon={<WarningIcon label="" />}>
-			<span>Content of the banner...</span>
-		</Banner>
-	)
-	//#endregion banner2
-
-	//#region banner3
-	const example3 = (
-		<Banner
-			appearance="error"
-			icon={
-				<ErrorIcon
-					secondaryColor="var(--ds-background-danger-bold, #DE350B)"
-					label=""
-				/>
-			}
-		>
-			<span>Content of the banner...</span>
-		</Banner>
-	)
-	//#endregion banner3
 
 	return (
 		<ShowcaseWrapperItem
@@ -677,25 +678,15 @@ function BannerShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/banner",
-					url: "https://atlassian.design/components/banner/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "single?component=Banner",
 				},
 			]}
 			examples={[
 				{
-					title: "Example 1",
-					example: example,
-					sourceCodeExampleId: "banner1",
-				},
-				{
-					title: "Example 2",
-					example: example2,
-					sourceCodeExampleId: "banner2",
-				},
-				{
-					title: "Example 3",
-					example: example3,
-					sourceCodeExampleId: "banner3",
+					title: "Example",
+					example: bannerExample,
+					sourceCodeExampleId: "banner-example",
 				},
 			]}
 		/>
@@ -704,16 +695,76 @@ function BannerShowcase(props: ShowcaseProps) {
 
 export default BannerShowcase
 
-import React, { CSSProperties, useMemo, useRef, useState } from "react"
-import { BookCard, BookCardComponents, Tag } from "@linked-planet/ui-kit-ts"
+import React, { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { Blanket, Button } from "@linked-planet/ui-kit-ts"
+
+function BannerShowcase(props: ShowcaseProps) {
+	//#region blanket-example
+	const [showBlanket, setShowBlanket] = useState(false)
+
+	const blanketExample = (
+		<div className="flex w-full flex-col gap-4">
+			<Button onClick={() => setShowBlanket(true)}>Show Blanket</Button>
+			{showBlanket && (
+				<Blanket onClick={() => setShowBlanket(false)}>
+					<div className="flex size-full items-center justify-center">
+						<div className="bg-surface rounded-md p-8">
+							<h1 className="text-base font-bold">
+								This is a blanket.
+							</h1>
+							<Button onClick={() => setShowBlanket(false)}>
+								Close
+							</Button>
+						</div>
+					</div>
+				</Blanket>
+			)}
+		</div>
+	)
+	//#endregion blanket-example
+
+	return (
+		<ShowcaseWrapperItem
+			name="Blanket"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "single?component=Blanket",
+				},
+			]}
+			examples={[
+				{
+					title: "Example",
+					example: blanketExample,
+					sourceCodeExampleId: "blanket-example",
+				},
+			]}
+		/>
+	)
+}
+
+export default BannerShowcase
+
+import { type CSSProperties, useMemo, useRef, useState } from "react"
+import {
+	BookCard,
+	BookCardComponents,
+	Tag,
+	TagGroup,
+	Badge,
+	Fieldset,
+	Button,
+	ButtonGroup,
+} from "@linked-planet/ui-kit-ts"
 
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import Button, { ButtonGroup } from "@atlaskit/button"
-import { Fieldset } from "@atlaskit/form"
-import { Badge, SimpleTag, TagGroup } from "@linked-planet/ui-kit-ts"
 import { CSSTransition } from "react-transition-group"
 import { TruncatedText } from "@linked-planet/ui-kit-ts/components/TruncatedText"
 
@@ -874,12 +925,12 @@ function BookCardExample() {
 				actions={
 					<div className="flex items-center">
 						<TagGroup>
-							<SimpleTag key="action" appearance="danger">
+							<Tag key="action" appearance="danger">
 								DAUERAUSLEIHE
-							</SimpleTag>
-							<SimpleTag key="action 1" appearance="greenLight">
+							</Tag>
+							<Tag key="action 1" appearance="greenLight">
 								action item
-							</SimpleTag>
+							</Tag>
 						</TagGroup>
 					</div>
 				}
@@ -907,12 +958,12 @@ function BookCardExample() {
 						<BookCardComponents.CardBodyEntryTitle>
 							Book Entry Title
 						</BookCardComponents.CardBodyEntryTitle>
-						<SimpleTag>
+						<Tag>
 							Lorem ipsum, dolor sit amet consectetur adipisicing
 							elit. Illo cumque eum laborum voluptate ipsa sed
 							consectetur tempore vel quia est quas itaque
 							voluptatem neque odio, maiores ut cum at distinctio?
-						</SimpleTag>
+						</Tag>
 						<Tag>
 							Lorem ipsum, dolor sit amet consectetur adipisicing
 							elit. Illo cumque eum laborum voluptate ipsa sed
@@ -933,19 +984,19 @@ function BookCardExample() {
 				<Fieldset legend="Book Card Collapsible">
 					<ButtonGroup>
 						<Button
-							isSelected={isClosed === false}
+							selected={isClosed === false}
 							onClick={() => setIsClosed(false)}
 						>
 							Opened
 						</Button>
 						<Button
-							isSelected={isClosed === true}
+							selected={isClosed === true}
 							onClick={() => setIsClosed(true)}
 						>
 							Closed
 						</Button>
 						<Button
-							isSelected={isClosed === undefined}
+							selected={isClosed === undefined}
 							onClick={() => setIsClosed(undefined)}
 						>
 							Closed Undefined
@@ -955,19 +1006,19 @@ function BookCardExample() {
 				<Fieldset legend="Book Card Body Layout">
 					<ButtonGroup>
 						<Button
-							isSelected={bodyLayout === "row"}
+							selected={bodyLayout === "row"}
 							onClick={() => setBodyLayout("row")}
 						>
 							Row
 						</Button>
 						<Button
-							isSelected={bodyLayout === "grid"}
+							selected={bodyLayout === "grid"}
 							onClick={() => setBodyLayout("grid")}
 						>
 							Grid
 						</Button>
 						<Button
-							isSelected={bodyLayout === "column"}
+							selected={bodyLayout === "column"}
 							onClick={() => setBodyLayout("column")}
 						>
 							Column
@@ -1035,14 +1086,187 @@ export default function BookCardShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKButton, {
+import { Breadcrumbs, Checkbox, Input, Label } from "@linked-planet/ui-kit-ts"
+
+import AddCircleIcon from "@atlaskit/icon/glyph/add-circle"
+
+//#region bread-crumbs-max-items-example
+function MaxItemsExample() {
+	const [maxItems, setMaxItems] = useState(5)
+	const [itemsBeforeCollapse, setItemsBeforeCollapse] = useState(1)
+	const [itemsAfterCollapse, setItemsAfterCollapse] = useState(1)
+
+	return (
+		<div>
+			<div className="mb-4 flex gap-4">
+				<div>
+					<Label htmlFor="maxItems">Max Items</Label>
+					<Input
+						id="maxItems"
+						type="number"
+						value={maxItems}
+						onChange={(e) =>
+							setMaxItems(Number.parseInt(e.target.value))
+						}
+					/>
+				</div>
+				<div>
+					<Label htmlFor="itemsBefore">Items Before Collapse</Label>
+					<Input
+						id="itemsBefore"
+						type="number"
+						value={itemsBeforeCollapse}
+						onChange={(e) =>
+							setItemsBeforeCollapse(
+								Number.parseInt(e.target.value),
+							)
+						}
+					/>
+				</div>
+				<div>
+					<Label htmlFor="itemsAfter">Items After Collapse</Label>
+					<Input
+						id="itemsAfter"
+						type="number"
+						value={itemsAfterCollapse}
+						onChange={(e) =>
+							setItemsAfterCollapse(
+								Number.parseInt(e.target.value),
+							)
+						}
+					/>
+				</div>
+			</div>
+			<div className="flex flex-col gap-4">
+				<Breadcrumbs
+					maxItems={maxItems}
+					itemsAfterCollapse={itemsAfterCollapse}
+					itemsBeforeCollapse={itemsBeforeCollapse}
+				>
+					<Breadcrumbs.Item
+						href="#"
+						iconBefore={<AddCircleIcon label="" />}
+						iconAfter={<AddCircleIcon label="" />}
+					>
+						Home
+					</Breadcrumbs.Item>
+					<Breadcrumbs.Item href="#">Library</Breadcrumbs.Item>
+					<Breadcrumbs.Item href="#">Components</Breadcrumbs.Item>
+					<Breadcrumbs.Item href="#">Readme</Breadcrumbs.Item>
+					<Breadcrumbs.Item href="#">Showcase</Breadcrumbs.Item>
+					<Breadcrumbs.Item href="#">Homepage</Breadcrumbs.Item>
+				</Breadcrumbs>
+			</div>
+		</div>
+	)
+}
+//#endregion bread-crumbs-max-items-example
+
+//#region bread-crumbs-controlled-example
+function ConstrainedExample() {
+	const [expanded, setExpanded] = useState(false)
+
+	return (
+		<div>
+			<div className="mb-4">
+				<Checkbox
+					checked={expanded}
+					onChange={(e) => setExpanded(e.target.checked)}
+					label="Expanded"
+				/>
+			</div>
+			<div className="flex flex-col gap-4">
+				<Breadcrumbs
+					expanded={expanded}
+					onExpandedChange={(expandedChanged) =>
+						console.log("Expanded changed", expandedChanged)
+					}
+				>
+					<Breadcrumbs.Item
+						href="#"
+						iconBefore={<AddCircleIcon label="" />}
+						iconAfter={<AddCircleIcon label="" />}
+					>
+						Home
+					</Breadcrumbs.Item>
+					<Breadcrumbs.Item href="#">Library</Breadcrumbs.Item>
+					<Breadcrumbs.Item href="#">Components</Breadcrumbs.Item>
+					<Breadcrumbs.Item href="#">Readme</Breadcrumbs.Item>
+					<Breadcrumbs.Item href="#">Showcase</Breadcrumbs.Item>
+					<Breadcrumbs.Item href="#">Homepage</Breadcrumbs.Item>
+				</Breadcrumbs>
+			</div>
+		</div>
+	)
+}
+//#endregion bread-crumbs-controlled-example
+
+function BannerShowcase(props: ShowcaseProps) {
+	//#region bread-crumbs-example
+	const example = (
+		<div className="flex flex-col gap-4">
+			<Breadcrumbs>
+				<Breadcrumbs.Item
+					href="#"
+					iconBefore={<AddCircleIcon label="" />}
+					iconAfter={<AddCircleIcon label="" />}
+				>
+					Home
+				</Breadcrumbs.Item>
+				<Breadcrumbs.Item href="#">Library</Breadcrumbs.Item>
+				<Breadcrumbs.Item href="#">Components</Breadcrumbs.Item>
+				<Breadcrumbs.Item href="#">Readme</Breadcrumbs.Item>
+				<Breadcrumbs.Item href="#">Showcase</Breadcrumbs.Item>
+			</Breadcrumbs>
+		</div>
+	)
+	//#endregion bread-crumbs-example
+
+	return (
+		<ShowcaseWrapperItem
+			name="Breadcrumbs"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "single?component=BreadCrumbs",
+				},
+			]}
+			examples={[
+				{
+					title: "Example",
+					example: example,
+					sourceCodeExampleId: "bread-crumbs-example",
+				},
+				{
+					title: "Max Items",
+					example: <MaxItemsExample />,
+					sourceCodeExampleId: "bread-crumbs-max-items-example",
+				},
+				{
+					title: "Controlled",
+					example: <ConstrainedExample />,
+					sourceCodeExampleId: "bread-crumbs-controlled-example",
+				},
+			]}
+		/>
+	)
+}
+
+export default BannerShowcase
+
+import { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+/*import AKButton, {
 	ButtonGroup as AKButtonGroup,
 	LoadingButton as AKLoadingButton,
-} from "@atlaskit/button"
+} from "@atlaskit/button"*/
 import { Button, LoadingButton, ButtonGroup } from "@linked-planet/ui-kit-ts"
 import SearchIcon from "@atlaskit/icon/glyph/search"
 
@@ -1051,7 +1275,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<>
-			<AKButtonGroup>
+			{/*<AKButtonGroup>
 				<AKButton
 					appearance="default"
 					onClick={() => console.log("Button pressed")}
@@ -1166,7 +1390,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 				>
 					Download Button
 				</AKButton>
-			</AKButtonGroup>
+			</AKButtonGroup>*/}
 		</>
 	)
 
@@ -1407,6 +1631,7 @@ import {
 	ButtonGroup,
 	Calendar,
 	CalendarBase,
+	DateUtils,
 	type DateType,
 } from "@linked-planet/ui-kit-ts"
 import {
@@ -1714,6 +1939,32 @@ function CalendarRangeForm() {
 }
 //#endregion calendar2-range-form
 
+//#region calendar2-multi
+function CalendarMulti() {
+	const [selected, setSelected] = useState<DateType[] | undefined>([
+		DateUtils.toDateType(Date()),
+	])
+
+	return (
+		<div className="flex gap-4">
+			<Calendar
+				mode="multiple"
+				defaultSelected={[]}
+				selected={selected}
+				onSelectionChanged={setSelected}
+			/>
+			<CalendarBase
+				mode="multiple"
+				selected={selected?.map((d) => dateFromString(d, true))}
+				onSelect={(dates: Date[] | undefined) => {
+					setSelected(dates?.map((d) => DateUtils.toDateType(d)))
+				}}
+			/>
+		</div>
+	)
+}
+//#endregion calendar2-multi
+
 export default function Calendar2Showcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -1736,6 +1987,11 @@ export default function Calendar2Showcase(props: ShowcaseProps) {
 					title: "Calendar Day Range",
 					example: <CalendarRange />,
 					sourceCodeExampleId: "calendar2-range",
+				},
+				{
+					title: "Calendar Day Multi",
+					example: <CalendarMulti />,
+					sourceCodeExampleId: "calendar2-multi",
 				},
 				{
 					title: "Base Calendar",
@@ -2309,6 +2565,333 @@ export default function LayeringShowcase(props: ShowcaseProps) {
 	)
 }
 
+import React, { type ReactNode, useMemo } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import {
+	DataTable,
+	type DataTableTypes,
+	Input,
+	Label,
+	Checkbox,
+	Button,
+} from "@linked-planet/ui-kit-ts"
+
+//#region datatable-example
+type RowData = {
+	firstName: string
+	lastName: string
+	city: string
+	zip: number
+	state: string
+	button: ReactNode
+}
+
+function DataTableExample() {
+	const rows = useMemo(() => {
+		// create 100 example rows
+		const rows: RowData[] = []
+		for (let i = 0; i < 100; i++) {
+			rows.push({
+				firstName: `First ${i}`,
+				lastName: `Last ${i}`,
+				city: `City ${Math.floor(i / 2)}`,
+				zip: i,
+				state: `State ${i}`,
+				button: <Button appearance="primary">Delete</Button>,
+			})
+		}
+		return rows
+	}, [])
+
+	// see: https://tanstack.com/table/v8/docs/guide/column-defs#creating-accessor-columns
+	// create by using ColumnDef directly (better to use the helper to have improved typing as seen in the example below)
+	const columns = useMemo(() => {
+		const ret: DataTableTypes.ColumnDef<RowData>[] = [
+			{
+				id: "select", // either header or ID should be present
+				header: (headerprops) => (
+					<Checkbox
+						checked={
+							headerprops.table.getIsAllPageRowsSelected() ||
+							headerprops.table.getIsSomePageRowsSelected()
+						}
+						onCheckedChange={(value) =>
+							headerprops.table.toggleAllPageRowsSelected(!!value)
+						}
+						className="pb-1.5 pl-2"
+						indeterminate={headerprops.table.getIsSomePageRowsSelected()}
+					/>
+				),
+				cell: (cellprops) => (
+					<Checkbox
+						checked={cellprops.row.getIsSelected()}
+						onCheckedChange={() => {
+							cellprops.row.toggleSelected()
+						}}
+						className="pl-2"
+					/>
+				),
+			},
+			{
+				id: "Full Name", // either header or ID should be present
+				accessorFn: (row) => `${row.firstName} ${row.lastName}`,
+			},
+			{
+				//accessorFn: (row) => row.city,
+				header: "City",
+				accessorKey: "city",
+				enableGrouping: true,
+				enableSorting: true,
+				//cell: (cellprops) => <b>{cellprops.getValue<string>()}</b>,
+			},
+			{
+				header: "Zip",
+				accessorKey: "zip",
+				enableGrouping: true,
+				invertSorting: true,
+			},
+			{
+				header: "State",
+				accessorKey: "state",
+				enableGrouping: true,
+				invertSorting: true,
+			},
+			{
+				header: "Button",
+				accessorKey: "button",
+				cell: (cellprops) => cellprops.getValue<Element>(),
+			},
+		]
+		return ret
+	}, [])
+
+	const [fullNameFilter, setFullNameFilter] =
+		React.useState<DataTableTypes.ColumnFilter>()
+	const [cityFilter, setCityFilter] =
+		React.useState<DataTableTypes.ColumnFilter>()
+	const [hideState, setHideState] = React.useState<boolean>(false)
+
+	const filters = []
+	if (fullNameFilter) filters.push(fullNameFilter)
+	if (cityFilter) filters.push(cityFilter)
+
+	const visibilityState = {
+		state: !hideState,
+	}
+
+	return (
+		<>
+			<Label htmlFor="search">Search Full Name</Label>
+			<Input
+				type="text"
+				placeholder="Search"
+				onChange={(e) => {
+					const val = e.target.value
+					setFullNameFilter({ id: "Full Name", value: val })
+				}}
+			/>
+			<Label htmlFor="search">Search City</Label>
+			<Input
+				type="text"
+				placeholder="Search"
+				onChange={(e) => {
+					const val = e.target.value
+					setCityFilter({ id: "city", value: val })
+				}}
+				className="mb-4"
+			/>
+			<Label htmlFor="hideState">Hide State</Label>
+			<Checkbox
+				label="Hide State"
+				checked={hideState}
+				onCheckedChange={setHideState}
+			/>
+			<div className="bg-surface h-96 overflow-hidden">
+				<DataTable.Table<RowData>
+					data={rows}
+					columns={columns}
+					columnFilters={filters}
+					columnVisibility={visibilityState}
+				/>
+			</div>
+		</>
+	)
+}
+//#endregion datatable-example
+
+//#region datatable-coldef-helper-example
+function DataTableColumnDefHelperExample() {
+	const rows = useMemo(() => {
+		// create 100 example rows
+		const rows: RowData[] = []
+		for (let i = 0; i < 100; i++) {
+			rows.push({
+				firstName: `First ${i}`,
+				lastName: `Last ${i}`,
+				city: `City ${Math.floor(i / 2)}`,
+				zip: i,
+				state: `State ${i}`,
+				button: <Button appearance="primary">Delete</Button>,
+			})
+		}
+		return rows
+	}, [])
+
+	// see: https://tanstack.com/table/v8/docs/guide/column-defs#creating-accessor-columns
+	// make the helper for better typing
+	const columnHelper = DataTable.createColumnHelper<RowData>()
+
+	// make the columns
+	const columns = useMemo(() => {
+		// display column to show the select state and the checkbox using the cell function (without the cell, it would be display string)
+		const selectCol = columnHelper.display({
+			id: "select", // either header or ID should be present
+			header: (headerProps) => (
+				<Checkbox
+					checked={
+						headerProps.table.getIsAllPageRowsSelected() ||
+						headerProps.table.getIsSomePageRowsSelected()
+					}
+					onCheckedChange={(value) =>
+						headerProps.table.toggleAllPageRowsSelected(!!value)
+					}
+					className="pb-1.5 pl-2"
+					indeterminate={headerProps.table.getIsSomePageRowsSelected()}
+				/>
+			),
+			cell: (cellprops) => (
+				<Checkbox
+					checked={cellprops.row.getIsSelected()}
+					onCheckedChange={() => cellprops.row.toggleSelected()}
+					className="pl-2"
+				/>
+			),
+		})
+
+		// accessor column using accessor function
+		const fullNameCol = columnHelper.accessor(
+			(row) => `${row.firstName} ${row.lastName}`,
+			{
+				header: "Full Name", // either header or ID should be present
+			},
+		)
+
+		// accessor column using accessor key
+		const cityCol = columnHelper.accessor("city", {
+			header: "City",
+			enableGrouping: true,
+			enableSorting: true,
+			cell: (cellProps) => <b>{cellProps.getValue<string>()}</b>,
+		})
+
+		const zipCol = columnHelper.accessor("zip", {
+			header: "Zip",
+			enableGrouping: true,
+			invertSorting: true,
+		})
+
+		const stateCol = columnHelper.accessor("state", {
+			header: "State",
+			enableGrouping: true,
+			invertSorting: true,
+		})
+
+		// display column using accessor key, but avoid the toString() of the element
+		const buttonCol = columnHelper.accessor("button", {
+			header: "Button",
+			id: "button",
+			cell: (cellProps) => cellProps.getValue<Element>(),
+		})
+
+		return [selectCol, fullNameCol, cityCol, zipCol, stateCol, buttonCol]
+	}, [columnHelper])
+
+	const [fullNameFilter, setFullNameFilter] =
+		React.useState<DataTableTypes.ColumnFilter>()
+	const [cityFilter, setCityFilter] =
+		React.useState<DataTableTypes.ColumnFilter>()
+	const [hideState, setHideState] = React.useState<boolean>(false)
+
+	const filters: DataTableTypes.ColumnFilter[] = []
+	if (fullNameFilter) filters.push(fullNameFilter)
+	if (cityFilter) filters.push(cityFilter)
+
+	const visibilityState = {
+		state: !hideState,
+	}
+
+	return (
+		<>
+			<Label htmlFor="search">Search Full Name</Label>
+			<Input
+				type="text"
+				placeholder="Search"
+				onChange={(e) => {
+					const val = e.target.value
+					setFullNameFilter({ id: "Full Name", value: val })
+				}}
+			/>
+			<Label htmlFor="search">Search City</Label>
+			<Input
+				type="text"
+				placeholder="Search"
+				onChange={(e) => {
+					const val = e.target.value
+					setCityFilter({ id: "city", value: val })
+				}}
+				className="mb-4"
+			/>
+			<Label htmlFor="hideState">Hide State</Label>
+			<Checkbox
+				label="Hide State"
+				checked={hideState}
+				onCheckedChange={setHideState}
+			/>
+			<div className="bg-surface h-96 overflow-hidden">
+				<DataTable.Table<RowData>
+					data={rows}
+					columns={columns}
+					columnFilters={filters}
+					columnVisibility={visibilityState}
+				/>
+			</div>
+		</>
+	)
+}
+//#endregion datatable-coldef-helper-example
+
+function DynamicTableShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="Dynamic table"
+			description="A sortable, filterable and searchable table component, based on tanstack/react-table (see https://tanstack.com/table/)."
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "/ui-kit-ts/single?component=DataTable",
+				},
+			]}
+			examples={[
+				{
+					title: "Data Table ColumnDef Helper",
+					example: <DataTableColumnDefHelperExample />,
+					sourceCodeExampleId: "datatable-coldef-helper-example",
+				},
+				{
+					title: "Data Table",
+					example: <DataTableExample />,
+					sourceCodeExampleId: "datatable-example",
+				},
+			]}
+		/>
+	)
+}
+
+export default DynamicTableShowcase
+
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
@@ -2321,10 +2904,8 @@ import {
 	TimePicker,
 	type DateType,
 	type TimeType,
-	DatePicker2,
-	TimePicker2,
-	DateTimePicker2,
 	DateUtils,
+	Fieldset,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
@@ -2334,18 +2915,12 @@ type FormData = {
 	date?: DateType
 }
 
-type FormData2 = {
-	dateTime: Date
-	time: TimeType
-	date?: DateType
-}
-
 //#region datetime-picker-form
 function FormExample() {
 	const { handleSubmit, control, reset } = useForm<FormData>({
 		defaultValues: {
 			dateTime: "2023-12-24T10:00+0100",
-			time: "10:10",
+			time: "10:10", // the value must exist in the times array (or the default created times array)
 			date: "2023-12-24",
 		},
 	})
@@ -2378,110 +2953,45 @@ function FormExample() {
 }
 //#endregion datetime-picker-form
 
-//#region datetime-picker-form2
-function FormExample2() {
-	const { handleSubmit, control, reset } = useForm<FormData2>({
-		defaultValues: {
-			dateTime: DateUtils.dateFromString("2023-12-24T10:00+0100"),
-			time: "10:30",
-			date: "2024-12-24",
-		},
-	})
-
-	return (
-		<form
-			onSubmit={handleSubmit((data) => console.log("form data:", data))}
-			onReset={(e) => {
-				e.preventDefault()
-				reset()
-			}}
-		>
-			<div className="flex flex-col gap-2">
-				<DatePicker2<FormData2>
-					control={control}
-					name="date"
-					required
-				/>
-				<TimePicker2<FormData2>
-					control={control}
-					name="time"
-					required
-					startTime="00:00"
-					endTime="00:00"
-					interval={30}
-				/>
-				<DateTimePicker2<FormData2>
-					control={control}
-					name="dateTime"
-					required
-					startTime="00:00"
-					endTime="00:00"
-					interval={30}
-				/>
-			</div>
-			<ButtonGroup className="mt-4 flex justify-end">
-				<Button appearance="subtle" type="reset">
-					Reset
-				</Button>
-				<Button appearance="primary" type="submit">
-					Submit
-				</Button>
-			</ButtonGroup>
-		</form>
-	)
-}
-//#endregion datetime-picker-form2
-
 //#region datetime-picker-form-controlled
 function ControlledFormExample() {
-	const [selectedDate, setSelectedDate] = useState<DateType>("1999-12-23")
-	const [selectedTime, setSelectedTime] = useState<TimeType>("10:10")
-	const [selectedDateTime, setSelectedDateTime] = useState<string>(
-		"1999-12-23T10:10+0100",
+	const [selectedDate, setSelectedDate] = useState<DateType | null>(
+		"1999-12-23",
+	)
+	const [selectedTime, setSelectedTime] = useState<TimeType | null>("10:10")
+	const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(
+		DateUtils.dateFromString("1999-12-23T10:10+0100"),
 	)
 
-	const { handleSubmit, control, reset } = useForm<FormData>()
+	const { handleSubmit, control } = useForm<FormData>()
 
 	return (
 		<form
 			onSubmit={handleSubmit((data) => console.log("form data:", data))}
-			onReset={(e) => {
-				e.preventDefault()
-				reset()
-			}}
 		>
 			<div className="flex flex-col gap-2">
-				<div className="w-[13.3rem] overflow-hidden">
-					<DateTimePicker
-						control={control}
-						value={selectedDateTime}
-						onChange={setSelectedDateTime}
-						name="dateTime"
-					/>
-				</div>
+				<DateTimePicker
+					control={control}
+					value={selectedDateTime}
+					onChange={setSelectedDateTime}
+					name="dateTime"
+				/>
 				<hr />
-				<div className="w-24 overflow-hidden">
-					<TimePicker
-						control={control}
-						value={selectedTime}
-						onChange={setSelectedTime}
-						name="time"
-					/>
-				</div>
+				<TimePicker
+					control={control}
+					value={selectedTime}
+					onChange={setSelectedTime}
+					name="time"
+				/>
 				<hr />
-				<div className="w-[8.3rem] overflow-hidden">
-					<DatePicker
-						control={control}
-						value={selectedDate}
-						onChange={setSelectedDate}
-						name="date"
-					/>
-				</div>
+				<DatePicker
+					control={control}
+					value={selectedDate}
+					onChange={setSelectedDate}
+					name="date"
+				/>
 			</div>
 			<ButtonGroup className="mt-4 flex justify-end">
-				<Button appearance="subtle" type="reset">
-					Reset
-				</Button>
 				<Button appearance="primary" type="submit">
 					Submit
 				</Button>
@@ -2491,59 +3001,6 @@ function ControlledFormExample() {
 }
 //#endregion datetime-picker-form-controlled
 
-//#region datetime-picker-form-controlled2
-function ControlledFormExample2() {
-	const [selectedDate, setSelectedDate] = useState<DateType | null>(
-		"1999-12-23",
-	)
-	const [selectedTime, setSelectedTime] = useState<TimeType | null>("11:00")
-	const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(
-		DateUtils.dateFromString("1999-12-23T10:00+0100"),
-	)
-
-	const { handleSubmit, control, reset } = useForm<FormData>()
-
-	return (
-		<form
-			onSubmit={handleSubmit((data) => console.log("form data:", data))}
-			onReset={(e) => {
-				e.preventDefault()
-				reset()
-			}}
-		>
-			<div className="flex flex-col gap-2">
-				<DateTimePicker2
-					control={control}
-					value={selectedDateTime}
-					onChange={setSelectedDateTime}
-					name="dateTime"
-				/>
-				<TimePicker2
-					control={control}
-					value={selectedTime}
-					onChange={setSelectedTime}
-					name="time"
-				/>
-				<DatePicker2
-					control={control}
-					value={selectedDate}
-					onChange={setSelectedDate}
-					name="date"
-				/>
-			</div>
-			<ButtonGroup className="mt-4 flex justify-end">
-				<Button appearance="subtle" type="reset">
-					Reset
-				</Button>
-				<Button appearance="primary" type="submit">
-					Submit
-				</Button>
-			</ButtonGroup>
-		</form>
-	)
-}
-//#endregion datetime-picker-form-controlled2
-
 function DateTimePickerShowcase(props: ShowcaseProps) {
 	const [date, setDate] = useState<DateType | null>(null)
 	const [time, setTime] = useState<TimeType | null>(null)
@@ -2552,38 +3009,28 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 	//#region datetime-picker
 	const example = (
 		<div className="flex gap-4">
-			<div>
+			<Fieldset legend="Date Picker">
 				<DatePicker onChange={setDate} value={date} />
-				<TimePicker onChange={setTime} value={time} />
-				<DateTimePicker
-					onChange={(val) => {
-						const d = val ? DateUtils.dateFromString(val) : null
-						setDateTime(d)
-					}}
-					value={
-						dateTime
-							? DateUtils.dateToJavaDateTimeString(dateTime)
-							: undefined
-					}
-				/>
-			</div>
-			<div>
-				<DatePicker2 onChange={setDate} value={date} />
-				<TimePicker2
+			</Fieldset>
+			<Fieldset legend="Time Picker">
+				<TimePicker
 					onChange={setTime}
 					value={time}
 					startTime="00:00"
 					endTime="00:00"
 					interval={30}
 				/>
-				<DateTimePicker2
+			</Fieldset>
+			<Fieldset legend="Date Time Picker">
+				<DateTimePicker
 					onChange={(d) => {
-						console.log("DateTimePicker2", d)
+						console.log("DateTimePicker", d)
 						setDateTime(d)
 					}}
 					value={dateTime}
+					className="border-warning-bold border-2"
 				/>
-			</div>
+			</Fieldset>
 		</div>
 	)
 	//#endregion datetime-picker
@@ -2594,8 +3041,8 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/datetime-picker",
-					url: "https://atlassian.design/components/datetime-picker/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "single?component=Date+Time+Picker",
 				},
 			]}
 			examples={[
@@ -2610,19 +3057,9 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					sourceCodeExampleId: "datetime-picker-form",
 				},
 				{
-					title: "Form Uncontrolled 2",
-					example: <FormExample2 />,
-					sourceCodeExampleId: "datetime-picker-form2",
-				},
-				{
 					title: "Form Controlled",
 					example: <ControlledFormExample />,
 					sourceCodeExampleId: "datetime-picker-form-controlled",
-				},
-				{
-					title: "Form Controlled 2",
-					example: <ControlledFormExample2 />,
-					sourceCodeExampleId: "datetime-picker-form-controlled2",
 				},
 			]}
 		/>
@@ -2631,15 +3068,15 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 
 export default DateTimePickerShowcase
 
-import AKDropdownMenu, {
+/*import AKDropdownMenu, {
 	DropdownItemCheckbox as AKDropdownItemCheckbox,
 	DropdownItemGroup as AKDropdownItemGroup,
 	DropdownItem as AKDropdownItem,
 	DropdownItemRadioGroup as AKDropdownItemRadioGroup,
 	DropdownItemRadio as AKDropdownItemRadio,
 	DropdownItemCheckboxGroup as AKDropdownItemCheckboxGroup,
-} from "@atlaskit/dropdown-menu"
-import React, { useState } from "react"
+} from "@atlaskit/dropdown-menu"*/
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -2664,7 +3101,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const akExample = (
 		<>
-			<AKDropdownMenu trigger={"Trigger"}>
+			{/*<AKDropdownMenu trigger={"Trigger"}>
 				<AKDropdownItemCheckbox
 					id="item-1"
 					description={"test description"}
@@ -2746,7 +3183,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 				{Array.from(Array(100).keys()).map((i) => (
 					<AKDropdownItem key={i}>long test item {i}</AKDropdownItem>
 				))}
-			</AKDropdownMenu>
+			</AKDropdownMenu>*/}
 		</>
 	)
 
@@ -2867,7 +3304,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const example = (
 		<div className="flex gap-4">
-			{akExample}
+			{/*akExample*/}
 			{lpExample}
 			{lpExample2}
 		</div>
@@ -2897,302 +3334,11 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 export default DropDownMenuShowcase
 
-import React, { ReactNode, useMemo } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import DynamicTable from "@atlaskit/dynamic-table"
-import Button from "@atlaskit/button"
-import {
-	type ColumnDef,
-	type ColumnFilter,
-	DataTable,
-	Input,
-	Label,
-	Checkbox,
-} from "@linked-planet/ui-kit-ts"
-
-//#region table-example
-function AKDynamicTableExample() {
-	return (
-		<div style={{ minWidth: 300 }}>
-			<DynamicTable
-				caption=""
-				head={{
-					cells: [
-						{
-							key: "first",
-							content: "First col",
-							isSortable: true,
-						},
-						{
-							key: "second",
-							content: "Second col",
-							isSortable: true,
-						},
-						{ key: "third", content: <span>Action col</span> },
-					],
-				}}
-				rowsPerPage={3}
-				rows={[
-					{
-						key: "1stRow",
-						cells: [
-							{ content: "1-1" },
-							{ content: "1-2" },
-							{
-								content: (
-									<Button appearance="primary">Delete</Button>
-								),
-							},
-						],
-					},
-					{
-						key: "2ndRow",
-						cells: [
-							{ content: "2-1" },
-							{ content: "2-2" },
-							{
-								content: (
-									<Button appearance="primary">Delete</Button>
-								),
-							},
-						],
-					},
-					{
-						key: "3rdRow",
-						cells: [
-							{ content: "3-1" },
-							{ content: "3-2" },
-							{
-								content: (
-									<Button appearance="primary">Delete</Button>
-								),
-							},
-						],
-					},
-					{
-						key: "4thRow",
-						cells: [
-							{ content: "4-1" },
-							{ content: "4-2" },
-							{
-								content: (
-									<Button appearance="primary">Delete</Button>
-								),
-							},
-						],
-					},
-					{
-						key: "5thRow",
-						cells: [
-							{ content: "5-1" },
-							{ content: "5-2" },
-							{
-								content: (
-									<Button appearance="primary">Delete</Button>
-								),
-							},
-						],
-					},
-					{
-						key: "6thRow",
-						cells: [
-							{ content: "6-1" },
-							{ content: "6-2" },
-							{
-								content: (
-									<Button appearance="primary">Delete</Button>
-								),
-							},
-						],
-					},
-				]}
-				onSort={(item) => console.log("Sorting", item)}
-				onSetPage={(pageNumber) =>
-					console.log("SetPageNumber", pageNumber)
-				}
-			></DynamicTable>
-		</div>
-	)
-}
-//#endregion table-example
-
-//#region datatable-example
-type RowData = {
-	firstName: string
-	lastName: string
-	city: string
-	zip: number
-	state: string
-	button: ReactNode
-}
-
-function DataTableExample() {
-	const rows = useMemo(() => {
-		// create 100 example rows
-		const rows: RowData[] = []
-		for (let i = 0; i < 100; i++) {
-			rows.push({
-				firstName: `First ${i}`,
-				lastName: `Last ${i}`,
-				city: `City ${Math.floor(i / 2)}`,
-				zip: i,
-				state: `State ${i}`,
-				button: <Button appearance="primary">Delete</Button>,
-			})
-		}
-		return rows
-	}, [])
-
-	// see: https://tanstack.com/table/v8/docs/guide/column-defs#creating-accessor-columns
-	const columns = useMemo(() => {
-		const ret: ColumnDef<RowData>[] = [
-			{
-				id: "select", // either header or ID should be present
-				header: (headerprops) => (
-					<Checkbox
-						checked={
-							headerprops.table.getIsAllPageRowsSelected() ||
-							headerprops.table.getIsSomePageRowsSelected()
-						}
-						onCheckedChange={(value) =>
-							headerprops.table.toggleAllPageRowsSelected(!!value)
-						}
-						className="pb-1.5 pl-2"
-						indeterminate={headerprops.table.getIsSomePageRowsSelected()}
-					/>
-				),
-				cell: (cellprops) => (
-					<Checkbox
-						checked={cellprops.row.getIsSelected()}
-						onCheckedChange={() => {
-							cellprops.row.toggleSelected()
-						}}
-						className="pl-2"
-					/>
-				),
-			},
-			{
-				id: "Full Name", // either header or ID should be present
-				accessorFn: (row) => `${row.firstName} ${row.lastName}`,
-			},
-			{
-				//accessorFn: (row) => row.city,
-				header: "City",
-				accessorKey: "city",
-				enableGrouping: true,
-				enableSorting: true,
-				cell: (cellprops) => <b>{cellprops.getValue()}</b>,
-			},
-			{
-				header: "Zip",
-				accessorKey: "zip",
-				enableGrouping: true,
-				invertSorting: true,
-			},
-			{
-				header: "State",
-				accessorKey: "state",
-				enableGrouping: true,
-				invertSorting: true,
-			},
-			{
-				header: "Button",
-				accessorKey: "button",
-				cell: (cellprops) => cellprops.getValue(),
-			},
-		]
-		return ret
-	}, [])
-
-	const [fullNameFilter, setFullNameFilter] = React.useState<ColumnFilter>()
-	const [cityFilter, setCityFilter] = React.useState<ColumnFilter>()
-	const [hideState, setHideState] = React.useState<boolean>(false)
-
-	const filters = []
-	if (fullNameFilter) filters.push(fullNameFilter)
-	if (cityFilter) filters.push(cityFilter)
-
-	const visibilityState = {
-		state: !hideState,
-	}
-
-	return (
-		<>
-			<Label htmlFor="search">Search Full Name</Label>
-			<Input
-				type="text"
-				placeholder="Search"
-				onChange={(e) => {
-					const val = e.target.value
-					setFullNameFilter({ id: "Full Name", value: val })
-				}}
-			/>
-			<Label htmlFor="search">Search City</Label>
-			<Input
-				type="text"
-				placeholder="Search"
-				onChange={(e) => {
-					const val = e.target.value
-					setCityFilter({ id: "city", value: val })
-				}}
-				className="mb-4"
-			/>
-			<Label htmlFor="hideState">Hide State</Label>
-			<Checkbox
-				label="Hide State"
-				checked={hideState}
-				onCheckedChange={setHideState}
-			/>
-			<div className="bg-surface h-96 overflow-hidden">
-				<DataTable
-					data={rows}
-					columns={columns}
-					columnFilters={filters}
-					columnVisibility={visibilityState}
-				/>
-			</div>
-		</>
-	)
-}
-//#endregion datatable-example
-
-function DynamicTableShowcase(props: ShowcaseProps) {
-	return (
-		<ShowcaseWrapperItem
-			name="Dynamic table"
-			{...props}
-			packages={[
-				{
-					name: "@atlaskit/dynamic-table",
-					url: "https://atlassian.design/components/dynamic-table/examples",
-				},
-			]}
-			examples={[
-				{
-					title: "AK Dynamic Table",
-					example: <AKDynamicTableExample />,
-					sourceCodeExampleId: "table-example",
-				},
-				{
-					title: "Data Table",
-					example: <DataTableExample />,
-					sourceCodeExampleId: "datatable-example",
-				},
-			]}
-		/>
-	)
-}
-
-export default DynamicTableShowcase
-
-import React from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Button from "@atlaskit/button"
 import EmptyState from "@atlaskit/empty-state"
+import { Button } from "@linked-planet/ui-kit-ts"
 
 function EmptyStateShowcase(props: ShowcaseProps) {
 	//#region empty-state
@@ -3644,6 +3790,27 @@ function FlagShowcase(props: ShowcaseProps) {
 				appearance="information"
 				type="pale"
 			/>
+
+			<Flag
+				title="Flag"
+				description="Discovery Flag"
+				appearance="discovery"
+				actions={[{ content: "Action", onClick: () => {} }]}
+			/>
+
+			<Flag
+				title="Flag"
+				description="Discovery Flag"
+				appearance="discovery"
+				type="inverted"
+			/>
+
+			<Flag
+				title="Flag"
+				description="Discovery Flag"
+				appearance="discovery"
+				type="pale"
+			/>
 			<ToastFlagContainer />
 		</div>
 	)
@@ -3668,231 +3835,6 @@ function FlagShowcase(props: ShowcaseProps) {
 }
 
 export default FlagShowcase
-
-import React, { Fragment } from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Form, {
-	CheckboxField,
-	Field,
-	Fieldset,
-	FormFooter,
-	FormHeader,
-	FormSection,
-	HelperMessage,
-} from "@atlaskit/form"
-import TextField from "@atlaskit/textfield"
-import Button, { ButtonGroup, LoadingButton } from "@atlaskit/button"
-import Checkbox from "@atlaskit/checkbox"
-import Select, {
-	CreatableSelect,
-	OptionType,
-	ValueType,
-} from "@atlaskit/select"
-
-function FormShowcase(props: ShowcaseProps) {
-	//#region form
-	interface TestData {
-		name: string
-		readonlyField: string
-		disabledField: string
-		surname: string
-		checkboxGroup: string[]
-		favoriteColor: "RED" | "BLUE"
-		favoriteColorCreatable: string
-	}
-
-	const initFormData = {
-		name: "Carl",
-		readonlyField: "Read-only Field",
-		disabledField: "Disabled Field",
-		surname: "Coderrrr",
-		checkboxGroup: ["Coder"],
-		favoriteColor: "BLUE",
-		favoriteColorCreatable: "BLUE",
-	}
-
-	const example = (
-		<Form
-			onSubmit={(formData: TestData) =>
-				console.log("Form submit:", formData)
-			}
-		>
-			{({ formProps }) => (
-				<form {...formProps}>
-					<FormHeader
-						title="Give me your input"
-						description="I describe this form"
-					/>
-
-					<FormSection title="Your data" description="I'm curious">
-						<Field
-							label="Name"
-							name="name"
-							defaultValue={initFormData.name}
-						>
-							{({ fieldProps }) => (
-								<Fragment>
-									<TextField {...fieldProps} />
-									<HelperMessage>Help!</HelperMessage>
-								</Fragment>
-							)}
-						</Field>
-
-						<Field
-							label="Read-only Field"
-							name="readonlyField"
-							defaultValue={initFormData.readonlyField}
-						>
-							{({ fieldProps }) => (
-								<Fragment>
-									<TextField
-										readOnly={true}
-										{...fieldProps}
-									/>
-								</Fragment>
-							)}
-						</Field>
-
-						<Field
-							label="Disabled Field"
-							name="disabledField"
-							defaultValue={initFormData.disabledField}
-						>
-							{({ fieldProps }) => (
-								<Fragment>
-									<TextField {...fieldProps} />
-								</Fragment>
-							)}
-						</Field>
-
-						<Field
-							label="Surname"
-							name="surname"
-							defaultValue={initFormData.surname}
-						>
-							{({ fieldProps }) => (
-								<Fragment>
-									<TextField {...fieldProps} />
-									<HelperMessage>Help!</HelperMessage>
-								</Fragment>
-							)}
-						</Field>
-
-						<Fieldset legend="See more info">
-							{["Coder", "React fan"].map((item) => {
-								return (
-									<CheckboxField
-										name="checkboxGroup"
-										value={item}
-										defaultIsChecked={initFormData.checkboxGroup.includes(
-											item,
-										)}
-										key={item}
-									>
-										{({ fieldProps }) => (
-											<Checkbox
-												{...fieldProps}
-												label={item}
-											/>
-										)}
-									</CheckboxField>
-								)
-							})}
-						</Fieldset>
-					</FormSection>
-
-					<FormSection title="More data" description="Tell me more">
-						<Field<ValueType<OptionType>>
-							label="Favorite Color"
-							name="favoriteColor"
-							defaultValue={{
-								label: initFormData.favoriteColor,
-								value: initFormData.favoriteColor,
-							}}
-						>
-							{({ fieldProps }) => (
-								<Fragment>
-									<Select
-										{...fieldProps}
-										inputId="favoriteColor"
-										options={[
-											{ label: "RED", value: "RED" },
-											{ label: "BLUE", value: "BLUE" },
-										]}
-										defaultValue={{
-											label: initFormData.favoriteColor,
-											value: initFormData.favoriteColor,
-										}}
-									/>
-								</Fragment>
-							)}
-						</Field>
-
-						<Field<ValueType<OptionType>>
-							label="Favorite Color (Creatable)"
-							name="favoriteColorCreatable"
-							defaultValue={{
-								label: initFormData.favoriteColor,
-								value: initFormData.favoriteColor,
-							}}
-						>
-							{({ fieldProps }) => (
-								<Fragment>
-									<CreatableSelect
-										{...fieldProps}
-										inputId="favoriteColorCreatable"
-										options={[
-											{ label: "RED", value: "RED" },
-											{ label: "BLUE", value: "BLUE" },
-										]}
-										defaultValue={{
-											label: initFormData.favoriteColorCreatable,
-											value: initFormData.favoriteColorCreatable,
-										}}
-									/>
-								</Fragment>
-							)}
-						</Field>
-					</FormSection>
-
-					<FormFooter>
-						<ButtonGroup>
-							<Button appearance="subtle">Reset</Button>
-							<LoadingButton
-								type="submit"
-								appearance="primary"
-								isLoading={false}
-							>
-								Save
-							</LoadingButton>
-						</ButtonGroup>
-					</FormFooter>
-				</form>
-			)}
-		</Form>
-	)
-	//#endregion form
-
-	return (
-		<ShowcaseWrapperItem
-			name="Form"
-			{...props}
-			packages={[
-				{
-					name: "@atlaskit/form",
-					url: "https://atlassian.design/components/form/examples",
-				},
-			]}
-			examples={[
-				{ title: "Example", example, sourceCodeExampleId: "form" },
-			]}
-		/>
-	)
-}
-
-export default FormShowcase
 
 import React from "react"
 import ShowcaseWrapperItem, {
@@ -4082,17 +4024,17 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import TextField from "@atlaskit/textfield"
+import AKTextField from "@atlaskit/textfield"
 import {
 	Button,
 	ButtonGroup,
-	IconSizeHelper,
+	Fieldset,
 	Input,
 	Label,
+	TextArea,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
@@ -4134,6 +4076,7 @@ function FormExample() {
 					required: true,
 					minLength: 3,
 				})}
+				placeholder="Placeholder"
 				invalid={!!errors.testInput}
 				errorMessage={
 					errors.testInput?.type === "required"
@@ -4154,20 +4097,21 @@ function FormExample() {
 
 export default function InputShowcase(props: ShowcaseProps) {
 	const exampleAK = (
-		<div className="flex flex-col">
-			<TextField />
-			<TextField isDisabled />
-			<TextField placeholder="Placeholder" />
-			<TextField isInvalid value={"invalid"} />
-			<TextField isReadOnly value={"readonly"} />
-			<TextField type="number" defaultValue={1} />
-			<TextField type="number" defaultValue={1} appearance="subtle" />
-		</div>
+		<Fieldset legend="Input Example">
+			<AKTextField />
+			<AKTextField isDisabled />
+			<AKTextField placeholder="Placeholder" />
+			<AKTextField isInvalid value={"invalid"} />
+			<AKTextField isReadOnly value={"readonly"} />
+			<AKTextField type="number" defaultValue={1} />
+			<AKTextField type="number" defaultValue={1} appearance="subtle" />
+			{/*<AKTextArea placeholder="Text Area">It wants children</AKTextArea>*/}
+		</Fieldset>
 	)
 
 	//#region input
 	const exampleLP = (
-		<div className="flex flex-col">
+		<Fieldset legend="Input Example">
 			<Label htmlFor="testInput" required>
 				This is a required input label.
 			</Label>
@@ -4178,15 +4122,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			/>
 			<Input disabled />
 			<Label htmlFor="testInput2">This is a label.</Label>
-			<Input
-				placeholder="Placeholder"
-				id="testInput2"
-				iconAfter={
-					<IconSizeHelper>
-						<ScheduleIcon size="medium" label="calendar" />
-					</IconSizeHelper>
-				}
-			/>
+			<Input placeholder="Placeholder" id="testInput2" />
 			<Input
 				invalid={true}
 				value={"invalid"}
@@ -4201,7 +4137,15 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<Input readOnly value={"readonly"} />
 			<Input type="number" defaultValue={1} />
 			<Input type="number" defaultValue={1} appearance="subtle" />
-		</div>
+			<Input
+				type="text"
+				defaultValue={"default text"}
+				iconAfter={<ScheduleIcon label="" />}
+				iconBefore={<ScheduleIcon label="" />}
+			/>
+			<TextArea placeholder="Placeholder" />
+			<TextArea placeholder="Placeholder" disabled />
+		</Fieldset>
 	)
 	//#endregion input
 
@@ -4239,13 +4183,13 @@ export default function InputShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import ReactJoyride from "react-joyride"
-import Button, { ButtonGroup } from "@atlaskit/button"
 import { token } from "@atlaskit/tokens"
+import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
 
 function JoyrideShowcase(props: ShowcaseProps) {
 	//#region joyride
@@ -4272,7 +4216,7 @@ function JoyrideShowcase(props: ShowcaseProps) {
 			<div>
 				<ButtonGroup>
 					<Button
-						isSelected={isJoyrideActive}
+						selected={isJoyrideActive}
 						onClick={() => setIsJoyrideActive(true)}
 					>
 						Start Tour
@@ -4354,892 +4298,6 @@ function JoyrideShowcase(props: ShowcaseProps) {
 }
 
 export default JoyrideShowcase
-
-import React, { useCallback, useMemo } from "react"
-import { useState } from "react"
-import dayjs, { type Dayjs } from "dayjs"
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
-import { Button, LPTimeTable } from "@linked-planet/ui-kit-ts"
-import type {
-	TimeSlotBooking,
-	TimeTableEntry,
-	TimeTableGroup,
-} from "@linked-planet/ui-kit-ts"
-import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
-import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
-import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
-
-import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
-import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
-import type { TimeTableViewType } from "@linked-planet/ui-kit-ts/components/timetable/LPTimeTable"
-
-//import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
-
-const debounceTimeout = 500
-let debounceTimeoutCurrent: number | undefined = undefined
-function debounceHelper(callback: () => void) {
-	if (debounceTimeoutCurrent) {
-		clearTimeout(debounceTimeoutCurrent)
-	}
-	debounceTimeoutCurrent = window.setTimeout(() => {
-		callback()
-	}, debounceTimeout)
-}
-
-type ExampleGroup = TimeTableGroup
-
-type ExampleItem = TimeSlotBooking
-
-const exampleEntries: TimeTableEntry<ExampleGroup, ExampleItem>[] = [
-	{
-		group: {
-			title: "Empty Group",
-		},
-		items: [],
-	},
-	{
-		group: {
-			title: "Group 1",
-			subtitle: "Group 1 description",
-		},
-		items: [
-			{
-				// expected to be on group row 0
-				startDate: dayjs()
-					.startOf("day")
-					.add(9, "hours")
-					.add(10, "minutes"),
-				endDate: dayjs()
-					.startOf("day")
-					.add(12, "hours")
-					.add(10, "minutes"),
-				title: "Item 1-1",
-			},
-			{
-				// expected to be on group row 0
-				startDate: dayjs().startOf("day").add(13, "hours"),
-				endDate: dayjs().startOf("day").add(15, "hours"),
-				title: "Item 1-2",
-			},
-			{
-				// expected to be on group row 0
-				startDate: dayjs()
-					.startOf("day")
-					.add(15, "hours")
-					.add(10, "minutes"),
-				endDate: dayjs().startOf("day").add(16, "hours"),
-				title: "Item 1-3",
-			},
-			{
-				// expected to be on group row 0
-				startDate: dayjs().startOf("day").add(7, "hours"),
-				endDate: dayjs()
-					.startOf("day")
-					.add(8, "hours")
-					.add(10, "minutes"),
-				title: "Item 1-3-1",
-			},
-			{
-				// expected to be on group row 0
-				startDate: dayjs().startOf("day").add(1, "day").add(8, "hours"),
-				endDate: dayjs().startOf("day").add(1, "day").add(9, "hours"),
-				title: "Item 1-4",
-			},
-			{
-				// expected to be on group row 1
-				startDate: dayjs().startOf("day").add(9, "hours"),
-				endDate: dayjs().startOf("day").add(15, "hours"),
-				title: "Item 1-5",
-			},
-			{
-				// expected to be on group row 2
-				startDate: dayjs()
-					.startOf("day")
-					.add(9, "hours")
-					.add(10, "minutes"),
-				endDate: dayjs()
-					.startOf("day")
-					.add(15, "hours")
-					.add(10, "minutes"),
-				title: "Item 1-6",
-			},
-			{
-				// expected to be on group row 0
-				startDate: dayjs()
-					.startOf("day")
-					.add(9, "hours")
-					.add(10, "minutes"),
-				endDate: dayjs()
-					.startOf("day")
-					.add(12, "hours")
-					.add(10, "minutes"),
-				title: "Item 1-1-2",
-			},
-			{
-				// expected to be on group row 0
-				startDate: dayjs().startOf("day").add(13, "hours"),
-				endDate: dayjs().startOf("day").add(15, "hours"),
-				title: "Item 1-2-2",
-			},
-		],
-	},
-	{
-		group: {
-			title: "Group 2",
-			subtitle: "Group 2 description",
-		},
-		items: [
-			{
-				startDate: dayjs()
-					.startOf("day")
-					.add(8, "hours")
-					.add(10, "minutes"),
-				endDate: dayjs()
-					.startOf("day")
-					.add(8, "hours")
-					.add(20, "minutes"),
-				title: "Item 2-1",
-			},
-			{
-				startDate: dayjs()
-					.startOf("day")
-					.add(8, "hours")
-					.add(21, "minutes"),
-				endDate: dayjs()
-					.startOf("day")
-					.add(8, "hours")
-					.add(40, "minutes"),
-				title: "Item 2-2",
-			},
-			{
-				startDate: dayjs()
-					.startOf("day")
-					.add(8, "hours")
-					.add(41, "minutes"),
-				endDate: dayjs()
-					.startOf("day")
-					.add(8, "hours")
-					.add(50, "minutes"),
-				title: "Item 2-3",
-			},
-			{
-				startDate: dayjs()
-					.startOf("day")
-					.add(8, "hours")
-					.add(51, "minutes"),
-				endDate: dayjs()
-					.startOf("day")
-					.add(9, "hours")
-					.add(50, "minutes"),
-				title: "Item 2-3-1",
-			},
-			{
-				startDate: dayjs().startOf("day").add(8, "hours"),
-				endDate: dayjs().startOf("day").add(10, "hours"),
-				title: "Item 2-4",
-			},
-		],
-	},
-	{
-		group: {
-			title: "Group 3",
-			subtitle: "Group 3 description",
-		},
-		items: [
-			{
-				// this entry is totally before the available slots of the day
-				startDate: dayjs().startOf("day").add(5, "hours"),
-				endDate: dayjs().startOf("day").add(6, "hours"),
-				title: "Item 3-1",
-			},
-			{
-				startDate: dayjs().startOf("day").add(1, "day").add(9, "hours"),
-				endDate: dayjs().startOf("day").add(2, "days").add(9, "hours"),
-				title: "Item 3-2",
-			},
-			{
-				// this entry is totally after the available slots of the day
-				startDate: dayjs().startOf("day").add(17, "hours"),
-				endDate: dayjs().startOf("day").add(20, "hours"),
-				title: "Item 3-3",
-			},
-		],
-	},
-	{
-		group: {
-			title: "Group 4",
-			subtitle: "Group 4 description",
-		},
-		items: [
-			{
-				// this case ends after the end of the day
-				startDate: dayjs()
-					.startOf("day")
-					.add(-1, "day")
-					.add(8, "hours"),
-				endDate: dayjs().startOf("day").add(1, "day").add(16, "hours"),
-				title: "Item 4-1",
-			},
-			{
-				startDate: dayjs()
-					.startOf("day")
-					.add(-1, "day")
-					.add(8.4, "hours"),
-				endDate: dayjs()
-					.startOf("day")
-					.add(1, "day")
-					.add(13.75, "hours"),
-				title: "Item 4-2",
-			},
-			{
-				// this case starts before the start of the day
-				startDate: dayjs()
-					.startOf("day")
-					.add(-1, "day")
-					.add(7.4, "hours"),
-				endDate: dayjs()
-					.startOf("day")
-					.add(4, "days")
-					.add(13.75, "hours"),
-				title: "Item 4-3",
-			},
-			{
-				startDate: dayjs()
-					.startOf("day")
-					.add(-1, "day")
-					.add(10.2, "hours"),
-				endDate: dayjs()
-					.startOf("day")
-					.add(4, "day")
-					.add(13.75, "hours"),
-				title: "Item 4-4",
-			},
-			{
-				startDate: dayjs().startOf("day").add(-1, "day"),
-				endDate: dayjs().startOf("day").add(3, "day"),
-				title: "Item 4-4-5",
-			},
-		],
-	},
-	{
-		group: {
-			title: "Group 5",
-			subtitle: "Whole Time Frame",
-		},
-		items: [
-			{
-				// this case ends after the end of the day and starts before
-				startDate: dayjs().startOf("day").add(-2, "day"),
-				endDate: dayjs().startOf("day").add(7, "days"),
-				title: "Item 5-1",
-			},
-			{
-				// this case ends after the end of the day and starts before
-				startDate: dayjs().startOf("day").add(12, "hours"),
-				endDate: dayjs().startOf("day").add(1, "day").add(12, "hours"),
-				title: "Item 5-2",
-			},
-			{
-				startDate: dayjs().startOf("day").add(1, "day"), // 00:00-00:00
-				endDate: dayjs().startOf("day").add(1, "day"),
-				title: "Item 5-3",
-			},
-		],
-	},
-	{
-		group: {
-			title: "Group 6 (Directly Connected)",
-			subtitle: "Whole Time Frame",
-		},
-		items: [
-			{
-				// this case ends after the end of the day and starts before
-				startDate: dayjs().startOf("day").add(7, "hours"),
-				endDate: dayjs().startOf("day").add(12, "hours"),
-				title: "Item 6-1",
-			},
-			{
-				// this case ends after the end of the day and starts before
-				startDate: dayjs().startOf("day").add(12, "hours"),
-				endDate: dayjs().startOf("day").add(16, "hours"),
-				title: "Item 6-1-1",
-			},
-			{
-				startDate: dayjs().startOf("day").add(1, "day"),
-				endDate: dayjs().startOf("day").add(2, "day"),
-				title: "Item 6-2-1",
-			},
-			{
-				startDate: dayjs().startOf("day").add(2, "day"),
-				endDate: dayjs().startOf("day").add(3, "day"),
-				title: "Item 6-2-2",
-			},
-		],
-	},
-	{
-		group: {
-			title: "Group 7 (Full Day)",
-			subtitle: "Whole Time Frame",
-		},
-		items: [
-			{
-				// this case ends after the end of the day and starts before
-				startDate: dayjs().startOf("day"),
-				endDate: dayjs().endOf("day"),
-				title: "Item 7-1",
-			},
-		],
-	},
-]
-
-function createTestItems(
-	startDate: Dayjs,
-	endDate: Dayjs,
-	groupNumber: number,
-) {
-	const itemCount = Math.round(Math.random() * 10)
-	const ret = []
-	for (let i = 0; i < itemCount; i++) {
-		const addDays = Math.round(
-			Math.random() * endDate.diff(startDate, "days"),
-		)
-		const addStartMinutes = Math.round(Math.random() * 3 * 60)
-		const addEndMinutes = Math.round(Math.random() * 6 * 60)
-		const itemStartDate = startDate
-			.add(addDays, "days")
-			.add(addStartMinutes, "minutes")
-		const itemEndDate = itemStartDate.add(addEndMinutes, "minutes")
-		ret.push({
-			startDate: itemStartDate,
-			endDate: itemEndDate,
-			title: `Random Item ${groupNumber}-${i}`,
-		})
-	}
-	return ret
-}
-
-function createTestEntries(
-	startDate: Dayjs,
-	endDate: Dayjs,
-	currentEntries: TimeTableEntry<ExampleGroup, ExampleItem>[],
-) {
-	if (startDate.isSame(startDateInitial) && endDate.isSame(endDateInitial)) {
-		return exampleEntries
-	}
-
-	const groupWithItems = currentEntries.map((group, g) => {
-		const newGroup: TimeTableEntry<ExampleGroup, ExampleItem> = {
-			group: group.group,
-			items: createTestItems(startDate, endDate, g),
-		}
-		return newGroup
-	})
-
-	return groupWithItems
-}
-
-function createMoreTestGroups(
-	startDate: Dayjs,
-	endDate: Dayjs,
-	count: number,
-	startCount: number,
-) {
-	const newGroups: TimeTableEntry<ExampleGroup, ExampleItem>[] = []
-	for (let i = 0; i < count; i++) {
-		const groupNumber = startCount + i
-		newGroups.push({
-			group: {
-				title: `Group ${groupNumber}`,
-				subtitle: "random",
-			},
-			items: createTestItems(startDate, endDate, groupNumber),
-		})
-	}
-	return newGroups
-}
-
-const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
-const endDateInitial = dayjs().startOf("day").add(5, "days").add(20, "hours")
-
-function Example() {
-	//#region timetable
-
-	const [timeSteps, setTimeSteps] = useState(60)
-	const [timeStepsInputValue, setTimeStepsInputValue] = useState(110)
-	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
-	const [columnWidth, setColumnWidth] = useState(70)
-	const [disabledWeekendInteractions, setDisabledWeekendInteractions] =
-		useState(true)
-	const [showTimeSlotHeader, setShowTimeSlotHeader] = useState(true)
-	const [hideOutOfDayRangeMarkers, setHideOutOfDayRangeMarkers] =
-		useState(false)
-
-	const [timeFrame, setTimeFrame] = useState({
-		startDate: startDateInitial,
-		endDate: endDateInitial,
-	})
-
-	const [selectedTimeSlotItem, setSelectedTimeSlotItem] = useState<
-		ExampleItem | undefined
-	>()
-
-	const [entries, setEntries] = useState(exampleEntries)
-
-	const onTimeSlotItemClickCB = useCallback(
-		(group: ExampleGroup, item: ExampleItem) => {
-			setSelectedTimeSlotItem((prev) => {
-				if (prev === item) {
-					return undefined
-				}
-				return item
-			})
-		},
-		[],
-	)
-
-	//#region time frame and groups pagination
-	const requestNextTimeFrameCB = () => {
-		const dayDiff = timeFrame.endDate.diff(timeFrame.startDate, "days")
-		const nextStartDate = timeFrame.startDate.add(dayDiff, "days")
-		const nextEndDate = timeFrame.endDate.add(dayDiff, "days")
-		setTimeFrame({
-			startDate: nextStartDate,
-			endDate: nextEndDate,
-		})
-		const newEntries = createTestEntries(
-			nextStartDate,
-			nextEndDate,
-			entries,
-		)
-		setEntries(newEntries)
-	}
-
-	const requestPrevTimeFrameCB = () => {
-		const dayDiff = timeFrame.endDate.diff(timeFrame.startDate, "days")
-		const prevStartDate = timeFrame.startDate.add(-dayDiff, "days")
-		const prevEndDate = timeFrame.endDate.add(-dayDiff, "days")
-		setTimeFrame({
-			startDate: prevStartDate,
-			endDate: prevEndDate,
-		})
-		const newEntries = createTestEntries(
-			prevStartDate,
-			prevEndDate,
-			entries,
-		)
-		setEntries(newEntries)
-	}
-
-	const requestMoreEntriesCB = () => {
-		const missing = entries.length + 10 - exampleEntries.length
-		const missingGroups = createMoreTestGroups(
-			timeFrame.startDate,
-			timeFrame.endDate,
-			missing,
-			exampleEntries.length,
-		)
-		setEntries([...exampleEntries, ...missingGroups])
-	}
-	//#endregion
-
-	const [showCreateNewItemModal, setShowCreateNewItemModal] = useState(false)
-	const [selectedTimeRange, setSelectedTimeRange] = useState<
-		{ startDate: Dayjs; endDate: Dayjs; group: TimeTableGroup } | undefined
-	>()
-	const [clearSelectedTimeRangeCB, setClearSelectedTimeRangeCB] =
-		useState<() => void>()
-	const [disableTimeRangeSelection, setDisableTimeRangeSelection] =
-		useState(false)
-
-	const onCreateNewItemConfirmCB = useCallback(
-		(group: TimeTableGroup, item: TimeSlotBooking) => {
-			setShowCreateNewItemModal(false)
-			setEntries((prev) => {
-				const groupIndex = prev.findIndex((e) => e.group === group)
-				if (groupIndex === -1) {
-					console.error("group not found", group)
-					return prev
-				}
-				const newEntries = [...prev]
-				const newGroup = { ...newEntries[groupIndex] }
-				const newGroupItems = [...newGroup.items]
-				newGroupItems.push(item)
-				newGroup.items = newGroupItems
-				newEntries[groupIndex] = newGroup
-				// clears the selected time range in the table using a callback set by the selected time slots context in the time table
-				if (clearSelectedTimeRangeCB) {
-					clearSelectedTimeRangeCB()
-				}
-				return newEntries
-			})
-			setSelectedTimeRange(undefined)
-		},
-		[clearSelectedTimeRangeCB],
-	)
-
-	const [viewType, setViewType] = useState<TimeTableViewType>("hours")
-
-	const translation = useTranslation() as TranslatedTimeTableMessages
-	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
-
-	return (
-		<>
-			<div className="flex gap-8">
-				{/* time table setup values */}
-				<div className="grid grid-cols-2 items-start gap-2">
-					<label className="mr-4" htmlFor="startdate">
-						Start:
-					</label>
-					<input
-						type="datetime-local"
-						value={timeFrame.startDate.format("YYYY-MM-DDTHH:mm")}
-						onChange={(e) => {
-							setTimeFrame({
-								startDate: dayjs(e.target.value),
-								endDate: timeFrame.endDate,
-							})
-						}}
-					/>
-					<label className="mr-4" htmlFor="enddate">
-						End:
-					</label>
-					<input
-						type="datetime-local"
-						value={timeFrame.endDate.format("YYYY-MM-DDTHH:mm")}
-						onChange={(e) => {
-							setTimeFrame({
-								startDate: timeFrame.startDate,
-								endDate: dayjs(e.target.value),
-							})
-						}}
-					/>
-					<label className="mr-4" htmlFor="timesteps">
-						Time Steps [min]:
-					</label>
-					<input
-						type="number"
-						name="timesteps"
-						value={timeStepsInputValue}
-						step={10}
-						min={10}
-						max={1200}
-						onChange={(e) => {
-							const val = Number.parseInt(e.target.value)
-							setTimeStepsInputValue(val)
-							debounceHelper(() => setTimeSteps(val))
-						}}
-						className="mr-1 w-16 text-center"
-					/>
-				</div>
-				{/* time table layout */}
-				<div className="grid grid-cols-2 items-start gap-2">
-					<label className="mr-4" htmlFor="firstcolwidth">
-						Group Header Width [px]:
-					</label>
-					<input
-						type="number"
-						name="firstcolwidth"
-						value={groupHeaderColumnWidth}
-						step={10}
-						min={10}
-						max={300}
-						onChange={(e) =>
-							debounceHelper(() =>
-								setGroupHeaderColumnWidth(
-									Number.parseInt(e.target.value),
-								),
-							)
-						}
-						className="mr-1 w-16 text-center"
-					/>
-					<label className="mr-4" htmlFor="colwidth">
-						Column Width [px]:
-					</label>
-					<input
-						type="number"
-						name="colwidth"
-						value={columnWidth}
-						step={10}
-						min={10}
-						max={1000}
-						onChange={(e) =>
-							debounceHelper(() =>
-								setColumnWidth(Number.parseInt(e.target.value)),
-							)
-						}
-						className="mr-1 w-16 text-center"
-					/>
-				</div>
-				{/* time table settings */}
-				<div className="grid grid-cols-2 items-start gap-2">
-					<label htmlFor="diableweekends" className="mr-4">
-						Disable Weekend Interactions:
-					</label>
-					<input
-						type="checkbox"
-						name="disableweekends"
-						checked={disabledWeekendInteractions}
-						onChange={(e) =>
-							setDisabledWeekendInteractions(e.target.checked)
-						}
-						className="mr-1 text-center"
-					/>
-					<label htmlFor="showtimeslotheader" className="mr-4">
-						Show Time Slot Header:
-					</label>
-					<input
-						type="checkbox"
-						name="showtimeslotheader"
-						checked={showTimeSlotHeader}
-						onChange={(e) => {
-							setShowTimeSlotHeader(e.target.checked)
-						}}
-						className="mr-1 text-center"
-					/>
-					<label htmlFor="hideoutofdayrange" className="mr-4">
-						Hide Out Of Day Range Markers:
-					</label>
-					<input
-						type="checkbox"
-						name="hideoutofdayrange"
-						checked={hideOutOfDayRangeMarkers}
-						onChange={(e) => {
-							setHideOutOfDayRangeMarkers(e.target.checked)
-						}}
-						className="mr-1 text-center"
-					/>
-					<label
-						htmlFor="disabletimerangeselection"
-						style={{
-							marginRight: "1rem",
-						}}
-					>
-						Disable Time Range Selection
-					</label>
-					<input
-						type="checkbox"
-						name="disabletimerangeselection"
-						checked={disableTimeRangeSelection}
-						onChange={(e) => {
-							setDisableTimeRangeSelection(e.target.checked)
-						}}
-						className="mr-1 text-center"
-					/>
-					<label htmlFor="viewtype" className="mr-4">
-						View Type
-					</label>
-					<select
-						name="viewtype"
-						onChange={(e) =>
-							setViewType(e.target.value as TimeTableViewType)
-						}
-						value={viewType}
-					>
-						<option value="hours">Hours</option>
-						<option value="days">Days</option>
-						<option value="weeks">Weeks</option>
-						<option value="months">Months</option>
-						<option value="years">Years</option>
-					</select>
-				</div>
-			</div>
-			<div className="flex-start flex">
-				<Button
-					onClick={requestPrevTimeFrameCB}
-					title="Previous Time Frame"
-					className="mb-2 mr-2"
-				>
-					<ChevronLeftIcon label="prevtimeframe" />
-				</Button>
-				<Button
-					onClick={requestNextTimeFrameCB}
-					title="Next Time Frame"
-					className="mb-2 mr-2"
-				>
-					<ChevronRightIcon label="nexttimeframe" />
-				</Button>
-				<Button
-					disabled={!selectedTimeRange}
-					onClick={() => {
-						setShowCreateNewItemModal(true)
-					}}
-					title="Create New Item"
-					className="mb-2 mr-2"
-				>
-					Create New Item
-				</Button>
-			</div>
-			<div
-				style={{
-					height: "600px",
-				}}
-			>
-				<LPTimeTable
-					groupHeaderColumnWidth={groupHeaderColumnWidth}
-					columnWidth={columnWidth}
-					startDate={timeFrame.startDate}
-					endDate={timeFrame.endDate}
-					timeStepsMinutes={timeSteps}
-					entries={entries}
-					selectedTimeSlotItem={selectedTimeSlotItem}
-					/*renderGroup={ Group }
-					renderTimeSlotItem={ Item }
-					renderPlaceHolder={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
-						<div
-							style={ { height: props.height, backgroundColor: "rgba(0,0,0,0.1)", textAlign: "center" } }
-							onClick={ () => props.clearTimeRangeSelectionCB() }
-						>
-							Placeholder
-						</div>
-					) }*/
-					onTimeSlotItemClick={onTimeSlotItemClickCB}
-					nowOverwrite={nowOverwrite}
-					timeTableMessages={translation}
-					onTimeRangeSelected={
-						!disableTimeRangeSelection
-							? setSelectedTimeRange
-							: undefined
-					}
-					setClearSelectedTimeRangeCB={setClearSelectedTimeRangeCB}
-					disableWeekendInteractions={disabledWeekendInteractions}
-					showTimeSlotHeader={showTimeSlotHeader}
-					hideOutOfRangeMarkers={hideOutOfDayRangeMarkers}
-					isCellDisabled={(group, start) => {
-						if (group.title === "Group 2") {
-							return start.isBefore(dayjs().startOf("day"))
-						}
-						return false
-					}}
-					viewType={viewType}
-				/>
-			</div>
-			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
-				<ChevronDownIcon label="entryloader" />
-			</Button>
-			{showCreateNewItemModal && selectedTimeRange && (
-				<CreateNewTimeTableItemDialog
-					group={selectedTimeRange.group}
-					startDate={selectedTimeRange.startDate}
-					endDate={selectedTimeRange.endDate}
-					onCancel={() => setShowCreateNewItemModal(false)}
-					onConfirm={onCreateNewItemConfirmCB}
-					timeSteps={timeSteps}
-				/>
-			)}
-		</>
-	)
-
-	//endregion timetable
-}
-
-function ExampleCalendar() {
-	//#region timetabledays
-	const timeFrame = useMemo(
-		() => ({
-			startDate: startDateInitial.startOf("day"),
-			endDate: endDateInitial.startOf("day"),
-		}),
-		[],
-	)
-
-	const translation = useTranslation() as TranslatedTimeTableMessages
-	return (
-		<>
-			<div
-				style={{
-					height: "600px",
-				}}
-			>
-				<LPTimeTable
-					groupHeaderColumnWidth={150}
-					columnWidth={70}
-					startDate={timeFrame.startDate}
-					endDate={timeFrame.endDate}
-					entries={exampleEntries}
-					timeTableMessages={translation}
-					disableWeekendInteractions={true}
-					showTimeSlotHeader={false}
-					viewType={"days"}
-				/>
-			</div>
-		</>
-	)
-
-	//#endregion timetabledays
-}
-
-function ExampleMonthCalendar() {
-	//region timetablemonths
-	const timeFrame = useMemo(
-		() => ({
-			startDate: startDateInitial.startOf("month").subtract(1, "day"),
-			endDate: endDateInitial.endOf("month").add(1, "day"),
-		}),
-		[],
-	)
-
-	const translation = useTranslation() as TranslatedTimeTableMessages
-
-	return (
-		<>
-			<div
-				style={{
-					height: "600px",
-				}}
-			>
-				<LPTimeTable
-					groupHeaderColumnWidth={150}
-					columnWidth={70}
-					startDate={timeFrame.startDate}
-					endDate={timeFrame.endDate}
-					entries={exampleEntries}
-					timeTableMessages={translation}
-					disableWeekendInteractions={true}
-					viewType={"months"}
-					showTimeSlotHeader={false}
-				/>
-			</div>
-		</>
-	)
-
-	//#endregion timetablemonths
-}
-
-export default function TimeTableShowcase(props: ShowcaseProps) {
-	return (
-		<ShowcaseWrapperItem
-			name="Time Table"
-			{...props}
-			packages={[
-				{
-					name: "@linked-planet/ui-kit-ts",
-					url: "https://github.com/linked-planet/ui-kit-ts",
-				},
-			]}
-			examples={[
-				{
-					title: "Example",
-					example: <Example />,
-					sourceCodeExampleId: "timetable",
-				},
-				{
-					title: "Days",
-					example: <ExampleCalendar />,
-					sourceCodeExampleId: "timetabledays",
-				},
-				{
-					title: "Months",
-					example: <ExampleMonthCalendar />,
-					sourceCodeExampleId: "timetablemonths",
-				},
-			]}
-		/>
-	)
-}
 
 import React from "react"
 import ShowcaseWrapperItem, {
@@ -5433,23 +4491,62 @@ export default function LoadingSpinnerShowcase(props: ShowcaseProps) {
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import Lozenge from "@atlaskit/lozenge"
+import AKLozenge from "@atlaskit/lozenge"
+import { Lozenge } from "@linked-planet/ui-kit-ts"
 
 function LozengeShowcase(props: ShowcaseProps) {
 	//#region lozenge
 	const example = (
-		<>
-			<Lozenge>First lozenge</Lozenge>
-			<Lozenge appearance="new">Colored lozenge</Lozenge>
-			<Lozenge appearance="success" isBold>
-				Colored bold lozenge
-			</Lozenge>
-			<Lozenge appearance="success" isBold={false}>
-				Colored non-bold lozenge
-			</Lozenge>
-		</>
+		<div className="flex flex-col gap-8">
+			<div className="">
+				<AKLozenge>First lozenge</AKLozenge>
+				<AKLozenge appearance="new">new</AKLozenge>
+				<AKLozenge appearance="new" isBold>
+					new bold
+				</AKLozenge>
+				<AKLozenge appearance="success">success</AKLozenge>
+				<AKLozenge appearance="success" isBold>
+					success bold
+				</AKLozenge>
+				<AKLozenge appearance="inprogress">inprogress</AKLozenge>
+				<AKLozenge appearance="inprogress" isBold>
+					inprogress bold
+				</AKLozenge>
+				<AKLozenge appearance="moved">moved</AKLozenge>
+				<AKLozenge appearance="moved" isBold>
+					moved bold
+				</AKLozenge>
+				<AKLozenge appearance="removed">removed</AKLozenge>
+				<AKLozenge appearance="removed" isBold>
+					removed bold
+				</AKLozenge>
+			</div>
+			<div>
+				<Lozenge>First lozenge</Lozenge>
+				<Lozenge appearance="new">new</Lozenge>
+				<Lozenge appearance="new" bold>
+					new bold
+				</Lozenge>
+				<Lozenge appearance="success">success</Lozenge>
+				<Lozenge appearance="success" bold>
+					success bold
+				</Lozenge>
+				<Lozenge appearance="inprogress">inprogress</Lozenge>
+				<Lozenge appearance="inprogress" bold>
+					inprogress bold
+				</Lozenge>
+				<Lozenge appearance="moved">moved</Lozenge>
+				<Lozenge appearance="moved" bold>
+					moved bold
+				</Lozenge>
+				<Lozenge appearance="removed">removed</Lozenge>
+				<Lozenge appearance="removed" bold>
+					removed bold
+				</Lozenge>
+			</div>
+		</div>
 	)
 	//#endregion lozenge
 
@@ -5459,8 +4556,8 @@ function LozengeShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/lozenge",
-					url: "https://atlassian.design/components/lozenge/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Lozenge",
 				},
 			]}
 			examples={[
@@ -5476,13 +4573,10 @@ function LozengeShowcase(props: ShowcaseProps) {
 
 export default LozengeShowcase
 
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { HeadingItem, MenuGroup } from "@atlaskit/menu"
-import { SimpleTag } from "@linked-planet/ui-kit-ts"
-import { Badge } from "@linked-planet/ui-kit-ts"
 
 function MenuShowcase(props: ShowcaseProps) {
 	//#region menu
@@ -5490,7 +4584,7 @@ function MenuShowcase(props: ShowcaseProps) {
 	const [selectedItems, setSelectedItems] = useState(["Menu A"])
 	const example = (
 		<div>
-			<MenuGroup>
+			{/*<MenuGroup>
 				<HeadingItem>
 					<h4>Filter</h4>
 				</HeadingItem>
@@ -5511,7 +4605,7 @@ function MenuShowcase(props: ShowcaseProps) {
 								}
 							}}
 						>
-							<SimpleTag
+							<Tag
 								appearance={
 									selectedItems.includes(item)
 										? "gray"
@@ -5519,12 +4613,12 @@ function MenuShowcase(props: ShowcaseProps) {
 								}
 							>
 								{item}
-							</SimpleTag>
+							</Tag>
 							<Badge appearance="default">0</Badge>
 						</a>
 					)
 				})}
-			</MenuGroup>
+			</MenuGroup>*/}
 		</div>
 	)
 	//#endregion menu
@@ -5548,28 +4642,27 @@ function MenuShowcase(props: ShowcaseProps) {
 
 export default MenuShowcase
 
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import CrossIcon from "@atlaskit/icon/glyph/cross"
-import {
+/*import {
 	default as AKModal,
 	ModalBody as AKModalBody,
 	ModalFooter as AKModalFooter,
 	ModalHeader as AKModalHeader,
 	ModalTitle as AKModalTitle,
 	ModalTransition as AKModalTransition,
-} from "@atlaskit/modal-dialog"
+} from "@atlaskit/modal-dialog"*/
 import {
 	Modal,
 	Select,
 	Button,
-	ButtonGroup,
 	Dropdown,
 	Collapsible,
 } from "@linked-planet/ui-kit-ts"
-import { default as AKSelect } from "@atlaskit/select"
+//import { default as AKSelect } from "@atlaskit/select"
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
 
 function AKExample() {
@@ -5590,7 +4683,7 @@ function AKExample() {
 				Show AK Modal
 			</Button>
 
-			{isAKModalActive && (
+			{/*isAKModalActive && (
 				<AKModalTransition>
 					<AKModal onClose={() => setIsAKModalActive(false)}>
 						<AKModalHeader>
@@ -5609,8 +4702,6 @@ function AKExample() {
 							<Select
 								placeholder="Choose"
 								options={selectOptions}
-								side="bottom"
-								align="end"
 								className="z-10"
 							/>
 							Lorem, ipsum dolor sit amet consectetur adipisicing
@@ -5685,7 +4776,7 @@ function AKExample() {
 						</AKModalFooter>
 					</AKModal>
 				</AKModalTransition>
-			)}
+			)*/}
 		</>
 	)
 }
@@ -5722,9 +4813,12 @@ function ControlledExample() {
 						if (!opened) setIsModalActive(false)
 					}}
 					shouldCloseOnEscapePress={true}
+					accessibleDialogDescription="This is a modal dialog example"
 				>
 					<Modal.Header>
-						<Modal.Title>Sample Modal</Modal.Title>
+						<Modal.Title accessibleDialogTitle="Sample Modal">
+							Sample Modal
+						</Modal.Title>
 						<Button
 							appearance="link"
 							onClick={() => setIsModalActive(false)}
@@ -6232,7 +5326,95 @@ export default function PopoverShowcase(props: ShowcaseProps) {
 	)
 }
 
-import { default as AKSelect } from "@atlaskit/select"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { SectionMessage } from "@linked-planet/ui-kit-ts"
+//import AKSectionMessage from "@atlaskit/section-message"
+
+function SectionMessageShowcase(props: ShowcaseProps) {
+	//#region section-message
+	const example = (
+		<div className="flex gap-3">
+			<div className="flex flex-col gap-3">
+				{/*<AKSectionMessage title="Section Message Title">
+					Default Section Message
+				</AKSectionMessage>
+				<AKSectionMessage appearance="success">
+					Success Section Message
+				</AKSectionMessage>
+				<AKSectionMessage appearance="warning">
+					Warning Section Message
+				</AKSectionMessage>
+				<AKSectionMessage appearance="error">
+					Error Section Message
+				</AKSectionMessage>
+				<AKSectionMessage appearance="information">
+					Information Section Message
+				</AKSectionMessage>
+				<AKSectionMessage appearance="discovery">
+					Discovery Section Message
+				</AKSectionMessage>*/}
+			</div>
+			<div className="flex flex-col gap-3">
+				<SectionMessage
+					title="Section Message Title"
+					actions={[
+						{
+							content: "Action",
+						},
+						{
+							content: "Action2",
+						},
+					]}
+				>
+					Default Section Message
+				</SectionMessage>
+				<SectionMessage appearance="success">
+					Success Section Message
+				</SectionMessage>
+				<SectionMessage appearance="warning">
+					Warning Section Message
+				</SectionMessage>
+				<SectionMessage appearance="error">
+					Error Section Message
+				</SectionMessage>
+				<SectionMessage appearance="information">
+					Information Section Message
+				</SectionMessage>
+				<SectionMessage appearance="discovery">
+					Discovery Section Message
+				</SectionMessage>
+			</div>
+		</div>
+	)
+	//#endregion section-message
+
+	return (
+		<ShowcaseWrapperItem
+			name="Section Messsage"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "/single?component=SectionMessage",
+				},
+			]}
+			description="Drop in replacement for the @atlaskit/section-message component. Practically the same as the Flag."
+			examples={[
+				{
+					title: "Example",
+					example,
+					sourceCodeExampleId: "section-message",
+				},
+			]}
+		/>
+	)
+}
+
+export default SectionMessageShowcase
+
+//import { default as AKSelect } from "@atlaskit/select"
 import {
 	Button,
 	ButtonGroup,
@@ -6240,7 +5422,7 @@ import {
 	Select,
 	type OptionGroupType,
 } from "@linked-planet/ui-kit-ts"
-import React, { useState } from "react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
@@ -6288,71 +5470,46 @@ function FormExample() {
 	})
 
 	return (
-		<>
-			<div className="flex gap-2">
-				<Button
-					onClick={() => {
-						setValue("singleValue", null)
-					}}
-				>
-					Reset Single Value
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<Label>Single Uncontrolled</Label>
+			<Select<FormData, string>
+				control={control}
+				name="singleValue"
+				options={availableOptions}
+				usePortal
+				errorMessage="TEST"
+				invalid
+			/>
+			<Label>Multi Uncontrolled</Label>
+			<Select<FormData, string>
+				control={control}
+				isMulti
+				name="multiValues"
+				options={availableOptions}
+				usePortal
+			/>
+			<Label>Grouped Multi</Label>
+			{/* string is the value type, FormData the type of the form data for the control, true is the isMulti flag */}
+			<Select<FormData, string, true>
+				isMulti
+				control={control}
+				name="groupedMultiValues"
+				options={availableGroupOptions}
+				usePortal
+			/>
+			<ButtonGroup className="mt-2 w-full justify-end">
+				<Button type="reset">Reset</Button>
+				<Button type="submit" appearance="primary">
+					Submit
 				</Button>
-				<Button
-					onClick={() => {
-						setValue("multiValues", null)
-					}}
-				>
-					Reset Multi Value
-				</Button>
-				<Button
-					onClick={() => {
-						setValue("groupedMultiValues", null)
-					}}
-				>
-					Reset Grouped Multi Value
-				</Button>
-			</div>
-			<form
-				onSubmit={handleSubmit((data) => console.log(data))}
-				onReset={(e) => {
-					e.preventDefault()
-					reset()
-				}}
-			>
-				<Label>Single Uncontrolled</Label>
-				<Select<FormData, string>
-					control={control}
-					name="singleValue"
-					options={availableOptions}
-					usePortal
-					errorMessage="TEST"
-					invalid
-				/>
-				<Label>Multi Uncontrolled</Label>
-				<Select<FormData, string>
-					control={control}
-					isMulti
-					name="multiValues"
-					options={availableOptions}
-					usePortal
-				/>
-				<Label>Grouped Multi</Label>
-				{/* string is the value type, FormData the type of the form data for the control, true is the isMulti flag */}
-				<Select<FormData, string, true>
-					isMulti
-					control={control}
-					name="groupedMultiValues"
-					options={availableGroupOptions}
-					usePortal
-				/>
-				<ButtonGroup className="mt-2 w-full justify-end">
-					<Button type="reset">Reset</Button>
-					<Button type="submit" appearance="primary">
-						Submit
-					</Button>
-				</ButtonGroup>
-			</form>
-		</>
+			</ButtonGroup>
+		</form>
 	)
 }
 //#endregion select2form-uncontrolled
@@ -6371,7 +5528,7 @@ function ControlledFormExample() {
 		{ label: "Fourth option", value: "fourth" },
 	]
 
-	const { handleSubmit, control, reset } = useForm<FormDataControlled>()
+	const { handleSubmit, control } = useForm<FormDataControlled>()
 
 	const [selectedControlled, setSelectedControlled] = useState<
 		{ label: string; value: string } | undefined | null
@@ -6383,13 +5540,7 @@ function ControlledFormExample() {
 
 	return (
 		<>
-			<form
-				onSubmit={handleSubmit((data) => console.log(data))}
-				onReset={(e) => {
-					e.preventDefault()
-					reset()
-				}}
-			>
+			<form onSubmit={handleSubmit((data) => console.log(data))}>
 				<Label htmlFor="controlled">Controlled Single</Label>
 				<Select<FormDataControlled, string, false>
 					id="controlled"
@@ -6426,13 +5577,13 @@ function SelectShowcase(props: ShowcaseProps) {
 	//#region select
 	const example1 = (
 		<div className="flex flex-col gap-4">
-			<AKSelect
+			{/*<AKSelect
 				inputId="select-1"
 				options={[
 					{ label: "First option", value: "first" },
 					{ label: "Second option", value: { test: "bla" } },
 				]}
-			/>
+			/>*/}
 			<Select
 				isCreateable
 				isClearable
@@ -6498,7 +5649,7 @@ function SelectShowcase(props: ShowcaseProps) {
 	//#region select2
 	const example2 = (
 		<div className="flex flex-col gap-4">
-			<AKSelect
+			{/*<AKSelect
 				inputId="select-s"
 				options={[
 					{
@@ -6516,7 +5667,7 @@ function SelectShowcase(props: ShowcaseProps) {
 						],
 					},
 				]}
-			/>
+			/>*/}
 			{/*<RadixSelect
 				placeholder="Select a value"
 				options={{
@@ -6605,8 +5756,8 @@ function SelectShowcase(props: ShowcaseProps) {
 			}
 			packages={[
 				{
-					name: "@atlaskit/select",
-					url: "https://atlassian.design/components/select/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Select",
 				},
 			]}
 			examples={[
@@ -6636,6 +5787,272 @@ function SelectShowcase(props: ShowcaseProps) {
 }
 
 export default SelectShowcase
+
+import React from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { IconSizeHelper, SideNavigation } from "@linked-planet/ui-kit-ts"
+import {
+	SideNavigation as AKSideNavigation,
+	NavigationHeader as AKNavigationHeader,
+	NavigationContent as AKNavigationContent,
+	NavigationFooter as AKNavigationFooter,
+	ButtonItem as AKButtonItem,
+	GoBackItem as AKGoBackItem,
+	Section as AKSection,
+	LinkItem as AKLinkItem,
+	SkeletonItem as AKSkeletonItem,
+	Header as AKHeader,
+	NestingItem as AKNestingItem,
+	NestableNavigationContent as AKNestableNavigationContent,
+} from "@atlaskit/side-navigation"
+
+import ActivityIcon from "@atlaskit/icon/glyph/activity"
+
+//#region side-nav-example
+function SideNavExample() {
+	return (
+		<div className="flex gap-8">
+			<div className="h-[350px]">
+				<SideNavigation.Container
+					className="max-w-sm"
+					aria-label="Side navigation"
+				>
+					<SideNavigation.NavigationHeader>
+						<span>test header</span>
+					</SideNavigation.NavigationHeader>
+					<SideNavigation.Content storeIdent="side-nav-store-showcase">
+						<SideNavigation.NestableNavigationContent>
+							<SideNavigation.NestingItem title="test nesting">
+								<SideNavigation.ButtonItem>
+									Test Nested Button
+								</SideNavigation.ButtonItem>
+								<SideNavigation.NestableNavigationContent>
+									<SideNavigation.NestingItem title="inner nesting">
+										<SideNavigation.ButtonItem>
+											Inner Test Nested Button
+										</SideNavigation.ButtonItem>
+									</SideNavigation.NestingItem>
+								</SideNavigation.NestableNavigationContent>
+							</SideNavigation.NestingItem>
+						</SideNavigation.NestableNavigationContent>
+
+						<SideNavigation.ButtonItem
+							description="This is a description which is also waaaaaaaaaaaaaaaaaaaaaay tooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"
+							iconBefore={
+								<IconSizeHelper>
+									<ActivityIcon
+										label="Activity"
+										size="large"
+									/>
+								</IconSizeHelper>
+							}
+						>
+							Button Item 1 with a tooooooooooooooooooooooo long
+							title
+						</SideNavigation.ButtonItem>
+						<SideNavigation.ButtonItem>
+							Button Item 1
+						</SideNavigation.ButtonItem>
+						<SideNavigation.ButtonItem
+							selected
+							description="This is a description"
+							iconBefore={
+								<IconSizeHelper>
+									<ActivityIcon
+										label="Activity"
+										size="large"
+									/>
+								</IconSizeHelper>
+							}
+						>
+							Selected Button Item
+						</SideNavigation.ButtonItem>
+						<SideNavigation.ButtonItem
+							disabled
+							description="This is a description"
+							iconBefore={
+								<IconSizeHelper>
+									<ActivityIcon
+										label="Activity"
+										size="large"
+									/>
+								</IconSizeHelper>
+							}
+						>
+							Disabled Button Item
+						</SideNavigation.ButtonItem>
+
+						<SideNavigation.Section
+							title="Section"
+							hasSeparator
+							isList
+						>
+							<SideNavigation.ButtonItem description="This is a description">
+								Button Item 1
+							</SideNavigation.ButtonItem>
+							<SideNavigation.GoBackItem description="This is a description">
+								Go Back Item
+							</SideNavigation.GoBackItem>
+							<SideNavigation.LinkItem
+								href="https://www.google.com"
+								description={"test link description"}
+							>
+								Link Item
+							</SideNavigation.LinkItem>
+						</SideNavigation.Section>
+						<SideNavigation.SkeletonItem />
+						<SideNavigation.SkeletonItem shimmering={false} />
+						<SideNavigation.SkeletonItem hasIconBefore shimmering />
+						<SideNavigation.SkeletonItem
+							hasAvatarBefore
+							shimmering
+						/>
+					</SideNavigation.Content>
+					<SideNavigation.NavigationFooter>
+						<div>test footer</div>
+					</SideNavigation.NavigationFooter>
+				</SideNavigation.Container>
+			</div>
+
+			<div className="h-[350px]">
+				<AKSideNavigation label="">
+					<AKNavigationHeader>
+						<AKHeader>test header</AKHeader>
+					</AKNavigationHeader>
+					<AKNestableNavigationContent>
+						<AKNestingItem id={"id"} title={"title"}>
+							<AKButtonItem
+								iconBefore={
+									<IconSizeHelper>
+										<ActivityIcon
+											label="Activity"
+											size="large"
+										/>
+									</IconSizeHelper>
+								}
+								description={"test description"}
+							>
+								test button
+							</AKButtonItem>
+							<AKNestableNavigationContent>
+								<AKNestingItem
+									id={"idinner"}
+									title={"inner nesting"}
+								>
+									<AKButtonItem
+										iconBefore={
+											<IconSizeHelper>
+												<ActivityIcon
+													label="Activity"
+													size="large"
+												/>
+											</IconSizeHelper>
+										}
+										description={"test description"}
+									>
+										inner nesting button
+									</AKButtonItem>
+								</AKNestingItem>
+							</AKNestableNavigationContent>
+						</AKNestingItem>
+					</AKNestableNavigationContent>
+					<AKNavigationContent>
+						<AKButtonItem
+							iconBefore={
+								<IconSizeHelper>
+									<ActivityIcon
+										label="Activity"
+										size="large"
+									/>
+								</IconSizeHelper>
+							}
+							description={"test description"}
+						>
+							test button
+						</AKButtonItem>
+						<AKButtonItem>test button</AKButtonItem>
+						<AKButtonItem
+							isSelected
+							iconBefore={
+								<IconSizeHelper>
+									<ActivityIcon
+										label="Activity"
+										size="large"
+									/>
+								</IconSizeHelper>
+							}
+							description={"test description"}
+						>
+							selected button item
+						</AKButtonItem>
+						<AKButtonItem
+							isDisabled
+							iconBefore={
+								<IconSizeHelper>
+									<ActivityIcon
+										label="Activity"
+										size="large"
+									/>
+								</IconSizeHelper>
+							}
+							description={"test description"}
+						>
+							disabled button item
+						</AKButtonItem>
+						<AKSection title="Section" hasSeparator isList>
+							<AKButtonItem description="This is a description">
+								Button Item 1
+							</AKButtonItem>
+							<AKGoBackItem description="test description">
+								Go Back
+							</AKGoBackItem>
+							<AKLinkItem
+								href="https://www.google.com"
+								description={"test link description"}
+							>
+								Link Item
+							</AKLinkItem>
+						</AKSection>
+						<AKSkeletonItem />
+						<AKSkeletonItem isShimmering />
+						<AKSkeletonItem hasIcon />
+						<AKSkeletonItem hasAvatar />
+					</AKNavigationContent>
+					<AKNavigationFooter>
+						<div>test footer</div>
+					</AKNavigationFooter>
+				</AKSideNavigation>
+			</div>
+		</div>
+	)
+}
+//#endregion side-nav-example
+
+function SideNavigationShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="Side Navigation"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Side%20Navigation",
+				},
+			]}
+			examples={[
+				{
+					title: "Example",
+					example: <SideNavExample />,
+					sourceCodeExampleId: "side-nav-example",
+				},
+			]}
+		/>
+	)
+}
+
+export default SideNavigationShowcase
 
 import type React from "react"
 import ShowcaseWrapperItem, {
@@ -6855,33 +6272,33 @@ import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKTabs, {
+/*import AKTabs, {
 	Tab as AKTab,
 	TabList as AKTabList,
 	TabPanel as AKTabPanel,
-} from "@atlaskit/tabs"
+} from "@atlaskit/tabs"*/
 
-import { Tabs, TabList, TabPanel, Tab, Button } from "@linked-planet/ui-kit-ts"
+import { Tabs, Button } from "@linked-planet/ui-kit-ts"
 
 function AutomaticTabsValue() {
 	//#region tabs_automatic_value
 	return (
-		<Tabs>
-			<TabList>
-				<Tab>Tab 1</Tab>
-				<Tab>Tab 2</Tab>
-				<Tab disabled>Tab 3</Tab>
-			</TabList>
-			<TabPanel>
+		<Tabs.Container>
+			<Tabs.TabList>
+				<Tabs.Tab>Tab 1</Tabs.Tab>
+				<Tabs.Tab>Tab 2</Tabs.Tab>
+				<Tabs.Tab disabled>Tab 3</Tabs.Tab>
+			</Tabs.TabList>
+			<Tabs.TabPanel>
 				<span>First Content</span>
-			</TabPanel>
-			<TabPanel>
+			</Tabs.TabPanel>
+			<Tabs.TabPanel>
 				<span>Second Content</span>
-			</TabPanel>
-			<TabPanel>
+			</Tabs.TabPanel>
+			<Tabs.TabPanel>
 				<span>Third Content</span>
-			</TabPanel>
-		</Tabs>
+			</Tabs.TabPanel>
+		</Tabs.Container>
 	)
 	//#endregion tabs_automatic_value
 }
@@ -6890,64 +6307,64 @@ function TabsSides() {
 	//#region tabs_side
 	return (
 		<div className="flex flex-wrap gap-6">
-			<Tabs>
-				<TabList side="top">
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-				</TabList>
-				<TabPanel>
+			<Tabs.Container>
+				<Tabs.TabList side="top">
+					<Tabs.Tab>Tab 1</Tabs.Tab>
+					<Tabs.Tab>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 
-			<Tabs>
-				<TabList side="left">
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-				</TabList>
-				<TabPanel>
+			<Tabs.Container>
+				<Tabs.TabList side="left">
+					<Tabs.Tab>Tab 1</Tabs.Tab>
+					<Tabs.Tab>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 
-			<Tabs>
-				<TabList side="right">
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-				</TabList>
-				<TabPanel>
+			<Tabs.Container>
+				<Tabs.TabList side="right">
+					<Tabs.Tab>Tab 1</Tabs.Tab>
+					<Tabs.Tab>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 
-			<Tabs>
-				<TabList side="bottom">
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-				</TabList>
-				<TabPanel>
+			<Tabs.Container>
+				<Tabs.TabList side="bottom">
+					<Tabs.Tab>Tab 1</Tabs.Tab>
+					<Tabs.Tab>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 		</div>
 	)
 	//#endregion tabs_side
 }
 
 function ExampleLabels() {
-	const akExample = (
+	/*const akExample = (
 		<div>
 			{
 				<AKTabs id="tab-example" defaultSelected={1}>
@@ -6966,30 +6383,30 @@ function ExampleLabels() {
 				</AKTabs>
 			}
 		</div>
-	)
+	)*/
 
 	//#region tabs_labels
 	const lpExample = (
 		<div>
-			<Tabs defaultSelected="tab2">
-				<TabList>
-					<Tab label="Tab 1" />
-					<Tab label="tab2">Tab 2</Tab>
-				</TabList>
-				<TabPanel label="Tab 1">
+			<Tabs.Container defaultSelected="tab2">
+				<Tabs.TabList>
+					<Tabs.Tab label="Tab 1" />
+					<Tabs.Tab label="tab2">Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel label="Tab 1">
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel label="tab2">
+				</Tabs.TabPanel>
+				<Tabs.TabPanel label="tab2">
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 		</div>
 	)
 	//#endregion tabs_labels
 
 	return (
 		<div className="bg-surface flex w-full flex-col gap-4">
-			{akExample}
+			{/*akExample*/}
 			<hr />
 			{lpExample}
 		</div>
@@ -7001,23 +6418,23 @@ function ExampleControlled() {
 	const [selected, setSelected] = useState(0)
 	const lpExample = (
 		<div style={{ minWidth: 300, border: "2px solid orange" }}>
-			<Tabs
+			<Tabs.Container
 				selected={selected}
 				onChange={(t: string) => setSelected(Number.parseInt(t))}
 			>
-				<TabList>
-					<Tab label={0}>
+				<Tabs.TabList>
+					<Tabs.Tab label={0}>
 						<div>Tab 1</div>
-					</Tab>
-					<Tab label={1}>Tab 2</Tab>
-				</TabList>
-				<TabPanel label={0}>
+					</Tabs.Tab>
+					<Tabs.Tab label={1}>Tab 2</Tabs.Tab>
+				</Tabs.TabList>
+				<Tabs.TabPanel label={0}>
 					<span>First Content</span>
-				</TabPanel>
-				<TabPanel label={1}>
+				</Tabs.TabPanel>
+				<Tabs.TabPanel label={1}>
 					<span>Second Content</span>
-				</TabPanel>
-			</Tabs>
+				</Tabs.TabPanel>
+			</Tabs.Container>
 		</div>
 	)
 	//#endregion tabscontrolled
@@ -7107,11 +6524,11 @@ export default TabsShowcase
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
 import AKTagGroup from "@atlaskit/tag-group"
-import { TagGroup, SimpleTag, Tag } from "@linked-planet/ui-kit-ts"
+import { TagGroup, Tag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
@@ -7148,7 +6565,7 @@ function TagShowcase(props: ShowcaseProps) {
 
 	//#region tags
 	const lpExample = (
-		<div className="flex w-full items-center">
+		<div className="flex w-full flex-wrap items-center">
 			<TagGroup>
 				<Tag
 					onBeforeRemoveAction={() => {
@@ -7158,28 +6575,29 @@ function TagShowcase(props: ShowcaseProps) {
 					onAfterRemoveAction={(str) =>
 						console.log("on after remove", str)
 					}
+					removable
 				>
 					Removable Tag
 				</Tag>
-				<Tag isRemovable={false}>Non-removal Tag</Tag>
-				<SimpleTag>Simple Tag</SimpleTag>
-				<SimpleTag looks="rounded">Colored Simple Tag</SimpleTag>
-				<SimpleTag>Colored Simple Tag</SimpleTag>
+				<Tag removable={false}>Non-removal Tag</Tag>
+				<Tag>Simple Tag</Tag>
+				<Tag looks="rounded">Colored Simple Tag</Tag>
+				<Tag>Colored Simple Tag</Tag>
 			</TagGroup>
 			<TagGroup>
-				<SimpleTag appearance="danger">Danger Simple Tag</SimpleTag>
-				<SimpleTag appearance="warning">Warning Simple Tag</SimpleTag>
-				<SimpleTag appearance="brand">Brand Simple Tag</SimpleTag>
-				<SimpleTag appearance="success">Success Simple Tag</SimpleTag>
-				<SimpleTag appearance="discovery">
+				<Tag appearance="danger">Danger Simple Tag</Tag>
+				<Tag appearance="warning">Warning Simple Tag</Tag>
+				<Tag appearance="brand">Brand Simple Tag</Tag>
+				<Tag appearance="success">Success Simple Tag</Tag>
+				<Tag appearance="discovery" truncate>
 					Discovery Simple Tag
-				</SimpleTag>
-				<SimpleTag appearance="information">
+				</Tag>
+				<Tag appearance="information" truncate>
 					Information Simple Tag
-				</SimpleTag>
-				<SimpleTag appearance="discovery">
+				</Tag>
+				<Tag appearance="discovery" truncate>
 					Discovery Simple Tag
-				</SimpleTag>
+				</Tag>
 			</TagGroup>
 		</div>
 	)
@@ -7213,65 +6631,65 @@ function TagShowcase(props: ShowcaseProps) {
 
 	//#region tagscolors
 	const colorTags = (
-		<>
-			<TagGroup>
+		<div className="flex w-full flex-col gap-2 overflow-hidden">
+			<TagGroup wrap>
 				<Tag appearance="blue">blue</Tag>
-				<SimpleTag appearance="green">green</SimpleTag>
-				<SimpleTag appearance="gray">gray</SimpleTag>
-				<SimpleTag appearance="purple">purple</SimpleTag>
-				<SimpleTag appearance="red">red</SimpleTag>
-				<SimpleTag appearance="teal">teal</SimpleTag>
-				<SimpleTag appearance="yellow">yellow</SimpleTag>
-				<SimpleTag appearance="lime">lime</SimpleTag>
-				<SimpleTag appearance="pink">pink</SimpleTag>
-				<SimpleTag appearance="orange">orange</SimpleTag>
-				<SimpleTag appearance="indigo">indigo</SimpleTag>
-				<SimpleTag appearance="cyan">cyan</SimpleTag>
-				<SimpleTag appearance="violet">violet</SimpleTag>
-				<SimpleTag appearance="amber">amber</SimpleTag>
-				<SimpleTag appearance="emerald">emerald</SimpleTag>
-				<SimpleTag appearance="fuchsia">fuchsia</SimpleTag>
-				<SimpleTag appearance="sky">sky</SimpleTag>
+				<Tag appearance="green">green</Tag>
+				<Tag appearance="gray">gray</Tag>
+				<Tag appearance="purple">purple</Tag>
+				<Tag appearance="red">red</Tag>
+				<Tag appearance="teal">teal</Tag>
+				<Tag appearance="yellow">yellow</Tag>
+				<Tag appearance="lime">lime</Tag>
+				<Tag appearance="pink">pink</Tag>
+				<Tag appearance="orange">orange</Tag>
+				<Tag appearance="indigo">indigo</Tag>
+				<Tag appearance="cyan">cyan</Tag>
+				<Tag appearance="violet">violet</Tag>
+				<Tag appearance="amber">amber</Tag>
+				<Tag appearance="emerald">emerald</Tag>
+				<Tag appearance="fuchsia">fuchsia</Tag>
+				<Tag appearance="sky">sky</Tag>
 			</TagGroup>
-			<TagGroup>
+			<TagGroup wrap>
 				<Tag appearance="blueLight">blueLight</Tag>
-				<SimpleTag appearance="greenLight">greenLight</SimpleTag>
-				<SimpleTag appearance="grayLight">greyLight</SimpleTag>
-				<SimpleTag appearance="purpleLight">purpleLight</SimpleTag>
-				<SimpleTag appearance="redLight">redLight</SimpleTag>
-				<SimpleTag appearance="tealLight">tealLight</SimpleTag>
-				<SimpleTag appearance="yellowLight">yellowLight</SimpleTag>
-				<SimpleTag appearance="limeLight">limeLight</SimpleTag>
-				<SimpleTag appearance="pinkLight">pinkLight</SimpleTag>
-				<SimpleTag appearance="orangeLight">orangeLight</SimpleTag>
-				<SimpleTag appearance="indigoLight">indigoLight</SimpleTag>
-				<SimpleTag appearance="cyanLight">cyanLight</SimpleTag>
-				<SimpleTag appearance="violetLight">violetLight</SimpleTag>
-				<SimpleTag appearance="amberLight">amberLight</SimpleTag>
-				<SimpleTag appearance="emeraldLight">emeraldLight</SimpleTag>
-				<SimpleTag appearance="fuchsiaLight">fuchsiaLight</SimpleTag>
-				<SimpleTag appearance="skyLight">skyLight</SimpleTag>
+				<Tag appearance="greenLight">greenLight</Tag>
+				<Tag appearance="grayLight">greyLight</Tag>
+				<Tag appearance="purpleLight">purpleLight</Tag>
+				<Tag appearance="redLight">redLight</Tag>
+				<Tag appearance="tealLight">tealLight</Tag>
+				<Tag appearance="yellowLight">yellowLight</Tag>
+				<Tag appearance="limeLight">limeLight</Tag>
+				<Tag appearance="pinkLight">pinkLight</Tag>
+				<Tag appearance="orangeLight">orangeLight</Tag>
+				<Tag appearance="indigoLight">indigoLight</Tag>
+				<Tag appearance="cyanLight">cyanLight</Tag>
+				<Tag appearance="violetLight">violetLight</Tag>
+				<Tag appearance="amberLight">amberLight</Tag>
+				<Tag appearance="emeraldLight">emeraldLight</Tag>
+				<Tag appearance="fuchsiaLight">fuchsiaLight</Tag>
+				<Tag appearance="skyLight">skyLight</Tag>
 			</TagGroup>
-			<TagGroup>
+			<TagGroup wrap>
 				<Tag appearance="blueBold">blueBold</Tag>
-				<SimpleTag appearance="greenBold">greenBold</SimpleTag>
-				<SimpleTag appearance="grayBold">greyBold</SimpleTag>
-				<SimpleTag appearance="purpleBold">purpleBold</SimpleTag>
-				<SimpleTag appearance="redBold">redBold</SimpleTag>
-				<SimpleTag appearance="tealBold">tealBold</SimpleTag>
-				<SimpleTag appearance="yellowBold">yellowBold</SimpleTag>
-				<SimpleTag appearance="limeBold">limeBold</SimpleTag>
-				<SimpleTag appearance="pinkBold">pinkBold</SimpleTag>
-				<SimpleTag appearance="orangeBold">orangeBold</SimpleTag>
-				<SimpleTag appearance="indigoBold">indigoBold</SimpleTag>
-				<SimpleTag appearance="cyanBold">cyanBold</SimpleTag>
-				<SimpleTag appearance="violetBold">violetBold</SimpleTag>
-				<SimpleTag appearance="amberBold">amberBold</SimpleTag>
-				<SimpleTag appearance="emeraldBold">emeraldBold</SimpleTag>
-				<SimpleTag appearance="fuchsiaBold">fuchsiaBold</SimpleTag>
-				<SimpleTag appearance="skyBold">skyBold</SimpleTag>
+				<Tag appearance="greenBold">greenBold</Tag>
+				<Tag appearance="grayBold">greyBold</Tag>
+				<Tag appearance="purpleBold">purpleBold</Tag>
+				<Tag appearance="redBold">redBold</Tag>
+				<Tag appearance="tealBold">tealBold</Tag>
+				<Tag appearance="yellowBold">yellowBold</Tag>
+				<Tag appearance="limeBold">limeBold</Tag>
+				<Tag appearance="pinkBold">pinkBold</Tag>
+				<Tag appearance="orangeBold">orangeBold</Tag>
+				<Tag appearance="indigoBold">indigoBold</Tag>
+				<Tag appearance="cyanBold">cyanBold</Tag>
+				<Tag appearance="violetBold">violetBold</Tag>
+				<Tag appearance="amberBold">amberBold</Tag>
+				<Tag appearance="emeraldBold">emeraldBold</Tag>
+				<Tag appearance="fuchsiaBold">fuchsiaBold</Tag>
+				<Tag appearance="skyBold">skyBold</Tag>
 			</TagGroup>
-			<TagGroup>
+			<TagGroup wrap>
 				<Tag appearance="default">default</Tag>
 				<Tag appearance="danger">danger</Tag>
 				<Tag appearance="warning">warning</Tag>
@@ -7280,7 +6698,7 @@ function TagShowcase(props: ShowcaseProps) {
 				<Tag appearance="discovery">discovery</Tag>
 				<Tag appearance="brand">brand</Tag>
 			</TagGroup>
-		</>
+		</div>
 	)
 	//#endregion
 
@@ -7325,18 +6743,71 @@ export default TagShowcase
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import TextArea from "@atlaskit/textarea"
+import { Button, ButtonGroup, TextArea } from "@linked-planet/ui-kit-ts"
+import { useForm } from "react-hook-form"
+
+//#region textarea-form-example
+function FormExample() {
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors, isValid },
+	} = useForm<{ testTextArea: string }>({
+		defaultValues: {
+			testTextArea: "default value",
+		},
+		mode: "onChange",
+	})
+
+	return (
+		<form
+			onSubmit={handleSubmit((data) => console.log(data))}
+			onReset={(e) => {
+				e.preventDefault()
+				reset()
+			}}
+		>
+			<TextArea
+				placeholder="Placeholder"
+				aria-invalid={!!errors.testTextArea}
+				errorMessage={
+					errors.testTextArea?.message === "required"
+						? "Required"
+						: "Min length 3"
+				}
+				{...register("testTextArea", {
+					required: true,
+					minLength: 3,
+				})}
+			/>
+			<ButtonGroup className="mt-4 flex justify-end">
+				<Button type="reset">Reset</Button>
+				<Button appearance="primary" type="submit" disabled={!isValid}>
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
+	)
+}
+//#endregion textarea-form-example
 
 function TextAreaShowcase(props: ShowcaseProps) {
 	//#region textarea
 	const example = (
-		<div style={{ minWidth: 300 }}>
+		<div className="flex flex-col gap-2">
 			<TextArea
 				placeholder="This is a placeholder."
-				onPointerEnterCapture={() => console.log("pointer capture")}
-				onPointerLeaveCapture={() => console.log("pointer left")}
+				helpMessage="This is a help message."
+			/>
+			<TextArea
+				placeholder="This is a placeholder."
+				helpMessage="This is a help message."
+				errorMessage="This is an error message."
+				aria-invalid={true}
+				minLength={5}
 			/>
 		</div>
 	)
@@ -7348,12 +6819,17 @@ function TextAreaShowcase(props: ShowcaseProps) {
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/textarea",
-					url: "https://atlassian.design/components/textarea/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single#TextArea",
 				},
 			]}
 			examples={[
 				{ title: "Example", example, sourceCodeExampleId: "textarea" },
+				{
+					title: "Form Example",
+					example: <FormExample />,
+					sourceCodeExampleId: "textarea-form-example",
+				},
 			]}
 		/>
 	)
@@ -7363,46 +6839,31 @@ export default TextAreaShowcase
 
 import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import TextField from "@atlaskit/textfield"
 
 function TextFieldShowcase(props: ShowcaseProps) {
 	//#region textfield
-	const example1 = (
-		<div style={{ minWidth: 300 }}>
-			<TextField defaultValue="Content of text field..." />
-		</div>
-	)
 	//#endregion textfield
-	//#region textfield2
-	const example2 = (
-		<div style={{ minWidth: 300 }}>
-			<TextField defaultValue="Password" type="password" />
-		</div>
-	)
-	//#endregion textfield2
 
 	return (
 		<ShowcaseWrapperItem
 			name="Text field"
+			description="Please use the Input component instead."
 			{...props}
 			packages={[
 				{
-					name: "@atlaskit/textfield",
-					url: "https://atlassian.design/components/textfield/examples",
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Input",
 				},
 			]}
 			examples={[
 				{
-					title: "Example",
-					example: example1,
+					title: "Input Link",
+					example: (
+						<a href="single?component=Input">Open Input Page</a>
+					),
 					sourceCodeExampleId: "textfield",
-				},
-				{
-					title: "Example 2",
-					example: example2,
-					sourceCodeExampleId: "textfield2",
 				},
 			]}
 		/>
@@ -7410,6 +6871,939 @@ function TextFieldShowcase(props: ShowcaseProps) {
 }
 
 export default TextFieldShowcase
+
+import { useCallback, useMemo } from "react"
+import { useState } from "react"
+import dayjs, { type Dayjs } from "dayjs"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
+import { Button, TimeTable } from "@linked-planet/ui-kit-ts"
+
+import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
+import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
+import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
+import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
+
+import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
+import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
+import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
+
+//import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
+
+const debounceTimeout = 500
+let debounceTimeoutCurrent: number | undefined = undefined
+function debounceHelper(callback: () => void) {
+	if (debounceTimeoutCurrent) {
+		clearTimeout(debounceTimeoutCurrent)
+	}
+	debounceTimeoutCurrent = window.setTimeout(() => {
+		callback()
+	}, debounceTimeout)
+}
+
+type ExampleGroup = TimeTableTypes.TimeTableGroup
+
+type ExampleItem = TimeTableTypes.TimeSlotBooking
+
+const exampleEntries: TimeTableTypes.TimeTableEntry<
+	ExampleGroup,
+	ExampleItem
+>[] = [
+	{
+		group: {
+			id: "group-empty",
+			title: "Empty Group",
+		},
+		items: [],
+	},
+	{
+		group: {
+			id: "group-1",
+			title: "Group 1",
+			subtitle: "Group 1 description",
+		},
+		items: [
+			{
+				// expected to be on group row 0
+				startDate: dayjs()
+					.startOf("day")
+					.add(9, "hours")
+					.add(10, "minutes"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(12, "hours")
+					.add(10, "minutes"),
+				title: "Item 1-1",
+			},
+			{
+				// expected to be on group row 0
+				startDate: dayjs().startOf("day").add(13, "hours"),
+				endDate: dayjs().startOf("day").add(15, "hours"),
+				title: "Item 1-2",
+			},
+			{
+				// expected to be on group row 0
+				startDate: dayjs()
+					.startOf("day")
+					.add(15, "hours")
+					.add(10, "minutes"),
+				endDate: dayjs().startOf("day").add(16, "hours"),
+				title: "Item 1-3",
+			},
+			{
+				// expected to be on group row 0
+				startDate: dayjs().startOf("day").add(7, "hours"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(8, "hours")
+					.add(10, "minutes"),
+				title: "Item 1-3-1",
+			},
+			{
+				// expected to be on group row 0
+				startDate: dayjs().startOf("day").add(1, "day").add(8, "hours"),
+				endDate: dayjs().startOf("day").add(1, "day").add(9, "hours"),
+				title: "Item 1-4",
+			},
+			{
+				// expected to be on group row 1
+				startDate: dayjs().startOf("day").add(9, "hours"),
+				endDate: dayjs().startOf("day").add(15, "hours"),
+				title: "Item 1-5",
+			},
+			{
+				// expected to be on group row 2
+				startDate: dayjs()
+					.startOf("day")
+					.add(9, "hours")
+					.add(10, "minutes"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(15, "hours")
+					.add(10, "minutes"),
+				title: "Item 1-6",
+			},
+			{
+				// expected to be on group row 0
+				startDate: dayjs()
+					.startOf("day")
+					.add(9, "hours")
+					.add(10, "minutes"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(12, "hours")
+					.add(10, "minutes"),
+				title: "Item 1-1-2",
+			},
+			{
+				// expected to be on group row 0
+				startDate: dayjs().startOf("day").add(13, "hours"),
+				endDate: dayjs().startOf("day").add(15, "hours"),
+				title: "Item 1-2-2",
+			},
+		],
+	},
+	{
+		group: {
+			id: "group-2",
+			title: "Group 2",
+			subtitle: "Group 2 description",
+		},
+		items: [
+			{
+				startDate: dayjs()
+					.startOf("day")
+					.add(8, "hours")
+					.add(10, "minutes"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(8, "hours")
+					.add(20, "minutes"),
+				title: "Item 2-1",
+			},
+			{
+				startDate: dayjs()
+					.startOf("day")
+					.add(8, "hours")
+					.add(21, "minutes"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(8, "hours")
+					.add(40, "minutes"),
+				title: "Item 2-2",
+			},
+			{
+				startDate: dayjs()
+					.startOf("day")
+					.add(8, "hours")
+					.add(41, "minutes"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(8, "hours")
+					.add(50, "minutes"),
+				title: "Item 2-3",
+			},
+			{
+				startDate: dayjs()
+					.startOf("day")
+					.add(8, "hours")
+					.add(51, "minutes"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(9, "hours")
+					.add(50, "minutes"),
+				title: "Item 2-3-1",
+			},
+			{
+				startDate: dayjs().startOf("day").add(8, "hours"),
+				endDate: dayjs().startOf("day").add(10, "hours"),
+				title: "Item 2-4",
+			},
+		],
+	},
+	{
+		group: {
+			id: "group-3",
+			title: "Group 3",
+			subtitle: "Group 3 description",
+		},
+		items: [
+			{
+				// this entry is totally before the available slots of the day
+				startDate: dayjs().startOf("day").add(5, "hours"),
+				endDate: dayjs().startOf("day").add(6, "hours"),
+				title: "Item 3-1",
+			},
+			{
+				startDate: dayjs().startOf("day").add(1, "day").add(9, "hours"),
+				endDate: dayjs().startOf("day").add(2, "days").add(9, "hours"),
+				title: "Item 3-2",
+			},
+			{
+				// this entry is totally after the available slots of the day
+				startDate: dayjs().startOf("day").add(17, "hours"),
+				endDate: dayjs().startOf("day").add(20, "hours"),
+				title: "Item 3-3",
+			},
+		],
+	},
+	{
+		group: {
+			id: "group-4",
+			title: "Group 4",
+			subtitle: "Group 4 description",
+		},
+		items: [
+			{
+				// this case ends after the end of the day
+				startDate: dayjs()
+					.startOf("day")
+					.add(-1, "day")
+					.add(8, "hours"),
+				endDate: dayjs().startOf("day").add(1, "day").add(16, "hours"),
+				title: "Item 4-1",
+			},
+			{
+				startDate: dayjs()
+					.startOf("day")
+					.add(-1, "day")
+					.add(8.4, "hours"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(1, "day")
+					.add(13.75, "hours"),
+				title: "Item 4-2",
+			},
+			{
+				// this case starts before the start of the day
+				startDate: dayjs()
+					.startOf("day")
+					.add(-1, "day")
+					.add(7.4, "hours"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(4, "days")
+					.add(13.75, "hours"),
+				title: "Item 4-3",
+			},
+			{
+				startDate: dayjs()
+					.startOf("day")
+					.add(-1, "day")
+					.add(10.2, "hours"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(4, "day")
+					.add(13.75, "hours"),
+				title: "Item 4-4",
+			},
+			{
+				startDate: dayjs().startOf("day").add(-1, "day"),
+				endDate: dayjs().startOf("day").add(3, "day"),
+				title: "Item 4-4-5",
+			},
+		],
+	},
+	{
+		group: {
+			id: "group-5",
+			title: "Group 5",
+			subtitle: "Whole Time Frame",
+		},
+		items: [
+			{
+				// this case ends after the end of the day and starts before
+				startDate: dayjs().startOf("day").add(-2, "day"),
+				endDate: dayjs().startOf("day").add(7, "days"),
+				title: "Item 5-1",
+			},
+			{
+				// this case ends after the end of the day and starts before
+				startDate: dayjs().startOf("day").add(12, "hours"),
+				endDate: dayjs().startOf("day").add(1, "day").add(12, "hours"),
+				title: "Item 5-2",
+			},
+			{
+				startDate: dayjs().startOf("day").add(1, "day"), // 00:00-00:00
+				endDate: dayjs().startOf("day").add(1, "day"),
+				title: "Item 5-3",
+			},
+		],
+	},
+	{
+		group: {
+			id: "group-6",
+			title: "Group 6 (Directly Connected)",
+			subtitle: "Whole Time Frame",
+		},
+		items: [
+			{
+				// this case ends after the end of the day and starts before
+				startDate: dayjs().startOf("day").add(7, "hours"),
+				endDate: dayjs().startOf("day").add(12, "hours"),
+				title: "Item 6-1",
+			},
+			{
+				// this case ends after the end of the day and starts before
+				startDate: dayjs().startOf("day").add(12, "hours"),
+				endDate: dayjs().startOf("day").add(16, "hours"),
+				title: "Item 6-1-1",
+			},
+			{
+				startDate: dayjs().startOf("day").add(1, "day"),
+				endDate: dayjs().startOf("day").add(2, "day"),
+				title: "Item 6-2-1",
+			},
+			{
+				startDate: dayjs().startOf("day").add(2, "day"),
+				endDate: dayjs().startOf("day").add(3, "day"),
+				title: "Item 6-2-2",
+			},
+		],
+	},
+	{
+		group: {
+			id: "group-7",
+			title: "Group 7 (Full Day)",
+			subtitle: "Whole Time Frame",
+		},
+		items: [
+			{
+				// this case ends after the end of the day and starts before
+				startDate: dayjs().startOf("day"),
+				endDate: dayjs().endOf("day"),
+				title: "Item 7-1",
+			},
+		],
+	},
+]
+
+function createTestItems(
+	startDate: Dayjs,
+	endDate: Dayjs,
+	groupNumber: number,
+) {
+	const itemCount = Math.round(Math.random() * 10)
+	const ret = []
+	for (let i = 0; i < itemCount; i++) {
+		const addDays = Math.round(
+			Math.random() * endDate.diff(startDate, "days"),
+		)
+		const addStartMinutes = Math.round(Math.random() * 3 * 60)
+		const addEndMinutes = Math.round(Math.random() * 6 * 60)
+		const itemStartDate = startDate
+			.add(addDays, "days")
+			.add(addStartMinutes, "minutes")
+		const itemEndDate = itemStartDate.add(addEndMinutes, "minutes")
+		ret.push({
+			startDate: itemStartDate,
+			endDate: itemEndDate,
+			title: `Random Item ${groupNumber}-${i}`,
+		})
+	}
+	return ret
+}
+
+function createTestEntries(
+	startDate: Dayjs,
+	endDate: Dayjs,
+	currentEntries: TimeTableTypes.TimeTableEntry<ExampleGroup, ExampleItem>[],
+) {
+	if (startDate.isSame(startDateInitial) && endDate.isSame(endDateInitial)) {
+		return exampleEntries
+	}
+
+	const groupWithItems = currentEntries.map((group, g) => {
+		const newGroup: TimeTableTypes.TimeTableEntry<
+			ExampleGroup,
+			ExampleItem
+		> = {
+			group: group.group,
+			items: createTestItems(startDate, endDate, g),
+		}
+		return newGroup
+	})
+
+	return groupWithItems
+}
+
+function createMoreTestGroups(
+	startDate: Dayjs,
+	endDate: Dayjs,
+	count: number,
+	startCount: number,
+) {
+	const newGroups: TimeTableTypes.TimeTableEntry<
+		ExampleGroup,
+		ExampleItem
+	>[] = []
+	for (let i = 0; i < count; i++) {
+		const groupNumber = startCount + i
+		newGroups.push({
+			group: {
+				id: `group-${groupNumber}`,
+				title: `Group ${groupNumber}`,
+				subtitle: "random",
+			},
+			items: createTestItems(startDate, endDate, groupNumber),
+		})
+	}
+	return newGroups
+}
+
+const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
+const endDateInitial = dayjs().startOf("day").add(5, "days").add(20, "hours")
+
+function Example() {
+	//#region timetable
+
+	const [timeSteps, setTimeSteps] = useState(60)
+	const [timeStepsInputValue, setTimeStepsInputValue] = useState(timeSteps)
+	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
+	const [columnWidth, setColumnWidth] = useState(70)
+	const [rowHeight, setRowHeight] = useState(40)
+	const [disabledWeekendInteractions, setDisabledWeekendInteractions] =
+		useState(true)
+	const [showTimeSlotHeader, setShowTimeSlotHeader] = useState(true)
+	const [hideOutOfDayRangeMarkers, setHideOutOfDayRangeMarkers] =
+		useState(false)
+
+	const [timeFrame, setTimeFrame] = useState({
+		startDate: startDateInitial,
+		endDate: endDateInitial,
+	})
+
+	const [selectedTimeSlotItem, setSelectedTimeSlotItem] = useState<
+		ExampleItem | undefined
+	>()
+
+	const [entries, setEntries] = useState(exampleEntries)
+
+	const onTimeSlotItemClickCB = useCallback(
+		(group: ExampleGroup, item: ExampleItem) => {
+			setSelectedTimeSlotItem((prev) => {
+				if (prev === item) {
+					return undefined
+				}
+				return item
+			})
+		},
+		[],
+	)
+
+	//#region time frame and groups pagination
+	const requestNextTimeFrameCB = () => {
+		const dayDiff = timeFrame.endDate.diff(timeFrame.startDate, "days")
+		const nextStartDate = timeFrame.startDate.add(dayDiff, "days")
+		const nextEndDate = timeFrame.endDate.add(dayDiff, "days")
+		setTimeFrame({
+			startDate: nextStartDate,
+			endDate: nextEndDate,
+		})
+		const newEntries = createTestEntries(
+			nextStartDate,
+			nextEndDate,
+			entries,
+		)
+		setEntries(newEntries)
+	}
+
+	const requestPrevTimeFrameCB = () => {
+		const dayDiff = timeFrame.endDate.diff(timeFrame.startDate, "days")
+		const prevStartDate = timeFrame.startDate.add(-dayDiff, "days")
+		const prevEndDate = timeFrame.endDate.add(-dayDiff, "days")
+		setTimeFrame({
+			startDate: prevStartDate,
+			endDate: prevEndDate,
+		})
+		const newEntries = createTestEntries(
+			prevStartDate,
+			prevEndDate,
+			entries,
+		)
+		setEntries(newEntries)
+	}
+
+	const requestMoreEntriesCB = () => {
+		const missing = entries.length + 10 - exampleEntries.length
+		const missingGroups = createMoreTestGroups(
+			timeFrame.startDate,
+			timeFrame.endDate,
+			missing,
+			exampleEntries.length,
+		)
+		setEntries([...exampleEntries, ...missingGroups])
+	}
+	//#endregion
+
+	const [showCreateNewItemModal, setShowCreateNewItemModal] = useState(false)
+	const [selectedTimeRange, setSelectedTimeRange] = useState<{
+		startDate: Dayjs
+		endDate: Dayjs
+		group: TimeTableTypes.TimeTableGroup
+	} | null>(null)
+	const [disableTimeRangeSelection, setDisableTimeRangeSelection] =
+		useState(false)
+
+	const onCreateNewItemConfirmCB = useCallback(
+		(
+			group: TimeTableTypes.TimeTableGroup,
+			item: TimeTableTypes.TimeSlotBooking,
+		) => {
+			setShowCreateNewItemModal(false)
+			setEntries((prev) => {
+				const groupIndex = prev.findIndex((e) => e.group === group)
+				if (groupIndex === -1) {
+					console.error("group not found", group)
+					return prev
+				}
+				const newEntries = [...prev]
+				const newGroup = { ...newEntries[groupIndex] }
+				const newGroupItems = [...newGroup.items]
+				newGroupItems.push(item)
+				newGroup.items = newGroupItems
+				newEntries[groupIndex] = newGroup
+				return newEntries
+			})
+			setSelectedTimeRange(null)
+		},
+		[],
+	)
+
+	const [viewType, setViewType] =
+		useState<TimeTableTypes.TimeTableViewType>("hours")
+
+	const translation = useTranslation() as TranslatedTimeTableMessages
+	const nowOverwrite = undefined //startDate.add( 1, "day" ).add( 1, "hour" ).add( 37, "minutes" );
+
+	const isCellDisabled = useCallback(
+		(group: TimeTableTypes.TimeTableGroup, start: Dayjs) => {
+			if (group.title === "Group 2") {
+				return start.isBefore(dayjs().startOf("day"))
+			}
+			return false
+		},
+		[],
+	)
+
+	return (
+		<>
+			<div className="flex gap-8">
+				{/* time table setup values */}
+				<div className="grid grid-cols-2 items-start gap-2">
+					<label className="mr-4" htmlFor="startdate">
+						Start:
+					</label>
+					<input
+						type="datetime-local"
+						value={timeFrame.startDate.format("YYYY-MM-DDTHH:mm")}
+						onChange={(e) => {
+							setTimeFrame({
+								startDate: dayjs(e.target.value),
+								endDate: timeFrame.endDate,
+							})
+						}}
+					/>
+					<label className="mr-4" htmlFor="enddate">
+						End:
+					</label>
+					<input
+						type="datetime-local"
+						value={timeFrame.endDate.format("YYYY-MM-DDTHH:mm")}
+						onChange={(e) => {
+							setTimeFrame({
+								startDate: timeFrame.startDate,
+								endDate: dayjs(e.target.value),
+							})
+						}}
+					/>
+					<label className="mr-4" htmlFor="timesteps">
+						Time Steps [min]:
+					</label>
+					<input
+						type="number"
+						name="timesteps"
+						value={timeStepsInputValue}
+						step={10}
+						min={10}
+						max={1200}
+						onChange={(e) => {
+							const val = Number.parseInt(e.target.value)
+							setTimeStepsInputValue(val)
+							debounceHelper(() => setTimeSteps(val))
+						}}
+						className="mr-1 w-16 text-center"
+					/>
+				</div>
+				{/* time table layout */}
+				<div className="grid grid-cols-2 items-start gap-2">
+					<label className="mr-4" htmlFor="firstcolwidth">
+						Group Header Width [px]:
+					</label>
+					<input
+						type="number"
+						name="firstcolwidth"
+						value={groupHeaderColumnWidth}
+						step={10}
+						min={10}
+						max={300}
+						onChange={(e) =>
+							debounceHelper(() =>
+								setGroupHeaderColumnWidth(
+									Number.parseInt(e.target.value),
+								),
+							)
+						}
+						className="mr-1 w-16 text-center"
+					/>
+					<label className="mr-4" htmlFor="colwidth">
+						Column Width [px]:
+					</label>
+					<input
+						type="number"
+						name="colwidth"
+						defaultValue={columnWidth}
+						step={5}
+						min={10}
+						max={1000}
+						onChange={(e) =>
+							debounceHelper(() => {
+								setColumnWidth(Number.parseInt(e.target.value))
+							})
+						}
+						className="mr-1 w-16 text-center"
+					/>
+					<label className="mr-4" htmlFor="rowheight">
+						Row Height [px]:
+					</label>
+					<input
+						type="number"
+						name="rowheight"
+						defaultValue={rowHeight}
+						step={2}
+						min={10}
+						max={100}
+						onChange={(e) =>
+							debounceHelper(() =>
+								setRowHeight(Number.parseInt(e.target.value)),
+							)
+						}
+						className="mr-1 w-16 text-center"
+					/>
+				</div>
+				{/* time table settings */}
+				<div className="grid grid-cols-2 items-start gap-2">
+					<label htmlFor="diableweekends" className="mr-4">
+						Disable Weekend Interactions:
+					</label>
+					<input
+						type="checkbox"
+						name="disableweekends"
+						checked={disabledWeekendInteractions}
+						onChange={(e) =>
+							setDisabledWeekendInteractions(e.target.checked)
+						}
+						className="mr-1 text-center"
+					/>
+					<label htmlFor="showtimeslotheader" className="mr-4">
+						Show Time Slot Header:
+					</label>
+					<input
+						type="checkbox"
+						name="showtimeslotheader"
+						checked={showTimeSlotHeader}
+						onChange={(e) => {
+							setShowTimeSlotHeader(e.target.checked)
+						}}
+						className="mr-1 text-center"
+					/>
+					<label htmlFor="hideoutofdayrange" className="mr-4">
+						Hide Out Of Day Range Markers:
+					</label>
+					<input
+						type="checkbox"
+						name="hideoutofdayrange"
+						checked={hideOutOfDayRangeMarkers}
+						onChange={(e) => {
+							setHideOutOfDayRangeMarkers(e.target.checked)
+						}}
+						className="mr-1 text-center"
+					/>
+					<label
+						htmlFor="disabletimerangeselection"
+						style={{
+							marginRight: "1rem",
+						}}
+					>
+						Disable Time Range Selection
+					</label>
+					<input
+						type="checkbox"
+						name="disabletimerangeselection"
+						checked={disableTimeRangeSelection}
+						onChange={(e) => {
+							setDisableTimeRangeSelection(e.target.checked)
+						}}
+						className="mr-1 text-center"
+					/>
+					<label htmlFor="viewtype" className="mr-4">
+						View Type
+					</label>
+					<select
+						name="viewtype"
+						onChange={(e) =>
+							setViewType(
+								e.target
+									.value as TimeTableTypes.TimeTableViewType,
+							)
+						}
+						value={viewType}
+					>
+						<option value="hours">Hours</option>
+						<option value="days">Days</option>
+						<option value="weeks">Weeks</option>
+						<option value="months">Months</option>
+						<option value="years">Years</option>
+					</select>
+				</div>
+			</div>
+			<div className="flex-start flex">
+				<Button
+					onClick={requestPrevTimeFrameCB}
+					title="Previous Time Frame"
+					className="mb-2 mr-2"
+				>
+					<ChevronLeftIcon label="prevtimeframe" />
+				</Button>
+				<Button
+					onClick={requestNextTimeFrameCB}
+					title="Next Time Frame"
+					className="mb-2 mr-2"
+				>
+					<ChevronRightIcon label="nexttimeframe" />
+				</Button>
+				<Button
+					disabled={!selectedTimeRange}
+					onClick={() => {
+						setShowCreateNewItemModal(true)
+					}}
+					title="Create New Item"
+					className="mb-2 mr-2"
+				>
+					Create New Item
+				</Button>
+			</div>
+			<div
+				style={{
+					height: "600px",
+				}}
+			>
+				<TimeTable
+					groupHeaderColumnWidth={groupHeaderColumnWidth}
+					columnWidth={columnWidth}
+					rowHeight={rowHeight}
+					startDate={timeFrame.startDate}
+					endDate={timeFrame.endDate}
+					timeStepsMinutes={timeSteps}
+					entries={entries}
+					selectedTimeSlotItem={selectedTimeSlotItem}
+					selectedTimeRange={selectedTimeRange}
+					disableMessages
+					/*groupComponent={ Group }
+					timeSlotItemComponent={ Item }
+					placeHolderComponent={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
+						<div
+							style={ { height: props.height, backgroundColor: "rgba(0,0,0,0.1)", textAlign: "center" } }
+							onClick={ () => props.clearTimeRangeSelectionCB() }
+						>
+							Placeholder
+						</div>
+					) }*/
+					onTimeSlotItemClick={onTimeSlotItemClickCB}
+					nowOverwrite={nowOverwrite}
+					timeTableMessages={translation}
+					onTimeRangeSelected={
+						!disableTimeRangeSelection
+							? setSelectedTimeRange
+							: undefined
+					}
+					disableWeekendInteractions={disabledWeekendInteractions}
+					showTimeSlotHeader={showTimeSlotHeader}
+					hideOutOfRangeMarkers={hideOutOfDayRangeMarkers}
+					isCellDisabled={isCellDisabled}
+					viewType={viewType}
+				/>
+			</div>
+			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
+				<ChevronDownIcon label="entryloader" />
+			</Button>
+			{showCreateNewItemModal && selectedTimeRange && (
+				<CreateNewTimeTableItemDialog
+					group={selectedTimeRange.group}
+					startDate={selectedTimeRange.startDate}
+					endDate={selectedTimeRange.endDate}
+					onCancel={() => setShowCreateNewItemModal(false)}
+					onConfirm={onCreateNewItemConfirmCB}
+					timeSteps={timeSteps}
+				/>
+			)}
+		</>
+	)
+
+	//endregion timetable
+}
+
+function ExampleCalendar() {
+	//#region timetabledays
+	const timeFrame = useMemo(
+		() => ({
+			startDate: startDateInitial.startOf("day"),
+			endDate: endDateInitial.startOf("day"),
+		}),
+		[],
+	)
+
+	const translation = useTranslation() as TranslatedTimeTableMessages
+	return (
+		<>
+			<div
+				style={{
+					height: "600px",
+				}}
+			>
+				<TimeTable
+					groupHeaderColumnWidth={150}
+					columnWidth={70}
+					rowHeight={30}
+					startDate={timeFrame.startDate}
+					endDate={timeFrame.endDate}
+					entries={exampleEntries}
+					timeTableMessages={translation}
+					disableWeekendInteractions={true}
+					showTimeSlotHeader={false}
+					viewType={"days"}
+					itemsOutsideOfDayRangeFound={(items) => {
+						console.info("items outside of day range found", items)
+					}}
+				/>
+			</div>
+		</>
+	)
+
+	//#endregion timetabledays
+}
+
+function ExampleMonthCalendar() {
+	//region timetablemonths
+	const timeFrame = useMemo(
+		() => ({
+			startDate: startDateInitial.startOf("month").subtract(1, "day"),
+			endDate: endDateInitial.endOf("month").add(1, "day"),
+		}),
+		[],
+	)
+
+	const translation = useTranslation() as TranslatedTimeTableMessages
+
+	return (
+		<>
+			<div
+				style={{
+					height: "600px",
+				}}
+			>
+				<TimeTable
+					groupHeaderColumnWidth={150}
+					columnWidth={70}
+					rowHeight={30}
+					startDate={timeFrame.startDate}
+					endDate={timeFrame.endDate}
+					entries={exampleEntries}
+					timeTableMessages={translation}
+					disableWeekendInteractions={true}
+					viewType={"months"}
+					showTimeSlotHeader={false}
+				/>
+			</div>
+		</>
+	)
+
+	//#endregion timetablemonths
+}
+
+export default function TimeTableShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="Time Table"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://github.com/linked-planet/ui-kit-ts",
+				},
+			]}
+			examples={[
+				{
+					title: "Example",
+					example: <Example />,
+					sourceCodeExampleId: "timetable",
+				},
+				{
+					title: "Days",
+					example: <ExampleCalendar />,
+					sourceCodeExampleId: "timetabledays",
+				},
+				{
+					title: "Months",
+					example: <ExampleMonthCalendar />,
+					sourceCodeExampleId: "timetablemonths",
+				},
+			]}
+		/>
+	)
+}
 
 import React from "react"
 import ShowcaseWrapperItem, {
@@ -7419,6 +7813,7 @@ import ShowcaseWrapperItem, {
 import {
 	Button,
 	ToastFlagContainer,
+	showDiscoveryFlag,
 	showErrorFlag,
 	showFlag,
 	showFlagExtended,
@@ -7438,7 +7833,7 @@ function ExampleShowExtendedFlag() {
 						title: "standard flag",
 						description: "test",
 						autoClose: false,
-						flagType: "default",
+						flagType: "bold",
 					})
 				}}
 			>
@@ -7517,6 +7912,17 @@ function ExampleShowExtendedFlag() {
 			<Button
 				onClick={() =>
 					showFlagExtended({
+						title: "discovery flag",
+						description: "This is a discovery toast flag.",
+						appearance: "discovery",
+					})
+				}
+			>
+				Discovery
+			</Button>
+			<Button
+				onClick={() =>
+					showFlagExtended({
 						title: "warning flag",
 						description: (
 							<div>
@@ -7568,7 +7974,7 @@ function ExampleShowFlags() {
 					})
 				}
 			>
-				Standard Not Dissapearing Bottom Left
+				Standard Not Disappearing Bottom Left
 			</Button>
 
 			<Button
@@ -7576,11 +7982,11 @@ function ExampleShowFlags() {
 					showFlag({
 						title: "Default Style",
 						description: "The default style is rather dark.",
-						flagType: "default",
+						flagType: "bold",
 					})
 				}
 			>
-				Standard Default
+				Standard Bold
 			</Button>
 
 			<Button
@@ -7610,7 +8016,7 @@ function ExampleShowFlags() {
 				onClick={() =>
 					showSuccessFlag({
 						title: "Default Style",
-						flagType: "default",
+						flagType: "bold",
 						description:
 							"Using the default flag style (see flags).",
 					})
@@ -7640,6 +8046,40 @@ function ExampleShowFlags() {
 				}
 			>
 				Information Pale
+			</Button>
+			<Button
+				onClick={() =>
+					showDiscoveryFlag({
+						title: "Discovery",
+						description: "This is a bold discovery toast.",
+						flagType: "bold",
+					})
+				}
+			>
+				Discovery
+			</Button>
+			<Button
+				onClick={() =>
+					showDiscoveryFlag({
+						title: "Discovery",
+						description: "This is a pale discovery toast.",
+						flagType: "pale",
+					})
+				}
+			>
+				Discovery Pale
+			</Button>
+			<Button
+				onClick={() =>
+					showDiscoveryFlag({
+						title: "Discovery",
+						description:
+							"This is a inverted (default) discovery toast.",
+						flagType: "inverted",
+					})
+				}
+			>
+				Discovery Inverted
 			</Button>
 			<Button
 				onClick={() =>
@@ -7767,13 +8207,15 @@ function ToggleShowcase(props: ShowcaseProps) {
 
 export default ToggleShowcase
 
-import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import SearchIcon from "@atlaskit/icon/glyph/search"
 import WatchIcon from "@atlaskit/icon/glyph/watch"
-import { Tooltip, TooltipProvider } from "@linked-planet/ui-kit-ts"
+import ActivityIcon from "@atlaskit/icon/glyph/activity"
+import CameraIcon from "@atlaskit/icon/glyph/camera"
+import TaskIcon from "@atlaskit/icon/glyph/task"
+import { Tooltip, TooltipProvider, Button } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
 
@@ -7789,22 +8231,30 @@ function TooltipShowcase(props: ShowcaseProps) {
 						usePortal
 						align="start"
 					>
-						<SearchIcon label="" />
+						<div>
+							<SearchIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
-						tooltipHTMLContent={`<span>I&apos;m a <b>top</b> tooltip with stringified HTML</span>`}
+						tooltipHTMLContent={
+							"<span>I&apos;m a <b>top</b> tooltip with stringified HTML</span>"
+						}
 						usePortal={false}
 						side="bottom"
 						align="end"
 					>
-						<SearchIcon label="" />
+						<div>
+							<ActivityIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						side="top"
 						defaultOpen
 						tooltipContent={"I'm a top tooltip"}
 					>
-						<SearchIcon label="" />
+						<div>
+							<CameraIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						side="bottom"
@@ -7816,7 +8266,9 @@ function TooltipShowcase(props: ShowcaseProps) {
 							</p>
 						}
 					>
-						<SearchIcon label="" />
+						<div>
+							<TaskIcon label="" />
+						</div>
 					</Tooltip>
 					<Tooltip
 						tooltipContent={`Der Fliegenpilz ist mit seinem auffälligen roten, weiß gepunkteten Hut weit und gut zu sehen. Er hat einen Durchmesser von 5 bis über 15 Zentimeter, ist jung kugelig oder halbkugelig geschlossen, dann konvex, schließlich scheibenförmig mit etwas herabgebogenem, gestreiftem Rand. Jung ist er durch sehr dicht stehende Warzen und Schuppen noch fast weiß mit schwachem orangen oder rötlichem Schimmer, dann tief rot und mit grauweißen kegelförmigen Warzen, zum Teil auch breiten Schuppen – den charakteristischen weißen „Punkten“ – besetzt, die leicht abgewischt werden können. Sie sind Reste einer Gesamthülle (Velum universale), die den jungen Pilz anfangs schützend umschließt.
@@ -7833,7 +8285,23 @@ function TooltipShowcase(props: ShowcaseProps) {
 						
 						Ältere Pilzkörper bilden im Becherstadium eine Vertiefung in ihrem Hut, in dem sich Regenwasser sammeln kann, der sogenannte Zwergenwein.[5]`}
 					>
-						<WatchIcon label="" />
+						<div>
+							<WatchIcon label="" />
+						</div>
+					</Tooltip>
+					<Tooltip
+						tooltipContent={
+							<div>
+								Button:
+								<Button>Button</Button>
+							</div>
+						}
+						side="right"
+						align="end"
+					>
+						<div className="bg-brand-bold p-2 rounded text-text-inverse">
+							Button with tooltip
+						</div>
 					</Tooltip>
 				</div>
 			</div>
@@ -7856,6 +8324,10 @@ function TooltipShowcase(props: ShowcaseProps) {
 					<br />
 					The variant defines the color of the tooltip - if it is not
 					defined, it is unstyled.
+					<br />
+					<b>Important:</b> The tooltip component's child must be
+					ref-able, otherwise the tooltip will not work (i.g. use a
+					div around an icon).
 				</p>
 			}
 			{...props}

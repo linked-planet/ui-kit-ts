@@ -1,14 +1,14 @@
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import TextField from "@atlaskit/textfield"
+import AKTextField from "@atlaskit/textfield"
 import {
 	Button,
 	ButtonGroup,
-	IconSizeHelper,
+	Fieldset,
 	Input,
 	Label,
+	TextArea,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
 
@@ -50,6 +50,7 @@ function FormExample() {
 					required: true,
 					minLength: 3,
 				})}
+				placeholder="Placeholder"
 				invalid={!!errors.testInput}
 				errorMessage={
 					errors.testInput?.type === "required"
@@ -70,20 +71,21 @@ function FormExample() {
 
 export default function InputShowcase(props: ShowcaseProps) {
 	const exampleAK = (
-		<div className="flex flex-col">
-			<TextField />
-			<TextField isDisabled />
-			<TextField placeholder="Placeholder" />
-			<TextField isInvalid value={"invalid"} />
-			<TextField isReadOnly value={"readonly"} />
-			<TextField type="number" defaultValue={1} />
-			<TextField type="number" defaultValue={1} appearance="subtle" />
-		</div>
+		<Fieldset legend="Input Example">
+			<AKTextField />
+			<AKTextField isDisabled />
+			<AKTextField placeholder="Placeholder" />
+			<AKTextField isInvalid value={"invalid"} />
+			<AKTextField isReadOnly value={"readonly"} />
+			<AKTextField type="number" defaultValue={1} />
+			<AKTextField type="number" defaultValue={1} appearance="subtle" />
+			{/*<AKTextArea placeholder="Text Area">It wants children</AKTextArea>*/}
+		</Fieldset>
 	)
 
 	//#region input
 	const exampleLP = (
-		<div className="flex flex-col">
+		<Fieldset legend="Input Example">
 			<Label htmlFor="testInput" required>
 				This is a required input label.
 			</Label>
@@ -94,15 +96,7 @@ export default function InputShowcase(props: ShowcaseProps) {
 			/>
 			<Input disabled />
 			<Label htmlFor="testInput2">This is a label.</Label>
-			<Input
-				placeholder="Placeholder"
-				id="testInput2"
-				iconAfter={
-					<IconSizeHelper>
-						<ScheduleIcon size="medium" label="calendar" />
-					</IconSizeHelper>
-				}
-			/>
+			<Input placeholder="Placeholder" id="testInput2" />
 			<Input
 				invalid={true}
 				value={"invalid"}
@@ -117,7 +111,15 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<Input readOnly value={"readonly"} />
 			<Input type="number" defaultValue={1} />
 			<Input type="number" defaultValue={1} appearance="subtle" />
-		</div>
+			<Input
+				type="text"
+				defaultValue={"default text"}
+				iconAfter={<ScheduleIcon label="" />}
+				iconBefore={<ScheduleIcon label="" />}
+			/>
+			<TextArea placeholder="Placeholder" />
+			<TextArea placeholder="Placeholder" disabled />
+		</Fieldset>
 	)
 	//#endregion input
 

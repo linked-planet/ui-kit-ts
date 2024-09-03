@@ -3,6 +3,7 @@ import {
 	ButtonGroup,
 	Calendar,
 	CalendarBase,
+	DateUtils,
 	type DateType,
 } from "@linked-planet/ui-kit-ts"
 import {
@@ -310,6 +311,32 @@ function CalendarRangeForm() {
 }
 //#endregion calendar2-range-form
 
+//#region calendar2-multi
+function CalendarMulti() {
+	const [selected, setSelected] = useState<DateType[] | undefined>([
+		DateUtils.toDateType(Date()),
+	])
+
+	return (
+		<div className="flex gap-4">
+			<Calendar
+				mode="multiple"
+				defaultSelected={[]}
+				selected={selected}
+				onSelectionChanged={setSelected}
+			/>
+			<CalendarBase
+				mode="multiple"
+				selected={selected?.map((d) => dateFromString(d, true))}
+				onSelect={(dates: Date[] | undefined) => {
+					setSelected(dates?.map((d) => DateUtils.toDateType(d)))
+				}}
+			/>
+		</div>
+	)
+}
+//#endregion calendar2-multi
+
 export default function Calendar2Showcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -332,6 +359,11 @@ export default function Calendar2Showcase(props: ShowcaseProps) {
 					title: "Calendar Day Range",
 					example: <CalendarRange />,
 					sourceCodeExampleId: "calendar2-range",
+				},
+				{
+					title: "Calendar Day Multi",
+					example: <CalendarMulti />,
+					sourceCodeExampleId: "calendar2-multi",
 				},
 				{
 					title: "Base Calendar",

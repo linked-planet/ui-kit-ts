@@ -14,6 +14,24 @@ export const topNavigationHeightVar = "--topNavigationHeight" as const
 export const leftPanelWidthVar = "--leftPanelWidth" as const
 export const rightPanelWidthVar = "--rightPanelWidth" as const
 
+export function initTopNavigationHeight() {
+	const topNav = document.getElementsByClassName("aui-header")
+	if (!topNav.length) {
+		console.log(
+			"Unable to find top navigation element to set:",
+			topNavigationHeightVar,
+		)
+		return
+	}
+	const topNavHeight = topNav[0].clientHeight
+	if (topNavHeight) {
+		document.documentElement.style.setProperty(
+			topNavigationHeightVar,
+			`${topNavHeight}px`,
+		)
+	}
+}
+
 /**
  * The container is the top level container that holds all the other layout elements.
  * It is the root element of the layout.
@@ -309,7 +327,7 @@ function Main({
 const LeftSidebar = LeftSidebarImpl
 const RightSidebar = RightSidebarImpl
 
-const AppLayout = {
+export const AppLayout = {
 	Container,
 	Banner,
 	TopNavigation,
@@ -326,4 +344,3 @@ const AppLayout = {
 	leftSidebarWidthVar,
 	rightSidebarWidthVar,
 }
-export default AppLayout

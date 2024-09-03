@@ -1,12 +1,12 @@
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
 import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
-import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
-import type React from "react"
 import { useEffect, useMemo, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Dropdown, type DropdownMenuProps } from "./DropdownMenu"
 import { IconSizeHelper } from "./IconSizeHelper"
+
+const triggerClassName =
+	"h-8 hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded bg-transparent p-1.5"
 
 function PageSizeSelector({
 	pageSize,
@@ -53,18 +53,8 @@ function PageSizeSelector({
 		<div className="flex items-center gap-2">
 			<span>{pageSizeTitle}</span>
 			<Dropdown.Menu
-				trigger={({ opened }: { opened: boolean }) => (
-					<div className="hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded bg-transparent p-1.5">
-						{_pageSize}
-						<IconSizeHelper>
-							{opened ? (
-								<ChevronDownIcon size="small" label="" />
-							) : (
-								<ChevronUpIcon size="small" label="" />
-							)}
-						</IconSizeHelper>
-					</div>
-				)}
+				trigger={pageSize}
+				triggerClassName={triggerClassName}
 				side={pageSizeMenuSide}
 				align={pageSizeMenuAlign}
 			>
@@ -185,8 +175,8 @@ function PaginationPageHandler<P extends string | number>({
 
 	return (
 		<nav className={className} style={style} aria-label={label}>
-			<ul className="flex list-none">
-				<li>
+			<ul className="flex list-none items-center">
+				<li className="m-0">
 					<button
 						disabled={currentIdx <= 0}
 						className={twMerge(
@@ -214,7 +204,7 @@ function PaginationPageHandler<P extends string | number>({
 					</button>
 				</li>
 				{visiblePages.map((page) => (
-					<li key={page} aria-hidden={page === "..."}>
+					<li key={page} aria-hidden={page === "..."} className="m-0">
 						{page !== "..." ? (
 							<button
 								className={twMerge(
@@ -262,32 +252,34 @@ function PaginationPageHandler<P extends string | number>({
 						)}
 					</li>
 				))}
-				<button
-					className={twMerge(
-						`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 ${
-							currentIdx < pages.length - 1
-								? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
-								: "text-disabled-text"
-						}`,
-						pageButtonClassName,
-					)}
-					onClick={() => {
-						const _currentIndex = pages.indexOf(_currentPage)
-						setCurrentPage(pages[_currentIndex + 1])
-						onPageIndexChange?.(_currentIndex + 1)
-						onPageChange?.(pages[_currentIndex + 1])
-					}}
-					disabled={currentIdx >= pages.length - 1}
-					title={nextLabel}
-					aria-label={nextLabel}
-					aria-disabled={currentIdx >= pages.length - 1}
-					type="button"
-					style={pageButtonStyle}
-				>
-					<IconSizeHelper>
-						<ChevronRightLargeIcon size="medium" label="" />
-					</IconSizeHelper>
-				</button>
+				<li className="m-0">
+					<button
+						className={twMerge(
+							`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 ${
+								currentIdx < pages.length - 1
+									? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
+									: "text-disabled-text"
+							}`,
+							pageButtonClassName,
+						)}
+						onClick={() => {
+							const _currentIndex = pages.indexOf(_currentPage)
+							setCurrentPage(pages[_currentIndex + 1])
+							onPageIndexChange?.(_currentIndex + 1)
+							onPageChange?.(pages[_currentIndex + 1])
+						}}
+						disabled={currentIdx >= pages.length - 1}
+						title={nextLabel}
+						aria-label={nextLabel}
+						aria-disabled={currentIdx >= pages.length - 1}
+						type="button"
+						style={pageButtonStyle}
+					>
+						<IconSizeHelper>
+							<ChevronRightLargeIcon size="medium" label="" />
+						</IconSizeHelper>
+					</button>
+				</li>
 			</ul>
 		</nav>
 	)
