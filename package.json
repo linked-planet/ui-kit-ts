@@ -11,7 +11,9 @@
 	"description": "",
 	"module": "dist/index.js",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"types": "./dist/index.d.ts",
 	"style": [
 		"dist/styles.css",
@@ -54,10 +56,17 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": ["en", "de"],
+	"supportedLocales": [
+		"en",
+		"de"
+	],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [">0.2%", "not dead", "not op_mini all"],
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -65,7 +74,7 @@
 		]
 	},
 	"dependencies": {
-		"@atlaskit/icon": "^22.15.1",
+		"@atlaskit/icon": "^22.15.2",
 		"@emotion/css": "^11.13.0",
 		"@radix-ui/react-accordion": "^1.2.0",
 		"@radix-ui/react-avatar": "^1.1.0",
@@ -127,7 +136,7 @@
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-formatjs": "^4.13.3",
-		"eslint-plugin-react": "^7.35.1",
+		"eslint-plugin-react": "^7.35.2",
 		"eslint-plugin-react-hooks": "^4.6.2",
 		"eslint-plugin-react-refresh": "^0.4.11",
 		"eslint-plugin-tailwindcss": "^3.17.4",
@@ -147,7 +156,7 @@
 		"tailwindcss": "^3.4.10",
 		"typescript": "^5.5.4",
 		"typescript-plugin-css-modules": "^5.1.0",
-		"vite": "^5.4.2",
+		"vite": "^5.4.3",
 		"vite-plugin-dts": "^4.1.0",
 		"vitest": "^2.0.5"
 	},
