@@ -11,7 +11,9 @@
 	"description": "",
 	"module": "dist/index.js",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"types": "./dist/index.d.ts",
 	"style": [
 		"dist/styles.css",
@@ -21,7 +23,9 @@
 	"scripts": {
 		"build:lib": "tsc --noEmit -p tsconfig.lib.json && vitest run && vite build -c vite.config.lib.ts && TAILWIND_IMPORTANT=true vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist && npm run tsc:plugin",
 		"build:sc": "node ./showcase/copySources.js && tsc --noEmit && vite build -c vite.config.showcase.ts && node ./showcase/copyIndexTo404.js",
+		"build:sc-debug": "node ./showcase/copySources.js && tsc --noEmit && vite build --mode development -c vite.config.showcase.ts && node ./showcase/copyIndexTo404.js",
 		"preview": "vitest run && npm run build:sc && vite preview -c vite.config.showcase.ts",
+		"previewdebug": "vitest run && npm run build:sc-debug && vite preview --mode development  -c vite.config.showcase.ts",
 		"dev:lib": "vite build -c vite.config.lib.ts --watch",
 		"dev:sc": "node ./showcase/copySources.js  && npm run messages:compile && vite -c vite.config.showcase.ts --open",
 		"eslint": "eslint **/*.ts*",
@@ -54,10 +58,17 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": ["en", "de"],
+	"supportedLocales": [
+		"en",
+		"de"
+	],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [">0.2%", "not dead", "not op_mini all"],
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -65,7 +76,7 @@
 		]
 	},
 	"dependencies": {
-		"@atlaskit/icon": "^22.15.1",
+		"@atlaskit/icon": "^22.15.2",
 		"@emotion/css": "^11.13.0",
 		"@radix-ui/react-accordion": "^1.2.0",
 		"@radix-ui/react-avatar": "^1.1.0",
@@ -118,6 +129,7 @@
 		"@formatjs/cli": "^6.2.12",
 		"@monaco-editor/react": "^4.6.0",
 		"@total-typescript/ts-reset": "^0.6.1",
+		"@types/node": "^22.5.4",
 		"@types/react": "^18.3.5",
 		"@types/react-dom": "^18.3.0",
 		"@typescript-eslint/eslint-plugin": "^8.4.0",
@@ -127,13 +139,14 @@
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-formatjs": "^4.13.3",
-		"eslint-plugin-react": "^7.35.1",
+		"eslint-plugin-react": "^7.35.2",
 		"eslint-plugin-react-hooks": "^4.6.2",
 		"eslint-plugin-react-refresh": "^0.4.11",
 		"eslint-plugin-tailwindcss": "^3.17.4",
-		"postcss": "^8.4.44",
+		"postcss": "^8.4.45",
 		"prettier": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.6",
+		"prismjs": "^1.29.0",
 		"process": "^0.11.10",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
@@ -147,7 +160,7 @@
 		"tailwindcss": "^3.4.10",
 		"typescript": "^5.5.4",
 		"typescript-plugin-css-modules": "^5.1.0",
-		"vite": "^5.4.2",
+		"vite": "^5.4.3",
 		"vite-plugin-dts": "^4.1.0",
 		"vitest": "^2.0.5"
 	},

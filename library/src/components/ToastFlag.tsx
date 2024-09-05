@@ -141,7 +141,7 @@ export function showFlagExtended({
 			appearance={appearance}
 			type={flagType}
 			style={flagStyle}
-			className="bottom-0 bg-transparent p-0"
+			className="bottom-0 bg-transparent p-0 shadow-none"
 			{...props}
 		/>,
 		{

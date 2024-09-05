@@ -1,15 +1,30 @@
 import dayjs, { type Dayjs } from "dayjs"
 import weekOfYear from "dayjs/plugin/weekOfYear"
 import weekYear from "dayjs/plugin/weekYear"
+import localeData from "dayjs/plugin/localeData"
 dayjs.extend(weekOfYear)
 dayjs.extend(weekYear)
+dayjs.extend(localeData)
 import type React from "react"
 import { Fragment, forwardRef } from "react"
+
+// if more locales then english and germans are needed, we need to enable them first here
+import "dayjs/locale/de"
+//import "dayjs/locale/es"
+//import "dayjs/locale/fr"
+//import "dayjs/locale/it"
+//import "dayjs/locale/nl"
 
 import type { TimeTableViewType } from "./TimeTable"
 import type { TimeFrameDay } from "./TimeTableConfigStore"
 
-const headerTimeSlotFormat = "HH:mm"
+const headerTimeSlotFormat: { [viewType in TimeTableViewType]: string } = {
+	hours: "HH:mm",
+	days: "dd HH:mm",
+	weeks: "HH:mm",
+	months: "HH:mm",
+	years: "HH:mm",
+}
 
 export function headerText(
 	tsStart: Dayjs,
@@ -49,6 +64,7 @@ type TimeTableHeaderProps = {
 	/** a dayjs format string */
 	dateHeaderTextFormat?: string
 	weekStartsOnSunday: boolean
+	locale?: "en" | "de"
 }
 
 export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
@@ -63,9 +79,15 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 		timeFrameDay,
 		dateHeaderTextFormat,
 		weekStartsOnSunday,
+		locale,
 	}: TimeTableHeaderProps,
 	tableHeaderRef: React.Ref<HTMLTableSectionElement>,
 ) {
+	const currentLocale = dayjs.locale()
+	if (locale && locale !== currentLocale) {
+		dayjs.locale(locale)
+	}
+
 	const viewTypeUnit = viewType === "hours" ? "days" : viewType
 	const daysOrWeeksOrMonths = [
 		...new Set(
@@ -217,7 +239,9 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								} ${showTimeSlotHeader ? "pt-1" : ""}`}
 							>
 								{showTimeSlotHeader
-									? slot.format(headerTimeSlotFormat)
+									? slot.format(
+											headerTimeSlotFormat[viewType],
+										)
 									: undefined}
 							</th>
 						)

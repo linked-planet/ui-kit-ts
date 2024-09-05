@@ -435,6 +435,7 @@ function Example() {
 	const [showTimeSlotHeader, setShowTimeSlotHeader] = useState(true)
 	const [hideOutOfDayRangeMarkers, setHideOutOfDayRangeMarkers] =
 		useState(false)
+	const [locale, setLocale] = useState<"en" | "de">("en")
 
 	const [timeFrame, setTimeFrame] = useState({
 		startDate: startDateInitial,
@@ -734,6 +735,21 @@ function Example() {
 						<option value="years">Years</option>
 					</select>
 				</div>
+				<div className="grid grid-cols-2 items-start gap-2">
+					<label htmlFor="locale" className="mr-4">
+						Locale
+					</label>
+					<select
+						name="locale"
+						onChange={(e) =>
+							setLocale(e.target.value as "en" | "de")
+						}
+						value={locale}
+					>
+						<option value="en">en</option>
+						<option value="de">de</option>
+					</select>
+				</div>
 			</div>
 			<div className="flex-start flex">
 				<Button
@@ -800,6 +816,7 @@ function Example() {
 					hideOutOfRangeMarkers={hideOutOfDayRangeMarkers}
 					isCellDisabled={isCellDisabled}
 					viewType={viewType}
+					locale={locale}
 				/>
 			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>

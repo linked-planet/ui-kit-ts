@@ -9,7 +9,7 @@ import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
 function JoyrideShowcase(props: ShowcaseProps) {
 	//#region joyride
 	// fix missing global
-	if (!window.global) window.global = window
+	if (!(window as any).global) (window as any).global = window
 
 	const [isJoyrideActive, setIsJoyrideActive] = useState(false)
 	const example = (
