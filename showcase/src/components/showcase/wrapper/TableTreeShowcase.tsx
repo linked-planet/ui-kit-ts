@@ -1,6 +1,5 @@
-import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import TableTree, {
 	Cell,
@@ -21,7 +20,7 @@ function TableTreeShowcase(props: ShowcaseProps) {
 		id: string
 		title: string
 		description: string
-		children?: TableTreeItem[]
+		children: TableTreeItem[]
 	}
 
 	const bookDataTree = [
@@ -50,14 +49,14 @@ function TableTreeShowcase(props: ShowcaseProps) {
 				},
 			],
 		},
-		{
+		/*{
 			id: "2",
 			content: { title: "Typescript is fun", description: "2" },
 			hasChildren: false,
-		},
+		},*/
 	]
 
-	const bookDataTree2 = [
+	const bookDataTree2: TableTreeItem[] = [
 		{
 			id: "1",
 			title: "It is lonely at the top.",
@@ -72,6 +71,7 @@ function TableTreeShowcase(props: ShowcaseProps) {
 							id: "1.1.1",
 							title: "I am deeply nested.",
 							description: "1.1.1",
+							children: [],
 						},
 					],
 				},
@@ -81,6 +81,7 @@ function TableTreeShowcase(props: ShowcaseProps) {
 			id: "2",
 			title: "Typescript is fun",
 			description: "2",
+			children: [],
 		},
 	]
 	const example1 = (
@@ -115,7 +116,7 @@ function TableTreeShowcase(props: ShowcaseProps) {
 						itemId={data.description}
 						items={data.children}
 						hasChildren={
-							data?.children != undefined &&
+							data?.children !== undefined &&
 							data.children.length > 0
 						}
 						isDefaultExpaned={false}
@@ -123,8 +124,13 @@ function TableTreeShowcase(props: ShowcaseProps) {
 						<Cell singleLine={true}>
 							<div
 								onClick={() =>
-									window.alert("onClick: " + data.title)
+									window.alert(`onClick: ${data.title}`)
 								}
+								onKeyUp={(e) => {
+									if (e.key === "Enter") {
+										window.alert(`onKeyUp: ${data.title}`)
+									}
+								}}
 							>
 								{data.title}
 							</div>
@@ -132,8 +138,15 @@ function TableTreeShowcase(props: ShowcaseProps) {
 						<Cell singleLine={true}>
 							<div
 								onClick={() =>
-									window.alert("onClick: " + data.description)
+									window.alert(`onClick: ${data.description}`)
 								}
+								onKeyUp={(e) => {
+									if (e.key === "Enter") {
+										window.alert(
+											`onKeyUp: ${data.description}`,
+										)
+									}
+								}}
 							>
 								{data.description}
 							</div>
