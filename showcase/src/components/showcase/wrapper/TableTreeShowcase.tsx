@@ -119,7 +119,7 @@ function TableTreeShowcase(props: ShowcaseProps) {
 							data?.children !== undefined &&
 							data.children.length > 0
 						}
-						isDefaultExpaned={false}
+						isDefaultExpanded={false}
 					>
 						<Cell singleLine={true}>
 							<div
