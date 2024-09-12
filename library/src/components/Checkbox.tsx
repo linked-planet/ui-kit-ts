@@ -1,5 +1,3 @@
-import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
-import CheckboxIndeterminateIcon from "@atlaskit/icon/glyph/checkbox-indeterminate"
 import type React from "react"
 import {
 	type ForwardedRef,
@@ -13,7 +11,7 @@ import {
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./inputs/ErrorHelpWrapper"
-import { IconSizeHelper } from "./IconSizeHelper"
+import { CheckIcon, MinusIcon } from "lucide-react"
 
 type AdditionalCheckboxPropsWithIndeterminate = {
 	checked?: boolean
@@ -45,21 +43,19 @@ type CheckboxProps = Omit<
 		testId?: string
 	}
 
-const checkBoxSize = "size-[15px] box-border" as const
-const checkBoxClickableSize = "size-[20px] box-border" as const
+const checkBoxSize = "size-4 box-border" as const
 
 const checkBoxStyles = twJoin(
-	"relative bg-input hover:bg-input-hovered focus:bg-input-active border-border-bold border-solid border-2 focus:border-selected-bold-hovered hover:border-selected-bold-hovered box-border flex flex-none items-center justify-center mr-2 ease-linear transition duration-150 cursor-default rounded-[3px] outline-none outline-0 outline-offset-0",
+	"bg-input hover:bg-input-hovered focus:bg-input-active border-border-bold border-solid border-2 box-border flex flex-none items-center justify-center ease-linear transition duration-150 cursor-default",
+	"rounded focus:outline outline-offset-4 outline-[1.5px] outline-brand-bold",
 	checkBoxSize,
 )
 
 const disabledStyles =
-	"cursor-not-allowed hover:bg-input hover:border-border focus:bg-input border-disabled" as const
+	"disabled:cursor-not-allowed disabled:bg-disabled border-disabled" as const
 
-const checkBoxCheckedStyles =
-	"text-selected-bold hover:text-selected-bold-hovered border-selected-border opacity-100" as const
-const checkBoxUncheckedStyles = "border-border text-transparent" as const
-const checkBoxInvalidStyles = "border-danger-border" as const
+const checkBoxInvalidStyles =
+	"border-danger-border hover:border-danger-border checked:border-danger-border" as const
 
 //#region label styles
 const labelStyles =
@@ -143,32 +139,12 @@ const CheckboxI = (
 		<>
 			<div
 				className={twMerge(
-					"flex items-center justify-start",
+					"flex items-center justify-start gap-1",
 					className,
 				)}
 				style={style}
 			>
-				<div
-					className={twMerge(
-						checkBoxStyles,
-						checked
-							? checkBoxCheckedStyles
-							: checkBoxUncheckedStyles,
-						invalid ? checkBoxInvalidStyles : undefined,
-						disabled ? disabledStyles : undefined,
-					)}
-				>
-					<IconSizeHelper
-						className={
-							"absolute inset-0 size-full items-center justify-center"
-						}
-					>
-						{!indeterminate ? (
-							<CheckboxIcon label="" size="medium" />
-						) : (
-							<CheckboxIndeterminateIcon label="" />
-						)}
-					</IconSizeHelper>
+				<div className={"relative flex items-center justify-center"}>
 					<input
 						type="checkbox"
 						id={id}
@@ -177,7 +153,12 @@ const CheckboxI = (
 						disabled={disabled}
 						checked={!!checked}
 						required={required}
-						className={`absolute m-0 box-border ${checkBoxClickableSize} appearance-none`}
+						className={twMerge(
+							"appearance-none",
+							checkBoxStyles,
+							invalid ? checkBoxInvalidStyles : undefined,
+							disabled ? disabledStyles : undefined,
+						)}
 						onChange={(e) => {
 							if (checkedProp == null) {
 								setChecked(e.target.checked)
@@ -187,6 +168,26 @@ const CheckboxI = (
 						}}
 						{...props}
 					/>
+
+					<div
+						className={`flex justify-center items-center absolute inset-0 border-2 border-solid border-transparent ${invalid ? "border-danger-bold" : undefined} pointer-events-none duration-150 ease-linear ${checked ? "bg-brand-bold" : "bg-transparent"} rounded-[3px]`}
+					>
+						{!indeterminate ? (
+							<CheckIcon
+								className={`size-3 duration-150 ease-linear text-text-inverse ${checked ? null : "opacity-0"}`}
+								style={{
+									strokeWidth: 4,
+								}}
+							/>
+						) : (
+							<MinusIcon
+								className={`size-3 duration-150 ease-linear text-text-inverse ${checked ? null : "opacity-0"}`}
+								style={{
+									strokeWidth: 4,
+								}}
+							/>
+						)}
+					</div>
 				</div>
 
 				<label
