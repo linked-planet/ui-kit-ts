@@ -217,12 +217,12 @@ export const theme = {
 
 		danger: {
 			DEFAULT: `var(--ds-background-danger, ${colors.red[50]})`,
-			hovered: `var(--ds-background-danger-hovered, ${colors.red[75]})`,
-			pressed: `var(--ds-background-danger-pressed, ${colors.red[100]})`,
+			hovered: `var(--ds-background-danger-hovered, ${colors.red[100]})`,
+			pressed: `var(--ds-background-danger-pressed, ${colors.red[200]})`,
 			bold: {
-				DEFAULT: `var(--ds-background-danger-bold, ${colors.red[500]})`,
-				hovered: `var(--ds-background-danger-bold-hovered, ${colors.red[300]})`,
-				pressed: `var(--ds-background-danger-bold-pressed, ${colors.red[500]})`,
+				DEFAULT: `var(--ds-background-danger-bold, ${colors.red[600]})`,
+				hovered: `var(--ds-background-danger-bold-hovered, ${colors.red[700]})`,
+				pressed: `var(--ds-background-danger-bold-pressed, ${colors.red[800]})`,
 			},
 			text: `var(--ds-text-danger, ${colors.red[800]})`,
 			border: `var(--ds-border-danger, ${colors.red[600]})`,
