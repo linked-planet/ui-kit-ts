@@ -1,0 +1,13 @@
+@use "sass:meta";
+
+html[data-color-mode="light"], 
+html[data-color-mode="fallback"],
+html[data-color-mode="aui-light"],
+html[data-color-mode="auto"]
+{
+  @include meta.load-css("highlight.js/styles/github");
+}
+html[data-color-mode="dark"] {
+  @include meta.load-css("highlight.js/styles/github-dark-dimmed");
+}
+

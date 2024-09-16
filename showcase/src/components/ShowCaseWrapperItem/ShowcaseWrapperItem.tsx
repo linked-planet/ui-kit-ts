@@ -7,8 +7,7 @@ import {
 	useRef,
 	useState,
 } from "react"
-import { Tabs, Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
-import { CodeBlock } from "@atlaskit/code"
+import { Tabs, Button, ButtonGroup, CodeBlock } from "@linked-planet/ui-kit-ts"
 
 import styles from "./ShowCaseWrapperItem.module.css"
 import { useLocation, useSearchParams } from "react-router-dom"
@@ -213,7 +212,7 @@ function ShowCaseExample({
 					{!code && <span>No sources found...</span>}
 					{code && (
 						<div>
-							<CodeBlock text={code} language="typescript" />
+							<CodeBlock language="typescript">{code}</CodeBlock>
 						</div>
 					)}
 				</div>
