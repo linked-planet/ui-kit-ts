@@ -1,8 +1,8 @@
-import React from "react"
+import { CodeBlock } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { CodeBlock } from "@atlaskit/code"
+import { CodeBlock as AKCodeBlock } from "@atlaskit/code"
 
 function CodeBlockShowcase(props: ShowcaseProps) {
 	//#region code-block
@@ -11,8 +11,12 @@ function CodeBlockShowcase(props: ShowcaseProps) {
         System.out.println('Hello world')
     }
 }`
-	const example = <CodeBlock language="java" text={code} />
+	const example = <AKCodeBlock language="java" text={code} />
 	//#endregion code-block
+
+	//#region code-block-own
+	const exampleOwn = <CodeBlock language="java">{code}</CodeBlock>
+	//#endregion code-block-own
 
 	return (
 		<ShowcaseWrapperItem
@@ -25,6 +29,11 @@ function CodeBlockShowcase(props: ShowcaseProps) {
 				},
 			]}
 			examples={[
+				{
+					title: "Example Own",
+					example: exampleOwn,
+					sourceCodeExampleId: "code-block-own",
+				},
 				{
 					title: "Example",
 					example,
