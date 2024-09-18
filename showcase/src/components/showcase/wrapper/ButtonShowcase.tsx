@@ -135,7 +135,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 
 	//#region button
 	const lpExample = (
-		<ButtonGroup>
+		<ButtonGroup data-id="test-data-id">
 			<Button
 				appearance="default"
 				onClick={() => console.log("Button pressed")}

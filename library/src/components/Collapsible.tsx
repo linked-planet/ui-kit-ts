@@ -2,7 +2,7 @@ import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
 import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import * as CollapsibleRUI from "@radix-ui/react-collapsible"
-import { forwardRef, useCallback, useState } from "react"
+import { forwardRef, type HTMLProps, useCallback, useState } from "react"
 import { twMerge } from "tailwind-merge"
 
 type CollapsibleProps = {
@@ -22,7 +22,7 @@ type CollapsibleProps = {
 	openButtonPosition?: "left" | "right" | "hidden"
 	id?: string
 	testId?: string
-}
+} & HTMLProps<HTMLDivElement>
 
 export const Collapsible = forwardRef(
 	(
@@ -43,6 +43,7 @@ export const Collapsible = forwardRef(
 			children,
 			id,
 			testId,
+			...props
 		}: CollapsibleProps,
 		ref: React.ForwardedRef<HTMLDivElement>,
 	) => {
@@ -76,6 +77,7 @@ export const Collapsible = forwardRef(
 
 		return (
 			<CollapsibleRUI.Root
+				{...props}
 				open={open}
 				defaultOpen={defaultOpen}
 				onOpenChange={openCB}
@@ -84,6 +86,7 @@ export const Collapsible = forwardRef(
 				data-testid={testId}
 				id={id}
 				ref={ref}
+				
 			>
 				<CollapsibleRUI.Trigger
 					className={twMerge(

@@ -1,5 +1,5 @@
 import type React from "react"
-import { type CSSProperties, forwardRef, useMemo } from "react"
+import { type CSSProperties, forwardRef, type HTMLProps, useMemo } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { LoadingSpinner } from "./LoadingSpinner"
 
@@ -211,15 +211,14 @@ export const ButtonGroup = ({
 	children,
 	className,
 	style,
-}: {
-	children: React.ReactNode
-	className?: string
-	style?: CSSProperties
-}) => {
+	...props
+}: HTMLProps<HTMLDivElement>) => {
 	return (
 		<div
+			{...props}
 			className={twMerge("inline-flex flex-wrap gap-2 p-2", className)} //gap-2 and p-2 are because of the button outlines on focus
 			style={style}
+
 		>
 			{children}
 		</div>

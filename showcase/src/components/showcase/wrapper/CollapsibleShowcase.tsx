@@ -9,6 +9,7 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 		<Collapsible
 			header={<h4>Collapsible Title</h4>}
 			openButtonPosition="left"
+			data-id="test-data-id"
 		>
 			<div className="p-4">collapsible content</div>
 		</Collapsible>
