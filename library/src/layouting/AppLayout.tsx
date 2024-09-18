@@ -50,7 +50,7 @@ function Container({
 	return (
 		<div
 			className={twMerge(
-				"relative m-0 box-border grid h-full min-h-dvh w-full",
+				"relative m-0 box-border grid h-dvh w-full",
 				className,
 			)}
 			data-layout-container="true"

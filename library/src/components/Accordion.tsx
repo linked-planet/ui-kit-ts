@@ -34,10 +34,13 @@ type AccordionMultipleProps = Pick<
 type AccordionContainerProps = (
 	| AccordionSingleProps
 	| AccordionMultipleProps
-) & { testId?: string }
+) & { 
+	"data-testid"?: string
+	"data-id"?: string
+}
 
-const Container = ({ testId, ...props }: AccordionContainerProps) => {
-	return <RAccordion.Root data-testid={testId} {...props} />
+const Container = (props: AccordionContainerProps) => {
+	return <RAccordion.Root {...props} />
 }
 
 type AccordionItemProps = Pick<
@@ -51,11 +54,12 @@ const AccordionItem = React.forwardRef(
 		forwardedRef: Ref<HTMLDivElement>,
 	) => (
 		<RAccordion.Item
+			{...props}
 			className={twMerge(
 				"border-border overflow-hidden  border-b-2 first:rounded-t last:rounded-b last:border-b-0 focus-within:relative focus-within:z-10",
 				className,
 			)}
-			{...props}
+			
 			ref={forwardedRef}
 		>
 			{children}
