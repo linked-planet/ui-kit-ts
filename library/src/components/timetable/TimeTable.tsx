@@ -309,7 +309,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			let itemCount = 0
 			for (const groupId in itemsOutsideOfDayRange) {
 				const group = itemsOutsideOfDayRange[groupId]
-				itemCount += group.length
+				if (group?.length) {
+					itemCount += group.length
+				}
 			}
 			if (itemCount > 0) {
 				setMessage?.({

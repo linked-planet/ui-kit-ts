@@ -17,12 +17,11 @@ function WrappersPage() {
 	}, [])
 
 	return (
-		<div>
-			<h1>Wrappers</h1>
+		<>
 			{Object.entries(scs).map(([id, component]) =>
 				React.cloneElement(component, { id }),
 			)}
-		</div>
+		</>
 	)
 }
 

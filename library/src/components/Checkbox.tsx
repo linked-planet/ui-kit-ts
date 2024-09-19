@@ -47,7 +47,7 @@ const checkBoxSize = "size-4 box-border" as const
 
 const checkBoxStyles = twJoin(
 	"bg-input hover:bg-input-hovered focus:bg-input-active border-border-bold border-solid border-2 box-border flex flex-none items-center justify-center ease-linear transition duration-150 cursor-default",
-	"rounded focus:outline outline-offset-4 outline-[1.5px] outline-brand-bold",
+	"rounded focus:outline outline-offset-1 outline-[1.5px] outline-brand-bold",
 	checkBoxSize,
 )
 
@@ -139,7 +139,7 @@ const CheckboxI = (
 		<>
 			<div
 				className={twMerge(
-					"flex items-center justify-start gap-1",
+					"flex items-center justify-start gap-x-1",
 					className,
 				)}
 				style={style}
