@@ -121,14 +121,14 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 			basicProperties,
 			timeTableConfigStore[ident].basicProperties,
 			"start date updated",
-			timeTableConfigStore[ident].startDate !== startDate.format(),
-			timeTableConfigStore[ident].startDate !== startDate.format()
-				? `${timeTableConfigStore[ident].startDate} !== ${startDate.format()}`
+			timeTableConfigStore[ident].startDate !== startDateString,
+			timeTableConfigStore[ident].startDate !== startDateString
+				? `${timeTableConfigStore[ident].startDate} !== ${startDateString}`
 				: "",
 			"end date updated",
-			timeTableConfigStore[ident].endDate !== endDate.format(),
-			timeTableConfigStore[ident].endDate !== endDate.format()
-				? `${timeTableConfigStore[ident].endDate} !== ${endDate.format()}`
+			timeTableConfigStore[ident].endDate !== endDateString,
+			timeTableConfigStore[ident].endDate !== endDateString
+				? `${timeTableConfigStore[ident].endDate} !== ${endDateString}`
 				: "",
 			"time slot minutes updated",
 			timeTableConfigStore[ident].propTimeSlotMinutes !==
