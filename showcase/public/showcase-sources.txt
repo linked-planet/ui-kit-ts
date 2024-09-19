@@ -8,7 +8,7 @@ import ShowcaseWrapperItem, {
 function AccordionExample() {
 	return (
 		<div className="bg-surface">
-			<Accordion.Container type="single" defaultValue="item-1">
+			<Accordion.Container type="single" defaultValue="item-1" data-id="test-data-id">
 				<Accordion.Item value="item-1">
 					<Accordion.Trigger>Is it accessible?</Accordion.Trigger>
 					<Accordion.Content>
@@ -1396,7 +1396,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 
 	//#region button
 	const lpExample = (
-		<ButtonGroup>
+		<ButtonGroup data-id="test-data-id">
 			<Button
 				appearance="default"
 				onClick={() => console.log("Button pressed")}
@@ -2209,6 +2209,7 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 		<Collapsible
 			header={<h4>Collapsible Title</h4>}
 			openButtonPosition="left"
+			data-id="test-data-id"
 		>
 			<div className="p-4">collapsible content</div>
 		</Collapsible>

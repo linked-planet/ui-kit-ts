@@ -1,11 +1,11 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseTopNavigation from "./components/showcase/ShowcaseTopNavigation"
 import ShowcaseLeftSidebar from "./components/showcase/ShowcaseLeftSidebar"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 import IntroPage from "./page/IntroPage"
 import NotFoundPage from "./page/NotFoundPage"
 
-import { AppLayout, LocaleProvider } from "@linked-planet/ui-kit-ts"
+import { AppLayout, LocaleProvider, PageLayout } from "@linked-planet/ui-kit-ts"
 import SinglePage from "./page/SinglePage"
 import WrappersPage from "./page/WrappersPage"
 
@@ -21,29 +21,46 @@ export default function ShowcaseApp() {
 		<BrowserRouter basename="ui-kit-ts">
 			<LocaleProvider>
 				<AppLayout.Container>
-					<ShowcaseTopNavigation
-						sidebarPosition={sidebarPosition}
-						setSidebarPosition={setSidebarPosition}
-					/>
+					<AppLayout.TopNavigation>
+						<ShowcaseTopNavigation
+							sidebarPosition={sidebarPosition}
+							setSidebarPosition={setSidebarPosition}
+						/>
+					</AppLayout.TopNavigation>
+
 					<AppLayout.Content>
-						<ShowcaseLeftSidebar position={sidebarPosition} />
-						<AppLayout.Main className="overflow-hidden p-4">
-							<Routes>
-								<Route
-									path="/"
-									element={<Navigate to="/intro" />}
-								/>
-								<Route path="/intro" element={<IntroPage />} />
-								<Route
-									path="/wrappers"
-									element={<WrappersPage />}
-								/>
-								<Route
-									path="/single"
-									element={<SinglePage />}
-								/>
-								<Route path="*" element={<NotFoundPage />} />
-							</Routes>
+						<ShowcaseLeftSidebar position="left" />
+						<AppLayout.Main className="overflow-hidden">
+							<PageLayout.Page>
+								<PageLayout.PageBody>
+									<PageLayout.PageBodyContent>
+										<Routes>
+											<Route
+												path="/"
+												element={
+													<Navigate to="/intro" />
+												}
+											/>
+											<Route
+												path="/intro"
+												element={<IntroPage />}
+											/>
+											<Route
+												path="/wrappers"
+												element={<WrappersPage />}
+											/>
+											<Route
+												path="/single"
+												element={<SinglePage />}
+											/>
+											<Route
+												path="*"
+												element={<NotFoundPage />}
+											/>
+										</Routes>
+									</PageLayout.PageBodyContent>
+								</PageLayout.PageBody>
+							</PageLayout.Page>
 						</AppLayout.Main>
 					</AppLayout.Content>
 				</AppLayout.Container>
