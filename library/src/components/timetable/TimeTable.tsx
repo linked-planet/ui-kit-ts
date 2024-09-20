@@ -238,10 +238,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		!disableMessages,
 	)
 
-	useEffect(() => {
-		console.log("START DATE", startDate.format(), endDate.format())
-	}, [startDate, endDate])
-
 	// change on viewType
 	useEffect(() => {
 		setMessage?.(undefined) // clear the message on time frame change
