@@ -234,8 +234,8 @@ export function useTTCDates(ident: string) {
  */
 export function useTTCTimeFrameOfDay(ident: string) {
 	const timeFrameOfDay = useSnapshot(
-		timeTableConfigStore[ident].basicProperties.timeFrameDay,
-	)
+		timeTableConfigStore[ident].basicProperties,
+	).timeFrameDay
 	return timeFrameOfDay
 }
 
@@ -244,8 +244,8 @@ export function useTTCTimeFrameOfDay(ident: string) {
  */
 export function useTTCSlotsArray(ident: string) {
 	const slotsArray = useSnapshot(
-		timeTableConfigStore[ident].basicProperties.slotsArray,
-	)
+		timeTableConfigStore[ident].basicProperties,
+	).slotsArray
 	return slotsArray
 }
 
@@ -253,8 +253,9 @@ export function useTTCSlotsArray(ident: string) {
  * returns the time slot minutes and a setter for it
  */
 export function useTTCTimeSlotMinutes(ident: string) {
-	const timeSlotMinutes = useSnapshot(timeTableConfigStore[ident])
-		.basicProperties.timeSlotMinutes
+	const timeSlotMinutes = useSnapshot(
+		timeTableConfigStore[ident].basicProperties,
+	).timeSlotMinutes
 	return timeSlotMinutes
 }
 
