@@ -219,9 +219,10 @@ export function clearTimeSlotSelection(
 ) {
 	const store = timeTableSelectionStore[ident]
 	if (!store) {
-		throw new Error(
+		return
+		/*throw new Error(
 			`TimeTable - no time table selection store to clear found for ident: ${ident}`,
-		)
+		)*/
 	}
 	store.selection.selectedTimeSlots = null
 	store.selection.groupId = null
