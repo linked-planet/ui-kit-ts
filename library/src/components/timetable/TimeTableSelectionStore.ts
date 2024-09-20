@@ -223,12 +223,10 @@ export function clearTimeSlotSelection(
 			`TimeTable - no time table selection store to clear found for ident: ${ident}`,
 		)
 	}
-	const needsNotify =
-		store.selection.selectedTimeSlots?.length && needsNotification
 	store.selection.selectedTimeSlots = null
 	store.selection.groupId = null
 	store.multiSelectionMode = false
-	if (needsNotify) {
+	if (needsNotification) {
 		notifyOnTimeRangeSelected(ident)
 	}
 }
