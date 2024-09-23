@@ -33,6 +33,7 @@ import {
 	type onTimeRangeSelectedType,
 } from "./TimeTableSelectionStore"
 import { getStartAndEndSlot, useGroupRows } from "./useGoupRows"
+import { twMerge } from "tailwind-merge"
 
 export interface TimeSlotBooking {
 	title: string
@@ -177,6 +178,9 @@ export interface LPTimeTableProps<
 	 * For those who require to start the week on Sunday, this can be set to true.
 	 */
 	weekStartsOnSunday?: boolean
+
+	className?: string
+	style?: React.CSSProperties
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -232,6 +236,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	dateHeaderTextFormat,
 	weekStartsOnSunday = false,
 	disableMessages = false,
+	className,
+	style,
 }: LPTimeTableProps<G, I>) => {
 	// if we have viewType of days, we need to round the start and end date to the start and end of the day
 	const { setMessage, translatedMessage } = useTimeTableMessage(
@@ -456,57 +462,57 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					/>
 				)}
 			</div>
-			<div className="size-full relative">
-				<TimeTableIdentProvider ident={storeIdent}>
-					<div
-						className="overflow-auto relative"
-						style={{
-							height: `calc(${height} - ${inlineMessageRef.current?.clientHeight}px)`,
-						}}
-						ref={intersectionContainerRef}
+
+			<TimeTableIdentProvider ident={storeIdent}>
+				<div
+					className={twMerge("overflow-auto relative", className)}
+					style={{
+						height: `calc(${height} - ${inlineMessageRef.current?.clientHeight}px)`,
+						...style,
+					}}
+					ref={intersectionContainerRef}
+				>
+					<table
+						className={
+							"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
+						}
+						ref={tableRef}
 					>
-						<table
-							className={
-								"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
+						<LPTimeTableHeader
+							slotsArray={slotsArray}
+							columnWidth={columnWidth}
+							groupHeaderColumnWidth={groupHeaderColumnWidth}
+							startDate={startDate}
+							endDate={endDate}
+							viewType={viewType}
+							timeFrameDay={timeFrameDay}
+							showTimeSlotHeader={
+								showTimeSlotHeader === undefined ||
+								showTimeSlotHeader === null
+									? viewType === "hours"
+									: showTimeSlotHeader
 							}
-							ref={tableRef}
-						>
-							<LPTimeTableHeader
-								slotsArray={slotsArray}
-								columnWidth={columnWidth}
-								groupHeaderColumnWidth={groupHeaderColumnWidth}
-								startDate={startDate}
-								endDate={endDate}
-								viewType={viewType}
-								timeFrameDay={timeFrameDay}
-								showTimeSlotHeader={
-									showTimeSlotHeader === undefined ||
-									showTimeSlotHeader === null
-										? viewType === "hours"
-										: showTimeSlotHeader
+							dateHeaderTextFormat={dateHeaderTextFormat}
+							weekStartsOnSunday={weekStartsOnSunday}
+							locale={locale}
+							ref={tableHeaderRef}
+						/>
+						<tbody ref={tableBodyRef} className="table-fixed">
+							<TimeTableRows<G, I>
+								entries={entries}
+								selectedTimeSlotItem={selectedTimeSlotItem}
+								onTimeSlotItemClick={onTimeSlotItemClick}
+								onGroupClick={onGroupClick}
+								groupRows={groupRows}
+								intersectionContainerRef={
+									intersectionContainerRef
 								}
-								dateHeaderTextFormat={dateHeaderTextFormat}
-								weekStartsOnSunday={weekStartsOnSunday}
-								locale={locale}
-								ref={tableHeaderRef}
+								headerRef={tableHeaderRef}
 							/>
-							<tbody ref={tableBodyRef} className="table-fixed">
-								<TimeTableRows<G, I>
-									entries={entries}
-									selectedTimeSlotItem={selectedTimeSlotItem}
-									onTimeSlotItemClick={onTimeSlotItemClick}
-									onGroupClick={onGroupClick}
-									groupRows={groupRows}
-									intersectionContainerRef={
-										intersectionContainerRef
-									}
-									headerRef={tableHeaderRef}
-								/>
-							</tbody>
-						</table>
-					</div>
-				</TimeTableIdentProvider>
-			</div>
+						</tbody>
+					</table>
+				</div>
+			</TimeTableIdentProvider>
 		</>
 	)
 }
