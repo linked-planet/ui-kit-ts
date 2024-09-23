@@ -172,29 +172,51 @@ function ItemGroup({
 	hasSeparator,
 	children,
 	className,
+	titleClassName,
+	separatorClassName,
 	style,
+	titleStyle,
+	separatorStyle,
+	...props
 }: {
 	title?: string
 	hasSeparator?: boolean
 	children: React.ReactNode
 	className?: string
+	titleClassName?: string
+	separatorClassName?: string
 	style?: React.CSSProperties
+	titleStyle?: React.CSSProperties
+	separatorStyle?: React.CSSProperties
 }) {
-	return useMemo(
-		() => (
-			<RDd.Group className={twMerge("py-3", className)} style={style}>
-				{hasSeparator && (
-					<RDd.Separator className="border-border border-t-2 pb-4" />
-				)}
-				{title && (
-					<RDd.Label className="px-4 py-3 text-[11px] font-bold uppercase">
-						{title}
-					</RDd.Label>
-				)}
-				{children}
-			</RDd.Group>
-		),
-		[children, hasSeparator, title, className, style],
+	return (
+		<RDd.Group
+			{...props}
+			className={twMerge("py-3", className)}
+			style={style}
+		>
+			{hasSeparator && (
+				<RDd.Separator
+					className={twMerge(
+						"border-border border-t-2 pb-4",
+						separatorClassName,
+					)}
+					style={separatorStyle}
+				/>
+			)}
+			{title && (
+				<RDd.Label
+					className={twMerge(
+						"px-4 py-3 text-[11px] font-bold uppercase",
+						titleClassName,
+					)}
+					style={titleStyle}
+				>
+					{title}
+				</RDd.Label>
+			)}
+			{children}
+		</RDd.Group>
 	)
 }
 
