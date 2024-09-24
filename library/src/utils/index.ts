@@ -15,3 +15,5 @@ export type { TimeType, DateTimeType, DateType }
 import { isDateTimeType, isDateType, isTimeType } from "./DateUtils"
 export { isTimeType, isDateTimeType, isDateType }
 export * as DateUtils from "./DateUtils"
+
+export * from "./ErrorHandler"

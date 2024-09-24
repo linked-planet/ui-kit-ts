@@ -29,7 +29,10 @@ const translationsPath = "./translations-compiled"
 	"./translations-compiled/de.json"
 )*/
 const messageTranslations: Record<string, Record<string, string>> = {}
-export const defaultLanguage = navigator?.language.substring(0, 2) ?? "en"
+export const defaultLanguage =
+	typeof navigator !== "undefined"
+		? (navigator?.language.substring(0, 2) ?? "en")
+		: "en"
 // this would load all the message translations immediatly, but we simply use dynamic imports
 /*;(async function main() {
 	const loadMessages = async (language: string) => {
