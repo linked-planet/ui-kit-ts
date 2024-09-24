@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import { useMemo } from "react"
 import AccordionShowcase from "./components/showcase/wrapper/AccordionShowcase"
 import AnimatedListShowcase from "./components/showcase/wrapper/AnimatedListShowcase"
 import AvatarShowcase from "./components/showcase/wrapper/AvatarShowcase"
@@ -49,6 +49,7 @@ import SideNavigationShowcase from "./components/showcase/wrapper/SideNavigation
 import BlanketShowcase from "./components/showcase/wrapper/BlanketShowcase"
 import BreadcrumbsShowcase from "./components/showcase/wrapper/BreadcrumbsShowcase"
 import SectionMessageShowcase from "./components/showcase/wrapper/SectionMessageShowcase"
+import DragAndDropShowcase from "./components/showcase/wrapper/DragAndDropShowcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -97,6 +98,9 @@ export default function useShowcases({
 			),
 			"Data Table": (
 				<DataTableShowcase overallSourceCode={overallSourceCode} />
+			),
+			"Drag and Drop": (
+				<DragAndDropShowcase overallSourceCode={overallSourceCode} />
 			),
 			Dropdown: (
 				<DropDownMenuShowcase overallSourceCode={overallSourceCode} />
