@@ -1,4 +1,3 @@
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -49,6 +48,7 @@ function ExampleShowExtendedFlag() {
 						title: "1: This flag does not disappear!",
 						description:
 							"This is a standard not disappearing toast flag.",
+						autoClose: false,
 					})
 				}
 			>
