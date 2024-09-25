@@ -71,9 +71,11 @@ function CloseButton({
 	closeToast,
 	inverted,
 }: CloseButtonProps & { inverted: boolean }) {
-	const ref = useRef<HTMLDivElement>(null)
+	const ref = useRef<HTMLButtonElement>(null)
 	return (
-		<div
+		<button
+			type="button"
+			data-id="flag-close-button"
 			ref={ref}
 			className={`cursor-pointer ${
 				inverted ? "text-text" : "text-text-inverse"
@@ -86,7 +88,7 @@ function CloseButton({
 			}}
 		>
 			<CrossIcon label="Close" size="small" />
-		</div>
+		</button>
 	)
 }
 

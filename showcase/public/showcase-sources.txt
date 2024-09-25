@@ -3093,13 +3093,13 @@ function TagShowcase(props: ShowcaseProps) {
 		"Item 4",
 	])
 	const example = (
-		<DnD.DragAndDropPanel<string> items={items} onOrderChanged={setItems}>
+		<DnD.List<string> items={items} onOrderChanged={setItems}>
 			{items.map((item, i) => (
 				<DnD.DragItem key={item} draggableId={item} index={i} thin>
 					{item}
 				</DnD.DragItem>
 			))}
-		</DnD.DragAndDropPanel>
+		</DnD.List>
 	)
 	//#endregion dnd-list-example
 
