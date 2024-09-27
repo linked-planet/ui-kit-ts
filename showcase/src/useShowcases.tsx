@@ -50,6 +50,7 @@ import BlanketShowcase from "./components/showcase/wrapper/BlanketShowcase"
 import BreadcrumbsShowcase from "./components/showcase/wrapper/BreadcrumbsShowcase"
 import SectionMessageShowcase from "./components/showcase/wrapper/SectionMessageShowcase"
 import DragAndDropShowcase from "./components/showcase/wrapper/DragAndDropShowcase"
+import FormShowcase from "./components/showcase/wrapper/FormShowcase";
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -110,6 +111,7 @@ export default function useShowcases({
 			),
 			Flag: <FlagShowcase overallSourceCode={overallSourceCode} />,
 			Filters: <FiltersShowcase overallSourceCode={overallSourceCode} />,
+			Form: <FormShowcase overallSourceCode={overallSourceCode} />,
 			Icon: <IconShowcase overallSourceCode={overallSourceCode} />,
 			"Icon Size Helper": (
 				<IconSizeHelperShowcase overallSourceCode={overallSourceCode} />
