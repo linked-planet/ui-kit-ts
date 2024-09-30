@@ -50,6 +50,8 @@ import BlanketShowcase from "./components/showcase/wrapper/BlanketShowcase"
 import BreadcrumbsShowcase from "./components/showcase/wrapper/BreadcrumbsShowcase"
 import SectionMessageShowcase from "./components/showcase/wrapper/SectionMessageShowcase"
 import DragAndDropShowcase from "./components/showcase/wrapper/DragAndDropShowcase"
+import GlobalStateShowcase from "./components/showcase/wrapper/GlobalStateShowcase";
+import EventListShowcase from "./components/showcase/wrapper/EventListShowcase";
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -108,8 +110,12 @@ export default function useShowcases({
 			"Empty State": (
 				<EmptyStateShowcase overallSourceCode={overallSourceCode} />
 			),
+			"EventList": (
+				<EventListShowcase overallSourceCode={overallSourceCode} />
+			),
 			Flag: <FlagShowcase overallSourceCode={overallSourceCode} />,
 			Filters: <FiltersShowcase overallSourceCode={overallSourceCode} />,
+			GlobalState: <GlobalStateShowcase overallSourceCode={overallSourceCode} />,
 			Icon: <IconShowcase overallSourceCode={overallSourceCode} />,
 			"Icon Size Helper": (
 				<IconSizeHelperShowcase overallSourceCode={overallSourceCode} />
