@@ -7618,6 +7618,28 @@ function createMoreTestGroups(
 const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
 const endDateInitial = dayjs().startOf("day").add(5, "days").add(20, "hours")
 
+function testCustomHeaderRowTimeSlot({
+	timeSlot,
+	timeSlotMinutes,
+	isLastOfDay,
+	timeFrameOfDay,
+	viewType,
+}: TimeTableTypes.CustomHeadeRowTimeSlotProps) {
+	return <div>{timeSlot.format()}</div>
+}
+
+function customHeaderRowHeader({
+	slotsArray,
+	timeFrameOfDay,
+	viewType,
+}: {
+	slotsArray: readonly Dayjs[]
+	timeFrameOfDay: TimeTableTypes.TimeFrameDay
+	viewType: TimeTableTypes.TimeTableViewType
+}) {
+	return <div>HEADER</div>
+}
+
 function Example() {
 	//#region timetable
 
@@ -8013,6 +8035,10 @@ function Example() {
 					isCellDisabled={isCellDisabled}
 					viewType={viewType}
 					locale={locale}
+					customHeaderRow={{
+						timeSlot: testCustomHeaderRowTimeSlot,
+						header: customHeaderRowHeader,
+					}}
 				/>
 			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
