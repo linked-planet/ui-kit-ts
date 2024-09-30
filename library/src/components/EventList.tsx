@@ -60,6 +60,10 @@ function useOrderByDateBookings<T extends EventObject>(
 			let startDate = it.startDate ?? minStartTime
 			const endDate = it.endDate ?? maxEndTime
 
+			const timelineStartDay = startDate
+				.hour(dayStartTime[0])
+				.minute(dayStartTime[1])
+
 			while (startDate.isBefore(endDate)) {
 				const dt = DateUtils.toDateType(startDate)
 				const bookingOfThisDay = {
@@ -67,11 +71,17 @@ function useOrderByDateBookings<T extends EventObject>(
 					renderStartDate: startDate,
 					renderEndDate: endDate,
 				}
-				if (!it.startDate || it.startDate.isBefore(startDate)) {
+
+				if (it.startDate && it.startDate?.isBefore(timelineStartDay)) {
+					bookingOfThisDay.renderStartDate = startDate
+						.hour(dayStartTime[0])
+						.minute(dayStartTime[1])
+				} else if (!it.startDate || it.startDate.isBefore(startDate)) {
 					bookingOfThisDay.renderStartDate = startDate
 						.hour(dayStartTime[0])
 						.minute(dayStartTime[1])
 				}
+
 				const currEndDate = startDate
 					.hour(dayEndTime[0])
 					.minute(dayEndTime[1])
