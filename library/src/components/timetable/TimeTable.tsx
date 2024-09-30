@@ -5,7 +5,12 @@ import { type MutableRefObject, useCallback, useEffect, useRef } from "react"
 import useResizeObserver from "use-resize-observer"
 import { InlineMessage } from "../InlineMessage"
 import type { TimeTableItemProps } from "./ItemWrapper"
-import { LPTimeTableHeader, headerText } from "./TimeTableHeader"
+import {
+	type CustomHeaderRowHeaderProps,
+	type CustomHeaderRowTimeSlotProps,
+	LPTimeTableHeader,
+	headerText,
+} from "./TimeTableHeader"
 import {
 	PlaceHolderItemPlaceHolder,
 	type TimeTablePlaceholderItemProps,
@@ -181,6 +186,12 @@ export interface LPTimeTableProps<
 
 	className?: string
 	style?: React.CSSProperties
+
+	/** custom header row */
+	customHeaderRow?: {
+		timeSlot: (props: CustomHeaderRowTimeSlotProps) => JSX.Element
+		header: (props: CustomHeaderRowHeaderProps) => JSX.Element
+	}
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -238,6 +249,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	disableMessages = false,
 	className,
 	style,
+	customHeaderRow,
 }: LPTimeTableProps<G, I>) => {
 	// if we have viewType of days, we need to round the start and end date to the start and end of the day
 	const { setMessage, translatedMessage } = useTimeTableMessage(
@@ -495,6 +507,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 							dateHeaderTextFormat={dateHeaderTextFormat}
 							weekStartsOnSunday={weekStartsOnSunday}
 							locale={locale}
+							customHeaderRow={customHeaderRow}
 							ref={tableHeaderRef}
 						/>
 						<tbody ref={tableBodyRef} className="table-fixed">

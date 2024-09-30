@@ -41,6 +41,7 @@ import {
 	useTimeSlotSelection,
 } from "./TimeTableSelectionStore"
 import type { ItemRowEntry } from "./useGoupRows"
+import { getLeftAndWidth } from "./timeTableUtils"
 
 interface TimeTableRowsProps<
 	G extends TimeTableGroup,
@@ -407,16 +408,14 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				/>
 			)}
 			{itemsToRender && itemsToRender.length > 0 && (
-				<>
-					<div
-						className="box-border grid"
-						style={{
-							gridTemplateColumns,
-						}}
-					>
-						{itemsToRender}
-					</div>
-				</>
+				<div
+					className="box-border grid"
+					style={{
+						gridTemplateColumns,
+					}}
+				>
+					{itemsToRender}
+				</div>
 			)}
 			{afterCount > 0 && !hideOutOfRangeMarkers && (
 				<div
@@ -910,160 +909,4 @@ function useMouseHandlers<G extends TimeTableGroup>(
 		timeSlotNumber,
 		storeIdent,
 	])
-}
-
-/**
- * Gets the left and width css properties for an item to be rendered in %
- * @param item
- * @param startSlot
- * @param endSlot
- * @param slotsArray
- * @param timeSteps
- */
-function getLeftAndWidth(
-	item: TimeSlotBooking,
-	startSlot: number,
-	endSlot: number,
-	slotsArray: readonly Dayjs[],
-	timeFrameDay: TimeFrameDay,
-	viewType: TimeTableViewType,
-	timeSlotMinutes: number,
-) {
-	let itemModStart = item.startDate
-	const timeFrameStartStart = slotsArray[0]
-		.startOf("day")
-		.add(timeFrameDay.startHour, "hours")
-		.add(timeFrameDay.startMinute, "minutes")
-	if (item.startDate.isBefore(timeFrameStartStart)) {
-		itemModStart = timeFrameStartStart
-	} else if (
-		item.startDate.hour() < timeFrameDay.startHour ||
-		(item.startDate.hour() === timeFrameDay.startHour &&
-			item.startDate.minute() < timeFrameDay.startMinute)
-	) {
-		itemModStart = item.startDate
-			.startOf("day")
-			.add(timeFrameDay.startHour, "hour")
-			.add(timeFrameDay.startMinute, "minutes")
-	}
-
-	let itemModEnd = item.endDate
-	if (item.endDate.isBefore(item.startDate)) {
-		console.error(
-			"LPTimeTable - item with end date before start date found:",
-			item,
-			itemModStart,
-			itemModEnd,
-		)
-		itemModEnd = itemModStart
-	} else if (item.endDate.isSame(item.startDate)) {
-		console.error(
-			"LPTimeTable - item with end date same as start date found:",
-			item,
-			itemModStart,
-			itemModEnd,
-		)
-		itemModEnd = itemModStart
-	} else {
-		let timeFrameEndEnd = slotsArray[slotsArray.length - 1]
-			.startOf("day")
-			.add(timeFrameDay.endHour, "hour")
-			.add(timeFrameDay.endMinute, "minutes")
-		if (viewType !== "hours") {
-			timeFrameEndEnd = timeFrameEndEnd
-				.add(1, viewType)
-				.subtract(1, "day")
-		}
-		if (itemModEnd.isAfter(timeFrameEndEnd)) {
-			itemModEnd = timeFrameEndEnd
-		} else if (item.endDate.hour() === 0 && item.endDate.minute() === 0) {
-			itemModEnd = itemModEnd.subtract(1, "minute")
-			itemModEnd = itemModEnd
-				.startOf("day")
-				.add(timeFrameDay.endHour, "hour")
-				.add(timeFrameDay.endMinute, "minutes")
-		} else if (
-			item.endDate.hour() > timeFrameDay.endHour ||
-			(item.endDate.hour() === timeFrameDay.endHour &&
-				item.endDate.minute() > timeFrameDay.endMinute)
-		) {
-			itemModEnd = itemModEnd
-				.startOf("day")
-				.add(timeFrameDay.endHour, "hour")
-				.add(timeFrameDay.endMinute, "minutes")
-		}
-	}
-
-	const dTimeDay = 24 * 60 - timeFrameDay.oneDayMinutes
-
-	let slotStart = slotsArray[startSlot]
-	if (viewType !== "hours") {
-		slotStart = slotStart
-			.add(timeFrameDay.startHour, "hour")
-			.add(timeFrameDay.startMinute, "minutes")
-	}
-	const dstartDays = itemModStart.diff(slotStart, "day")
-	let dstartMin = itemModStart.diff(slotStart, "minute")
-	if (dstartDays > 0) {
-		dstartMin -= dstartDays * dTimeDay
-	}
-	let left = dstartMin / timeSlotMinutes
-	if (left < 0) {
-		console.error(
-			"LPTimeTable - item with negative left found:",
-			left,
-			item,
-			startSlot,
-			endSlot,
-			slotsArray,
-			timeSlotMinutes,
-		)
-		// if the start is before the time slot, we need to set the left to 0
-		left = 0
-	}
-
-	const timeSpanDays = itemModEnd.diff(itemModStart, "day")
-	let timeSpanMin = itemModEnd.diff(itemModStart, "minute")
-	if (timeSpanDays > 0) {
-		timeSpanMin -= timeSpanDays * dTimeDay
-	}
-	const width = timeSpanMin / timeSlotMinutes
-
-	/*let dmin = itemModEnd.diff(slotsArray[endSlot], "minute")
-	// because of the time frame of the day, i need to remove the amount if minutes missing to the days end  * the amount of days of the time slot to get the correct end
-	if (viewType !== "hours") {
-		const daysCount = Math.floor(dmin / (26 * 60))
-		if (daysCount > 0) {
-			const diffToDayEnd = itemModEnd.diff(
-				itemModEnd.endOf("day"),
-				"minute",
-			)
-			dmin -= daysCount * diffToDayEnd
-		}
-	}
-	let width = dmin / timeSteps*/
-
-	// check if this is the last time slot of the day
-	//width = endSlot + 1 - startSlot - (left + width)
-	//width = endSlot - startSlot + width - left
-
-	if (width < 0) {
-		// this should not happen, but if it does, we need to log it to find the error
-		console.error(
-			"LPTimeTable - item with negative width found:",
-			width,
-			item,
-			startSlot,
-			endSlot,
-			slotsArray,
-			timeSlotMinutes,
-			timeSpanMin,
-			timeSpanDays,
-			dTimeDay,
-			itemModStart,
-			itemModEnd,
-		)
-	}
-
-	return { left, width }
 }

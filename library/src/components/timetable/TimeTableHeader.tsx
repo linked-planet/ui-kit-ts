@@ -52,6 +52,20 @@ export function headerText(
 	}
 }
 
+export type CustomHeaderRowTimeSlotProps = {
+	timeSlot: Dayjs
+	timeSlotMinutes: number
+	isLastOfDay: boolean
+	viewType: TimeTableViewType
+	timeFrameOfDay: TimeFrameDay
+}
+
+export type CustomHeaderRowHeaderProps = {
+	slotsArray: readonly Dayjs[]
+	viewType: TimeTableViewType
+	timeFrameOfDay: TimeFrameDay
+}
+
 type TimeTableHeaderProps = {
 	slotsArray: readonly Dayjs[]
 	groupHeaderColumnWidth: number | string
@@ -65,6 +79,11 @@ type TimeTableHeaderProps = {
 	dateHeaderTextFormat?: string
 	weekStartsOnSunday: boolean
 	locale?: "en" | "de"
+
+	customHeaderRow?: {
+		timeSlot: (props: CustomHeaderRowTimeSlotProps) => JSX.Element
+		header: (props: CustomHeaderRowHeaderProps) => JSX.Element
+	}
 }
 
 export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
@@ -80,6 +99,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 		dateHeaderTextFormat,
 		weekStartsOnSunday,
 		locale,
+		customHeaderRow,
 	}: TimeTableHeaderProps,
 	tableHeaderRef: React.Ref<HTMLTableSectionElement>,
 ) {
@@ -247,6 +267,43 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 						)
 					})}
 				</tr>
+				{customHeaderRow && (
+					<tr>
+						<th
+							className={`border-border bg-surface sticky left-0 top-0 z-[5] select-none border-l-0 border-t-0 border-solid p-0 ${
+								showTimeSlotHeader ? "pt-1" : "py-0"
+							}`}
+						>
+							{customHeaderRow.header({
+								slotsArray,
+								timeFrameOfDay: timeFrameDay,
+								viewType,
+							})}
+						</th>
+						{slotsArray.map((slot, i) => {
+							const isLastOfDay =
+								i === slotsArray.length - 1 ||
+								!slotsArray[i + 1].isSame(slot, "day")
+							return (
+								<th
+									key={`timeheader${slot.unix()}`}
+									colSpan={2}
+									className={`bg-surface border-transparent border-b-border after:border-border relative select-none border-0 border-b-2 border-solid p-0 pl-1 font-bold after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-solid ${
+										isLastOfDay ? "after:border-l-2" : ""
+									} ${showTimeSlotHeader ? "pt-1" : ""}`}
+								>
+									{customHeaderRow.timeSlot({
+										timeSlot: slot,
+										timeSlotMinutes: 60,
+										isLastOfDay,
+										timeFrameOfDay: timeFrameDay,
+										viewType,
+									})}
+								</th>
+							)
+						})}
+					</tr>
+				)}
 			</thead>
 		</>
 	)
