@@ -4064,45 +4064,249 @@ export default FlagShowcase
 
 import React from "react"
 import ShowcaseWrapperItem, {type ShowcaseProps,} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import {useGlobalState} from "@linked-planet/ui-kit-ts/GlobalState";
+import {DynamicForm} from "@linked-planet/ui-kit-ts/components/form/DynamicForm"
+import {InputFormField} from "@linked-planet/ui-kit-ts/components/form/elements/InputFormField"
+import {SelectSingleFormField} from "@linked-planet/ui-kit-ts/components/form/elements/SelectSingleFormField"
+import {CheckboxFormField} from "@linked-planet/ui-kit-ts/components/form/elements/CheckboxFormField"
+import {Button, ButtonGroup} from "@linked-planet/ui-kit-ts"
+import {SelectMultiFormField} from "@linked-planet/ui-kit-ts/components/form/elements/SelectMultiFormField"
 
-//#region global-state
-function GlobalStateExample() {
-	// define global state type
-	interface MyData {
-		key: string
-		name: string
-	}
-
-	// create global state hook
-	const useMyData = useGlobalState<MyData>("myData", {
-		key: "1",
-		name: "Foo Bar",
-	})
-
-	// use hook in local components
-	const [myData, setMyData] = useMyData
-
-	return <div className="bg-surface"></div>
+interface TestObject {
+	firstname: string
+	lastname: string
+	language: string
+	hobbies: string[]
+	age: number
+	alive: boolean
 }
-//#endregion global-state
 
-export default function GlobalStateShowcase(props: ShowcaseProps) {
+const testObject = {
+	firstname: "Max",
+	lastname: "Mustermann",
+	language: "de",
+	hobbies: ["Football", "Guitar"],
+	age: 30,
+	alive: true,
+}
+
+const languages = [
+	{ label: "German", value: "de" },
+	{ label: "English", value: "en" },
+	{ label: "Swedisch", value: "se" },
+]
+
+const hobbies = [
+	{ label: "Football", value: "Football" },
+	{ label: "Guitar", value: "Guitar" },
+	{ label: "Basketball", value: "Basketball" },
+]
+
+//#region form-horizontal
+function FormHorizontalExample() {
+	return (
+		<div className="bg-surface">
+			<DynamicForm<TestObject>
+				obj={testObject}
+				onSubmit={(data) => {
+					console.info("Saving form", data)
+				}}
+			>
+				{(formProps) => (
+					<>
+						<InputFormField
+							formProps={formProps}
+							objKey="firstname"
+							title="Firstname"
+						/>
+						<InputFormField
+							formProps={formProps}
+							objKey="lastname"
+							title="Lastname"
+						/>
+						<SelectSingleFormField
+							formProps={formProps}
+							objKey="language"
+							title="Language"
+							options={languages}
+							onChange={(value) =>
+								console.info("On language change", value)
+							}
+						/>
+						<SelectMultiFormField
+							formProps={formProps}
+							objKey="hobbies"
+							title="Hobbies"
+							options={hobbies}
+						/>
+						<InputFormField
+							formProps={formProps}
+							objKey="age"
+							title="Age"
+						/>
+						<CheckboxFormField
+							formProps={formProps}
+							objKey="alive"
+							title="Alive"
+						/>
+					</>
+				)}
+			</DynamicForm>
+		</div>
+	)
+}
+//#endregion form-horizontal
+
+//#region form-vertical
+function FormVerticalExample() {
+	return (
+		<div className="bg-surface">
+			<DynamicForm<TestObject>
+				vertical
+				obj={testObject}
+				onSubmit={(data) => {
+					console.info("Saving form", data)
+				}}
+			>
+				{(formProps) => (
+					<>
+						<InputFormField
+							formProps={formProps}
+							objKey="firstname"
+							title="Firstname"
+						/>
+						<InputFormField
+							formProps={formProps}
+							objKey="lastname"
+							title="Lastname"
+						/>
+						<SelectSingleFormField
+							formProps={formProps}
+							objKey="language"
+							title="Language"
+							options={languages}
+							onChange={(value) =>
+								console.info("On language change", value)
+							}
+						/>
+						<SelectMultiFormField
+							formProps={formProps}
+							objKey="hobbies"
+							title="Hobbies"
+							options={hobbies}
+						/>
+						<InputFormField
+							formProps={formProps}
+							objKey="age"
+							title="Age"
+						/>
+						<CheckboxFormField
+							formProps={formProps}
+							objKey="alive"
+							title="Alive"
+						/>
+					</>
+				)}
+			</DynamicForm>
+		</div>
+	)
+}
+//#endregion form-vertical
+
+//#region form-custom
+function FormCustomExample() {
+	return (
+		<div className="bg-surface">
+			<DynamicForm<TestObject>
+				hideReset
+				hideSave
+				className="max-w-4xl mt-3"
+				obj={testObject}
+				onSubmit={(data) => {
+					console.info("Saving form", data)
+				}}
+			>
+				{(formProps) => (
+					<>
+						<div className="flex gap-2">
+							<InputFormField
+								formProps={formProps}
+								objKey="firstname"
+								title="Firstname"
+							/>
+							<InputFormField
+								formProps={formProps}
+								objKey="lastname"
+								title="Lastname"
+							/>
+
+							<SelectSingleFormField
+								formProps={formProps}
+								objKey="language"
+								title="Language"
+								options={languages}
+								onChange={(value) =>
+									console.info("On language change", value)
+								}
+							/>
+						</div>
+						<SelectMultiFormField
+							formProps={formProps}
+							objKey="hobbies"
+							title="Hobbies"
+							options={hobbies}
+						/>
+						<InputFormField
+							formProps={formProps}
+							objKey="age"
+							title="Age"
+						/>
+						<CheckboxFormField
+							formProps={formProps}
+							objKey="alive"
+							title="Alive"
+						/>
+						<ButtonGroup>
+							<Button appearance="primary" type="submit">
+								Submit
+							</Button>
+							<Button appearance="subtle" type="reset">
+								Reset
+							</Button>
+						</ButtonGroup>
+					</>
+				)}
+			</DynamicForm>
+		</div>
+	)
+}
+//#endregion form-custom
+
+export default function FormShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
-			name="GlobalState"
+			name="Form"
 			{...props}
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts/single?component=GlobalState",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Form",
 				},
 			]}
 			examples={[
 				{
-					title: "Global State",
-					example: <GlobalStateExample />,
-					sourceCodeExampleId: "global-state",
+					title: "Form horizontal",
+					example: <FormHorizontalExample />,
+					sourceCodeExampleId: "form-horizontal",
+				},
+				{
+					title: "Form Vertical",
+					example: <FormVerticalExample />,
+					sourceCodeExampleId: "form-vertical",
+				},
+				{
+					title: "Form Custom",
+					example: <FormCustomExample />,
+					sourceCodeExampleId: "form-custom",
 				},
 			]}
 		/>
@@ -7582,6 +7786,28 @@ function createMoreTestGroups(
 const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
 const endDateInitial = dayjs().startOf("day").add(5, "days").add(20, "hours")
 
+function testCustomHeaderRowTimeSlot({
+	timeSlot,
+	timeSlotMinutes,
+	isLastOfDay,
+	timeFrameOfDay,
+	viewType,
+}: TimeTableTypes.CustomHeadeRowTimeSlotProps) {
+	return <div>{timeSlot.format()}</div>
+}
+
+function customHeaderRowHeader({
+	slotsArray,
+	timeFrameOfDay,
+	viewType,
+}: {
+	slotsArray: readonly Dayjs[]
+	timeFrameOfDay: TimeTableTypes.TimeFrameDay
+	viewType: TimeTableTypes.TimeTableViewType
+}) {
+	return <div>HEADER</div>
+}
+
 function Example() {
 	//#region timetable
 
@@ -7977,6 +8203,10 @@ function Example() {
 					isCellDisabled={isCellDisabled}
 					viewType={viewType}
 					locale={locale}
+					customHeaderRow={{
+						timeSlot: testCustomHeaderRowTimeSlot,
+						header: customHeaderRowHeader,
+					}}
 				/>
 			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
