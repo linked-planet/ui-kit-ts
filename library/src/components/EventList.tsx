@@ -72,7 +72,7 @@ function useOrderByDateBookings<T extends EventObject>(
 					renderEndDate: endDate,
 				}
 
-				if (it.startDate && it.startDate?.isBefore(timelineStartDay)) {
+				if (it.startDate?.isBefore(timelineStartDay) === true) {
 					bookingOfThisDay.renderStartDate = startDate
 						.hour(dayStartTime[0])
 						.minute(dayStartTime[1])
