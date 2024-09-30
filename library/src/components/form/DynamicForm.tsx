@@ -1,34 +1,32 @@
-import React from "react"
 import {
-    Control,
-    DefaultValues,
-    FieldValues,
-    RegisterOptions,
-    useForm,
-    UseFormRegisterReturn,
-    UseFormWatch,
+	type Path,
+	useForm,
+	type Control,
+	type DefaultValues,
+	type FieldValues,
+	type RegisterOptions,
+	type UseFormRegisterReturn,
+	type UseFormWatch,
 } from "react-hook-form"
-import {twMerge} from "tailwind-merge";
-import {Button} from "../Button";
+import { twMerge } from "tailwind-merge"
+import { Button } from "../Button"
 
 export interface FormProps<T extends FieldValues> {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	control: Control<T, any>
+	control: Control<T>
 	watch: UseFormWatch<T>
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	register: (
-		name: any,
-		options?: RegisterOptions<T, any> | undefined,
-	) => UseFormRegisterReturn<any>
+		name: Path<T>,
+		options?: RegisterOptions<T>,
+	) => UseFormRegisterReturn
 	readonly?: boolean
 }
 
 export interface FormField<T extends FieldValues> {
-	objKey: keyof T
+	name: Path<T>
 	title: string
 	description?: string
 	required?: boolean
-	formProps?: FormProps<T>
+	formProps: FormProps<T>
 }
 
 export interface DynamicFormProps<T extends FieldValues>
@@ -97,7 +95,7 @@ export function DynamicForm<T extends FieldValues>({
 
 			<hr className="border border-border" />
 
-			<div className={`flex flex-row items-end w-full justify-end mt-4`}>
+			<div className="flex flex-row items-end w-full justify-end mt-4">
 				{!hideReset && (
 					<Button
 						type="reset"

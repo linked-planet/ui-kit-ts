@@ -1,57 +1,49 @@
-import React, {useEffect} from "react"
-import {FieldValues, Path} from "react-hook-form"
-import {FormField} from "../DynamicForm";
-import {Label} from "../../inputs";
-import {Checkbox} from "../../Checkbox";
+import { useEffect, useRef } from "react"
+import type { FieldValues } from "react-hook-form"
+import type { FormField } from "../DynamicForm"
+import { Label } from "../../inputs"
+import { Checkbox } from "../../Checkbox"
 
-export interface CheckboxFormField<T extends FieldValues>
-	extends FormField<T> {
+export interface CheckboxFormField<T extends FieldValues> extends FormField<T> {
 	onChange?: (value: string) => void
 }
 
-export function CheckboxFormField<T extends FieldValues>(
-	props: CheckboxFormField<T>,
-) {
-	console.info("formProps", props.formProps)
-	const fieldValue = props.formProps?.watch(props.objKey as Path<T>)
+export function CheckboxFormField<T extends FieldValues>({
+	name,
+	onChange,
+	formProps,
+	required,
+	description,
+	title,
+}: CheckboxFormField<T>) {
+	const fieldValue = formProps.watch(name)
+	const onChangeCB = useRef(onChange)
+	if (onChangeCB.current !== onChange) {
+		onChangeCB.current = onChange
+	}
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		if (props.onChange) {
-			// @ts-ignore
-			props.onChange(fieldValue)
-		}
+		onChangeCB.current?.(fieldValue)
 	}, [fieldValue])
 
-	const inputProps = props.formProps?.register(props.objKey)
+	const inputProps = formProps.register(name)
 
 	return (
 		<div className="flex flex-1 flex-col">
-			<Label
-				htmlFor={inputProps?.name}
-				required={props.required}
-			>
-				{props.title}
+			<Label htmlFor={name} required={required}>
+				{title}
 			</Label>
-			{props.description && (
+			{description && (
 				<p className="mt-0 pb-2">
-					<small>{props.description}</small>
+					<small>{description}</small>
 				</p>
 			)}
 			<Checkbox
 				className="mt-2"
 				label={"Aktivieren"}
-				disabled={props.formProps?.readonly === true}
+				disabled={formProps.readonly}
 				id={inputProps?.name}
 				{...inputProps}
-				onChange={(event) => {
-					if (props.onChange) {
-						props.onChange(
-							// @ts-ignore
-							(event.target as HTMLInputElement).checked,
-						)
-					}
-				}}
 			/>
 		</div>
 	)

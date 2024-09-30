@@ -1,48 +1,61 @@
-import React, {useEffect} from "react"
-import {FieldValues, Path} from "react-hook-form"
-import {FormField} from "../DynamicForm";
-import {Label, Select} from "../../inputs";
+import { useEffect, useRef } from "react"
+import type { FieldValues } from "react-hook-form"
+import type { FormField } from "../DynamicForm"
+import { Label, Select } from "../../inputs"
 
-export interface SelectMultiFormField<T extends FieldValues, A extends string | number>
-	extends FormField<T> {
+export interface SelectMultiFormField<
+	T extends FieldValues,
+	A extends string | number,
+> extends FormField<T> {
 	options: Array<{ label: string; value: A }>
 	onChange?: (values: Array<string>) => void
+	placeholder?: string
 }
 
-export function SelectMultiFormField<T extends FieldValues, A extends string | number>(
-	props: SelectMultiFormField<T, A>,
-) {
-	const fieldValue = props.formProps?.watch(props.objKey as Path<T>)
+export function SelectMultiFormField<
+	T extends FieldValues,
+	A extends string | number,
+>({
+	name,
+	onChange,
+	formProps,
+	required,
+	description,
+	title,
+	options,
+	placeholder,
+}: SelectMultiFormField<T, A>) {
+	const fieldValue = formProps.watch(name)
+	const onChangeCB = useRef(onChange)
+	if (onChangeCB.current !== onChange) {
+		onChangeCB.current = onChange
+	}
 
 	useEffect(() => {
-		console.info("FieldChange", props.objKey, fieldValue, props.onChange)
-		if (props.onChange) {
-			console.info(
-				"FieldChange EXECUTING",
-				props.objKey,
-				fieldValue,
-				props.onChange,
-			)
-			// @ts-ignore
-			props.onChange(fieldValue)
-		}
+		onChangeCB.current?.(fieldValue)
 	}, [fieldValue])
 
-	const inputProps = props.formProps?.register(props.objKey)
+	const inputProps = formProps.register(name)
 
 	return (
-		<div className="flex flex-1 flex-col">
-			<Label htmlFor={inputProps?.name} required={props.required}>
-				{props.title}
+		<div className="flex flex-1 flex-col min-w-max">
+			<Label htmlFor={inputProps?.name} required={required}>
+				{title}
 			</Label>
+			{description && (
+				<p className="mt-0 pb-2">
+					<small>{description}</small>
+				</p>
+			)}
 			<Select<T, A, true>
 				isMulti
-				id={inputProps?.name}
-				name={inputProps?.name as Path<T>}
-				control={props.formProps!.control}
-				options={props.options}
-				required
-				disabled={props.formProps?.readonly === true}
+				id={name}
+				name={name}
+				control={formProps.control}
+				options={options}
+				required={required}
+				disabled={formProps.readonly}
+				placeholder={placeholder}
 			/>
 		</div>
 	)

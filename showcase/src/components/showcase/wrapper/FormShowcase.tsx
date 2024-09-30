@@ -1,11 +1,12 @@
-import React from "react"
-import ShowcaseWrapperItem, {type ShowcaseProps,} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import {DynamicForm} from "@linked-planet/ui-kit-ts/components/form/DynamicForm"
-import {InputFormField} from "@linked-planet/ui-kit-ts/components/form/elements/InputFormField"
-import {SelectSingleFormField} from "@linked-planet/ui-kit-ts/components/form/elements/SelectSingleFormField"
-import {CheckboxFormField} from "@linked-planet/ui-kit-ts/components/form/elements/CheckboxFormField"
-import {Button, ButtonGroup} from "@linked-planet/ui-kit-ts"
-import {SelectMultiFormField} from "@linked-planet/ui-kit-ts/components/form/elements/SelectMultiFormField"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { DynamicForm } from "@linked-planet/ui-kit-ts/components/form/DynamicForm"
+import { InputFormField } from "@linked-planet/ui-kit-ts/components/form/elements/InputFormField"
+import { SelectSingleFormField } from "@linked-planet/ui-kit-ts/components/form/elements/SelectSingleFormField"
+import { CheckboxFormField } from "@linked-planet/ui-kit-ts/components/form/elements/CheckboxFormField"
+import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
+import { SelectMultiFormField } from "@linked-planet/ui-kit-ts/components/form/elements/SelectMultiFormField"
 
 interface TestObject {
 	firstname: string
@@ -37,8 +38,8 @@ const hobbies = [
 	{ label: "Basketball", value: "Basketball" },
 ]
 
-//#region form-horizontal
-function FormHorizontalExample() {
+//#region form-vertical
+function FormVerticalExample() {
 	return (
 		<div className="bg-surface">
 			<DynamicForm<TestObject>
@@ -51,17 +52,17 @@ function FormHorizontalExample() {
 					<>
 						<InputFormField
 							formProps={formProps}
-							objKey="firstname"
+							name="firstname"
 							title="Firstname"
 						/>
 						<InputFormField
 							formProps={formProps}
-							objKey="lastname"
+							name="lastname"
 							title="Lastname"
 						/>
 						<SelectSingleFormField
 							formProps={formProps}
-							objKey="language"
+							name="language"
 							title="Language"
 							options={languages}
 							onChange={(value) =>
@@ -70,18 +71,18 @@ function FormHorizontalExample() {
 						/>
 						<SelectMultiFormField
 							formProps={formProps}
-							objKey="hobbies"
+							name="hobbies"
 							title="Hobbies"
 							options={hobbies}
 						/>
 						<InputFormField
 							formProps={formProps}
-							objKey="age"
+							name="age"
 							title="Age"
 						/>
 						<CheckboxFormField
 							formProps={formProps}
-							objKey="alive"
+							name="alive"
 							title="Alive"
 						/>
 					</>
@@ -90,10 +91,10 @@ function FormHorizontalExample() {
 		</div>
 	)
 }
-//#endregion form-horizontal
+//#endregion form-vertical
 
-//#region form-vertical
-function FormVerticalExample() {
+//#region form-horizontal
+function FormHorizontalExample() {
 	return (
 		<div className="bg-surface">
 			<DynamicForm<TestObject>
@@ -107,17 +108,19 @@ function FormVerticalExample() {
 					<>
 						<InputFormField
 							formProps={formProps}
-							objKey="firstname"
+							name="firstname"
 							title="Firstname"
+							placeholder="Vorname"
 						/>
 						<InputFormField
 							formProps={formProps}
-							objKey="lastname"
+							name="lastname"
 							title="Lastname"
+							placeholder="Nachname"
 						/>
 						<SelectSingleFormField
 							formProps={formProps}
-							objKey="language"
+							name="language"
 							title="Language"
 							options={languages}
 							onChange={(value) =>
@@ -126,18 +129,18 @@ function FormVerticalExample() {
 						/>
 						<SelectMultiFormField
 							formProps={formProps}
-							objKey="hobbies"
+							name="hobbies"
 							title="Hobbies"
 							options={hobbies}
 						/>
 						<InputFormField
 							formProps={formProps}
-							objKey="age"
+							name="age"
 							title="Age"
 						/>
 						<CheckboxFormField
 							formProps={formProps}
-							objKey="alive"
+							name="alive"
 							title="Alive"
 						/>
 					</>
@@ -146,7 +149,7 @@ function FormVerticalExample() {
 		</div>
 	)
 }
-//#endregion form-vertical
+//#endregion form-horizontal
 
 //#region form-custom
 function FormCustomExample() {
@@ -166,18 +169,18 @@ function FormCustomExample() {
 						<div className="flex gap-2">
 							<InputFormField
 								formProps={formProps}
-								objKey="firstname"
+								name="firstname"
 								title="Firstname"
 							/>
 							<InputFormField
 								formProps={formProps}
-								objKey="lastname"
+								name="lastname"
 								title="Lastname"
 							/>
 
 							<SelectSingleFormField
 								formProps={formProps}
-								objKey="language"
+								name="language"
 								title="Language"
 								options={languages}
 								onChange={(value) =>
@@ -187,18 +190,18 @@ function FormCustomExample() {
 						</div>
 						<SelectMultiFormField
 							formProps={formProps}
-							objKey="hobbies"
+							name="hobbies"
 							title="Hobbies"
 							options={hobbies}
 						/>
 						<InputFormField
 							formProps={formProps}
-							objKey="age"
+							name="age"
 							title="Age"
 						/>
 						<CheckboxFormField
 							formProps={formProps}
-							objKey="alive"
+							name="alive"
 							title="Alive"
 						/>
 						<ButtonGroup>
@@ -230,13 +233,13 @@ export default function FormShowcase(props: ShowcaseProps) {
 			]}
 			examples={[
 				{
-					title: "Form horizontal",
-					example: <FormHorizontalExample />,
+					title: "Form Vertical",
+					example: <FormVerticalExample />,
 					sourceCodeExampleId: "form-horizontal",
 				},
 				{
-					title: "Form Vertical",
-					example: <FormVerticalExample />,
+					title: "Form Horizontal",
+					example: <FormHorizontalExample />,
 					sourceCodeExampleId: "form-vertical",
 				},
 				{
