@@ -1,6 +1,8 @@
-import React from "react"
-import ShowcaseWrapperItem, {type ShowcaseProps,} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import {useGlobalState} from "@linked-planet/ui-kit-ts/GlobalState";
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { useGlobalState } from "@linked-planet/ui-kit-ts/GlobalState"
+import { Input, Label } from "@linked-planet/ui-kit-ts"
 
 //#region global-state
 function GlobalStateExample() {
@@ -19,14 +21,80 @@ function GlobalStateExample() {
 	// use hook in local components
 	const [myData, setMyData] = useMyData
 
-	return <div className="bg-surface"></div>
+	return (
+		<>
+			<>
+				<Label htmlFor="myDataKey">Key</Label>
+				<Input
+					type="text"
+					id="myDataKey"
+					value={myData.key}
+					onChange={(e) => {
+						setMyData({ key: e.target.value, name: myData.name })
+					}}
+				/>
+				<Label htmlFor="myDataName">Name</Label>
+				<Input
+					type="text"
+					id="myDataName"
+					value={myData.name}
+					onChange={(e) => {
+						setMyData({ key: myData.key, name: e.target.value })
+					}}
+				/>
+			</>
+			<div className="bg-surface mt-8">{myData.key}</div>
+			<div className="bg-surface">{myData.name}</div>
+		</>
+	)
 }
 //#endregion global-state
+
+//#region global-state-array
+
+function ArrayString() {
+	const [arrayData] = useGlobalState<string[]>("myArrayData", [])
+	return (
+		<>
+			<div className="bg-surface mt-8">{arrayData.join(", ")}</div>
+		</>
+	)
+}
+
+function GlobalArrayStateExample() {
+	// create global state hook
+	const [arrayData, setArrayData] = useGlobalState<string[]>("myArrayData", [
+		"Apple",
+		"Banana",
+	])
+
+	return (
+		<>
+			<>
+				<Label htmlFor="myDataKey">Array Data Input</Label>
+				<Input
+					type="text"
+					id="myDataKey"
+					onKeyUp={(e) => {
+						if (e.key !== "Enter") return
+						setArrayData([
+							...arrayData,
+							(e.target as HTMLInputElement).value,
+						])
+					}}
+				/>
+			</>
+			<ArrayString />
+		</>
+	)
+}
+//#endregion global-state-array
 
 export default function GlobalStateShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="GlobalState"
+			description="Global state is a way to store data in a global store. It is useful for storing data that is needed in multiple components. But it does not have fine-grained reactivity - use it only for simple values and shallow objects where things are subscribed to changes only on the top 'value' level."
 			{...props}
 			packages={[
 				{
@@ -39,6 +107,11 @@ export default function GlobalStateShowcase(props: ShowcaseProps) {
 					title: "Global State",
 					example: <GlobalStateExample />,
 					sourceCodeExampleId: "global-state",
+				},
+				{
+					title: "Global Array State",
+					example: <GlobalArrayStateExample />,
+					sourceCodeExampleId: "global-state-array",
 				},
 			]}
 		/>

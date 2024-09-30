@@ -1,6 +1,6 @@
-import React, {useMemo} from "react"
-import type {Dayjs} from "dayjs"
-import {DateType, DateUtils, TimeType} from "../utils";
+import { useMemo } from "react"
+import type { Dayjs } from "dayjs"
+import { type DateType, DateUtils, type TimeType } from "../utils"
 
 export interface EventObject {
 	key: string
@@ -112,13 +112,14 @@ export function EventList<T extends EventObject>({
 	dayStart,
 	dayEnd,
 }: EventListProps<T>) {
-	const datesMap: {[p: DateType]: EventWrapper<T>[]} = useOrderByDateBookings(
-		items,
-		minStartTime,
-		maxEndTime,
-		dayStart || "00:00",
-		dayEnd || "00:00",
-	)
+	const datesMap: { [p: DateType]: EventWrapper<T>[] } =
+		useOrderByDateBookings(
+			items,
+			minStartTime,
+			maxEndTime,
+			dayStart || "00:00",
+			dayEnd || "00:00",
+		)
 
 	return (
 		<div className="min-h-0 overflow-auto">
@@ -128,17 +129,17 @@ export function EventList<T extends EventObject>({
 				)
 				return (
 					<div key={date}>
-						{renderTimeHeader ?
-							renderTimeHeader(date) : dateStr
-						}
+						{renderTimeHeader ? renderTimeHeader(date) : dateStr}
 						<div className="flex flex-1 flex-col gap-1">
-							{eventObjects.map((eventObject: EventWrapper<T>) => {
-								return renderEvent(
-									eventObject.booking,
-									eventObject.renderStartDate,
-									eventObject.renderEndDate,
-								)
-							})}
+							{eventObjects.map(
+								(eventObject: EventWrapper<T>) => {
+									return renderEvent(
+										eventObject.booking,
+										eventObject.renderStartDate,
+										eventObject.renderEndDate,
+									)
+								},
+							)}
 						</div>
 					</div>
 				)
