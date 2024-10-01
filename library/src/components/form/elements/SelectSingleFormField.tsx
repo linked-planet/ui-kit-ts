@@ -3,7 +3,7 @@ import type { FieldValues, Path } from "react-hook-form"
 import type { FormField } from "../DynamicForm"
 import { Label, Select } from "../../inputs"
 
-export interface SelectSingleFormField<
+export interface SelectSingleFormFieldProps<
 	T extends FieldValues,
 	A extends string | number,
 > extends FormField<T> {
@@ -24,7 +24,7 @@ export function SelectSingleFormField<
 	required,
 	options,
 	placeholder,
-}: SelectSingleFormField<T, A>) {
+}: SelectSingleFormFieldProps<T, A>) {
 	const fieldValue = formProps.watch(name)
 	const onChangeCB = useRef(onChange)
 	if (onChangeCB.current !== onChange) {

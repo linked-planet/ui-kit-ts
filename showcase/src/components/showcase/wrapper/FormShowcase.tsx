@@ -1,12 +1,8 @@
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { DynamicForm } from "@linked-planet/ui-kit-ts/components/form/DynamicForm"
-import { InputFormField } from "@linked-planet/ui-kit-ts/components/form/elements/InputFormField"
-import { SelectSingleFormField } from "@linked-planet/ui-kit-ts/components/form/elements/SelectSingleFormField"
-import { CheckboxFormField } from "@linked-planet/ui-kit-ts/components/form/elements/CheckboxFormField"
+import { DynamicForm } from "@linked-planet/ui-kit-ts"
 import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
-import { SelectMultiFormField } from "@linked-planet/ui-kit-ts/components/form/elements/SelectMultiFormField"
 
 interface TestObject {
 	firstname: string
@@ -42,7 +38,7 @@ const hobbies = [
 function FormVerticalExample() {
 	return (
 		<div className="bg-surface">
-			<DynamicForm<TestObject>
+			<DynamicForm.Form<TestObject>
 				obj={testObject}
 				onSubmit={(data) => {
 					console.info("Saving form", data)
@@ -50,17 +46,17 @@ function FormVerticalExample() {
 			>
 				{(formProps) => (
 					<>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="firstname"
 							title="Firstname"
 						/>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="lastname"
 							title="Lastname"
 						/>
-						<SelectSingleFormField
+						<DynamicForm.SelectSingleFormField
 							formProps={formProps}
 							name="language"
 							title="Language"
@@ -69,25 +65,25 @@ function FormVerticalExample() {
 								console.info("On language change", value)
 							}
 						/>
-						<SelectMultiFormField
+						<DynamicForm.SelectMultiFormField
 							formProps={formProps}
 							name="hobbies"
 							title="Hobbies"
 							options={hobbies}
 						/>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="age"
 							title="Age"
 						/>
-						<CheckboxFormField
+						<DynamicForm.CheckboxFormField
 							formProps={formProps}
 							name="alive"
 							title="Alive"
 						/>
 					</>
 				)}
-			</DynamicForm>
+			</DynamicForm.Form>
 		</div>
 	)
 }
@@ -97,7 +93,7 @@ function FormVerticalExample() {
 function FormHorizontalExample() {
 	return (
 		<div className="bg-surface">
-			<DynamicForm<TestObject>
+			<DynamicForm.Form<TestObject>
 				vertical
 				obj={testObject}
 				onSubmit={(data) => {
@@ -106,19 +102,19 @@ function FormHorizontalExample() {
 			>
 				{(formProps) => (
 					<>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="firstname"
 							title="Firstname"
 							placeholder="Vorname"
 						/>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="lastname"
 							title="Lastname"
 							placeholder="Nachname"
 						/>
-						<SelectSingleFormField
+						<DynamicForm.SelectSingleFormField
 							formProps={formProps}
 							name="language"
 							title="Language"
@@ -127,25 +123,25 @@ function FormHorizontalExample() {
 								console.info("On language change", value)
 							}
 						/>
-						<SelectMultiFormField
+						<DynamicForm.SelectMultiFormField
 							formProps={formProps}
 							name="hobbies"
 							title="Hobbies"
 							options={hobbies}
 						/>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="age"
 							title="Age"
 						/>
-						<CheckboxFormField
+						<DynamicForm.CheckboxFormField
 							formProps={formProps}
 							name="alive"
 							title="Alive"
 						/>
 					</>
 				)}
-			</DynamicForm>
+			</DynamicForm.Form>
 		</div>
 	)
 }
@@ -155,7 +151,7 @@ function FormHorizontalExample() {
 function FormCustomExample() {
 	return (
 		<div className="bg-surface">
-			<DynamicForm<TestObject>
+			<DynamicForm.Form<TestObject>
 				hideReset
 				hideSave
 				className="max-w-4xl mt-3"
@@ -167,18 +163,18 @@ function FormCustomExample() {
 				{(formProps) => (
 					<>
 						<div className="flex gap-2">
-							<InputFormField
+							<DynamicForm.InputFormField
 								formProps={formProps}
 								name="firstname"
 								title="Firstname"
 							/>
-							<InputFormField
+							<DynamicForm.InputFormField
 								formProps={formProps}
 								name="lastname"
 								title="Lastname"
 							/>
 
-							<SelectSingleFormField
+							<DynamicForm.SelectSingleFormField
 								formProps={formProps}
 								name="language"
 								title="Language"
@@ -188,18 +184,18 @@ function FormCustomExample() {
 								}
 							/>
 						</div>
-						<SelectMultiFormField
+						<DynamicForm.SelectMultiFormField
 							formProps={formProps}
 							name="hobbies"
 							title="Hobbies"
 							options={hobbies}
 						/>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="age"
 							title="Age"
 						/>
-						<CheckboxFormField
+						<DynamicForm.CheckboxFormField
 							formProps={formProps}
 							name="alive"
 							title="Alive"
@@ -214,7 +210,7 @@ function FormCustomExample() {
 						</ButtonGroup>
 					</>
 				)}
-			</DynamicForm>
+			</DynamicForm.Form>
 		</div>
 	)
 }

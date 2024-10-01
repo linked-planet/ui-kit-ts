@@ -4,7 +4,8 @@ import type { FormField } from "../DynamicForm"
 import { Label } from "../../inputs"
 import { Checkbox } from "../../Checkbox"
 
-export interface CheckboxFormField<T extends FieldValues> extends FormField<T> {
+export interface CheckboxFormFieldProps<T extends FieldValues>
+	extends FormField<T> {
 	onChange?: (value: string) => void
 }
 
@@ -15,7 +16,7 @@ export function CheckboxFormField<T extends FieldValues>({
 	required,
 	description,
 	title,
-}: CheckboxFormField<T>) {
+}: CheckboxFormFieldProps<T>) {
 	const fieldValue = formProps.watch(name)
 	const onChangeCB = useRef(onChange)
 	if (onChangeCB.current !== onChange) {

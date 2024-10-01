@@ -3,7 +3,7 @@ import type { FieldValues } from "react-hook-form"
 import type { FormField } from "../DynamicForm"
 import { Label, Select } from "../../inputs"
 
-export interface SelectMultiFormField<
+export interface SelectMultiFormFieldProps<
 	T extends FieldValues,
 	A extends string | number,
 > extends FormField<T> {
@@ -24,7 +24,7 @@ export function SelectMultiFormField<
 	title,
 	options,
 	placeholder,
-}: SelectMultiFormField<T, A>) {
+}: SelectMultiFormFieldProps<T, A>) {
 	const fieldValue = formProps.watch(name)
 	const onChangeCB = useRef(onChange)
 	if (onChangeCB.current !== onChange) {

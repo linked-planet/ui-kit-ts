@@ -3,7 +3,8 @@ import type { FieldValues } from "react-hook-form"
 import type { FormField } from "../DynamicForm"
 import { Input, Label } from "../../inputs"
 
-export interface InputFormField<T extends FieldValues> extends FormField<T> {
+export interface InputFormFieldProps<T extends FieldValues>
+	extends FormField<T> {
 	onChange?: (value: string) => void
 	placeholder?: string
 }
@@ -16,7 +17,7 @@ export function InputFormField<T extends FieldValues>({
 	description,
 	title,
 	placeholder,
-}: InputFormField<T>) {
+}: InputFormFieldProps<T>) {
 	const fieldValue = formProps.watch(name)
 	const onChangeCB = useRef(onChange)
 	if (onChangeCB.current !== onChange) {
