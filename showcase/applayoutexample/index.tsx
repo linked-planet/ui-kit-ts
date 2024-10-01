@@ -1,11 +1,16 @@
 import React from "react"
-import ReactDOM from "react-dom"
+import { createRoot } from "react-dom/client"
 
 import AppLayoutExample from "./AppLayoutExample"
 
-ReactDOM.render(
+const container = document.getElementById("applayout-root")
+if (!container) {
+	throw new Error("Could not find root element")
+}
+
+const root = createRoot(container)
+root.render(
 	<React.StrictMode>
 		<AppLayoutExample />
 	</React.StrictMode>,
-	document.getElementById("applayout-root"),
 )
