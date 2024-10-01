@@ -50,6 +50,7 @@ import BlanketShowcase from "./components/showcase/wrapper/BlanketShowcase"
 import BreadcrumbsShowcase from "./components/showcase/wrapper/BreadcrumbsShowcase"
 import SectionMessageShowcase from "./components/showcase/wrapper/SectionMessageShowcase"
 import DragAndDropShowcase from "./components/showcase/wrapper/DragAndDropShowcase"
+import TourShowcase from "./components/showcase/wrapper/TourShowcase";
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -169,6 +170,7 @@ export default function useShowcases({
 			"Truncated Text": (
 				<TruncatedTextShowcase overallSourceCode={overallSourceCode} />
 			),
+			Tour: <TourShowcase overallSourceCode={overallSourceCode} />,
 			Utils: <UtilsShowcase overallSourceCode={overallSourceCode} />,
 		}),
 		[overallSourceCode],
