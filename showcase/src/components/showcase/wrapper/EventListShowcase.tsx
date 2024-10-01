@@ -1,11 +1,13 @@
-import React from "react"
-import ShowcaseWrapperItem, {type ShowcaseProps,} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import {EventList} from "@linked-planet/ui-kit-ts/components/EventList"
-import dayjs from "dayjs"
+import { DateUtils, Label } from "@linked-planet/ui-kit-ts"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { EventList } from "@linked-planet/ui-kit-ts/components/EventList"
+import dayjs, { type Dayjs } from "dayjs"
+import { useState } from "react"
 
 //#region event-list
 function EventListExample() {
-
 	const data = [
 		{
 			title: "Event 1",
@@ -33,18 +35,35 @@ function EventListExample() {
 		},
 	]
 
+	const [useCustomHeader, setUseCustomHeader] = useState(false)
+
 	return (
 		<div className="bg-surface">
+			<Label htmlFor="useCustomHeader">Use Custom Header</Label>
+			<input
+				type="checkbox"
+				id="useCustomHeader"
+				checked={useCustomHeader}
+				onChange={(e) => {
+					setUseCustomHeader(e.target.checked)
+				}}
+			/>
 			<EventList
 				items={data}
 				minStartTime={dayjs("2024-01-01", "YYYY-MM-DD")}
 				maxEndTime={dayjs("2024-01-31", "YYYY-MM-DD")}
 				dayStart="00:00"
 				dayEnd="23:59"
-				renderTimeHeader={(dateString) => (
-					<span className="text-text-subtle text-lg">{dateString}</span>
-				)}
-				renderEvent={(obj, startDate, endDate) => {
+				renderTimeHeader={
+					useCustomHeader
+						? (date: Dayjs) => (
+								<span className="text-text-subtle text-lg">
+									{DateUtils.toDateType(date)}
+								</span>
+							)
+						: undefined
+				}
+				/*renderEvent={(obj, startDate, endDate) => {
 					return (
 						<div
 							data-id={obj.key}
@@ -64,7 +83,7 @@ function EventListExample() {
 							</div>
 						</div>
 					)
-				}}
+				}}*/
 			/>
 		</div>
 	)
@@ -73,7 +92,6 @@ function EventListExample() {
 
 //#region event-list-start-end
 function EventListStartEndExample() {
-
 	const data = [
 		{
 			title: "Event 1",
@@ -102,21 +120,23 @@ function EventListStartEndExample() {
 	]
 
 	return (
-		<div className="bg-surface">
+		<div className="">
 			<EventList
 				items={data}
 				minStartTime={dayjs("2024-01-01", "YYYY-MM-DD")}
 				maxEndTime={dayjs("2024-01-31", "YYYY-MM-DD")}
 				dayStart="08:00"
 				dayEnd="18:00"
-				renderTimeHeader={(dateString) => (
-					<span className="text-text-subtle text-lg">{dateString}</span>
+				renderTimeHeader={(date) => (
+					<span className="text-text-subtle text-lg">
+						{DateUtils.toDateType(date)}
+					</span>
 				)}
 				renderEvent={(obj, startDate, endDate) => {
 					return (
 						<div
 							data-id={obj.key}
-							className="flex justify-between py-1 cursor-pointer border-solid border-l-8 overflow-hidden"
+							className="flex justify-between py-1 cursor-pointer border-solid border-l-8 border-l-danger-bold overflow-hidden bg-danger"
 						>
 							<div className="flex pl-2.5 flex-col overflow-hidden">
 								<div className="text-text-subtle text-xl flex-0 truncate">
@@ -157,7 +177,7 @@ export default function EventListShowcase(props: ShowcaseProps) {
 					sourceCodeExampleId: "event-list",
 				},
 				{
-					title: "Custom Start/End-Times",
+					title: "Custom Start/End-Times and Custom Render",
 					example: <EventListStartEndExample />,
 					sourceCodeExampleId: "event-list-start-end",
 				},

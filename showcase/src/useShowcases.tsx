@@ -52,6 +52,7 @@ import SectionMessageShowcase from "./components/showcase/wrapper/SectionMessage
 import DragAndDropShowcase from "./components/showcase/wrapper/DragAndDropShowcase"
 import GlobalStateShowcase from "./components/showcase/wrapper/GlobalStateShowcase"
 import FormShowcase from "./components/showcase/wrapper/FormShowcase"
+import EventListShowcase from "./components/showcase/wrapper/EventListShowcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -110,10 +111,13 @@ export default function useShowcases({
 			"Empty State": (
 				<EmptyStateShowcase overallSourceCode={overallSourceCode} />
 			),
+			"Event List": (
+				<EventListShowcase overallSourceCode={overallSourceCode} />
+			),
 			Flag: <FlagShowcase overallSourceCode={overallSourceCode} />,
 			Filters: <FiltersShowcase overallSourceCode={overallSourceCode} />,
 			Form: <FormShowcase overallSourceCode={overallSourceCode} />,
-			GlobalState: (
+			"Global State": (
 				<GlobalStateShowcase overallSourceCode={overallSourceCode} />
 			),
 			Icon: <IconShowcase overallSourceCode={overallSourceCode} />,

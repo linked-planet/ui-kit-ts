@@ -3434,14 +3434,16 @@ function EmptyStateShowcase(props: ShowcaseProps) {
 
 export default EmptyStateShowcase
 
-import React from "react"
-import ShowcaseWrapperItem, {type ShowcaseProps,} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import {EventList} from "@linked-planet/ui-kit-ts/components/EventList"
-import dayjs from "dayjs"
+import { DateUtils, Label } from "@linked-planet/ui-kit-ts"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { EventList } from "@linked-planet/ui-kit-ts/components/EventList"
+import dayjs, { type Dayjs } from "dayjs"
+import { useState } from "react"
 
 //#region event-list
 function EventListExample() {
-
 	const data = [
 		{
 			title: "Event 1",
@@ -3469,17 +3471,34 @@ function EventListExample() {
 		},
 	]
 
+	const [useCustomHeader, setUseCustomHeader] = useState(false)
+
 	return (
 		<div className="bg-surface">
+			<Label htmlFor="useCustomHeader">Use Custom Header</Label>
+			<input
+				type="checkbox"
+				id="useCustomHeader"
+				checked={useCustomHeader}
+				onChange={(e) => {
+					setUseCustomHeader(e.target.checked)
+				}}
+			/>
 			<EventList
 				items={data}
 				minStartTime={dayjs("2024-01-01", "YYYY-MM-DD")}
 				maxEndTime={dayjs("2024-01-31", "YYYY-MM-DD")}
 				dayStart="00:00"
 				dayEnd="23:59"
-				renderTimeHeader={(dateString) => (
-					<span className="text-text-subtle text-lg">{dateString}</span>
-				)}
+				renderTimeHeader={
+					useCustomHeader
+						? (date: Dayjs) => (
+								<span className="text-text-subtle text-lg">
+									{DateUtils.toDateType(date)}
+								</span>
+							)
+						: undefined
+				}
 				renderEvent={(obj, startDate, endDate) => {
 					return (
 						<div
@@ -3509,7 +3528,6 @@ function EventListExample() {
 
 //#region event-list-start-end
 function EventListStartEndExample() {
-
 	const data = [
 		{
 			title: "Event 1",
@@ -3545,8 +3563,10 @@ function EventListStartEndExample() {
 				maxEndTime={dayjs("2024-01-31", "YYYY-MM-DD")}
 				dayStart="08:00"
 				dayEnd="18:00"
-				renderTimeHeader={(dateString) => (
-					<span className="text-text-subtle text-lg">{dateString}</span>
+				renderTimeHeader={(date) => (
+					<span className="text-text-subtle text-lg">
+						{DateUtils.toDateType(date)}
+					</span>
 				)}
 				renderEvent={(obj, startDate, endDate) => {
 					return (
@@ -4316,9 +4336,11 @@ export default function FormShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React from "react"
-import ShowcaseWrapperItem, {type ShowcaseProps,} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import {useGlobalState} from "@linked-planet/ui-kit-ts/GlobalState";
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { useGlobalState } from "@linked-planet/ui-kit-ts/GlobalState"
+import { Input, Label } from "@linked-planet/ui-kit-ts"
 
 //#region global-state
 function GlobalStateExample() {
@@ -4337,14 +4359,80 @@ function GlobalStateExample() {
 	// use hook in local components
 	const [myData, setMyData] = useMyData
 
-	return <div className="bg-surface"></div>
+	return (
+		<>
+			<>
+				<Label htmlFor="myDataKey">Key</Label>
+				<Input
+					type="text"
+					id="myDataKey"
+					value={myData.key}
+					onChange={(e) => {
+						setMyData({ key: e.target.value, name: myData.name })
+					}}
+				/>
+				<Label htmlFor="myDataName">Name</Label>
+				<Input
+					type="text"
+					id="myDataName"
+					value={myData.name}
+					onChange={(e) => {
+						setMyData({ key: myData.key, name: e.target.value })
+					}}
+				/>
+			</>
+			<div className="bg-surface mt-8">{myData.key}</div>
+			<div className="bg-surface">{myData.name}</div>
+		</>
+	)
 }
 //#endregion global-state
+
+//#region global-state-array
+
+function ArrayString() {
+	const [arrayData] = useGlobalState<string[]>("myArrayData", [])
+	return (
+		<>
+			<div className="bg-surface mt-8">{arrayData.join(", ")}</div>
+		</>
+	)
+}
+
+function GlobalArrayStateExample() {
+	// create global state hook
+	const [arrayData, setArrayData] = useGlobalState<string[]>("myArrayData", [
+		"Apple",
+		"Banana",
+	])
+
+	return (
+		<>
+			<>
+				<Label htmlFor="myDataKey">Array Data Input</Label>
+				<Input
+					type="text"
+					id="myDataKey"
+					onKeyUp={(e) => {
+						if (e.key !== "Enter") return
+						setArrayData([
+							...arrayData,
+							(e.target as HTMLInputElement).value,
+						])
+					}}
+				/>
+			</>
+			<ArrayString />
+		</>
+	)
+}
+//#endregion global-state-array
 
 export default function GlobalStateShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="GlobalState"
+			description="Global state is a way to store data in a global store. It is useful for storing data that is needed in multiple components. But it does not have fine-grained reactivity - use it only for simple values and shallow objects where things are subscribed to changes only on the top 'value' level."
 			{...props}
 			packages={[
 				{
@@ -4357,6 +4445,11 @@ export default function GlobalStateShowcase(props: ShowcaseProps) {
 					title: "Global State",
 					example: <GlobalStateExample />,
 					sourceCodeExampleId: "global-state",
+				},
+				{
+					title: "Global Array State",
+					example: <GlobalArrayStateExample />,
+					sourceCodeExampleId: "global-state-array",
 				},
 			]}
 		/>
