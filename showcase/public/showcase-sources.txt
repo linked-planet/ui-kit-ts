@@ -3499,7 +3499,7 @@ function EventListExample() {
 							)
 						: undefined
 				}
-				renderEvent={(obj, startDate, endDate) => {
+				/*renderEvent={(obj, startDate, endDate) => {
 					return (
 						<div
 							data-id={obj.key}
@@ -3519,7 +3519,7 @@ function EventListExample() {
 							</div>
 						</div>
 					)
-				}}
+				}}*/
 			/>
 		</div>
 	)
@@ -3556,7 +3556,7 @@ function EventListStartEndExample() {
 	]
 
 	return (
-		<div className="bg-surface">
+		<div className="">
 			<EventList
 				items={data}
 				minStartTime={dayjs("2024-01-01", "YYYY-MM-DD")}
@@ -3572,7 +3572,7 @@ function EventListStartEndExample() {
 					return (
 						<div
 							data-id={obj.key}
-							className="flex justify-between py-1 cursor-pointer border-solid border-l-8 overflow-hidden"
+							className="flex justify-between py-1 cursor-pointer border-solid border-l-8 border-l-danger-bold overflow-hidden bg-danger"
 						>
 							<div className="flex pl-2.5 flex-col overflow-hidden">
 								<div className="text-text-subtle text-xl flex-0 truncate">
@@ -3613,7 +3613,7 @@ export default function EventListShowcase(props: ShowcaseProps) {
 					sourceCodeExampleId: "event-list",
 				},
 				{
-					title: "Custom Start/End-Times",
+					title: "Custom Start/End-Times and Custom Render",
 					example: <EventListStartEndExample />,
 					sourceCodeExampleId: "event-list-start-end",
 				},
@@ -4085,12 +4085,8 @@ export default FlagShowcase
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { DynamicForm } from "@linked-planet/ui-kit-ts/components/form/DynamicForm"
-import { InputFormField } from "@linked-planet/ui-kit-ts/components/form/elements/InputFormField"
-import { SelectSingleFormField } from "@linked-planet/ui-kit-ts/components/form/elements/SelectSingleFormField"
-import { CheckboxFormField } from "@linked-planet/ui-kit-ts/components/form/elements/CheckboxFormField"
+import { DynamicForm } from "@linked-planet/ui-kit-ts"
 import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
-import { SelectMultiFormField } from "@linked-planet/ui-kit-ts/components/form/elements/SelectMultiFormField"
 
 interface TestObject {
 	firstname: string
@@ -4126,7 +4122,7 @@ const hobbies = [
 function FormVerticalExample() {
 	return (
 		<div className="bg-surface">
-			<DynamicForm<TestObject>
+			<DynamicForm.Form<TestObject>
 				obj={testObject}
 				onSubmit={(data) => {
 					console.info("Saving form", data)
@@ -4134,17 +4130,17 @@ function FormVerticalExample() {
 			>
 				{(formProps) => (
 					<>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="firstname"
 							title="Firstname"
 						/>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="lastname"
 							title="Lastname"
 						/>
-						<SelectSingleFormField
+						<DynamicForm.SelectSingleFormField
 							formProps={formProps}
 							name="language"
 							title="Language"
@@ -4153,25 +4149,25 @@ function FormVerticalExample() {
 								console.info("On language change", value)
 							}
 						/>
-						<SelectMultiFormField
+						<DynamicForm.SelectMultiFormField
 							formProps={formProps}
 							name="hobbies"
 							title="Hobbies"
 							options={hobbies}
 						/>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="age"
 							title="Age"
 						/>
-						<CheckboxFormField
+						<DynamicForm.CheckboxFormField
 							formProps={formProps}
 							name="alive"
 							title="Alive"
 						/>
 					</>
 				)}
-			</DynamicForm>
+			</DynamicForm.Form>
 		</div>
 	)
 }
@@ -4181,7 +4177,7 @@ function FormVerticalExample() {
 function FormHorizontalExample() {
 	return (
 		<div className="bg-surface">
-			<DynamicForm<TestObject>
+			<DynamicForm.Form<TestObject>
 				vertical
 				obj={testObject}
 				onSubmit={(data) => {
@@ -4190,19 +4186,19 @@ function FormHorizontalExample() {
 			>
 				{(formProps) => (
 					<>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="firstname"
 							title="Firstname"
 							placeholder="Vorname"
 						/>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="lastname"
 							title="Lastname"
 							placeholder="Nachname"
 						/>
-						<SelectSingleFormField
+						<DynamicForm.SelectSingleFormField
 							formProps={formProps}
 							name="language"
 							title="Language"
@@ -4211,25 +4207,25 @@ function FormHorizontalExample() {
 								console.info("On language change", value)
 							}
 						/>
-						<SelectMultiFormField
+						<DynamicForm.SelectMultiFormField
 							formProps={formProps}
 							name="hobbies"
 							title="Hobbies"
 							options={hobbies}
 						/>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="age"
 							title="Age"
 						/>
-						<CheckboxFormField
+						<DynamicForm.CheckboxFormField
 							formProps={formProps}
 							name="alive"
 							title="Alive"
 						/>
 					</>
 				)}
-			</DynamicForm>
+			</DynamicForm.Form>
 		</div>
 	)
 }
@@ -4239,7 +4235,7 @@ function FormHorizontalExample() {
 function FormCustomExample() {
 	return (
 		<div className="bg-surface">
-			<DynamicForm<TestObject>
+			<DynamicForm.Form<TestObject>
 				hideReset
 				hideSave
 				className="max-w-4xl mt-3"
@@ -4251,18 +4247,18 @@ function FormCustomExample() {
 				{(formProps) => (
 					<>
 						<div className="flex gap-2">
-							<InputFormField
+							<DynamicForm.InputFormField
 								formProps={formProps}
 								name="firstname"
 								title="Firstname"
 							/>
-							<InputFormField
+							<DynamicForm.InputFormField
 								formProps={formProps}
 								name="lastname"
 								title="Lastname"
 							/>
 
-							<SelectSingleFormField
+							<DynamicForm.SelectSingleFormField
 								formProps={formProps}
 								name="language"
 								title="Language"
@@ -4272,18 +4268,18 @@ function FormCustomExample() {
 								}
 							/>
 						</div>
-						<SelectMultiFormField
+						<DynamicForm.SelectMultiFormField
 							formProps={formProps}
 							name="hobbies"
 							title="Hobbies"
 							options={hobbies}
 						/>
-						<InputFormField
+						<DynamicForm.InputFormField
 							formProps={formProps}
 							name="age"
 							title="Age"
 						/>
-						<CheckboxFormField
+						<DynamicForm.CheckboxFormField
 							formProps={formProps}
 							name="alive"
 							title="Alive"
@@ -4298,7 +4294,7 @@ function FormCustomExample() {
 						</ButtonGroup>
 					</>
 				)}
-			</DynamicForm>
+			</DynamicForm.Form>
 		</div>
 	)
 }
@@ -9022,122 +9018,133 @@ function TooltipShowcase(props: ShowcaseProps) {
 
 export default TooltipShowcase
 
-import CrossIcon from "@atlaskit/icon/glyph/cross";
-import {Button, ButtonGroup, Modal, Select} from "@linked-planet/ui-kit-ts";
-import {Tour, TourStep} from "@linked-planet/ui-kit-ts/components/tour/TourWrapper";
-import React, {useState} from "react"
-import ReactJoyride, {Step} from "react-joyride";
-import ShowcaseWrapperItem, {type ShowcaseProps,} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import CrossIcon from "@atlaskit/icon/glyph/cross"
+import {
+	Button,
+	ButtonGroup,
+	Modal,
+	Select,
+	ToastFlagContainer,
+} from "@linked-planet/ui-kit-ts"
+import { Tour, TourStep } from "@linked-planet/ui-kit-ts"
+import { useMemo, useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import type { Step } from "react-joyride"
 
 //#region tour
+const defaultLocale = {
+	back: "Back",
+	close: "Close",
+	last: "Done",
+	next: "Next",
+	open: "Open",
+	skip: "Skip",
+} as const
+
 function TourExample() {
 	const [isActive, setActive] = useState(false)
 	const [popup, setPopup] = useState(false)
 
-	const defaultLocale = {
-		back: "Zurück",
-		close: "Schließen",
-		last: "Fertig",
-		next: "Weiter",
-		open: "Öffnen",
-		skip: "Überspringen",
-	} as const
+	const steps = useMemo(() => {
+		const InitStep = new (class extends TourStep {
+			step: Step = {
+				title: "Tour starten",
+				target: "#tour-start",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "bottom",
+				locale: { ...defaultLocale, next: "Start Tour" },
+				content: (
+					<span>
+						The first step selects the tour start to start the tour.
+					</span>
+				),
+			}
+		})()
 
-	const InitStep = new (class extends TourStep {
-		step: Step = {
-			title: "Tour starten",
-			target: "#tour-start",
-			disableBeacon: true,
-			showSkipButton: false,
-			placement: "bottom",
-			locale: defaultLocale,
-			content: (
-				<span>
-					Mit Klick auf diesen Button können Sie jederzeit die Tour
-					starten.
-				</span>
-			),
-		}
-	})()
+		const SecondStep = new (class extends TourStep {
+			step: Step = {
+				title: "Button",
+				target: "#joyride-first",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "right",
+				locale: defaultLocale,
+				content: (
+					<span>
+						This step selects the popup which would open the popup.
+					</span>
+				),
+			}
+		})()
 
-	const SecondStep = new (class extends TourStep {
-		step: Step = {
-			title: "Button",
-			target: "*[data-id='Test-1']",
-			disableBeacon: true,
-			showSkipButton: false,
-			placement: "right",
-			locale: defaultLocale,
-			content: (
-				<span>
-					Klicken Sie diesen Button um das Popup zu öffnen.
-				</span>
-			),
-		}
-	})()
+		const ThirdPopupStep = new (class extends TourStep {
+			step: Step = {
+				title: "Popup",
+				target: "#test-select",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "right",
+				locale: defaultLocale,
+				content: (
+					<span>
+						This step opens the popup and selects the dropdown in
+						it.
+					</span>
+				),
+			}
 
-	const PopupStep = new (class extends TourStep {
-		step: Step = {
-			title: "Popup",
-			target: "*[data-id='select']",
-			disableBeacon: true,
-			showSkipButton: false,
-			placement: "right",
-			locale: defaultLocale,
-			content: (
-				<span>
-					Hier ist ein Select im Popup, was in der Tour geöffnet wurde.
-				</span>
-			),
-		}
+			onInit() {
+				setPopup(true)
+			}
 
-		async onPrepare(next: () => void): Promise<void> {
-			setPopup(true)
-			setTimeout(() => next(), 500)
-		}
+			onPrepare() {
+				console.log("prepare message")
+			}
 
-		async onExit(): Promise<void> {
-			setPopup(false)
-		}
-	})()
+			onExit() {
+				setPopup(false)
+			}
+		})()
 
-	const ThirdStep = new (class extends TourStep {
-		step: Step = {
-			title: "Weiterer Button",
-			target: "*[data-id='Test-2']",
-			disableBeacon: true,
-			showSkipButton: false,
-			placement: "right",
-			locale: defaultLocale,
-			content: (
-				<span>
-					This step closes the popup and continues with this button.
-				</span>
-			),
-		}
-
-		async onPrepare(next: () => void): Promise<void> {
-			setPopup(false)
-			setTimeout(() => next(), 500)
-		}
-	})()
+		const FourthStep = new (class extends TourStep {
+			step: Step = {
+				title: "Weiterer Button",
+				target: "#joyride-second",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "right",
+				locale: defaultLocale,
+				content: (
+					<span>
+						This step closes the popup and continues with this
+						button.
+					</span>
+				),
+			}
+		})()
+		return [InitStep, SecondStep, ThirdPopupStep, FourthStep]
+	}, [])
 
 	return (
 		<div className="bg-surface">
 			<ButtonGroup>
 				<div id="tour-start" className="flex justify-center flex-1">
-					<button
+					<Button
 						type="button"
 						className="px-2"
 						onClick={() => setActive(true)}
+						appearance="primary"
 					>
 						Tour starten
-					</button>
+					</Button>
 					<Tour
 						isActive={isActive}
 						setActive={setActive}
-						steps={[InitStep, SecondStep, PopupStep, ThirdStep]}
-						skipOnError={true}
+						steps={steps}
+						skipOnError={false}
 						showInfoAndError={true}
 						beforeAll={() => {
 							// initialize dummy data or other inits before tour starts
@@ -9149,16 +9156,26 @@ function TourExample() {
 						}}
 					/>
 				</div>
-				<Button data-id="Test-1" className="joyride-first">First step</Button>
-				<Button data-id="Test-2" className="joyride-second">Second step</Button>
+				<Button
+					data-id="Test-1"
+					//onClick={() => setPopup(true)}
+					id="joyride-first"
+				>
+					First step
+				</Button>
+				<Button data-id="Test-2" id="joyride-second">
+					Second step
+				</Button>
 			</ButtonGroup>
 			<Modal.Container
 				open={popup}
 				//defaultOpen={true}
 				onOpenChange={(opened) => {
+					console.log("OOPEN POPUP CHANGE", popup, opened)
 					if (!opened) setPopup(false)
 				}}
-				shouldCloseOnEscapePress={true}
+				//shouldCloseOnEscapePress={false}
+				shouldCloseOnOverlayClick={false} // this is required, the show "clicks" outside of the dialog closing the modal, which results in the failing of the next step because the element is not mounted anymore
 				accessibleDialogDescription="This is a modal dialog example"
 			>
 				<Modal.Header>
@@ -9178,7 +9195,8 @@ function TourExample() {
 						<p>This is the body of the modal.</p>
 					</div>
 					<Select
-						data-id="select"
+						id="test-select"
+						data-id="test-select"
 						placeholder="Choose..."
 						options={[]}
 					/>
@@ -9191,6 +9209,7 @@ function TourExample() {
 					</Modal.CloseTrigger>
 				</Modal.Footer>
 			</Modal.Container>
+			<ToastFlagContainer />
 		</div>
 	)
 }
@@ -9208,10 +9227,11 @@ export default function TourShowcase(props: ShowcaseProps) {
 					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Tour",
 				},
 			]}
+			description="This is a simple wrapper for joyride guided tour including beforeAll, afterAll, onInit, onPrepare, onExit events."
 			examples={[
 				{
 					title: "Tour",
-					example: <TourExample/>,
+					example: <TourExample />,
 					sourceCodeExampleId: "tour",
 				},
 			]}

@@ -1,124 +1,130 @@
-import CrossIcon from "@atlaskit/icon/glyph/cross";
-import {Button, ButtonGroup, Modal, Select} from "@linked-planet/ui-kit-ts";
-import {Tour, TourStep} from "@linked-planet/ui-kit-ts/components/tour/TourWrapper";
-import React, {useState} from "react"
-import ShowcaseWrapperItem, {type ShowcaseProps,} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import {Step} from "react-joyride"
+import CrossIcon from "@atlaskit/icon/glyph/cross"
+import {
+	Button,
+	ButtonGroup,
+	Modal,
+	Select,
+	ToastFlagContainer,
+} from "@linked-planet/ui-kit-ts"
+import { Tour, TourStep } from "@linked-planet/ui-kit-ts"
+import { useMemo, useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import type { Step } from "react-joyride"
 
 //#region tour
+const defaultLocale = {
+	back: "Back",
+	close: "Close",
+	last: "Done",
+	next: "Next",
+	open: "Open",
+	skip: "Skip",
+} as const
+
 function TourExample() {
 	const [isActive, setActive] = useState(false)
 	const [popup, setPopup] = useState(false)
 
-	const defaultLocale = {
-		back: "Back",
-		close: "Close",
-		last: "Done",
-		next: "Next",
-		open: "Open",
-		skip: "Skip",
-	} as const
+	const steps = useMemo(() => {
+		const InitStep = new (class extends TourStep {
+			step: Step = {
+				title: "Tour starten",
+				target: "#tour-start",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "bottom",
+				locale: { ...defaultLocale, next: "Start Tour" },
+				content: (
+					<span>
+						The first step selects the tour start to start the tour.
+					</span>
+				),
+			}
+		})()
 
-	const InitStep = new (class extends TourStep {
-		step: Step = {
-			title: "Tour starten",
-			target: "#tour-start",
-			disableBeacon: true,
-			showSkipButton: false,
-			placement: "bottom",
-			locale: {...defaultLocale, next: "Start Tour"},
-			content: (
-				<span>
-					The first step selects the tour start to start the tour.
-				</span>
-			),
-		}
-	})()
+		const SecondStep = new (class extends TourStep {
+			step: Step = {
+				title: "Button",
+				target: "#joyride-first",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "right",
+				locale: defaultLocale,
+				content: (
+					<span>
+						This step selects the popup which would open the popup.
+					</span>
+				),
+			}
+		})()
 
-	const SecondStep = new (class extends TourStep {
-		step: Step = {
-			title: "Button",
-			target: "*[data-id='Test-1']",
-			disableBeacon: true,
-			showSkipButton: false,
-			placement: "right",
-			locale: defaultLocale,
-			content: (
-				<span>
-					This step selects the popup which would open the popup.
-				</span>
-			),
-		}
-	})()
+		const ThirdPopupStep = new (class extends TourStep {
+			step: Step = {
+				title: "Popup",
+				target: "#test-select",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "right",
+				locale: defaultLocale,
+				content: (
+					<span>
+						This step opens the popup and selects the dropdown in
+						it.
+					</span>
+				),
+			}
 
-	const PopupStep = new (class extends TourStep {
-		step: Step = {
-			title: "Popup",
-			target: "#test-select",
-			disableBeacon: true,
-			showSkipButton: false,
-			placement: "right",
-			locale: defaultLocale,
-			content: (
-				<span>
-					This step opens the popup and selects the dropdown in it.
-				</span>
-			),
-		}
+			onInit() {
+				setPopup(true)
+			}
 
-		async onInit(next: () => void): Promise<void> {
-			setPopup(true)
-			next()
-			setTimeout(() => next(), 50)
-		}
+			onPrepare() {
+				console.log("prepare message")
+			}
 
-		async onPrepare(next: () => void): Promise<void> {
-			setPopup(true)
-			setTimeout(() => next(), 50)
-		}
+			onExit() {
+				setPopup(false)
+			}
+		})()
 
-		async onExit(): Promise<void> {
-			setPopup(false)
-		}
-	})()
-
-	const ThirdStep = new (class extends TourStep {
-		step: Step = {
-			title: "Weiterer Button",
-			target: "*[data-id='Test-2']",
-			disableBeacon: true,
-			showSkipButton: false,
-			placement: "right",
-			locale: defaultLocale,
-			content: (
-				<span>
-					This step closes the popup and continues with this button.
-				</span>
-			),
-		}
-
-		async onPrepare(next: () => void): Promise<void> {
-			setPopup(false)
-			setTimeout(() => next(), 500)
-		}
-	})()
+		const FourthStep = new (class extends TourStep {
+			step: Step = {
+				title: "Weiterer Button",
+				target: "#joyride-second",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "right",
+				locale: defaultLocale,
+				content: (
+					<span>
+						This step closes the popup and continues with this
+						button.
+					</span>
+				),
+			}
+		})()
+		return [InitStep, SecondStep, ThirdPopupStep, FourthStep]
+	}, [])
 
 	return (
 		<div className="bg-surface">
 			<ButtonGroup>
 				<div id="tour-start" className="flex justify-center flex-1">
-					<button
+					<Button
 						type="button"
 						className="px-2"
 						onClick={() => setActive(true)}
+						appearance="primary"
 					>
 						Tour starten
-					</button>
+					</Button>
 					<Tour
 						isActive={isActive}
 						setActive={setActive}
-						steps={[InitStep, SecondStep, PopupStep, ThirdStep]}
-						skipOnError={true}
+						steps={steps}
+						skipOnError={false}
 						showInfoAndError={true}
 						beforeAll={() => {
 							// initialize dummy data or other inits before tour starts
@@ -130,16 +136,26 @@ function TourExample() {
 						}}
 					/>
 				</div>
-				<Button data-id="Test-1" onClick={() => setPopup(true)} className="joyride-first">First step</Button>
-				<Button data-id="Test-2" className="joyride-second">Second step</Button>
+				<Button
+					data-id="Test-1"
+					//onClick={() => setPopup(true)}
+					id="joyride-first"
+				>
+					First step
+				</Button>
+				<Button data-id="Test-2" id="joyride-second">
+					Second step
+				</Button>
 			</ButtonGroup>
 			<Modal.Container
 				open={popup}
 				//defaultOpen={true}
 				onOpenChange={(opened) => {
+					console.log("OOPEN POPUP CHANGE", popup, opened)
 					if (!opened) setPopup(false)
 				}}
-				shouldCloseOnEscapePress={true}
+				//shouldCloseOnEscapePress={false}
+				shouldCloseOnOverlayClick={false} // this is required, the show "clicks" outside of the dialog closing the modal, which results in the failing of the next step because the element is not mounted anymore
 				accessibleDialogDescription="This is a modal dialog example"
 			>
 				<Modal.Header>
@@ -173,6 +189,7 @@ function TourExample() {
 					</Modal.CloseTrigger>
 				</Modal.Footer>
 			</Modal.Container>
+			<ToastFlagContainer />
 		</div>
 	)
 }
@@ -194,7 +211,7 @@ export default function TourShowcase(props: ShowcaseProps) {
 			examples={[
 				{
 					title: "Tour",
-					example: <TourExample/>,
+					example: <TourExample />,
 					sourceCodeExampleId: "tour",
 				},
 			]}

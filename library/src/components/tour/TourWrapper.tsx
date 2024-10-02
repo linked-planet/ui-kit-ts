@@ -1,8 +1,15 @@
-import ReactJoyride, { type Step } from "react-joyride"
-import React, { useRef, useState } from "react"
-import {showErrorFlag, showInformationFlag} from "../ToastFlag";
+import ReactJoyride, {
+	type Locale,
+	type Styles,
+	type Step,
+	type FloaterProps,
+	type CallBackProps,
+} from "react-joyride"
+import { useCallback, useMemo, useRef, useState } from "react"
+import { showErrorFlag, showInformationFlag } from "../ToastFlag"
+import { flushSync } from "react-dom"
 
-export class TourStep {
+export abstract class TourStep {
 	step: Step
 
 	constructor() {
@@ -12,15 +19,11 @@ export class TourStep {
 		}
 	}
 
-	async onInit(next: () => void) {
-		next()
-	}
+	onInit?(): void
 
-	async onPrepare(next: () => void) {
-		next()
-	}
+	onPrepare?(): void
 
-	async onExit() {}
+	onExit?(): void
 }
 
 export interface TourProps {
@@ -31,137 +34,191 @@ export interface TourProps {
 	showInfoAndError: boolean
 	beforeAll: () => void
 	afterAll: () => void
+
+	/**
+	 * the scroll offset from the top for the tour (to remove the fixed header)
+	 * @default 220
+	 * */
+	scrollOffset?: number
+
+	/**
+	 * Scrolls to the first step element when the tour starts
+	 * @default true
+	 */
+	scrollToFirstStep?: boolean
+
+	/**
+	 * Disables the closing of the overlay when clicking outside of the tour
+	 * @default true
+	 * */
+	disabledOverlayClose?: boolean
+}
+
+const floaterProps: Partial<FloaterProps> = {
+	styles: {
+		floater: {
+			zIndex: 2000,
+			pointerEvents: "auto" as const,
+		},
+	},
+}
+
+const styles: Partial<Styles> = {
+	overlay: {
+		zIndex: 1000,
+		//opacity: 0.0,
+	},
+}
+
+const locale: Locale = {
+	back: "Zurück",
+	close: "Schließen",
+	last: "Fertig",
+	next: "Weiter",
+	open: "Öffnen",
+	skip: "Überspringen",
 }
 
 export function Tour({
 	isActive,
 	setActive,
 	steps,
-	skipOnError,
-	showInfoAndError,
+	skipOnError = true,
+	showInfoAndError = true,
 	beforeAll,
 	afterAll,
+	scrollOffset = 220,
+	scrollToFirstStep = true,
+	disabledOverlayClose = true,
 }: TourProps) {
 	const [stepIndex, setStepIndex] = useState(0)
 	const isInit = useRef(false)
 
-	function next() {
-		setStepIndex(stepIndex + 1)
-	}
+	// run the set stepIndex update in a timeout that is runs after the rendering is done, and use flushSync to make sure the DOM is updated
+	const next = useCallback((i: number) => {
+		window.setTimeout(() =>
+			flushSync(() => setStepIndex((prev) => prev + i)),
+		)
+	}, [])
 
-	function before() {
-		setStepIndex(stepIndex - 1)
-	}
+	const reset = useCallback(() => {
+		setActive(false)
+		setStepIndex(0)
+		isInit.current = false
+		afterAll()
+	}, [afterAll, setActive])
 
-	const _steps = steps.map((it) => it.step)
+	const _steps = useMemo(() => steps.map((it) => it.step), [steps])
+
+	const callback = useCallback(
+		(joyrideState: CallBackProps) => {
+			const { action, index, lifecycle, type, step } = joyrideState
+			console.log("ACTION", action, "TYPE", type, "INDEX", index)
+
+			switch (type) {
+				case "tour:start":
+					beforeAll()
+					isInit.current = true
+					setStepIndex(0)
+					break
+				case "tour:end":
+					reset()
+					break
+				case "step:before":
+					steps[index]?.onPrepare?.()
+					break
+				case "step:after":
+					steps[index]?.onExit?.()
+					switch (action) {
+						case "next":
+							steps[index + 1]?.onInit?.()
+							next(1)
+							break
+						case "prev":
+							steps[index - 1]?.onInit?.()
+							next(-1)
+							break
+						case "skip":
+							steps[index + 2]?.onInit?.()
+							next(2)
+							break
+						case "close":
+							reset()
+							break
+						case "reset":
+							reset()
+							break
+						case "stop":
+							reset()
+							break
+						default:
+							break
+					}
+					break
+				case "error:target_not_found":
+					if (skipOnError) {
+						if (showInfoAndError) {
+							showInformationFlag({
+								title: "Tour-Info",
+								description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen, das Element wurde nicht gefunden.`,
+							})
+						}
+						next(1)
+					} else {
+						if (showInfoAndError) {
+							showErrorFlag({
+								title: "Tour-Fehler",
+								description: `Fehler bei Step [${steps[index].step?.title ?? "Unbekannt"}]. Das Element ${step.target} wurde nicht gefunden.`,
+							})
+						}
+						reset()
+					}
+					break
+				case "error":
+					if (skipOnError) {
+						if (showInfoAndError) {
+							showInformationFlag({
+								title: "Tour-Info",
+								description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen.`,
+							})
+						}
+						next(1)
+					} else {
+						if (showInfoAndError) {
+							showErrorFlag({
+								title: "Tour-Fehler",
+								description: `Fehler bei Step [${steps[index].step?.title ?? "Unbekannt"}].`,
+							})
+						}
+						reset()
+					}
+					break
+
+				default:
+					break
+			}
+		},
+		[beforeAll, reset, next, showInfoAndError, skipOnError, steps],
+	)
 
 	return (
 		<ReactJoyride
 			run={isActive}
 			continuous={true}
 			showProgress={true}
-			disableScrolling={true}
-			scrollToFirstStep={false}
-			styles={{
-				overlay: {
-					zIndex: 1000,
-				},
-			}}
-			floaterProps={{
-				styles: {
-					floater: {
-						zIndex: 2000,
-						pointerEvents: "auto",
-					},
-				},
-			}}
-			scrollOffset={220}
+			disableScrollParentFix={true} //this is to avoid that joyride kills the scrolling in the app layout
+			//disableScrolling={true}
+			scrollToFirstStep={scrollToFirstStep}
+			styles={styles}
+			floaterProps={floaterProps}
+			disableOverlayClose={disabledOverlayClose}
+			scrollOffset={scrollOffset}
 			stepIndex={stepIndex}
-			locale={{
-				back: "Zurück",
-				close: "Schließen",
-				last: "Fertig",
-				next: "Weiter",
-				open: "Öffnen",
-				skip: "Überspringen",
-			}}
-			callback={(joyrideState) => {
-				const { action, index, lifecycle, type } = joyrideState
-
-				const lpBeforeStep =
-					stepIndex <= 0 ? undefined : steps[stepIndex - 1]
-				const lpNextStep =
-					stepIndex >= 0 && stepIndex < steps.length
-						? steps[stepIndex + 1]
-						: undefined
-				const lpStep = steps[stepIndex]
-
-				if (type === "error" || type === "error:target_not_found") {
-					if (skipOnError) {
-						if (showInfoAndError) {
-							showInformationFlag({
-								title: "Tour-Info",
-								description: `Ein Step [${lpStep.step?.title ?? "Unbekannt"}] wurde übersprungen.`,
-							})
-						}
-						next()
-					} else {
-						if (showInfoAndError) {
-							showErrorFlag({
-								title: "Tour-Fehler",
-								description: `Fehler bei Step [${lpStep.step?.title ?? "Unbekannt"}]. Das Element wurde nicht gefunden.`,
-							})
-						}
-						setStepIndex(0)
-						isInit.current = false
-					}
-					afterAll()
-				}
-
-				if (action === "start" && lifecycle === "init") {
-					beforeAll()
-					isInit.current = false
-					lpStep?.onInit(() => {
-						isInit.current = true
-					})
-				}
-
-				if (type === "step:after") {
-					if (action === "prev") {
-						lpStep?.onExit()
-						if (lpBeforeStep) {
-							lpBeforeStep.onPrepare(before)
-						} else {
-							before()
-						}
-					} else if (action === "next") {
-						lpStep?.onExit()
-						if (lpNextStep) {
-							lpNextStep.onPrepare(next)
-						} else {
-							next()
-						}
-					}
-				}
-
-				if (action === "skip" || action === "close") {
-					setActive(false)
-					isInit.current = false
-					afterAll()
-				}
-
-				if (
-					action === "reset" ||
-					(type === "tour:end" && action === "next")
-				) {
-					setActive(false)
-					setStepIndex(0)
-					isInit.current = false
-					afterAll()
-				}
-			}}
+			locale={locale}
+			disableOverlay={false}
+			callback={callback}
 			steps={_steps}
-			debug={true}
+			debug={false}
 		/>
 	)
 }
