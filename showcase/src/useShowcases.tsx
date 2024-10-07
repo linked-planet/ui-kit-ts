@@ -51,6 +51,7 @@ import BreadcrumbsShowcase from "./components/showcase/wrapper/BreadcrumbsShowca
 import SectionMessageShowcase from "./components/showcase/wrapper/SectionMessageShowcase"
 import DragAndDropShowcase from "./components/showcase/wrapper/DragAndDropShowcase"
 import GlobalStateShowcase from "./components/showcase/wrapper/GlobalStateShowcase"
+import TourShowcase from "./components/showcase/wrapper/TourShowcase"
 import FormShowcase from "./components/showcase/wrapper/FormShowcase"
 import EventListShowcase from "./components/showcase/wrapper/EventListShowcase"
 export default function useShowcases({
@@ -179,6 +180,7 @@ export default function useShowcases({
 			"Truncated Text": (
 				<TruncatedTextShowcase overallSourceCode={overallSourceCode} />
 			),
+			Tour: <TourShowcase overallSourceCode={overallSourceCode} />,
 			Utils: <UtilsShowcase overallSourceCode={overallSourceCode} />,
 		}),
 		[overallSourceCode],

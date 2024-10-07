@@ -3,7 +3,7 @@ import type { Dayjs } from "dayjs"
 import { twMerge } from "tailwind-merge"
 import type { TimeType } from "../utils"
 
-export interface EventObject {
+export interface EventListObject {
 	key: string
 	title?: string
 	subtitle?: string
@@ -11,13 +11,13 @@ export interface EventObject {
 	endDate: Dayjs | undefined
 }
 
-interface EventWrapper<T extends EventObject> {
+interface EventWrapper<T extends EventListObject> {
 	booking: T
 	renderStartDate: Dayjs
 	renderEndDate: Dayjs
 }
 
-export interface EventListProps<T extends EventObject> {
+export interface EventListProps<T extends EventListObject> {
 	items: T[]
 	minStartTime: Dayjs
 	maxEndTime: Dayjs
@@ -33,7 +33,7 @@ export interface EventListProps<T extends EventObject> {
 	style?: React.CSSProperties
 }
 
-function useOrderByDateBookings<T extends EventObject>(
+function useOrderByDateBookings<T extends EventListObject>(
 	items: T[],
 	_minStartTime: Dayjs,
 	maxEndTime: Dayjs,
@@ -122,7 +122,7 @@ const dateFormat = Intl.DateTimeFormat(undefined, {
 	year: "numeric",
 })
 
-function defaultRenderEvent<T extends EventObject>(
+function defaultRenderEvent<T extends EventListObject>(
 	booking: T,
 	startDate: Dayjs | undefined,
 	endDate: Dayjs | undefined,
@@ -149,7 +149,7 @@ function defaultRenderEvent<T extends EventObject>(
 	)
 }
 
-export function EventList<T extends EventObject>({
+export function EventList<T extends EventListObject>({
 	items,
 	renderEvent = defaultRenderEvent,
 	renderTimeHeader,
