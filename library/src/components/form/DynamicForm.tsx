@@ -41,7 +41,7 @@ export interface DynamicFormProps<T extends FieldValues>
 	) => React.JSX.Element
 	onSubmit: (obj: T) => void
 	readonly?: boolean
-	vertical?: boolean
+	horizontal?: boolean
 	hideReset?: boolean
 	hideSave?: boolean
 }
@@ -51,7 +51,7 @@ export function DynamicForm<T extends FieldValues>({
 	children,
 	onSubmit,
 	readonly,
-	vertical,
+	horizontal,
 	className,
 	hideSave,
 	hideReset,
@@ -77,7 +77,7 @@ export function DynamicForm<T extends FieldValues>({
 		<form
 			{...props}
 			className={twMerge(
-				`flex ${vertical ? "flex-row" : "flex-col"} gap-4`,
+				`flex ${horizontal ? "flex-row" : "flex-col"} gap-4`,
 				className,
 			)}
 			onSubmit={handleSubmit(onSubmit)}
