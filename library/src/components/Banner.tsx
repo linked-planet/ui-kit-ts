@@ -17,7 +17,7 @@ type BannerProps = {
 }
 
 const announcementStyles = "bg-neutral-full text-text-inverse"
-const warningStyles = "bg-warning-bold text-text"
+const warningStyles = "bg-warning-bold text-text-inverse"
 const errorStyles = "bg-danger-bold text-text-inverse"
 const successStyles = "bg-success-bold text-text-inverse"
 const informationStyles = "bg-information-bold text-text-inverse"

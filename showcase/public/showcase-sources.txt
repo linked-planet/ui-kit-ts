@@ -3434,6 +3434,194 @@ function EmptyStateShowcase(props: ShowcaseProps) {
 
 export default EmptyStateShowcase
 
+import { DateUtils, Label } from "@linked-planet/ui-kit-ts"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { EventList } from "@linked-planet/ui-kit-ts/components/EventList"
+import dayjs, { type Dayjs } from "dayjs"
+import { useState } from "react"
+
+//#region event-list
+function EventListExample() {
+	const data = [
+		{
+			title: "Event 1",
+			subtitle: "This is my first event 00:00 - 23:59",
+			// down here required fields
+			key: "1",
+			startDate: dayjs("2024-01-01 00:00", "YYYY-MM-DD HH:mm"),
+			endDate: dayjs("2024-01-01 23:59", "YYYY-MM-DD HH:mm"),
+		},
+		{
+			title: "Event 2",
+			subtitle: "This event goes 13:00 to 15:00",
+			// down here required fields
+			key: "2",
+			startDate: dayjs("2024-01-01 13:00", "YYYY-MM-DD HH:mm"),
+			endDate: dayjs("2024-01-01 15:00", "YYYY-MM-DD HH:mm"),
+		},
+		{
+			title: "Event 3",
+			subtitle: "This event goes over 2 days 08:00 - 16:00",
+			// down here required fields
+			key: "3",
+			startDate: dayjs("2024-01-02 08:00", "YYYY-MM-DD HH:mm"),
+			endDate: dayjs("2024-01-03 16:00", "YYYY-MM-DD HH:mm"),
+		},
+	]
+
+	const [useCustomHeader, setUseCustomHeader] = useState(false)
+
+	return (
+		<div className="bg-surface">
+			<Label htmlFor="useCustomHeader">Use Custom Header</Label>
+			<input
+				type="checkbox"
+				id="useCustomHeader"
+				checked={useCustomHeader}
+				onChange={(e) => {
+					setUseCustomHeader(e.target.checked)
+				}}
+			/>
+			<EventList
+				items={data}
+				minStartTime={dayjs("2024-01-01", "YYYY-MM-DD")}
+				maxEndTime={dayjs("2024-01-31", "YYYY-MM-DD")}
+				dayStart="00:00"
+				dayEnd="23:59"
+				renderTimeHeader={
+					useCustomHeader
+						? (date: Dayjs) => (
+								<span className="text-text-subtle text-lg">
+									{DateUtils.toDateType(date)}
+								</span>
+							)
+						: undefined
+				}
+				/*renderEvent={(obj, startDate, endDate) => {
+					return (
+						<div
+							data-id={obj.key}
+							className="flex justify-between py-1 cursor-pointer border-solid border-l-8 overflow-hidden"
+						>
+							<div className="flex pl-2.5 flex-col overflow-hidden">
+								<div className="text-text-subtle text-xl flex-0 truncate">
+									<span>{obj.title}</span>
+								</div>
+								<div className="text-text-subtle text-sm flex-0 truncate">
+									<span>{obj.subtitle}</span>
+								</div>
+								<div className="text-text">
+									{startDate?.format("HH:mm")} -{" "}
+									{endDate?.format("HH:mm")}
+								</div>
+							</div>
+						</div>
+					)
+				}}*/
+			/>
+		</div>
+	)
+}
+//#endregion event-list
+
+//#region event-list-start-end
+function EventListStartEndExample() {
+	const data = [
+		{
+			title: "Event 1",
+			subtitle: "This is my first event 00:00 - 23:59",
+			// down here required fields
+			key: "1",
+			startDate: dayjs("2024-01-01 00:00", "YYYY-MM-DD HH:mm"),
+			endDate: dayjs("2024-01-01 23:59", "YYYY-MM-DD HH:mm"),
+		},
+		{
+			title: "Event 2",
+			subtitle: "This event goes 13:00 to 15:00",
+			// down here required fields
+			key: "2",
+			startDate: dayjs("2024-01-01 13:00", "YYYY-MM-DD HH:mm"),
+			endDate: dayjs("2024-01-01 15:00", "YYYY-MM-DD HH:mm"),
+		},
+		{
+			title: "Event 3",
+			subtitle: "This event goes over 2 days 08:00 - 16:00",
+			// down here required fields
+			key: "3",
+			startDate: dayjs("2024-01-02 08:00", "YYYY-MM-DD HH:mm"),
+			endDate: dayjs("2024-01-03 16:00", "YYYY-MM-DD HH:mm"),
+		},
+	]
+
+	return (
+		<div className="">
+			<EventList
+				items={data}
+				minStartTime={dayjs("2024-01-01", "YYYY-MM-DD")}
+				maxEndTime={dayjs("2024-01-31", "YYYY-MM-DD")}
+				dayStart="08:00"
+				dayEnd="18:00"
+				renderTimeHeader={(date) => (
+					<span className="text-text-subtle text-lg">
+						{DateUtils.toDateType(date)}
+					</span>
+				)}
+				renderEvent={(obj, startDate, endDate) => {
+					return (
+						<div
+							data-id={obj.key}
+							className="flex justify-between py-1 cursor-pointer border-solid border-l-8 border-l-danger-bold overflow-hidden bg-danger"
+						>
+							<div className="flex pl-2.5 flex-col overflow-hidden">
+								<div className="text-text-subtle text-xl flex-0 truncate">
+									<span>{obj.title}</span>
+								</div>
+								<div className="text-text-subtle text-sm flex-0 truncate">
+									<span>{obj.subtitle}</span>
+								</div>
+								<div className="text-text">
+									{startDate?.format("HH:mm")} -{" "}
+									{endDate?.format("HH:mm")}
+								</div>
+							</div>
+						</div>
+					)
+				}}
+			/>
+		</div>
+	)
+}
+//#endregion event-list-start-end
+
+export default function EventListShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="EventList"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=EventList",
+				},
+			]}
+			examples={[
+				{
+					title: "Basic",
+					example: <EventListExample />,
+					sourceCodeExampleId: "event-list",
+				},
+				{
+					title: "Custom Start/End-Times and Custom Render",
+					example: <EventListStartEndExample />,
+					sourceCodeExampleId: "event-list-start-end",
+				},
+			]}
+		/>
+	)
+}
+
 import React, { useState } from "react"
 import ShowcaseWrapperItem, {
 	ShowcaseProps,
@@ -3893,6 +4081,376 @@ function FlagShowcase(props: ShowcaseProps) {
 }
 
 export default FlagShowcase
+
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { DynamicForm } from "@linked-planet/ui-kit-ts"
+import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
+
+interface TestObject {
+	firstname: string
+	lastname: string
+	language: string
+	hobbies: string[]
+	age: number
+	alive: boolean
+}
+
+const testObject = {
+	firstname: "Max",
+	lastname: "Mustermann",
+	language: "de",
+	hobbies: ["Football", "Guitar"],
+	age: 30,
+	alive: true,
+}
+
+const languages = [
+	{ label: "German", value: "de" },
+	{ label: "English", value: "en" },
+	{ label: "Swedisch", value: "se" },
+]
+
+const hobbies = [
+	{ label: "Football", value: "Football" },
+	{ label: "Guitar", value: "Guitar" },
+	{ label: "Basketball", value: "Basketball" },
+]
+
+//#region form-vertical
+function FormVerticalExample() {
+	return (
+		<div className="bg-surface">
+			<DynamicForm.Form<TestObject>
+				obj={testObject}
+				onSubmit={(data) => {
+					console.info("Saving form", data)
+				}}
+			>
+				{(formProps) => (
+					<>
+						<DynamicForm.InputFormField
+							formProps={formProps}
+							name="firstname"
+							title="Firstname"
+						/>
+						<DynamicForm.InputFormField
+							formProps={formProps}
+							name="lastname"
+							title="Lastname"
+						/>
+						<DynamicForm.SelectSingleFormField
+							formProps={formProps}
+							name="language"
+							title="Language"
+							options={languages}
+							onChange={(value) =>
+								console.info("On language change", value)
+							}
+						/>
+						<DynamicForm.SelectMultiFormField
+							formProps={formProps}
+							name="hobbies"
+							title="Hobbies"
+							options={hobbies}
+						/>
+						<DynamicForm.InputFormField
+							formProps={formProps}
+							name="age"
+							title="Age"
+						/>
+						<DynamicForm.CheckboxFormField
+							formProps={formProps}
+							name="alive"
+							title="Alive"
+						/>
+					</>
+				)}
+			</DynamicForm.Form>
+		</div>
+	)
+}
+//#endregion form-vertical
+
+//#region form-horizontal
+function FormHorizontalExample() {
+	return (
+		<div className="bg-surface">
+			<DynamicForm.Form<TestObject>
+				horizontal
+				obj={testObject}
+				onSubmit={(data) => {
+					console.info("Saving form", data)
+				}}
+			>
+				{(formProps) => (
+					<>
+						<DynamicForm.InputFormField
+							formProps={formProps}
+							name="firstname"
+							title="Firstname"
+							placeholder="Vorname"
+						/>
+						<DynamicForm.InputFormField
+							formProps={formProps}
+							name="lastname"
+							title="Lastname"
+							placeholder="Nachname"
+						/>
+						<DynamicForm.SelectSingleFormField
+							formProps={formProps}
+							name="language"
+							title="Language"
+							options={languages}
+							onChange={(value) =>
+								console.info("On language change", value)
+							}
+						/>
+						<DynamicForm.SelectMultiFormField
+							formProps={formProps}
+							name="hobbies"
+							title="Hobbies"
+							options={hobbies}
+						/>
+						<DynamicForm.InputFormField
+							formProps={formProps}
+							name="age"
+							title="Age"
+						/>
+						<DynamicForm.CheckboxFormField
+							formProps={formProps}
+							name="alive"
+							title="Alive"
+						/>
+					</>
+				)}
+			</DynamicForm.Form>
+		</div>
+	)
+}
+//#endregion form-horizontal
+
+//#region form-custom
+function FormCustomExample() {
+	return (
+		<div className="bg-surface">
+			<DynamicForm.Form<TestObject>
+				hideReset
+				hideSave
+				className="max-w-4xl mt-3"
+				obj={testObject}
+				onSubmit={(data) => {
+					console.info("Saving form", data)
+				}}
+			>
+				{(formProps) => (
+					<>
+						<div className="flex gap-2">
+							<DynamicForm.InputFormField
+								formProps={formProps}
+								name="firstname"
+								title="Firstname"
+							/>
+							<DynamicForm.InputFormField
+								formProps={formProps}
+								name="lastname"
+								title="Lastname"
+							/>
+
+							<DynamicForm.SelectSingleFormField
+								formProps={formProps}
+								name="language"
+								title="Language"
+								options={languages}
+								onChange={(value) =>
+									console.info("On language change", value)
+								}
+							/>
+						</div>
+						<DynamicForm.SelectMultiFormField
+							formProps={formProps}
+							name="hobbies"
+							title="Hobbies"
+							options={hobbies}
+						/>
+						<DynamicForm.InputFormField
+							formProps={formProps}
+							name="age"
+							title="Age"
+						/>
+						<DynamicForm.CheckboxFormField
+							formProps={formProps}
+							name="alive"
+							title="Alive"
+						/>
+						<ButtonGroup>
+							<Button appearance="primary" type="submit">
+								Submit
+							</Button>
+							<Button appearance="subtle" type="reset">
+								Reset
+							</Button>
+						</ButtonGroup>
+					</>
+				)}
+			</DynamicForm.Form>
+		</div>
+	)
+}
+//#endregion form-custom
+
+export default function FormShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="Form"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Form",
+				},
+			]}
+			examples={[
+				{
+					title: "Form Vertical",
+					example: <FormVerticalExample />,
+					sourceCodeExampleId: "form-horizontal",
+				},
+				{
+					title: "Form Horizontal",
+					example: <FormHorizontalExample />,
+					sourceCodeExampleId: "form-vertical",
+				},
+				{
+					title: "Form Custom",
+					example: <FormCustomExample />,
+					sourceCodeExampleId: "form-custom",
+				},
+			]}
+		/>
+	)
+}
+
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { useGlobalState } from "@linked-planet/ui-kit-ts/GlobalState"
+import { Input, Label } from "@linked-planet/ui-kit-ts"
+
+//#region global-state
+function GlobalStateExample() {
+	// define global state type
+	interface MyData {
+		key: string
+		name: string
+	}
+
+	// create global state hook
+	const useMyData = useGlobalState<MyData>("myData", {
+		key: "1",
+		name: "Foo Bar",
+	})
+
+	// use hook in local components
+	const [myData, setMyData] = useMyData
+
+	return (
+		<>
+			<>
+				<Label htmlFor="myDataKey">Key</Label>
+				<Input
+					type="text"
+					id="myDataKey"
+					value={myData.key}
+					onChange={(e) => {
+						setMyData({ key: e.target.value, name: myData.name })
+					}}
+				/>
+				<Label htmlFor="myDataName">Name</Label>
+				<Input
+					type="text"
+					id="myDataName"
+					value={myData.name}
+					onChange={(e) => {
+						setMyData({ key: myData.key, name: e.target.value })
+					}}
+				/>
+			</>
+			<div className="bg-surface mt-8">{myData.key}</div>
+			<div className="bg-surface">{myData.name}</div>
+		</>
+	)
+}
+//#endregion global-state
+
+//#region global-state-array
+
+function ArrayString() {
+	const [arrayData] = useGlobalState<string[]>("myArrayData", [])
+	return (
+		<>
+			<div className="bg-surface mt-8">{arrayData.join(", ")}</div>
+		</>
+	)
+}
+
+function GlobalArrayStateExample() {
+	// create global state hook
+	const [arrayData, setArrayData] = useGlobalState<string[]>("myArrayData", [
+		"Apple",
+		"Banana",
+	])
+
+	return (
+		<>
+			<>
+				<Label htmlFor="myDataKey">Array Data Input</Label>
+				<Input
+					type="text"
+					id="myDataKey"
+					onKeyUp={(e) => {
+						if (e.key !== "Enter") return
+						setArrayData([
+							...arrayData,
+							(e.target as HTMLInputElement).value,
+						])
+					}}
+				/>
+			</>
+			<ArrayString />
+		</>
+	)
+}
+//#endregion global-state-array
+
+export default function GlobalStateShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="GlobalState"
+			description="Global state is a way to store data in a global store. It is useful for storing data that is needed in multiple components. But it does not have fine-grained reactivity - use it only for simple values and shallow objects where things are subscribed to changes only on the top 'value' level."
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=GlobalState",
+				},
+			]}
+			examples={[
+				{
+					title: "Global State",
+					example: <GlobalStateExample />,
+					sourceCodeExampleId: "global-state",
+				},
+				{
+					title: "Global Array State",
+					example: <GlobalArrayStateExample />,
+					sourceCodeExampleId: "global-state-array",
+				},
+			]}
+		/>
+	)
+}
 
 import React from "react"
 import ShowcaseWrapperItem, {
@@ -8459,6 +9017,227 @@ function TooltipShowcase(props: ShowcaseProps) {
 }
 
 export default TooltipShowcase
+
+import CrossIcon from "@atlaskit/icon/glyph/cross"
+import {
+	Button,
+	ButtonGroup,
+	Modal,
+	Select,
+	ToastFlagContainer,
+} from "@linked-planet/ui-kit-ts"
+import { Tour, TourStep } from "@linked-planet/ui-kit-ts"
+import { useMemo, useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import type { Step } from "react-joyride"
+
+//#region tour
+const defaultLocale = {
+	back: "Back",
+	close: "Close",
+	last: "Done",
+	next: "Next",
+	open: "Open",
+	skip: "Skip",
+} as const
+
+function TourExample() {
+	const [isActive, setActive] = useState(false)
+	const [popup, setPopup] = useState(false)
+
+	const steps = useMemo(() => {
+		const InitStep = new (class extends TourStep {
+			step: Step = {
+				title: "Tour starten",
+				target: "#tour-start",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "bottom",
+				locale: { ...defaultLocale, next: "Start Tour" },
+				content: (
+					<span>
+						The first step selects the tour start to start the tour.
+					</span>
+				),
+			}
+		})()
+
+		const SecondStep = new (class extends TourStep {
+			step: Step = {
+				title: "Button",
+				target: "#joyride-first",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "right",
+				locale: defaultLocale,
+				content: (
+					<span>
+						This step selects the popup which would open the popup.
+					</span>
+				),
+			}
+		})()
+
+		const ThirdPopupStep = new (class extends TourStep {
+			step: Step = {
+				title: "Popup",
+				target: "#test-select",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "right",
+				locale: defaultLocale,
+				content: (
+					<span>
+						This step opens the popup and selects the dropdown in
+						it.
+					</span>
+				),
+			}
+
+			onInit() {
+				setPopup(true)
+			}
+
+			onPrepare() {
+				console.log("prepare message")
+			}
+
+			onExit() {
+				setPopup(false)
+			}
+		})()
+
+		const FourthStep = new (class extends TourStep {
+			step: Step = {
+				title: "Weiterer Button",
+				target: "#joyride-second",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "right",
+				locale: defaultLocale,
+				content: (
+					<span>
+						This step closes the popup and continues with this
+						button.
+					</span>
+				),
+			}
+		})()
+		return [InitStep, SecondStep, ThirdPopupStep, FourthStep]
+	}, [])
+
+	return (
+		<div className="bg-surface">
+			<ButtonGroup>
+				<div id="tour-start" className="flex justify-center flex-1">
+					<Button
+						type="button"
+						className="px-2"
+						onClick={() => setActive(true)}
+						appearance="primary"
+					>
+						Tour starten
+					</Button>
+					<Tour
+						isActive={isActive}
+						setActive={setActive}
+						steps={steps}
+						skipOnError={false}
+						showInfoAndError={true}
+						beforeAll={() => {
+							// initialize dummy data or other inits before tour starts
+							console.info("Starting Tour")
+						}}
+						afterAll={() => {
+							// cleanup dummy data or other inits after tour finished
+							console.info("Ending Tour")
+						}}
+					/>
+				</div>
+				<Button
+					data-id="Test-1"
+					//onClick={() => setPopup(true)}
+					id="joyride-first"
+				>
+					First step
+				</Button>
+				<Button data-id="Test-2" id="joyride-second">
+					Second step
+				</Button>
+			</ButtonGroup>
+			<Modal.Container
+				open={popup}
+				//defaultOpen={true}
+				onOpenChange={(opened) => {
+					console.log("OOPEN POPUP CHANGE", popup, opened)
+					if (!opened) setPopup(false)
+				}}
+				//shouldCloseOnEscapePress={false}
+				shouldCloseOnOverlayClick={false} // this is required, the show "clicks" outside of the dialog closing the modal, which results in the failing of the next step because the element is not mounted anymore
+				accessibleDialogDescription="This is a modal dialog example"
+			>
+				<Modal.Header>
+					<Modal.Title accessibleDialogTitle="Sample Modal">
+						Sample Modal
+					</Modal.Title>
+					<Button
+						appearance="link"
+						onClick={() => setPopup(false)}
+						className="text-text p-0"
+					>
+						<CrossIcon label="Close popup" />
+					</Button>
+				</Modal.Header>
+				<Modal.Body>
+					<div>
+						<p>This is the body of the modal.</p>
+					</div>
+					<Select
+						id="test-select"
+						data-id="test-select"
+						placeholder="Choose..."
+						options={[]}
+					/>
+				</Modal.Body>
+				<Modal.Footer>
+					<Modal.CloseTrigger>
+						<Button appearance="primary" className="z-0">
+							Close
+						</Button>
+					</Modal.CloseTrigger>
+				</Modal.Footer>
+			</Modal.Container>
+			<ToastFlagContainer />
+		</div>
+	)
+}
+
+//#endregion tour
+
+export default function TourShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="Tour"
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Tour",
+				},
+			]}
+			description="This is a simple wrapper for joyride guided tour including beforeAll, afterAll, onInit, onPrepare, onExit events."
+			examples={[
+				{
+					title: "Tour",
+					example: <TourExample />,
+					sourceCodeExampleId: "tour",
+				},
+			]}
+		/>
+	)
+}
 
 import React from "react"
 import ShowcaseWrapperItem, {

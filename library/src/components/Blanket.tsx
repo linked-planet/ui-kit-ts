@@ -1,4 +1,3 @@
-import React from "react"
 import ReactDOM from "react-dom"
 import type { ComponentPropsWithoutRef } from "react"
 import { twMerge } from "tailwind-merge"
@@ -6,6 +5,7 @@ import { getPortal } from "../utils"
 
 type BlanketProps = ComponentPropsWithoutRef<"div"> & {
 	usePortal?: boolean
+	portalContainer?: HTMLElement | null
 }
 
 export function Blanket({
@@ -14,6 +14,7 @@ export function Blanket({
 	"aria-label": ariaLabel,
 	role,
 	usePortal = true,
+	portalContainer = getPortal("uikts-blanket"),
 	...props
 }: BlanketProps) {
 	const ele = (
@@ -38,8 +39,8 @@ export function Blanket({
 			</div>
 		</div>
 	)
-	if (!usePortal) {
+	if (!usePortal || portalContainer === null) {
 		return ele
 	}
-	return ReactDOM.createPortal(ele, getPortal("uikts-blanket"))
+	return ReactDOM.createPortal(ele, portalContainer)
 }

@@ -50,6 +50,10 @@ import BlanketShowcase from "./components/showcase/wrapper/BlanketShowcase"
 import BreadcrumbsShowcase from "./components/showcase/wrapper/BreadcrumbsShowcase"
 import SectionMessageShowcase from "./components/showcase/wrapper/SectionMessageShowcase"
 import DragAndDropShowcase from "./components/showcase/wrapper/DragAndDropShowcase"
+import GlobalStateShowcase from "./components/showcase/wrapper/GlobalStateShowcase"
+import TourShowcase from "./components/showcase/wrapper/TourShowcase"
+import FormShowcase from "./components/showcase/wrapper/FormShowcase"
+import EventListShowcase from "./components/showcase/wrapper/EventListShowcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -108,8 +112,15 @@ export default function useShowcases({
 			"Empty State": (
 				<EmptyStateShowcase overallSourceCode={overallSourceCode} />
 			),
+			"Event List": (
+				<EventListShowcase overallSourceCode={overallSourceCode} />
+			),
 			Flag: <FlagShowcase overallSourceCode={overallSourceCode} />,
 			Filters: <FiltersShowcase overallSourceCode={overallSourceCode} />,
+			Form: <FormShowcase overallSourceCode={overallSourceCode} />,
+			"Global State": (
+				<GlobalStateShowcase overallSourceCode={overallSourceCode} />
+			),
 			Icon: <IconShowcase overallSourceCode={overallSourceCode} />,
 			"Icon Size Helper": (
 				<IconSizeHelperShowcase overallSourceCode={overallSourceCode} />
@@ -169,6 +180,7 @@ export default function useShowcases({
 			"Truncated Text": (
 				<TruncatedTextShowcase overallSourceCode={overallSourceCode} />
 			),
+			Tour: <TourShowcase overallSourceCode={overallSourceCode} />,
 			Utils: <UtilsShowcase overallSourceCode={overallSourceCode} />,
 		}),
 		[overallSourceCode],
