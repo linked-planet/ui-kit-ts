@@ -8,7 +8,7 @@ export interface SelectSingleFormFieldProps<
 	A extends string | number,
 > extends FormField<T> {
 	options: Array<{ label: string; value: A }>
-	onChange?: (value: string) => void
+	onChange?: (value: A) => void
 	placeholder?: string
 }
 

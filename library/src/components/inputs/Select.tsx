@@ -347,7 +347,6 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 		invalid,
 	)
 
-
 	// get the browsers locale
 	const locale = navigator.language
 
@@ -373,6 +372,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 				return (
 					<div
 						{..._props.innerProps}
+						// biome-ignore lint/a11y/useSemanticElements: <explanation>
 						role="button"
 						className={_props.getClassNames(
 							"clearIndicator",
@@ -421,6 +421,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 				}`
 				return (
 					<div
+						// biome-ignore lint/a11y/useSemanticElements: <explanation>
 						role="button"
 						{..._props.innerProps}
 						title={title}
@@ -480,8 +481,10 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 						_props.selectProps.menuIsOpen ? "close" : "open"
 					} the menu`
 				return (
+					// biome-ignore lint/a11y/useFocusableInteractive: <explanation>
 					<div
 						{..._props.innerProps}
+						// biome-ignore lint/a11y/useSemanticElements: <explanation>
 						role="button"
 						data-action="open_select"
 						//aria-disabled={_props.isDisabled}
