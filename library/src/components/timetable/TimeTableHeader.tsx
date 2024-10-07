@@ -6,7 +6,7 @@ dayjs.extend(weekOfYear)
 dayjs.extend(weekYear)
 dayjs.extend(localeData)
 import type React from "react"
-import { Fragment, forwardRef } from "react"
+import { Fragment } from "react"
 
 // if more locales then english and germans are needed, we need to enable them first here
 import "dayjs/locale/de"
@@ -15,7 +15,12 @@ import "dayjs/locale/de"
 //import "dayjs/locale/it"
 //import "dayjs/locale/nl"
 
-import type { TimeTableViewType } from "./TimeTable"
+import type {
+	TimeSlotBooking,
+	TimeTableEntry,
+	TimeTableGroup,
+	TimeTableViewType,
+} from "./TimeTable"
 import type { TimeFrameDay } from "./TimeTableConfigStore"
 
 const headerTimeSlotFormat: { [viewType in TimeTableViewType]: string } = {
@@ -52,21 +57,33 @@ export function headerText(
 	}
 }
 
-export type CustomHeaderRowTimeSlotProps = {
+export type CustomHeaderRowTimeSlotProps<
+	G extends TimeTableGroup,
+	I extends TimeSlotBooking,
+> = {
 	timeSlot: Dayjs
 	timeSlotMinutes: number
 	isLastOfDay: boolean
 	viewType: TimeTableViewType
 	timeFrameOfDay: TimeFrameDay
+	entries: TimeTableEntry<G, I>[]
+	slotsArray: readonly Dayjs[]
 }
 
-export type CustomHeaderRowHeaderProps = {
+export type CustomHeaderRowHeaderProps<
+	G extends TimeTableGroup,
+	I extends TimeSlotBooking,
+> = {
 	slotsArray: readonly Dayjs[]
 	viewType: TimeTableViewType
 	timeFrameOfDay: TimeFrameDay
+	entries: TimeTableEntry<G, I>[]
 }
 
-type TimeTableHeaderProps = {
+type TimeTableHeaderProps<
+	G extends TimeTableGroup,
+	I extends TimeSlotBooking,
+> = {
 	slotsArray: readonly Dayjs[]
 	groupHeaderColumnWidth: number | string
 	columnWidth: number | string
@@ -80,29 +97,34 @@ type TimeTableHeaderProps = {
 	weekStartsOnSunday: boolean
 	locale?: "en" | "de"
 
+	entries: TimeTableEntry<G, I>[]
 	customHeaderRow?: {
-		timeSlot: (props: CustomHeaderRowTimeSlotProps) => JSX.Element
-		header: (props: CustomHeaderRowHeaderProps) => JSX.Element
+		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => JSX.Element
+		header: (props: CustomHeaderRowHeaderProps<G, I>) => JSX.Element
 	}
+
+	tableHeaderRef: React.Ref<HTMLTableSectionElement>
 }
 
-export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
-	{
-		slotsArray,
-		groupHeaderColumnWidth,
-		columnWidth,
-		startDate,
-		endDate,
-		viewType,
-		showTimeSlotHeader,
-		timeFrameDay,
-		dateHeaderTextFormat,
-		weekStartsOnSunday,
-		locale,
-		customHeaderRow,
-	}: TimeTableHeaderProps,
-	tableHeaderRef: React.Ref<HTMLTableSectionElement>,
-) {
+export const LPTimeTableHeader = function TimeTableHeader<
+	G extends TimeTableGroup,
+	I extends TimeSlotBooking,
+>({
+	slotsArray,
+	groupHeaderColumnWidth,
+	columnWidth,
+	startDate,
+	endDate,
+	viewType,
+	showTimeSlotHeader,
+	timeFrameDay,
+	dateHeaderTextFormat,
+	weekStartsOnSunday,
+	locale,
+	customHeaderRow,
+	entries,
+	tableHeaderRef,
+}: TimeTableHeaderProps<G, I>) {
 	const currentLocale = dayjs.locale()
 	if (locale && locale !== currentLocale) {
 		dayjs.locale(locale)
@@ -278,6 +300,7 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 								slotsArray,
 								timeFrameOfDay: timeFrameDay,
 								viewType,
+								entries,
 							})}
 						</th>
 						{slotsArray.map((slot, i) => {
@@ -298,6 +321,8 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 										isLastOfDay,
 										timeFrameOfDay: timeFrameDay,
 										viewType,
+										entries,
+										slotsArray,
 									})}
 								</th>
 							)
@@ -307,4 +332,4 @@ export const LPTimeTableHeader = forwardRef(function TimeTableHeader(
 			</thead>
 		</>
 	)
-})
+}
