@@ -94,7 +94,7 @@ function FormHorizontalExample() {
 	return (
 		<div className="bg-surface">
 			<DynamicForm.Form<TestObject>
-				vertical
+				horizontal
 				obj={testObject}
 				onSubmit={(data) => {
 					console.info("Saving form", data)
