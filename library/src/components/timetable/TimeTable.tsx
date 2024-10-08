@@ -494,6 +494,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					>
 						<LPTimeTableHeader<G, I>
 							slotsArray={slotsArray}
+							timeSlotMinutes={timeSlotMinutes}
 							columnWidth={columnWidth}
 							groupHeaderColumnWidth={groupHeaderColumnWidth}
 							startDate={startDate}

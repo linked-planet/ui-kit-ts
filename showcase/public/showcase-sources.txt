@@ -7508,7 +7508,7 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { Button, TimeTable } from "@linked-planet/ui-kit-ts"
+import { Button, TimeTable, timeTableUtils } from "@linked-planet/ui-kit-ts"
 
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
@@ -7934,14 +7934,39 @@ function TestCustomHeaderRowTimeSlot<
 	isLastOfDay,
 	timeFrameOfDay,
 	viewType,
+	slotsArray,
 	entries,
 }: TimeTableTypes.CustomHeadeRowTimeSlotProps<G, I>) {
 	const groupItems = entries[1].items
-	const tsEnd = timeSlot.add(timeSlotMinutes, "minutes")
-	const timeSlotItems = groupItems.filter((it) => {
-		return it.startDate.isBefore(tsEnd) && it.endDate.isAfter(timeSlot)
+
+	const startAndEndSlots = groupItems.map((it) =>
+		timeTableUtils.getStartAndEndSlot(
+			it,
+			slotsArray,
+			timeFrameOfDay,
+			timeSlotMinutes,
+			viewType,
+		),
+	)
+
+	const getLeftAndWidth = groupItems.map((it, i) => {
+		const startAndEnd = startAndEndSlots[i]
+		if (startAndEnd.status === "before" || startAndEnd.status === "after") {
+			return null
+		}
+		return timeTableUtils.getLeftAndWidth(
+			it,
+			startAndEnd.startSlot,
+			startAndEnd.endSlot,
+			slotsArray,
+			timeFrameOfDay,
+			viewType,
+			timeSlotMinutes,
+		)
 	})
-	return <div>{timeSlotItems.length}</div>
+
+	console.log("GET LEFT AND WIDTH", getLeftAndWidth)
+	return <div>{startAndEndSlots.length}</div>
 }
 
 function CustomHeaderRowHeader<

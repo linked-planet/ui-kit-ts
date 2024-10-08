@@ -6,7 +6,7 @@ dayjs.extend(weekOfYear)
 dayjs.extend(weekYear)
 dayjs.extend(localeData)
 import type React from "react"
-import { Fragment } from "react"
+import { Fragment, type RefObject, useRef } from "react"
 
 // if more locales then english and germans are needed, we need to enable them first here
 import "dayjs/locale/de"
@@ -68,6 +68,7 @@ export type CustomHeaderRowTimeSlotProps<
 	timeFrameOfDay: TimeFrameDay
 	entries: TimeTableEntry<G, I>[]
 	slotsArray: readonly Dayjs[]
+	tableCellRef: RefObject<HTMLTableCellElement>
 }
 
 export type CustomHeaderRowHeaderProps<
@@ -85,6 +86,7 @@ type TimeTableHeaderProps<
 	I extends TimeSlotBooking,
 > = {
 	slotsArray: readonly Dayjs[]
+	timeSlotMinutes: number
 	groupHeaderColumnWidth: number | string
 	columnWidth: number | string
 	startDate: Dayjs
@@ -106,11 +108,15 @@ type TimeTableHeaderProps<
 	tableHeaderRef: React.Ref<HTMLTableSectionElement>
 }
 
+const headerCellBaseClassname =
+	"bg-surface border-transparent border-b-border after:border-border relative select-none border-0 border-b-2 border-solid p-0 pl-1 font-bold after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-solid"
+
 export const LPTimeTableHeader = function TimeTableHeader<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 >({
 	slotsArray,
+	timeSlotMinutes,
 	groupHeaderColumnWidth,
 	columnWidth,
 	startDate,
@@ -276,7 +282,7 @@ export const LPTimeTableHeader = function TimeTableHeader<
 							<th
 								key={`timeheader${slot.unix()}`}
 								colSpan={2}
-								className={`bg-surface border-transparent border-b-border after:border-border relative select-none border-0 border-b-2 border-solid p-0 pl-1 font-bold after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-solid ${
+								className={`${headerCellBaseClassname} ${
 									isLastOfDay ? "after:border-l-2" : ""
 								} ${showTimeSlotHeader ? "pt-1" : ""}`}
 							>
@@ -308,28 +314,75 @@ export const LPTimeTableHeader = function TimeTableHeader<
 								i === slotsArray.length - 1 ||
 								!slotsArray[i + 1].isSame(slot, "day")
 							return (
-								<th
+								<CustomHeaderRowCell
+									customHeaderRow={customHeaderRow}
+									timeSlot={slot}
+									timeSlotMinutes={timeSlotMinutes}
+									timeFrameOfDay={timeFrameDay}
+									slotsArray={slotsArray}
+									entries={entries}
+									showTimeSlotHeader={showTimeSlotHeader}
+									viewType={viewType}
+									isLastOfDay={isLastOfDay}
 									key={`timeheader${slot.unix()}`}
-									colSpan={2}
-									className={`bg-surface border-transparent border-b-border after:border-border relative select-none border-0 border-b-2 border-solid p-0 pl-1 font-bold after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-solid ${
-										isLastOfDay ? "after:border-l-2" : ""
-									} ${showTimeSlotHeader ? "pt-1" : ""}`}
-								>
-									{customHeaderRow.timeSlot({
-										timeSlot: slot,
-										timeSlotMinutes: 60,
-										isLastOfDay,
-										timeFrameOfDay: timeFrameDay,
-										viewType,
-										entries,
-										slotsArray,
-									})}
-								</th>
+								/>
 							)
 						})}
 					</tr>
 				)}
 			</thead>
 		</>
+	)
+}
+
+function CustomHeaderRowCell<
+	G extends TimeTableGroup,
+	I extends TimeSlotBooking,
+>({
+	timeSlot,
+	timeSlotMinutes,
+	isLastOfDay,
+	viewType,
+	timeFrameOfDay,
+	entries,
+	slotsArray,
+	showTimeSlotHeader,
+	customHeaderRow,
+}: {
+	timeSlot: Dayjs
+	timeSlotMinutes: number
+	isLastOfDay: boolean
+	viewType: TimeTableViewType
+	timeFrameOfDay: TimeFrameDay
+	entries: TimeTableEntry<G, I>[]
+	slotsArray: readonly Dayjs[]
+	showTimeSlotHeader: boolean
+	customHeaderRow: {
+		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => JSX.Element
+		header: (props: CustomHeaderRowHeaderProps<G, I>) => JSX.Element
+	}
+}) {
+	const ref = useRef<HTMLTableCellElement>(null)
+
+	return (
+		<th
+			key={`timeheader${timeSlot.unix()}`}
+			colSpan={2}
+			className={`${headerCellBaseClassname} ${
+				isLastOfDay ? "after:border-l-2" : ""
+			} ${showTimeSlotHeader ? "pt-1" : ""}`}
+			ref={ref}
+		>
+			{customHeaderRow.timeSlot({
+				timeSlot,
+				timeSlotMinutes,
+				isLastOfDay,
+				timeFrameOfDay,
+				viewType,
+				entries,
+				slotsArray,
+				tableCellRef: ref,
+			})}
+		</th>
 	)
 }
