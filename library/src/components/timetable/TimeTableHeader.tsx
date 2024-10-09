@@ -369,7 +369,7 @@ function CustomHeaderRowCell<
 			key={`timeheader${timeSlot.unix()}`}
 			colSpan={2}
 			className={`${headerCellBaseClassname} ${
-				isLastOfDay ? "after:border-l-2" : ""
+				isLastOfDay ? "after:border-l-2" : "after:border-l"
 			} ${showTimeSlotHeader ? "pt-1" : ""}`}
 			ref={ref}
 		>
