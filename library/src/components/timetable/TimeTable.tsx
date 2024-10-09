@@ -37,8 +37,9 @@ import {
 	initAndUpdateTimeTableSelectionStore,
 	type onTimeRangeSelectedType,
 } from "./TimeTableSelectionStore"
-import { getStartAndEndSlot, useGroupRows } from "./useGoupRows"
+import { useGroupRows } from "./useGoupRows"
 import { twMerge } from "tailwind-merge"
+import { getStartAndEndSlot } from "./timeTableUtils"
 
 export interface TimeSlotBooking {
 	title: string
@@ -189,8 +190,8 @@ export interface LPTimeTableProps<
 
 	/** custom header row */
 	customHeaderRow?: {
-		timeSlot: (props: CustomHeaderRowTimeSlotProps) => JSX.Element
-		header: (props: CustomHeaderRowHeaderProps) => JSX.Element
+		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => JSX.Element
+		header: (props: CustomHeaderRowHeaderProps<G, I>) => JSX.Element
 	}
 }
 
@@ -257,6 +258,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	)
 
 	// change on viewType
+	// biome-ignore lint/correctness/useExhaustiveDependencies: just remove the message is props change
 	useEffect(() => {
 		setMessage?.(undefined) // clear the message on time frame change
 	}, [viewType, startDate, endDate, setMessage, timeStepsMinutes])
@@ -490,8 +492,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 						}
 						ref={tableRef}
 					>
-						<LPTimeTableHeader
+						<LPTimeTableHeader<G, I>
 							slotsArray={slotsArray}
+							timeSlotMinutes={timeSlotMinutes}
 							columnWidth={columnWidth}
 							groupHeaderColumnWidth={groupHeaderColumnWidth}
 							startDate={startDate}
@@ -508,7 +511,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 							weekStartsOnSunday={weekStartsOnSunday}
 							locale={locale}
 							customHeaderRow={customHeaderRow}
-							ref={tableHeaderRef}
+							entries={entries}
+							tableHeaderRef={tableHeaderRef}
 						/>
 						<tbody ref={tableBodyRef} className="table-fixed">
 							<TimeTableRows<G, I>

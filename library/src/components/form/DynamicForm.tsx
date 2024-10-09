@@ -9,7 +9,7 @@ import {
 	type UseFormWatch,
 } from "react-hook-form"
 import { twMerge } from "tailwind-merge"
-import { Button } from "../Button"
+import { Button, ButtonGroup } from "../Button"
 
 export interface FormProps<T extends FieldValues> {
 	control: Control<T>
@@ -44,6 +44,9 @@ export interface DynamicFormProps<T extends FieldValues>
 	horizontal?: boolean
 	hideReset?: boolean
 	hideSave?: boolean
+
+	customSubmitButton?: (props: { disabled: boolean }) => React.ReactNode
+	customResetButton?: (props: { disabled: boolean }) => React.ReactNode
 }
 
 export function DynamicForm<T extends FieldValues>({
@@ -55,6 +58,8 @@ export function DynamicForm<T extends FieldValues>({
 	className,
 	hideSave,
 	hideReset,
+	customResetButton,
+	customSubmitButton,
 	...props
 }: DynamicFormProps<T>) {
 	const {
@@ -95,26 +100,32 @@ export function DynamicForm<T extends FieldValues>({
 
 			<hr className="border border-border" />
 
-			<div className="flex flex-row items-end w-full justify-end mt-4">
-				{!hideReset && (
-					<Button
-						type="reset"
-						appearance="subtle"
-						disabled={!isDirty}
-					>
-						Reset
-					</Button>
-				)}
-				{!hideSave && (
-					<Button
-						appearance="primary"
-						type="submit"
-						disabled={!isValid}
-					>
-						Save
-					</Button>
-				)}
-			</div>
+			<ButtonGroup className="justify-end">
+				{!hideReset &&
+					(customResetButton ? (
+						customResetButton({ disabled: !isDirty })
+					) : (
+						<Button
+							type="reset"
+							appearance="subtle"
+							disabled={!isDirty}
+						>
+							Reset
+						</Button>
+					))}
+				{!hideSave &&
+					(customSubmitButton ? (
+						customSubmitButton({ disabled: !isValid })
+					) : (
+						<Button
+							appearance="primary"
+							type="submit"
+							disabled={!isValid}
+						>
+							Save
+						</Button>
+					))}
+			</ButtonGroup>
 		</form>
 	)
 }

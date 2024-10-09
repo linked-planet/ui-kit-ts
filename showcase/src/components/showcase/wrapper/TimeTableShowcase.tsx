@@ -5,7 +5,7 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { Button, TimeTable } from "@linked-planet/ui-kit-ts"
+import { Button, TimeTable, timeTableUtils } from "@linked-planet/ui-kit-ts"
 
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
@@ -422,26 +422,96 @@ function createMoreTestGroups(
 const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
 const endDateInitial = dayjs().startOf("day").add(5, "days").add(20, "hours")
 
-function testCustomHeaderRowTimeSlot({
+function TestCustomHeaderRowTimeSlot<
+	G extends TimeTableTypes.TimeTableGroup,
+	I extends TimeTableTypes.TimeSlotBooking,
+>({
 	timeSlot,
 	timeSlotMinutes,
 	isLastOfDay,
 	timeFrameOfDay,
 	viewType,
-}: TimeTableTypes.CustomHeadeRowTimeSlotProps) {
-	return <div>{timeSlot.format()}</div>
+	slotsArray,
+	entries,
+	tableCellRef,
+}: TimeTableTypes.CustomHeadeRowTimeSlotProps<G, I>) {
+	const groupItems = entries[1].items
+
+	const groupItemsOfCell: I[] = []
+	const startAndEndInSlow: {
+		status: "in" | "before" | "after"
+		startSlot: number
+		endSlot: number
+	}[] = []
+	for (let i = 0; i < groupItems.length; i++) {
+		const item = groupItems[i]
+		const startAndEnd = timeTableUtils.getStartAndEndSlot(
+			item,
+			slotsArray,
+			timeFrameOfDay,
+			timeSlotMinutes,
+			viewType,
+		)
+		if (slotsArray[startAndEnd.startSlot] === timeSlot) {
+			groupItemsOfCell.push(item)
+			startAndEndInSlow.push(startAndEnd)
+		}
+	}
+
+	console.log("GROUP ITEMS", groupItemsOfCell)
+
+	const leftAndWidths = groupItemsOfCell.map((it, i) => {
+		const startAndEnd = startAndEndInSlow[i]
+		if (startAndEnd.status === "before" || startAndEnd.status === "after") {
+			return null
+		}
+		return timeTableUtils.getLeftAndWidth(
+			it,
+			startAndEnd.startSlot,
+			startAndEnd.endSlot,
+			slotsArray,
+			timeFrameOfDay,
+			viewType,
+			timeSlotMinutes,
+		)
+	})
+
+	const cellWidth = tableCellRef.current?.offsetWidth ?? 70
+
+	const ret = leftAndWidths.map((it, i) =>
+		it ? (
+			<div
+				key={groupItemsOfCell[i].title}
+				className="absolute top-0 bottom-0 bg-warning-bold whitespace-nowrap overflow-visible truncate"
+				style={{
+					left: `${it.left * cellWidth}px`,
+					width: `${it.width * cellWidth}px`,
+				}}
+			>
+				{groupItemsOfCell[i].title}
+			</div>
+		) : null,
+	)
+
+	console.log("RET", ret, leftAndWidths)
+
+	return <>{ret}</>
 }
 
-function customHeaderRowHeader({
+function CustomHeaderRowHeader<
+	G extends TimeTableTypes.TimeTableGroup,
+	I extends TimeTableTypes.TimeSlotBooking,
+>({
 	slotsArray,
 	timeFrameOfDay,
 	viewType,
-}: {
-	slotsArray: readonly Dayjs[]
-	timeFrameOfDay: TimeTableTypes.TimeFrameDay
-	viewType: TimeTableTypes.TimeTableViewType
-}) {
-	return <div>HEADER</div>
+	entries,
+}: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
+	return (
+		<div>
+			{entries[1].group.title} has {entries.length} entries
+		</div>
+	)
 }
 
 function Example() {
@@ -840,8 +910,8 @@ function Example() {
 					viewType={viewType}
 					locale={locale}
 					customHeaderRow={{
-						timeSlot: testCustomHeaderRowTimeSlot,
-						header: customHeaderRowHeader,
+						timeSlot: TestCustomHeaderRowTimeSlot,
+						header: CustomHeaderRowHeader,
 					}}
 				/>
 			</div>

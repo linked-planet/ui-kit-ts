@@ -18,6 +18,17 @@ export type { TimeTableItemProps } from "./ItemWrapper"
 export type { TimeTablePlaceholderItemProps } from "./PlaceholderItem"
 import type { TimeFrameDay as _TimeFrameDay } from "./TimeTableConfigStore"
 
+import {
+	getLeftAndWidth,
+	getStartAndEndSlot,
+	itemsOutsideOfDayRangeORSameStartAndEnd,
+} from "./timeTableUtils"
+export const timeTableUtils = {
+	getLeftAndWidth,
+	getStartAndEndSlot,
+	itemsOutsideOfDayRangeORSameStartAndEnd,
+}
+
 //const memoized = React.memo(TimeTable) as typeof TimeTable
 
 //export { memoized as TimeTable }
@@ -27,8 +38,14 @@ export namespace TimeTableTypes {
 	export type TimeSlotBooking = _TimeSlotBooking
 	export type TimeFrameDay = _TimeFrameDay
 	export type TimeTableGroup = _TimeTableGroup
-	export type CustomHeaderRowHeaderProps = _CustomHeaderRowHeaderProps
-	export type CustomHeadeRowTimeSlotProps = _CustomHeaderRowTimeSlotProps
+	export type CustomHeaderRowHeaderProps<
+		G extends TimeTableGroup,
+		I extends TimeSlotBooking,
+	> = _CustomHeaderRowHeaderProps<G, I>
+	export type CustomHeadeRowTimeSlotProps<
+		G extends TimeTableGroup,
+		I extends TimeSlotBooking,
+	> = _CustomHeaderRowTimeSlotProps<G, I>
 
 	export type TimeTableEntry<
 		G extends TimeTableGroup,

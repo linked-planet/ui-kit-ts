@@ -7508,7 +7508,7 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import { Button, TimeTable } from "@linked-planet/ui-kit-ts"
+import { Button, TimeTable, timeTableUtils } from "@linked-planet/ui-kit-ts"
 
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
@@ -7925,26 +7925,64 @@ function createMoreTestGroups(
 const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
 const endDateInitial = dayjs().startOf("day").add(5, "days").add(20, "hours")
 
-function testCustomHeaderRowTimeSlot({
+function TestCustomHeaderRowTimeSlot<
+	G extends TimeTableTypes.TimeTableGroup,
+	I extends TimeTableTypes.TimeSlotBooking,
+>({
 	timeSlot,
 	timeSlotMinutes,
 	isLastOfDay,
 	timeFrameOfDay,
 	viewType,
-}: TimeTableTypes.CustomHeadeRowTimeSlotProps) {
-	return <div>{timeSlot.format()}</div>
+	slotsArray,
+	entries,
+}: TimeTableTypes.CustomHeadeRowTimeSlotProps<G, I>) {
+	const groupItems = entries[1].items
+
+	const startAndEndSlots = groupItems.map((it) =>
+		timeTableUtils.getStartAndEndSlot(
+			it,
+			slotsArray,
+			timeFrameOfDay,
+			timeSlotMinutes,
+			viewType,
+		),
+	)
+
+	const getLeftAndWidth = groupItems.map((it, i) => {
+		const startAndEnd = startAndEndSlots[i]
+		if (startAndEnd.status === "before" || startAndEnd.status === "after") {
+			return null
+		}
+		return timeTableUtils.getLeftAndWidth(
+			it,
+			startAndEnd.startSlot,
+			startAndEnd.endSlot,
+			slotsArray,
+			timeFrameOfDay,
+			viewType,
+			timeSlotMinutes,
+		)
+	})
+
+	console.log("GET LEFT AND WIDTH", getLeftAndWidth)
+	return <div>{startAndEndSlots.length}</div>
 }
 
-function customHeaderRowHeader({
+function CustomHeaderRowHeader<
+	G extends TimeTableTypes.TimeTableGroup,
+	I extends TimeTableTypes.TimeSlotBooking,
+>({
 	slotsArray,
 	timeFrameOfDay,
 	viewType,
-}: {
-	slotsArray: readonly Dayjs[]
-	timeFrameOfDay: TimeTableTypes.TimeFrameDay
-	viewType: TimeTableTypes.TimeTableViewType
-}) {
-	return <div>HEADER</div>
+	entries,
+}: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
+	return (
+		<div>
+			{entries[1].group.title} has {entries.length} entries
+		</div>
+	)
 }
 
 function Example() {
@@ -8343,8 +8381,8 @@ function Example() {
 					viewType={viewType}
 					locale={locale}
 					customHeaderRow={{
-						timeSlot: testCustomHeaderRowTimeSlot,
-						header: customHeaderRowHeader,
+						timeSlot: TestCustomHeaderRowTimeSlot,
+						header: CustomHeaderRowHeader,
 					}}
 				/>
 			</div>
