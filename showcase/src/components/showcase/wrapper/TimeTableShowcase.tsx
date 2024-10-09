@@ -492,8 +492,6 @@ function TestCustomHeaderRowTimeSlot<
 		) : null,
 	)
 
-	console.log("RET", ret, leftAndWidths)
-
 	return <>{ret}</>
 }
 
