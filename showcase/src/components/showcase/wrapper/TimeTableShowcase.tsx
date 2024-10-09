@@ -458,8 +458,6 @@ function TestCustomHeaderRowTimeSlot<
 		}
 	}
 
-	console.log("GROUP ITEMS", groupItemsOfCell)
-
 	const leftAndWidths = groupItemsOfCell.map((it, i) => {
 		const startAndEnd = startAndEndInSlow[i]
 		if (startAndEnd.status === "before" || startAndEnd.status === "after") {
@@ -482,18 +480,17 @@ function TestCustomHeaderRowTimeSlot<
 		it ? (
 			<div
 				key={groupItemsOfCell[i].title}
-				className="absolute top-0 bottom-0 bg-warning-bold whitespace-nowrap overflow-visible truncate"
+				className="absolute top-0 bottom-0 bg-discovery-bold whitespace-nowrap overflow-visible z-10 opacity-50"
 				style={{
 					left: `${it.left * cellWidth}px`,
 					width: `${it.width * cellWidth}px`,
 				}}
+				title={groupItemsOfCell[i].title}
 			>
-				{groupItemsOfCell[i].title}
+				<div className="truncate">{groupItemsOfCell[i].title}</div>
 			</div>
 		) : null,
 	)
-
-	console.log("RET", ret, leftAndWidths)
 
 	return <>{ret}</>
 }

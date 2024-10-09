@@ -7936,21 +7936,33 @@ function TestCustomHeaderRowTimeSlot<
 	viewType,
 	slotsArray,
 	entries,
+	tableCellRef,
 }: TimeTableTypes.CustomHeadeRowTimeSlotProps<G, I>) {
 	const groupItems = entries[1].items
 
-	const startAndEndSlots = groupItems.map((it) =>
-		timeTableUtils.getStartAndEndSlot(
-			it,
+	const groupItemsOfCell: I[] = []
+	const startAndEndInSlow: {
+		status: "in" | "before" | "after"
+		startSlot: number
+		endSlot: number
+	}[] = []
+	for (let i = 0; i < groupItems.length; i++) {
+		const item = groupItems[i]
+		const startAndEnd = timeTableUtils.getStartAndEndSlot(
+			item,
 			slotsArray,
 			timeFrameOfDay,
 			timeSlotMinutes,
 			viewType,
-		),
-	)
+		)
+		if (slotsArray[startAndEnd.startSlot] === timeSlot) {
+			groupItemsOfCell.push(item)
+			startAndEndInSlow.push(startAndEnd)
+		}
+	}
 
-	const getLeftAndWidth = groupItems.map((it, i) => {
-		const startAndEnd = startAndEndSlots[i]
+	const leftAndWidths = groupItemsOfCell.map((it, i) => {
+		const startAndEnd = startAndEndInSlow[i]
 		if (startAndEnd.status === "before" || startAndEnd.status === "after") {
 			return null
 		}
@@ -7965,8 +7977,27 @@ function TestCustomHeaderRowTimeSlot<
 		)
 	})
 
-	console.log("GET LEFT AND WIDTH", getLeftAndWidth)
-	return <div>{startAndEndSlots.length}</div>
+	const cellWidth = tableCellRef.current?.offsetWidth ?? 70
+
+	const ret = leftAndWidths.map((it, i) =>
+		it ? (
+			<div
+				key={groupItemsOfCell[i].title}
+				className="absolute top-0 bottom-0 bg-discovery-bold whitespace-nowrap overflow-visible z-10 opacity-50"
+				style={{
+					left: `${it.left * cellWidth}px`,
+					width: `${it.width * cellWidth}px`,
+				}}
+				title={groupItemsOfCell[i].title}
+			>
+				<div className="truncate">{groupItemsOfCell[i].title}</div>
+			</div>
+		) : null,
+	)
+
+	console.log("RET", ret, leftAndWidths)
+
+	return <>{ret}</>
 }
 
 function CustomHeaderRowHeader<

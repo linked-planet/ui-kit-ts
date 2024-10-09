@@ -566,7 +566,8 @@ function moveNowBar(
 	const tableBody = tableBodyRef.current
 
 	// remove the orange border from the header cell
-	const headerTimeslotRow = tableHeader.children[1]
+	const headerTimeslotRow =
+		tableHeader.children[tableHeader.children.length - 1]
 	if (!headerTimeslotRow) {
 		setMessage?.({
 			appearance: "danger",
