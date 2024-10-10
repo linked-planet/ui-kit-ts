@@ -151,7 +151,6 @@ function TourExample() {
 				open={popup}
 				//defaultOpen={true}
 				onOpenChange={(opened) => {
-					console.log("OOPEN POPUP CHANGE", popup, opened)
 					if (!opened) setPopup(false)
 				}}
 				//shouldCloseOnEscapePress={false}
