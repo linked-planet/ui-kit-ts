@@ -492,7 +492,7 @@ function TestCustomHeaderRowTimeSlot<
 		) : null,
 	)
 
-	return <>{ret}</>
+	return <div className="bg-surface-pressed absolute inset-0">{ret}</div>
 }
 
 function CustomHeaderRowHeader<
@@ -505,7 +505,7 @@ function CustomHeaderRowHeader<
 	entries,
 }: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
 	return (
-		<div>
+		<div className="bg-surface-pressed">
 			{entries[1].group.title} has {entries.length} entries
 		</div>
 	)
