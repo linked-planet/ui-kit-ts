@@ -9,14 +9,40 @@ import { useCallback, useMemo, useRef, useState } from "react"
 import { showErrorFlag, showInformationFlag } from "../ToastFlag"
 import { flushSync } from "react-dom"
 
-export abstract class TourStep {
-	step: Step
+export type TourStepProps = Step
 
-	constructor() {
-		this.step = {
-			content: <>Step should be overwritten.</>,
-			target: "body",
-		}
+export class TourStep {
+	private _step: Step
+	private contentClassname = "text-start text-base" as const
+
+	constructor({
+		step,
+		onPrepare,
+		onInit,
+		onExit,
+	}: {
+		step: TourStepProps
+		onPrepare?: () => void
+		onInit?: () => void
+		onExit?: () => void
+	}) {
+		const content = (
+			<div className={this.contentClassname}>{step.content}</div>
+		)
+		this._step = { ...step, content }
+		this.onInit = onInit
+		this.onPrepare = onPrepare
+		this.onExit = onExit
+	}
+
+	set step(step: Step) {
+		const content = (
+			<div className={this.contentClassname}>{step.content}</div>
+		)
+		this._step = { ...step, content }
+	}
+	get step(): Step {
+		return this._step
 	}
 
 	onInit?(): void
@@ -113,7 +139,6 @@ export function Tour({
 	const callback = useCallback(
 		(joyrideState: CallBackProps) => {
 			const { action, index, lifecycle, type, step } = joyrideState
-			console.log("ACTION", action, "TYPE", type, "INDEX", index)
 
 			switch (type) {
 				case "tour:start":

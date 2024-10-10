@@ -11,7 +11,6 @@ import { useMemo, useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import type { Step } from "react-joyride"
 
 //#region tour
 const defaultLocale = {
@@ -28,8 +27,8 @@ function TourExample() {
 	const [popup, setPopup] = useState(false)
 
 	const steps = useMemo(() => {
-		const InitStep = new (class extends TourStep {
-			step: Step = {
+		const InitStep = new TourStep({
+			step: {
 				title: "Tour starten",
 				target: "#tour-start",
 				disableBeacon: true,
@@ -41,11 +40,11 @@ function TourExample() {
 						The first step selects the tour start to start the tour.
 					</span>
 				),
-			}
-		})()
+			},
+		})
 
-		const SecondStep = new (class extends TourStep {
-			step: Step = {
+		const SecondStep = new TourStep({
+			step: {
 				title: "Button",
 				target: "#joyride-first",
 				disableBeacon: true,
@@ -57,11 +56,11 @@ function TourExample() {
 						This step selects the popup which would open the popup.
 					</span>
 				),
-			}
-		})()
+			},
+		})
 
-		const ThirdPopupStep = new (class extends TourStep {
-			step: Step = {
+		const ThirdPopupStep = new TourStep({
+			step: {
 				title: "Popup",
 				target: "#test-select",
 				disableBeacon: true,
@@ -74,23 +73,20 @@ function TourExample() {
 						it.
 					</span>
 				),
-			}
-
-			onInit() {
+			},
+			onInit: () => {
 				setPopup(true)
-			}
-
-			onPrepare() {
+			},
+			onPrepare: () => {
 				console.log("prepare message")
-			}
-
-			onExit() {
+			},
+			onExit: () => {
 				setPopup(false)
-			}
-		})()
+			},
+		})
 
-		const FourthStep = new (class extends TourStep {
-			step: Step = {
+		const FourthStep = new TourStep({
+			step: {
 				title: "Weiterer Button",
 				target: "#joyride-second",
 				disableBeacon: true,
@@ -103,8 +99,8 @@ function TourExample() {
 						button.
 					</span>
 				),
-			}
-		})()
+			},
+		})
 		return [InitStep, SecondStep, ThirdPopupStep, FourthStep]
 	}, [])
 
@@ -151,7 +147,6 @@ function TourExample() {
 				open={popup}
 				//defaultOpen={true}
 				onOpenChange={(opened) => {
-					console.log("OOPEN POPUP CHANGE", popup, opened)
 					if (!opened) setPopup(false)
 				}}
 				//shouldCloseOnEscapePress={false}
