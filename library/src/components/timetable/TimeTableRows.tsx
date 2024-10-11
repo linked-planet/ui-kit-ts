@@ -4,6 +4,7 @@ import {
 	createRef,
 	type MouseEvent,
 	useCallback,
+	useEffect,
 	useLayoutEffect,
 	useMemo,
 	useRef,
@@ -162,6 +163,7 @@ export default function TimeTableRows<
 
 	// initial run
 	useLayoutEffect(handleIntersections, [groupRows])
+	useEffect(handleIntersections, [])
 
 	// handle intersection observer, create new observer if the intersectionContainerRef changes
 	useLayoutEffect(() => {
@@ -183,7 +185,10 @@ export default function TimeTableRows<
 		}
 	}, [handleIntersectionsDebounced, intersectionContainerRef.current])
 
-	if (!entries) return []
+	if (!entries || entries.length === 0) {
+		console.log("TimeTable - no entries")
+		return []
+	}
 	return entries.map((groupEntry, g) => {
 		const rows = groupRows[groupEntry.group.id]
 		let mref = refCollection.current[g]
