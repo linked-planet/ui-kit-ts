@@ -35,6 +35,18 @@ function calculateTimeSlotsHoursView(
 	startDate: Dayjs,
 ) {
 	if (!Number.isFinite(timeSlotsPerDay)) {
+		console.log(
+			"TimeTable - timeSlotsPerDay is not finite",
+			timeSlotsPerDay,
+		)
+		return null
+	}
+
+	if (daysDifference <= 0) {
+		console.log(
+			"TimeTable - daysDifference is not greater than 0",
+			daysDifference,
+		)
 		return null
 	}
 
@@ -113,7 +125,8 @@ function calculateTimeSlotPropertiesForHoursView(
 		)
 		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
 	}
-	if (endDate.hour() > 0 || (endDate.hour() === 0 && endDate.minute() > 0)) {
+	//if (endDate.hour() > 0 || (endDate.hour() === 0 && endDate.minute() > 0)) {
+	if (daysDifference === 0) {
 		daysDifference++
 	}
 
@@ -131,15 +144,10 @@ function calculateTimeSlotPropertiesForHoursView(
 		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
 	}
 
-	let endDateUsed = endDate
-	if (endDateUsed.hour() === 0 && endDateUsed.minute() === 0) {
-		endDateUsed = endDateUsed.subtract(1, "minute")
-	}
-
-	const timeDiff = dayjs()
+	let timeDiff = dayjs()
 		.startOf("day")
-		.add(endDateUsed.hour(), "hours")
-		.add(endDateUsed.minute(), "minutes")
+		.add(endDate.hour(), "hours")
+		.add(endDate.minute(), "minutes")
 		.diff(
 			dayjs()
 				.startOf("day")
@@ -147,6 +155,9 @@ function calculateTimeSlotPropertiesForHoursView(
 				.add(startDate.minute(), "minutes"),
 			"minutes",
 		)
+	if (timeDiff === 0) {
+		timeDiff = 24 * 60
+	}
 
 	timeSlotsPerDay = Math.floor(Math.abs(timeDiff) / timeStepsMinute)
 
