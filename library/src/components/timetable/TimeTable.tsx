@@ -40,6 +40,7 @@ import {
 import { useGroupRows } from "./useGoupRows"
 import { twMerge } from "tailwind-merge"
 import { getStartAndEndSlot } from "./timeTableUtils"
+import { flushSync } from "react-dom"
 
 export interface TimeSlotBooking {
 	title: string
@@ -414,6 +415,11 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			clearInterval(interval)
 		}
 	}, [adjustNowBar])
+
+	// since the groups are redone, we need to adjust the now bar to draw it again
+	useEffect(() => {
+		window.setTimeout(() => flushSync(adjustNowBar), 0)
+	}, [entries])
 
 	const observedSizeChangedCB = useCallback(() => {
 		if (!slotsArray) {
