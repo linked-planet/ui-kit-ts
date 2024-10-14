@@ -391,10 +391,10 @@ export function getLeftAndWidth(
 		)
 		itemModEnd = itemModStart
 	} else {
-		let timeFrameEndEnd = slotsArray[slotsArray.length - 1]
-			.startOf("day")
-			.add(timeFrameDay.endHour, "hour")
-			.add(timeFrameDay.endMinute, "minutes")
+		let timeFrameEndEnd = slotsArray[slotsArray.length - 1].add(
+			timeSlotMinutes,
+			"minutes",
+		)
 		if (viewType !== "hours") {
 			timeFrameEndEnd = timeFrameEndEnd
 				.add(1, viewType)
@@ -403,20 +403,22 @@ export function getLeftAndWidth(
 		if (itemModEnd.isAfter(timeFrameEndEnd)) {
 			itemModEnd = timeFrameEndEnd
 		} else if (item.endDate.hour() === 0 && item.endDate.minute() === 0) {
-			itemModEnd = itemModEnd.subtract(1, "minute")
-			itemModEnd = itemModEnd
-				.startOf("day")
-				.add(timeFrameDay.endHour, "hour")
-				.add(timeFrameDay.endMinute, "minutes")
+			//itemModEnd = itemModEnd.subtract(1, "minute")
+			itemModEnd = timeFrameEndEnd
+			//.startOf("day")
+			//.add(timeFrameDay.endHour, "hour")
+			//.add(timeFrameDay.endMinute, "minutes")
 		} else if (
 			item.endDate.hour() > timeFrameDay.endHour ||
 			(item.endDate.hour() === timeFrameDay.endHour &&
 				item.endDate.minute() > timeFrameDay.endMinute)
 		) {
-			itemModEnd = itemModEnd
-				.startOf("day")
-				.add(timeFrameDay.endHour, "hour")
-				.add(timeFrameDay.endMinute, "minutes")
+			if (timeFrameDay.endHour !== 0 && timeFrameDay.endMinute !== 0) {
+				itemModEnd = itemModEnd
+					.startOf("day")
+					.add(timeFrameDay.endHour, "hour")
+					.add(timeFrameDay.endMinute, "minutes")
+			}
 		}
 	}
 
@@ -517,10 +519,13 @@ export function getStartAndEndSlot(
 			.add(timeFrameDay.startHour, "hours")
 			.add(timeFrameDay.startMinute, "minutes")
 	}
-	let timeFrameEnd = slotsArray[slotsArray.length - 1]
-		.startOf("day")
-		.add(timeFrameDay.endHour, "hours")
-		.add(timeFrameDay.endMinute, "minutes")
+	let timeFrameEnd = slotsArray[slotsArray.length - 1].add(
+		timeSlotMinutes,
+		"minutes",
+	)
+	//.startOf("day")
+	//.add(timeFrameDay.endHour, "hours")
+	//.add(timeFrameDay.endMinute, "minutes")
 	if (viewType !== "hours") {
 		timeFrameEnd = timeFrameEnd.add(1, viewType).subtract(1, "day")
 	}
