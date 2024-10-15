@@ -170,6 +170,7 @@ function ControlledExample() {
 					}}
 					shouldCloseOnEscapePress={true}
 					accessibleDialogDescription="This is a modal dialog example"
+					useModal={true}
 				>
 					<Modal.Header>
 						<Modal.Title accessibleDialogTitle="Sample Modal">
@@ -195,6 +196,7 @@ function ControlledExample() {
 							placeholder="Choose..."
 							options={selectOptions}
 							menuPlacement="top"
+							menuIsOpen
 						/>
 						<Dropdown.Menu
 							className="w-full"

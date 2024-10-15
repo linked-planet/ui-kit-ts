@@ -91,6 +91,9 @@ function Container({
 					}
 					id={id}
 					data-testid={testId}
+					onWheel={(e) => {
+						e.stopPropagation() // this is necessary or scrolling will not work in the select dropdown menu in the modal
+					}}
 				>
 					<VisuallyHidden>
 						<RDialog.DialogDescription>
