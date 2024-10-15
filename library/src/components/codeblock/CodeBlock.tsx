@@ -25,7 +25,7 @@ function CodeBlock({
 	const ast = language
 		? lowLight.highlight(language, children)
 		: lowLight.highlightAuto(children)
-	// @ts-expect-error: react types don’t type these.
+
 	const jsxTree = toJsxRuntime(ast, { Fragment, jsx, jsxs })
 
 	return (
