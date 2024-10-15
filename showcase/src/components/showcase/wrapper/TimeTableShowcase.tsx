@@ -434,7 +434,7 @@ function TestCustomHeaderRowTimeSlot<
 	slotsArray,
 	entries,
 	tableCellRef,
-}: TimeTableTypes.CustomHeadeRowTimeSlotProps<G, I>) {
+}: TimeTableTypes.CustomHeaderRowTimeSlotProps<G, I>) {
 	const groupItems = entries[1].items
 
 	const groupItemsOfCell: I[] = []

@@ -42,7 +42,7 @@ export namespace TimeTableTypes {
 		G extends TimeTableGroup,
 		I extends TimeSlotBooking,
 	> = _CustomHeaderRowHeaderProps<G, I>
-	export type CustomHeadeRowTimeSlotProps<
+	export type CustomHeaderRowTimeSlotProps<
 		G extends TimeTableGroup,
 		I extends TimeSlotBooking,
 	> = _CustomHeaderRowTimeSlotProps<G, I>
