@@ -545,22 +545,16 @@ function NestableNavigationContent({
 	const currentOpenedTitle = getPathElement(_level)
 
 	let renderChild: React.ReactElement<_NestingItemProps> | null = null
-	const titles = React.Children.map(children, (child) => {
+	React.Children.forEach(children, (child) => {
 		if (
-			!React.isValidElement<_NestingItemProps>(child) ||
-			child.type !== NestingItem
+			React.isValidElement<_NestingItemProps>(child) &&
+			child.props.title === currentOpenedTitle
 		) {
-			throw new Error(
-				"NestableNavigationContent must only contain NestingItem components",
-			)
-		}
-		if (child.props.title === currentOpenedTitle) {
 			renderChild = React.cloneElement(child, {
 				_level,
 				_sideNavStoreIdent,
 			})
 		}
-		return child.props.title
 	})
 
 	return (
@@ -598,22 +592,37 @@ function NestableNavigationContent({
 						ref={outsideRef}
 						className={currentOpenedTitle ? "hidden" : "size-full"}
 					>
-						{titles?.map((title) => (
-							<ButtonItem
-								key={title}
-								onClick={() => setPathElement(title, _level)}
-								iconAfter={
-									<IconSizeHelper>
-										<ArrowRightCircleIcon
-											label=""
-											size="medium"
-										/>
-									</IconSizeHelper>
-								}
-							>
-								{title}
-							</ButtonItem>
-						))}
+						{React.Children.map(children, (child) => {
+							if (
+								!React.isValidElement<_NestingItemProps>(
+									child,
+								) ||
+								child.type !== NestingItem
+							) {
+								return child
+							}
+							return (
+								<ButtonItem
+									key={child.props.title}
+									onClick={() =>
+										setPathElement(
+											child.props.title,
+											_level,
+										)
+									}
+									iconAfter={
+										<IconSizeHelper>
+											<ArrowRightCircleIcon
+												label=""
+												size="medium"
+											/>
+										</IconSizeHelper>
+									}
+								>
+									{child.props.title}
+								</ButtonItem>
+							)
+						})}
 					</div>
 				</CSSTransition>
 			)}
