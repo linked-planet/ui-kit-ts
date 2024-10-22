@@ -46,10 +46,30 @@ export function useSideNavigationStore(sideNavStoreIdent: string) {
 		[sideNavStoreIdent],
 	)
 
+	const pushPathElement = useCallback(
+		(pathEle: string) => store[sideNavStoreIdent].path.push(pathEle),
+		[sideNavStoreIdent],
+	)
+	const popPathElement = useCallback(
+		() => store[sideNavStoreIdent].path.pop(),
+		[sideNavStoreIdent],
+	)
+
+	const getCurrentPathElement = useCallback(
+		() =>
+			store[sideNavStoreIdent].path[
+				store[sideNavStoreIdent].path.length - 1
+			],
+		[sideNavStoreIdent],
+	)
+
 	return {
 		path,
 		setPath,
 		setPathElement,
 		getPathElement,
+		pushPathElement,
+		popPathElement,
+		getCurrentPathElement,
 	}
 }

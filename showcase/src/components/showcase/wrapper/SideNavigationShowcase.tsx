@@ -1,4 +1,3 @@
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -240,6 +239,33 @@ function SideNavExample() {
 }
 //#endregion side-nav-example
 
+//#region side-nav-example-nesting
+function NestingSideNavExample() {
+	return (
+		<div className="h-[350px]">
+			<SideNavigation.Container
+				className="max-w-sm"
+				aria-label="Side navigation"
+			>
+				<SideNavigation.Content>
+					<SideNavigation.NestableNavigationContent>
+						<SideNavigation.NestingItem title="outer">
+							<SideNavigation.NestingItem title="inner">
+								<SideNavigation.NestingItem title="inner2">
+									<SideNavigation.ButtonItem>
+										Inner Nested Button
+									</SideNavigation.ButtonItem>
+								</SideNavigation.NestingItem>
+							</SideNavigation.NestingItem>
+						</SideNavigation.NestingItem>
+					</SideNavigation.NestableNavigationContent>
+				</SideNavigation.Content>
+			</SideNavigation.Container>
+		</div>
+	)
+}
+//#endregion side-nav-example-nesting
+
 function SideNavigationShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -256,6 +282,11 @@ function SideNavigationShowcase(props: ShowcaseProps) {
 					title: "Example",
 					example: <SideNavExample />,
 					sourceCodeExampleId: "side-nav-example",
+				},
+				{
+					title: "Nesting in Nesting",
+					example: <NestingSideNavExample />,
+					sourceCodeExampleId: "side-nav-example-nesting",
 				},
 			]}
 		/>

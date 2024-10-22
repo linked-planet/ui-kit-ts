@@ -469,40 +469,47 @@ type _NestingItemProps = {
 	className?: string
 	style?: React.CSSProperties
 	title: string // title is used to identify the item and as a key
-	/* do not set the _level manually, it is used internally */
-	_level?: number
-	/* do not set the _sideNavStoreIdent manually, it is used internally */
-	_sideNavStoreIdent?: string
+	sideNavStoreIdent?: string
 }
 
 function NestingItem({
 	children,
 	className,
 	style,
-	_level = 0,
-	_sideNavStoreIdent,
+	sideNavStoreIdent = "default",
+	title,
 }: _NestingItemProps) {
-	const childrenWithLevel = React.Children.map(children, (child) => {
-		if (
-			React.isValidElement<_NestableNavigationContentProps>(child) &&
-			child.type === NestableNavigationContent
-		) {
-			return React.cloneElement(child, {
-				_level: _level + 1,
-				_sideNavStoreIdent,
-			})
-		}
-		return child
-	})
+	const { getCurrentPathElement, pushPathElement } =
+		useSideNavigationStore(sideNavStoreIdent)
+
+	const isOpen = getCurrentPathElement() === title
+
+	if (isOpen) {
+		return (
+			<Container
+				className={className}
+				style={style}
+				aria-label="Nested side navigation"
+			>
+				{children}
+			</Container>
+		)
+	}
 
 	return (
-		<Container
-			className={className}
-			style={style}
-			aria-label="Nested side navigation"
+		<ButtonItem
+			onClick={() => {
+				console.log("ADDING", title)
+				pushPathElement(title)
+			}}
+			iconAfter={
+				<IconSizeHelper>
+					<ArrowRightCircleIcon label="" size="medium" />
+				</IconSizeHelper>
+			}
 		>
-			{childrenWithLevel}
-		</Container>
+			{title}
+		</ButtonItem>
 	)
 }
 
@@ -524,38 +531,47 @@ type _NestableNavigationContentProps = {
 	goBackLabel?: string
 	children: React.ReactNode
 	reserveHeight?: boolean
-	/* do not set the _level manually, it is used internally */
-	_level?: number
-	/* do not set the _sideNavStoreIdent manually, it is used internally */
-	_sideNavStoreIdent?: string
+	sideNavStoreIdent?: string
+}
+
+function searchChild(
+	children: React.ReactNode,
+	currentOpenedTitle: string | undefined,
+) {
+	let renderChild: React.ReactElement<_NestingItemProps> | null = null
+	React.Children.forEach(children, (child) => {
+		if (renderChild) return
+		if (
+			React.isValidElement<_NestingItemProps>(child) &&
+			child.props.title === currentOpenedTitle
+		) {
+			renderChild = child
+			return
+		}
+		if (React.isValidElement(child)) {
+			const ret = searchChild(child.props.children, currentOpenedTitle)
+			if (ret) renderChild = ret
+		}
+	})
+	return renderChild
 }
 
 function NestableNavigationContent({
 	goBackLabel = "Go Back",
 	children,
 	reserveHeight,
-	_sideNavStoreIdent = "side-nav-store",
-	_level = 0,
+	sideNavStoreIdent = "default",
 }: _NestableNavigationContentProps) {
-	const { setPathElement, getPathElement } =
-		useSideNavigationStore(_sideNavStoreIdent)
+	const { popPathElement, getCurrentPathElement, path } =
+		useSideNavigationStore(sideNavStoreIdent)
 
 	const insideRef = useRef<HTMLDivElement>(null)
 	const outsideRef = useRef<HTMLDivElement>(null)
-	const currentOpenedTitle = getPathElement(_level)
+	const currentOpenedTitle = getCurrentPathElement()
 
-	let renderChild: React.ReactElement<_NestingItemProps> | null = null
-	React.Children.forEach(children, (child) => {
-		if (
-			React.isValidElement<_NestingItemProps>(child) &&
-			child.props.title === currentOpenedTitle
-		) {
-			renderChild = React.cloneElement(child, {
-				_level,
-				_sideNavStoreIdent,
-			})
-		}
-	})
+	const renderChild = currentOpenedTitle
+		? searchChild(children, currentOpenedTitle)
+		: null
 
 	return (
 		<TransitionGroup
@@ -563,7 +579,7 @@ function NestableNavigationContent({
 			enter
 			exit
 		>
-			{currentOpenedTitle && (
+			{renderChild && (
 				<CSSTransition
 					classNames={cssEnterRightTransitionClassNames}
 					timeout={200}
@@ -571,9 +587,10 @@ function NestableNavigationContent({
 				>
 					<div ref={insideRef} className="size-full">
 						<GoBackItem
-							onClick={() => setPathElement(undefined, _level)}
+							//onClick={() => setPathElement(undefined, _level)}
+							onClick={() => popPathElement()}
 						>
-							{goBackLabel} - {_level}
+							{goBackLabel}
 						</GoBackItem>
 						<div className="border-b-border-separator border-t-border-separator flex size-full border-b-2 border-t-2 border-solid py-2">
 							{renderChild}
@@ -582,7 +599,7 @@ function NestableNavigationContent({
 				</CSSTransition>
 			)}
 
-			{!currentOpenedTitle && (
+			{!renderChild && (
 				<CSSTransition
 					classNames={cssLeaveLeftTransitionClassNames}
 					timeout={200}
@@ -592,37 +609,7 @@ function NestableNavigationContent({
 						ref={outsideRef}
 						className={currentOpenedTitle ? "hidden" : "size-full"}
 					>
-						{React.Children.map(children, (child) => {
-							if (
-								!React.isValidElement<_NestingItemProps>(
-									child,
-								) ||
-								child.type !== NestingItem
-							) {
-								return child
-							}
-							return (
-								<ButtonItem
-									key={child.props.title}
-									onClick={() =>
-										setPathElement(
-											child.props.title,
-											_level,
-										)
-									}
-									iconAfter={
-										<IconSizeHelper>
-											<ArrowRightCircleIcon
-												label=""
-												size="medium"
-											/>
-										</IconSizeHelper>
-									}
-								>
-									{child.props.title}
-								</ButtonItem>
-							)
-						})}
+						{children}
 					</div>
 				</CSSTransition>
 			)}
