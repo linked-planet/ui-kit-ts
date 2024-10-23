@@ -6655,19 +6655,15 @@ function NestingSideNavExample() {
 				className="max-w-sm"
 				aria-label="Side navigation"
 			>
-				<SideNavigation.NavigationHeader>
-					<span>test header</span>
-				</SideNavigation.NavigationHeader>
-				<SideNavigation.Content storeIdent="side-nav-store-showcase">
+				<SideNavigation.Content>
 					<SideNavigation.NestableNavigationContent>
-						<SideNavigation.NestingItem title="test nesting">
-							<SideNavigation.ButtonItem>
-								Test Nested Button
-							</SideNavigation.ButtonItem>
-							<SideNavigation.NestingItem title="inner nesting">
-								<SideNavigation.ButtonItem>
-									Inner Test Nested Button
-								</SideNavigation.ButtonItem>
+						<SideNavigation.NestingItem title="outer">
+							<SideNavigation.NestingItem title="inner">
+								<SideNavigation.NestingItem title="inner2">
+									<SideNavigation.ButtonItem>
+										Inner Nested Button
+									</SideNavigation.ButtonItem>
+								</SideNavigation.NestingItem>
 							</SideNavigation.NestingItem>
 						</SideNavigation.NestingItem>
 					</SideNavigation.NestableNavigationContent>

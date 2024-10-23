@@ -2,7 +2,8 @@ import { useCallback } from "react"
 import { proxy, useSnapshot } from "valtio"
 
 type SideNavigationStore = {
-	path: (string | undefined)[]
+	path: string[]
+	transitioning: null | string | true // true in case of a forward transition, the popped element in case of a backward transition where the element gets removed from the path
 }
 
 const store = proxy<Record<string, SideNavigationStore>>({})
@@ -11,6 +12,7 @@ export function useSideNavigationStore(sideNavStoreIdent: string) {
 	if (!store[sideNavStoreIdent]) {
 		store[sideNavStoreIdent] = {
 			path: [],
+			transitioning: null,
 		}
 	}
 
@@ -21,22 +23,8 @@ export function useSideNavigationStore(sideNavStoreIdent: string) {
 		path.path.map((e) => e),
 	)
 
-	const setPathElement = useCallback(
-		(element: string | undefined, level: number) => {
-			if (
-				element === undefined &&
-				level === store[sideNavStoreIdent].path.length - 1
-			) {
-				store[sideNavStoreIdent].path.pop()
-				return
-			}
-			store[sideNavStoreIdent].path.splice(level, 1, element)
-		},
-		[sideNavStoreIdent],
-	)
-
 	const setPath = useCallback(
-		(path: (string | undefined)[]) =>
+		(path: string[]) =>
 			store[sideNavStoreIdent].path.splice(0, path.length, ...path),
 		[sideNavStoreIdent],
 	)
@@ -55,6 +43,13 @@ export function useSideNavigationStore(sideNavStoreIdent: string) {
 		[sideNavStoreIdent],
 	)
 
+	const setTransitioning = useCallback(
+		(transitioning: string | null | true) => {
+			store[sideNavStoreIdent].transitioning = transitioning
+		},
+		[sideNavStoreIdent],
+	)
+
 	const getCurrentPathElement = useCallback(
 		() =>
 			store[sideNavStoreIdent].path[
@@ -63,13 +58,16 @@ export function useSideNavigationStore(sideNavStoreIdent: string) {
 		[sideNavStoreIdent],
 	)
 
+	const transitioning = useSnapshot(store[sideNavStoreIdent]).transitioning
+
 	return {
 		path,
 		setPath,
-		setPathElement,
 		getPathElement,
 		pushPathElement,
 		popPathElement,
 		getCurrentPathElement,
+		setTransitioning,
+		transitioning,
 	}
 }
