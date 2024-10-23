@@ -1,4 +1,3 @@
-import type React from "react"
 import {
 	type Dispatch,
 	type ReactNode,
@@ -125,10 +124,12 @@ function useOptions({
 		}
 
 		// add the value or default value to the top
-		if (_value) {
-			slots.unshift(_value)
-		} else if (_defaultValue) {
-			slots.unshift(_defaultValue)
+		if (!foundValue) {
+			if (_value) {
+				slots.unshift(_value)
+			} else if (_defaultValue) {
+				slots.unshift(_defaultValue)
+			}
 		}
 
 		// create options
@@ -165,8 +166,8 @@ export function TimePicker<FormData extends FieldValues>(
 
 /**
  * The timepicker is a select that opens a list of times.
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 export function TimePicker<FormData extends FieldValues>({
 	invalid,
@@ -215,10 +216,15 @@ export function TimePicker<FormData extends FieldValues>({
 		[onChange],
 	)
 
-	const classNameMerged = twMerge("flex flex-1 min-w-28 cursor-pointer", className)
+	const classNameMerged = twMerge(
+		"flex flex-1 min-w-28 cursor-pointer",
+		className,
+	)
 	const ariaLabel = label ?? _ariaLabel ?? "time picker"
 
-	const selectProps: SelectProps<TimeType, false> | SelectInFormProps<FormData, TimeType, false> = {
+	const selectProps:
+		| SelectProps<TimeType, false>
+		| SelectInFormProps<FormData, TimeType, false> = {
 		testId,
 		options,
 		"aria-label": ariaLabel,
@@ -248,19 +254,15 @@ export function TimePicker<FormData extends FieldValues>({
 
 	if (!control) {
 		selectProps satisfies SelectProps<TimeType, false>
-		return (
-			<TimePickerNotInForm
-				{...selectProps}
-			/>
-		)
+		return <TimePickerNotInForm {...selectProps} />
 	}
 
-	const selectInFormProps = {...selectProps, control, name} satisfies SelectInFormProps<FormData, TimeType, false>
-	return (
-		<TimePickerInForm<FormData>
-			{...selectInFormProps}
-		/>
-	)
+	const selectInFormProps = {
+		...selectProps,
+		control,
+		name,
+	} satisfies SelectInFormProps<FormData, TimeType, false>
+	return <TimePickerInForm<FormData> {...selectInFormProps} />
 }
 
 function TimePickerNotInForm(props: SelectProps<TimeType, false>) {
@@ -270,9 +272,5 @@ function TimePickerNotInForm(props: SelectProps<TimeType, false>) {
 function TimePickerInForm<FormData extends FieldValues>({
 	...props
 }: SelectInFormProps<FormData, TimeType, false>) {
-	return (
-		<Select<FormData, TimeType, false>
-			{...props}
-		/>
-	)
+	return <Select<FormData, TimeType, false> {...props} />
 }

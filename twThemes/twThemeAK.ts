@@ -62,8 +62,14 @@ export const theme = {
 		animation: {
 			"fade-in": "fade-in 300ms linear",
 			"fade-out": "fade-out 300ms linear",
-			slideDown: "slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1)",
-			slideUp: "slideUp 300ms cubic-bezier(0.87, 0, 0.13, 1)",
+			slideDownAccordion:
+				"slideDownAccordion 300ms cubic-bezier(0.87, 0, 0.13, 1)",
+			slideUpAccordion:
+				"slideUpAccordion 300ms cubic-bezier(0.87, 0, 0.13, 1)",
+			slideDownCollapsible:
+				"slideDownCollapsible 300ms cubic-bezier(0.87, 0, 0.13, 1)",
+			slideUpCollapsible:
+				"slideUpCollapsible 300ms cubic-bezier(0.87, 0, 0.13, 1)",
 		},
 		keyframes: {
 			"fade-in": {
@@ -75,12 +81,21 @@ export const theme = {
 				"0%": { opacity: "100%" },
 			},
 			// for the accordion
-			slideDown: {
+			slideDownAccordion: {
 				from: { height: "0px" },
 				to: { height: "var(--radix-accordion-content-height)" },
 			},
-			slideUp: {
+			slideUpAccordion: {
 				from: { height: "var(--radix-accordion-content-height)" },
+				to: { height: "0px" },
+			},
+			// for the Collapsible
+			slideDownCollapsible: {
+				from: { height: "0px" },
+				to: { height: "var(--radix-collapsible-content-height)" },
+			},
+			slideUpCollapsible: {
+				from: { height: "var(--radix-collapsible-content-height)" },
 				to: { height: "0px" },
 			},
 		},

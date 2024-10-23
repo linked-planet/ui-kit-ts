@@ -1,13 +1,12 @@
-import React, { useRef } from "react"
+import React, { useRef, useState } from "react"
 import type { ComponentPropsWithoutRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import ArrowLeftCircleIcon from "@atlaskit/icon/glyph/arrow-left-circle"
 import ArrowRightCircleIcon from "@atlaskit/icon/glyph/arrow-right-circle"
 import { IconSizeHelper } from "../IconSizeHelper"
-
-import { CSSTransition, TransitionGroup } from "react-transition-group"
-import type { CSSTransitionProps } from "react-transition-group/CSSTransition"
 import { useSideNavigationStore } from "./SideNavigationStore"
+import { AnimatePresence, motion } from "framer-motion"
+import { flushSync } from "react-dom"
 
 const itemBaseStyles = twJoin(
 	"px-1.5 data-[selected=true]:bg-neutral-subtle-hovered group flex w-full cursor-pointer select-none items-center overflow-hidden rounded",
@@ -66,7 +65,7 @@ function Container({
  * Keeps the content of the side navigation, and makes it scrollable.
  */
 function Content({
-	children: _children,
+	children,
 	className,
 	style,
 	storeIdent = "side-nav-store",
@@ -77,19 +76,6 @@ function Content({
 	storeIdent?: string
 }) {
 	const ref = useRef<HTMLDivElement>(null)
-
-	const children = React.Children.map(_children, (child) => {
-		if (
-			React.isValidElement<_NestableNavigationContentProps>(child) &&
-			child.type === NestableNavigationContent
-		) {
-			return React.cloneElement(child, {
-				_level: 0,
-				_sideNavStoreIdent: storeIdent,
-			})
-		}
-		return child
-	})
 
 	return (
 		<div className="relative flex size-full flex-1 overflow-hidden">
@@ -469,155 +455,195 @@ type _NestingItemProps = {
 	className?: string
 	style?: React.CSSProperties
 	title: string // title is used to identify the item and as a key
-	/* do not set the _level manually, it is used internally */
-	_level?: number
-	/* do not set the _sideNavStoreIdent manually, it is used internally */
-	_sideNavStoreIdent?: string
+	sideNavStoreIdent?: string
 }
 
 function NestingItem({
 	children,
 	className,
 	style,
-	_level = 0,
-	_sideNavStoreIdent,
-}: _NestingItemProps) {
-	const childrenWithLevel = React.Children.map(children, (child) => {
-		if (
-			React.isValidElement<_NestableNavigationContentProps>(child) &&
-			child.type === NestableNavigationContent
-		) {
-			return React.cloneElement(child, {
-				_level: _level + 1,
-				_sideNavStoreIdent,
-			})
-		}
-		return child
-	})
+	sideNavStoreIdent = "default",
+	title,
+	_isOpen,
+}: _NestingItemProps & { _isOpen?: boolean }) {
+	const {
+		getCurrentPathElement,
+		pushPathElement,
+		transitioning,
+		setTransitioning,
+	} = useSideNavigationStore(sideNavStoreIdent)
+
+	console.log("TRANSITIONING", _isOpen, title)
+
+	//const isOpen = getCurrentPathElement() === title && transitioning === null*/
+	if (_isOpen) {
+		return (
+			<Container
+				className={className}
+				style={style}
+				aria-label="Nested side navigation"
+			>
+				{children}
+			</Container>
+		)
+	}
 
 	return (
-		<Container
-			className={className}
-			style={style}
-			aria-label="Nested side navigation"
+		<ButtonItem
+			onClick={() => {
+				pushPathElement(title)
+				setTransitioning(true)
+				window.setTimeout(() => setTransitioning(null), animTime * 1000)
+			}}
+			iconAfter={
+				<IconSizeHelper>
+					<ArrowRightCircleIcon label="" size="medium" />
+				</IconSizeHelper>
+			}
 		>
-			{childrenWithLevel}
-		</Container>
+			{title}
+		</ButtonItem>
 	)
-}
-
-const cssLeaveLeftTransitionClassNames: CSSTransitionProps["classNames"] = {
-	enter: "duration-200 ease-in-out -translate-x-full",
-	enterDone: "duration-200 ease-in-out translate-x-0",
-	exit: "duration-200 ease-in-out translate-x-0",
-	exitDone: "duration-200 ease-in-out -translate-x-full",
-}
-
-const cssEnterRightTransitionClassNames: CSSTransitionProps["classNames"] = {
-	enter: "duration-200 ease-in-out translate-x-full",
-	enterDone: "duration-200 ease-in-out translate-x-0",
-	exit: "duration-200 ease-in-out translate-x-full",
-	exitDone: "duration-200 ease-in-out translate-x-0",
 }
 
 type _NestableNavigationContentProps = {
 	goBackLabel?: string
 	children: React.ReactNode
-	reserveHeight?: boolean
-	/* do not set the _level manually, it is used internally */
-	_level?: number
-	/* do not set the _sideNavStoreIdent manually, it is used internally */
-	_sideNavStoreIdent?: string
+	className?: string
+	style?: React.CSSProperties
+	sideNavStoreIdent?: string
 }
+
+function searchChild(
+	children: React.ReactNode,
+	currentOpenedTitle: string | undefined,
+) {
+	let renderChild: React.ReactElement<_NestingItemProps> | null = null
+	React.Children.forEach(children, (child) => {
+		if (renderChild) return
+		if (
+			React.isValidElement<_NestingItemProps>(child) &&
+			child.props.title === currentOpenedTitle
+		) {
+			renderChild = child
+			return
+		}
+		if (React.isValidElement(child)) {
+			const ret = searchChild(child.props.children, currentOpenedTitle)
+			if (ret) renderChild = ret
+		}
+	})
+	return renderChild
+}
+
+const animTime = 1
 
 function NestableNavigationContent({
 	goBackLabel = "Go Back",
 	children,
-	reserveHeight,
-	_sideNavStoreIdent = "side-nav-store",
-	_level = 0,
+	sideNavStoreIdent = "default",
+	className,
+	style,
 }: _NestableNavigationContentProps) {
-	const { setPathElement, getPathElement } =
-		useSideNavigationStore(_sideNavStoreIdent)
+	const { popPathElement, getCurrentPathElement, setTransitioning } =
+		useSideNavigationStore(sideNavStoreIdent)
 
-	const insideRef = useRef<HTMLDivElement>(null)
-	const outsideRef = useRef<HTMLDivElement>(null)
-	const currentOpenedTitle = getPathElement(_level)
+	const currentOpenedTitle = getCurrentPathElement()
 
-	let renderChild: React.ReactElement<_NestingItemProps> | null = null
-	const titles = React.Children.map(children, (child) => {
-		if (
-			!React.isValidElement<_NestingItemProps>(child) ||
-			child.type !== NestingItem
-		) {
-			throw new Error(
-				"NestableNavigationContent must only contain NestingItem components",
-			)
-		}
-		if (child.props.title === currentOpenedTitle) {
-			renderChild = React.cloneElement(child, {
-				_level,
-				_sideNavStoreIdent,
-			})
-		}
-		return child.props.title
-	})
+	const renderChild = currentOpenedTitle
+		? searchChild(children, currentOpenedTitle)
+		: null
+
+	const [isBack, setIsBack] = useState(false)
 
 	return (
-		<TransitionGroup
-			className={reserveHeight ? "size-full" : "w-full"}
-			enter
-			exit
+		<div
+			className={twMerge("overflow-hidden size-full", className)}
+			style={style}
 		>
-			{currentOpenedTitle && (
-				<CSSTransition
-					classNames={cssEnterRightTransitionClassNames}
-					timeout={200}
-					nodeRef={insideRef}
-				>
-					<div ref={insideRef} className="size-full">
-						<GoBackItem
-							onClick={() => setPathElement(undefined, _level)}
-						>
-							{goBackLabel} - {_level}
-						</GoBackItem>
-						<div className="border-b-border-separator border-t-border-separator flex size-full border-b-2 border-t-2 border-solid py-2">
-							{renderChild}
-						</div>
-					</div>
-				</CSSTransition>
-			)}
-
-			{!currentOpenedTitle && (
-				<CSSTransition
-					classNames={cssLeaveLeftTransitionClassNames}
-					timeout={200}
-					nodeRef={outsideRef}
-				>
-					<div
-						ref={outsideRef}
-						className={currentOpenedTitle ? "hidden" : "size-full"}
+			<AnimatePresence initial={false} mode="popLayout">
+				{/* root level elements */}
+				{!renderChild && (
+					<motion.div
+						key="outside"
+						//layout
+						initial={{ x: "-100%" }}
+						animate={{ x: renderChild ? "-100%" : "0%" }}
+						exit={{
+							x: "-100%",
+						}}
+						transition={{
+							duration: animTime,
+							ease: "easeInOut",
+						}}
 					>
-						{titles?.map((title) => (
-							<ButtonItem
-								key={title}
-								onClick={() => setPathElement(title, _level)}
-								iconAfter={
-									<IconSizeHelper>
-										<ArrowRightCircleIcon
-											label=""
-											size="medium"
-										/>
-									</IconSizeHelper>
-								}
-							>
-								{title}
-							</ButtonItem>
-						))}
-					</div>
-				</CSSTransition>
-			)}
-		</TransitionGroup>
+						{children}
+					</motion.div>
+				)}
+			</AnimatePresence>
+			<AnimatePresence initial={false} mode="popLayout">
+				{renderChild && (
+					<motion.div
+						key="go-back-btn"
+						initial={{ x: "100%" }}
+						animate={{ x: "0%" }}
+						exit={{ x: "100%" }}
+						transition={{
+							duration: animTime,
+							ease: "easeInOut",
+						}}
+					>
+						<GoBackItem
+							onClick={() => {
+								setIsBack(true)
+								// this setTimeout is required else the animation will not work correctly
+								window.setTimeout(() => {
+									flushSync(() => {
+										const popped = popPathElement()
+										if (popped) setTransitioning(popped)
+										window.setTimeout(
+											() => setTransitioning(null),
+											animTime * 1000,
+										)
+									})
+								}, 0)
+							}}
+						>
+							{goBackLabel}
+						</GoBackItem>
+					</motion.div>
+				)}
+			</AnimatePresence>
+			<AnimatePresence
+				initial={false}
+				mode="popLayout"
+				onExitComplete={() => setIsBack(false)}
+			>
+				{/* followed by the lower level elements */}
+				{renderChild && (
+					<motion.div
+						key={`inside-${currentOpenedTitle}`}
+						initial={{
+							x: isBack ? "-100%" : "100%",
+						}}
+						animate={{
+							x: "0%",
+						}}
+						exit={{
+							x: isBack ? "100%" : "-100%",
+						}}
+						transition={{
+							duration: animTime,
+							ease: "easeInOut",
+							//delay: animTime * 0.5,
+						}}
+						className="border-b-border-separator border-t-border-separator flex size-full border-b-2 border-t-2 border-solid py-2"
+					>
+						{React.cloneElement(renderChild, { _isOpen: true })}
+					</motion.div>
+				)}
+			</AnimatePresence>
+		</div>
 	)
 }
 

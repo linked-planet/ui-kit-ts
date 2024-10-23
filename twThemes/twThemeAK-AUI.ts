@@ -74,13 +74,21 @@ export const theme = {
 				"100%": { opacity: 0 },
 				"0%": { opacity: "100%" },
 			},
-			// for the accordion
-			slideDown: {
+			slideDownAccordion: {
 				from: { height: "0px" },
 				to: { height: "var(--radix-accordion-content-height)" },
 			},
-			slideUp: {
+			slideUpAccordion: {
 				from: { height: "var(--radix-accordion-content-height)" },
+				to: { height: "0px" },
+			},
+			// for the Collapsible
+			slideDownCollapsible: {
+				from: { height: "0px" },
+				to: { height: "var(--radix-collapsible-content-height)" },
+			},
+			slideUpCollapsible: {
+				from: { height: "var(--radix-collapsible-content-height)" },
 				to: { height: "0px" },
 			},
 		},

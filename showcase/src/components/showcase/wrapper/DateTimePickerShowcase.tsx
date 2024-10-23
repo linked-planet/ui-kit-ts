@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -141,6 +141,14 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 	)
 	//#endregion datetime-picker
 
+	//#region datetime-picker-timesettings
+	const example2 = (
+		<Fieldset legend="Date Time Picker">
+			<DateTimePicker startTime="08:00" endTime="21:00" interval={15} />
+		</Fieldset>
+	)
+	//#endregion datetime-picker-timesettings
+
 	return (
 		<ShowcaseWrapperItem
 			name="Date Time Picker"
@@ -166,6 +174,11 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					title: "Form Controlled",
 					example: <ControlledFormExample />,
 					sourceCodeExampleId: "datetime-picker-form-controlled",
+				},
+				{
+					title: "Time Settings",
+					example: example2,
+					sourceCodeExampleId: "datetime-picker-timesettings",
 				},
 			]}
 		/>
