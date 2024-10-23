@@ -6,9 +6,6 @@ import {
 } from "@radix-ui/react-icons"
 import { forwardRef, type HTMLProps } from "react"
 import { twMerge } from "tailwind-merge"
-import { motion } from "framer-motion"
-
-const MotionContent = motion(CollapsibleRUI.Content)
 
 type CollapsibleProps = {
 	open?: boolean
