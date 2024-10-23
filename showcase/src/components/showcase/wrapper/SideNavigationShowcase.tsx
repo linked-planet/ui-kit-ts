@@ -251,6 +251,12 @@ function NestingSideNavExample() {
 					<SideNavigation.NestableNavigationContent>
 						<SideNavigation.NestingItem title="outer">
 							<SideNavigation.NestingItem title="inner">
+								<SideNavigation.Section title="Section">
+									<SideNavigation.SkeletonItem />
+									<SideNavigation.ButtonItem>
+										Inner Button
+									</SideNavigation.ButtonItem>
+								</SideNavigation.Section>
 								<SideNavigation.NestingItem title="inner2">
 									<SideNavigation.ButtonItem>
 										Inner Nested Button
@@ -259,6 +265,11 @@ function NestingSideNavExample() {
 							</SideNavigation.NestingItem>
 						</SideNavigation.NestingItem>
 					</SideNavigation.NestableNavigationContent>
+					<SideNavigation.Section title="Section">
+						<SideNavigation.ButtonItem>
+							Outer Button
+						</SideNavigation.ButtonItem>
+					</SideNavigation.Section>
 				</SideNavigation.Content>
 			</SideNavigation.Container>
 		</div>

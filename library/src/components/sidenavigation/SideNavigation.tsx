@@ -4,8 +4,6 @@ import { twJoin, twMerge } from "tailwind-merge"
 import ArrowLeftCircleIcon from "@atlaskit/icon/glyph/arrow-left-circle"
 import ArrowRightCircleIcon from "@atlaskit/icon/glyph/arrow-right-circle"
 import { IconSizeHelper } from "../IconSizeHelper"
-
-import type { CSSTransitionProps } from "react-transition-group/CSSTransition"
 import { useSideNavigationStore } from "./SideNavigationStore"
 import { AnimatePresence, motion } from "framer-motion"
 import { flushSync } from "react-dom"
@@ -508,24 +506,11 @@ function NestingItem({
 	)
 }
 
-const cssLeaveLeftTransitionClassNames: CSSTransitionProps["classNames"] = {
-	enter: "duration-200 ease-in-out -translate-x-full",
-	enterDone: "duration-200 ease-in-out translate-x-0",
-	exit: "duration-200 ease-in-out translate-x-0",
-	exitDone: "duration-200 ease-in-out -translate-x-full",
-}
-
-const cssEnterRightTransitionClassNames: CSSTransitionProps["classNames"] = {
-	enter: "duration-200 ease-in-out translate-x-full",
-	enterDone: "duration-200 ease-in-out translate-x-0",
-	exit: "duration-200 ease-in-out translate-x-full",
-	exitDone: "duration-200 ease-in-out translate-x-0",
-}
-
 type _NestableNavigationContentProps = {
 	goBackLabel?: string
 	children: React.ReactNode
-	reserveHeight?: boolean
+	className?: string
+	style?: React.CSSProperties
 	sideNavStoreIdent?: string
 }
 
@@ -556,8 +541,9 @@ const animTime = 1
 function NestableNavigationContent({
 	goBackLabel = "Go Back",
 	children,
-	reserveHeight,
 	sideNavStoreIdent = "default",
+	className,
+	style,
 }: _NestableNavigationContentProps) {
 	const { popPathElement, getCurrentPathElement, setTransitioning } =
 		useSideNavigationStore(sideNavStoreIdent)
@@ -571,7 +557,10 @@ function NestableNavigationContent({
 	const [isBack, setIsBack] = useState(false)
 
 	return (
-		<aside className="overflow-hidden size-full">
+		<div
+			className={twMerge("overflow-hidden size-full", className)}
+			style={style}
+		>
 			<AnimatePresence initial={false} mode="popLayout">
 				{/* root level elements */}
 				{!renderChild && (
@@ -654,7 +643,7 @@ function NestableNavigationContent({
 					</motion.div>
 				)}
 			</AnimatePresence>
-		</aside>
+		</div>
 	)
 }
 
