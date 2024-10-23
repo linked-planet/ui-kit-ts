@@ -115,7 +115,7 @@ export const Collapsible = forwardRef(
 
 				<CollapsibleRUI.Content
 					className={twMerge(
-						"overflow-hidden ease-in-out data-[state=closed]:animate-slideUpCollapsible data-[state=open]:animate-slideDownCollapsible duration-1000 transition-transform",
+						"overflow-hidden data-[state=closed]:animate-slideUpCollapsible data-[state=open]:animate-slideDownCollapsible",
 						contentClassName,
 					)}
 					style={{
