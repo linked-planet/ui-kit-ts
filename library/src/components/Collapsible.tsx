@@ -1,9 +1,14 @@
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
-import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
-import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import * as CollapsibleRUI from "@radix-ui/react-collapsible"
-import { forwardRef, type HTMLProps, useCallback, useState } from "react"
+import {
+	ChevronDownIcon,
+	ChevronRightIcon,
+	ChevronUpIcon,
+} from "@radix-ui/react-icons"
+import { forwardRef, type HTMLProps } from "react"
 import { twMerge } from "tailwind-merge"
+import { motion } from "framer-motion"
+
+const MotionContent = motion(CollapsibleRUI.Content)
 
 type CollapsibleProps = {
 	open?: boolean
@@ -47,53 +52,24 @@ export const Collapsible = forwardRef(
 		}: CollapsibleProps,
 		ref: React.ForwardedRef<HTMLDivElement>,
 	) => {
-		const [open, setOpen] = useState(
-			opened === undefined || opened === null ? defaultOpen : opened,
-		)
-
-		if (opened != null && opened !== open) {
-			setOpen(opened)
-		}
-
-		const openCB = useCallback(
-			(opened: boolean) => {
-				setOpen(opened)
-				if (onChanged) onChanged(opened)
-			},
-			[onChanged],
-		)
-
-		const chevron = open ? (
-			<ChevronDownIcon label="close" />
-		) : (
-			<>
-				{openButtonPosition === "left" ? (
-					<ChevronRightIcon label="open" />
-				) : (
-					<ChevronUpIcon label="open" />
-				)}
-			</>
-		)
-
 		return (
 			<CollapsibleRUI.Root
 				{...props}
-				open={open}
-				defaultOpen={defaultOpen}
-				onOpenChange={openCB}
-				className={twMerge("bg-surface-raised rounded", className)}
+				className={twMerge(
+					"bg-surface-raised rounded group",
+					className,
+				)}
 				style={style}
 				data-testid={testId}
 				id={id}
 				ref={ref}
-				
 			>
 				<CollapsibleRUI.Trigger
 					className={twMerge(
-						`flex w-full flex-1 items-center justify-start ${
+						`flex w-full p-1.5 flex-1 items-center hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none ${
 							openButtonPosition === "hidden"
 								? "cursor-default"
-								: ""
+								: "cursor-pointer disabled:cursor-default"
 						}`,
 						triggerClassName,
 					)}
@@ -103,7 +79,14 @@ export const Collapsible = forwardRef(
 					<div>
 						{openButtonPosition === "left" && (
 							<div className="flex h-full flex-none items-center justify-center">
-								{chevron}
+								<ChevronDownIcon
+									aria-label="close"
+									className="group-data-[state=open]:block group-data-[state=closed]:hidden"
+								/>
+								<ChevronRightIcon
+									aria-label="open"
+									className="group-data-[state=closed]:block group-data-[state=open]:hidden"
+								/>
 							</div>
 						)}
 						<div
@@ -117,15 +100,27 @@ export const Collapsible = forwardRef(
 						</div>
 						{openButtonPosition === "right" && (
 							<div className="flex h-full flex-none items-center justify-center">
-								{chevron}
+								<ChevronDownIcon
+									aria-label="close"
+									className="group-data-[state=open]:block group-data-[state=closed]:hidden"
+								/>
+								<ChevronUpIcon
+									aria-label="open"
+									className="group-data-[state=closed]:block group-data-[state=open]:hidden"
+								/>
 							</div>
 						)}
 					</div>
 				</CollapsibleRUI.Trigger>
 
 				<CollapsibleRUI.Content
-					className={contentClassName}
-					style={contentStyle}
+					className={twMerge(
+						"overflow-hidden ease-in-out data-[state=closed]:animate-slideUpCollapsible data-[state=open]:animate-slideDownCollapsible duration-1000 transition-transform",
+						contentClassName,
+					)}
+					style={{
+						...contentStyle,
+					}}
 				>
 					{children}
 				</CollapsibleRUI.Content>

@@ -2199,7 +2199,6 @@ function CodeBlockShowcase(props: ShowcaseProps) {
 export default CodeBlockShowcase
 
 import { Collapsible } from "@linked-planet/ui-kit-ts/components/Collapsible"
-import React from "react"
 import type { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import ShowcaseWrapperItem from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
@@ -6659,6 +6658,12 @@ function NestingSideNavExample() {
 					<SideNavigation.NestableNavigationContent>
 						<SideNavigation.NestingItem title="outer">
 							<SideNavigation.NestingItem title="inner">
+								<SideNavigation.Section title="Section">
+									<SideNavigation.SkeletonItem />
+									<SideNavigation.ButtonItem>
+										Inner Button
+									</SideNavigation.ButtonItem>
+								</SideNavigation.Section>
 								<SideNavigation.NestingItem title="inner2">
 									<SideNavigation.ButtonItem>
 										Inner Nested Button
@@ -6667,6 +6672,11 @@ function NestingSideNavExample() {
 							</SideNavigation.NestingItem>
 						</SideNavigation.NestingItem>
 					</SideNavigation.NestableNavigationContent>
+					<SideNavigation.Section title="Section">
+						<SideNavigation.ButtonItem>
+							Outer Button
+						</SideNavigation.ButtonItem>
+					</SideNavigation.Section>
 				</SideNavigation.Content>
 			</SideNavigation.Container>
 		</div>

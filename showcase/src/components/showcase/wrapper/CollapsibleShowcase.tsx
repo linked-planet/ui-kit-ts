@@ -1,5 +1,4 @@
 import { Collapsible } from "@linked-planet/ui-kit-ts/components/Collapsible"
-import React from "react"
 import type { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import ShowcaseWrapperItem from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 

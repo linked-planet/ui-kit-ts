@@ -34,7 +34,7 @@ type AccordionMultipleProps = Pick<
 type AccordionContainerProps = (
 	| AccordionSingleProps
 	| AccordionMultipleProps
-) & { 
+) & {
 	"data-testid"?: string
 	"data-id"?: string
 }
@@ -59,7 +59,6 @@ const AccordionItem = React.forwardRef(
 				"border-border overflow-hidden  border-b-2 first:rounded-t last:rounded-b last:border-b-0 focus-within:relative focus-within:z-10",
 				className,
 			)}
-			
 			ref={forwardedRef}
 		>
 			{children}
@@ -81,7 +80,7 @@ const AccordionTrigger = React.forwardRef(
 		<RAccordion.Header className="flex">
 			<RAccordion.Trigger
 				className={twMerge(
-					"text-text bg-surface hover:bg-surface-hovered active:bg-surface-pressed group flex min-h-12 flex-1 cursor-default items-center justify-between px-4 text-base font-bold outline-none",
+					"text-text bg-surface hover:bg-surface-hovered active:bg-surface-pressed group flex min-h-12 flex-1 cursor-pointer disabled:cursor-default items-center justify-between px-4 text-base font-bold outline-none",
 					className,
 				)}
 				{...props}
@@ -110,7 +109,7 @@ const AccordionContent = React.forwardRef(
 	) => (
 		<RAccordion.Content
 			className={twMerge(
-				"data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp border-border bg-surface overflow-hidden border-t",
+				"data-[state=open]:animate-slideDownAccordion data-[state=closed]:animate-slideUpAccordion border-border bg-surface overflow-hidden border-t",
 				className,
 			)}
 			{...props}
