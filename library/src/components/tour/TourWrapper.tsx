@@ -185,7 +185,7 @@ export function Tour({
 						if (showInfoAndError) {
 							showInformationFlag({
 								title: "Tour-Info",
-								description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen, das Element wurde nicht gefunden.`,
+								description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen, das Element ${steps[index].step.target} wurde nicht gefunden.`,
 							})
 						}
 						next(1)
