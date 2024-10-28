@@ -13,6 +13,7 @@ type TabProps = Pick<
 	| "onKeyUp"
 	| "aria-selected"
 	| "aria-checked"
+	| "id"
 > & {
 	label?: string | number
 	tooltip?: string
@@ -95,6 +96,7 @@ const Tab = forwardRef(
 )
 
 export type TabListProps = {
+	id?: string
 	children: React.ReactNode
 	className?: string
 	style?: React.CSSProperties
@@ -116,7 +118,7 @@ const tabListBottomClassName =
  */
 const TabList = forwardRef(
 	(
-		{ children, className, style, testId, side = "top" }: TabListProps,
+		{ children, className, style, testId, side = "top", id }: TabListProps,
 		ref: ForwardedRef<HTMLDivElement>,
 	) => {
 		const tabListChildrenWithValue = React.Children.map(
@@ -163,6 +165,7 @@ const TabList = forwardRef(
 					),
 					className,
 				)}
+				id={id}
 				style={style}
 				data-testid={testId}
 				ref={ref}
@@ -179,6 +182,7 @@ const TabList = forwardRef(
 )
 
 type TabPanelProps = {
+	id?: string
 	label?: string | number
 	children: React.ReactNode
 	className?: string
@@ -188,7 +192,7 @@ type TabPanelProps = {
 
 const TabPanel = forwardRef(
 	(
-		{ label, children, className, style, testId }: TabPanelProps,
+		{ label, children, className, style, testId, id }: TabPanelProps,
 		ref: ForwardedRef<HTMLDivElement>,
 	) => {
 		if (label === undefined || label === null || label === "") {
@@ -196,6 +200,7 @@ const TabPanel = forwardRef(
 		}
 		return (
 			<RTabs.Content
+				id={id}
 				className={twMerge("data-[state=inactive]:hidden", className)}
 				style={style}
 				value={label.toString()} /* this is set in the Tabs component! */
@@ -227,7 +232,7 @@ const Container = forwardRef(
 			selected?: number | string | null | undefined
 			defaultSelected?: number | string
 			onChange?: (value: string) => void
-			children: React.ReactNodeArray
+			children: React.ReactNode[]
 			className?: string
 			style?: React.CSSProperties
 			testId?: string
