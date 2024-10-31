@@ -6,7 +6,7 @@ dayjs.extend(weekOfYear)
 dayjs.extend(weekYear)
 dayjs.extend(localeData)
 import type React from "react"
-import { Fragment, type RefObject, useRef } from "react"
+import { Fragment, type RefObject, useCallback, useRef, useState } from "react"
 
 // if more locales then english and germans are needed, we need to enable them first here
 import "dayjs/locale/de"
@@ -22,6 +22,7 @@ import type {
 	TimeTableViewType,
 } from "./TimeTable"
 import type { TimeFrameDay } from "./TimeTableConfigStore"
+import useResizeObserver, { type ObservedSize } from "use-resize-observer"
 
 const headerTimeSlotFormat: { [viewType in TimeTableViewType]: string } = {
 	hours: "HH:mm",
@@ -69,6 +70,7 @@ export type CustomHeaderRowTimeSlotProps<
 	entries: TimeTableEntry<G, I>[]
 	slotsArray: readonly Dayjs[]
 	tableCellRef: RefObject<HTMLTableCellElement>
+	tableCellWidth: number
 }
 
 export type CustomHeaderRowHeaderProps<
@@ -358,7 +360,22 @@ function CustomHeaderRowCell<
 		header: (props: CustomHeaderRowHeaderProps<G, I>) => JSX.Element
 	}
 }) {
-	const ref = useRef<HTMLTableCellElement>(null)
+	// this is the same as in the TableCell component
+	const tableCellRef = useRef<HTMLTableCellElement>(null)
+	const [tableCellWidth, setTableCellWidth] = useState(
+		tableCellRef.current?.offsetWidth ?? 70,
+	)
+
+	const resizeCallback = useCallback((observedSize: ObservedSize) => {
+		setTableCellWidth(observedSize.width ?? 70)
+	}, [])
+	useResizeObserver({
+		ref: tableCellRef,
+		onResize: resizeCallback,
+		box: "border-box",
+		round: (n: number) => n, // we don't need rounding here
+	})
+	//
 
 	return (
 		<th
@@ -367,7 +384,7 @@ function CustomHeaderRowCell<
 			className={`${headerCellBaseClassname} ${
 				isLastOfDay ? "after:border-l-2" : "after:border-l"
 			}`}
-			ref={ref}
+			ref={tableCellRef}
 		>
 			{customHeaderRow.timeSlot({
 				timeSlot,
@@ -377,7 +394,8 @@ function CustomHeaderRowCell<
 				viewType,
 				entries,
 				slotsArray,
-				tableCellRef: ref,
+				tableCellRef,
+				tableCellWidth,
 			})}
 		</th>
 	)

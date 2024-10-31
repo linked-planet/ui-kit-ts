@@ -1,4 +1,4 @@
-import React, { type CSSProperties } from "react"
+import type { CSSProperties } from "react"
 import { twMerge } from "tailwind-merge"
 type Size = "xsmall" | "small" | "medium" | "large" | "xlarge"
 
@@ -42,5 +42,27 @@ export function LoadingSpinner({
 			id={id}
 			data-testid={testId}
 		/>
+	)
+}
+
+export function LoadingSpinnerCentered({
+	style,
+	className,
+	size,
+}: {
+	style?: React.CSSProperties
+	className?: string
+	size?: Size
+}) {
+	return (
+		<div
+			className={twMerge(
+				"absolute inset-0 flex justify-center items-center",
+				className,
+			)}
+			style={style}
+		>
+			<LoadingSpinner size={size} />
+		</div>
 	)
 }
