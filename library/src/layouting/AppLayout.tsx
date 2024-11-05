@@ -14,6 +14,10 @@ export const topNavigationHeightVar = "--topNavigationHeight" as const
 export const leftPanelWidthVar = "--leftPanelWidth" as const
 export const rightPanelWidthVar = "--rightPanelWidth" as const
 
+let uikts_layouting_heightCB = false
+/**
+ * Initialize the top navigation height variable by setting it to the height of the top navigation element.
+ */
 export function initTopNavigationHeight() {
 	const topNav = document.getElementsByClassName("aui-header")
 	if (!topNav.length) {
@@ -29,6 +33,29 @@ export function initTopNavigationHeight() {
 			topNavigationHeightVar,
 			`${topNavHeight}px`,
 		)
+	}
+
+	const headers = document.getElementsByTagName("header")
+	for (let i = 0; i < headers.length; i++) {
+		const header = headers.item(i)
+		if (header?.getAttribute("role") === "banner") {
+			const bannerHeight = header.clientHeight || 0
+			document.documentElement.style.setProperty(
+				bannerHeightVar,
+				`${bannerHeight}px`,
+			)
+			console.log(
+				"UIKitTs - Banner height set to:",
+				bannerHeight,
+				header.clientHeight,
+			)
+		}
+	}
+
+	if (!uikts_layouting_heightCB) {
+		window.addEventListener("resize", initTopNavigationHeight)
+		console.info("Added resize event listener for App layouting")
+		uikts_layouting_heightCB = true
 	}
 }
 
@@ -62,8 +89,9 @@ function Container({
 					"left-panel content right-panel"
 				`,
 				gridTemplateColumns: `var(${leftPanelWidthVar}, 0px) minmax(0, 1fr) var(${rightPanelWidthVar}, 0px)`,
-				gridTemplateRows: `var(${bannerHeightVar}, min-content) var(${topNavigationHeightVar}, min-content) 1fr`,
+				gridTemplateRows: `var(${topNavigationHeightVar}, min-content) 1fr`,
 				outline: "none",
+				height: `calc(100dvh - var(${bannerHeightVar}, 0px))`,
 				...style,
 			}}
 		>
