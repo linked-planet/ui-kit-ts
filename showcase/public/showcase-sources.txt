@@ -6050,9 +6050,11 @@ import {
 	ButtonGroup,
 	Label,
 	Select,
+	type SelectComponentProps,
 	type OptionGroupType,
+	selectComponents,
 } from "@linked-planet/ui-kit-ts"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
@@ -6202,6 +6204,92 @@ function ControlledFormExample() {
 	)
 }
 //#endregion select2form-controlled
+
+//#region select-custom-component
+type Book = {
+	title: string
+	author: string
+	isbn: string
+	language: string
+}
+
+const books: Book[] = [
+	{
+		title: "The Lord of the Rings",
+		author: "J.R.R. Tolkien",
+		isbn: "978-3-86680-192-9",
+		language: "English",
+	},
+	{
+		title: "Harry Potter",
+		author: "J.K. Rowling",
+		isbn: "978-3-86680-192-9",
+		language: "English",
+	},
+	{
+		title: "The Historical Development of the Heart from Its Formation in the Primitive Vertebrate to Its Most Recent Manifestation in Modern Homo Sapiens as Seen in the Context of the Evolutionary Process, Along with Reflections on Its Influence upon Social, Cultural, and Economic Development with Reference to the Views of Charles Darwin and Other Prominent Thinkers, and Including Detailed Examinations of the Physiological and Anatomical Aspects of the Organ, with Illustrations Drawn from Various Epochs and Regions of the World, as well as a Comprehensive Study of Heart Disease and Its Treatment from Ancient Times to the Present Day, Covering Both Eastern and Western Medical Practices, with a Special Section Devoted to the Role of Diet and Lifestyle in the Maintenance of Cardiovascular Health, Alongside a Discussion of the Spiritual and Symbolic Significance of the Heart in World Religions, and an Appendix on the Potential Future Developments in Heart Transplantation and Artificial Heart Research in the 21st Century",
+		author: "Nigel Tomm",
+		isbn: "123-4-56789-234-5",
+		language: "English",
+	},
+	{
+		title: "ABC",
+		author: "Sir Augustus Maximilian Percival Thaddeus Leopold Ambrose Fitzwilliam Kensington-Rutherford de la Croix Montmorency Beaumont Windsor St. John Alistair Edward Victor Montgomery Hawthorne-Darcy Fitzgerald, Duke of Abernathy, Marquess of Silverwood, Earl of Whitehall, Viscount Longfellow, Baron Cresswell of Eversfield",
+		isbn: "123-4-56789-234-5",
+		language: "English",
+	},
+]
+
+// https://react-select.com/components
+function BookOption(props: SelectComponentProps.OptionProps<Book>) {
+	const value = props.data.value
+	return (
+		<selectComponents.Option {...props}>
+			<div className="py-2">
+				<h3 className="font-bold">{value.title}</h3>
+				<div
+					className="grid pt-1"
+					style={{
+						gridTemplateColumns: "1fr 12rem auto",
+					}}
+				>
+					<p className="truncate text-left">{value.author}</p>
+					<p className="truncate text-center px-2">{value.isbn}</p>
+					<p className="truncate text-right pl-2">{value.language}</p>
+				</div>
+			</div>
+		</selectComponents.Option>
+	)
+}
+
+function CustomComponentExample() {
+	const [selectedBook, setSelectedBook] = useState<Book | null>(null)
+
+	const options = useMemo(() => {
+		return books.map((book) => ({
+			label: book.title,
+			value: book,
+		}))
+	}, [])
+
+	const value =
+		options?.find((option) => option.value === selectedBook) ?? null
+
+	return (
+		<Select<Book, false>
+			options={options}
+			value={value}
+			onChange={(opt) => {
+				setSelectedBook(opt?.value ?? null)
+			}}
+			components={{
+				Option: BookOption,
+			}}
+		/>
+	)
+}
+
+//#endregion
 
 function SelectShowcase(props: ShowcaseProps) {
 	//#region select
@@ -6410,6 +6498,11 @@ function SelectShowcase(props: ShowcaseProps) {
 					title: "Form Controlled",
 					example: <ControlledFormExample />,
 					sourceCodeExampleId: "select2form-controlled",
+				},
+				{
+					title: "Custom Component",
+					example: <CustomComponentExample />,
+					sourceCodeExampleId: "select-custom-component",
 				},
 			]}
 		/>
