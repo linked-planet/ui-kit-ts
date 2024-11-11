@@ -43,6 +43,7 @@ import {
 } from "./TimeTableSelectionStore"
 import type { ItemRowEntry } from "./useGoupRows"
 import { getLeftAndWidth } from "./timeTableUtils"
+import { flushSync } from "react-dom"
 
 interface TimeTableRowsProps<
 	G extends TimeTableGroup,
@@ -64,6 +65,7 @@ interface TimeTableRowsProps<
 
 const intersectionStackDelay = 0
 const rowsMargin = 3
+const renderBatchSize = 1
 /**
  * Creates the table rows for the given entries.
  */
@@ -87,15 +89,28 @@ export default function TimeTableRows<
 		useTTCCellDimentions(storeIdent)
 
 	const refCollection = useRef<React.MutableRefObject<HTMLElement>[]>([])
-	if (refCollection.current.length !== entries.length) {
-		refCollection.current = Array(entries.length)
+	if (refCollection.current.length < entries.length) {
+		refCollection.current.length = entries.length
 	}
+
+	// groupRowsRendered is the array of rendered group rows
+	const groupRowsRendered = useRef<JSX.Element[]>(new Array(entries.length))
+	// groupRowsRenderedIdx is the index of the group row which is currently rendered using batch rendering
+	const [groupRowsRenderedIdx, setGroupRowsRenderedIdx] = useState(0)
+	// this is a reference to the current groupRowsRenderedIdx to avoid changing the handleIntersections callback on groupRowsRenderedIdx change
+	// and to know how far we are with the initial rendering... this is needed to know when to start the intersection observer
+	// and it should be only set to 0 when the group rows change
+	const groupRowsRenderedIdxRef = useRef(groupRowsRenderedIdx)
 
 	// handle intersection is called after intersectionStackDelay ms to avoid too many calls
 	// and checks which groups are intersecting with the intersection container.
 	// those are rendered, others are only rendered as placeholder (1 div per group, instead of multiple rows and cells)
 	const handleIntersections = useCallback(() => {
 		if (!refCollection.current.length) {
+			return
+		}
+		if (!refCollection.current[0] || !refCollection.current[0].current) {
+			// placeholders not yet rendered
 			return
 		}
 		if (!intersectionContainerRef.current || !headerRef.current) {
@@ -111,21 +126,27 @@ export default function TimeTableRows<
 		const firstRef =
 			refCollection.current[0].current.getBoundingClientRect()
 		const firstRefDistance = Math.abs(firstRef.y - intersectionbb.y)
+		let lastIdx = groupRowsRenderedIdxRef.current
+		while (!refCollection.current[lastIdx]?.current && lastIdx > 0) {
+			lastIdx--
+		}
+
 		const lastRef =
-			refCollection.current[
-				refCollection.current.length - 1
-			].current.getBoundingClientRect()
+			refCollection.current[lastIdx].current.getBoundingClientRect()
 		const lastRefDistance = Math.abs(lastRef.y - intersectionbb.y)
 		const startFromFirst = firstRefDistance < lastRefDistance
 
-		const startIdx = startFromFirst ? 0 : refCollection.current.length - 1
-		const endIdx = startFromFirst ? refCollection.current.length : -1
-		const di = startFromFirst ? 1 : -1
+		/*const startIdx = startFromFirst ? 0 : lastIdx
+		const endIdx = startFromFirst ? lastIdx + 1 : -1
+		const di = startFromFirst ? 1 : -1*/
+		const startIdx = 0
+		const endIdx = lastIdx + 1
+		const di = 1
 
 		const newRenderCells = new Set<string>()
 		for (let i = startIdx; i !== endIdx; i += di) {
 			const ref = refCollection.current[i]
-			if (ref.current) {
+			if (ref?.current) {
 				const rowbb = ref.current.getBoundingClientRect()
 				// test if the bounding boxes are overlapping
 				if (rowbb.bottom < top) {
@@ -145,10 +166,40 @@ export default function TimeTableRows<
 					console.warn("TimeTable - intersection group id not found")
 					continue
 				}
+				/*console.log(
+					"timeTable - intersecting group",
+					groupId,
+					newRenderCells,
+					i,
+					startIdx,
+					endIdx,
+				)*/
 				newRenderCells.add(groupId)
+			} else {
+				// if a ref is not yet found, react did not render it yet
+				//window.setTimeout(handleIntersectionsDebounced, 1)
+				console.log(
+					"TimeTable - ref not found",
+					i,
+					refCollection.current,
+				)
+				window.setTimeout(handleIntersectionsDebounced, 1)
+				break
 			}
 		}
-		setRenderCells(newRenderCells)
+		setRenderCells((prev) => {
+			if (prev.size !== newRenderCells.size) {
+				return newRenderCells
+			}
+			for (const g of prev) {
+				if (!newRenderCells.has(g)) {
+					return newRenderCells
+				}
+			}
+			return prev
+		})
+		setGroupRowsRenderedIdx(0)
+		//groupRowsRenderedIdxRef.current = 0 no! we need to know how far we are with the initial rendering
 	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
 
 	const handleIntersectionsDebounced = useCallback(() => {
@@ -185,36 +236,88 @@ export default function TimeTableRows<
 		}
 	}, [handleIntersectionsDebounced, intersectionContainerRef.current])
 
-	if (!entries || entries.length === 0) {
-		console.log("TimeTable - no entries")
-		return []
-	}
-	return entries.map((groupEntry, g) => {
-		const rows = groupRows[groupEntry.group.id]
-		let mref = refCollection.current[g]
-		if (!mref) {
-			mref =
-				createRef<HTMLTableRowElement>() as React.MutableRefObject<HTMLElement>
-			refCollection.current[g] = mref
-		}
+	const renderBatch = useCallback(() => {
+		flushSync(() => {
+			setGroupRowsRenderedIdx((groupRowsRenderedIdx) => {
+				const ret = renderBatchSize + groupRowsRenderedIdx
+				// we need to push through an initial rendering of the group rows
+				// there fore we need to render one time until entries.length - 1
+				const start =
+					groupRowsRenderedIdxRef.current < entries.length - 1
+						? groupRowsRenderedIdxRef.current
+						: groupRowsRenderedIdx
 
-		return (
-			<GroupRows<G, I>
-				key={`${groupEntry.group.title}${g}`}
-				group={groupEntry.group}
-				groupNumber={g}
-				itemRows={rows}
-				onGroupHeaderClick={onGroupClick}
-				onTimeSlotItemClick={onTimeSlotItemClick}
-				selectedTimeSlotItem={selectedTimeSlotItem}
-				renderCells={renderCells.has(groupEntry.group.id)}
-				columnWidth={columnWidth}
-				rowHeight={rowHeight}
-				placeHolderHeight={placeHolderHeight}
-				mref={mref}
-			/>
-		)
-	})
+				for (let g = start; g < ret && g < entries.length; g++) {
+					const groupEntry = entries[g]
+					const rows = groupRows[groupEntry.group.id]
+					let mref = refCollection.current[g]
+					if (!mref) {
+						mref =
+							createRef<HTMLTableRowElement>() as React.MutableRefObject<HTMLElement>
+						refCollection.current[g] = mref
+					}
+					groupRowsRendered.current[g] = (
+						<GroupRows<G, I>
+							key={`${groupEntry.group.title}${g}`}
+							group={groupEntry.group}
+							groupNumber={g}
+							itemRows={rows}
+							onGroupHeaderClick={onGroupClick}
+							onTimeSlotItemClick={onTimeSlotItemClick}
+							selectedTimeSlotItem={selectedTimeSlotItem}
+							renderCells={renderCells.has(groupEntry.group.id)}
+							columnWidth={columnWidth}
+							rowHeight={rowHeight}
+							placeHolderHeight={placeHolderHeight}
+							mref={mref}
+						/>
+					)
+				}
+				if (
+					groupRowsRenderedIdxRef.current <
+					//groupRowsRenderedIdx + batchSize
+					start + renderBatchSize
+				) {
+					groupRowsRenderedIdxRef.current = start + renderBatchSize
+					window.setTimeout(handleIntersectionsDebounced, 1)
+				}
+				// if nothing yet it intersected, it might be the first rendering, so we establish the intersection
+				//if (renderCells.size === 0 && groupRowsRenderedIdx >= batchSize) {
+				/*if (
+					groupRowsRenderedIdxRef.current > 0 &&
+					groupRowsRenderedIdxRef.current < entries.length - 1
+				) {
+					console.log(
+						"HANDLE INTERSECTIONS DEBOUNCED",
+						groupRowsRenderedIdxRef.current,
+						entries.length,
+					)
+					window.setTimeout(
+						() => flushSync(handleIntersectionsDebounced),
+						1,
+					)
+				}*/
+				return ret
+			})
+		})
+	}, [
+		entries,
+		groupRows,
+		renderCells,
+		onGroupClick,
+		onTimeSlotItemClick,
+		selectedTimeSlotItem,
+		columnWidth,
+		rowHeight,
+		placeHolderHeight,
+		handleIntersectionsDebounced,
+	])
+
+	if (groupRowsRenderedIdx < entries.length) {
+		window.setTimeout(renderBatch, 1)
+	}
+
+	return groupRowsRendered.current
 }
 
 /**

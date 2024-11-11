@@ -652,7 +652,7 @@ function moveNowBar(
 		nowBar = document.createElement("div")
 		//nowBar.className = styles.nowBar
 		nowBar.className =
-			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-[1] w-[2px]"
+			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-10 w-[2px]"
 		slotBar.appendChild(nowBar)
 		nowBarRef.current = nowBar
 	}
