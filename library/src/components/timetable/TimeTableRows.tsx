@@ -63,7 +63,7 @@ interface TimeTableRowsProps<
 	headerRef: React.RefObject<HTMLTableSectionElement>
 }
 
-const intersectionStackDelay = 0
+const intersectionStackDelay = 10
 const rowsMargin = 3
 export const timeTableGroupRenderBatchSize = 1
 /**
@@ -106,6 +106,7 @@ export default function TimeTableRows<
 	// and checks which groups are intersecting with the intersection container.
 	// those are rendered, others are only rendered as placeholder (1 div per group, instead of multiple rows and cells)
 	const handleIntersections = useCallback(() => {
+		console.log("INTERSECT")
 		if (!refCollection.current.length) {
 			return
 		}
@@ -179,11 +180,11 @@ export default function TimeTableRows<
 			} else {
 				// if a ref is not yet found, react did not render it yet
 				//window.setTimeout(handleIntersectionsDebounced, 1)
-				console.log(
+				/*console.log(
 					"TimeTable - ref not found",
 					i,
 					refCollection.current,
-				)
+				)*/
 				setGroupRowsRenderedIdx(0)
 				handleIntersectionsDebounced()
 				return
@@ -211,7 +212,6 @@ export default function TimeTableRows<
 		intersectionBatchTimeout.current = window.setTimeout(
 			() =>
 				flushSync(() => {
-					console.log("INTERSECT CALL")
 					handleIntersections()
 				}),
 			intersectionStackDelay,
@@ -219,8 +219,16 @@ export default function TimeTableRows<
 	}, [handleIntersections])
 
 	// initial run
-	useLayoutEffect(handleIntersections, [groupRows])
-	useEffect(handleIntersections, [])
+	useEffect(() => {
+		console.log("----GROUP ROWS UPDATED", groupRows)
+		//setGroupRowsRenderedIdx(0)
+		if (groupRowsRenderedIdxRef.current > Object.keys(groupRows).length) {
+			setGroupRowsRenderedIdx(0)
+			groupRowsRenderedIdxRef.current = 0
+		}
+		window.setTimeout(renderBatch, 0)
+	}, [groupRows])
+	//useEffect(handleIntersections, [])
 
 	// handle intersection observer, create new observer if the intersectionContainerRef changes
 	useLayoutEffect(() => {
@@ -232,11 +240,19 @@ export default function TimeTableRows<
 			"scroll",
 			handleIntersectionsDebounced,
 		)
+		intersectionContainerRef.current.addEventListener(
+			"scrollend",
+			handleIntersectionsDebounced,
+		)
 
 		return () => {
 			//groupHeaderIntersectionObserver.current?.disconnect()
 			intersectionContainerRef.current?.removeEventListener(
 				"scroll",
+				handleIntersectionsDebounced,
+			)
+			intersectionContainerRef.current?.removeEventListener(
+				"scrollend",
 				handleIntersectionsDebounced,
 			)
 		}
@@ -248,14 +264,19 @@ export default function TimeTableRows<
 				const ret = timeTableGroupRenderBatchSize + groupRowsRenderedIdx
 				// we need to push through an initial rendering of the group rows
 				// there fore we need to render one time until entries.length - 1
+				const groupRowKeys = Object.keys(groupRows)
 				const start =
-					groupRowsRenderedIdxRef.current < entries.length - 1
+					groupRowsRenderedIdxRef.current < groupRowKeys.length - 1
 						? groupRowsRenderedIdxRef.current
 						: groupRowsRenderedIdx
 
-				for (let g = start; g < ret && g < entries.length; g++) {
+				for (let g = start; g < ret && g < groupRowKeys.length; g++) {
 					const groupEntry = entries[g]
 					const rows = groupRows[groupEntry.group.id]
+					if (!rows) {
+						// rows not yet calculated
+						continue
+					}
 					let mref = refCollection.current[g]
 					if (!mref) {
 						mref =

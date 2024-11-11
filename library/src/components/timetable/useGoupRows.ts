@@ -16,7 +16,8 @@ import {
 	isOverlapping,
 	itemsOutsideOfDayRangeORSameStartAndEnd,
 } from "./timeTableUtils"
-import { useRef } from "react"
+import { useCallback, useRef, useState } from "react"
+import { timeTableGroupRenderBatchSize } from "./TimeTableRows"
 
 /**
  * Contains the items of one group row (one row within one group)
@@ -26,6 +27,14 @@ export type ItemRowEntry<I extends TimeSlotBooking = TimeSlotBooking> = {
 	startSlot: number
 	endSlot: number
 	status: "before" | "after" | "in" // before: starts and ends before the time slot, after: starts and ends after the time slot, in: overlaps the time slot
+}
+
+type GroupRowsState<I extends TimeSlotBooking> = {
+	groupRows: { [groupId: string]: ItemRowEntry<I>[][] }
+	rowCount: number
+	maxRowCountOfSingleGroup: number
+	itemsOutsideOfDayRange: { [groupId: string]: I[] }
+	itemsWithSameStartAndEnd: { [groupId: string]: I[] }
 }
 
 export function useGroupRows<
@@ -38,6 +47,17 @@ export function useGroupRows<
 	const viewType = useTTCViewType(storeIdent)
 
 	const currentEntries = useRef<TimeTableEntry<G, I>[]>()
+
+	const [currentGroupRowsState, setCurrentGroupRowsState] = useState<
+		GroupRowsState<I>
+	>({
+		groupRows: {},
+		rowCount: 0,
+		maxRowCountOfSingleGroup: 0,
+		itemsOutsideOfDayRange: {},
+		itemsWithSameStartAndEnd: {},
+	})
+
 	const currentGroupRows = useRef<{
 		groupRows: { [groupId: string]: ItemRowEntry<I>[][] }
 		rowCount: number
@@ -61,6 +81,90 @@ export function useGroupRows<
 		currentTimeSlots.current !== slotsArray ||
 		currentTimeFrameDay.current !== timeFrameDay ||
 		currentTimeSlotMinutes.current !== timeSlotMinutes
+
+	const clearGroupRows = useCallback(() => {
+		setCurrentGroupRowsState({
+			groupRows: {},
+			rowCount: 0,
+			maxRowCountOfSingleGroup: 0,
+			itemsOutsideOfDayRange: {},
+			itemsWithSameStartAndEnd: {},
+		})
+	}, [])
+
+	const calculateGroupRows = useCallback(() => {
+		setCurrentGroupRowsState((prev) => {
+			if (!currentEntries.current) {
+				console.warn(
+					"TimeTable - no entries, returning empty group rows",
+				)
+				return {
+					groupRows: {},
+					rowCount: 0,
+					maxRowCountOfSingleGroup: 0,
+					itemsOutsideOfDayRange: {},
+					itemsWithSameStartAndEnd: {},
+				}
+			}
+			// cannot use structured clone because dayjs dates loose their prototype
+			const updated = { ...prev }
+			updated.groupRows = { ...prev.groupRows }
+			updated.itemsOutsideOfDayRange = { ...prev.itemsOutsideOfDayRange }
+			updated.itemsWithSameStartAndEnd = {
+				...prev.itemsWithSameStartAndEnd,
+			}
+
+			const start = Object.keys(prev.groupRows).length
+			for (
+				let i = start;
+				i < currentEntries.current.length &&
+				i < start + timeTableGroupRenderBatchSize;
+				i++
+			) {
+				const entry = currentEntries.current[i]
+				// calculate the new group rows
+				const {
+					itemsOutsideRange,
+					itemsWithSameStartAndEnd: _itemsWithSameStartAndEnd,
+				} = itemsOutsideOfDayRangeORSameStartAndEnd(
+					entry.items,
+					slotsArray,
+					timeFrameDay,
+					timeSlotMinutes,
+					viewType,
+				)
+				if (itemsOutsideRange.length) {
+					updated.itemsOutsideOfDayRange[entry.group.id] =
+						itemsOutsideRange
+				}
+				if (_itemsWithSameStartAndEnd.length) {
+					updated.itemsWithSameStartAndEnd[entry.group.id] =
+						_itemsWithSameStartAndEnd
+				}
+				const groupItems = entry.items.filter(
+					(it) => !_itemsWithSameStartAndEnd.includes(it),
+				)
+				//.filter((it) => !itemsOutsideRange.includes(it))
+
+				const itemRows = getGroupItemStack(
+					groupItems,
+					slotsArray,
+					timeFrameDay,
+					timeSlotMinutes,
+					viewType,
+				)
+				updated.groupRows[entry.group.id] = itemRows
+				updated.rowCount += itemRows.length
+				updated.maxRowCountOfSingleGroup = Math.max(
+					updated.maxRowCountOfSingleGroup,
+					itemRows.length,
+				)
+			}
+			return updated
+		})
+	}, [slotsArray, timeFrameDay, timeSlotMinutes, viewType])
+
+	const timeoutRunning = useRef(0)
 
 	if (currentEntries.current !== entries || requireNewGroupRows) {
 		const groupRows: { [groupId: string]: ItemRowEntry<I>[][] } = {}
@@ -147,9 +251,26 @@ export function useGroupRows<
 		currentTimeSlots.current = slotsArray
 		currentTimeFrameDay.current = timeFrameDay
 		currentTimeSlotMinutes.current = timeSlotMinutes
+
+		if (timeoutRunning.current) {
+			clearTimeout(timeoutRunning.current)
+		}
+		clearGroupRows()
+		//calculateGroupRows()
 	}
 
-	return currentGroupRows.current
+	if (timeoutRunning.current) {
+		clearTimeout(timeoutRunning.current)
+	}
+
+	if (Object.keys(currentGroupRowsState.groupRows).length < entries.length) {
+		timeoutRunning.current = window.setTimeout(() => {
+			calculateGroupRows()
+		}, 1000)
+	}
+
+	//return currentGroupRows.current
+	return currentGroupRowsState
 }
 
 /**
