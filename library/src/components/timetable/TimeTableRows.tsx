@@ -65,7 +65,7 @@ interface TimeTableRowsProps<
 
 const intersectionStackDelay = 0
 const rowsMargin = 3
-const renderBatchSize = 1
+export const timeTableGroupRenderBatchSize = 1
 /**
  * Creates the table rows for the given entries.
  */
@@ -134,7 +134,8 @@ export default function TimeTableRows<
 		const lastRef =
 			refCollection.current[lastIdx].current.getBoundingClientRect()
 		const lastRefDistance = Math.abs(lastRef.y - intersectionbb.y)
-		const startFromFirst = firstRefDistance < lastRefDistance
+		//const startFromFirst = firstRefDistance < lastRefDistance
+		const startFromFirst = true
 
 		/*const startIdx = startFromFirst ? 0 : lastIdx
 		const endIdx = startFromFirst ? lastIdx + 1 : -1
@@ -183,8 +184,9 @@ export default function TimeTableRows<
 					i,
 					refCollection.current,
 				)
-				window.setTimeout(handleIntersectionsDebounced, 1)
-				break
+				setGroupRowsRenderedIdx(0)
+				handleIntersectionsDebounced()
+				return
 			}
 		}
 		setRenderCells((prev) => {
@@ -207,7 +209,11 @@ export default function TimeTableRows<
 			clearTimeout(intersectionBatchTimeout.current)
 		}
 		intersectionBatchTimeout.current = window.setTimeout(
-			handleIntersections,
+			() =>
+				flushSync(() => {
+					console.log("INTERSECT CALL")
+					handleIntersections()
+				}),
 			intersectionStackDelay,
 		)
 	}, [handleIntersections])
@@ -239,7 +245,7 @@ export default function TimeTableRows<
 	const renderBatch = useCallback(() => {
 		flushSync(() => {
 			setGroupRowsRenderedIdx((groupRowsRenderedIdx) => {
-				const ret = renderBatchSize + groupRowsRenderedIdx
+				const ret = timeTableGroupRenderBatchSize + groupRowsRenderedIdx
 				// we need to push through an initial rendering of the group rows
 				// there fore we need to render one time until entries.length - 1
 				const start =
@@ -275,14 +281,12 @@ export default function TimeTableRows<
 				}
 				if (
 					groupRowsRenderedIdxRef.current <
-					//groupRowsRenderedIdx + batchSize
-					start + renderBatchSize
+					start + timeTableGroupRenderBatchSize
 				) {
-					groupRowsRenderedIdxRef.current = start + renderBatchSize
-					window.setTimeout(handleIntersectionsDebounced, 1)
+					groupRowsRenderedIdxRef.current =
+						start + timeTableGroupRenderBatchSize
+					handleIntersectionsDebounced()
 				}
-				// if nothing yet it intersected, it might be the first rendering, so we establish the intersection
-				//if (renderCells.size === 0 && groupRowsRenderedIdx >= batchSize) {
 				/*if (
 					groupRowsRenderedIdxRef.current > 0 &&
 					groupRowsRenderedIdxRef.current < entries.length - 1
