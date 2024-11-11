@@ -492,7 +492,7 @@ const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
 					className={`hidden h-4 w-4 items-center justify-center ${
 						hideChevron
 							? ""
-							: "group-data-[state=closed]:flex group-data-[state=open]:visible"
+							: "group-data-[state=closed]:flex group-data-[state=closed]:visible"
 					}`}
 				>
 					<ChevronDownIcon label="" size="small" />
