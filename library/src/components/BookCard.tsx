@@ -50,10 +50,10 @@ export const CardBase = forwardRef(
 				defaultOpen={defaultOpen}
 				onChanged={onOpenChanged}
 				className={twMerge(
-					"border-border shadow-overlay-bold border",
+					"border-border box-border shadow-overlay-bold border",
 					className,
 				)}
-				triggerClassName="rounded-t border-b border-border overflow-hidden"
+				triggerClassName="rounded-t border-b box-border border-border overflow-hidden"
 				id={id}
 				testId={testId}
 				ref={ref}
@@ -82,7 +82,7 @@ const CardHeaderPrefix = ({
 	testId?: string
 }) => {
 	const _className = twMerge(
-		"text-text-subtlest pr-2 mr-4 text-xs border-border border-r w-[100px] flex-none font-semibold grid items-center justify-start",
+		"text-text-subtlest pr-2 mr-4 box-border text-xs border-border border-r w-[100px] flex-none font-semibold grid items-center justify-start",
 		className,
 	)
 	return (
@@ -113,7 +113,7 @@ const CardHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface-overlay flex w-full max-w-fit flex-1 justify-between px-4 py-3",
+			"bg-surface-overlay box-border flex w-full flex-1 justify-between px-4 py-3",
 			className,
 		)}
 		style={style}
@@ -139,7 +139,7 @@ const CardHeaderMeta = ({
 	testId?: string
 }) => (
 	<div
-		className="w-full items-baseline overflow-hidden"
+		className="w-full items-baseline box-border overflow-hidden"
 		id={id}
 		data-testid={testId}
 	>
@@ -163,7 +163,7 @@ const CardHeaderTitle = ({
 	prefixStyle?: CSSProperties
 }) => {
 	const _className = twMerge(
-		"mt-0 truncate text-start text-xl font-medium",
+		"mt-0 truncate box-border text-start text-xl font-medium",
 		className,
 	)
 
@@ -205,7 +205,7 @@ const CardHeaderSubtitle = ({
 	id?: string
 }) => {
 	const _className = twMerge(
-		"text-text-subtlest mt-1 flex-1 justify-start truncate text-start text-sm font-semibold",
+		"text-text-subtlest box-border mt-1 flex-1 justify-start truncate text-start text-sm font-semibold",
 		className,
 	)
 	if (typeof children === "string") {
@@ -241,7 +241,7 @@ const CardHeaderUpperTitle = ({
 	id?: string
 }) => {
 	const _className = twMerge(
-		"text-text-subtlest my-1 w-full flex-1 justify-start truncate text-start text-xs font-light italic",
+		"text-text-subtlest box-border my-1 w-full flex-1 justify-start truncate text-start text-xs font-light italic",
 		className,
 	)
 	if (typeof children === "string") {
@@ -273,7 +273,7 @@ const CardHeaderActions = ({
 	testId?: string
 }) => (
 	<div
-		className="flex flex-none items-center justify-end pl-2"
+		className="flex flex-none box-border items-center justify-end pl-2"
 		id={id}
 		data-testid={testId}
 	>
@@ -290,7 +290,11 @@ const CardHeaderActionsInfo = ({
 	id?: string
 	testId?: string
 }) => (
-	<div className="mr-2 items-center text-sm" id={id} data-testid={testId}>
+	<div
+		className="mr-2 box-border items-center text-sm"
+		id={id}
+		data-testid={testId}
+	>
 		{children}
 	</div>
 )
@@ -316,13 +320,13 @@ const CardGridBody = ({
 	style?: CSSProperties
 }) => (
 	<div
-		className="w-full overflow-hidden rounded-b"
+		className="w-full overflow-hidden box-border rounded-b"
 		is={id}
 		data-testid={testId}
 	>
 		<div
 			className={twMerge(
-				`grid border-collapse overflow-hidden ${cardBodyEntryBaseStyle} ${css`
+				`grid border-collapse box-border overflow-hidden ${cardBodyEntryBaseStyle} ${css`
 					grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 				`}`,
 				className,
@@ -343,9 +347,13 @@ const CardRowBody = ({
 	id?: string
 	testId?: string
 }) => (
-	<div className="overflow-hidden rounded-b" id={id} data-testid={testId}>
+	<div
+		className="overflow-hidden rounded-b box-border"
+		id={id}
+		data-testid={testId}
+	>
 		<div
-			className={`grid border-collapse grid-flow-col overflow-x-auto overflow-y-hidden ${cardBodyEntryBaseStyle} ${css`
+			className={`grid border-collapse grid-flow-col box-border overflow-x-auto overflow-y-hidden ${cardBodyEntryBaseStyle} ${css`
 				grid-auto-columns: minmax(150px, 1fr);
 			`}`}
 		>
@@ -363,9 +371,13 @@ const CardColumnBody = ({
 	id?: string
 	testId?: string
 }) => (
-	<div className="overflow-hidden rounded-b" id={id} data-testid={testId}>
+	<div
+		className="overflow-hidden rounded-b box-border"
+		id={id}
+		data-testid={testId}
+	>
 		<div
-			className={`grid border-collapse grid-flow-row overflow-auto ${cardBodyEntryBaseStyle} ${css`
+			className={`grid border-collapse box-border grid-flow-row overflow-auto ${cardBodyEntryBaseStyle} ${css`
 				grid-auto-rows: minmax(150px, 1fr);
 			`}`}
 		>
