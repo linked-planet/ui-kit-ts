@@ -389,7 +389,7 @@ const CardBodyEntry = ({
 }) => (
 	<div
 		className={twMerge(
-			"flex w-full flex-1 flex-col items-baseline overflow-hidden text-sm",
+			"flex w-full box-border flex-1 flex-col items-baseline overflow-hidden text-sm",
 			className,
 		)}
 		id={id}
