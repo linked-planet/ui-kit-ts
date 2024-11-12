@@ -83,6 +83,7 @@ export function useGroupRows<
 		currentTimeSlotMinutes.current !== timeSlotMinutes
 
 	const clearGroupRows = useCallback(() => {
+		clearTimeout(timeoutRunning.current)
 		setCurrentGroupRowsState({
 			groupRows: {},
 			rowCount: 0,
@@ -256,15 +257,34 @@ export function useGroupRows<
 			clearTimeout(timeoutRunning.current)
 		}
 		clearGroupRows()
+		console.log(
+			"CLEAR GROUP ROWS update",
+			Object.keys(currentGroupRowsState.groupRows).length,
+			entries.length,
+		)
 		//calculateGroupRows()
 	}
 
 	if (timeoutRunning.current) {
+		console.log("CLEAR TIMEOUT")
 		clearTimeout(timeoutRunning.current)
 	}
 
+	console.log(
+		"CALC TEST",
+		Object.keys(currentGroupRowsState.groupRows).length,
+		entries.length,
+	)
+
 	if (Object.keys(currentGroupRowsState.groupRows).length < entries.length) {
+		console.log("SETUP TIMEOUT")
 		timeoutRunning.current = window.setTimeout(() => {
+			timeoutRunning.current = 0
+			console.log(
+				"CALC",
+				Object.keys(currentGroupRowsState.groupRows).length,
+				entries.length,
+			)
 			calculateGroupRows()
 		}, 1000)
 	}
