@@ -113,7 +113,7 @@ const CardHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface-overlay flex w-full flex-1 justify-between px-4 py-3",
+			"bg-surface-overlay flex w-full max-w-fit flex-1 justify-between px-4 py-3",
 			className,
 		)}
 		style={style}
@@ -163,7 +163,7 @@ const CardHeaderTitle = ({
 	prefixStyle?: CSSProperties
 }) => {
 	const _className = twMerge(
-		"mt-0 w-full truncate text-start text-xl font-medium",
+		"mt-0 truncate text-start text-xl font-medium",
 		className,
 	)
 
@@ -205,7 +205,7 @@ const CardHeaderSubtitle = ({
 	id?: string
 }) => {
 	const _className = twMerge(
-		"text-text-subtlest mt-1 w-full flex-1 justify-start truncate text-start text-sm font-semibold",
+		"text-text-subtlest mt-1 flex-1 justify-start truncate text-start text-sm font-semibold",
 		className,
 	)
 	if (typeof children === "string") {
