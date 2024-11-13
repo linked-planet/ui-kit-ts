@@ -48,9 +48,24 @@ export function useGroupRows<
 
 	const currentEntries = useRef<TimeTableEntry<G, I>[]>()
 
-	const [currentGroupRowsState, setCurrentGroupRowsState] = useState<
+	/*const [currentGroupRowsState, setCurrentGroupRowsState] = useState<
 		GroupRowsState<I>
 	>({
+		groupRows: {},
+		rowCount: 0,
+		maxRowCountOfSingleGroup: 0,
+		itemsOutsideOfDayRange: {},
+		itemsWithSameStartAndEnd: {},
+	})*/
+	const [renderBatch, setRenderBatch] = useState(0)
+
+	const currentGroupRowsRef = useRef<{
+		groupRows: { [groupId: string]: ItemRowEntry<I>[][] }
+		rowCount: number
+		maxRowCountOfSingleGroup: number
+		itemsOutsideOfDayRange: { [groupId: string]: I[] }
+		itemsWithSameStartAndEnd: { [groupId: string]: I[] }
+	}>({
 		groupRows: {},
 		rowCount: 0,
 		maxRowCountOfSingleGroup: 0,
@@ -84,86 +99,88 @@ export function useGroupRows<
 
 	const clearGroupRows = useCallback(() => {
 		clearTimeout(timeoutRunning.current)
-		setCurrentGroupRowsState({
+		currentGroupRowsRef.current = {
 			groupRows: {},
 			rowCount: 0,
 			maxRowCountOfSingleGroup: 0,
 			itemsOutsideOfDayRange: {},
 			itemsWithSameStartAndEnd: {},
-		})
+		}
+		if (currentEntries.current?.length) {
+			setRenderBatch(0)
+		} else {
+			setRenderBatch(-1)
+		}
 	}, [])
 
 	const calculateGroupRows = useCallback(() => {
-		setCurrentGroupRowsState((prev) => {
-			if (!currentEntries.current) {
-				console.warn(
-					"TimeTable - no entries, returning empty group rows",
-				)
-				return {
-					groupRows: {},
-					rowCount: 0,
-					maxRowCountOfSingleGroup: 0,
-					itemsOutsideOfDayRange: {},
-					itemsWithSameStartAndEnd: {},
-				}
+		if (!currentEntries.current) {
+			if (currentGroupRowsRef.current.groupRows.length) {
+				clearGroupRows()
+				console.warn("TimeTable - no entries, clearing group rows")
 			}
-			// cannot use structured clone because dayjs dates loose their prototype
-			const updated = { ...prev }
-			updated.groupRows = { ...prev.groupRows }
-			updated.itemsOutsideOfDayRange = { ...prev.itemsOutsideOfDayRange }
-			updated.itemsWithSameStartAndEnd = {
-				...prev.itemsWithSameStartAndEnd,
-			}
+			return
+		}
 
-			const start = Object.keys(prev.groupRows).length
-			for (
-				let i = start;
-				i < currentEntries.current.length &&
-				i < start + timeTableGroupRenderBatchSize;
-				i++
-			) {
-				const entry = currentEntries.current[i]
-				// calculate the new group rows
-				const {
-					itemsOutsideRange,
-					itemsWithSameStartAndEnd: _itemsWithSameStartAndEnd,
-				} = itemsOutsideOfDayRangeORSameStartAndEnd(
-					entry.items,
-					slotsArray,
-					timeFrameDay,
-					timeSlotMinutes,
-					viewType,
-				)
-				if (itemsOutsideRange.length) {
-					updated.itemsOutsideOfDayRange[entry.group.id] =
-						itemsOutsideRange
+		const keys = Object.keys(currentGroupRowsRef.current.groupRows)
+		const start = keys.length
+		for (
+			let i = start;
+			i < currentEntries.current.length &&
+			i < start + timeTableGroupRenderBatchSize;
+			i++
+		) {
+			const entry = currentEntries.current[i]
+			// calculate the new group rows
+			const {
+				itemsOutsideRange,
+				itemsWithSameStartAndEnd: _itemsWithSameStartAndEnd,
+			} = itemsOutsideOfDayRangeORSameStartAndEnd(
+				entry.items,
+				slotsArray,
+				timeFrameDay,
+				timeSlotMinutes,
+				viewType,
+			)
+			if (itemsOutsideRange.length) {
+				currentGroupRowsRef.current.itemsOutsideOfDayRange = {
+					...currentGroupRowsRef.current.itemsOutsideOfDayRange,
 				}
-				if (_itemsWithSameStartAndEnd.length) {
-					updated.itemsWithSameStartAndEnd[entry.group.id] =
-						_itemsWithSameStartAndEnd
-				}
-				const groupItems = entry.items.filter(
-					(it) => !_itemsWithSameStartAndEnd.includes(it),
-				)
-				//.filter((it) => !itemsOutsideRange.includes(it))
-
-				const itemRows = getGroupItemStack(
-					groupItems,
-					slotsArray,
-					timeFrameDay,
-					timeSlotMinutes,
-					viewType,
-				)
-				updated.groupRows[entry.group.id] = itemRows
-				updated.rowCount += itemRows.length
-				updated.maxRowCountOfSingleGroup = Math.max(
-					updated.maxRowCountOfSingleGroup,
-					itemRows.length,
-				)
+				currentGroupRowsRef.current.itemsOutsideOfDayRange[
+					entry.group.id
+				] = itemsOutsideRange
 			}
-			return updated
-		})
-	}, [slotsArray, timeFrameDay, timeSlotMinutes, viewType])
+			if (_itemsWithSameStartAndEnd.length) {
+				currentGroupRowsRef.current.itemsWithSameStartAndEnd = {
+					...currentGroupRowsRef.current.itemsWithSameStartAndEnd,
+				}
+				currentGroupRowsRef.current.itemsWithSameStartAndEnd[
+					entry.group.id
+				] = _itemsWithSameStartAndEnd
+			}
+			const groupItems = entry.items.filter(
+				(it) => !_itemsWithSameStartAndEnd.includes(it),
+			)
+			//.filter((it) => !itemsOutsideRange.includes(it))
+
+			const itemRows = getGroupItemStack(
+				groupItems,
+				slotsArray,
+				timeFrameDay,
+				timeSlotMinutes,
+				viewType,
+			)
+			currentGroupRowsRef.current.groupRows = {
+				...currentGroupRowsRef.current.groupRows,
+			}
+			currentGroupRowsRef.current.groupRows[entry.group.id] = itemRows
+			currentGroupRowsRef.current.rowCount += itemRows.length
+			currentGroupRowsRef.current.maxRowCountOfSingleGroup = Math.max(
+				currentGroupRowsRef.current.maxRowCountOfSingleGroup,
+				itemRows.length,
+			)
+		}
+	}, [slotsArray, timeFrameDay, timeSlotMinutes, viewType, clearGroupRows])
 
 	const timeoutRunning = useRef(0)
 
@@ -257,40 +274,27 @@ export function useGroupRows<
 			clearTimeout(timeoutRunning.current)
 		}
 		clearGroupRows()
-		console.log(
-			"CLEAR GROUP ROWS update",
-			Object.keys(currentGroupRowsState.groupRows).length,
-			entries.length,
-		)
-		//calculateGroupRows()
 	}
 
 	if (timeoutRunning.current) {
-		console.log("CLEAR TIMEOUT")
 		clearTimeout(timeoutRunning.current)
 	}
 
-	console.log(
-		"CALC TEST",
-		Object.keys(currentGroupRowsState.groupRows).length,
-		entries.length,
-	)
-
-	if (Object.keys(currentGroupRowsState.groupRows).length < entries.length) {
-		console.log("SETUP TIMEOUT")
+	if (
+		Object.keys(currentGroupRowsRef.current.groupRows).length <
+		entries.length
+	) {
 		timeoutRunning.current = window.setTimeout(() => {
 			timeoutRunning.current = 0
-			console.log(
-				"CALC",
-				Object.keys(currentGroupRowsState.groupRows).length,
-				entries.length,
-			)
 			calculateGroupRows()
+			setRenderBatch((batch) => batch + 1)
 		}, 1000)
+	} else if (renderBatch >= 0) {
+		setRenderBatch(-1)
 	}
 
 	//return currentGroupRows.current
-	return currentGroupRowsState
+	return currentGroupRowsRef.current
 }
 
 /**
