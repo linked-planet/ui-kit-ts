@@ -43,7 +43,10 @@ import {
 } from "./TimeTableSelectionStore"
 import type { ItemRowEntry } from "./useGoupRows"
 import { getLeftAndWidth } from "./timeTableUtils"
-import { flushSync } from "react-dom"
+import {
+	useDebounceHelper,
+	useRateLimitHelper,
+} from "@linked-planet/ui-kit-ts/utils"
 
 interface TimeTableRowsProps<
 	G extends TimeTableGroup,
@@ -63,7 +66,8 @@ interface TimeTableRowsProps<
 	headerRef: React.RefObject<HTMLTableSectionElement>
 }
 
-const intersectionStackDelay = 10
+const intersectionStackDelay = 1000
+const rateLimiting = 1000
 const rowsMargin = 3
 export const timeTableGroupRenderBatchSize = 1
 /**
@@ -81,9 +85,6 @@ export default function TimeTableRows<
 	intersectionContainerRef,
 	headerRef,
 }: TimeTableRowsProps<G, I>) {
-	const [renderCells, setRenderCells] = useState<Set<string>>(new Set())
-	const intersectionBatchTimeout = useRef<number>()
-
 	const storeIdent = useTimeTableIdent()
 	const { rowHeight, columnWidth, placeHolderHeight } =
 		useTTCCellDimentions(storeIdent)
@@ -92,6 +93,8 @@ export default function TimeTableRows<
 	if (refCollection.current.length < entries.length) {
 		refCollection.current.length = entries.length
 	}
+
+	const renderCells = useRef<[number, number]>([-1, -1])
 
 	// groupRowsRendered is the array of rendered group rows
 	const groupRowsRendered = useRef<JSX.Element[]>(new Array(entries.length))
@@ -102,11 +105,15 @@ export default function TimeTableRows<
 	// and it should be only set to 0 when the group rows change
 	const groupRowsRenderedIdxRef = useRef(groupRowsRenderedIdx)
 
+	const rateLimiterIntersection = useRateLimitHelper(rateLimiting)
+	const rateLimiterRendering = useRateLimitHelper(rateLimiting)
+	const debounceIntersection = useDebounceHelper(intersectionStackDelay)
+
 	// handle intersection is called after intersectionStackDelay ms to avoid too many calls
 	// and checks which groups are intersecting with the intersection container.
 	// those are rendered, others are only rendered as placeholder (1 div per group, instead of multiple rows and cells)
 	const handleIntersections = useCallback(() => {
-		console.log("INTERSECT")
+		console.log("INTERSECTION")
 		if (!refCollection.current.length) {
 			return
 		}
@@ -124,43 +131,26 @@ export default function TimeTableRows<
 		const top = headerbb.bottom - rowsMargin * rowHeight
 		const bottom = intersectionbb.bottom + rowsMargin * rowHeight
 
-		const firstRef =
-			refCollection.current[0].current.getBoundingClientRect()
-		const firstRefDistance = Math.abs(firstRef.y - intersectionbb.y)
+		// find the last rendered group row
 		let lastIdx = groupRowsRenderedIdxRef.current
 		while (!refCollection.current[lastIdx]?.current && lastIdx > 0) {
 			lastIdx--
 		}
 
-		const lastRef =
-			refCollection.current[lastIdx].current.getBoundingClientRect()
-		const lastRefDistance = Math.abs(lastRef.y - intersectionbb.y)
-		//const startFromFirst = firstRefDistance < lastRefDistance
-		const startFromFirst = true
-
-		/*const startIdx = startFromFirst ? 0 : lastIdx
-		const endIdx = startFromFirst ? lastIdx + 1 : -1
-		const di = startFromFirst ? 1 : -1*/
 		const startIdx = 0
 		const endIdx = lastIdx + 1
 		const di = 1
 
-		const newRenderCells = new Set<string>()
+		const newRenderCells: [number, number] = [-1, -1]
 		for (let i = startIdx; i !== endIdx; i += di) {
 			const ref = refCollection.current[i]
 			if (ref?.current) {
 				const rowbb = ref.current.getBoundingClientRect()
 				// test if the bounding boxes are overlapping
 				if (rowbb.bottom < top) {
-					if (startFromFirst) {
-						continue
-					}
-					break
+					continue
 				}
 				if (rowbb.top > bottom) {
-					if (!startFromFirst) {
-						continue
-					}
 					break
 				}
 				const groupId = ref.current.getAttribute("data-group-id")
@@ -176,58 +166,56 @@ export default function TimeTableRows<
 					startIdx,
 					endIdx,
 				)*/
-				newRenderCells.add(groupId)
+				if (newRenderCells[0] === -1) {
+					newRenderCells[0] = i
+				} else {
+					newRenderCells[1] = i
+				}
 			} else {
-				// if a ref is not yet found, react did not render it yet
-				//window.setTimeout(handleIntersectionsDebounced, 1)
-				/*console.log(
-					"TimeTable - ref not found",
-					i,
-					refCollection.current,
-				)*/
-				setGroupRowsRenderedIdx(0)
-				handleIntersectionsDebounced()
+				// not yet rendered
+				console.log("NOT YET RENDERED", i, refCollection.current)
 				return
 			}
 		}
-		setRenderCells((prev) => {
-			if (prev.size !== newRenderCells.size) {
-				return newRenderCells
+		if (newRenderCells[0] > newRenderCells[1]) {
+			newRenderCells[1] = newRenderCells[0]
+		}
+		if (
+			renderCells.current[0] !== newRenderCells[0] ||
+			renderCells.current[1] !== newRenderCells[1]
+		) {
+			let minRenderIndex = Math.min(
+				renderCells.current[0],
+				newRenderCells[0],
+			)
+			if (newRenderCells[0] === minRenderIndex) {
+				minRenderIndex = Math.min(
+					renderCells.current[1],
+					newRenderCells[1],
+				)
 			}
-			for (const g of prev) {
-				if (!newRenderCells.has(g)) {
-					return newRenderCells
-				}
-			}
-			return prev
-		})
-		setGroupRowsRenderedIdx(0)
+
+			console.log("NEW RENDER CELLS", newRenderCells, minRenderIndex)
+			renderCells.current = newRenderCells
+			// start render from the first visible group
+			setGroupRowsRenderedIdx((prev) =>
+				prev < minRenderIndex ? prev : minRenderIndex,
+			)
+		} else {
+			console.log("SAME RENDERINGCELL", newRenderCells)
+		}
 		//groupRowsRenderedIdxRef.current = 0 no! we need to know how far we are with the initial rendering
 	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
 
-	const handleIntersectionsDebounced = useCallback(() => {
-		if (intersectionBatchTimeout.current) {
-			clearTimeout(intersectionBatchTimeout.current)
-		}
-		intersectionBatchTimeout.current = window.setTimeout(
-			() =>
-				flushSync(() => {
-					handleIntersections()
-				}),
-			intersectionStackDelay,
-		)
-	}, [handleIntersections])
-
 	// initial run
 	useEffect(() => {
-		console.log("----GROUP ROWS UPDATED", groupRows)
-		//setGroupRowsRenderedIdx(0)
-		if (groupRowsRenderedIdxRef.current > Object.keys(groupRows).length) {
-			setGroupRowsRenderedIdx(0)
-			groupRowsRenderedIdxRef.current = 0
-		}
-		window.setTimeout(renderBatch, 0)
-	}, [groupRows])
+		console.log("UPDATED GROUP ROWS", groupRows)
+		//if (groupRowsRenderedIdxRef.current > Object.keys(groupRows).length) {
+		setGroupRowsRenderedIdx(0)
+		groupRowsRenderedIdxRef.current = 0
+		//}
+		rateLimiterRendering(() => window.setTimeout(renderBatch, 0))
+	}, [groupRows, rateLimiterRendering])
 	//useEffect(handleIntersections, [])
 
 	// handle intersection observer, create new observer if the intersectionContainerRef changes
@@ -235,80 +223,100 @@ export default function TimeTableRows<
 		if (!intersectionContainerRef.current) {
 			return
 		}
+
+		const debIntersection = () => debounceIntersection(handleIntersections)
 		// scroll event handler
 		intersectionContainerRef.current.addEventListener(
 			"scroll",
-			handleIntersectionsDebounced,
+			debIntersection,
 		)
 		intersectionContainerRef.current.addEventListener(
 			"scrollend",
-			handleIntersectionsDebounced,
+			debIntersection,
 		)
 
 		return () => {
 			//groupHeaderIntersectionObserver.current?.disconnect()
 			intersectionContainerRef.current?.removeEventListener(
 				"scroll",
-				handleIntersectionsDebounced,
+				debIntersection,
 			)
 			intersectionContainerRef.current?.removeEventListener(
 				"scrollend",
-				handleIntersectionsDebounced,
+				debIntersection,
 			)
 		}
-	}, [handleIntersectionsDebounced, intersectionContainerRef.current])
+	}, [
+		debounceIntersection,
+		handleIntersections,
+		intersectionContainerRef.current,
+	])
 
 	const renderBatch = useCallback(() => {
-		flushSync(() => {
-			setGroupRowsRenderedIdx((groupRowsRenderedIdx) => {
-				const ret = timeTableGroupRenderBatchSize + groupRowsRenderedIdx
-				// we need to push through an initial rendering of the group rows
-				// there fore we need to render one time until entries.length - 1
-				const groupRowKeys = Object.keys(groupRows)
-				const start =
-					groupRowsRenderedIdxRef.current < groupRowKeys.length - 1
-						? groupRowsRenderedIdxRef.current
-						: groupRowsRenderedIdx
+		setGroupRowsRenderedIdx((groupRowsRenderedIdx) => {
+			const ret = timeTableGroupRenderBatchSize + groupRowsRenderedIdx
+			// we need to push through an initial rendering of the group rows
+			// there fore we need to render one time until entries.length - 1
+			const groupRowKeys = Object.keys(groupRows)
+			const start = groupRowsRenderedIdx
 
-				for (let g = start; g < ret && g < groupRowKeys.length; g++) {
-					const groupEntry = entries[g]
-					const rows = groupRows[groupEntry.group.id]
-					if (!rows) {
-						// rows not yet calculated
-						continue
-					}
-					let mref = refCollection.current[g]
-					if (!mref) {
-						mref =
-							createRef<HTMLTableRowElement>() as React.MutableRefObject<HTMLElement>
-						refCollection.current[g] = mref
-					}
-					groupRowsRendered.current[g] = (
-						<GroupRows<G, I>
-							key={`${groupEntry.group.title}${g}`}
-							group={groupEntry.group}
-							groupNumber={g}
-							itemRows={rows}
-							onGroupHeaderClick={onGroupClick}
-							onTimeSlotItemClick={onTimeSlotItemClick}
-							selectedTimeSlotItem={selectedTimeSlotItem}
-							renderCells={renderCells.has(groupEntry.group.id)}
-							columnWidth={columnWidth}
-							rowHeight={rowHeight}
-							placeHolderHeight={placeHolderHeight}
-							mref={mref}
-						/>
-					)
+			console.log(
+				"RENDR",
+				groupRowsRenderedIdx,
+				start,
+				ret,
+				renderCells.current,
+			)
+
+			for (let g = start; g < ret && g < groupRowKeys.length; g++) {
+				const groupEntry = entries[g]
+				if (!groupEntry) {
+					console.warn("TimeTable - group entry not found", g)
+					return groupRowsRenderedIdx
 				}
-				if (
-					groupRowsRenderedIdxRef.current <
+				const rows = groupRows?.[groupEntry.group.id]
+				if (!rows) {
+					// rows not yet calculated
+					console.log("NOT YET", g)
+					return groupRowsRenderedIdx
+				}
+				let mref = refCollection.current[g]
+				if (!mref) {
+					mref =
+						createRef<HTMLTableRowElement>() as React.MutableRefObject<HTMLElement>
+					refCollection.current[g] = mref
+				}
+				const rendering =
+					g >= renderCells.current[0] && g <= renderCells.current[1]
+				console.log("RENDERING", g, rendering, groupEntry.group.id)
+				groupRowsRendered.current[g] = (
+					<GroupRows<G, I>
+						key={`${groupEntry.group.title}${g}-${rendering}`}
+						group={groupEntry.group}
+						groupNumber={g}
+						itemRows={rows}
+						onGroupHeaderClick={onGroupClick}
+						onTimeSlotItemClick={onTimeSlotItemClick}
+						selectedTimeSlotItem={selectedTimeSlotItem}
+						renderCells={rendering}
+						columnWidth={columnWidth}
+						rowHeight={rowHeight}
+						placeHolderHeight={placeHolderHeight}
+						mref={mref}
+					/>
+				)
+			}
+			if (
+				groupRowsRenderedIdxRef.current <
+				start + timeTableGroupRenderBatchSize
+			) {
+				groupRowsRenderedIdxRef.current =
 					start + timeTableGroupRenderBatchSize
-				) {
-					groupRowsRenderedIdxRef.current =
-						start + timeTableGroupRenderBatchSize
-					handleIntersectionsDebounced()
-				}
-				/*if (
+				//handleIntersectionsDebounced()
+				//handleIntersections()
+				//handleIntersectionsRateLimited()
+			}
+			/*if (
 					groupRowsRenderedIdxRef.current > 0 &&
 					groupRowsRenderedIdxRef.current < entries.length - 1
 				) {
@@ -322,24 +330,25 @@ export default function TimeTableRows<
 						1,
 					)
 				}*/
-				return ret
-			})
+			return ret
 		})
 	}, [
 		entries,
 		groupRows,
-		renderCells,
 		onGroupClick,
 		onTimeSlotItemClick,
 		selectedTimeSlotItem,
 		columnWidth,
 		rowHeight,
 		placeHolderHeight,
-		handleIntersectionsDebounced,
 	])
 
+	if (groupRowsRenderedIdxRef.current < entries.length) {
+		rateLimiterIntersection(handleIntersections)
+	}
+
 	if (groupRowsRenderedIdx < entries.length) {
-		window.setTimeout(renderBatch, 1)
+		rateLimiterRendering(renderBatch)
 	}
 
 	return groupRowsRendered.current

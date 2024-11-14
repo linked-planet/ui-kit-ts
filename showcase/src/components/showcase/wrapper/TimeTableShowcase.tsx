@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { useState } from "react"
 import dayjs, { type Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -582,16 +582,18 @@ function Example() {
 		setEntries(newEntries)
 	}
 
-	const requestMoreEntriesCB = () => {
-		const missing = entries.length + 10 - exampleEntries.length
-		const missingGroups = createMoreTestGroups(
-			timeFrame.startDate,
-			timeFrame.endDate,
-			missing,
-			exampleEntries.length,
-		)
-		setEntries([...exampleEntries, ...missingGroups])
-	}
+	const requestMoreEntriesCB = useCallback(() => {
+		setEntries((prev) => {
+			const missing = 10
+			const missingGroups = createMoreTestGroups(
+				timeFrame.startDate,
+				timeFrame.endDate,
+				missing,
+				prev.length,
+			)
+			return [...prev, ...missingGroups]
+		})
+	}, [timeFrame.endDate, timeFrame.startDate])
 	//#endregion
 
 	const [showCreateNewItemModal, setShowCreateNewItemModal] = useState(false)
@@ -643,6 +645,42 @@ function Example() {
 		},
 		[],
 	)
+
+	useEffect(() => {
+		console.log("ADDING")
+		requestMoreEntriesCB()
+		/*requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()*/
+		/*requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		/*requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		/*requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()*/
+	}, [requestMoreEntriesCB])
 
 	return (
 		<>

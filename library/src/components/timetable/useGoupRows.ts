@@ -48,32 +48,9 @@ export function useGroupRows<
 
 	const currentEntries = useRef<TimeTableEntry<G, I>[]>()
 
-	/*const [currentGroupRowsState, setCurrentGroupRowsState] = useState<
-		GroupRowsState<I>
-	>({
-		groupRows: {},
-		rowCount: 0,
-		maxRowCountOfSingleGroup: 0,
-		itemsOutsideOfDayRange: {},
-		itemsWithSameStartAndEnd: {},
-	})*/
 	const [renderBatch, setRenderBatch] = useState(0)
 
 	const currentGroupRowsRef = useRef<{
-		groupRows: { [groupId: string]: ItemRowEntry<I>[][] }
-		rowCount: number
-		maxRowCountOfSingleGroup: number
-		itemsOutsideOfDayRange: { [groupId: string]: I[] }
-		itemsWithSameStartAndEnd: { [groupId: string]: I[] }
-	}>({
-		groupRows: {},
-		rowCount: 0,
-		maxRowCountOfSingleGroup: 0,
-		itemsOutsideOfDayRange: {},
-		itemsWithSameStartAndEnd: {},
-	})
-
-	const currentGroupRows = useRef<{
 		groupRows: { [groupId: string]: ItemRowEntry<I>[][] }
 		rowCount: number
 		maxRowCountOfSingleGroup: number
@@ -107,10 +84,11 @@ export function useGroupRows<
 			itemsWithSameStartAndEnd: {},
 		}
 		if (currentEntries.current?.length) {
+			console.log("CLEAR RESTART")
 			setRenderBatch(0)
-		} else {
-			setRenderBatch(-1)
+			return
 		}
+		setRenderBatch(-1)
 	}, [])
 
 	const calculateGroupRows = useCallback(() => {
@@ -173,6 +151,17 @@ export function useGroupRows<
 			currentGroupRowsRef.current.groupRows = {
 				...currentGroupRowsRef.current.groupRows,
 			}
+			if (currentGroupRowsRef.current.groupRows[entry.group.id]) {
+				console.error(
+					"Group rows already exists:",
+					entry.group.id,
+					entry,
+					currentEntries.current,
+					i,
+					currentGroupRowsRef.current.groupRows,
+				)
+				throw new Error(`Group rows already exists: ${entry.group.id}`)
+			}
 			currentGroupRowsRef.current.groupRows[entry.group.id] = itemRows
 			currentGroupRowsRef.current.rowCount += itemRows.length
 			currentGroupRowsRef.current.maxRowCountOfSingleGroup = Math.max(
@@ -185,86 +174,6 @@ export function useGroupRows<
 	const timeoutRunning = useRef(0)
 
 	if (currentEntries.current !== entries || requireNewGroupRows) {
-		const groupRows: { [groupId: string]: ItemRowEntry<I>[][] } = {}
-		let rowCount = 0
-		let maxRowCountOfSingleGroup = 0
-		const itemsOutsideOfDayRange: { [groupId: string]: I[] } = {}
-		const itemsWithSameStartAndEnd: { [groupId: string]: I[] } = {}
-
-		for (const entry of entries) {
-			const oldEntry = currentEntries.current?.find(
-				(it) => it.group.id === entry.group.id,
-			)
-			if (
-				oldEntry &&
-				oldEntry.items === entry.items &&
-				!requireNewGroupRows
-			) {
-				// take the old group rows
-				groupRows[entry.group.id] =
-					currentGroupRows.current.groupRows[entry.group.id]
-				rowCount +=
-					currentGroupRows.current.groupRows[entry.group.id].length
-				maxRowCountOfSingleGroup = Math.max(
-					maxRowCountOfSingleGroup,
-					currentGroupRows.current.groupRows[entry.group.id].length,
-				)
-				itemsOutsideOfDayRange[entry.group.id] =
-					currentGroupRows.current.itemsOutsideOfDayRange[
-						entry.group.id
-					]
-				itemsWithSameStartAndEnd[entry.group.id] =
-					currentGroupRows.current.itemsWithSameStartAndEnd[
-						entry.group.id
-					]
-				continue
-			}
-
-			// calculate the new group rows
-			const {
-				itemsOutsideRange,
-				itemsWithSameStartAndEnd: _itemsWithSameStartAndEnd,
-			} = itemsOutsideOfDayRangeORSameStartAndEnd(
-				entry.items,
-				slotsArray,
-				timeFrameDay,
-				timeSlotMinutes,
-				viewType,
-			)
-			if (itemsOutsideRange.length) {
-				itemsOutsideOfDayRange[entry.group.id] = itemsOutsideRange
-			}
-			if (_itemsWithSameStartAndEnd.length) {
-				itemsWithSameStartAndEnd[entry.group.id] =
-					_itemsWithSameStartAndEnd
-			}
-			const groupItems = entry.items.filter(
-				(it) => !_itemsWithSameStartAndEnd.includes(it),
-			)
-			//.filter((it) => !itemsOutsideRange.includes(it))
-
-			const itemRows = getGroupItemStack(
-				groupItems,
-				slotsArray,
-				timeFrameDay,
-				timeSlotMinutes,
-				viewType,
-			)
-			groupRows[entry.group.id] = itemRows
-			rowCount += itemRows.length
-			maxRowCountOfSingleGroup = Math.max(
-				maxRowCountOfSingleGroup,
-				itemRows.length,
-			)
-		}
-
-		currentGroupRows.current = {
-			groupRows,
-			rowCount,
-			maxRowCountOfSingleGroup,
-			itemsOutsideOfDayRange,
-			itemsWithSameStartAndEnd,
-		}
 		currentEntries.current = entries
 		currentTimeSlots.current = slotsArray
 		currentTimeFrameDay.current = timeFrameDay
@@ -274,6 +183,7 @@ export function useGroupRows<
 			clearTimeout(timeoutRunning.current)
 		}
 		clearGroupRows()
+		calculateGroupRows()
 	}
 
 	if (timeoutRunning.current) {
@@ -288,8 +198,9 @@ export function useGroupRows<
 			timeoutRunning.current = 0
 			calculateGroupRows()
 			setRenderBatch((batch) => batch + 1)
-		}, 1000)
+		}, 0)
 	} else if (renderBatch >= 0) {
+		console.log("timeTable - all group rows calculated")
 		setRenderBatch(-1)
 	}
 
