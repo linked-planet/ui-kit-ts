@@ -221,7 +221,12 @@ export default function TimeTableRows<
 			)
 		}
 		//groupRowsRenderedIdxRef.current = 0 no! we need to know how far we are with the initial rendering
-	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
+	}, [
+		intersectionContainerRef.current,
+		headerRef.current,
+		rowHeight,
+		entries.length,
+	])
 
 	// initial run
 	useEffect(() => {
@@ -294,12 +299,16 @@ export default function TimeTableRows<
 				start = startVisible
 				// placeholder not yet rendered either
 			} else if (startVisible === -1) {
+				// those groups we want to unrender (only placeholder), but they were rendered as visible before
 				for (const renderedG of renderedCells.current) {
 					if (
 						renderedG < renderCells.current[0] ||
 						renderedG > renderCells.current[1]
 					) {
-						start = renderedG
+						if (start === -1 || renderedG < start) {
+							start = renderedG
+							console.log("UNRENDER START", renderedG)
+						}
 						increment++
 						if (increment >= timeTableGroupRenderBatchSize) {
 							break
@@ -350,12 +359,14 @@ export default function TimeTableRows<
 					console.log("RENDERING", g, rendering, groupEntry.group.id)
 					renderedCells.current.add(g)
 				} else {
-					console.log(
-						"UNRENDERING",
-						g,
-						rendering,
-						groupEntry.group.id,
-					)
+					if (renderedCells.current.has(g)) {
+						console.log(
+							"UNRENDERING",
+							g,
+							rendering,
+							groupEntry.group.id,
+						)
+					}
 					renderedCells.current.delete(g)
 				}
 				groupRowsRendered.current[g] = (
@@ -377,6 +388,7 @@ export default function TimeTableRows<
 			}
 			if (start === groupRowsRenderedIdx) {
 				groupRowsRenderedIdxRef.current = end
+				console.log("REGULAR", end)
 				return end
 			}
 			console.log(
