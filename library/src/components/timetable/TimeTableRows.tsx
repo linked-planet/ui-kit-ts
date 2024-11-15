@@ -201,7 +201,7 @@ export default function TimeTableRows<
 			renderCells.current = newRenderCells
 			// need to reactive rendering if we are at the end of the rendering
 			setGroupRowsRenderedIdx((prev) => {
-				if (prev >= entries.length - 1) {
+				if (prev >= entries.length) {
 					console.log("SET RDXIDX", prev - 1)
 					return prev - 1
 				}
@@ -211,14 +211,6 @@ export default function TimeTableRows<
 			/*setGroupRowsRenderedIdx((prev) =>
 				prev < minRenderIndex ? prev : minRenderIndex,
 			)*/
-		} else {
-			console.log(
-				"SAME RENDERINGCELL",
-				newRenderCells,
-				startIdx,
-				endIdx,
-				groupRowsRenderedIdxRef.current,
-			)
 		}
 		//groupRowsRenderedIdxRef.current = 0 no! we need to know how far we are with the initial rendering
 	}, [
@@ -279,35 +271,35 @@ export default function TimeTableRows<
 
 			// we need to push through an initial rendering of the group rows
 			// there fore we need to render one time until entries.length - 1
-			const groupRowKeys = Object.keys(groupRows)
+
 			let start = groupRowsRenderedIdx
 
 			// get the group entries which required rendering
-			let startVisible = -1
+			let startRender = -1
 			for (
 				let g = renderCells.current[0];
 				g <= renderCells.current[1];
 				g++
 			) {
 				if (!renderedCells.current.has(g)) {
-					if (startVisible === -1) startVisible = g
+					if (startRender === -1) startRender = g
 					increment++
 					if (increment >= timeTableGroupRenderBatchSize) break
 				}
 			}
-			if (startVisible > -1 && startVisible < start) {
-				start = startVisible
+			if (startRender > -1 && startRender < start) {
+				start = startRender
 				// placeholder not yet rendered either
-			} else if (startVisible === -1) {
+			} else if (startRender === -1) {
 				// those groups we want to unrender (only placeholder), but they were rendered as visible before
 				for (const renderedG of renderedCells.current) {
 					if (
 						renderedG < renderCells.current[0] ||
 						renderedG > renderCells.current[1]
 					) {
-						if (start === -1 || renderedG < start) {
-							start = renderedG
-							console.log("UNRENDER START", renderedG)
+						if (startRender === -1 || renderedG < start) {
+							startRender = renderedG
+							console.log("UNRENDER START", startRender)
 						}
 						increment++
 						if (increment >= timeTableGroupRenderBatchSize) {
@@ -317,23 +309,30 @@ export default function TimeTableRows<
 				}
 			}
 
+			if (startRender > -1) {
+				console.log(
+					"START RENDER",
+					startRender,
+					increment,
+					"end",
+					start + increment,
+				)
+				start = startRender
+			}
+
 			if (start !== groupRowsRenderedIdx && increment === 0) {
 				console.log("STOP")
 			}
 
-			const end =
+			const groupRowKeys = Object.keys(groupRows)
+
+			let end =
 				start === groupRowsRenderedIdx
 					? groupRowsRenderedIdx + timeTableGroupRenderBatchSize
 					: start + increment
-			console.log(
-				"RENDR",
-				groupRowsRenderedIdx,
-				start,
-				end,
-				renderCells.current,
-				increment,
-				startVisible,
-			)
+			if (end > groupRowKeys.length) {
+				end = groupRowKeys.length
+			}
 
 			for (let g = start; g < end && g < groupRowKeys.length; g++) {
 				const groupEntry = entries[g]
@@ -365,6 +364,7 @@ export default function TimeTableRows<
 							g,
 							rendering,
 							groupEntry.group.id,
+							renderCells.current,
 						)
 					}
 					renderedCells.current.delete(g)
@@ -391,13 +391,13 @@ export default function TimeTableRows<
 				console.log("REGULAR", end)
 				return end
 			}
-			console.log(
-				"NEG",
-				groupRowsRenderedIdx,
-				increment,
-				groupRowsRenderedIdx - increment,
-			)
-			return groupRowsRenderedIdx - increment
+
+			const ret =
+				groupRowsRenderedIdx === groupRowsRenderedIdxRef.current - 1
+					? groupRowsRenderedIdxRef.current - 2
+					: groupRowsRenderedIdxRef.current - 1 // -1 to keep rendering.. if there is no change, it will stop rendering
+			console.log("NEG", ret)
+			return ret
 		})
 	}, [
 		entries,
@@ -415,14 +415,7 @@ export default function TimeTableRows<
 	}
 
 	if (groupRowsRenderedIdx < entries.length) {
-		console.log(
-			"SHOULD KEEP RENDERING",
-			groupRowsRenderedIdx,
-			entries.length,
-		)
 		rateLimiterRendering(renderBatch)
-	} else {
-		console.log("STOP RENDERING", groupRowsRenderedIdx, entries.length)
 	}
 
 	return groupRowsRendered.current
