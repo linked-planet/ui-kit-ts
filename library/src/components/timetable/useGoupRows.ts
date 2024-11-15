@@ -198,7 +198,7 @@ export function useGroupRows<
 			timeoutRunning.current = 0
 			calculateGroupRows()
 			setRenderBatch((batch) => batch + 1)
-		}, 0)
+		}, 1) // if timeout is 0, it calculates immediately all group rows
 	} else if (renderBatch >= 0) {
 		console.log("timeTable - all group rows calculated")
 		setRenderBatch(-1)

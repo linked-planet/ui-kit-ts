@@ -43,10 +43,7 @@ import {
 } from "./TimeTableSelectionStore"
 import type { ItemRowEntry } from "./useGoupRows"
 import { getLeftAndWidth } from "./timeTableUtils"
-import {
-	useDebounceHelper,
-	useRateLimitHelper,
-} from "@linked-planet/ui-kit-ts/utils"
+import { useDebounceHelper, useRateLimitHelper } from "../../utils"
 
 interface TimeTableRowsProps<
 	G extends TimeTableGroup,
@@ -220,15 +217,54 @@ export default function TimeTableRows<
 		entries.length,
 	])
 
+	const currentGroupRows = useRef(groupRows)
+
 	// initial run
 	useEffect(() => {
-		console.log("UPDATED GROUP ROWS", groupRows)
-		//if (groupRowsRenderedIdxRef.current > Object.keys(groupRows).length) {
-		setGroupRowsRenderedIdx(0)
-		groupRowsRenderedIdxRef.current = 0
-		//}
-		rateLimiterRendering(() => window.setTimeout(renderBatch, 0))
-	}, [groupRows, rateLimiterRendering])
+		if (!currentGroupRows.current) {
+			currentGroupRows.current = groupRows
+			setGroupRowsRenderedIdx(0)
+			groupRowsRenderedIdxRef.current = 0
+			console.log("GROUP ROWS all UPDATED")
+			return
+		}
+		// determine when new ones start
+		let newOne = -1
+		const keys = Object.keys(currentGroupRows.current)
+		for (let i = 0; i < keys.length; i++) {
+			const key = keys[i]
+			if (!groupRows[key]) {
+				newOne = i
+				break
+			}
+			if (groupRows[key] !== currentGroupRows.current[key]) {
+				newOne = i
+				break
+			}
+		}
+		if (newOne === -1) {
+			if (keys.length === Object.keys(groupRows).length) {
+				console.log("GROUP ROWS NO CHANGE")
+				return
+			}
+			newOne = keys.length
+		}
+		currentGroupRows.current = groupRows
+		// we need to render the new ones
+		setGroupRowsRenderedIdx((prev) => (prev >= newOne ? newOne : prev))
+		groupRowsRenderedIdxRef.current =
+			groupRowsRenderedIdxRef.current >= newOne
+				? newOne
+				: groupRowsRenderedIdxRef.current
+		console.log(
+			"GROUP ROWS UPDATED from ",
+			newOne,
+			"RDIDX",
+			groupRowsRenderedIdxRef.current,
+		)
+
+		//rateLimiterRendering(() => window.setTimeout(renderBatch, 0))
+	}, [groupRows])
 	//useEffect(handleIntersections, [])
 
 	// handle intersection observer, create new observer if the intersectionContainerRef changes
@@ -337,7 +373,13 @@ export default function TimeTableRows<
 			for (let g = start; g < end && g < groupRowKeys.length; g++) {
 				const groupEntry = entries[g]
 				if (!groupEntry) {
-					console.warn("TimeTable - group entry not found", g)
+					console.warn(
+						"TimeTable - group entry not found",
+						g,
+						start,
+						increment,
+						entries,
+					)
 					return groupRowsRenderedIdx
 				}
 				const rows = groupRows?.[groupEntry.group.id]
@@ -392,10 +434,13 @@ export default function TimeTableRows<
 				return end
 			}
 
-			const ret =
+			let ret =
 				groupRowsRenderedIdx === groupRowsRenderedIdxRef.current - 1
 					? groupRowsRenderedIdxRef.current - 2
 					: groupRowsRenderedIdxRef.current - 1 // -1 to keep rendering.. if there is no change, it will stop rendering
+			if (ret < 0) {
+				ret = groupRowsRenderedIdx === 0 ? -1 : 0
+			}
 			console.log("NEG", ret)
 			return ret
 		})
