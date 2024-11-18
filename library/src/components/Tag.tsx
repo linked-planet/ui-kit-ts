@@ -4,7 +4,6 @@ import { type CSSProperties, useCallback, useMemo, useState } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import type { Appearance } from "../utils/appearanceTypes"
 import { IconSizeHelper } from "./IconSizeHelper"
-import { Tooltip } from "./Tooltip"
 
 export const TagColorOptions = [
 	"blue",
@@ -160,7 +159,7 @@ function SimpleTag({
 		: TagAppearanceColors[appearance]
 
 	return (
-		<div
+		<output
 			className={twMerge(
 				twJoin(
 					colors,
@@ -171,14 +170,13 @@ function SimpleTag({
 				),
 				className,
 			)}
-			role="status"
 			style={style}
 			title={title}
 			id={id}
 			data-testid={testId}
 		>
 			<div className={truncate ? "truncate" : undefined}>{children}</div>
-		</div>
+		</output>
 	)
 }
 
@@ -234,7 +232,7 @@ export function Tag({
 							onClick()
 						}
 					}}
-					className={`m-0 ml-0.5 flex size-4 flex-none items-center justify-center ${
+					className={`m-0 ml-0.5 flex size-4 flex-none items-center justify-center border-transparent text-[inherit] bg-transparent hover:cursor-pointer ${
 						!removable ? "hidden" : ""
 					}`}
 					aria-label={removeButtonLabel}
