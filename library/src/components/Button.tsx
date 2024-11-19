@@ -201,8 +201,9 @@ export const LoadingButton = ({
 	iconAfter,
 	iconBefore,
 	children,
+	loadingSpinnerClassName,
 	...props
-}: ButtonProps & { loading: boolean }) => {
+}: ButtonProps & { loading: boolean; loadingSpinnerClassName: string }) => {
 	return (
 		<Button
 			iconAfter={!loading && iconAfter}
@@ -213,11 +214,12 @@ export const LoadingButton = ({
 			{loading && (
 				<div className="absolute inset-0 flex items-center justify-center">
 					<LoadingSpinner
-						className={
+						className={twMerge(
 							loadingSpinnerClassNames[
 								props.appearance ?? "default"
-							]
-						}
+							],
+							loadingSpinnerClassName,
+						)}
 					/>
 				</div>
 			)}
