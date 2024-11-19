@@ -317,6 +317,19 @@ function ButtonShowcase(props: ShowcaseProps) {
 				Icon Loading Button
 			</LoadingButton>
 
+			<LoadingButton
+				onClick={() => {
+					setIsLoading(true)
+					window.setTimeout(() => setIsLoading(false), 3000)
+				}}
+				loading={isLoading}
+				iconBefore={<SearchIcon label="" />}
+				iconAfter={<SearchIcon label="" />}
+				appearance="subtle-link"
+			>
+				Primary Icon Loading Button
+			</LoadingButton>
+
 			<Button
 				appearance="primary"
 				href={"https://www.google.com/"}

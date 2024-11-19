@@ -1,6 +1,5 @@
 import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
-import { Calendar, Popover } from "@linked-planet/ui-kit-ts"
-import React from "react"
+import { Calendar, Popover, Select } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -16,12 +15,24 @@ function PopoverExample() {
 				closer={<EditorCloseIcon label="Close Popover" />}
 				className="w-96"
 				contentClassName="w-96"
+				usePortal
 			>
 				<Calendar mode="single" />
+				<Select
+					menuPlacement="top"
+					menuIsOpen
+					usePortal
+					options={[
+						{ label: "Option 1", value: "1" },
+						{ label: "Option 2", value: "2" },
+						{ label: "Option 3", value: "3" },
+					]}
+				/>
 			</Popover.Root>
 			<Popover.Root
 				trigger={<div className="text-warning-bold">Other Trigger</div>}
 				contentClassName="p-4"
+				closer="Close"
 				side="bottom"
 				align="end"
 			>

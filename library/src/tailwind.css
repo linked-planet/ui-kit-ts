@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/** Custom styles for running with preflight off */
+@layer base {
+	button {
+		@apply cursor-pointer disabled:cursor-not-allowed bg-transparent border-none box-border;
+	}
+}
