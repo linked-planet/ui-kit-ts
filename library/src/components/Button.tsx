@@ -203,7 +203,7 @@ export const LoadingButton = ({
 	children,
 	loadingSpinnerClassName,
 	...props
-}: ButtonProps & { loading: boolean; loadingSpinnerClassName: string }) => {
+}: ButtonProps & { loading: boolean; loadingSpinnerClassName?: string }) => {
 	return (
 		<Button
 			iconAfter={!loading && iconAfter}

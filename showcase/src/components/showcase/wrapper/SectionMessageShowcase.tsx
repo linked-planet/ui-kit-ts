@@ -2,32 +2,11 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { SectionMessage } from "@linked-planet/ui-kit-ts"
-//import AKSectionMessage from "@atlaskit/section-message"
 
 function SectionMessageShowcase(props: ShowcaseProps) {
 	//#region section-message
 	const example = (
 		<div className="flex gap-3">
-			<div className="flex flex-col gap-3">
-				{/*<AKSectionMessage title="Section Message Title">
-					Default Section Message
-				</AKSectionMessage>
-				<AKSectionMessage appearance="success">
-					Success Section Message
-				</AKSectionMessage>
-				<AKSectionMessage appearance="warning">
-					Warning Section Message
-				</AKSectionMessage>
-				<AKSectionMessage appearance="error">
-					Error Section Message
-				</AKSectionMessage>
-				<AKSectionMessage appearance="information">
-					Information Section Message
-				</AKSectionMessage>
-				<AKSectionMessage appearance="discovery">
-					Discovery Section Message
-				</AKSectionMessage>*/}
-			</div>
 			<div className="flex flex-col gap-3">
 				<SectionMessage
 					title="Section Message Title"
