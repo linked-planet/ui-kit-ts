@@ -10,7 +10,7 @@ import { flushSync } from "react-dom"
 
 const itemBaseStyles = twJoin(
 	"px-1.5 data-[selected=true]:bg-neutral-subtle-hovered group flex w-full cursor-pointer select-none items-center overflow-hidden rounded",
-	"hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed",
+	"hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed border-transparent bg-transparent",
 	"disabled:bg-neutral-subtle disabled:cursor-not-allowed data-[selected=true]:disabled:bg-neutral-subtle",
 	"data-[selected=true]:bg-selected-subtle data-[selected=true]:hover:bg-selected-subtle-hovered data-[selected=true]:active:bg-selected-subtle-pressed",
 )
