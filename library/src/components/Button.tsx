@@ -184,6 +184,18 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "LPButton"
 export { Button }
 
+const loadingSpinnerClassNames: { [appearance in ButtonAppearance]: string } = {
+	primary: "border-t-text-inverse",
+	default: "border-t-border-bold",
+	subtle: "border-t-border-bold",
+	link: "border-t-border-bold",
+	"subtle-link": "border-t-border-bold",
+	warning: "border-t-text-inverse",
+	danger: "border-t-text-inverse",
+	success: "border-t-text-inverse",
+	information: "border-t-text-inverse",
+}
+
 export const LoadingButton = ({
 	loading = false,
 	iconAfter,
@@ -200,7 +212,13 @@ export const LoadingButton = ({
 			<div className={loading ? "opacity-0" : undefined}>{children}</div>
 			{loading && (
 				<div className="absolute inset-0 flex items-center justify-center">
-					<LoadingSpinner />
+					<LoadingSpinner
+						className={
+							loadingSpinnerClassNames[
+								props.appearance ?? "default"
+							]
+						}
+					/>
 				</div>
 			)}
 		</Button>
@@ -218,7 +236,6 @@ export const ButtonGroup = ({
 			{...props}
 			className={twMerge("inline-flex flex-wrap gap-2 p-2", className)} //gap-2 and p-2 are because of the button outlines on focus
 			style={style}
-
 		>
 			{children}
 		</div>

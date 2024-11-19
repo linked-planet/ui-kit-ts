@@ -53,8 +53,7 @@ import { SlidingErrorMessage } from "./ErrorHelpWrapper"
 import { IconSizeHelper } from "../IconSizeHelper"
 import { inputBaseStyles } from "../styleHelper"
 
-const menuStyles =
-	"bg-surface min-w-min z-10 shadow-overlay rounded overflow-hidden"
+const menuStyles = "bg-surface min-w-min shadow-overlay rounded overflow-hidden" // some styles like zIndex are overwritten by react-select, use the custom-styles below for those
 
 const optionStyles =
 	"py-2 px-3 border-l-2 border-l-transparent border-transparent border-solid"
@@ -211,6 +210,10 @@ const customStyles = {
 		cursor: "pointer",
 		minHeight: "2.25rem", // this is min-h-9 as set in the inputBaseStyle
 		flexWrap: "nowrap" as const,
+	}),
+	menuPortal: (provided: CSSObjectWithLabel) => ({
+		...provided,
+		zIndex: 51,
 	}),
 }
 
