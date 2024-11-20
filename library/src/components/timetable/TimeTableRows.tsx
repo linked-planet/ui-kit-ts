@@ -63,10 +63,10 @@ interface TimeTableRowsProps<
 	headerRef: React.RefObject<HTMLTableSectionElement>
 }
 
-const intersectionStackDelay = 1000
-const rateLimiting = 1000
-const rowsMargin = 3
-export const timeTableGroupRenderBatchSize = 1
+const intersectionStackDelay = 1
+const rateLimiting = 1
+const rowsMargin = 1
+export const timeTableGroupRenderBatchSize = 10
 /**
  * Creates the table rows for the given entries.
  */
@@ -104,6 +104,7 @@ export default function TimeTableRows<
 	// and to know how far we are with the initial rendering... this is needed to know when to start the intersection observer
 	// and it should be only set to 0 when the group rows change
 	const groupRowsRenderedIdxRef = useRef(groupRowsRenderedIdx)
+	const allPlaceholderRendered = useRef(false)
 
 	const rateLimiterIntersection = useRateLimitHelper(rateLimiting)
 	const rateLimiterRendering = useRateLimitHelper(rateLimiting)
@@ -194,12 +195,10 @@ export default function TimeTableRows<
 				)
 			}*/
 
-			console.log("NEW RENDER CELLS", newRenderCells)
 			renderCells.current = newRenderCells
 			// need to reactive rendering if we are at the end of the rendering
 			setGroupRowsRenderedIdx((prev) => {
 				if (prev >= entries.length) {
-					console.log("SET RDXIDX", prev - 1)
 					return prev - 1
 				}
 				return prev
@@ -217,51 +216,57 @@ export default function TimeTableRows<
 		entries.length,
 	])
 
-	const currentGroupRows = useRef(groupRows)
+	//const currentGroupRows = useRef(groupRows)
+	const [currentGroupRows, setCurrentGroupRows] = useState(groupRows)
 
 	// initial run
 	useEffect(() => {
-		if (!currentGroupRows.current) {
-			currentGroupRows.current = groupRows
-			setGroupRowsRenderedIdx(0)
-			groupRowsRenderedIdxRef.current = 0
-			console.log("GROUP ROWS all UPDATED")
-			return
-		}
-		// determine when new ones start
-		let newOne = -1
-		const keys = Object.keys(currentGroupRows.current)
-		for (let i = 0; i < keys.length; i++) {
-			const key = keys[i]
-			if (!groupRows[key]) {
-				newOne = i
-				break
+		setCurrentGroupRows((currentGroupRows) => {
+			if (!currentGroupRows) {
+				setCurrentGroupRows(groupRows)
+				setGroupRowsRenderedIdx(0)
+				groupRowsRenderedIdxRef.current = 0
+				console.info("TimeTable - all group rows updated")
+				return currentGroupRows
 			}
-			if (groupRows[key] !== currentGroupRows.current[key]) {
-				newOne = i
-				break
+			// determine when new ones start
+			let newOne = -1
+			const keys = Object.keys(currentGroupRows)
+			for (let i = 0; i < keys.length; i++) {
+				const key = keys[i]
+				if (!groupRows[key]) {
+					newOne = i
+					break
+				}
+				if (groupRows[key] !== currentGroupRows[key]) {
+					newOne = i
+					break
+				}
 			}
-		}
-		if (newOne === -1) {
-			if (keys.length === Object.keys(groupRows).length) {
-				console.log("GROUP ROWS NO CHANGE")
-				return
+			if (newOne === -1) {
+				if (keys.length === Object.keys(groupRows).length) {
+					console.info(
+						"TimeTable - group rows have no changes",
+						keys.length,
+					)
+					return currentGroupRows
+				}
+				newOne = keys.length
 			}
-			newOne = keys.length
-		}
-		currentGroupRows.current = groupRows
-		// we need to render the new ones
-		setGroupRowsRenderedIdx((prev) => (prev >= newOne ? newOne : prev))
-		groupRowsRenderedIdxRef.current =
-			groupRowsRenderedIdxRef.current >= newOne
-				? newOne
-				: groupRowsRenderedIdxRef.current
-		console.log(
-			"GROUP ROWS UPDATED from ",
-			newOne,
-			"RDIDX",
-			groupRowsRenderedIdxRef.current,
-		)
+			// we need to render the new ones
+			setGroupRowsRenderedIdx((prev) => {
+				const ret = prev >= newOne ? newOne : prev
+				if (ret === newOne) {
+					allPlaceholderRendered.current = false
+				}
+				return ret
+			})
+			groupRowsRenderedIdxRef.current =
+				groupRowsRenderedIdxRef.current >= newOne
+					? newOne
+					: groupRowsRenderedIdxRef.current
+			return groupRows
+		})
 
 		//rateLimiterRendering(() => window.setTimeout(renderBatch, 0))
 	}, [groupRows])
@@ -335,7 +340,6 @@ export default function TimeTableRows<
 					) {
 						if (startRender === -1 || renderedG < start) {
 							startRender = renderedG
-							console.log("UNRENDER START", startRender)
 						}
 						increment++
 						if (increment >= timeTableGroupRenderBatchSize) {
@@ -346,18 +350,7 @@ export default function TimeTableRows<
 			}
 
 			if (startRender > -1) {
-				console.log(
-					"START RENDER",
-					startRender,
-					increment,
-					"end",
-					start + increment,
-				)
 				start = startRender
-			}
-
-			if (start !== groupRowsRenderedIdx && increment === 0) {
-				console.log("STOP")
 			}
 
 			const groupRowKeys = Object.keys(groupRows)
@@ -385,7 +378,7 @@ export default function TimeTableRows<
 				const rows = groupRows?.[groupEntry.group.id]
 				if (!rows) {
 					// rows not yet calculated
-					console.log("NOT YET", g)
+					console.log("NOT YET", g, groupRows)
 					return groupRowsRenderedIdx
 				}
 				let mref = refCollection.current[g]
@@ -397,18 +390,8 @@ export default function TimeTableRows<
 				const rendering =
 					g >= renderCells.current[0] && g <= renderCells.current[1]
 				if (rendering) {
-					console.log("RENDERING", g, rendering, groupEntry.group.id)
 					renderedCells.current.add(g)
 				} else {
-					if (renderedCells.current.has(g)) {
-						console.log(
-							"UNRENDERING",
-							g,
-							rendering,
-							groupEntry.group.id,
-							renderCells.current,
-						)
-					}
 					renderedCells.current.delete(g)
 				}
 				groupRowsRendered.current[g] = (
@@ -428,9 +411,9 @@ export default function TimeTableRows<
 					/>
 				)
 			}
+
 			if (start === groupRowsRenderedIdx) {
 				groupRowsRenderedIdxRef.current = end
-				console.log("REGULAR", end)
 				return end
 			}
 
@@ -441,7 +424,6 @@ export default function TimeTableRows<
 			if (ret < 0) {
 				ret = groupRowsRenderedIdx === 0 ? -1 : 0
 			}
-			console.log("NEG", ret)
 			return ret
 		})
 	}, [
@@ -461,6 +443,17 @@ export default function TimeTableRows<
 
 	if (groupRowsRenderedIdx < entries.length) {
 		rateLimiterRendering(renderBatch)
+	} else {
+		console.info(
+			"TimeTable - all group rows rendered",
+			groupRowsRenderedIdx,
+			entries.length,
+		)
+		if (!allPlaceholderRendered.current) {
+			allPlaceholderRendered.current = true
+			// we need to render all placeholders
+			rateLimiterIntersection(handleIntersections)
+		}
 	}
 
 	return groupRowsRendered.current

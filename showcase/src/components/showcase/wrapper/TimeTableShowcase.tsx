@@ -647,9 +647,9 @@ function Example() {
 	)
 
 	useEffect(() => {
-		console.log("ADDING")
-		requestMoreEntriesCB()
+		//console.log("ADDING")
 		/*requestMoreEntriesCB()
+		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()*/
@@ -658,7 +658,6 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
-		/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
@@ -669,7 +668,8 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
-		/*requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()

@@ -194,6 +194,12 @@ export interface LPTimeTableProps<
 		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => JSX.Element
 		header: (props: CustomHeaderRowHeaderProps<G, I>) => JSX.Element
 	}
+
+	/**
+	 * renderBatch tells how many groups are calculated in one step and rendered. This is useful for large time tables, where the rendering takes a long time.
+	 * @default 10
+	 */
+	renderBatch?: number
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute

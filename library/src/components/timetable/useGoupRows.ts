@@ -105,7 +105,8 @@ export function useGroupRows<
 		for (
 			let i = start;
 			i < currentEntries.current.length &&
-			i < start + timeTableGroupRenderBatchSize;
+			i < start + timeTableGroupRenderBatchSize &&
+			i < currentEntries.current.length;
 			i++
 		) {
 			const entry = currentEntries.current[i]
@@ -158,6 +159,8 @@ export function useGroupRows<
 					entry,
 					currentEntries.current,
 					i,
+					start,
+					currentEntries.current.length,
 					currentGroupRowsRef.current.groupRows,
 				)
 				throw new Error(`Group rows already exists: ${entry.group.id}`)
@@ -173,7 +176,7 @@ export function useGroupRows<
 
 	const timeoutRunning = useRef(0)
 
-	if (currentEntries.current !== entries || requireNewGroupRows) {
+	if (requireNewGroupRows) {
 		currentEntries.current = entries
 		currentTimeSlots.current = slotsArray
 		currentTimeFrameDay.current = timeFrameDay
@@ -184,6 +187,47 @@ export function useGroupRows<
 		}
 		clearGroupRows()
 		calculateGroupRows()
+	}
+
+	if (currentEntries.current !== entries) {
+		// check what needs to be removed, recalculated or added
+		const updatedGroupRows: GroupRowsState<I> = {
+			groupRows: {},
+			rowCount: 0,
+			maxRowCountOfSingleGroup: 0,
+			itemsOutsideOfDayRange: {},
+			itemsWithSameStartAndEnd: {},
+		}
+
+		for (let i = 0; i < entries.length; i++) {
+			const entry = entries[i]
+			const currEntry = currentEntries.current?.[i]
+			if (
+				currEntry &&
+				currEntry === entry &&
+				currEntry.items === entry.items &&
+				currentGroupRowsRef.current.groupRows[entry.group.id]
+			) {
+				updatedGroupRows.groupRows[entry.group.id] =
+					currentGroupRowsRef.current.groupRows[entry.group.id]
+				updatedGroupRows.rowCount +=
+					updatedGroupRows.groupRows[entry.group.id].length
+				updatedGroupRows.maxRowCountOfSingleGroup = Math.max(
+					updatedGroupRows.maxRowCountOfSingleGroup,
+					updatedGroupRows.groupRows[entry.group.id].length,
+				)
+				updatedGroupRows.itemsOutsideOfDayRange[entry.group.id] =
+					currentGroupRowsRef.current.itemsOutsideOfDayRange[
+						entry.group.id
+					]
+				updatedGroupRows.itemsWithSameStartAndEnd[entry.group.id] =
+					currentGroupRowsRef.current.itemsWithSameStartAndEnd[
+						entry.group.id
+					]
+			}
+		}
+		currentEntries.current = entries
+		currentGroupRowsRef.current = updatedGroupRows
 	}
 
 	if (timeoutRunning.current) {
@@ -200,7 +244,7 @@ export function useGroupRows<
 			setRenderBatch((batch) => batch + 1)
 		}, 1) // if timeout is 0, it calculates immediately all group rows
 	} else if (renderBatch >= 0) {
-		console.log("timeTable - all group rows calculated")
+		console.log("TimeTable - all group rows calculated")
 		setRenderBatch(-1)
 	}
 
