@@ -95,6 +95,7 @@ export default function TimeTableRows<
 	// as long as prev render cells are set, we should render first the renderCells, and then render the difference of renderCells and prevRenderCells to only render the placeholders
 	// for the cells not in the viewport anymore
 	const renderedCells = useRef<Set<number>>(new Set<number>())
+	const cellsRequiringUpdate = useRef<Set<number>>(new Set<number>())
 
 	// groupRowsRendered is the array of rendered group rows
 	const groupRowsRendered = useRef<JSX.Element[]>(new Array(entries.length))
@@ -158,14 +159,7 @@ export default function TimeTableRows<
 					console.warn("TimeTable - intersection group id not found")
 					continue
 				}
-				/*console.log(
-					"timeTable - intersecting group",
-					groupId,
-					newRenderCells,
-					i,
-					startIdx,
-					endIdx,
-				)*/
+
 				if (newRenderCells[0] === -1) {
 					newRenderCells[0] = i
 				} else {
@@ -184,18 +178,8 @@ export default function TimeTableRows<
 			renderCells.current[0] !== newRenderCells[0] ||
 			renderCells.current[1] !== newRenderCells[1]
 		) {
-			/*let minRenderIndex = Math.min(
-				renderCells.current[0],
-				newRenderCells[0],
-			)
-			if (newRenderCells[0] === minRenderIndex) {
-				minRenderIndex = Math.min(
-					renderCells.current[1],
-					newRenderCells[1],
-				)
-			}*/
-
 			renderCells.current = newRenderCells
+			console.log("NEW RENDERINCELLS", newRenderCells, lastIdx)
 			// need to reactive rendering if we are at the end of the rendering
 			setGroupRowsRenderedIdx((prev) => {
 				if (prev >= entries.length) {
@@ -203,10 +187,6 @@ export default function TimeTableRows<
 				}
 				return prev
 			})
-			// start render from the first visible group
-			/*setGroupRowsRenderedIdx((prev) =>
-				prev < minRenderIndex ? prev : minRenderIndex,
-			)*/
 		}
 		//groupRowsRenderedIdxRef.current = 0 no! we need to know how far we are with the initial rendering
 	}, [
@@ -238,7 +218,12 @@ export default function TimeTableRows<
 					newOne = i
 					break
 				}
-				if (groupRows[key] !== currentGroupRows[key]) {
+				if (
+					(groupRows[key] !== currentGroupRows[key] &&
+						i >= renderCells.current[0] &&
+						i <= renderCells.current[1]) ||
+					groupRows[key]?.length !== currentGroupRows[key]?.length
+				) {
 					newOne = i
 					break
 				}
@@ -261,10 +246,6 @@ export default function TimeTableRows<
 				}
 				return ret
 			})
-			groupRowsRenderedIdxRef.current =
-				groupRowsRenderedIdxRef.current >= newOne
-					? newOne
-					: groupRowsRenderedIdxRef.current
 			return groupRows
 		})
 
@@ -378,7 +359,6 @@ export default function TimeTableRows<
 				const rows = groupRows?.[groupEntry.group.id]
 				if (!rows) {
 					// rows not yet calculated
-					console.log("NOT YET", g, groupRows)
 					return groupRowsRenderedIdx
 				}
 				let mref = refCollection.current[g]

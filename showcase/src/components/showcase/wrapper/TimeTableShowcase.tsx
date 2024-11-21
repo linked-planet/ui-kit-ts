@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { useState } from "react"
 import dayjs, { type Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -646,14 +646,8 @@ function Example() {
 		[],
 	)
 
-	/*useEffect(() => {
+	useEffect(() => {
 		//console.log("ADDING")
-		/*requestMoreEntriesCB()
-		requestMoreEntriesCB()
-		requestMoreEntriesCB()
-		requestMoreEntriesCB()
-		requestMoreEntriesCB()*/
-	/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
@@ -679,8 +673,14 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
-		requestMoreEntriesCB()*/
-	//}, [requestMoreEntriesCB])
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+	}, [requestMoreEntriesCB])
 
 	return (
 		<>

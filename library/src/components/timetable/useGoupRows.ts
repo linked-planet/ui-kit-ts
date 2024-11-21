@@ -17,7 +17,7 @@ import {
 	itemsOutsideOfDayRangeORSameStartAndEnd,
 } from "./timeTableUtils"
 import { useCallback, useRef, useState } from "react"
-import { useRateLimitHelper } from "@linked-planet/ui-kit-ts/utils"
+import { useRateLimitHelper } from "../../utils"
 
 /**
  * Contains the items of one group row (one row within one group)
