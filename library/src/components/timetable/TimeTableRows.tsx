@@ -51,7 +51,7 @@ interface TimeTableRowsProps<
 > {
 	entries: TimeTableEntry<G, I>[]
 
-	groupRows: { [groupId: string]: ItemRowEntry<I>[][] }
+	groupRows: { [groupId: string]: ItemRowEntry<I>[][] | null }
 
 	selectedTimeSlotItem: I | undefined
 
