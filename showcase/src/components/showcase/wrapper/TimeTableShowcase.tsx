@@ -420,7 +420,7 @@ function createMoreTestGroups(
 }
 
 const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
-const endDateInitial = dayjs().startOf("day").add(5, "days").add(20, "hours")
+const endDateInitial = dayjs().startOf("day").add(5, "days").add(23, "hours")
 
 function TestCustomHeaderRowTimeSlot<
 	G extends TimeTableTypes.TimeTableGroup,

@@ -633,10 +633,26 @@ function moveNowBar(
 	const startSlot = startAndEndSlot.startSlot
 
 	// the first row in the body is used for the time slot bars
-	const tbodyFirstRow = tableBody.children[0] as
+	let childIdx = 0
+	let tbodyFirstRow = tableBody.children[childIdx] as
 		| HTMLTableRowElement
 		| undefined
 	// now get the current time slot index element (not -1 because the first empty element for the groups)
+
+	// find the first rendered row
+	while (tbodyFirstRow && tbodyFirstRow.children.length === 0) {
+		childIdx++
+		tbodyFirstRow = tableBody.children[childIdx] as
+			| HTMLTableRowElement
+			| undefined
+	}
+
+	if (!tbodyFirstRow) {
+		console.warn(
+			"LPTimeTable - unable to find time slot row for the now bar",
+		)
+		return
+	}
 
 	const slotBar = tbodyFirstRow?.children[startSlot + 1] as
 		| HTMLDivElement
@@ -658,7 +674,7 @@ function moveNowBar(
 		nowBar = document.createElement("div")
 		//nowBar.className = styles.nowBar
 		nowBar.className =
-			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-10 w-[2px]"
+			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-1 w-[2px]"
 		slotBar.appendChild(nowBar)
 		nowBarRef.current = nowBar
 	}
