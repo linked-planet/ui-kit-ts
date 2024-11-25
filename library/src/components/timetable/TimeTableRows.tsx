@@ -66,7 +66,7 @@ interface TimeTableRowsProps<
 const intersectionStackDelay = 1
 const rateLimiting = 1
 const rowsMargin = 1
-export const timeTableGroupRenderBatchSize = 10
+export const timeTableGroupRenderBatchSize = 1
 /**
  * Creates the table rows for the given entries.
  */
@@ -179,7 +179,6 @@ export default function TimeTableRows<
 			renderCells.current[1] !== newRenderCells[1]
 		) {
 			renderCells.current = newRenderCells
-			console.log("NEW RENDERINCELLS", newRenderCells, lastIdx)
 			// need to reactive rendering if we are at the end of the rendering
 			setGroupRowsRenderedIdx((prev) => {
 				if (prev >= entries.length) {
@@ -393,7 +392,12 @@ export default function TimeTableRows<
 			}
 
 			if (start === groupRowsRenderedIdx) {
-				groupRowsRenderedIdxRef.current = end
+				if (
+					end > groupRowsRenderedIdxRef.current ||
+					groupRowsRenderedIdxRef.current > entries.length
+				) {
+					groupRowsRenderedIdxRef.current = end
+				}
 				return end
 			}
 
