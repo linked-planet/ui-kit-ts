@@ -25,9 +25,6 @@ import {
 import {
 	initAndUpdateTimeTableConfigStore,
 	type TimeFrameDay,
-	useTTCSlotsArray,
-	useTTCTimeFrameOfDay,
-	useTTCTimeSlotMinutes,
 } from "./TimeTableConfigStore"
 import { TimeTableIdentProvider } from "./TimeTableIdentContext"
 import { initAndUpdateTimeTableComponentStore } from "./TimeTableComponentStore"
@@ -299,9 +296,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		isCellDisabled,
 	)
 
-	const timeFrameDay = useTTCTimeFrameOfDay(storeIdent)
-	const timeSlotMinutes = useTTCTimeSlotMinutes(storeIdent)
-
 	initAndUpdateTimeTableSelectionStore(
 		storeIdent,
 		defaultSelectedTimeRange,
@@ -309,7 +303,17 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		onTimeRangeSelected,
 	)
 
-	const slotsArray = useTTCSlotsArray(storeIdent)
+	const {
+		groupRows,
+		rowCount,
+		maxRowCountOfSingleGroup,
+		itemsOutsideOfDayRange,
+		itemsWithSameStartAndEnd,
+		slotsArray,
+		timeFrameDay,
+		timeSlotMinutes,
+	} = useGroupRows(entries)
+
 	if (!slotsArray || slotsArray.length === 0) {
 		console.warn(
 			"LPTimeTable - no slots array, or slots array is empty",
@@ -317,14 +321,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		)
 		return <div>No slots array</div>
 	}
-
-	const {
-		groupRows,
-		rowCount,
-		maxRowCountOfSingleGroup,
-		itemsOutsideOfDayRange,
-		itemsWithSameStartAndEnd,
-	} = useGroupRows(entries)
 
 	useEffect(() => {
 		if (!setMessage) return
@@ -537,6 +533,10 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 									intersectionContainerRef
 								}
 								headerRef={tableHeaderRef}
+								slotsArray={slotsArray}
+								timeSlotMinutes={timeSlotMinutes}
+								timeFrameDay={timeFrameDay}
+								viewType={viewType}
 							/>
 						</tbody>
 					</table>
@@ -674,7 +674,7 @@ function moveNowBar(
 		nowBar = document.createElement("div")
 		//nowBar.className = styles.nowBar
 		nowBar.className =
-			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-1 w-[2px]"
+			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-[2] w-[2px]"
 		slotBar.appendChild(nowBar)
 		nowBarRef.current = nowBar
 	}

@@ -70,6 +70,7 @@ export function useGroupRows<
 		maxRowCountOfSingleGroup.current = 0
 		itemsOutsideOfDayRange.current = {}
 		itemsWithSameStartAndEnd.current = {}
+		console.info("TimeTable - clearing group rows")
 		groupRowsToCalc.current.clear()
 		if (currentEntries.current?.length) {
 			for (let i = 0; i < currentEntries.current.length; i++) {
@@ -118,7 +119,7 @@ export function useGroupRows<
 					"TimeTable - entry not found to calculate group rows",
 				)
 			}
-			if (updatedGroupRows[entry.group.id] !== null) {
+			if (updatedGroupRows[entry.group.id] != null) {
 				console.error(
 					"Group rows already exists:",
 					entry.group.id,
@@ -126,6 +127,9 @@ export function useGroupRows<
 					currentEntries.current,
 					i,
 					currEntries.length,
+					updatedGroupRows,
+					groupRowsToCalc.current,
+					updatedGroupRows[entry.group.id],
 				)
 				throw new Error(
 					`TimeTable - group rows already calculated: ${entry.group.id}`,
@@ -166,6 +170,7 @@ export function useGroupRows<
 				timeSlotMinutes,
 				viewType,
 			)
+
 			const oldRowCount =
 				groupRowsState.current[entry.group.id]?.length || 0
 			rowCount.current -= oldRowCount
@@ -264,6 +269,11 @@ export function useGroupRows<
 		maxRowCountOfSingleGroup: maxRowCountOfSingleGroup.current,
 		itemsOutsideOfDayRange: itemsOutsideOfDayRange.current,
 		itemsWithSameStartAndEnd: itemsWithSameStartAndEnd.current,
+		// those three are cached for consistency to render with the correct data even through the data might have been updated in between
+		timeSlotMinutes: currentTimeSlotMinutes.current,
+		timeFrameDay: currentTimeFrameDay.current,
+		slotsArray: currentTimeSlots.current,
+		//
 	}
 }
 

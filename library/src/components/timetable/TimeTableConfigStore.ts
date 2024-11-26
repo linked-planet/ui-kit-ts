@@ -239,26 +239,6 @@ export function useTTCTimeFrameOfDay(ident: string) {
 	return timeFrameOfDay
 }
 
-/**
- * returns the current time slots array
- */
-export function useTTCSlotsArray(ident: string) {
-	const slotsArray = useSnapshot(
-		timeTableConfigStore[ident].basicProperties,
-	).slotsArray
-	return slotsArray
-}
-
-/**
- * returns the time slot minutes and a setter for it
- */
-export function useTTCTimeSlotMinutes(ident: string) {
-	const timeSlotMinutes = useSnapshot(
-		timeTableConfigStore[ident].basicProperties,
-	).timeSlotMinutes
-	return timeSlotMinutes
-}
-
 export function useTTCTimeSlotSelectionDisabled(ident: string) {
 	const timeSlotSelectionDisabled = useSnapshot(
 		timeTableConfigStore[ident],
