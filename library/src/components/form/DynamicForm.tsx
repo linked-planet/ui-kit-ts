@@ -10,6 +10,7 @@ import {
 } from "react-hook-form"
 import { twMerge } from "tailwind-merge"
 import { Button, ButtonGroup } from "../Button"
+import {useEffect} from "react";
 
 export interface FormProps<T extends FieldValues> {
 	control: Control<T>
@@ -72,6 +73,10 @@ export function DynamicForm<T extends FieldValues>({
 	} = useForm<T>({
 		defaultValues: obj,
 	})
+
+	useEffect(() => {
+		reset(obj)
+	}, [obj, reset])
 
 	const onReset = (e: React.FormEvent) => {
 		e.preventDefault()

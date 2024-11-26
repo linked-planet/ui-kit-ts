@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { AppLayout, Checkbox, PageLayout } from "@linked-planet/ui-kit-ts"
 
 import "@atlaskit/css-reset" // sets base styles of AK
@@ -16,7 +16,7 @@ export default function AppLayoutExample() {
 	const [mainFixedHeight, setMainFixedHeight] = useState(true)
 
 	return (
-		<AppLayout.Container>
+		<AppLayout.Container useBanner>
 			<AppLayout.Banner
 				sticky={bannerSticky}
 				className="flex justify-between gap-4 border-2 border-solid px-4 py-2"

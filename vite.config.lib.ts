@@ -55,6 +55,7 @@ export default defineConfig({
 			fileName: (format, entryName) => {
 				return `${entryName}.js`
 			},
+			cssFileName: "styles.css",
 		},
 		rollupOptions: {
 			//input: "library/src/index.ts",

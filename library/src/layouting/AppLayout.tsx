@@ -29,6 +29,7 @@ export function initTopNavigationHeight() {
 	}
 	const topNavHeight = topNav[0].clientHeight
 	if (topNavHeight) {
+		console.info("UIKitTs - Top navigation height set to:", topNavHeight)
 		document.documentElement.style.setProperty(
 			topNavigationHeightVar,
 			`${topNavHeight}px`,
@@ -40,6 +41,7 @@ export function initTopNavigationHeight() {
 		const header = headers.item(i)
 		if (header?.getAttribute("role") === "banner") {
 			const bannerHeight = header.clientHeight || 0
+			console.info("UIKitTs - Banner height set to:", bannerHeight)
 			document.documentElement.style.setProperty(
 				bannerHeightVar,
 				`${bannerHeight}px`,
@@ -54,7 +56,7 @@ export function initTopNavigationHeight() {
 
 	if (!uikts_layouting_heightCB) {
 		window.addEventListener("resize", initTopNavigationHeight)
-		console.info("Added resize event listener for App layouting")
+		console.info("UIKitTs - Added resize event listener for App layouting")
 		uikts_layouting_heightCB = true
 	}
 }
@@ -68,11 +70,13 @@ function Container({
 	className,
 	style,
 	testId,
+	useBanner = false,
 }: {
 	children: React.ReactNode
 	className?: string
 	style?: React.CSSProperties
 	testId?: string
+	useBanner?: boolean
 }) {
 	return (
 		<div
@@ -83,15 +87,24 @@ function Container({
 			data-layout-container="true"
 			data-testid={testId}
 			style={{
-				gridTemplateAreas: `
+				gridTemplateAreas: useBanner
+					? `
 					"left-panel banner right-panel"
+					"left-panel top-navigation right-panel"
+					"left-panel content right-panel"
+				`
+					: `
 					"left-panel top-navigation right-panel"
 					"left-panel content right-panel"
 				`,
 				gridTemplateColumns: `var(${leftPanelWidthVar}, 0px) minmax(0, 1fr) var(${rightPanelWidthVar}, 0px)`,
-				gridTemplateRows: `var(${topNavigationHeightVar}, min-content) 1fr`,
+				gridTemplateRows: useBanner
+					? `var(${bannerHeightVar}, 0) var(${topNavigationHeightVar}, min-content) 1fr`
+					: `var(${topNavigationHeightVar}, min-content) 1fr`,
 				outline: "none",
-				height: `calc(100dvh - var(${bannerHeightVar}, 0px))`,
+				height: useBanner
+					? "100dvh"
+					: `calc(100dvh - var(${bannerHeightVar}, 0px))`,
 				...style,
 			}}
 		>
