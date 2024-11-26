@@ -25,9 +25,6 @@ import {
 import {
 	initAndUpdateTimeTableConfigStore,
 	type TimeFrameDay,
-	useTTCSlotsArray,
-	useTTCTimeFrameOfDay,
-	useTTCTimeSlotMinutes,
 } from "./TimeTableConfigStore"
 import { TimeTableIdentProvider } from "./TimeTableIdentContext"
 import { initAndUpdateTimeTableComponentStore } from "./TimeTableComponentStore"
@@ -194,6 +191,12 @@ export interface LPTimeTableProps<
 		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => JSX.Element
 		header: (props: CustomHeaderRowHeaderProps<G, I>) => JSX.Element
 	}
+
+	/**
+	 * renderBatch tells how many groups are calculated in one step and rendered. This is useful for large time tables, where the rendering takes a long time.
+	 * @default 10
+	 */
+	renderBatch?: number
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -213,6 +216,8 @@ export default function LPTimeTable<
 		</TimeTableMessageProvider>
 	)
 }
+
+export let timeTableGroupRenderBatchSize = 10
 
 /**
  * The LPTimeTable depends on the localization messages. It needs to be wrapped in an
@@ -252,11 +257,14 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	className,
 	style,
 	customHeaderRow,
+	renderBatch = timeTableGroupRenderBatchSize,
 }: LPTimeTableProps<G, I>) => {
 	// if we have viewType of days, we need to round the start and end date to the start and end of the day
 	const { setMessage, translatedMessage } = useTimeTableMessage(
 		!disableMessages,
 	)
+
+	timeTableGroupRenderBatchSize = renderBatch
 
 	// change on viewType
 	// biome-ignore lint/correctness/useExhaustiveDependencies: just remove the message is props change
@@ -293,9 +301,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		isCellDisabled,
 	)
 
-	const timeFrameDay = useTTCTimeFrameOfDay(storeIdent)
-	const timeSlotMinutes = useTTCTimeSlotMinutes(storeIdent)
-
 	initAndUpdateTimeTableSelectionStore(
 		storeIdent,
 		defaultSelectedTimeRange,
@@ -303,7 +308,17 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		onTimeRangeSelected,
 	)
 
-	const slotsArray = useTTCSlotsArray(storeIdent)
+	const {
+		groupRows,
+		rowCount,
+		maxRowCountOfSingleGroup,
+		itemsOutsideOfDayRange,
+		itemsWithSameStartAndEnd,
+		slotsArray,
+		timeFrameDay,
+		timeSlotMinutes,
+	} = useGroupRows(entries)
+
 	if (!slotsArray || slotsArray.length === 0) {
 		console.warn(
 			"LPTimeTable - no slots array, or slots array is empty",
@@ -311,14 +326,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		)
 		return <div>No slots array</div>
 	}
-
-	const {
-		groupRows,
-		rowCount,
-		maxRowCountOfSingleGroup,
-		itemsOutsideOfDayRange,
-		itemsWithSameStartAndEnd,
-	} = useGroupRows(entries)
 
 	useEffect(() => {
 		if (!setMessage) return
@@ -531,6 +538,10 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 									intersectionContainerRef
 								}
 								headerRef={tableHeaderRef}
+								slotsArray={slotsArray}
+								timeSlotMinutes={timeSlotMinutes}
+								timeFrameDay={timeFrameDay}
+								viewType={viewType}
 							/>
 						</tbody>
 					</table>
@@ -627,10 +638,26 @@ function moveNowBar(
 	const startSlot = startAndEndSlot.startSlot
 
 	// the first row in the body is used for the time slot bars
-	const tbodyFirstRow = tableBody.children[0] as
+	let childIdx = 0
+	let tbodyFirstRow = tableBody.children[childIdx] as
 		| HTMLTableRowElement
 		| undefined
 	// now get the current time slot index element (not -1 because the first empty element for the groups)
+
+	// find the first rendered row
+	while (tbodyFirstRow && tbodyFirstRow.children.length === 0) {
+		childIdx++
+		tbodyFirstRow = tableBody.children[childIdx] as
+			| HTMLTableRowElement
+			| undefined
+	}
+
+	if (!tbodyFirstRow) {
+		console.warn(
+			"LPTimeTable - unable to find time slot row for the now bar",
+		)
+		return
+	}
 
 	const slotBar = tbodyFirstRow?.children[startSlot + 1] as
 		| HTMLDivElement
@@ -652,7 +679,7 @@ function moveNowBar(
 		nowBar = document.createElement("div")
 		//nowBar.className = styles.nowBar
 		nowBar.className =
-			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-[1] w-[2px]"
+			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-[2] w-[2px]"
 		slotBar.appendChild(nowBar)
 		nowBarRef.current = nowBar
 	}
@@ -673,7 +700,7 @@ function moveNowBar(
 
 	const diffPerc = diffNow / timeSlotMinutes
 	nowBar.style.left = `${diffPerc * 100}%`
-	nowBar.style.height = `${tableBody.clientHeight}px`
+	nowBar.style.height = `${tableBody.getBoundingClientRect().bottom - slotBar.getBoundingClientRect().top}px`
 
 	// add orange border
 	const nowTimeSlotCell = headerTimeSlotCells[startSlot + 1]

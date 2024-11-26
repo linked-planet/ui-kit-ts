@@ -247,15 +247,28 @@ function CustomComponentExample() {
 
 function SelectShowcase(props: ShowcaseProps) {
 	//#region select
+
+	const options = [
+		{ label: "First option", value: { test: "first" } },
+		{ label: "Second option", value: { test: "second" } },
+		{
+			label: "Third option",
+			value: { test: "third" },
+		},
+		{
+			label: "Disabled option",
+			value: { test: "disabled" },
+			isDisabled: true,
+		},
+		{
+			label: "Fixed option",
+			value: { test: "fixed" },
+			isFixed: true,
+		},
+	]
+
 	const example1 = (
 		<div className="flex flex-col gap-4">
-			{/*<AKSelect
-				inputId="select-1"
-				options={[
-					{ label: "First option", value: "first" },
-					{ label: "Second option", value: { test: "bla" } },
-				]}
-			/>*/}
 			<Select
 				isCreateable
 				isClearable
@@ -284,11 +297,8 @@ function SelectShowcase(props: ShowcaseProps) {
 					console.log("value", value)
 				}}
 				isMulti
-				options={[
-					{ label: "First option", value: { test: "first" } },
-					{ label: "Second option", value: { test: "second" } },
-					{ label: "Third option", value: { test: "third" } },
-				]}
+				options={options}
+				value={options[4]}
 				/** adding some custom classnames to the styling */
 				classNames={{
 					control: () => "bg-warning",
@@ -305,16 +315,6 @@ function SelectShowcase(props: ShowcaseProps) {
 					{ label: "Third option", value: { test: "third" } },
 				]}
 			/>
-
-			{/*<RadixSelect
-				placeholder="Select an option"
-				options={[
-					{ label: "First option", value: "first" },
-					{ label: "Second option", value: "second" },
-				]}
-				isDisabled={false}
-				menuIsOpen={true}
-			/>*/}
 		</div>
 	)
 	//#endregion select

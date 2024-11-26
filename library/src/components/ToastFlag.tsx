@@ -77,7 +77,7 @@ function CloseButton({
 			type="button"
 			data-id="flag-close-button"
 			ref={ref}
-			className={`cursor-pointer mb-auto ${
+			className={`cursor-pointer mb-auto bg-transparent border-none ${
 				inverted ? "text-text" : "text-text-inverse"
 			}`}
 			onClick={closeToast}

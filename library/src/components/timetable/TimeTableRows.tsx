@@ -10,11 +10,12 @@ import {
 	useRef,
 	useState,
 } from "react"
-import type {
-	TimeSlotBooking,
-	TimeTableEntry,
-	TimeTableGroup,
-	TimeTableViewType,
+import {
+	timeTableGroupRenderBatchSize,
+	type TimeSlotBooking,
+	type TimeTableEntry,
+	type TimeTableGroup,
+	type TimeTableViewType,
 } from "./TimeTable"
 
 import ItemWrapper from "./ItemWrapper"
@@ -22,15 +23,12 @@ import ItemWrapper from "./ItemWrapper"
 import useResizeObserver, { type ObservedSize } from "use-resize-observer"
 import { PlaceHolderItemWrapper } from "./PlaceholderItem"
 import {
-	getTTCBasicProperties,
 	type TimeFrameDay,
 	useTTCCellDimentions,
 	useTTCDisableWeekendInteractions,
 	useTTCHideOutOfRangeMarkers,
 	useTTCIsCellDisabled,
-	useTTCTimeSlotMinutes,
 	useTTCTimeSlotSelectionDisabled,
-	useTTCViewType,
 } from "./TimeTableConfigStore"
 import { useTimeTableIdent } from "./TimeTableIdentContext"
 import { useGroupComponent } from "./TimeTableComponentStore"
@@ -43,6 +41,7 @@ import {
 } from "./TimeTableSelectionStore"
 import type { ItemRowEntry } from "./useGoupRows"
 import { getLeftAndWidth } from "./timeTableUtils"
+import { useDebounceHelper, useRateLimitHelper } from "../../utils"
 
 interface TimeTableRowsProps<
 	G extends TimeTableGroup,
@@ -50,7 +49,7 @@ interface TimeTableRowsProps<
 > {
 	entries: TimeTableEntry<G, I>[]
 
-	groupRows: { [groupId: string]: ItemRowEntry<I>[][] }
+	groupRows: { [groupId: string]: ItemRowEntry<I>[][] | null }
 
 	selectedTimeSlotItem: I | undefined
 
@@ -60,10 +59,17 @@ interface TimeTableRowsProps<
 
 	intersectionContainerRef: React.RefObject<HTMLDivElement>
 	headerRef: React.RefObject<HTMLTableSectionElement>
+
+	slotsArray: readonly Dayjs[]
+	timeFrameDay: TimeFrameDay
+	timeSlotMinutes: number
+	viewType: TimeTableViewType
 }
 
-const intersectionStackDelay = 0
-const rowsMargin = 3
+const intersectionStackDelay = 1
+const rateLimiting = 1
+const rowsMargin = 1
+
 /**
  * Creates the table rows for the given entries.
  */
@@ -78,24 +84,72 @@ export default function TimeTableRows<
 	selectedTimeSlotItem,
 	intersectionContainerRef,
 	headerRef,
+	slotsArray,
+	timeFrameDay,
+	timeSlotMinutes,
+	viewType,
 }: TimeTableRowsProps<G, I>) {
-	const [renderCells, setRenderCells] = useState<Set<string>>(new Set())
-	const intersectionBatchTimeout = useRef<number>()
-
 	const storeIdent = useTimeTableIdent()
 	const { rowHeight, columnWidth, placeHolderHeight } =
 		useTTCCellDimentions(storeIdent)
 
 	const refCollection = useRef<React.MutableRefObject<HTMLElement>[]>([])
-	if (refCollection.current.length !== entries.length) {
-		refCollection.current = Array(entries.length)
+	if (refCollection.current.length < entries.length) {
+		refCollection.current.length = entries.length
 	}
+
+	const renderCells = useRef<[number, number]>([-1, -1])
+	// as long as prev render cells are set, we should render first the renderCells, and then render the difference of renderCells and prevRenderCells to only render the placeholders
+	// for the cells not in the viewport anymore
+	const renderedCells = useRef<Set<number>>(new Set<number>())
+
+	// groupRowsRendered is the array of rendered group rows
+	const groupRowsRendered = useRef<JSX.Element[]>(new Array(entries.length))
+
+	const slotsArrayCurrent = useRef(slotsArray)
+	const timeSlotMinutesCurrent = useRef(timeSlotMinutes)
+	const viewTypeCurrent = useRef(viewType)
+	const timeFrameDayCurrent = useRef(timeFrameDay)
+
+	// groupRowsRenderedIdx is the index of the group row which is currently rendered using batch rendering
+	const [groupRowsRenderedIdx, setGroupRowsRenderedIdx] = useState(0)
+	// this is a reference to the current groupRowsRenderedIdx to avoid changing the handleIntersections callback on groupRowsRenderedIdx change
+	// and to know how far we are with the initial rendering... this is needed to know when to start the intersection observer
+	// and it should be only set to 0 when the group rows change
+	const groupRowsRenderedIdxRef = useRef(groupRowsRenderedIdx)
+	const allPlaceholderRendered = useRef(false)
+
+	if (
+		slotsArrayCurrent.current !== slotsArray ||
+		timeSlotMinutesCurrent.current !== timeSlotMinutes ||
+		viewTypeCurrent.current !== viewType ||
+		timeFrameDayCurrent.current !== timeFrameDay
+	) {
+		// reset the rendered cells
+		renderedCells.current.clear()
+		slotsArrayCurrent.current = slotsArray
+		timeSlotMinutesCurrent.current = timeSlotMinutes
+		viewTypeCurrent.current = viewType
+		timeFrameDayCurrent.current = timeFrameDay
+		setGroupRowsRenderedIdx(0)
+		groupRowsRenderedIdxRef.current = 0
+		groupRowsRendered.current = new Array(entries.length)
+		allPlaceholderRendered.current = false
+	}
+
+	const rateLimiterIntersection = useRateLimitHelper(rateLimiting)
+	const rateLimiterRendering = useRateLimitHelper(rateLimiting)
+	const debounceIntersection = useDebounceHelper(intersectionStackDelay)
 
 	// handle intersection is called after intersectionStackDelay ms to avoid too many calls
 	// and checks which groups are intersecting with the intersection container.
 	// those are rendered, others are only rendered as placeholder (1 div per group, instead of multiple rows and cells)
 	const handleIntersections = useCallback(() => {
 		if (!refCollection.current.length) {
+			return
+		}
+		if (!refCollection.current[0] || !refCollection.current[0].current) {
+			// placeholders not yet rendered
 			return
 		}
 		if (!intersectionContainerRef.current || !headerRef.current) {
@@ -108,36 +162,26 @@ export default function TimeTableRows<
 		const top = headerbb.bottom - rowsMargin * rowHeight
 		const bottom = intersectionbb.bottom + rowsMargin * rowHeight
 
-		const firstRef =
-			refCollection.current[0].current.getBoundingClientRect()
-		const firstRefDistance = Math.abs(firstRef.y - intersectionbb.y)
-		const lastRef =
-			refCollection.current[
-				refCollection.current.length - 1
-			].current.getBoundingClientRect()
-		const lastRefDistance = Math.abs(lastRef.y - intersectionbb.y)
-		const startFromFirst = firstRefDistance < lastRefDistance
+		// find the last rendered group row
+		let lastIdx = groupRowsRenderedIdxRef.current
+		while (!refCollection.current[lastIdx]?.current && lastIdx > 0) {
+			lastIdx--
+		}
 
-		const startIdx = startFromFirst ? 0 : refCollection.current.length - 1
-		const endIdx = startFromFirst ? refCollection.current.length : -1
-		const di = startFromFirst ? 1 : -1
+		const startIdx = 0
+		const endIdx = lastIdx + 1
+		const di = 1
 
-		const newRenderCells = new Set<string>()
+		const newRenderCells: [number, number] = [-1, -1]
 		for (let i = startIdx; i !== endIdx; i += di) {
 			const ref = refCollection.current[i]
-			if (ref.current) {
+			if (ref?.current) {
 				const rowbb = ref.current.getBoundingClientRect()
 				// test if the bounding boxes are overlapping
 				if (rowbb.bottom < top) {
-					if (startFromFirst) {
-						continue
-					}
-					break
+					continue
 				}
 				if (rowbb.top > bottom) {
-					if (!startFromFirst) {
-						continue
-					}
 					break
 				}
 				const groupId = ref.current.getAttribute("data-group-id")
@@ -145,76 +189,294 @@ export default function TimeTableRows<
 					console.warn("TimeTable - intersection group id not found")
 					continue
 				}
-				newRenderCells.add(groupId)
+
+				if (newRenderCells[0] === -1) {
+					newRenderCells[0] = i
+				} else {
+					newRenderCells[1] = i
+				}
+			} else {
+				// not yet rendered
+				console.log("NOT YET RENDERED", i, refCollection.current)
+				return
 			}
 		}
-		setRenderCells(newRenderCells)
-	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
-
-	const handleIntersectionsDebounced = useCallback(() => {
-		if (intersectionBatchTimeout.current) {
-			clearTimeout(intersectionBatchTimeout.current)
+		if (newRenderCells[0] > newRenderCells[1]) {
+			newRenderCells[1] = newRenderCells[0]
 		}
-		intersectionBatchTimeout.current = window.setTimeout(
-			handleIntersections,
-			intersectionStackDelay,
-		)
-	}, [handleIntersections])
+		if (
+			renderCells.current[0] !== newRenderCells[0] ||
+			renderCells.current[1] !== newRenderCells[1]
+		) {
+			renderCells.current = newRenderCells
+			// need to reactive rendering if we are at the end of the rendering
+			setGroupRowsRenderedIdx((prev) => {
+				if (prev >= entries.length) {
+					return prev - 1
+				}
+				return prev
+			})
+		}
+		//groupRowsRenderedIdxRef.current = 0 no! we need to know how far we are with the initial rendering
+	}, [
+		intersectionContainerRef.current,
+		headerRef.current,
+		rowHeight,
+		entries.length,
+	])
+
+	const currentGroupRows = useRef(groupRows)
+	//const [currentGroupRows, setCurrentGroupRows] = useState(groupRows)
 
 	// initial run
-	useLayoutEffect(handleIntersections, [groupRows])
-	useEffect(handleIntersections, [])
+	useEffect(() => {
+		if (!currentGroupRows.current) {
+			currentGroupRows.current = groupRows
+			setGroupRowsRenderedIdx(0)
+			groupRowsRenderedIdxRef.current = 0
+			console.info("TimeTable - all group rows updated")
+			return
+		}
+		// determine when new ones start
+		let newOne = -1
+		const keys = Object.keys(currentGroupRows)
+		for (let i = 0; i < keys.length; i++) {
+			const key = keys[i]
+			if (!groupRows[key]) {
+				newOne = i
+				break
+			}
+			if (
+				(groupRows[key] !== currentGroupRows.current[key] &&
+					i >= renderCells.current[0] &&
+					i <= renderCells.current[1]) ||
+				groupRows[key]?.length !== currentGroupRows.current[key]?.length
+			) {
+				newOne = i
+				break
+			}
+		}
+		if (newOne === -1) {
+			if (keys.length === Object.keys(groupRows).length) {
+				console.info(
+					"TimeTable - group rows have no changes",
+					keys.length,
+				)
+				currentGroupRows.current = groupRows
+				return
+			}
+			newOne = keys.length
+		}
+		// we need to render the new ones
+		setGroupRowsRenderedIdx((prev) => {
+			const ret = prev >= newOne ? newOne : prev
+			if (ret === newOne) {
+				allPlaceholderRendered.current = false
+			}
+			return ret
+		})
+		currentGroupRows.current = groupRows
+		//rateLimiterRendering(() => window.setTimeout(renderBatch, 0))
+	}, [groupRows])
+	//useEffect(handleIntersections, [])
 
 	// handle intersection observer, create new observer if the intersectionContainerRef changes
 	useLayoutEffect(() => {
 		if (!intersectionContainerRef.current) {
 			return
 		}
+
+		const debIntersection = () => debounceIntersection(handleIntersections)
 		// scroll event handler
 		intersectionContainerRef.current.addEventListener(
 			"scroll",
-			handleIntersectionsDebounced,
+			debIntersection,
+		)
+		intersectionContainerRef.current.addEventListener(
+			"scrollend",
+			debIntersection,
 		)
 
 		return () => {
 			//groupHeaderIntersectionObserver.current?.disconnect()
 			intersectionContainerRef.current?.removeEventListener(
 				"scroll",
-				handleIntersectionsDebounced,
+				debIntersection,
+			)
+			intersectionContainerRef.current?.removeEventListener(
+				"scrollend",
+				debIntersection,
 			)
 		}
-	}, [handleIntersectionsDebounced, intersectionContainerRef.current])
+	}, [
+		debounceIntersection,
+		handleIntersections,
+		intersectionContainerRef.current,
+	])
 
-	if (!entries || entries.length === 0) {
-		console.log("TimeTable - no entries")
-		return []
+	const renderBatch = useCallback(() => {
+		setGroupRowsRenderedIdx((groupRowsRenderedIdx) => {
+			let increment = 0
+
+			// we need to push through an initial rendering of the group rows
+			// there fore we need to render one time until entries.length - 1
+
+			let start = groupRowsRenderedIdx
+
+			// get the group entries which required rendering
+			let startRender = -1
+			for (
+				let g = renderCells.current[0];
+				g <= renderCells.current[1];
+				g++
+			) {
+				if (!renderedCells.current.has(g)) {
+					if (startRender === -1) startRender = g
+					increment++
+					if (increment >= timeTableGroupRenderBatchSize) break
+				}
+			}
+			if (startRender > -1 && startRender < start) {
+				start = startRender
+				// placeholder not yet rendered either
+			} else if (startRender === -1) {
+				// those groups we want to unrender (only placeholder), but they were rendered as visible before
+				for (const renderedG of renderedCells.current) {
+					if (
+						renderedG < renderCells.current[0] ||
+						renderedG > renderCells.current[1]
+					) {
+						if (startRender === -1 || renderedG < start) {
+							startRender = renderedG
+						}
+						increment++
+						if (increment >= timeTableGroupRenderBatchSize) {
+							break
+						}
+					}
+				}
+			}
+
+			if (startRender > -1) {
+				start = startRender
+			}
+
+			const groupRowKeys = Object.keys(groupRows)
+
+			let end =
+				start === groupRowsRenderedIdx
+					? groupRowsRenderedIdx + timeTableGroupRenderBatchSize
+					: start + increment
+			if (end > groupRowKeys.length) {
+				end = groupRowKeys.length
+			}
+
+			for (let g = start; g < end && g < groupRowKeys.length; g++) {
+				const groupEntry = entries[g]
+				if (!groupEntry) {
+					console.warn(
+						"TimeTable - group entry not found",
+						g,
+						start,
+						increment,
+						entries,
+					)
+					return groupRowsRenderedIdx
+				}
+				const rows = groupRows?.[groupEntry.group.id]
+				if (!rows) {
+					// rows not yet calculated
+					return groupRowsRenderedIdx
+				}
+				let mref = refCollection.current[g]
+				if (!mref) {
+					mref =
+						createRef<HTMLTableRowElement>() as React.MutableRefObject<HTMLElement>
+					refCollection.current[g] = mref
+				}
+				const rendering =
+					g >= renderCells.current[0] && g <= renderCells.current[1]
+				if (rendering) {
+					renderedCells.current.add(g)
+				} else {
+					renderedCells.current.delete(g)
+				}
+				groupRowsRendered.current[g] = (
+					<GroupRows<G, I>
+						key={`${groupEntry.group.title}${g}-${rendering}`}
+						group={groupEntry.group}
+						groupNumber={g}
+						itemRows={rows}
+						onGroupHeaderClick={onGroupClick}
+						onTimeSlotItemClick={onTimeSlotItemClick}
+						selectedTimeSlotItem={selectedTimeSlotItem}
+						renderCells={rendering}
+						columnWidth={columnWidth}
+						rowHeight={rowHeight}
+						placeHolderHeight={placeHolderHeight}
+						mref={mref}
+						slotsArray={slotsArray}
+						timeFrameDay={timeFrameDay}
+						timeSlotsMinutes={timeSlotMinutes}
+						viewType={viewType}
+					/>
+				)
+			}
+
+			if (start === groupRowsRenderedIdx) {
+				if (
+					end > groupRowsRenderedIdxRef.current ||
+					groupRowsRenderedIdxRef.current > entries.length
+				) {
+					groupRowsRenderedIdxRef.current = end
+				}
+				return end
+			}
+
+			let ret =
+				groupRowsRenderedIdx === groupRowsRenderedIdxRef.current - 1
+					? groupRowsRenderedIdxRef.current - 2
+					: groupRowsRenderedIdxRef.current - 1 // -1 to keep rendering.. if there is no change, it will stop rendering
+			if (ret < 0) {
+				ret = groupRowsRenderedIdx === 0 ? -1 : 0
+			}
+			return ret
+		})
+	}, [
+		entries,
+		groupRows,
+		onGroupClick,
+		onTimeSlotItemClick,
+		selectedTimeSlotItem,
+		columnWidth,
+		rowHeight,
+		placeHolderHeight,
+		slotsArray,
+		timeFrameDay,
+		timeSlotMinutes,
+		viewType,
+	])
+
+	if (groupRowsRenderedIdxRef.current < entries.length) {
+		rateLimiterIntersection(handleIntersections)
 	}
-	return entries.map((groupEntry, g) => {
-		const rows = groupRows[groupEntry.group.id]
-		let mref = refCollection.current[g]
-		if (!mref) {
-			mref =
-				createRef<HTMLTableRowElement>() as React.MutableRefObject<HTMLElement>
-			refCollection.current[g] = mref
-		}
 
-		return (
-			<GroupRows<G, I>
-				key={`${groupEntry.group.title}${g}`}
-				group={groupEntry.group}
-				groupNumber={g}
-				itemRows={rows}
-				onGroupHeaderClick={onGroupClick}
-				onTimeSlotItemClick={onTimeSlotItemClick}
-				selectedTimeSlotItem={selectedTimeSlotItem}
-				renderCells={renderCells.has(groupEntry.group.id)}
-				columnWidth={columnWidth}
-				rowHeight={rowHeight}
-				placeHolderHeight={placeHolderHeight}
-				mref={mref}
-			/>
+	if (groupRowsRenderedIdx < entries.length) {
+		rateLimiterRendering(renderBatch)
+	} else {
+		console.info(
+			"TimeTable - all group rows rendered",
+			groupRowsRenderedIdx,
+			entries.length,
 		)
-	})
+		if (!allPlaceholderRendered.current) {
+			allPlaceholderRendered.current = true
+			// we need to render all placeholders
+			rateLimiterIntersection(handleIntersections)
+		}
+	}
+
+	return groupRowsRendered.current
 }
 
 /**
@@ -232,6 +494,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	slotsArray,
 	timeFrameDay,
 	viewType,
+	timeSlotMinutes,
 }: {
 	timeSlotNumber: number
 	group: G
@@ -243,6 +506,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 	slotsArray: readonly Dayjs[]
 	timeFrameDay: TimeFrameDay
+	timeSlotMinutes: number
 	viewType: TimeTableViewType
 }) {
 	const storeIdent = useTimeTableIdent()
@@ -252,7 +516,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const hideOutOfRangeMarkers = useTTCHideOutOfRangeMarkers(storeIdent)
 	const timeSlotSelectionDisabled =
 		useTTCTimeSlotSelectionDisabled(storeIdent)
-	const timeSlotMinutes = useTTCTimeSlotMinutes(storeIdent)
 	const isCellDisabled = useTTCIsCellDisabled(storeIdent)
 
 	const timeSlot = slotsArray[timeSlotNumber]
@@ -564,6 +827,10 @@ type GroupRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	rowHeight: number
 	placeHolderHeight: number
 	mref: React.MutableRefObject<HTMLElement>
+	slotsArray: readonly Dayjs[]
+	timeFrameDay: TimeFrameDay
+	timeSlotsMinutes: number
+	viewType: TimeTableViewType
 }
 
 function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
@@ -577,12 +844,13 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	columnWidth,
 	rowHeight,
 	placeHolderHeight,
+	slotsArray,
+	timeFrameDay,
+	timeSlotsMinutes,
+	viewType,
 	mref,
 }: GroupRowsProps<G, I>) {
 	const storeIdent = useTimeTableIdent()
-	const { slotsArray, timeFrameDay, timeSlotMinutes } =
-		getTTCBasicProperties(storeIdent)
-	const viewType = useTTCViewType(storeIdent)
 	const timeSlotSelectionDisabled =
 		useTTCTimeSlotSelectionDisabled(storeIdent)
 	const _selectedTimeSlots = useTimeSlotSelection(storeIdent)
@@ -684,7 +952,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					group={group}
 					groupNumber={groupNumber}
 					timeSlotNumber={timeSlotNumber}
-					timeSlotMinutes={timeSlotMinutes}
+					timeSlotMinutes={timeSlotsMinutes}
 					viewType={viewType}
 					slotsArray={slotsArray}
 					selectedTimeSlots={selectedTimeSlots ?? undefined}
@@ -698,7 +966,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		groupNumber,
 		timeSlotSelectionDisabled,
 		slotsArray,
-		timeSlotMinutes,
+		timeSlotsMinutes,
 		viewType,
 		selectedTimeSlots,
 		renderCells,
@@ -706,10 +974,10 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	])
 
 	const normalRows = useMemo(() => {
-		const tdrs: JSX.Element[][] = []
 		if (!renderCells) {
 			return null
 		}
+		const tdrs: JSX.Element[][] = []
 		// and the normal rows
 		for (let r = 0; r < rowCount; r++) {
 			const tds: JSX.Element[] = []
@@ -728,7 +996,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 				tds.push(
 					<TableCell<G, I>
-						key={`${groupNumber}-${timeSlotNumber}`}
+						key={`${groupNumber}-${timeSlotNumber}-${viewType}`}
 						timeSlotNumber={timeSlotNumber}
 						isLastGroupRow={r === rowCount - 1}
 						isFirstRow={r === 0}
@@ -740,6 +1008,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						slotsArray={slotsArray}
 						timeFrameDay={timeFrameDay}
 						viewType={viewType}
+						timeSlotMinutes={timeSlotsMinutes}
 					/>,
 				)
 			}
@@ -758,6 +1027,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		selectedTimeSlotItem,
 		onTimeSlotItemClick,
 		renderCells,
+		timeSlotsMinutes,
 	])
 
 	if (!renderCells) {

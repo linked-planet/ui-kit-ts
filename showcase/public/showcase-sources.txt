@@ -1578,6 +1578,19 @@ function ButtonShowcase(props: ShowcaseProps) {
 				Icon Loading Button
 			</LoadingButton>
 
+			<LoadingButton
+				onClick={() => {
+					setIsLoading(true)
+					window.setTimeout(() => setIsLoading(false), 3000)
+				}}
+				loading={isLoading}
+				iconBefore={<SearchIcon label="" />}
+				iconAfter={<SearchIcon label="" />}
+				appearance="subtle-link"
+			>
+				Primary Icon Loading Button
+			</LoadingButton>
+
 			<Button
 				appearance="primary"
 				href={"https://www.google.com/"}
@@ -5924,6 +5937,7 @@ function PopoverExample() {
 			<Popover.Root
 				trigger={<div className="text-warning-bold">Other Trigger</div>}
 				contentClassName="p-4"
+				closer="Close"
 				side="bottom"
 				align="end"
 			>
@@ -5970,32 +5984,11 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { SectionMessage } from "@linked-planet/ui-kit-ts"
-//import AKSectionMessage from "@atlaskit/section-message"
 
 function SectionMessageShowcase(props: ShowcaseProps) {
 	//#region section-message
 	const example = (
 		<div className="flex gap-3">
-			<div className="flex flex-col gap-3">
-				{/*<AKSectionMessage title="Section Message Title">
-					Default Section Message
-				</AKSectionMessage>
-				<AKSectionMessage appearance="success">
-					Success Section Message
-				</AKSectionMessage>
-				<AKSectionMessage appearance="warning">
-					Warning Section Message
-				</AKSectionMessage>
-				<AKSectionMessage appearance="error">
-					Error Section Message
-				</AKSectionMessage>
-				<AKSectionMessage appearance="information">
-					Information Section Message
-				</AKSectionMessage>
-				<AKSectionMessage appearance="discovery">
-					Discovery Section Message
-				</AKSectionMessage>*/}
-			</div>
 			<div className="flex flex-col gap-3">
 				<SectionMessage
 					title="Section Message Title"
@@ -6303,15 +6296,28 @@ function CustomComponentExample() {
 
 function SelectShowcase(props: ShowcaseProps) {
 	//#region select
+
+	const options = [
+		{ label: "First option", value: { test: "first" } },
+		{ label: "Second option", value: { test: "second" } },
+		{
+			label: "Third option",
+			value: { test: "third" },
+		},
+		{
+			label: "Disabled option",
+			value: { test: "disabled" },
+			isDisabled: true,
+		},
+		{
+			label: "Fixed option",
+			value: { test: "fixed" },
+			isFixed: true,
+		},
+	]
+
 	const example1 = (
 		<div className="flex flex-col gap-4">
-			{/*<AKSelect
-				inputId="select-1"
-				options={[
-					{ label: "First option", value: "first" },
-					{ label: "Second option", value: { test: "bla" } },
-				]}
-			/>*/}
 			<Select
 				isCreateable
 				isClearable
@@ -6340,11 +6346,8 @@ function SelectShowcase(props: ShowcaseProps) {
 					console.log("value", value)
 				}}
 				isMulti
-				options={[
-					{ label: "First option", value: { test: "first" } },
-					{ label: "Second option", value: { test: "second" } },
-					{ label: "Third option", value: { test: "third" } },
-				]}
+				options={options}
+				value={options[4]}
 				/** adding some custom classnames to the styling */
 				classNames={{
 					control: () => "bg-warning",
@@ -6361,16 +6364,6 @@ function SelectShowcase(props: ShowcaseProps) {
 					{ label: "Third option", value: { test: "third" } },
 				]}
 			/>
-
-			{/*<RadixSelect
-				placeholder="Select an option"
-				options={[
-					{ label: "First option", value: "first" },
-					{ label: "Second option", value: "second" },
-				]}
-				isDisabled={false}
-				menuIsOpen={true}
-			/>*/}
 		</div>
 	)
 	//#endregion select
@@ -7660,7 +7653,7 @@ function TextFieldShowcase(props: ShowcaseProps) {
 
 export default TextFieldShowcase
 
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { useState } from "react"
 import dayjs, { type Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -8082,7 +8075,7 @@ function createMoreTestGroups(
 }
 
 const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
-const endDateInitial = dayjs().startOf("day").add(5, "days").add(20, "hours")
+const endDateInitial = dayjs().startOf("day").add(5, "days").add(23, "hours")
 
 function TestCustomHeaderRowTimeSlot<
 	G extends TimeTableTypes.TimeTableGroup,
@@ -8244,16 +8237,18 @@ function Example() {
 		setEntries(newEntries)
 	}
 
-	const requestMoreEntriesCB = () => {
-		const missing = entries.length + 10 - exampleEntries.length
-		const missingGroups = createMoreTestGroups(
-			timeFrame.startDate,
-			timeFrame.endDate,
-			missing,
-			exampleEntries.length,
-		)
-		setEntries([...exampleEntries, ...missingGroups])
-	}
+	const requestMoreEntriesCB = useCallback(() => {
+		setEntries((prev) => {
+			const missing = 10
+			const missingGroups = createMoreTestGroups(
+				timeFrame.startDate,
+				timeFrame.endDate,
+				missing,
+				prev.length,
+			)
+			return [...prev, ...missingGroups]
+		})
+	}, [timeFrame.endDate, timeFrame.startDate])
 	//#endregion
 
 	const [showCreateNewItemModal, setShowCreateNewItemModal] = useState(false)
@@ -8305,6 +8300,41 @@ function Example() {
 		},
 		[],
 	)
+
+	useEffect(() => {
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
+	}, [requestMoreEntriesCB])
 
 	return (
 		<>
