@@ -1,4 +1,3 @@
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -22,7 +21,7 @@ export default function AppLayoutShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts/applayoutexample/index.html",
+					url: "/ui-kit-ts/applayoutexample/index.html",
 				},
 			]}
 			examples={[
