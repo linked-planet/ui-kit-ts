@@ -221,9 +221,7 @@ export function Flag({
 			data-testid={testId}
 		>
 			{icon && (
-				<div>
-					<p className="flex items-center justify-center">{icon}</p>
-				</div>
+				<div className="flex items-start justify-center">{icon}</div>
 			)}
 			<div>
 				<div className="mb-2 font-bold">{title}</div>
