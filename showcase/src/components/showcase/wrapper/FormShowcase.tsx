@@ -1,13 +1,11 @@
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { DynamicForm } from "@linked-planet/ui-kit-ts"
-import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
+import ShowcaseWrapperItem, {type ShowcaseProps,} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import {Button, ButtonGroup, Checkbox, DynamicForm} from "@linked-planet/ui-kit-ts"
+import {useState} from "react"
 
 interface TestObject {
 	firstname: string
 	lastname: string
-	language: string
+	language: string | null
 	hobbies: string[]
 	age: number
 	alive: boolean
@@ -36,10 +34,15 @@ const hobbies = [
 
 //#region form-vertical
 function FormVerticalExample() {
+	const [formObj, setFormObj] = useState<TestObject>(testObject)
+	const [readonly, setReadonly] = useState(false)
+
 	return (
 		<div className="bg-surface">
+			<Checkbox label="Readonly" onChange={(event) => {setReadonly(event.target.checked)}} />
 			<DynamicForm.Form<TestObject>
-				obj={testObject}
+				readonly={readonly}
+				obj={formObj}
 				onSubmit={(data) => {
 					console.info("Saving form", data)
 				}}
@@ -84,6 +87,23 @@ function FormVerticalExample() {
 					</>
 				)}
 			</DynamicForm.Form>
+			<div className="flex p-2 justify-end">
+				<Button
+					appearance="danger"
+					onClick={() => {
+						setFormObj({
+							firstname: "",
+							lastname: "",
+							language: null,
+							age: 0,
+							alive: false,
+							hobbies: [],
+						})
+					}}
+				>
+					Clear
+				</Button>
+			</div>
 		</div>
 	)
 }
