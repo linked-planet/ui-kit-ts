@@ -700,7 +700,7 @@ function SelectInForm<
 	let valueUsed = value
 
 	// controlled
-	if (value) {
+	if (value !== undefined) {
 		if (!isMulti && isOptionType(value) && value.value !== field.value) {
 			field.onChange(value.value)
 		}
@@ -723,7 +723,7 @@ function SelectInForm<
 	//
 
 	// uncontrolled
-	if (!value) {
+	if (value === undefined) {
 		if (!isMulti && options) {
 			for (const opt of options) {
 				if (isOptionType(opt) && opt.value === field.value) {
@@ -739,9 +739,9 @@ function SelectInForm<
 					}
 				}
 			}
-			/*if (!valueUsed) {
-				valueUsed = field.value
-			}*/
+			if (field.value === null) {
+				valueUsed = null
+			}
 		} else if (isMulti && options) {
 			const multiValueUsed = []
 			if (field.value) {
