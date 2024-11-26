@@ -217,6 +217,8 @@ export default function LPTimeTable<
 	)
 }
 
+export let timeTableGroupRenderBatchSize = 10
+
 /**
  * The LPTimeTable depends on the localization messages. It needs to be wrapped in an
  * @returns
@@ -255,11 +257,14 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	className,
 	style,
 	customHeaderRow,
+	renderBatch = timeTableGroupRenderBatchSize,
 }: LPTimeTableProps<G, I>) => {
 	// if we have viewType of days, we need to round the start and end date to the start and end of the day
 	const { setMessage, translatedMessage } = useTimeTableMessage(
 		!disableMessages,
 	)
+
+	timeTableGroupRenderBatchSize = renderBatch
 
 	// change on viewType
 	// biome-ignore lint/correctness/useExhaustiveDependencies: just remove the message is props change
@@ -695,7 +700,7 @@ function moveNowBar(
 
 	const diffPerc = diffNow / timeSlotMinutes
 	nowBar.style.left = `${diffPerc * 100}%`
-	nowBar.style.height = `${tableBody.clientHeight}px`
+	nowBar.style.height = `${tableBody.getBoundingClientRect().bottom - slotBar.getBoundingClientRect().top}px`
 
 	// add orange border
 	const nowTimeSlotCell = headerTimeSlotCells[startSlot + 1]

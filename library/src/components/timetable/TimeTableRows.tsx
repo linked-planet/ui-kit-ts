@@ -9,11 +9,12 @@ import {
 	useRef,
 	useState,
 } from "react"
-import type {
-	TimeSlotBooking,
-	TimeTableEntry,
-	TimeTableGroup,
-	TimeTableViewType,
+import {
+	timeTableGroupRenderBatchSize,
+	type TimeSlotBooking,
+	type TimeTableEntry,
+	type TimeTableGroup,
+	type TimeTableViewType,
 } from "./TimeTable"
 
 import ItemWrapper from "./ItemWrapper"
@@ -67,7 +68,7 @@ interface TimeTableRowsProps<
 const intersectionStackDelay = 1
 const rateLimiting = 1
 const rowsMargin = 1
-export const timeTableGroupRenderBatchSize = 1
+
 /**
  * Creates the table rows for the given entries.
  */
@@ -222,63 +223,6 @@ export default function TimeTableRows<
 		rowHeight,
 		entries.length,
 	])
-
-	//const currentGroupRows = useRef(groupRows)
-	//const [currentGroupRows, setCurrentGroupRows] = useState(groupRows)
-
-	// initial run
-	/*useEffect(() => {
-		setCurrentGroupRows((currentGroupRows) => {
-			if (!currentGroupRows) {
-				setCurrentGroupRows(groupRows)
-				setGroupRowsRenderedIdx(0)
-				groupRowsRenderedIdxRef.current = 0
-				console.info("TimeTable - all group rows updated")
-				return currentGroupRows
-			}
-			// determine when new ones start
-			let newOne = -1
-			const keys = Object.keys(currentGroupRows)
-			for (let i = 0; i < keys.length; i++) {
-				const key = keys[i]
-				if (!groupRows[key]) {
-					newOne = i
-					break
-				}
-				if (
-					(groupRows[key] !== currentGroupRows[key] &&
-						i >= renderCells.current[0] &&
-						i <= renderCells.current[1]) ||
-					groupRows[key]?.length !== currentGroupRows[key]?.length
-				) {
-					newOne = i
-					break
-				}
-			}
-			if (newOne === -1) {
-				if (keys.length === Object.keys(groupRows).length) {
-					console.info(
-						"TimeTable - group rows have no changes",
-						keys.length,
-					)
-					return currentGroupRows
-				}
-				newOne = keys.length
-			}
-			// we need to render the new ones
-			setGroupRowsRenderedIdx((prev) => {
-				const ret = prev >= newOne ? newOne : prev
-				if (ret === newOne) {
-					allPlaceholderRendered.current = false
-				}
-				return ret
-			})
-			return groupRows
-		})
-
-		//rateLimiterRendering(() => window.setTimeout(renderBatch, 0))
-	}, [groupRows])*/
-	//useEffect(handleIntersections, [])
 
 	// handle intersection observer, create new observer if the intersectionContainerRef changes
 	useLayoutEffect(() => {
