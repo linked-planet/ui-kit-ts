@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react"
-import type { FieldValues, Path } from "react-hook-form"
-import type { FormField } from "../DynamicForm"
-import { Label, Select } from "../../inputs"
+import {useEffect, useRef} from "react"
+import type {FieldValues, Path} from "react-hook-form"
+import type {FormField} from "../DynamicForm"
+import {Label, Select} from "../../inputs"
 
 export interface SelectSingleFormFieldProps<
 	T extends FieldValues,
@@ -47,15 +47,28 @@ export function SelectSingleFormField<
 					<small>{description}</small>
 				</p>
 			)}
-			<Select<T, A, false>
-				id={inputProps?.name}
-				name={inputProps?.name as Path<T>}
-				control={formProps.control}
-				options={options}
-				required={required}
-				disabled={formProps.readonly}
-				placeholder={placeholder}
-			/>
+			{fieldValue ? (
+				<Select<T, A, false>
+					id={inputProps?.name}
+					name={inputProps?.name as Path<T>}
+					control={formProps.control}
+					options={options}
+					required={required}
+					disabled={formProps.readonly}
+					placeholder={placeholder}
+				/>
+			) : (
+				<Select<T, A, false>
+					id={inputProps?.name}
+					name={inputProps?.name as Path<T>}
+					control={formProps.control}
+					options={options}
+					required={required}
+					disabled={formProps.readonly}
+					placeholder={placeholder}
+					value={null}
+				/>
+			)}
 		</div>
 	)
 }
