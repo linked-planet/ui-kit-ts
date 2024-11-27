@@ -44,7 +44,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 		},
 		items: [],
 	},
-	/*{
+	{
 		group: {
 			id: "group-1",
 			title: "Group 1",
@@ -343,7 +343,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 7-1",
 			},
 		],
-	},*/
+	},
 ]
 
 function createTestItems(
@@ -435,7 +435,7 @@ function TestCustomHeaderRowTimeSlot<
 	entries,
 	tableCellRef,
 }: TimeTableTypes.CustomHeaderRowTimeSlotProps<G, I>) {
-	const groupItems = entries[0].items
+	const groupItems = entries[1].items
 	if (!groupItems.length) {
 		return null
 	}
@@ -480,10 +480,6 @@ function TestCustomHeaderRowTimeSlot<
 		)
 	})
 
-	if (entries[0].items.length) {
-		console.log("LEFT", entries[0].items, leftAndWidths, startAndEndInSlot)
-	}
-
 	const cellWidth = tableCellRef.current?.offsetWidth ?? 70
 
 	const ret = leftAndWidths.map((it, i) =>
@@ -516,7 +512,7 @@ function CustomHeaderRowHeader<
 }: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
 	return (
 		<div className="bg-surface-pressed">
-			{entries[0].group.title} has {entries.length} entries
+			{entries[1].group.title} has {entries.length} entries
 		</div>
 	)
 }
@@ -657,7 +653,6 @@ function Example() {
 	)
 
 	useEffect(() => {
-		/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
@@ -669,7 +664,8 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
-		requestMoreEntriesCB()*/
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
 		/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
