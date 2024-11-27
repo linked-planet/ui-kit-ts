@@ -11,13 +11,10 @@ import {
 	useTTCViewType,
 } from "./TimeTableConfigStore"
 import { useTimeTableIdent } from "./TimeTableIdentContext"
-import {
-	getStartAndEndSlot,
-	isOverlapping,
-	itemsOutsideOfDayRangeORSameStartAndEnd,
-} from "./timeTableUtils"
+import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
 import { useCallback, useRef, useState } from "react"
 import { useIdleRateLimitHelper } from "../../utils"
+import { renderIdleTimeout } from "./TimeTableRows"
 
 /**
  * Contains the items of one group row (one row within one group)
@@ -28,8 +25,6 @@ export type ItemRowEntry<I extends TimeSlotBooking = TimeSlotBooking> = {
 	endSlot: number
 	status: "before" | "after" | "in" // before: starts and ends before the time slot, after: starts and ends after the time slot, in: overlaps the time slot
 }
-
-const idleTimeout = 100
 
 export function useGroupRows<
 	G extends TimeTableGroup,
@@ -138,38 +133,29 @@ export function useGroupRows<
 
 			// calculate the new group rows
 			const {
+				itemRows,
 				itemsOutsideRange,
 				itemsWithSameStartAndEnd: _itemsWithSameStartAndEnd,
-			} = itemsOutsideOfDayRangeORSameStartAndEnd(
+			} = getGroupItemStack(
 				entry.items,
 				slotsArray,
 				timeFrameDay,
 				timeSlotMinutes,
 				viewType,
 			)
+
 			if (itemsOutsideRange.length) {
 				itemsOutsideOfDayRange.current = updatedItemsOutsideOfDayRange
 				itemsOutsideOfDayRange.current[entry.group.id] =
 					itemsOutsideRange
 			}
+
 			if (_itemsWithSameStartAndEnd.length) {
 				itemsWithSameStartAndEnd.current =
 					updatedItemsWithSameStartAndEnd
 				updatedItemsWithSameStartAndEnd[entry.group.id] =
 					_itemsWithSameStartAndEnd
 			}
-			const groupItems = entry.items.filter(
-				(it) => !_itemsWithSameStartAndEnd.includes(it),
-			)
-			//.filter((it) => !itemsOutsideRange.includes(it))
-
-			const itemRows = getGroupItemStack(
-				groupItems,
-				slotsArray,
-				timeFrameDay,
-				timeSlotMinutes,
-				viewType,
-			)
 
 			const oldRowCount =
 				groupRowsState.current[entry.group.id]?.length || 0
@@ -198,7 +184,7 @@ export function useGroupRows<
 		setCalcBatch((prev) => (prev > 10 ? prev - 1 : prev + 1))
 	}, [slotsArray, timeFrameDay, timeSlotMinutes, viewType])
 
-	const rateLimiterCalc = useIdleRateLimitHelper(idleTimeout)
+	const rateLimiterCalc = useIdleRateLimitHelper(renderIdleTimeout)
 
 	if (requireNewGroupRows) {
 		currentEntries.current = entries
@@ -288,15 +274,20 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 	timeFrameDay: TimeFrameDay,
 	timeSlotMinutes: number,
 	viewType: TimeTableViewType,
-): ItemRowEntry<I>[][] {
+) {
 	const itemRows: ItemRowEntry<I>[][] = []
+	const itemsOutsideRange: I[] = []
+	const itemsWithSameStartAndEnd: I[] = []
 
 	if (!slotsArray || slotsArray.length === 0) {
 		console.info("TimeTable - no slots array, returning empty item rows")
-		return itemRows
+		return { itemRows, itemsOutsideRange, itemsWithSameStartAndEnd }
 	}
 	for (const item of groupItems) {
-		let added = false
+		if (item.startDate.isSame(item.endDate)) {
+			itemsWithSameStartAndEnd.push(item)
+			continue
+		}
 
 		const startEndSlots = getStartAndEndSlot(
 			item,
@@ -306,36 +297,19 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 			viewType,
 		)
 
+		if (
+			startEndSlots.status === "before" ||
+			startEndSlots.status === "after"
+		) {
+			itemsOutsideRange.push(item)
+			continue
+		}
+
+		let added = false
+
 		const ret = {
 			...startEndSlots,
 			item,
-		}
-
-		if (
-			item.startDate.startOf("day") === item.endDate.startOf("day") &&
-			(item.endDate.hour() < timeFrameDay.startHour ||
-				(item.endDate.hour() === timeFrameDay.startHour &&
-					item.endDate.minute() < timeFrameDay.startMinute))
-		) {
-			if (itemRows.length === 0) {
-				itemRows.push([ret])
-			} else {
-				itemRows[0].push(ret)
-			}
-			continue
-		}
-
-		if (
-			item.startDate.hour() > timeFrameDay.endHour ||
-			(item.startDate.hour() === timeFrameDay.endHour &&
-				item.startDate.minute() > timeFrameDay.endMinute)
-		) {
-			if (itemRows.length === 0) {
-				itemRows.push([ret])
-			} else {
-				itemRows[0].push(ret)
-			}
-			continue
 		}
 
 		for (let r = 0; r < itemRows.length; r++) {
@@ -360,5 +334,5 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 		row.sort((a, b) => a.item.startDate.diff(b.item.startDate))
 	}
 
-	return itemRows
+	return { itemRows, itemsOutsideRange, itemsWithSameStartAndEnd }
 }

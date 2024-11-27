@@ -67,7 +67,7 @@ interface TimeTableRowsProps<
 }
 
 const intersectionStackDelay = 1
-const idleTimeout = 100
+export const renderIdleTimeout = 84 // ~12 fps
 const rowsMargin = 1
 
 /**
@@ -137,8 +137,8 @@ export default function TimeTableRows<
 		allPlaceholderRendered.current = false
 	}
 
-	const rateLimiterIntersection = useIdleRateLimitHelper(idleTimeout)
-	const rateLimiterRendering = useIdleRateLimitHelper(idleTimeout)
+	const rateLimiterIntersection = useIdleRateLimitHelper(renderIdleTimeout)
+	const rateLimiterRendering = useIdleRateLimitHelper(renderIdleTimeout)
 	const debounceIntersection = useDebounceHelper(intersectionStackDelay)
 
 	// handle intersection is called after intersectionStackDelay ms to avoid too many calls
@@ -597,6 +597,28 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					timeSlotMinutes,
 				)
 
+				if (left < 0) {
+					console.error(
+						"TimeTable - left is negative, this should not happen",
+						i,
+						it,
+						left,
+						currentLeft,
+						slotsArray,
+					)
+				}
+
+				if (width < 0) {
+					console.error(
+						"TimeTable - width is negative, this should not happen",
+						i,
+						it,
+						left,
+						currentLeft,
+						slotsArray,
+					)
+				}
+
 				const leftUsed = left - currentLeft
 				if (leftUsed < 0) {
 					console.error(
@@ -606,8 +628,11 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						leftUsed,
 						left,
 						currentLeft,
+						slotsArray,
+						bookingItemsBeginningInCell,
 					)
 				}
+
 				currentLeft = left + width
 
 				const gridTemplateColumnWidth =

@@ -567,6 +567,7 @@ export function getStartAndEndSlot(
 		}
 	}
 	if (startSlot === -1) {
+		//startSlot = slotsArray.length - 1
 		startSlot = slotsArray.length - 1
 	}
 
@@ -617,40 +618,4 @@ export function getStartAndEndSlot(
 	}
 
 	return { startSlot, endSlot, status: "in" }
-}
-
-export function itemsOutsideOfDayRangeORSameStartAndEnd<
-	I extends TimeSlotBooking,
->(
-	items: I[],
-	slotsArray: readonly Dayjs[],
-	timeFrameDay: TimeFrameDay,
-	timeSlotMinutes: number,
-	viewType: TimeTableViewType,
-) {
-	const itemsWithSameStartAndEnd: I[] = []
-	const itemsOutsideRange = items.filter((it) => {
-		if (it.startDate.isSame(it.endDate)) {
-			itemsWithSameStartAndEnd.push(it)
-			return false
-		}
-		if (slotsArray.length === 0) {
-			console.info(
-				"timeTableUtils - itemsOutsideOfDayRange - no slotsArray",
-			)
-			return false
-		}
-		const startAndEndSlot = getStartAndEndSlot(
-			it,
-			slotsArray,
-			timeFrameDay,
-			timeSlotMinutes,
-			viewType,
-		)
-		return (
-			startAndEndSlot.status === "after" ||
-			startAndEndSlot.status === "before"
-		)
-	})
-	return { itemsOutsideRange, itemsWithSameStartAndEnd }
 }
