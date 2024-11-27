@@ -561,7 +561,7 @@ export function getStartAndEndSlot(
 		}
 	}
 	if (startSlot === -1) {
-		startSlot = 0
+		startSlot = slotsArray.length - 1
 	}
 
 	let endSlot = slotsArray.findIndex((slot) => slot.isAfter(item.endDate))

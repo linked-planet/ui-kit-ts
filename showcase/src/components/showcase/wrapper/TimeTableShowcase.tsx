@@ -44,7 +44,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 		},
 		items: [],
 	},
-	{
+	/*{
 		group: {
 			id: "group-1",
 			title: "Group 1",
@@ -343,7 +343,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 7-1",
 			},
 		],
-	},
+	},*/
 ]
 
 function createTestItems(
@@ -419,8 +419,8 @@ function createMoreTestGroups(
 	return newGroups
 }
 
-const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
-const endDateInitial = dayjs().startOf("day").add(5, "days").add(23, "hours")
+const startDateInitial = dayjs().startOf("day").add(-1, "day")
+const endDateInitial = dayjs().startOf("day").add(6, "days")
 
 function TestCustomHeaderRowTimeSlot<
 	G extends TimeTableTypes.TimeTableGroup,
@@ -435,10 +435,13 @@ function TestCustomHeaderRowTimeSlot<
 	entries,
 	tableCellRef,
 }: TimeTableTypes.CustomHeaderRowTimeSlotProps<G, I>) {
-	const groupItems = entries[1].items
+	const groupItems = entries[0].items
+	if (!groupItems.length) {
+		return null
+	}
 
 	const groupItemsOfCell: I[] = []
-	const startAndEndInSlow: {
+	const startAndEndInSlot: {
 		status: "in" | "before" | "after"
 		startSlot: number
 		endSlot: number
@@ -454,12 +457,15 @@ function TestCustomHeaderRowTimeSlot<
 		)
 		if (slotsArray[startAndEnd.startSlot] === timeSlot) {
 			groupItemsOfCell.push(item)
-			startAndEndInSlow.push(startAndEnd)
+			startAndEndInSlot.push(startAndEnd)
 		}
+	}
+	if (!groupItemsOfCell.length) {
+		return null
 	}
 
 	const leftAndWidths = groupItemsOfCell.map((it, i) => {
-		const startAndEnd = startAndEndInSlow[i]
+		const startAndEnd = startAndEndInSlot[i]
 		if (startAndEnd.status === "before" || startAndEnd.status === "after") {
 			return null
 		}
@@ -473,6 +479,10 @@ function TestCustomHeaderRowTimeSlot<
 			timeSlotMinutes,
 		)
 	})
+
+	if (entries[0].items.length) {
+		console.log("LEFT", entries[0].items, leftAndWidths, startAndEndInSlot)
+	}
 
 	const cellWidth = tableCellRef.current?.offsetWidth ?? 70
 
@@ -506,7 +516,7 @@ function CustomHeaderRowHeader<
 }: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
 	return (
 		<div className="bg-surface-pressed">
-			{entries[1].group.title} has {entries.length} entries
+			{entries[0].group.title} has {entries.length} entries
 		</div>
 	)
 }
@@ -647,6 +657,7 @@ function Example() {
 	)
 
 	useEffect(() => {
+		/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
@@ -658,8 +669,7 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
-		requestMoreEntriesCB()
-		requestMoreEntriesCB()
+		requestMoreEntriesCB()*/
 		/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
