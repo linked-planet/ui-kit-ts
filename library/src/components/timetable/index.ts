@@ -18,15 +18,10 @@ export type { TimeTableItemProps } from "./ItemWrapper"
 export type { TimeTablePlaceholderItemProps } from "./PlaceholderItem"
 import type { TimeFrameDay as _TimeFrameDay } from "./TimeTableConfigStore"
 
-import {
-	getLeftAndWidth,
-	getStartAndEndSlot,
-	itemsOutsideOfDayRangeORSameStartAndEnd,
-} from "./timeTableUtils"
+import { getLeftAndWidth, getStartAndEndSlot } from "./timeTableUtils"
 export const timeTableUtils = {
 	getLeftAndWidth,
 	getStartAndEndSlot,
-	itemsOutsideOfDayRangeORSameStartAndEnd,
 }
 
 //const memoized = React.memo(TimeTable) as typeof TimeTable

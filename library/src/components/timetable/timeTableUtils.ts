@@ -546,7 +546,13 @@ export function getStartAndEndSlot(
 		}
 	}
 
-	let startSlot = slotsArray.findIndex((slot) => slot.isAfter(item.startDate))
+	let startSlot = -1
+	for (let i = 0; i < slotsArray.length; i++) {
+		if (slotsArray[i].isAfter(item.startDate)) {
+			startSlot = i
+			break
+		}
+	}
 	if (startSlot > 0) {
 		// if the item starts in the middle of a slot, we need to go back one slot to get the start slot
 		// but only if the time slot before is on the same day, else it means that the booking starts before the time frame range of the day
@@ -561,10 +567,17 @@ export function getStartAndEndSlot(
 		}
 	}
 	if (startSlot === -1) {
+		//startSlot = slotsArray.length - 1
 		startSlot = slotsArray.length - 1
 	}
 
-	let endSlot = slotsArray.findIndex((slot) => slot.isAfter(item.endDate))
+	let endSlot = -1
+	for (let i = startSlot; i < slotsArray.length; i++) {
+		if (slotsArray[i].isAfter(item.endDate)) {
+			endSlot = i
+			break
+		}
+	}
 	if (endSlot === -1) {
 		endSlot = slotsArray.length - 1
 	} else {
@@ -605,40 +618,4 @@ export function getStartAndEndSlot(
 	}
 
 	return { startSlot, endSlot, status: "in" }
-}
-
-export function itemsOutsideOfDayRangeORSameStartAndEnd<
-	I extends TimeSlotBooking,
->(
-	items: I[],
-	slotsArray: readonly Dayjs[],
-	timeFrameDay: TimeFrameDay,
-	timeSlotMinutes: number,
-	viewType: TimeTableViewType,
-) {
-	const itemsWithSameStartAndEnd: I[] = []
-	const itemsOutsideRange = items.filter((it) => {
-		if (it.startDate.isSame(it.endDate)) {
-			itemsWithSameStartAndEnd.push(it)
-			return false
-		}
-		if (slotsArray.length === 0) {
-			console.info(
-				"timeTableUtils - itemsOutsideOfDayRange - no slotsArray",
-			)
-			return false
-		}
-		const startAndEndSlot = getStartAndEndSlot(
-			it,
-			slotsArray,
-			timeFrameDay,
-			timeSlotMinutes,
-			viewType,
-		)
-		return (
-			startAndEndSlot.status === "after" ||
-			startAndEndSlot.status === "before"
-		)
-	})
-	return { itemsOutsideRange, itemsWithSameStartAndEnd }
 }

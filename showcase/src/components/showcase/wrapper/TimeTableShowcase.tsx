@@ -666,7 +666,6 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
-		/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
@@ -684,7 +683,8 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
-		requestMoreEntriesCB()*/
+		requestMoreEntriesCB()
+		requestMoreEntriesCB()
 	}, [requestMoreEntriesCB])
 
 	return (

@@ -194,7 +194,7 @@ export interface LPTimeTableProps<
 
 	/**
 	 * renderBatch tells how many groups are calculated in one step and rendered. This is useful for large time tables, where the rendering takes a long time.
-	 * @default 10
+	 * @default 1
 	 */
 	renderBatch?: number
 }
@@ -217,7 +217,7 @@ export default function LPTimeTable<
 	)
 }
 
-export let timeTableGroupRenderBatchSize = 10
+export let timeTableGroupRenderBatchSize = 1
 
 /**
  * The LPTimeTable depends on the localization messages. It needs to be wrapped in an
