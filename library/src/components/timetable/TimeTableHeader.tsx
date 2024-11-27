@@ -103,8 +103,8 @@ type TimeTableHeaderProps<
 
 	entries: TimeTableEntry<G, I>[]
 	customHeaderRow?: {
-		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => JSX.Element
-		header: (props: CustomHeaderRowHeaderProps<G, I>) => JSX.Element
+		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => React.ReactNode
+		header: (props: CustomHeaderRowHeaderProps<G, I>) => React.ReactNode
 	}
 
 	tableHeaderRef: React.Ref<HTMLTableSectionElement>
@@ -356,8 +356,8 @@ function CustomHeaderRowCell<
 	slotsArray: readonly Dayjs[]
 	showTimeSlotHeader: boolean
 	customHeaderRow: {
-		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => JSX.Element
-		header: (props: CustomHeaderRowHeaderProps<G, I>) => JSX.Element
+		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => React.ReactNode
+		header: (props: CustomHeaderRowHeaderProps<G, I>) => React.ReactNode
 	}
 }) {
 	// this is the same as in the TableCell component

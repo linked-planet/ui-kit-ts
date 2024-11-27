@@ -188,7 +188,7 @@ export interface LPTimeTableProps<
 
 	/** custom header row */
 	customHeaderRow?: {
-		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => JSX.Element
+		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => React.ReactNode
 		header: (props: CustomHeaderRowHeaderProps<G, I>) => JSX.Element
 	}
 
