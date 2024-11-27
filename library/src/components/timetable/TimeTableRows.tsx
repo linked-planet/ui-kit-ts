@@ -41,7 +41,7 @@ import {
 } from "./TimeTableSelectionStore"
 import type { ItemRowEntry } from "./useGoupRows"
 import { getLeftAndWidth } from "./timeTableUtils"
-import { useDebounceHelper, useRateLimitHelper } from "../../utils"
+import { useDebounceHelper, useIdleRateLimitHelper } from "../../utils"
 
 interface TimeTableRowsProps<
 	G extends TimeTableGroup,
@@ -67,7 +67,7 @@ interface TimeTableRowsProps<
 }
 
 const intersectionStackDelay = 1
-const rateLimiting = 1
+const idleTimeout = 100
 const rowsMargin = 1
 
 /**
@@ -137,8 +137,8 @@ export default function TimeTableRows<
 		allPlaceholderRendered.current = false
 	}
 
-	const rateLimiterIntersection = useRateLimitHelper(rateLimiting)
-	const rateLimiterRendering = useRateLimitHelper(rateLimiting)
+	const rateLimiterIntersection = useIdleRateLimitHelper(idleTimeout)
+	const rateLimiterRendering = useIdleRateLimitHelper(idleTimeout)
 	const debounceIntersection = useDebounceHelper(intersectionStackDelay)
 
 	// handle intersection is called after intersectionStackDelay ms to avoid too many calls

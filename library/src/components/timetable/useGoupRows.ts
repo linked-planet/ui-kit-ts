@@ -17,7 +17,7 @@ import {
 	itemsOutsideOfDayRangeORSameStartAndEnd,
 } from "./timeTableUtils"
 import { useCallback, useRef, useState } from "react"
-import { useRateLimitHelper } from "../../utils"
+import { useIdleRateLimitHelper } from "../../utils"
 
 /**
  * Contains the items of one group row (one row within one group)
@@ -29,7 +29,7 @@ export type ItemRowEntry<I extends TimeSlotBooking = TimeSlotBooking> = {
 	status: "before" | "after" | "in" // before: starts and ends before the time slot, after: starts and ends after the time slot, in: overlaps the time slot
 }
 
-const rateLimiting = 1
+const idleTimeout = 100
 
 export function useGroupRows<
 	G extends TimeTableGroup,
@@ -198,7 +198,7 @@ export function useGroupRows<
 		setCalcBatch((prev) => (prev > 10 ? prev - 1 : prev + 1))
 	}, [slotsArray, timeFrameDay, timeSlotMinutes, viewType])
 
-	const rateLimiterCalc = useRateLimitHelper(rateLimiting)
+	const rateLimiterCalc = useIdleRateLimitHelper(idleTimeout)
 
 	if (requireNewGroupRows) {
 		currentEntries.current = entries

@@ -1,10 +1,13 @@
 import { debounceHelper, useDebounceHelper } from "./debounce"
 import { getPortal } from "./getPortal"
 import { rateLimitHelper, useRateLimitHelper } from "./rateLimit"
+import { idleRateLimitHelper, useIdleRateLimitHelper } from "./idleRateLimit"
 
 export {
 	rateLimitHelper,
 	useRateLimitHelper,
+	idleRateLimitHelper,
+	useIdleRateLimitHelper,
 	debounceHelper,
 	useDebounceHelper,
 	getPortal,

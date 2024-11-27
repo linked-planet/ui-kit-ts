@@ -546,7 +546,13 @@ export function getStartAndEndSlot(
 		}
 	}
 
-	let startSlot = slotsArray.findIndex((slot) => slot.isAfter(item.startDate))
+	let startSlot = -1
+	for (let i = 0; i < slotsArray.length; i++) {
+		if (slotsArray[i].isAfter(item.startDate)) {
+			startSlot = i
+			break
+		}
+	}
 	if (startSlot > 0) {
 		// if the item starts in the middle of a slot, we need to go back one slot to get the start slot
 		// but only if the time slot before is on the same day, else it means that the booking starts before the time frame range of the day
@@ -564,7 +570,13 @@ export function getStartAndEndSlot(
 		startSlot = slotsArray.length - 1
 	}
 
-	let endSlot = slotsArray.findIndex((slot) => slot.isAfter(item.endDate))
+	let endSlot = -1
+	for (let i = startSlot; i < slotsArray.length; i++) {
+		if (slotsArray[i].isAfter(item.endDate)) {
+			endSlot = i
+			break
+		}
+	}
 	if (endSlot === -1) {
 		endSlot = slotsArray.length - 1
 	} else {
