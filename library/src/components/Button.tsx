@@ -1,5 +1,11 @@
 import type React from "react"
-import { type CSSProperties, forwardRef, type HTMLProps, useMemo } from "react"
+import {
+	type CSSProperties,
+	forwardRef,
+	type HTMLProps,
+	useMemo,
+	useRef,
+} from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { LoadingSpinner } from "./LoadingSpinner"
 
@@ -204,6 +210,10 @@ export const LoadingButton = ({
 	loadingSpinnerClassName,
 	...props
 }: ButtonProps & { loading: boolean; loadingSpinnerClassName?: string }) => {
+	const ref = useRef<HTMLDivElement>(null)
+
+	const height = ref.current?.clientHeight ?? 0
+
 	return (
 		<Button
 			iconAfter={!loading && iconAfter}
@@ -211,18 +221,21 @@ export const LoadingButton = ({
 			{...props}
 		>
 			<div className={loading ? "opacity-0" : undefined}>{children}</div>
-			{loading && (
-				<div className="absolute inset-0 flex items-center justify-center">
-					<LoadingSpinner
-						className={twMerge(
-							loadingSpinnerClassNames[
-								props.appearance ?? "default"
-							],
-							loadingSpinnerClassName,
-						)}
-					/>
-				</div>
-			)}
+			<div
+				className={`absolute inset-0 flex items-center justify-center ${loading ? "" : "opacity-0"}`}
+				ref={ref}
+			>
+				<LoadingSpinner
+					className={twMerge(
+						loadingSpinnerClassNames[props.appearance ?? "default"],
+						loadingSpinnerClassName,
+					)}
+					style={{
+						height: `${height * 0.8}px`,
+						width: `${height * 0.8}px`,
+					}}
+				/>
+			</div>
 		</Button>
 	)
 }

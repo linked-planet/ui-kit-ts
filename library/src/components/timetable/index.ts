@@ -60,3 +60,6 @@ export namespace TimeTableTypes {
 		I extends TimeSlotBooking,
 	> = LPTimeTableProps<G, I>
 }
+
+/** Evnts */
+export { allGroupsRenderedEvent } from "./TimeTableRows"

@@ -43,6 +43,8 @@ import type { ItemRowEntry } from "./useGoupRows"
 import { getLeftAndWidth } from "./timeTableUtils"
 import { useDebounceHelper, useIdleRateLimitHelper } from "../../utils"
 
+export const allGroupsRenderedEvent = "timetable-allgroupsrendered" as const
+
 interface TimeTableRowsProps<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
@@ -464,13 +466,14 @@ export default function TimeTableRows<
 	if (groupRowsRenderedIdx < entries.length) {
 		rateLimiterRendering(renderBatch)
 	} else {
-		console.info(
-			"TimeTable - all group rows rendered",
-			groupRowsRenderedIdx,
-			entries.length,
-		)
 		if (!allPlaceholderRendered.current) {
+			console.info(
+				"TimeTable - all group rows rendered",
+				groupRowsRenderedIdx,
+				entries.length,
+			)
 			allPlaceholderRendered.current = true
+			window.dispatchEvent(new Event(allGroupsRenderedEvent))
 			// we need to render all placeholders
 			rateLimiterIntersection(handleIntersections)
 		}

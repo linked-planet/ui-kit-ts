@@ -205,6 +205,8 @@ const nowbarUpdateIntervall = 1000 * 60 // 1 minute
  * Each column in the table is actually 2 columns. 1 fixed size one, and 1 dynamic sized on. Like that I can simulate min-width on the columns, which else is not allowed.
  *
  * The index exports a memoized version of the LPTimeTable, which is used by the parent component.
+ *
+ * @emits allGroupsRendered (exported, string: timetable-allgroupsrendered) - when all groups are rendered
  */
 export default function LPTimeTable<
 	G extends TimeTableGroup,

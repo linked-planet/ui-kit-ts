@@ -7689,6 +7689,7 @@ import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
+import { allGroupsRenderedEvent } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableRows"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -8191,6 +8192,10 @@ function CustomHeaderRowHeader<
 	)
 }
 
+window.addEventListener(allGroupsRenderedEvent, () => {
+	console.info("All groups rendered")
+})
+
 function Example() {
 	//#region timetable
 
@@ -8581,6 +8586,15 @@ function Example() {
 					className="mb-2 mr-2"
 				>
 					Create New Item
+				</Button>
+				<Button
+					onClick={() => {
+						setEntries([])
+					}}
+					title="Replace Groups and Items"
+					className="mb-2 mr-2"
+				>
+					Replace Groups and Items
 				</Button>
 			</div>
 			<div
