@@ -36,7 +36,7 @@ import {
 } from "./TimeTableSelectionStore"
 import { useGroupRows } from "./useGoupRows"
 import { twMerge } from "tailwind-merge"
-import { getStartAndEndSlot } from "./timeTableUtils"
+import { getStartAndEndSlot, getTimeSlotMinutes } from "./timeTableUtils"
 import { flushSync } from "react-dom"
 
 export interface TimeSlotBooking {
@@ -272,7 +272,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	// biome-ignore lint/correctness/useExhaustiveDependencies: just remove the message is props change
 	useEffect(() => {
 		setMessage?.(undefined) // clear the message on time frame change
-	}, [viewType, startDate, endDate, setMessage, timeStepsMinutes])
+	}, [startDate, endDate, setMessage, timeStepsMinutes])
 
 	const tableRef = useRef<HTMLTableElement>(null)
 	const tableHeaderRef = useRef<HTMLTableSectionElement>(null)
@@ -318,7 +318,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		itemsWithSameStartAndEnd,
 		slotsArray,
 		timeFrameDay,
-		timeSlotMinutes,
+		viewType: currViewType,
 	} = useGroupRows(entries)
 
 	if (!slotsArray || slotsArray.length === 0) {
@@ -403,18 +403,10 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			tableHeaderRef,
 			tableBodyRef,
 			timeFrameDay,
-			timeSlotMinutes,
-			viewType,
+			currViewType,
 			setMessage,
 		)
-	}, [
-		slotsArray,
-		nowOverwrite,
-		timeFrameDay,
-		timeSlotMinutes,
-		viewType,
-		setMessage,
-	])
+	}, [slotsArray, nowOverwrite, timeFrameDay, currViewType, setMessage])
 
 	// initial run, and start interval to move the now bar
 	useEffect(() => {
@@ -441,11 +433,10 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			tableHeaderRef,
 			tableBodyRef,
 			timeFrameDay,
-			timeSlotMinutes,
-			viewType,
+			currViewType,
 			setMessage,
 		)
-	}, [setMessage, slotsArray, timeFrameDay, timeSlotMinutes, viewType])
+	}, [setMessage, slotsArray, timeFrameDay, currViewType])
 
 	useResizeObserver({
 		ref: tableBodyRef,
@@ -509,12 +500,11 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					>
 						<LPTimeTableHeader<G, I>
 							slotsArray={slotsArray}
-							timeSlotMinutes={timeSlotMinutes}
 							columnWidth={columnWidth}
 							groupHeaderColumnWidth={groupHeaderColumnWidth}
 							startDate={startDate}
 							endDate={endDate}
-							viewType={viewType}
+							viewType={currViewType}
 							timeFrameDay={timeFrameDay}
 							showTimeSlotHeader={
 								showTimeSlotHeader === undefined ||
@@ -541,9 +531,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								}
 								headerRef={tableHeaderRef}
 								slotsArray={slotsArray}
-								timeSlotMinutes={timeSlotMinutes}
 								timeFrameDay={timeFrameDay}
-								viewType={viewType}
+								viewType={currViewType}
 							/>
 						</tbody>
 					</table>
@@ -570,7 +559,6 @@ function moveNowBar(
 	tableHeaderRef: MutableRefObject<HTMLTableSectionElement | null>,
 	tableBodyRef: MutableRefObject<HTMLTableSectionElement | null>,
 	timeFrameDay: TimeFrameDay,
-	timeSlotMinutes: number,
 	viewType: TimeTableViewType,
 	setMessage?: (message: TimeTableMessage) => void,
 ) {
@@ -625,7 +613,6 @@ function moveNowBar(
 		nowItem,
 		slotsArray,
 		timeFrameDay,
-		timeSlotMinutes,
 		viewType,
 	)
 	if (startAndEndSlot.status !== "in") {
@@ -686,19 +673,13 @@ function moveNowBar(
 		nowBarRef.current = nowBar
 	}
 
-	let currentTimeSlot = slotsArray[startSlot]
-	if (viewType !== "hours") {
-		currentTimeSlot = currentTimeSlot
-			.add(timeFrameDay.startHour, "hour")
-			.add(timeFrameDay.startMinute, "minute")
-	}
-
-	const diffNowDays = now.diff(currentTimeSlot, "days")
-	let diffNow = now.diff(currentTimeSlot, "minutes")
-	if (diffNowDays > 0) {
-		const dDay = 24 * 60 - timeFrameDay.oneDayMinutes
-		diffNow = diffNow - dDay * diffNowDays
-	}
+	const currentTimeSlot = slotsArray[startSlot]
+	const timeSlotMinutes = getTimeSlotMinutes(
+		currentTimeSlot,
+		timeFrameDay,
+		viewType,
+	)
+	const diffNow = now.diff(currentTimeSlot, "minutes")
 
 	const diffPerc = diffNow / timeSlotMinutes
 	nowBar.style.left = `${diffPerc * 100}%`
@@ -729,6 +710,7 @@ function moveNowBar(
 		console.error("unable to find header date row")
 		return
 	}
+
 	const headerDateCells = headerDateRow.children
 	for (const headerDateCell of headerDateCells) {
 		headerDateCell.classList.remove("text-text-subtle")

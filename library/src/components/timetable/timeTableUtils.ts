@@ -4,6 +4,7 @@ dayjs.extend(isoWeek)
 import type { TimeSlotBooking, TimeTableViewType } from "./TimeTable"
 import type { TimeTableMessage } from "./TimeTableMessageContext"
 import type { TimeFrameDay } from "./TimeTableConfigStore"
+import { assertUnreachable } from "../../utils/assertUnreachable"
 
 export function isOverlapping(
 	item: TimeSlotBooking,
@@ -210,7 +211,7 @@ export function calculateTimeSlotPropertiesForView(
 ): {
 	timeFrameDay: TimeFrameDay
 	slotsArray: Dayjs[]
-	timeSlotMinutes: number
+	viewType: TimeTableViewType
 } {
 	const startHour = startDate.hour()
 	const startMinute = startDate.minute()
@@ -236,7 +237,7 @@ export function calculateTimeSlotPropertiesForView(
 				oneDayMinutes: 0,
 			},
 			slotsArray: [],
-			timeSlotMinutes: 0,
+			viewType,
 		}
 	}
 
@@ -247,7 +248,7 @@ export function calculateTimeSlotPropertiesForView(
 			timeStepsMinute,
 			setMessage,
 		)
-		return Object.freeze(res)
+		return Object.freeze({ ...res, viewType })
 	}
 
 	// get the actual end time fitting to the time slots
@@ -329,12 +330,27 @@ export function calculateTimeSlotPropertiesForView(
 		.startOf("day")
 		.add(1, unit)
 		.diff(dayjs().startOf("day"), "days")
-	const timeSlotMinutes = unitDays * oneDayMinutes
+	//const timeSlotMinutes = unitDays * oneDayMinutes
+	let timeSlotMinutes = timeStepsMinute
+	switch (viewType) {
+		case "days": {
+			timeSlotMinutes = oneDayMinutes
+			break
+		}
+		case "weeks": {
+			timeSlotMinutes = 6 * 24 * 60 + oneDayMinutes
+			break
+		}
+		case "months": {
+			timeSlotMinutes = 29 * 24 * 60 + oneDayMinutes
+			break
+		}
+	}
 
 	return Object.freeze({
 		timeFrameDay,
 		slotsArray,
-		timeSlotMinutes,
+		viewType,
 	})
 }
 
@@ -345,6 +361,8 @@ export function calculateTimeSlotPropertiesForView(
  * @param endSlot
  * @param slotsArray
  * @param timeSteps
+ * @param timeFrameDay
+ * @param viewType
  */
 export function getLeftAndWidth(
 	item: TimeSlotBooking,
@@ -353,7 +371,6 @@ export function getLeftAndWidth(
 	slotsArray: readonly Dayjs[],
 	timeFrameDay: TimeFrameDay,
 	viewType: TimeTableViewType,
-	timeSlotMinutes: number,
 ) {
 	let itemModStart = item.startDate
 	const timeFrameStartStart = slotsArray[0]
@@ -391,20 +408,22 @@ export function getLeftAndWidth(
 		)
 		itemModEnd = itemModStart
 	} else {
-		let timeFrameEndEnd = slotsArray[slotsArray.length - 1].add(
+		const timeSlotMinutes = getTimeSlotMinutes(
+			slotsArray[slotsArray.length - 1],
+			timeFrameDay,
+			viewType,
+		)
+		const timeFrameEndEnd = slotsArray[slotsArray.length - 1].add(
 			timeSlotMinutes,
 			"minutes",
 		)
-		if (viewType !== "hours") {
-			timeFrameEndEnd = timeFrameEndEnd
-				.add(1, viewType)
-				.subtract(1, "day")
-		}
+
 		if (itemModEnd.isAfter(timeFrameEndEnd)) {
 			itemModEnd = timeFrameEndEnd
 		} else if (item.endDate.hour() === 0 && item.endDate.minute() === 0) {
-			//itemModEnd = itemModEnd.subtract(1, "minute")
-			itemModEnd = timeFrameEndEnd
+			//itemModEnd = itemModEnd.subtract(1, "second") // this is a hack to make the end time of the day inclusive
+			//console.log("HACK APPLIED", itemModEnd)
+			//itemModEnd = timeFrameEndEnd
 			//.startOf("day")
 			//.add(timeFrameDay.endHour, "hour")
 			//.add(timeFrameDay.endMinute, "minutes")
@@ -414,6 +433,7 @@ export function getLeftAndWidth(
 				item.endDate.minute() > timeFrameDay.endMinute)
 		) {
 			if (timeFrameDay.endHour !== 0 && timeFrameDay.endMinute !== 0) {
+				console.log("WARG", item, itemModEnd, timeFrameDay)
 				itemModEnd = itemModEnd
 					.startOf("day")
 					.add(timeFrameDay.endHour, "hour")
@@ -422,19 +442,14 @@ export function getLeftAndWidth(
 		}
 	}
 
-	const dTimeDay = 24 * 60 - timeFrameDay.oneDayMinutes
+	const slotStart = slotsArray[startSlot]
+	const timeSlotMinutes = getTimeSlotMinutes(
+		slotStart,
+		timeFrameDay,
+		viewType,
+	)
 
-	let slotStart = slotsArray[startSlot]
-	if (viewType !== "hours") {
-		slotStart = slotStart
-			.add(timeFrameDay.startHour, "hour")
-			.add(timeFrameDay.startMinute, "minutes")
-	}
-	const dstartDays = itemModStart.diff(slotStart, "day")
-	let dstartMin = itemModStart.diff(slotStart, "minute")
-	if (dstartDays > 0) {
-		dstartMin -= dstartDays * dTimeDay
-	}
+	const dstartMin = itemModStart.diff(slotStart, "minute")
 	let left = dstartMin / timeSlotMinutes
 	if (left < 0) {
 		console.error(
@@ -450,11 +465,7 @@ export function getLeftAndWidth(
 		left = 0
 	}
 
-	const timeSpanDays = itemModEnd.diff(itemModStart, "day")
-	let timeSpanMin = itemModEnd.diff(itemModStart, "minute")
-	if (timeSpanDays > 0) {
-		timeSpanMin -= timeSpanDays * dTimeDay
-	}
+	const timeSpanMin = itemModEnd.diff(itemModStart, "minute")
 	const width = timeSpanMin / timeSlotMinutes
 
 	/*let dmin = itemModEnd.diff(slotsArray[endSlot], "minute")
@@ -486,8 +497,6 @@ export function getLeftAndWidth(
 			slotsArray,
 			timeSlotMinutes,
 			timeSpanMin,
-			timeSpanDays,
-			dTimeDay,
 			itemModStart,
 			itemModEnd,
 		)
@@ -506,7 +515,6 @@ export function getStartAndEndSlot(
 	item: TimeSlotBooking,
 	slotsArray: readonly Dayjs[],
 	timeFrameDay: TimeFrameDay,
-	timeSlotMinutes: number,
 	viewType: TimeTableViewType,
 ): {
 	startSlot: number
@@ -519,16 +527,36 @@ export function getStartAndEndSlot(
 			.add(timeFrameDay.startHour, "hours")
 			.add(timeFrameDay.startMinute, "minutes")
 	}
-	let timeFrameEnd = slotsArray[slotsArray.length - 1].add(
-		timeSlotMinutes,
-		"minutes",
-	)
-	//.startOf("day")
-	//.add(timeFrameDay.endHour, "hours")
-	//.add(timeFrameDay.endMinute, "minutes")
-	if (viewType !== "hours") {
-		timeFrameEnd = timeFrameEnd.add(1, viewType).subtract(1, "day")
+	let timeFrameEnd = slotsArray[slotsArray.length - 1]
+	switch (viewType) {
+		case "hours":
+			timeFrameEnd = timeFrameEnd.add(1, "hour")
+			break
+		case "days":
+			timeFrameEnd = timeFrameEnd.add(
+				timeFrameDay.oneDayMinutes,
+				"minutes",
+			)
+			break
+		case "weeks":
+			timeFrameEnd = timeFrameEnd
+				.add(6, "days")
+				.add(timeFrameDay.oneDayMinutes, "minutes")
+			break
+		case "months":
+			timeFrameEnd = timeFrameEnd
+				.add(1, "month")
+				.subtract(1, "day")
+				.add(timeFrameDay.oneDayMinutes, "minutes")
+			break
+		case "years":
+			timeFrameEnd = timeFrameEnd
+				.add(1, "year")
+				.subtract(1, "day")
+				.add(timeFrameDay.oneDayMinutes, "minutes")
+			break
 	}
+
 	if (
 		item.endDate.isBefore(timeFrameStart) ||
 		item.endDate.isSame(timeFrameStart)
@@ -605,7 +633,7 @@ export function getStartAndEndSlot(
 
 	let endSlotEnd = slotsArray[endSlot]
 	if (viewType === "hours") {
-		endSlotEnd = endSlotEnd.add(timeSlotMinutes, "minutes")
+		endSlotEnd = endSlotEnd.add(60, "minutes")
 	} else {
 		endSlotEnd = endSlotEnd
 			.add(timeFrameDay.endHour, "hours")
@@ -618,4 +646,34 @@ export function getStartAndEndSlot(
 	}
 
 	return { startSlot, endSlot, status: "in" }
+}
+
+export function getTimeSlotMinutes(
+	slotStart: Dayjs,
+	timeFrameDay: TimeFrameDay,
+	viewType: TimeTableViewType,
+) {
+	switch (viewType) {
+		case "hours":
+			return 60
+		case "days":
+			return timeFrameDay.oneDayMinutes
+		case "weeks":
+			return 6 * 24 * 60 + timeFrameDay.oneDayMinutes
+		case "months":
+			return slotStart
+				.add(1, "month")
+				.subtract(1, "day")
+				.add(timeFrameDay.oneDayMinutes, "minutes")
+				.diff(slotStart, "minutes")
+		case "years":
+			return slotStart
+				.add(1, "year")
+				.subtract(1, "day")
+				.add(timeFrameDay.oneDayMinutes, "minutes")
+				.diff(slotStart, "minutes")
+
+		default:
+			assertUnreachable(viewType)
+	}
 }

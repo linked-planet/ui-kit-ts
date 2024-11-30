@@ -2,6 +2,7 @@ import { proxy, snapshot, useSnapshot } from "valtio"
 import type { TimeTableGroup } from "./TimeTable"
 import { getTTCBasicProperties } from "./TimeTableConfigStore"
 import type { Dayjs } from "dayjs"
+import { getTimeSlotMinutes } from "./timeTableUtils"
 
 export type onTimeRangeSelectedType<G extends TimeTableGroup> =
 	| React.Dispatch<
@@ -154,7 +155,6 @@ function setTimeSlotSelectionByDateRange<G extends TimeTableGroup>(
 
 	const basicConfig = getTTCBasicProperties(ident)
 	const slotsArray = basicConfig.slotsArray
-	const timeSlotMinutes = basicConfig.timeSlotMinutes
 
 	// find the time range in the slots array
 	const newSlots: number[] = []
@@ -163,6 +163,13 @@ function setTimeSlotSelectionByDateRange<G extends TimeTableGroup>(
 		if (!newSlots.length && slot.isSame(startDate)) {
 			newSlots.push(i)
 		}
+
+		const timeSlotMinutes = getTimeSlotMinutes(
+			slot,
+			basicConfig.timeFrameDay,
+			basicConfig.viewType,
+		)
+
 		const slotEnd = slot.add(timeSlotMinutes, "minutes")
 		if (
 			newSlots.length &&
@@ -363,8 +370,13 @@ function notifyOnTimeRangeSelected<G extends TimeTableGroup>(
 
 		const basicProps = getTTCBasicProperties(ident)
 		const startDate = basicProps.slotsArray[firstSlot]
+		const timeSlotMinutes = getTimeSlotMinutes(
+			basicProps.slotsArray[lastSlot],
+			basicProps.timeFrameDay,
+			basicProps.viewType,
+		)
 		const endDate = basicProps.slotsArray[lastSlot].add(
-			basicProps.timeSlotMinutes,
+			timeSlotMinutes,
 			"minutes",
 		)
 		store.onTimeRangeSelected({ group, startDate, endDate })

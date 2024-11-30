@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { useState } from "react"
 import dayjs, { type Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -456,7 +456,6 @@ function TestCustomHeaderRowTimeSlot<
 			item,
 			slotsArray,
 			timeFrameOfDay,
-			timeSlotMinutes,
 			viewType,
 		)
 		if (slotsArray[startAndEnd.startSlot] === timeSlot) {
@@ -480,7 +479,6 @@ function TestCustomHeaderRowTimeSlot<
 			slotsArray,
 			timeFrameOfDay,
 			viewType,
-			timeSlotMinutes,
 		)
 	})
 
@@ -663,7 +661,7 @@ function Example() {
 		[],
 	)
 
-	/*useEffect(() => {
+	useEffect(() => {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
@@ -696,9 +694,7 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
-	}, [requestMoreEntriesCB])*/
-
-	console.log("ENTRIES", entries)
+	}, [requestMoreEntriesCB])
 
 	return (
 		<>
@@ -924,6 +920,16 @@ function Example() {
 				<Button
 					onClick={() => {
 						setEntries([])
+					}}
+					title="Clear Groups and Items"
+					className="mb-2 mr-2"
+				>
+					Clear Groups and Items
+				</Button>
+				<Button
+					onClick={() => {
+						setEntries([])
+						setEntries(exampleEntries)
 					}}
 					title="Replace Groups and Items"
 					className="mb-2 mr-2"

@@ -1573,6 +1573,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 				loading={isLoading}
 				iconBefore={<SearchIcon label="" />}
 				iconAfter={<SearchIcon label="" />}
+				className="h-6"
 			>
 				Icon Loading Button
 			</LoadingButton>
@@ -6366,7 +6367,7 @@ function SelectShowcase(props: ShowcaseProps) {
 				}}
 				isMulti
 				options={options}
-				value={options[4]}
+				defaultValue={options[4]}
 				/** adding some custom classnames to the styling */
 				classNames={{
 					control: () => "bg-warning",
@@ -7672,7 +7673,7 @@ function TextFieldShowcase(props: ShowcaseProps) {
 
 export default TextFieldShowcase
 
-import { useCallback, useEffect, useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import { useState } from "react"
 import dayjs, { type Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -7712,7 +7713,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	ExampleGroup,
 	ExampleItem
 >[] = [
-	{
+	/*{
 		group: {
 			id: "group-empty",
 			title: "Empty Group",
@@ -7972,7 +7973,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 5-3",
 			},
 		],
-	},
+	},*/
 	{
 		group: {
 			id: "group-6",
@@ -7980,7 +7981,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			subtitle: "Whole Time Frame",
 		},
 		items: [
-			{
+			/*{
 				// this case ends after the end of the day and starts before
 				startDate: dayjs().startOf("day").add(7, "hours"),
 				endDate: dayjs().startOf("day").add(12, "hours"),
@@ -7991,7 +7992,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				startDate: dayjs().startOf("day").add(12, "hours"),
 				endDate: dayjs().startOf("day").add(16, "hours"),
 				title: "Item 6-1-1",
-			},
+			},*/
 			{
 				startDate: dayjs().startOf("day").add(1, "day"),
 				endDate: dayjs().startOf("day").add(2, "day"),
@@ -8004,7 +8005,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			},
 		],
 	},
-	{
+	/*{
 		group: {
 			id: "group-7",
 			title: "Group 7 (Full Day)",
@@ -8018,7 +8019,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 7-1",
 			},
 		],
-	},
+	},*/
 ]
 
 function createTestItems(
@@ -8110,6 +8111,9 @@ function TestCustomHeaderRowTimeSlot<
 	entries,
 	tableCellRef,
 }: TimeTableTypes.CustomHeaderRowTimeSlotProps<G, I>) {
+	if (!entries || !entries[1]) {
+		return null
+	}
 	const groupItems = entries[1].items
 	if (!groupItems.length) {
 		return null
@@ -8185,6 +8189,9 @@ function CustomHeaderRowHeader<
 	viewType,
 	entries,
 }: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
+	if (!entries || !entries[1]) {
+		return <></>
+	}
 	return (
 		<div className="bg-surface-pressed">
 			{entries[1].group.title} has {entries.length} entries
@@ -8331,7 +8338,7 @@ function Example() {
 		[],
 	)
 
-	useEffect(() => {
+	/*useEffect(() => {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
@@ -8364,7 +8371,7 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
-	}, [requestMoreEntriesCB])
+	}, [requestMoreEntriesCB])*/
 
 	return (
 		<>
@@ -8590,6 +8597,16 @@ function Example() {
 				<Button
 					onClick={() => {
 						setEntries([])
+					}}
+					title="Clear Groups and Items"
+					className="mb-2 mr-2"
+				>
+					Clear Groups and Items
+				</Button>
+				<Button
+					onClick={() => {
+						setEntries([])
+						setEntries(exampleEntries)
 					}}
 					title="Replace Groups and Items"
 					className="mb-2 mr-2"
