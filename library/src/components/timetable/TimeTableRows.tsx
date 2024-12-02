@@ -194,6 +194,7 @@ export default function TimeTableRows<
 				}
 			} else {
 				// not yet rendered
+				console.log("TimeTable - placeholder not yet rendered", i)
 				return
 			}
 		}
@@ -269,6 +270,7 @@ export default function TimeTableRows<
 			const ret = prev >= newOne ? newOne : prev
 			if (ret === newOne) {
 				allPlaceholderRendered.current = false
+				groupRowsRenderedIdxRef.current = newOne
 			}
 			return ret
 		})
