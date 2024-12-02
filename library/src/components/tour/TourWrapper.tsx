@@ -20,11 +20,13 @@ export class TourStep {
 		onPrepare,
 		onInit,
 		onExit,
+		onPrevious,
 	}: {
 		step: TourStepProps
 		onPrepare?: () => void
 		onInit?: () => void
 		onExit?: () => void
+		onPrevious?: () => void
 	}) {
 		const content = (
 			<div className={this.contentClassname}>{step.content}</div>
@@ -33,6 +35,7 @@ export class TourStep {
 		this.onInit = onInit
 		this.onPrepare = onPrepare
 		this.onExit = onExit
+		this.onPrevious = onPrevious
 	}
 
 	set step(step: Step) {
@@ -50,6 +53,8 @@ export class TourStep {
 	onPrepare?(): void
 
 	onExit?(): void
+
+	onPrevious?(): void
 }
 
 export interface TourProps {
@@ -160,6 +165,7 @@ export function Tour({
 							next(1)
 							break
 						case "prev":
+							steps[index]?.onPrevious?.()
 							steps[index - 1]?.onInit?.()
 							next(-1)
 							break

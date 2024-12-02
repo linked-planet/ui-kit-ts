@@ -194,7 +194,7 @@ export default function TimeTableRows<
 				}
 			} else {
 				// not yet rendered
-				console.log("NOT YET RENDERED", i, refCollection.current)
+				console.log("TimeTable - placeholder not yet rendered", i)
 				return
 			}
 		}
@@ -270,6 +270,7 @@ export default function TimeTableRows<
 			const ret = prev >= newOne ? newOne : prev
 			if (ret === newOne) {
 				allPlaceholderRendered.current = false
+				groupRowsRenderedIdxRef.current = newOne
 			}
 			return ret
 		})
@@ -319,7 +320,7 @@ export default function TimeTableRows<
 			// we need to push through an initial rendering of the group rows
 			// there fore we need to render one time until entries.length - 1
 
-			let start = groupRowsRenderedIdx
+			let start = groupRowsRenderedIdx < 0 ? 0 : groupRowsRenderedIdx
 
 			// removal of too many rendered elements
 			for (
@@ -328,7 +329,6 @@ export default function TimeTableRows<
 				g++
 			) {
 				if (groupRowsRendered.current[g]) {
-					console.log("REMOVING ", g, groupRowsRendered.current)
 					delete groupRowsRendered.current[g]
 					delete refCollection.current[g]
 					renderedCells.current.delete(g)
@@ -398,6 +398,9 @@ export default function TimeTableRows<
 						start,
 						increment,
 						entries,
+						renderCells.current,
+						startRender,
+						groupRowsRenderedIdx,
 					)
 					return groupRowsRenderedIdx
 				}
@@ -907,7 +910,8 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		: 1
 	const groupHeaderHeight =
 		rowHeight * rowCount +
-		(timeSlotSelectionDisabled ? 0 : placeHolderHeight)
+		(timeSlotSelectionDisabled ? 0 : placeHolderHeight) +
+		(renderCells ? 0 : 2) // the +1 on the placeholder should improve the behavior of the rounding (that the time table scrolls a bit after scrolling in the time table)
 	const GroupComponent = useGroupComponent(storeIdent)
 
 	const groupHeader = useMemo(() => {
@@ -940,7 +944,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				rowSpan={rowSpanGroupHeader}
 				className={
 					renderCells
-						? `border-border border-b-border m-0 p-0 sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${
+						? `border-border overflow-hidden box-border border-b-border m-0 p-0 sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${
 								groupNumber % 2 === 0
 									? "bg-surface"
 									: "bg-surface-hovered"

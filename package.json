@@ -141,7 +141,7 @@
 		"@vitejs/plugin-react-swc": "^3.7.2",
 		"autoprefixer": "^10.4.20",
 		"eslint-config-prettier": "^9.1.0",
-		"eslint-plugin-react-refresh": "^0.4.14",
+		"eslint-plugin-react-refresh": "^0.4.16",
 		"eslint-plugin-tailwindcss": "^3.17.5",
 		"postcss": "^8.4.49",
 		"prettier": "^3.4.1",
@@ -161,7 +161,7 @@
 		"typescript-plugin-css-modules": "^5.1.0",
 		"vite": "^6.0.2",
 		"vite-plugin-dts": "^4.3.0",
-		"vitest": "^2.1.6"
+		"vitest": "^2.1.8"
 	},
 	"peerDependencies": {
 		"axios": "^1.7.8",
