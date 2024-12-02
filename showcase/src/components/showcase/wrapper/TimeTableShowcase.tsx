@@ -479,6 +479,7 @@ function TestCustomHeaderRowTimeSlot<
 			slotsArray,
 			timeFrameOfDay,
 			viewType,
+			timeSlotMinutes,
 		)
 	})
 
@@ -517,7 +518,7 @@ function CustomHeaderRowHeader<
 	}
 	return (
 		<div className="bg-surface-pressed">
-			{entries[1].group.title} has {entries.length} entries
+			{entries[1].group.title} has {entries[1].items.length} entries
 		</div>
 	)
 }

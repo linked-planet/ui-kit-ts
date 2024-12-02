@@ -510,7 +510,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	slotsArray,
 	timeFrameDay,
 	viewType,
-	timeSlotMinutes,
 }: {
 	timeSlotNumber: number
 	group: G
@@ -522,7 +521,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 	slotsArray: readonly Dayjs[]
 	timeFrameDay: TimeFrameDay
-	timeSlotMinutes: number
 	viewType: TimeTableViewType
 }) {
 	const storeIdent = useTimeTableIdent()
@@ -551,6 +549,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const isLastSlotOfTheDay = timeSlotAfter
 		? timeSlotAfter.day() !== timeSlot.day()
 		: true
+
+	const timeSlotMinutes = getTimeSlotMinutes(timeSlot, timeFrameDay, viewType)
 
 	const cellDisabled =
 		isCellDisabled?.(
@@ -1039,12 +1039,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						)
 					: undefined
 
-				const timeSlotMinutes = getTimeSlotMinutes(
-					slotsArray[timeSlotNumber],
-					timeFrameDay,
-					viewType,
-				)
-
 				tds.push(
 					<TableCell<G, I>
 						key={`${groupNumber}-${timeSlotNumber}-${viewType}`}
@@ -1059,7 +1053,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						slotsArray={slotsArray}
 						timeFrameDay={timeFrameDay}
 						viewType={viewType}
-						timeSlotMinutes={timeSlotMinutes}
 					/>,
 				)
 			}

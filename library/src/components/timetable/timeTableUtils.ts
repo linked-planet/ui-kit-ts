@@ -363,6 +363,7 @@ export function calculateTimeSlotPropertiesForView(
  * @param timeSteps
  * @param timeFrameDay
  * @param viewType
+ * @param timeSlotMinutes
  */
 export function getLeftAndWidth(
 	item: TimeSlotBooking,
@@ -371,6 +372,7 @@ export function getLeftAndWidth(
 	slotsArray: readonly Dayjs[],
 	timeFrameDay: TimeFrameDay,
 	viewType: TimeTableViewType,
+	timeSlotMinutes: number,
 ) {
 	let itemModStart = item.startDate
 	const timeFrameStartStart = slotsArray[0]
@@ -408,13 +410,13 @@ export function getLeftAndWidth(
 		)
 		itemModEnd = itemModStart
 	} else {
-		const timeSlotMinutes = getTimeSlotMinutes(
+		const timeSlotMinutesLastTS = getTimeSlotMinutes(
 			slotsArray[slotsArray.length - 1],
 			timeFrameDay,
 			viewType,
 		)
 		const timeFrameEndEnd = slotsArray[slotsArray.length - 1].add(
-			timeSlotMinutes,
+			timeSlotMinutesLastTS,
 			"minutes",
 		)
 
@@ -443,11 +445,6 @@ export function getLeftAndWidth(
 	}
 
 	const slotStart = slotsArray[startSlot]
-	const timeSlotMinutes = getTimeSlotMinutes(
-		slotStart,
-		timeFrameDay,
-		viewType,
-	)
 
 	const dstartMin = itemModStart.diff(slotStart, "minute")
 	let left = dstartMin / timeSlotMinutes

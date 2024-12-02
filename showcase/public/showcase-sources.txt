@@ -7673,7 +7673,7 @@ function TextFieldShowcase(props: ShowcaseProps) {
 
 export default TextFieldShowcase
 
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { useState } from "react"
 import dayjs, { type Dayjs } from "dayjs"
 import ShowcaseWrapperItem, {
@@ -7713,7 +7713,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	ExampleGroup,
 	ExampleItem
 >[] = [
-	/*{
+	{
 		group: {
 			id: "group-empty",
 			title: "Empty Group",
@@ -7973,7 +7973,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 5-3",
 			},
 		],
-	},*/
+	},
 	{
 		group: {
 			id: "group-6",
@@ -7981,7 +7981,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			subtitle: "Whole Time Frame",
 		},
 		items: [
-			/*{
+			{
 				// this case ends after the end of the day and starts before
 				startDate: dayjs().startOf("day").add(7, "hours"),
 				endDate: dayjs().startOf("day").add(12, "hours"),
@@ -7992,7 +7992,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				startDate: dayjs().startOf("day").add(12, "hours"),
 				endDate: dayjs().startOf("day").add(16, "hours"),
 				title: "Item 6-1-1",
-			},*/
+			},
 			{
 				startDate: dayjs().startOf("day").add(1, "day"),
 				endDate: dayjs().startOf("day").add(2, "day"),
@@ -8005,7 +8005,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			},
 		],
 	},
-	/*{
+	{
 		group: {
 			id: "group-7",
 			title: "Group 7 (Full Day)",
@@ -8019,7 +8019,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 7-1",
 			},
 		],
-	},*/
+	},
 ]
 
 function createTestItems(
@@ -8131,7 +8131,6 @@ function TestCustomHeaderRowTimeSlot<
 			item,
 			slotsArray,
 			timeFrameOfDay,
-			timeSlotMinutes,
 			viewType,
 		)
 		if (slotsArray[startAndEnd.startSlot] === timeSlot) {
@@ -8338,7 +8337,7 @@ function Example() {
 		[],
 	)
 
-	/*useEffect(() => {
+	useEffect(() => {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
@@ -8371,7 +8370,7 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
-	}, [requestMoreEntriesCB])*/
+	}, [requestMoreEntriesCB])
 
 	return (
 		<>
