@@ -23,6 +23,7 @@ import type {
 } from "./TimeTable"
 import type { TimeFrameDay } from "./TimeTableConfigStore"
 import useResizeObserver, { type ObservedSize } from "use-resize-observer"
+import { getTimeSlotMinutes } from "./timeTableUtils"
 
 const headerTimeSlotFormat: { [viewType in TimeTableViewType]: string } = {
 	hours: "HH:mm",
@@ -88,7 +89,6 @@ type TimeTableHeaderProps<
 	I extends TimeSlotBooking,
 > = {
 	slotsArray: readonly Dayjs[]
-	timeSlotMinutes: number
 	groupHeaderColumnWidth: number | string
 	columnWidth: number | string
 	startDate: Dayjs
@@ -120,7 +120,6 @@ export const LPTimeTableHeader = function TimeTableHeader<
 	I extends TimeSlotBooking,
 >({
 	slotsArray,
-	timeSlotMinutes,
 	groupHeaderColumnWidth,
 	columnWidth,
 	startDate,
@@ -311,6 +310,11 @@ export const LPTimeTableHeader = function TimeTableHeader<
 							const isLastOfDay =
 								i === slotsArray.length - 1 ||
 								!slotsArray[i + 1].isSame(slot, "day")
+							const timeSlotMinutes = getTimeSlotMinutes(
+								slotsArray[i],
+								timeFrameDay,
+								viewType,
+							)
 							return (
 								<CustomHeaderRowCell
 									customHeaderRow={customHeaderRow}

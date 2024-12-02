@@ -8,7 +8,6 @@ import type {
 import {
 	getTTCBasicProperties,
 	type TimeFrameDay,
-	useTTCViewType,
 } from "./TimeTableConfigStore"
 import { useTimeTableIdent } from "./TimeTableIdentContext"
 import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
@@ -31,9 +30,8 @@ export function useGroupRows<
 	I extends TimeSlotBooking,
 >(entries: TimeTableEntry<G, I>[]) {
 	const storeIdent = useTimeTableIdent()
-	const { timeFrameDay, slotsArray, timeSlotMinutes } =
+	const { timeFrameDay, slotsArray, viewType } =
 		getTTCBasicProperties(storeIdent)
-	const viewType = useTTCViewType(storeIdent)
 
 	const currentEntries = useRef<TimeTableEntry<G, I>[]>()
 
@@ -49,7 +47,7 @@ export function useGroupRows<
 
 	const currentTimeSlots = useRef(slotsArray)
 	const currentTimeFrameDay = useRef(timeFrameDay)
-	const currentTimeSlotMinutes = useRef(timeSlotMinutes)
+	const currentViewType = useRef(viewType)
 
 	const [calcBatch, setCalcBatch] = useState<number>(-1)
 
@@ -57,7 +55,8 @@ export function useGroupRows<
 	const requireNewGroupRows =
 		currentTimeSlots.current !== slotsArray ||
 		currentTimeFrameDay.current !== timeFrameDay ||
-		currentTimeSlotMinutes.current !== timeSlotMinutes
+		currentViewType.current !== viewType ||
+		currentEntries.current !== entries
 
 	const clearGroupRows = useCallback(() => {
 		groupRowsState.current = {}
@@ -140,7 +139,6 @@ export function useGroupRows<
 				entry.items,
 				slotsArray,
 				timeFrameDay,
-				timeSlotMinutes,
 				viewType,
 			)
 
@@ -182,7 +180,7 @@ export function useGroupRows<
 		groupRowsState.current = updatedGroupRows
 		// we need to rerender the component to update the group rows
 		setCalcBatch((prev) => (prev > 10 ? prev - 1 : prev + 1))
-	}, [slotsArray, timeFrameDay, timeSlotMinutes, viewType])
+	}, [slotsArray, timeFrameDay, viewType])
 
 	const rateLimiterCalc = useIdleRateLimitHelper(renderIdleTimeout)
 
@@ -190,7 +188,7 @@ export function useGroupRows<
 		currentEntries.current = entries
 		currentTimeSlots.current = slotsArray
 		currentTimeFrameDay.current = timeFrameDay
-		currentTimeSlotMinutes.current = timeSlotMinutes
+		currentViewType.current = viewType
 		clearGroupRows()
 		rateLimiterCalc(calculateGroupRows)
 	}
@@ -256,7 +254,7 @@ export function useGroupRows<
 		itemsOutsideOfDayRange: itemsOutsideOfDayRange.current,
 		itemsWithSameStartAndEnd: itemsWithSameStartAndEnd.current,
 		// those three are cached for consistency to render with the correct data even through the data might have been updated in between
-		timeSlotMinutes: currentTimeSlotMinutes.current,
+		viewType: currentViewType.current,
 		timeFrameDay: currentTimeFrameDay.current,
 		slotsArray: currentTimeSlots.current,
 		//
@@ -272,7 +270,6 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 	groupItems: I[],
 	slotsArray: readonly Dayjs[],
 	timeFrameDay: TimeFrameDay,
-	timeSlotMinutes: number,
 	viewType: TimeTableViewType,
 ) {
 	const itemRows: ItemRowEntry<I>[][] = []
@@ -293,7 +290,6 @@ function getGroupItemStack<I extends TimeSlotBooking>(
 			item,
 			slotsArray,
 			timeFrameDay,
-			timeSlotMinutes,
 			viewType,
 		)
 

@@ -8,9 +8,8 @@ export type TimeTableConfig<G extends TimeTableGroup> = {
 	basicProperties: {
 		timeFrameDay: TimeFrameDay
 		slotsArray: readonly Dayjs[]
-		timeSlotMinutes: number // length of 1 slot in minutes (for example if the day starts at 8, and ends at 16, and the time slot is a week, that this means (16-8)*60*7 minutes)
+		viewType: TimeTableViewType
 	}
-	viewType: TimeTableViewType
 	disableWeekendInteractions: boolean
 	hideOutOfRangeMarkers: boolean
 	timeSlotSelectionDisabled: boolean
@@ -73,7 +72,6 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 
 		timeTableConfigStore[ident] = proxy<TimeTableConfig<G>>({
 			basicProperties,
-			viewType,
 
 			propTimeSlotMinutes,
 
@@ -107,7 +105,7 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 		timeTableConfigStore[ident].endDate !== endDateString ||
 		timeTableConfigStore[ident].propTimeSlotMinutes !==
 			propTimeSlotMinutes ||
-		timeTableConfigStore[ident].viewType !== viewType
+		timeTableConfigStore[ident].basicProperties.viewType !== viewType
 	) {
 		const basicProperties = calculateTimeSlotPropertiesForView(
 			startDate,
@@ -134,7 +132,7 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 			timeTableConfigStore[ident].propTimeSlotMinutes !==
 				propTimeSlotMinutes,
 			"view type updated",
-			timeTableConfigStore[ident].viewType !== viewType,
+			timeTableConfigStore[ident].basicProperties.viewType !== viewType,
 		)
 
 		clearTimeSlotSelection(ident, true)
@@ -156,12 +154,10 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 		}*/
 
 		timeTableConfigStore[ident].basicProperties = basicProperties
-		timeTableConfigStore[ident].viewType = viewType
 		timeTableConfigStore[ident].propTimeSlotMinutes = propTimeSlotMinutes
 		timeTableConfigStore[ident].startDate = startDateString
 		timeTableConfigStore[ident].endDate = endDateString
 		timeTableConfigStore[ident].propTimeSlotMinutes = propTimeSlotMinutes
-		timeTableConfigStore[ident].viewType = viewType
 	}
 
 	if (isCellDisabled !== timeTableConfigStore[ident].isCellDisabled) {
@@ -244,14 +240,6 @@ export function useTTCTimeSlotSelectionDisabled(ident: string) {
 		timeTableConfigStore[ident],
 	).timeSlotSelectionDisabled
 	return timeSlotSelectionDisabled
-}
-
-/**
- * returns the view type and a setter for it
- */
-export function useTTCViewType(ident: string) {
-	const viewType = useSnapshot(timeTableConfigStore[ident]).viewType
-	return viewType
 }
 
 //#endregion

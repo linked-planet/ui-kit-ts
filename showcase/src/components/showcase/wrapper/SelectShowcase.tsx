@@ -298,7 +298,7 @@ function SelectShowcase(props: ShowcaseProps) {
 				}}
 				isMulti
 				options={options}
-				value={options[4]}
+				defaultValue={options[4]}
 				/** adding some custom classnames to the styling */
 				classNames={{
 					control: () => "bg-warning",

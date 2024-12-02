@@ -313,6 +313,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 				loading={isLoading}
 				iconBefore={<SearchIcon label="" />}
 				iconAfter={<SearchIcon label="" />}
+				className="h-6"
 			>
 				Icon Loading Button
 			</LoadingButton>

@@ -15,6 +15,7 @@ import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
+import { allGroupsRenderedEvent } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableRows"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -435,6 +436,9 @@ function TestCustomHeaderRowTimeSlot<
 	entries,
 	tableCellRef,
 }: TimeTableTypes.CustomHeaderRowTimeSlotProps<G, I>) {
+	if (!entries || !entries[1]) {
+		return null
+	}
 	const groupItems = entries[1].items
 	if (!groupItems.length) {
 		return null
@@ -452,7 +456,6 @@ function TestCustomHeaderRowTimeSlot<
 			item,
 			slotsArray,
 			timeFrameOfDay,
-			timeSlotMinutes,
 			viewType,
 		)
 		if (slotsArray[startAndEnd.startSlot] === timeSlot) {
@@ -510,12 +513,19 @@ function CustomHeaderRowHeader<
 	viewType,
 	entries,
 }: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
+	if (!entries || !entries[1]) {
+		return <></>
+	}
 	return (
 		<div className="bg-surface-pressed">
-			{entries[1].group.title} has {entries.length} entries
+			{entries[1].group.title} has {entries[1].items.length} entries
 		</div>
 	)
 }
+
+window.addEventListener(allGroupsRenderedEvent, () => {
+	console.info("All groups rendered")
+})
 
 function Example() {
 	//#region timetable
@@ -907,6 +917,25 @@ function Example() {
 					className="mb-2 mr-2"
 				>
 					Create New Item
+				</Button>
+				<Button
+					onClick={() => {
+						setEntries([])
+					}}
+					title="Clear Groups and Items"
+					className="mb-2 mr-2"
+				>
+					Clear Groups and Items
+				</Button>
+				<Button
+					onClick={() => {
+						setEntries([])
+						setEntries(exampleEntries)
+					}}
+					title="Replace Groups and Items"
+					className="mb-2 mr-2"
+				>
+					Replace Groups and Items
 				</Button>
 			</div>
 			<div

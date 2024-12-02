@@ -40,8 +40,10 @@ import {
 	useTimeSlotSelection,
 } from "./TimeTableSelectionStore"
 import type { ItemRowEntry } from "./useGoupRows"
-import { getLeftAndWidth } from "./timeTableUtils"
+import { getLeftAndWidth, getTimeSlotMinutes } from "./timeTableUtils"
 import { useDebounceHelper, useIdleRateLimitHelper } from "../../utils"
+
+export const allGroupsRenderedEvent = "timetable-allgroupsrendered" as const
 
 interface TimeTableRowsProps<
 	G extends TimeTableGroup,
@@ -62,7 +64,6 @@ interface TimeTableRowsProps<
 
 	slotsArray: readonly Dayjs[]
 	timeFrameDay: TimeFrameDay
-	timeSlotMinutes: number
 	viewType: TimeTableViewType
 }
 
@@ -86,7 +87,6 @@ export default function TimeTableRows<
 	headerRef,
 	slotsArray,
 	timeFrameDay,
-	timeSlotMinutes,
 	viewType,
 }: TimeTableRowsProps<G, I>) {
 	const storeIdent = useTimeTableIdent()
@@ -107,7 +107,6 @@ export default function TimeTableRows<
 	const groupRowsRendered = useRef<JSX.Element[]>(new Array(entries.length))
 
 	const slotsArrayCurrent = useRef(slotsArray)
-	const timeSlotMinutesCurrent = useRef(timeSlotMinutes)
 	const viewTypeCurrent = useRef(viewType)
 	const timeFrameDayCurrent = useRef(timeFrameDay)
 
@@ -121,14 +120,12 @@ export default function TimeTableRows<
 
 	if (
 		slotsArrayCurrent.current !== slotsArray ||
-		timeSlotMinutesCurrent.current !== timeSlotMinutes ||
 		viewTypeCurrent.current !== viewType ||
 		timeFrameDayCurrent.current !== timeFrameDay
 	) {
 		// reset the rendered cells
 		renderedCells.current.clear()
 		slotsArrayCurrent.current = slotsArray
-		timeSlotMinutesCurrent.current = timeSlotMinutes
 		viewTypeCurrent.current = viewType
 		timeFrameDayCurrent.current = timeFrameDay
 		setGroupRowsRenderedIdx(0)
@@ -237,6 +234,7 @@ export default function TimeTableRows<
 			console.info("TimeTable - all group rows updated")
 			return
 		}
+
 		// determine when new ones start
 		let newOne = -1
 		const keys = Object.keys(currentGroupRows)
@@ -276,8 +274,8 @@ export default function TimeTableRows<
 			return ret
 		})
 		currentGroupRows.current = groupRows
-		//rateLimiterRendering(() => window.setTimeout(renderBatch, 0))
-	}, [groupRows])
+		rateLimiterRendering(renderBatch)
+	}, [groupRows, rateLimiterRendering])
 	//useEffect(handleIntersections, [])
 
 	// handle intersection observer, create new observer if the intersectionContainerRef changes
@@ -322,6 +320,26 @@ export default function TimeTableRows<
 			// there fore we need to render one time until entries.length - 1
 
 			let start = groupRowsRenderedIdx
+
+			// removal of too many rendered elements
+			for (
+				let g = entries.length;
+				g < groupRowsRendered.current.length;
+				g++
+			) {
+				if (groupRowsRendered.current[g]) {
+					console.log("REMOVING ", g, groupRowsRendered.current)
+					delete groupRowsRendered.current[g]
+					delete refCollection.current[g]
+					renderedCells.current.delete(g)
+					if (renderCells.current[0] >= g) {
+						renderCells.current[0] = g - 2 > 0 ? g - 2 : 0
+					}
+					if (renderCells.current[1] >= g) {
+						renderCells.current[1] = g - 1 > 0 ? g - 1 : 0
+					}
+				}
+			}
 
 			// get the group entries which required rendering
 			let startRender = -1
@@ -371,7 +389,7 @@ export default function TimeTableRows<
 				end = groupRowKeys.length
 			}
 
-			for (let g = start; g < end && g < groupRowKeys.length; g++) {
+			for (let g = start; g < end; g++) {
 				const groupEntry = entries[g]
 				if (!groupEntry) {
 					console.warn(
@@ -417,7 +435,6 @@ export default function TimeTableRows<
 						mref={mref}
 						slotsArray={slotsArray}
 						timeFrameDay={timeFrameDay}
-						timeSlotsMinutes={timeSlotMinutes}
 						viewType={viewType}
 					/>
 				)
@@ -453,7 +470,6 @@ export default function TimeTableRows<
 		placeHolderHeight,
 		slotsArray,
 		timeFrameDay,
-		timeSlotMinutes,
 		viewType,
 	])
 
@@ -464,18 +480,18 @@ export default function TimeTableRows<
 	if (groupRowsRenderedIdx < entries.length) {
 		rateLimiterRendering(renderBatch)
 	} else {
-		console.info(
-			"TimeTable - all group rows rendered",
-			groupRowsRenderedIdx,
-			entries.length,
-		)
 		if (!allPlaceholderRendered.current) {
+			console.info(
+				"TimeTable - all group rows rendered",
+				groupRowsRenderedIdx,
+				entries.length,
+			)
 			allPlaceholderRendered.current = true
+			window.dispatchEvent(new Event(allGroupsRenderedEvent))
 			// we need to render all placeholders
 			rateLimiterIntersection(handleIntersections)
 		}
 	}
-
 	return groupRowsRendered.current
 }
 
@@ -494,7 +510,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	slotsArray,
 	timeFrameDay,
 	viewType,
-	timeSlotMinutes,
 }: {
 	timeSlotNumber: number
 	group: G
@@ -506,7 +521,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	onTimeSlotItemClick: ((group: G, item: I) => void) | undefined
 	slotsArray: readonly Dayjs[]
 	timeFrameDay: TimeFrameDay
-	timeSlotMinutes: number
 	viewType: TimeTableViewType
 }) {
 	const storeIdent = useTimeTableIdent()
@@ -535,6 +549,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const isLastSlotOfTheDay = timeSlotAfter
 		? timeSlotAfter.day() !== timeSlot.day()
 		: true
+
+	const timeSlotMinutes = getTimeSlotMinutes(timeSlot, timeFrameDay, viewType)
 
 	const cellDisabled =
 		isCellDisabled?.(
@@ -630,6 +646,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						currentLeft,
 						slotsArray,
 						bookingItemsBeginningInCell,
+						width,
 					)
 				}
 
@@ -854,7 +871,6 @@ type GroupRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	mref: React.MutableRefObject<HTMLElement>
 	slotsArray: readonly Dayjs[]
 	timeFrameDay: TimeFrameDay
-	timeSlotsMinutes: number
 	viewType: TimeTableViewType
 }
 
@@ -871,7 +887,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	placeHolderHeight,
 	slotsArray,
 	timeFrameDay,
-	timeSlotsMinutes,
 	viewType,
 	mref,
 }: GroupRowsProps<G, I>) {
@@ -971,17 +986,22 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			timeSlotNumber < slotsArray.length;
 			timeSlotNumber++
 		) {
+			const timeSlotMinutes = getTimeSlotMinutes(
+				slotsArray[timeSlotNumber],
+				timeFrameDay,
+				viewType,
+			)
 			tds.push(
 				<PlaceholderTableCell<G>
 					key={timeSlotNumber}
 					group={group}
 					groupNumber={groupNumber}
 					timeSlotNumber={timeSlotNumber}
-					timeSlotMinutes={timeSlotsMinutes}
 					viewType={viewType}
 					slotsArray={slotsArray}
 					selectedTimeSlots={selectedTimeSlots ?? undefined}
 					placeHolderHeight={placeHolderHeight}
+					timeSlotMinutes={timeSlotMinutes}
 				/>,
 			)
 		}
@@ -991,11 +1011,11 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		groupNumber,
 		timeSlotSelectionDisabled,
 		slotsArray,
-		timeSlotsMinutes,
 		viewType,
 		selectedTimeSlots,
 		renderCells,
 		placeHolderHeight,
+		timeFrameDay,
 	])
 
 	const normalRows = useMemo(() => {
@@ -1033,7 +1053,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						slotsArray={slotsArray}
 						timeFrameDay={timeFrameDay}
 						viewType={viewType}
-						timeSlotMinutes={timeSlotsMinutes}
 					/>,
 				)
 			}
@@ -1052,7 +1071,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		selectedTimeSlotItem,
 		onTimeSlotItemClick,
 		renderCells,
-		timeSlotsMinutes,
 	])
 
 	if (!renderCells) {

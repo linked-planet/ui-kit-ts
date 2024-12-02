@@ -164,6 +164,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 							provided.isDisabled
 								? "bg-disabled text-disabled-text"
 								: undefined,
+							provided.data.isFixed ? "pr-1" : undefined,
 						),
 						"text-ellipsis whitespace-nowrap",
 						classNamesConfig?.multiValue?.(provided),
