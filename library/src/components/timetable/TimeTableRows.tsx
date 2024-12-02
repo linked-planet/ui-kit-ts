@@ -328,7 +328,6 @@ export default function TimeTableRows<
 				g++
 			) {
 				if (groupRowsRendered.current[g]) {
-					console.log("REMOVING ", g, groupRowsRendered.current)
 					delete groupRowsRendered.current[g]
 					delete refCollection.current[g]
 					renderedCells.current.delete(g)
