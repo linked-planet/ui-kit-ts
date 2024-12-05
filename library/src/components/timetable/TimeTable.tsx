@@ -521,7 +521,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 						/>
 						<tbody ref={tableBodyRef} className="table-fixed">
 							<TimeTableRows<G, I>
-								entries={entries}
 								selectedTimeSlotItem={selectedTimeSlotItem}
 								onTimeSlotItemClick={onTimeSlotItemClick}
 								onGroupClick={onGroupClick}

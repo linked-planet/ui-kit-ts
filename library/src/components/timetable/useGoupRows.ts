@@ -37,9 +37,9 @@ export function useGroupRows<
 
 	const groupRowsToCalc = useRef(new Set<number>())
 
-	const groupRowsState = useRef<{
-		[groupId: string]: ItemRowEntry<I>[][] | null
-	}>({})
+	const groupRowsState = useRef<Map<G, ItemRowEntry<I>[][] | null>>(
+		new Map<G, ItemRowEntry<I>[][] | null>(),
+	)
 	const rowCount = useRef<number>(0)
 	const maxRowCountOfSingleGroup = useRef<number>(0)
 	const itemsOutsideOfDayRange = useRef<{ [groupId: string]: I[] }>({})
@@ -52,14 +52,32 @@ export function useGroupRows<
 	const [calcBatch, setCalcBatch] = useState<number>(-1)
 
 	// is one of those properties changes we need to recalculate all group rows
+	if (
+		currentTimeSlots.current !== slotsArray ||
+		currentTimeFrameDay.current !== timeFrameDay ||
+		currentViewType.current !== viewType
+		//currentEntries.current !== entries
+	) {
+		console.log(
+			"REQUIRE NEW GROUP ROWS",
+			"ENTRIES",
+			currentEntries.current !== entries,
+			"TIME SLOTS",
+			currentTimeSlots.current !== slotsArray,
+			"TIME FRAME DAY",
+			currentTimeFrameDay.current !== timeFrameDay,
+			"VIEW TYPE",
+			currentViewType.current !== viewType,
+		)
+	}
+
 	const requireNewGroupRows =
 		currentTimeSlots.current !== slotsArray ||
 		currentTimeFrameDay.current !== timeFrameDay ||
-		currentViewType.current !== viewType ||
-		currentEntries.current !== entries
+		currentViewType.current !== viewType
 
 	const clearGroupRows = useCallback(() => {
-		groupRowsState.current = {}
+		groupRowsState.current = new Map<G, ItemRowEntry<I>[][] | null>()
 		rowCount.current = 0
 		maxRowCountOfSingleGroup.current = 0
 		itemsOutsideOfDayRange.current = {}
@@ -83,7 +101,10 @@ export function useGroupRows<
 				itemsOutsideOfDayRange.current = {}
 				itemsWithSameStartAndEnd.current = {}
 				groupRowsToCalc.current.clear()
-				groupRowsState.current = {}
+				groupRowsState.current = new Map<
+					G,
+					ItemRowEntry<I>[][] | null
+				>()
 			}
 			return
 		}
@@ -95,9 +116,10 @@ export function useGroupRows<
 
 		const currEntries = currentEntries.current
 
-		const updatedGroupRows: {
-			[groupId: string]: ItemRowEntry<I>[][] | null
-		} = { ...groupRowsState.current }
+		const updatedGroupRows: Map<G, ItemRowEntry<I>[][] | null> = new Map<
+			G,
+			ItemRowEntry<I>[][] | null
+		>(groupRowsState.current)
 		const updatedItemsOutsideOfDayRange: { [groupId: string]: I[] } = {
 			...itemsOutsideOfDayRange.current,
 		}
@@ -113,7 +135,7 @@ export function useGroupRows<
 					"TimeTable - entry not found to calculate group rows",
 				)
 			}
-			if (updatedGroupRows[entry.group.id] != null) {
+			if (updatedGroupRows.get(entry.group)) {
 				console.error(
 					"Group rows already exists:",
 					entry.group.id,
@@ -123,7 +145,12 @@ export function useGroupRows<
 					currEntries.length,
 					updatedGroupRows,
 					groupRowsToCalc.current,
-					updatedGroupRows[entry.group.id],
+					updatedGroupRows.get(entry.group),
+				)
+				console.error(
+					"Group rows already exists",
+					entry.group.id,
+					updatedGroupRows.get(entry.group),
 				)
 				throw new Error(
 					`TimeTable - group rows already calculated: ${entry.group.id}`,
@@ -156,10 +183,10 @@ export function useGroupRows<
 			}
 
 			const oldRowCount =
-				groupRowsState.current[entry.group.id]?.length || 0
+				groupRowsState.current.get(entry.group)?.length || 0
 			rowCount.current -= oldRowCount
 			rowCount.current += itemRows.length
-			updatedGroupRows[entry.group.id] = itemRows
+			updatedGroupRows.set(entry.group, itemRows)
 
 			if (oldRowCount === maxRowCountOfSingleGroup.current) {
 				maxRowCountOfSingleGroup.current = 0
@@ -197,9 +224,10 @@ export function useGroupRows<
 		// check what needs to be removed, recalculated or added
 		console.info("TimeTable - entries changed, recalculating group rows")
 
-		const updatedGroupRows: {
-			[groupId: string]: ItemRowEntry<I>[][] | null
-		} = {}
+		const updatedGroupRows: Map<G, ItemRowEntry<I>[][] | null> = new Map<
+			G,
+			ItemRowEntry<I>[][] | null
+		>()
 		let updatedRowCount = 0
 		let updatedMaxRowCountOfSingleGroup = 0
 		const updatedItemsOutsideOfDayRange: { [groupId: string]: I[] } = {}
@@ -214,9 +242,8 @@ export function useGroupRows<
 				currEntry.items === entry.items
 			) {
 				// currentGroupRowsRef.current.groupRows[entry.group.id] can be undefined, but to keep the order of the groups, we need to keep the entry
-				updatedGroupRows[entry.group.id] =
-					groupRowsState.current[entry.group.id]
-				const _groupRows = updatedGroupRows[entry.group.id]
+				const _groupRows =
+					groupRowsState.current.get(entry.group) || null
 				// if it is not undefined, we need to update the row count
 				if (_groupRows) {
 					updatedRowCount += _groupRows.length
@@ -224,13 +251,20 @@ export function useGroupRows<
 						updatedMaxRowCountOfSingleGroup,
 						maxRowCountOfSingleGroup.current,
 					)
-					updatedItemsOutsideOfDayRange[entry.group.id] =
-						itemsOutsideOfDayRange.current[entry.group.id]
-					updatedItemsWithSameStartAndEnd[entry.group.id] =
-						itemsWithSameStartAndEnd.current[entry.group.id]
+					if (itemsOutsideOfDayRange.current[entry.group.id]) {
+						updatedItemsOutsideOfDayRange[entry.group.id] =
+							itemsOutsideOfDayRange.current[entry.group.id]
+					}
+					if (itemsWithSameStartAndEnd.current[entry.group.id]) {
+						updatedItemsWithSameStartAndEnd[entry.group.id] =
+							itemsWithSameStartAndEnd.current[entry.group.id]
+					}
 				}
+				updatedGroupRows.set(entry.group, _groupRows)
+				// do we need to recalculate the group rows?
 			} else {
-				updatedGroupRows[entry.group.id] = null
+				console.log("GROUP ROW REQUIRING UPDATE", entry.group.id, i)
+				updatedGroupRows.set(entry.group, null)
 				groupRowsToCalc.current.add(i)
 			}
 		}
