@@ -474,6 +474,8 @@ export default function TimeTableRows<
 				}
 			}
 
+			console.log("START", start, increment)
+
 			if (
 				increment ||
 				(increment === 0 &&
