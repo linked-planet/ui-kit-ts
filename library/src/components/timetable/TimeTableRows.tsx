@@ -327,14 +327,14 @@ export default function TimeTableRows<
 						}
 					}
 				}
-				console.log(
+				/*console.log(
 					"TimeTable - updated intersected group rows from",
 					prev,
 					"to",
 					newRenderCells,
 					changedGroupRows.current,
 					currentGroupRowsRef.current,
-				)
+				)*/
 				renderGroupRangeRef.current = newRenderCells
 				return newRenderCells
 			}
@@ -412,7 +412,6 @@ export default function TimeTableRows<
 					`TimeTable - group rows require updated rendering ${updateCounter}, with first ${changedFound}`,
 				)
 			}
-			console.log("SET CURRENT GROUP ROWS", groupRows)
 			currentGroupRowsRef.current = groupRows
 			return groupRows
 		})
@@ -457,7 +456,6 @@ export default function TimeTableRows<
 	const renderBatch = useCallback(() => {
 		setGroupRowsRenderedIdx((groupRowsRenderedIdx) => {
 			if (changedGroupRows.current.size) {
-				console.log("RENDERING", changedGroupRows.current)
 				let counter = 0
 				if (renderGroupRangeRef.current[0] > -1) {
 					for (
