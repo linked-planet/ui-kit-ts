@@ -309,7 +309,7 @@ export default function TimeTableRows<
 					if (
 						(renderedGroup < newRenderCells[0] ||
 							renderedGroup > newRenderCells[1]) &&
-						renderedGroup < currentGroupRows.size
+						renderedGroup < currentGroupRowsRef.current.size
 					) {
 						changedGroupRows.current.add(renderedGroup)
 					}
@@ -318,7 +318,8 @@ export default function TimeTableRows<
 				if (newRenderCells[0] > -1) {
 					for (
 						let i = newRenderCells[0];
-						i <= newRenderCells[1] && i < currentGroupRows.size;
+						i <= newRenderCells[1] &&
+						i < currentGroupRowsRef.current.size;
 						i++
 					) {
 						if (!renderedGroups.current.has(i)) {
@@ -331,6 +332,8 @@ export default function TimeTableRows<
 					prev,
 					"to",
 					newRenderCells,
+					changedGroupRows.current,
+					currentGroupRowsRef.current,
 				)
 				renderGroupRangeRef.current = newRenderCells
 				return newRenderCells
@@ -339,9 +342,8 @@ export default function TimeTableRows<
 		})
 	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
 
-	//const currentGroupRows = useRef(groupRows)
+	const currentGroupRowsRef = useRef(groupRows)
 	const [currentGroupRows, setCurrentGroupRows] = useState(groupRows)
-	//const [currentGroupRows, setCurrentGroupRows] = useState(groupRows)
 
 	//** ------- CHANGE DETECTION ------ */
 	// handle changes in the group rows
@@ -371,7 +373,6 @@ export default function TimeTableRows<
 			}
 
 			// determine when new ones start
-			const perf_Start = performance.now()
 			let changedFound = -1
 			const keys = groupRows.keys().toArray()
 			let updateCounter = 0
@@ -411,6 +412,8 @@ export default function TimeTableRows<
 					`TimeTable - group rows require updated rendering ${updateCounter}, with first ${changedFound}`,
 				)
 			}
+			console.log("SET CURRENT GROUP ROWS", groupRows)
+			currentGroupRowsRef.current = groupRows
 			return groupRows
 		})
 	}
@@ -454,6 +457,7 @@ export default function TimeTableRows<
 	const renderBatch = useCallback(() => {
 		setGroupRowsRenderedIdx((groupRowsRenderedIdx) => {
 			if (changedGroupRows.current.size) {
+				console.log("RENDERING", changedGroupRows.current)
 				let counter = 0
 				if (renderGroupRangeRef.current[0] > -1) {
 					for (
@@ -461,7 +465,7 @@ export default function TimeTableRows<
 						i <= renderGroupRangeRef.current[1];
 						i++
 					) {
-						if (i > currentGroupRows.size - 1) {
+						if (i > currentGroupRowsRef.current.size - 1) {
 							changedGroupRows.current.delete(i)
 							continue
 						}
@@ -469,7 +473,7 @@ export default function TimeTableRows<
 						if (changedGroupRows.current.has(i)) {
 							renderGroupRows(
 								renderGroupRangeRef.current,
-								currentGroupRows,
+								currentGroupRowsRef.current,
 								i,
 								refCollection.current,
 								groupRowsRendered.current,
@@ -493,14 +497,17 @@ export default function TimeTableRows<
 					}
 				}
 				for (const g of changedGroupRows.current) {
-					if (g > currentGroupRows.size - 1) {
+					if (
+						g > currentGroupRowsRef.current.size - 1 ||
+						g > groupRowsRenderedIdxRef.current
+					) {
 						changedGroupRows.current.delete(g)
 						continue
 					}
 					// unrender not visible rows, but render only if the placeholders are already rendered)
 					renderGroupRows(
 						renderGroupRangeRef.current,
-						currentGroupRows,
+						currentGroupRowsRef.current,
 						g,
 						refCollection.current,
 						groupRowsRendered.current,
@@ -527,12 +534,12 @@ export default function TimeTableRows<
 			let ret = groupRowsRendered.current.length
 			let counter = 0
 			while (
-				ret < currentGroupRows.size &&
+				ret < currentGroupRowsRef.current.size &&
 				counter < timeTableGroupRenderBatchSize
 			) {
 				renderGroupRows(
 					renderGroupRangeRef.current,
-					currentGroupRows,
+					currentGroupRowsRef.current,
 					ret,
 					refCollection.current,
 					groupRowsRendered.current,
@@ -565,7 +572,6 @@ export default function TimeTableRows<
 		slotsArray,
 		timeFrameDay,
 		viewType,
-		currentGroupRows,
 		handleIntersections,
 		rateLimiterIntersection,
 	])
