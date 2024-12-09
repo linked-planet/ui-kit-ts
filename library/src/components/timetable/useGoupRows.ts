@@ -232,6 +232,7 @@ export function useGroupRows<
 		let updatedMaxRowCountOfSingleGroup = 0
 		const updatedItemsOutsideOfDayRange: { [groupId: string]: I[] } = {}
 		const updatedItemsWithSameStartAndEnd: { [groupId: string]: I[] } = {}
+		let updateCounter = 0
 
 		for (let i = 0; i < entries.length; i++) {
 			const entry = entries[i]
@@ -263,13 +264,16 @@ export function useGroupRows<
 				updatedGroupRows.set(entry.group, _groupRows)
 				// do we need to recalculate the group rows?
 			} else {
-				console.log("GROUP ROW REQUIRING UPDATE", entry.group.id, i)
+				updateCounter++
 				updatedGroupRows.set(entry.group, null)
 				groupRowsToCalc.current.add(i)
 			}
 		}
 		currentEntries.current = entries
-		console.info("TimeTable - updating group rows", updatedGroupRows)
+		console.info(
+			`TimeTable - updating ${updateCounter} group rows`,
+			updatedGroupRows,
+		)
 		rowCount.current = updatedRowCount
 		maxRowCountOfSingleGroup.current = updatedMaxRowCountOfSingleGroup
 		itemsOutsideOfDayRange.current = updatedItemsOutsideOfDayRange

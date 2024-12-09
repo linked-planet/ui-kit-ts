@@ -6,6 +6,20 @@
 	"configurations": [
 		{
 			"type": "firefox",
+			"request": "launch",
+			"reAttach": true,
+			"name": "Launch Firefox",
+			"url": "http://localhost:3000/#/wrappers",
+			"webRoot": "${workspaceFolder}",
+			"pathMappings": [
+				{
+					"url": "http://localhost:3000/ui-kit-ts/@fs/home/markus/lp/ui-kit-ts/library",
+					"path": "${workspaceFolder}/library"
+				}
+			]
+		},
+		{
+			"type": "firefox",
 			"request": "attach",
 			"name": "Attach"
 		},
