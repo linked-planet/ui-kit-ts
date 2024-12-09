@@ -107,6 +107,8 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 			groupEntry,
 			groupRows,
 			groupEntriesArray,
+			changedGroupRows,
+			renderCells,
 		)
 		throw new Error("TimeTable - group entry not found")
 	}
@@ -305,8 +307,9 @@ export default function TimeTableRows<
 				// detect to unrender
 				for (const renderedGroup of renderedGroups.current) {
 					if (
-						renderedGroup < newRenderCells[0] ||
-						renderedGroup > newRenderCells[1]
+						(renderedGroup < newRenderCells[0] ||
+							renderedGroup > newRenderCells[1]) &&
+						renderedGroup < currentGroupRows.size
 					) {
 						changedGroupRows.current.add(renderedGroup)
 					}
@@ -315,7 +318,7 @@ export default function TimeTableRows<
 				if (newRenderCells[0] > -1) {
 					for (
 						let i = newRenderCells[0];
-						i <= newRenderCells[1];
+						i <= newRenderCells[1] && i < currentGroupRows.size;
 						i++
 					) {
 						if (!renderedGroups.current.has(i)) {
@@ -323,17 +326,9 @@ export default function TimeTableRows<
 						}
 					}
 				}
-				/*console.log(
-					"TimeTable - intersection group rows changed",
-					newRenderCells,
-				)*/
 				renderGroupRangeRef.current = newRenderCells
 				return newRenderCells
 			}
-			console.log(
-				"TimeTable - intersection group rows not changed",
-				newRenderCells,
-			)
 			return prev
 		})
 	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
@@ -345,23 +340,8 @@ export default function TimeTableRows<
 	//** ------- CHANGE DETECTION ------ */
 	// handle changes in the group rows
 	if (groupRows !== currentGroupRows) {
-		if (groupRowsRendered.current.length > groupRows.size) {
-			// shorten and remove rendered elements array, if too long
-			console.info(
-				`Timetable - shorten rendered elements array from ${groupRowsRendered.current.length} to ${groupRows.size}`,
-			)
-			groupRowsRendered.current.length = groupRows.size
-			if (groupRowsRenderedIdxRef.current >= groupRows.size) {
-				groupRowsRenderedIdxRef.current = groupRows.size - 1
-			}
-		}
 		setCurrentGroupRows((currentGroupRows) => {
 			changedGroupRows.current.clear()
-			if (groupRows.size < currentGroupRows.size) {
-				refCollection.current.length = groupRows.size
-				groupRowsRendered.current.length = groupRows.size
-			}
-
 			if (!groupRows) {
 				setGroupRowsRenderedIdx(-1)
 				groupRowsRenderedIdxRef.current = 0
@@ -370,6 +350,18 @@ export default function TimeTableRows<
 				refCollection.current = []
 				console.log("TimeTable - group rows are null")
 				return groupRows
+			}
+
+			if (groupRowsRendered.current.length > groupRows.size) {
+				// shorten and remove rendered elements array, if too long
+				console.info(
+					`Timetable - shorten rendered elements array from ${groupRowsRendered.current.length} to ${groupRows.size}`,
+				)
+				groupRowsRendered.current.length = groupRows.size
+				refCollection.current.length = groupRows.size
+				if (groupRowsRenderedIdxRef.current >= groupRows.size) {
+					groupRowsRenderedIdxRef.current = groupRows.size - 1
+				}
 			}
 
 			// determine when new ones start
@@ -401,16 +393,18 @@ export default function TimeTableRows<
 					changedGroupRows.current.delete(changedG)
 				}
 			}
+			for (const renderedG of renderedGroups.current) {
+				if (renderedG > keys.length - 1) {
+					// delete obsolete change
+					renderedGroups.current.delete(renderedG)
+				}
+			}
 
-			console.log(
-				"PERF UPDATE GROUP ROWS ENTRIES",
-				performance.now() - perf_Start,
-				changedGroupRows.current,
-				keys.length,
-			)
-			console.log(
-				`TimeTable - group rows require updated rendering ${updateCounter}, with first ${changedFound}`,
-			)
+			if (updateCounter) {
+				console.log(
+					`TimeTable - group rows require updated rendering ${updateCounter}, with first ${changedFound}`,
+				)
+			}
 			return groupRows
 		})
 	}
@@ -461,6 +455,10 @@ export default function TimeTableRows<
 						i <= renderGroupRangeRef.current[1];
 						i++
 					) {
+						if (i > currentGroupRows.size - 1) {
+							changedGroupRows.current.delete(i)
+							continue
+						}
 						// make sure visible rows are rendered
 						if (changedGroupRows.current.has(i)) {
 							renderGroupRows(
@@ -489,30 +487,32 @@ export default function TimeTableRows<
 					}
 				}
 				for (const g of changedGroupRows.current) {
+					if (g > currentGroupRows.size - 1) {
+						changedGroupRows.current.delete(g)
+						continue
+					}
 					// unrender not visible rows, but render only if the placeholders are already rendered)
-					if (g < groupRowsRendered.current.length) {
-						renderGroupRows(
-							renderGroupRangeRef.current,
-							currentGroupRows,
-							g,
-							refCollection.current,
-							groupRowsRendered.current,
-							renderedGroups.current,
-							changedGroupRows.current,
-							onGroupClick,
-							placeHolderHeight,
-							columnWidth,
-							rowHeight,
-							selectedTimeSlotItem,
-							onTimeSlotItemClick,
-							slotsArray,
-							timeFrameDay,
-							viewType,
-						)
-						counter++
-						if (counter > timeTableGroupRenderBatchSize) {
-							return groupRowsRenderedIdx - 1
-						}
+					renderGroupRows(
+						renderGroupRangeRef.current,
+						currentGroupRows,
+						g,
+						refCollection.current,
+						groupRowsRendered.current,
+						renderedGroups.current,
+						changedGroupRows.current,
+						onGroupClick,
+						placeHolderHeight,
+						columnWidth,
+						rowHeight,
+						selectedTimeSlotItem,
+						onTimeSlotItemClick,
+						slotsArray,
+						timeFrameDay,
+						viewType,
+					)
+					counter++
+					if (counter > timeTableGroupRenderBatchSize) {
+						return groupRowsRenderedIdx - 1
 					}
 				}
 			}
