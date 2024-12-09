@@ -326,6 +326,12 @@ export default function TimeTableRows<
 						}
 					}
 				}
+				console.log(
+					"TimeTable - updated intersected group rows from",
+					prev,
+					"to",
+					newRenderCells,
+				)
 				renderGroupRangeRef.current = newRenderCells
 				return newRenderCells
 			}
