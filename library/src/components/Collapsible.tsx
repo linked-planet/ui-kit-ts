@@ -60,6 +60,9 @@ export const Collapsible = forwardRef(
 				data-testid={testId}
 				id={id}
 				ref={ref}
+				open={opened}
+				defaultOpen={defaultOpen}
+				onOpenChange={(open) => onChanged?.(open)}
 			>
 				<CollapsibleRUI.Trigger
 					className={twMerge(
