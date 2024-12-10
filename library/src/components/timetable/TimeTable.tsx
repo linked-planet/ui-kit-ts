@@ -625,50 +625,23 @@ function moveNowBar(
 
 	const startSlot = startAndEndSlot.startSlot
 
-	// the first row in the body is used for the time slot bars
-	let childIdx = 0
-	let tbodyFirstRow = tableBody.children[childIdx] as
-		| HTMLTableRowElement
-		| undefined
-	// now get the current time slot index element (not -1 because the first empty element for the groups)
-
-	// find the first rendered row
-	while (tbodyFirstRow && tbodyFirstRow.children.length === 0) {
-		childIdx++
-		tbodyFirstRow = tableBody.children[childIdx] as
-			| HTMLTableRowElement
-			| undefined
-	}
-
-	if (!tbodyFirstRow) {
-		console.warn(
-			"LPTimeTable - unable to find time slot row for the now bar",
-		)
+	// add orange border
+	const nowTimeSlotCell = headerTimeSlotCells[startSlot + 1]
+	if (!nowTimeSlotCell) {
+		console.error("unable to find header for time slot of the current time")
 		return
 	}
 
-	const slotBar = tbodyFirstRow?.children[startSlot + 1] as
-		| HTMLDivElement
-		| undefined
-	if (!slotBar) {
-		console.warn(
-			"LPTimeTable - unable to find time slot column for the now bar: ",
-			startSlot,
-		)
-		return
-	}
-
-	// adjust the nowbar div to the right parent, or create it if it doesn't exist
 	if (nowBar) {
-		if (nowBar.parentElement !== slotBar) {
-			slotBar.appendChild(nowBar)
+		if (nowBar.parentElement !== nowTimeSlotCell) {
+			nowTimeSlotCell.appendChild(nowBar)
 		}
 	} else {
 		nowBar = document.createElement("div")
 		//nowBar.className = styles.nowBar
 		nowBar.className =
 			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-[2] w-[2px]"
-		slotBar.appendChild(nowBar)
+		//slotBar.appendChild(nowBar)
 		nowBarRef.current = nowBar
 	}
 
@@ -682,14 +655,8 @@ function moveNowBar(
 
 	const diffPerc = diffNow / timeSlotMinutes
 	nowBar.style.left = `${diffPerc * 100}%`
-	nowBar.style.height = `${tableBody.getBoundingClientRect().bottom - slotBar.getBoundingClientRect().top}px`
-
-	// add orange border
-	const nowTimeSlotCell = headerTimeSlotCells[startSlot + 1]
-	if (!nowTimeSlotCell) {
-		console.error("unable to find header for time slot of the current time")
-		return
-	}
+	nowBar.style.top = "100%"
+	nowBar.style.height = `${tableBody.getBoundingClientRect().bottom - nowTimeSlotCell.getBoundingClientRect().top}px`
 
 	nowTimeSlotCell.classList.remove(
 		"border-b-border-bold",

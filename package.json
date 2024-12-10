@@ -76,8 +76,8 @@
 		]
 	},
 	"dependencies": {
-		"@atlaskit/empty-state": "^7.12.3",
-		"@atlaskit/icon": "^22.28.0",
+		"@atlaskit/empty-state": "^8.0.1",
+		"@atlaskit/icon": "^23.1.0",
 		"@emotion/css": "^11.13.5",
 		"@hello-pangea/dnd": "^17.0.0",
 		"@radix-ui/react-accordion": "^1.2.1",
