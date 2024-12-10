@@ -1,6 +1,32 @@
 import { Collapsible } from "@linked-planet/ui-kit-ts/components/Collapsible"
 import type { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import ShowcaseWrapperItem from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { useState } from "react"
+import { Button } from "@linked-planet/ui-kit-ts"
+
+//#region collapsible-controlled
+function CollapsibleControlled() {
+	const [open, setOpen] = useState(false)
+	return (
+		<>
+			<Button
+				onClick={() => setOpen(!open)}
+				className="btn btn-primary"
+				type="button"
+			>
+				{open ? "Close" : "Open"}
+			</Button>
+			<Collapsible
+				header={<h4>Collapsible Title</h4>}
+				open={open}
+				onChanged={setOpen}
+			>
+				<div className="p-4">collapsible content</div>
+			</Collapsible>
+		</>
+	)
+}
+//#endregion collapsible-controlled
 
 export default function CollapsibleShowcase(props: ShowcaseProps) {
 	//#region collapsible
@@ -50,6 +76,11 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 					title: "Chevron Right",
 					example: example1,
 					sourceCodeExampleId: "collapsible1",
+				},
+				{
+					title: "Controlled",
+					example: <CollapsibleControlled />,
+					sourceCodeExampleId: "collapsible-controlled",
 				},
 			]}
 		/>
