@@ -35,7 +35,7 @@ import {
 import { useGroupRows } from "./useGoupRows"
 import { twMerge } from "tailwind-merge"
 import { getStartAndEndSlot, getTimeSlotMinutes } from "./timeTableUtils"
-import { useRateLimitHelper } from "@linked-planet/ui-kit-ts/utils"
+import { useRateLimitHelper } from "../../utils/rateLimit"
 import useResizeObserver from "use-resize-observer"
 
 export interface TimeSlotBooking {
