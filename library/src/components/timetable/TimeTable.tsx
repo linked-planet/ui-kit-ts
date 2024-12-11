@@ -1,8 +1,6 @@
 import dayjs, { type Dayjs } from "dayjs"
 import type React from "react"
 import { type MutableRefObject, useCallback, useEffect, useRef } from "react"
-
-import useResizeObserver from "use-resize-observer"
 import { InlineMessage } from "../InlineMessage"
 import type { TimeTableItemProps } from "./ItemWrapper"
 import {
@@ -37,7 +35,8 @@ import {
 import { useGroupRows } from "./useGoupRows"
 import { twMerge } from "tailwind-merge"
 import { getStartAndEndSlot, getTimeSlotMinutes } from "./timeTableUtils"
-import { flushSync } from "react-dom"
+import { useRateLimitHelper } from "@linked-planet/ui-kit-ts/utils"
+import useResizeObserver from "use-resize-observer"
 
 export interface TimeSlotBooking {
 	title: string
@@ -278,7 +277,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const tableHeaderRef = useRef<HTMLTableSectionElement>(null)
 	const tableBodyRef = useRef<HTMLTableSectionElement>(null)
 	const inlineMessageRef = useRef<HTMLDivElement>(null)
-	const intersectionContainerRef = useRef<HTMLDivElement>(null)
+	const intersectionContainerRef = useRef<HTMLDivElement | null>(null)
 
 	initAndUpdateTimeTableComponentStore(
 		storeIdent,
@@ -377,8 +376,40 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	])
 
 	//#region now bar
+	const nowTimeSlotRef = useRef<HTMLTableCellElement | undefined>()
 	const nowBarRef = useRef<HTMLDivElement | undefined>()
 	const nowRef = useRef<Dayjs>(nowOverwrite ?? dayjs())
+
+	// nowbar scroll handling
+	const rateLimiter = useRateLimitHelper(13, true)
+	const nowbarScrollHandling = useCallback(() => {
+		if (nowTimeSlotRef?.current) {
+			rateLimiter(() =>
+				nowbarRemoveCoveredCheck(
+					nowBarRef,
+					tableHeaderRef,
+					nowTimeSlotRef,
+				),
+			)
+		}
+	}, [rateLimiter])
+
+	useEffect(() => {
+		if (intersectionContainerRef.current) {
+			intersectionContainerRef.current.addEventListener(
+				"scroll",
+				nowbarScrollHandling,
+			)
+			return () => {
+				intersectionContainerRef.current?.removeEventListener(
+					"scroll",
+					nowbarScrollHandling,
+				)
+			}
+		}
+	}, [nowbarScrollHandling])
+	//
+
 	// adjust the now bar moves the now bar to the current time slot, if it exists
 	// and also adjusts the orange border of the time slot header
 	const adjustNowBar = useCallback(() => {
@@ -400,6 +431,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			slotsArray,
 			nowRef,
 			nowBarRef,
+			nowTimeSlotRef,
 			tableHeaderRef,
 			tableBodyRef,
 			timeFrameDay,
@@ -410,33 +442,16 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 	// initial run, and start interval to move the now bar
 	useEffect(() => {
-		adjustNowBar()
+		rateLimiter(adjustNowBar)
 		const interval = setInterval(adjustNowBar, 1000 * 60) // run every minute
 		return () => {
 			clearInterval(interval)
 		}
-	}, [adjustNowBar])
-
-	// since the groups are redone, we need to adjust the now bar to draw it again
-	useEffect(() => {
-		window.setTimeout(() => flushSync(adjustNowBar), 0)
-	}, [entries])
+	}, [adjustNowBar, rateLimiter])
 
 	const observedSizeChangedCB = useCallback(() => {
-		if (!slotsArray) {
-			return
-		}
-		moveNowBar(
-			slotsArray,
-			nowRef,
-			nowBarRef,
-			tableHeaderRef,
-			tableBodyRef,
-			timeFrameDay,
-			currViewType,
-			setMessage,
-		)
-	}, [setMessage, slotsArray, timeFrameDay, currViewType])
+		rateLimiter(adjustNowBar)
+	}, [adjustNowBar, rateLimiter])
 
 	useResizeObserver({
 		ref: tableBodyRef,
@@ -555,6 +570,7 @@ function moveNowBar(
 	slotsArray: readonly Dayjs[],
 	nowRef: MutableRefObject<Dayjs>,
 	nowBarRef: MutableRefObject<HTMLDivElement | undefined>,
+	nowTimeSlotRef: MutableRefObject<HTMLTableCellElement | undefined>,
 	tableHeaderRef: MutableRefObject<HTMLTableSectionElement | null>,
 	tableBodyRef: MutableRefObject<HTMLTableSectionElement | null>,
 	timeFrameDay: TimeFrameDay,
@@ -629,8 +645,10 @@ function moveNowBar(
 	const nowTimeSlotCell = headerTimeSlotCells[startSlot + 1]
 	if (!nowTimeSlotCell) {
 		console.error("unable to find header for time slot of the current time")
+		nowTimeSlotRef.current = undefined
 		return
 	}
+	nowTimeSlotRef.current = nowTimeSlotCell as HTMLTableCellElement
 
 	if (nowBar) {
 		if (nowBar.parentElement !== nowTimeSlotCell) {
@@ -689,6 +707,39 @@ function moveNowBar(
 
 		if (textContent === nowTextContent) {
 			headerDateCell.classList.add("text-text-subtle")
+		}
+	}
+}
+
+/**
+ * Checks if the now bar is covered by the time slot header, and removes it if it is.
+ * @param nowBarRef
+ * @param tableHeaderRef
+ */
+function nowbarRemoveCoveredCheck(
+	nowBarRef: MutableRefObject<HTMLDivElement | undefined>,
+	tableHeaderRef: MutableRefObject<HTMLTableSectionElement | null>,
+	nowTimeSlotRef: MutableRefObject<HTMLTableCellElement | undefined>,
+) {
+	if (!nowTimeSlotRef.current) {
+		return
+	}
+	const tableHeader = tableHeaderRef.current
+	const tableHeaderFirstTH = tableHeader?.children[0]?.children[0]
+	const rightNowbarBorder =
+		tableHeaderFirstTH?.getBoundingClientRect().right || 0
+	if (
+		nowTimeSlotRef.current.getBoundingClientRect().left <= rightNowbarBorder
+	) {
+		if (nowBarRef.current?.parentElement) {
+			const nowBarRect = nowBarRef.current.getBoundingClientRect()
+			if (nowBarRect.left <= rightNowbarBorder) {
+				nowBarRef.current.remove()
+			}
+		}
+	} else {
+		if (nowBarRef.current && !nowBarRef.current.parentElement) {
+			nowTimeSlotRef.current.appendChild(nowBarRef.current)
 		}
 	}
 }
