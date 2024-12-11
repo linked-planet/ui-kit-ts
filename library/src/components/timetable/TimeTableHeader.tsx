@@ -203,7 +203,7 @@ export const LPTimeTableHeader = function TimeTableHeader<
 					)
 				})}
 			</colgroup>
-			<thead ref={tableHeaderRef} className="sticky top-0 z-[4]">
+			<thead ref={tableHeaderRef} className="sticky top-0 z-[5]">
 				<tr>
 					<th
 						style={{

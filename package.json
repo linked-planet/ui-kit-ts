@@ -113,8 +113,8 @@
 		"use-resize-observer": "^9.1.0"
 	},
 	"devDependencies": {
-		"@atlaskit/atlassian-navigation": "^4.9.4",
-		"@atlaskit/code": "^15.6.6",
+		"@atlaskit/atlassian-navigation": "^4.9.5",
+		"@atlaskit/code": "^15.6.7",
 		"@atlaskit/css-reset": "^6.11.2",
 		"@atlaskit/lozenge": "^11.12.3",
 		"@atlaskit/pagination": "^14.10.1",
@@ -133,9 +133,9 @@
 		"@formatjs/cli": "^6.3.14",
 		"@monaco-editor/react": "^4.6.0",
 		"@total-typescript/ts-reset": "^0.6.1",
-		"@types/node": "^22.10.1",
-		"@types/react": "^18.3.14",
-		"@types/react-dom": "^18.3.3",
+		"@types/node": "^22.10.2",
+		"@types/react": "^18.3.16",
+		"@types/react-dom": "^18.3.5",
 		"@typescript-eslint/eslint-plugin": "^8.18.0",
 		"@typescript-eslint/parser": "^8.18.0",
 		"@vitejs/plugin-react-swc": "^3.7.2",
