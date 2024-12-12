@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -14,10 +14,11 @@ function AutomaticTabsValue() {
 	//#region tabs_automatic_value
 	return (
 		<Tabs.Container>
-			<Tabs.TabList>
+			<Tabs.TabList allowNonTabComponents>
 				<Tabs.Tab>Tab 1</Tabs.Tab>
 				<Tabs.Tab>Tab 2</Tabs.Tab>
 				<Tabs.Tab disabled>Tab 3</Tabs.Tab>
+				<div>Other Component</div>
 			</Tabs.TabList>
 			<Tabs.TabPanel>
 				<span>First Content</span>
