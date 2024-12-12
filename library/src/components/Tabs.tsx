@@ -102,6 +102,7 @@ export type TabListProps = {
 	style?: React.CSSProperties
 	testId?: string
 	side?: TabsSide
+	allowNonTabComponents?: boolean
 }
 
 const tabListTopClassName =
@@ -118,7 +119,15 @@ const tabListBottomClassName =
  */
 const TabList = forwardRef(
 	(
-		{ children, className, style, testId, side = "top", id }: TabListProps,
+		{
+			children,
+			className,
+			style,
+			testId,
+			side = "top",
+			id,
+			allowNonTabComponents,
+		}: TabListProps,
 		ref: ForwardedRef<HTMLDivElement>,
 	) => {
 		const tabListChildrenWithValue = React.Children.map(
@@ -129,10 +138,11 @@ const TabList = forwardRef(
 						"TabList children must be valid React elements",
 					)
 				}
-				if (child.type !== Tab) {
-					console.log(
+				if (child.type !== Tab && !allowNonTabComponents) {
+					console.warn(
 						"Only Tab components are allowed as children of TabList, but was",
 						child.type,
+						"(use allowNonTabComponents prop to allow other components)",
 					)
 				}
 				const childTyped = child as React.ReactElement<
@@ -201,7 +211,10 @@ const TabPanel = forwardRef(
 		return (
 			<RTabs.Content
 				id={id}
-				className={twMerge("data-[state=inactive]:hidden", className)}
+				className={twMerge(
+					"data-[state=inactive]:hidden size-full",
+					className,
+				)}
 				style={style}
 				value={label.toString()} /* this is set in the Tabs component! */
 				data-testid={testId}
@@ -214,7 +227,8 @@ const TabPanel = forwardRef(
 )
 
 /**
- * Container containing the TabList tab menu bar, and Tab panels
+ * Container containing the TabList tab menu bar, and Tab panels.
+ * For the TabPanels to use the correct height in case that the tab panel should have a height of 100% of the parent container, enable the heightHelper prop
  */
 const Container = forwardRef(
 	(
@@ -293,7 +307,7 @@ const Container = forwardRef(
 				value={selected != null ? selected.toString() : undefined}
 				defaultValue={defaultSelectedValue}
 				className={twMerge(
-					`flex p-2 ${side === "top" || side === "bottom" ? "flex-col" : ""}`,
+					`flex p-2 size-full ${side === "top" || side === "bottom" ? "flex-col" : ""}`,
 					className,
 				)}
 				style={style}
