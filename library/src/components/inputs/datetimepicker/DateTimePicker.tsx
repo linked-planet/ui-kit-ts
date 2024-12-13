@@ -58,7 +58,9 @@ type TimePickerPropsPart = Pick<
 
 type DateTimePickerAdditionalProps = {
 	dateOpen?: boolean
+	dateDisabled?: boolean
 	timeOpen?: boolean
+	timeDisabled?: boolean
 	defaultDateOpen?: boolean
 	defaultTimeOpen?: boolean
 	onDateChange?: (date: DateType | null) => void
@@ -153,6 +155,9 @@ function DateTimeNotInFormPicker({
 	weekStartsOn,
 	datePlaceholder,
 	timePlaceholder,
+	disabled,
+	timeDisabled,
+	dateDisabled,
 	onClearButtonClick,
 	defaultDate: _defaultDate,
 	defaultTime: _defaultTime,
@@ -283,6 +288,7 @@ function DateTimeNotInFormPicker({
 		value: timeVal,
 		onChange: onTimeChangedCB,
 		onClearButtonClick: onClearButtonClickCB,
+		disabled: timeDisabled || disabled,
 		...props,
 		...timePickerOptionProps,
 	}
@@ -308,12 +314,13 @@ function DateTimeNotInFormPicker({
 		disabledDateFilter,
 		disabledDates,
 		label: props.label ?? props["aria-label"] ?? "Date and Time",
+		disabled: dateDisabled || disabled,
 		...props,
 	}
 
 	return (
 		<div
-			data-disabled={props.disabled}
+			data-disabled={disabled}
 			className={twJoin("flex", className)}
 			style={style}
 		>
@@ -326,7 +333,8 @@ function DateTimeNotInFormPicker({
 			/>
 			<TimePicker
 				className={twMerge(
-					"rounded-l-none border-l-0 border-l-transparent before:rounded-l-none",
+					!dateDisabled && "border-l-0 border-l-transparent",
+					"before:rounded-l-none rounded-l-none",
 					timePickerClassName,
 				)}
 				value={timeVal}

@@ -107,6 +107,35 @@ function ControlledFormExample() {
 }
 //#endregion datetime-picker-form-controlled
 
+//#region datetime-picker-disable-parts
+function DisablePartsExample() {
+	const [disableDate, setDisableDate] = useState(false)
+	const [disableTime, setDisableTime] = useState(false)
+	const [disabled, setDisabled] = useState(false)
+
+	return (
+		<div className="flex flex-col">
+			<ButtonGroup>
+				<Button onClick={() => setDisableDate((prev) => !prev)}>
+					{disableDate ? "Enable" : "Disable"} Date
+				</Button>
+				<Button onClick={() => setDisableTime((prev) => !prev)}>
+					{disableTime ? "Enable" : "Disable"} Time
+				</Button>
+				<Button onClick={() => setDisabled((prev) => !prev)}>
+					{disabled ? "Enable" : "Disable"} Both
+				</Button>
+			</ButtonGroup>
+			<DateTimePicker
+				disabled={disabled}
+				dateDisabled={disableDate}
+				timeDisabled={disableTime}
+			/>
+		</div>
+	)
+}
+//#endregion
+
 function DateTimePickerShowcase(props: ShowcaseProps) {
 	const [date, setDate] = useState<DateType | null>(null)
 	const [time, setTime] = useState<TimeType | null>(null)
@@ -179,6 +208,11 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					title: "Time Settings",
 					example: example2,
 					sourceCodeExampleId: "datetime-picker-timesettings",
+				},
+				{
+					title: "Disable Parts",
+					example: <DisablePartsExample />,
+					sourceCodeExampleId: "datetime-picker-disable-parts",
 				},
 			]}
 		/>

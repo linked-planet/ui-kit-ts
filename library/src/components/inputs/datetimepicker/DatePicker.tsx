@@ -274,50 +274,50 @@ const DatePickerBase = forwardRef(
 					readOnly={readOnly}
 					onChange={onInputChange}
 					iconAfter={
-						<>
-							{!hideIcon && (
-								<>
-									{value && !readOnly && (
-										<div className="pointer-events-none">
-											<Button
-												appearance="link"
-												className="text-disabled-text hover:text-text pointer-events-auto m-0 h-full w-8 px-1 py-0"
-												onClick={(e) => {
-													e.stopPropagation()
-													setOpen(false)
-													setValue("")
-													onChange?.(null)
-												}}
-												label={clearButtonLabel}
-											>
-												<IconSizeHelper
-													size="medium"
-													className=""
-												>
-													<SelectClearIcon
-														label=""
-														size="small"
-													/>
-												</IconSizeHelper>
-											</Button>
-										</div>
-									)}
-									{!value && !readOnly && (
-										<IconSizeHelper
-											size="medium"
-											className="w-8"
+						!hideIcon && (
+							<>
+								{value && !readOnly && (
+									<div className="pointer-events-none">
+										<Button
+											appearance="link"
+											className="text-disabled-text hover:text-text pointer-events-auto m-0 h-full w-8 px-1 py-0"
+											onClick={(e) => {
+												e.stopPropagation()
+												setOpen(false)
+												setValue("")
+												onChange?.(null)
+											}}
+											label={clearButtonLabel}
 										>
-											<CalendarIcon label="calendar" />
-										</IconSizeHelper>
-									)}
-								</>
-							)}
-						</>
+											<IconSizeHelper
+												size="medium"
+												className=""
+											>
+												<SelectClearIcon
+													label=""
+													size="small"
+												/>
+											</IconSizeHelper>
+										</Button>
+									</div>
+								)}
+								{!value && !readOnly && (
+									<IconSizeHelper
+										size="medium"
+										className="w-8"
+									>
+										<CalendarIcon label="calendar" />
+									</IconSizeHelper>
+								)}
+							</>
+						)
 					}
 					ref={ref}
 				/>
 			</div>
 		)
+
+		console.log("DISABLED", disabled)
 
 		return (
 			<Popover.Root
