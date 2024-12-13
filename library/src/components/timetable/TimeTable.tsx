@@ -674,7 +674,7 @@ function moveNowBar(
 	const diffPerc = diffNow / timeSlotMinutes
 	nowBar.style.left = `${diffPerc * 100}%`
 	nowBar.style.top = "100%"
-	nowBar.style.height = `${tableBody.getBoundingClientRect().bottom - nowTimeSlotCell.getBoundingClientRect().top}px`
+	nowBar.style.height = `${tableBody.getBoundingClientRect().bottom - nowTimeSlotCell.getBoundingClientRect().top - nowTimeSlotCell.clientHeight}px`
 
 	nowTimeSlotCell.classList.remove(
 		"border-b-border-bold",
