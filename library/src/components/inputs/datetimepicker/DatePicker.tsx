@@ -317,8 +317,6 @@ const DatePickerBase = forwardRef(
 			</div>
 		)
 
-		console.log("DISABLED", disabled)
-
 		return (
 			<Popover.Root
 				triggerComponent={trigger}
