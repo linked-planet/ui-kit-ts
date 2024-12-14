@@ -49,6 +49,7 @@ export function idleRateLimitHelper(
  * The idleRateLimitHelper returns a function, which you can call to execute a callback function.
  * However, the callback function will only be executed if the time elapsed since the last call is greater than the specified minimum distance.
  * @param minDistanceMS the minimal elapsed time between two calls.
+ * @param executeAfter if true, the callback will be executed using a timeout after the minimum distance has passed, to make sure (default: true).
  * @returns a function that takes a callback function as a parameter.
  */
 export function useIdleRateLimitHelper(

@@ -3,6 +3,7 @@ import type React from "react"
 import {
 	createRef,
 	type MouseEvent,
+	type MutableRefObject,
 	useCallback,
 	useLayoutEffect,
 	useMemo,
@@ -76,8 +77,8 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 	g: number,
 	refCollection: React.MutableRefObject<HTMLElement>[],
 	groupRowsRendered: JSX.Element[],
-	renderedCells: Set<number>,
-	changedGroupRows: Set<number>,
+	renderedGroupsRef: MutableRefObject<Set<number>>,
+	changedGroupRowsRef: MutableRefObject<Set<number>>,
 	onGroupClick: ((_: G) => void) | undefined,
 	placeHolderHeight: number,
 	columnWidth: number,
@@ -107,7 +108,7 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 			groupEntry,
 			groupRows,
 			groupEntriesArray,
-			changedGroupRows,
+			changedGroupRowsRef,
 			renderCells,
 		)
 		throw new Error("TimeTable - group entry not found")
@@ -130,16 +131,10 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 		refCollection[g] = mref
 	}
 	const rendering = g >= renderCells[0] && g <= renderCells[1]
-	if (rendering) {
-		renderedCells.add(g)
-	} else {
-		renderedCells.delete(g)
-	}
-	changedGroupRows.delete(g)
 
 	groupRowsRendered[g] = (
 		<GroupRows<G, I>
-			key={`${groupEntry.title}${g}-${rendering}`}
+			key={`${g}-${groupEntry.id}-${rendering}`}
 			group={groupEntry}
 			groupNumber={g}
 			itemRows={rows}
@@ -154,6 +149,10 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 			slotsArray={slotsArray}
 			timeFrameDay={timeFrameDay}
 			viewType={viewType}
+			// side effect props
+			renderedGroupsRef={renderedGroupsRef}
+			changedGroupRowsRef={changedGroupRowsRef}
+			//
 		/>
 	)
 }
@@ -165,7 +164,6 @@ export default function TimeTableRows<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
 >({
-	//entries,
 	groupRows,
 	onGroupClick,
 	onTimeSlotItemClick,
@@ -200,18 +198,21 @@ export default function TimeTableRows<
 	const changedGroupRows = useRef<Set<number>>(new Set<number>())
 
 	// groupRowsRendered is the array of rendered group rows JSX Elements, which is returned from the component
-	const groupRowsRendered = useRef<JSX.Element[]>([])
+	//const groupRowsRendered = useRef<JSX.Element[]>([])
+	const [groupRowsRendered, setGroupRowsRendered] = useState<JSX.Element[]>(
+		[],
+	)
 
 	const slotsArrayCurrent = useRef(slotsArray)
 	const viewTypeCurrent = useRef(viewType)
 	const timeFrameDayCurrent = useRef(timeFrameDay)
 
 	// groupRowsRenderedIdx is the index of the group row which is currently rendered using batch rendering
-	const [groupRowsRenderedIdx, setGroupRowsRenderedIdx] = useState(-1)
+	//const [groupRowsRenderedIdx, setGroupRowsRenderedIdx] = useState(-1)
 	// this is a reference to the current groupRowsRenderedIdx to avoid changing the handleIntersections callback on groupRowsRenderedIdx change
 	// and to know how far we are with the initial rendering... this is needed to know when to start the intersection observer
 	// and it should be only set to 0 when the group rows change
-	const groupRowsRenderedIdxRef = useRef(groupRowsRenderedIdx)
+	//const groupRowsRenderedIdxRef = useRef(groupRowsRenderedIdx)
 
 	if (
 		slotsArrayCurrent.current !== slotsArray ||
@@ -223,13 +224,13 @@ export default function TimeTableRows<
 		slotsArrayCurrent.current = slotsArray
 		viewTypeCurrent.current = viewType
 		timeFrameDayCurrent.current = timeFrameDay
-		setGroupRowsRenderedIdx(-1)
-		groupRowsRenderedIdxRef.current = 0
+		setGroupRowsRendered([])
 	}
 
 	const rateLimiterIntersection = useIdleRateLimitHelper(renderIdleTimeout)
 	const rateLimiterRendering = useIdleRateLimitHelper(renderIdleTimeout)
 	const debounceIntersection = useDebounceHelper(intersectionStackDelay)
+	const allRenderedPlaceholderCommitedToDOM = useRef(false)
 
 	// handle intersection is called after intersectionStackDelay ms to avoid too many calls
 	// and checks which groups are intersecting with the intersection container.
@@ -253,8 +254,10 @@ export default function TimeTableRows<
 		const bottom = intersectionbb.bottom + rowsMargin * rowHeight
 
 		// find the last rendered group row
-		let lastIdx = groupRowsRenderedIdxRef.current
+		let lastIdx = refCollection.current.length - 1
+		allRenderedPlaceholderCommitedToDOM.current = true
 		while (!refCollection.current[lastIdx]?.current && lastIdx > 0) {
+			allRenderedPlaceholderCommitedToDOM.current = false
 			lastIdx--
 		}
 
@@ -338,6 +341,7 @@ export default function TimeTableRows<
 				renderGroupRangeRef.current = newRenderCells
 				return newRenderCells
 			}
+			//console.log("TimeTable - intersected group rows not changed", prev)
 			return prev
 		})
 	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
@@ -351,25 +355,20 @@ export default function TimeTableRows<
 		setCurrentGroupRows((currentGroupRows) => {
 			changedGroupRows.current.clear()
 			if (!groupRows) {
-				setGroupRowsRenderedIdx(-1)
-				groupRowsRenderedIdxRef.current = 0
-				groupRowsRendered.current = []
 				renderedGroups.current.clear()
 				refCollection.current = []
+				setGroupRowsRendered([])
 				console.log("TimeTable - group rows are null")
 				return groupRows
 			}
 
-			if (groupRowsRendered.current.length > groupRows.size) {
+			if (groupRowsRendered.length > groupRows.size) {
 				// shorten and remove rendered elements array, if too long
 				console.info(
-					`Timetable - shorten rendered elements array from ${groupRowsRendered.current.length} to ${groupRows.size}`,
+					`Timetable - shorten rendered elements array from ${groupRowsRendered.length} to ${groupRows.size}`,
 				)
-				groupRowsRendered.current.length = groupRows.size
+				setGroupRowsRendered(groupRowsRendered.slice(0, groupRows.size))
 				refCollection.current.length = groupRows.size
-				if (groupRowsRenderedIdxRef.current >= groupRows.size) {
-					groupRowsRenderedIdxRef.current = groupRows.size - 1
-				}
 			}
 
 			// determine when new ones start
@@ -410,6 +409,9 @@ export default function TimeTableRows<
 			if (updateCounter) {
 				console.log(
 					`TimeTable - group rows require updated rendering ${updateCounter}, with first ${changedFound}`,
+					renderGroupRangeRef.current,
+					currentGroupRowsRef.current.size,
+					groupRows.size,
 				)
 			}
 			currentGroupRowsRef.current = groupRows
@@ -454,7 +456,8 @@ export default function TimeTableRows<
 
 	//** ------- RENDERING ------ */
 	const renderBatch = useCallback(() => {
-		setGroupRowsRenderedIdx((groupRowsRenderedIdx) => {
+		setGroupRowsRendered((groupRowsRenderedPrev) => {
+			const groupRowsRendered = [...groupRowsRenderedPrev]
 			if (changedGroupRows.current.size) {
 				let counter = 0
 				if (renderGroupRangeRef.current[0] > -1) {
@@ -474,9 +477,9 @@ export default function TimeTableRows<
 								currentGroupRowsRef.current,
 								i,
 								refCollection.current,
-								groupRowsRendered.current,
-								renderedGroups.current,
-								changedGroupRows.current,
+								groupRowsRendered,
+								renderedGroups,
+								changedGroupRows,
 								onGroupClick,
 								placeHolderHeight,
 								columnWidth,
@@ -489,7 +492,7 @@ export default function TimeTableRows<
 							)
 							counter++
 							if (counter > timeTableGroupRenderBatchSize) {
-								return groupRowsRenderedIdx - 1
+								return groupRowsRendered
 							}
 						}
 					}
@@ -497,7 +500,7 @@ export default function TimeTableRows<
 				for (const g of changedGroupRows.current) {
 					if (
 						g > currentGroupRowsRef.current.size - 1 ||
-						g > groupRowsRenderedIdxRef.current
+						g > groupRowsRendered.length - 1
 					) {
 						changedGroupRows.current.delete(g)
 						continue
@@ -508,9 +511,9 @@ export default function TimeTableRows<
 						currentGroupRowsRef.current,
 						g,
 						refCollection.current,
-						groupRowsRendered.current,
-						renderedGroups.current,
-						changedGroupRows.current,
+						groupRowsRendered,
+						renderedGroups,
+						changedGroupRows,
 						onGroupClick,
 						placeHolderHeight,
 						columnWidth,
@@ -523,26 +526,24 @@ export default function TimeTableRows<
 					)
 					counter++
 					if (counter > timeTableGroupRenderBatchSize) {
-						return groupRowsRenderedIdx - 1
+						return groupRowsRendered
 					}
 				}
 			}
 
-			//normal placeholder rendering
-			let ret = groupRowsRendered.current.length
 			let counter = 0
 			while (
-				ret < currentGroupRowsRef.current.size &&
+				groupRowsRendered.length < currentGroupRowsRef.current.size &&
 				counter < timeTableGroupRenderBatchSize
 			) {
 				renderGroupRows(
 					renderGroupRangeRef.current,
 					currentGroupRowsRef.current,
-					ret,
+					groupRowsRendered.length,
 					refCollection.current,
-					groupRowsRendered.current,
-					renderedGroups.current,
-					changedGroupRows.current,
+					groupRowsRendered,
+					renderedGroups,
+					changedGroupRows,
 					onGroupClick,
 					placeHolderHeight,
 					columnWidth,
@@ -554,11 +555,9 @@ export default function TimeTableRows<
 					viewType,
 				)
 				++counter
-				++ret
 			}
-			groupRowsRenderedIdxRef.current = ret
 			rateLimiterIntersection(handleIntersections)
-			return ret
+			return groupRowsRendered
 		})
 	}, [
 		onGroupClick,
@@ -576,14 +575,26 @@ export default function TimeTableRows<
 
 	if (
 		changedGroupRows.current.size ||
-		groupRowsRenderedIdx < groupRows.size - 1 ||
+		groupRowsRendered.length < groupRows.size ||
 		renderedGroups.current.size <
 			renderGroupRangeRef.current[1] - renderGroupRangeRef.current[0] + 1
 	) {
 		rateLimiterRendering(renderBatch)
+	} else {
+		// final rendering and intersection once all groups are rendered and committed to the DOM
+		if (!allRenderedPlaceholderCommitedToDOM.current) {
+			rateLimiterIntersection(handleIntersections)
+			rateLimiterRendering(renderBatch)
+			// need to use flush sync in case of only very very few groups that we really render all groups
+			// handleIntersections sets the allRenderedPlaceholderCommitedToDOM to true if all placeholders are found
+			/*window.setTimeout(() => {
+				rateLimiterIntersection(() => flushSync(handleIntersections))
+				rateLimiterRendering(() => flushSync(renderBatch))
+			}, 0)*/
+		}
 	}
 
-	return groupRowsRendered.current
+	return groupRowsRendered
 }
 
 /**
@@ -963,6 +974,9 @@ type GroupRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	slotsArray: readonly Dayjs[]
 	timeFrameDay: TimeFrameDay
 	viewType: TimeTableViewType
+	// this is a side effect to make sure that only the rendered groups are are set, because React sometimes optimizies the rendering out (so I have to keep track of the rendered groups in the actual invocation)
+	renderedGroupsRef: React.MutableRefObject<Set<number>>
+	changedGroupRowsRef: React.MutableRefObject<Set<number>>
 }
 
 function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
@@ -980,7 +994,20 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	timeFrameDay,
 	viewType,
 	mref,
+	// ugly side effect props
+	renderedGroupsRef,
+	changedGroupRowsRef,
+	//
 }: GroupRowsProps<G, I>) {
+	// ugly SIDE EFFECTs for now to make sure the rendered groups are set
+	changedGroupRowsRef.current.delete(groupNumber)
+	if (renderCells) {
+		renderedGroupsRef.current.add(groupNumber)
+	} else {
+		renderedGroupsRef.current.delete(groupNumber)
+	}
+	//
+
 	const storeIdent = useTimeTableIdent()
 	const timeSlotSelectionDisabled =
 		useTTCTimeSlotSelectionDisabled(storeIdent)
@@ -1039,6 +1066,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 							}`
 						: undefined
 				}
+				key={`${group.id}_h_${renderCells}`}
 			>
 				{renderCells && (
 					<div
@@ -1133,7 +1161,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 				tds.push(
 					<TableCell<G, I>
-						key={`${groupNumber}-${timeSlotNumber}-${viewType}`}
+						key={`${group.id}-${groupNumber}-${timeSlotNumber}-${viewType}`}
 						timeSlotNumber={timeSlotNumber}
 						isLastGroupRow={r === rowCount - 1}
 						isFirstRow={r === 0}
@@ -1174,6 +1202,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				}}
 				data-group-id={group.id}
 				data-test={`unrendered-table-row_${group.id}`}
+				key={`unrendered-table-row_${group.id}`}
 				ref={mref as React.Ref<HTMLTableRowElement>}
 				className="box-border m-0"
 			>
