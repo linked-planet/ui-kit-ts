@@ -52,7 +52,7 @@ export function useGroupRows<
 	const [calcBatch, setCalcBatch] = useState<number>(-1)
 
 	// is one of those properties changes we need to recalculate all group rows
-	if (
+	/*if (
 		currentTimeSlots.current !== slotsArray ||
 		currentTimeFrameDay.current !== timeFrameDay ||
 		currentViewType.current !== viewType
@@ -69,7 +69,7 @@ export function useGroupRows<
 			"VIEW TYPE",
 			currentViewType.current !== viewType,
 		)
-	}
+	}*/
 
 	const requireNewGroupRows =
 		currentTimeSlots.current !== slotsArray ||
