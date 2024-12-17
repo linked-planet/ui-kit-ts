@@ -39,6 +39,7 @@ import { useRateLimitHelper } from "../../utils/rateLimit"
 import useResizeObserver from "use-resize-observer"
 
 export interface TimeSlotBooking {
+	key: React.Key
 	title: string
 	startDate: Dayjs
 	endDate: Dayjs
@@ -614,6 +615,7 @@ function moveNowBar(
 	}
 
 	const nowItem: TimeSlotBooking = {
+		key: "nowbar",
 		title: "nowBar",
 		startDate: now,
 		endDate: now,

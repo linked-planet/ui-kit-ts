@@ -763,7 +763,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 				return (
 					<ItemWrapper
-						key={it.item.title}
+						key={it.item.key}
 						group={group}
 						item={it.item}
 						width={itemWidthInColumn}

@@ -65,7 +65,6 @@ function calculateTimeSlotsHoursView(
 			slotsArray[i * timeSlotsPerDay + ts] = timeSlot
 		}
 	}
-
 	return slotsArray
 }
 
@@ -145,17 +144,22 @@ function calculateTimeSlotPropertiesForHoursView(
 		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
 	}
 
-	let timeDiff = dayjs()
+	let endOfDay = dayjs()
 		.startOf("day")
 		.add(endDate.hour(), "hours")
 		.add(endDate.minute(), "minutes")
-		.diff(
-			dayjs()
-				.startOf("day")
-				.add(startDate.hour(), "hours")
-				.add(startDate.minute(), "minutes"),
-			"minutes",
-		)
+
+	const startOfDay = endOfDay
+		.startOf("day")
+		.add(startDate.hour(), "hours")
+		.add(startDate.minute(), "minutes")
+
+	if (endOfDay.isBefore(startOfDay)) {
+		endOfDay = endOfDay.add(1, "day")
+	}
+
+	let timeDiff = endOfDay.diff(startOfDay, "minutes")
+
 	if (timeDiff === 0) {
 		timeDiff = 24 * 60
 	}
@@ -293,29 +297,22 @@ export function calculateTimeSlotPropertiesForView(
 		slotsArray.push(ret)
 	}
 
-	let oneDayMinutes = dayjs()
+	let endOfDay = dayjs()
 		.startOf("day")
 		.add(endHour, "hours")
 		.add(endMinute, "minutes")
-		.diff(
-			dayjs()
-				.startOf("day")
-				.add(startHour, "hours")
-				.add(startMinute, "minutes"),
-			"minutes",
-		)
+
+	const startOfDay = endOfDay
+		.startOf("day")
+		.add(startHour, "hours")
+		.add(startMinute, "minutes")
+
+	if (endOfDay.isBefore(startOfDay)) {
+		endOfDay = endOfDay.add(1, "day")
+	}
+
+	let oneDayMinutes = endOfDay.diff(startOfDay, "minutes")
 	if (oneDayMinutes === 0) {
-		// I set it on purpose to 23h 59min
-		/*const endOfDay = dayjs().endOf("day")
-		endHour = endOfDay.hour()
-		endMinute = endOfDay.minute()
-		oneDayMinutes = endOfDay.diff(
-			dayjs()
-				.startOf("day")
-				.add(startHour, "hours")
-				.add(endHour, "minutes"),
-			"minutes",
-		)*/
 		oneDayMinutes = 24 * 60
 	}
 
@@ -614,7 +611,10 @@ export function getStartAndEndSlot(
 			.add(timeFrameDay.startMinute, "minutes")
 	}
 
-	if (item.endDate.isBefore(startSlotStart)) {
+	if (
+		item.endDate.isBefore(startSlotStart) ||
+		item.endDate.isSame(startSlotStart)
+	) {
 		return { startSlot: startSlot, endSlot: startSlot, status: "before" }
 	}
 

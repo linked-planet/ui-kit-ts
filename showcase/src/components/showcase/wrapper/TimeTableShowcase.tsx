@@ -420,7 +420,7 @@ function createMoreTestGroups(
 	return newGroups
 }
 
-const startDateInitial = dayjs().startOf("day").add(-1, "day")
+const startDateInitial = dayjs().startOf("day").add(-1, "day").add(8, "hours")
 const endDateInitial = dayjs().startOf("day").add(6, "days")
 
 function TestCustomHeaderRowTimeSlot<
