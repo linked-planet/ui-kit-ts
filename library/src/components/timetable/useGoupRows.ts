@@ -52,7 +52,7 @@ export function useGroupRows<
 	const [calcBatch, setCalcBatch] = useState<number>(-1)
 
 	// is one of those properties changes we need to recalculate all group rows
-	if (
+	/*if (
 		currentTimeSlots.current !== slotsArray ||
 		currentTimeFrameDay.current !== timeFrameDay ||
 		currentViewType.current !== viewType
@@ -69,7 +69,7 @@ export function useGroupRows<
 			"VIEW TYPE",
 			currentViewType.current !== viewType,
 		)
-	}
+	}*/
 
 	const requireNewGroupRows =
 		currentTimeSlots.current !== slotsArray ||
@@ -82,7 +82,9 @@ export function useGroupRows<
 		maxRowCountOfSingleGroup.current = 0
 		itemsOutsideOfDayRange.current = {}
 		itemsWithSameStartAndEnd.current = {}
-		console.info("TimeTable - clearing group rows")
+		console.info(
+			`TimeTable - clearing group rows in clearGroupRows callback - recalculating ${currentEntries.current?.length || 0} group rows`,
+		)
 		groupRowsToCalc.current.clear()
 		if (currentEntries.current?.length) {
 			for (let i = 0; i < currentEntries.current.length; i++) {
@@ -95,7 +97,9 @@ export function useGroupRows<
 	const calculateGroupRows = useCallback(() => {
 		if (!currentEntries.current) {
 			if (Object.keys(groupRowsState.current).length) {
-				console.warn("TimeTable - no entries, clearing group rows")
+				console.info(
+					"TimeTable - no entries, clearing group rows in calculateGroupRows",
+				)
 				rowCount.current = 0
 				maxRowCountOfSingleGroup.current = 0
 				itemsOutsideOfDayRange.current = {}
@@ -128,6 +132,7 @@ export function useGroupRows<
 		}
 
 		for (const i of groupRowsToCalc.current) {
+			//console.log(`TimeTable - calculating group rows of ${i}. group`)
 			const entry = currEntries[i]
 			if (!entry) {
 				console.error("TimeTable - entry not found", i)
@@ -216,14 +221,15 @@ export function useGroupRows<
 		currentTimeSlots.current = slotsArray
 		currentTimeFrameDay.current = timeFrameDay
 		currentViewType.current = viewType
+		console.info(
+			`TimeTable - require new group rows, clearing group rows, new entry count ${entries.length}`,
+		)
 		clearGroupRows()
 		rateLimiterCalc(calculateGroupRows)
 	}
 
 	if (currentEntries.current !== entries) {
 		// check what needs to be removed, recalculated or added
-		console.info("TimeTable - entries changed, recalculating group rows")
-
 		const updatedGroupRows: Map<G, ItemRowEntry<I>[][] | null> = new Map<
 			G,
 			ItemRowEntry<I>[][] | null
@@ -233,10 +239,15 @@ export function useGroupRows<
 		const updatedItemsOutsideOfDayRange: { [groupId: string]: I[] } = {}
 		const updatedItemsWithSameStartAndEnd: { [groupId: string]: I[] } = {}
 		let updateCounter = 0
+		let stillCalcRequired = 0
 
 		for (let i = 0; i < entries.length; i++) {
 			const entry = entries[i]
 			const currEntry = currentEntries.current?.[i]
+			// freeze the items array to get errors when the items array is changed but not the reference, and the changes would not be recognized
+			if (entry.items) {
+				Object.freeze(entry.items)
+			}
 			if (
 				currEntry &&
 				currEntry === entry &&
@@ -261,17 +272,24 @@ export function useGroupRows<
 							itemsWithSameStartAndEnd.current[entry.group.id]
 					}
 				}
-				updatedGroupRows.set(entry.group, _groupRows)
+				if (_groupRows) {
+					updatedGroupRows.set(entry.group, _groupRows)
+				} else {
+					// if it is undefined, we need to recalculate the group rows
+					updatedGroupRows.set(entry.group, null)
+					++stillCalcRequired
+					groupRowsToCalc.current.add(i)
+				}
 				// do we need to recalculate the group rows?
 			} else {
-				updateCounter++
+				++updateCounter
 				updatedGroupRows.set(entry.group, null)
 				groupRowsToCalc.current.add(i)
 			}
 		}
 		currentEntries.current = entries
 		console.info(
-			`TimeTable - updating ${updateCounter} group rows`,
+			`TimeTable - entries changed, updating ${updateCounter} group rows with ${stillCalcRequired} still requiring calculation`,
 			updatedGroupRows,
 		)
 		rowCount.current = updatedRowCount

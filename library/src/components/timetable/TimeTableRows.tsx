@@ -214,19 +214,6 @@ export default function TimeTableRows<
 	// and it should be only set to 0 when the group rows change
 	//const groupRowsRenderedIdxRef = useRef(groupRowsRenderedIdx)
 
-	if (
-		slotsArrayCurrent.current !== slotsArray ||
-		viewTypeCurrent.current !== viewType ||
-		timeFrameDayCurrent.current !== timeFrameDay
-	) {
-		// reset the rendered cells
-		renderedGroups.current.clear()
-		slotsArrayCurrent.current = slotsArray
-		viewTypeCurrent.current = viewType
-		timeFrameDayCurrent.current = timeFrameDay
-		setGroupRowsRendered([])
-	}
-
 	const rateLimiterIntersection = useIdleRateLimitHelper(renderIdleTimeout)
 	const rateLimiterRendering = useIdleRateLimitHelper(renderIdleTimeout)
 	const debounceIntersection = useDebounceHelper(intersectionStackDelay)
@@ -347,76 +334,90 @@ export default function TimeTableRows<
 	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
 
 	const currentGroupRowsRef = useRef(groupRows)
-	const [currentGroupRows, setCurrentGroupRows] = useState(groupRows)
+
+	if (
+		slotsArrayCurrent.current !== slotsArray ||
+		viewTypeCurrent.current !== viewType ||
+		timeFrameDayCurrent.current !== timeFrameDay
+	) {
+		// reset the rendered cells
+		renderedGroups.current.clear()
+		slotsArrayCurrent.current = slotsArray
+		viewTypeCurrent.current = viewType
+		timeFrameDayCurrent.current = timeFrameDay
+		currentGroupRowsRef.current.clear()
+		//setCurrentGroupRows(groupRows)
+	}
 
 	//** ------- CHANGE DETECTION ------ */
 	// handle changes in the group rows
-	if (groupRows !== currentGroupRows) {
-		setCurrentGroupRows((currentGroupRows) => {
-			changedGroupRows.current.clear()
-			if (!groupRows) {
-				renderedGroups.current.clear()
-				refCollection.current = []
-				setGroupRowsRendered([])
-				console.log("TimeTable - group rows are null")
-				return groupRows
-			}
-
-			if (groupRowsRendered.length > groupRows.size) {
-				// shorten and remove rendered elements array, if too long
-				console.info(
-					`Timetable - shorten rendered elements array from ${groupRowsRendered.length} to ${groupRows.size}`,
-				)
-				setGroupRowsRendered(groupRowsRendered.slice(0, groupRows.size))
-				refCollection.current.length = groupRows.size
-			}
-
-			// determine when new ones start
-			let changedFound = -1
-			const keys = groupRows.keys().toArray()
-			let updateCounter = 0
-			for (let i = 0; i < keys.length; i++) {
-				const group = keys[i]
-				const rows = groupRows.get(group)
-				const currentRows = currentGroupRows.get(group)
-				if (
-					(rows !== currentRows &&
-						renderGroupRangeRef.current[0] > -1 &&
-						i >= renderGroupRangeRef.current[0] &&
-						i <= renderGroupRangeRef.current[1]) ||
-					rows?.length !== currentRows?.length
-				) {
-					if (changedFound === -1) {
-						changedFound = i
-					}
-					updateCounter++
-					changedGroupRows.current.add(i)
-				}
-			}
-			for (const changedG of changedGroupRows.current) {
-				if (changedG > keys.length - 1) {
-					// delete obsolete change
-					changedGroupRows.current.delete(changedG)
-				}
-			}
-			for (const renderedG of renderedGroups.current) {
-				if (renderedG > keys.length - 1) {
-					// delete obsolete change
-					renderedGroups.current.delete(renderedG)
-				}
-			}
-
-			if (updateCounter) {
-				console.log(
-					`TimeTable - group rows require updated rendering ${updateCounter}, with first ${changedFound}`,
-					renderGroupRangeRef.current,
-					currentGroupRowsRef.current.size,
-					groupRows.size,
-				)
-			}
-			currentGroupRowsRef.current = groupRows
+	if (groupRows !== currentGroupRowsRef.current) {
+		//changedGroupRows.current.clear() -> this misses changes on fast updates where the currentGroupRowsRef is not yet updated
+		if (!groupRows) {
+			renderedGroups.current.clear()
+			refCollection.current = []
+			setGroupRowsRendered([])
+			console.log("TimeTable - group rows are null")
 			return groupRows
-		})
+		}
+
+		if (groupRowsRendered.length > groupRows.size) {
+			// shorten and remove rendered elements array, if too long
+			console.info(
+				`Timetable - shorten rendered elements array from ${groupRowsRendered.length} to ${groupRows.size}`,
+			)
+			setGroupRowsRendered(groupRowsRendered.slice(0, groupRows.size))
+			refCollection.current.length = groupRows.size
+		}
+
+		// determine when new ones start
+		let changedFound = -1
+		const keys = groupRows.keys().toArray()
+		let updateCounter = 0
+		for (let i = 0; i < keys.length; i++) {
+			const group = keys[i]
+			const rows = groupRows.get(group)
+			const currentRows = currentGroupRowsRef.current.get(group)
+			if (
+				(rows !== currentRows &&
+					renderGroupRangeRef.current[0] > -1 &&
+					i >= renderGroupRangeRef.current[0] &&
+					i <= renderGroupRangeRef.current[1]) ||
+				rows?.length !== currentRows?.length
+			) {
+				if (changedFound === -1) {
+					changedFound = i
+				}
+				updateCounter++
+				changedGroupRows.current.add(i)
+			}
+		}
+		for (const changedG of changedGroupRows.current) {
+			if (changedG > keys.length - 1) {
+				// delete obsolete change
+				changedGroupRows.current.delete(changedG)
+			}
+		}
+		for (const renderedG of renderedGroups.current) {
+			if (renderedG > keys.length - 1) {
+				// delete obsolete change
+				renderedGroups.current.delete(renderedG)
+			}
+		}
+
+		if (updateCounter) {
+			console.log(
+				`TimeTable - group rows require updated rendering ${updateCounter}, with first ${changedFound}`,
+				renderGroupRangeRef.current,
+				currentGroupRowsRef.current.size,
+				groupRows.size,
+			)
+		} else {
+			console.log(
+				"TimeTable - group rows do not require updated rendering",
+			)
+		}
+		currentGroupRowsRef.current = groupRows
 	}
 
 	//** ------- SCROLL HANDLING ------ */
@@ -762,7 +763,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 				return (
 					<ItemWrapper
-						key={it.item.title}
+						key={it.item.key}
 						group={group}
 						item={it.item}
 						width={itemWidthInColumn}

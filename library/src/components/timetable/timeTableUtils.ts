@@ -65,7 +65,6 @@ function calculateTimeSlotsHoursView(
 			slotsArray[i * timeSlotsPerDay + ts] = timeSlot
 		}
 	}
-
 	return slotsArray
 }
 
@@ -145,17 +144,22 @@ function calculateTimeSlotPropertiesForHoursView(
 		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
 	}
 
-	let timeDiff = dayjs()
+	let endOfDay = dayjs()
 		.startOf("day")
 		.add(endDate.hour(), "hours")
 		.add(endDate.minute(), "minutes")
-		.diff(
-			dayjs()
-				.startOf("day")
-				.add(startDate.hour(), "hours")
-				.add(startDate.minute(), "minutes"),
-			"minutes",
-		)
+
+	const startOfDay = endOfDay
+		.startOf("day")
+		.add(startDate.hour(), "hours")
+		.add(startDate.minute(), "minutes")
+
+	if (endOfDay.isBefore(startOfDay)) {
+		endOfDay = endOfDay.add(1, "day")
+	}
+
+	let timeDiff = endOfDay.diff(startOfDay, "minutes")
+
 	if (timeDiff === 0) {
 		timeDiff = 24 * 60
 	}
@@ -293,28 +297,23 @@ export function calculateTimeSlotPropertiesForView(
 		slotsArray.push(ret)
 	}
 
-	let oneDayMinutes = dayjs()
+	let endOfDay = dayjs()
 		.startOf("day")
 		.add(endHour, "hours")
 		.add(endMinute, "minutes")
-		.diff(
-			dayjs()
-				.startOf("day")
-				.add(startHour, "hours")
-				.add(startMinute, "minutes"),
-			"minutes",
-		)
+
+	const startOfDay = endOfDay
+		.startOf("day")
+		.add(startHour, "hours")
+		.add(startMinute, "minutes")
+
+	if (endOfDay.isBefore(startOfDay)) {
+		endOfDay = endOfDay.add(1, "day")
+	}
+
+	let oneDayMinutes = endOfDay.diff(startOfDay, "minutes")
 	if (oneDayMinutes === 0) {
-		const endOfDay = dayjs().endOf("day")
-		endHour = endOfDay.hour()
-		endMinute = endOfDay.minute()
-		oneDayMinutes = endOfDay.diff(
-			dayjs()
-				.startOf("day")
-				.add(startHour, "hours")
-				.add(endHour, "minutes"),
-			"minutes",
-		)
+		oneDayMinutes = 24 * 60
 	}
 
 	const timeFrameDay: TimeFrameDay = Object.freeze({
@@ -324,28 +323,6 @@ export function calculateTimeSlotPropertiesForView(
 		endMinute,
 		oneDayMinutes,
 	})
-
-	// how many minutes has 1 time slot
-	const unitDays = dayjs()
-		.startOf("day")
-		.add(1, unit)
-		.diff(dayjs().startOf("day"), "days")
-	//const timeSlotMinutes = unitDays * oneDayMinutes
-	let timeSlotMinutes = timeStepsMinute
-	switch (viewType) {
-		case "days": {
-			timeSlotMinutes = oneDayMinutes
-			break
-		}
-		case "weeks": {
-			timeSlotMinutes = 6 * 24 * 60 + oneDayMinutes
-			break
-		}
-		case "months": {
-			timeSlotMinutes = 29 * 24 * 60 + oneDayMinutes
-			break
-		}
-	}
 
 	return Object.freeze({
 		timeFrameDay,
@@ -422,24 +399,34 @@ export function getLeftAndWidth(
 
 		if (itemModEnd.isAfter(timeFrameEndEnd)) {
 			itemModEnd = timeFrameEndEnd
-		} else if (item.endDate.hour() === 0 && item.endDate.minute() === 0) {
+			//} else if (item.endDate.hour() === 0 && item.endDate.minute() === 0) {
 			//itemModEnd = itemModEnd.subtract(1, "second") // this is a hack to make the end time of the day inclusive
 			//console.log("HACK APPLIED", itemModEnd)
-			//itemModEnd = timeFrameEndEnd
-			//.startOf("day")
-			//.add(timeFrameDay.endHour, "hour")
-			//.add(timeFrameDay.endMinute, "minutes")
+			itemModEnd = timeFrameEndEnd
+				.startOf("day")
+				.add(timeFrameDay.endHour, "hour")
+				.add(timeFrameDay.endMinute, "minutes")
 		} else if (
-			item.endDate.hour() > timeFrameDay.endHour ||
+			((timeFrameDay.endHour > timeFrameDay.startHour ||
+				(timeFrameDay.endHour === timeFrameDay.startHour &&
+					timeFrameDay.endMinute > timeFrameDay.startMinute)) &&
+				item.endDate.hour() > timeFrameDay.endHour) ||
 			(item.endDate.hour() === timeFrameDay.endHour &&
 				item.endDate.minute() > timeFrameDay.endMinute)
 		) {
-			if (timeFrameDay.endHour !== 0 && timeFrameDay.endMinute !== 0) {
-				console.log("WARG", item, itemModEnd, timeFrameDay)
-				itemModEnd = itemModEnd
-					.startOf("day")
-					.add(timeFrameDay.endHour, "hour")
-					.add(timeFrameDay.endMinute, "minutes")
+			console.log("WARG", item, itemModEnd, timeFrameDay)
+			itemModEnd = itemModEnd
+				.startOf("day")
+				.add(timeFrameDay.endHour, "hour")
+				.add(timeFrameDay.endMinute, "minutes")
+			if (
+				timeFrameDay.endHour < timeFrameDay.startHour ||
+				(timeFrameDay.endHour === timeFrameDay.startHour &&
+					timeFrameDay.endMinute <= timeFrameDay.startMinute)
+			) {
+				if (viewType !== "hours") {
+					itemModEnd = itemModEnd.add(1, "day")
+				}
 			}
 		}
 	}
@@ -483,7 +470,7 @@ export function getLeftAndWidth(
 	//width = endSlot + 1 - startSlot - (left + width)
 	//width = endSlot - startSlot + width - left
 
-	if (width < 0) {
+	if (width <= 0) {
 		// this should not happen, but if it does, we need to log it to find the error
 		console.error(
 			"LPTimeTable - item with negative width found:",
@@ -624,7 +611,10 @@ export function getStartAndEndSlot(
 			.add(timeFrameDay.startMinute, "minutes")
 	}
 
-	if (item.endDate.isBefore(startSlotStart)) {
+	if (
+		item.endDate.isBefore(startSlotStart) ||
+		item.endDate.isSame(startSlotStart)
+	) {
 		return { startSlot: startSlot, endSlot: startSlot, status: "before" }
 	}
 
@@ -636,7 +626,13 @@ export function getStartAndEndSlot(
 			.add(timeFrameDay.endHour, "hours")
 			.add(timeFrameDay.endMinute, "minutes")
 			.add(1, viewType)
-			.subtract(1, "day")
+		if (
+			timeFrameDay.endHour > timeFrameDay.startHour ||
+			(timeFrameDay.endHour === timeFrameDay.startHour &&
+				timeFrameDay.endMinute > timeFrameDay.startMinute)
+		) {
+			endSlotEnd = endSlotEnd.subtract(1, "day")
+		}
 	}
 	if (item.startDate.isAfter(endSlotEnd)) {
 		return { startSlot: endSlot, endSlot: endSlot, status: "after" }
