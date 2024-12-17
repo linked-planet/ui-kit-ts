@@ -108,7 +108,7 @@ function useOptions({
 			.map((it) => Number.parseInt(it) ?? 0)
 		let end = dayjs().hour(endHourMin[0]).minute(endHourMin[1])
 		let curr = dayjs().hour(startHourMin[0]).minute(startHourMin[1])
-		if (end.isSame(curr)) {
+		if (end.isSame(curr) || end.isBefore(curr)) {
 			end = end.add(1, "day")
 		}
 
