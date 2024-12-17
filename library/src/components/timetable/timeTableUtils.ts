@@ -463,7 +463,7 @@ export function getLeftAndWidth(
 	if (width <= 0) {
 		// this should not happen, but if it does, we need to log it to find the error
 		console.error(
-			"LPTimeTable - item with negative/zero width found:",
+			"TimeTable - item with negative/zero width found:",
 			width,
 			item,
 			startSlot,
