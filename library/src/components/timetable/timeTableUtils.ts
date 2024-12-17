@@ -432,9 +432,19 @@ export function getLeftAndWidth(
 	}
 
 	const slotStart = slotsArray[startSlot]
+	const ddaysDiff = itemModStart.diff(slotStart, "day")
+	const startDiffDays = ddaysDiff * timeFrameDay.oneDayMinutes
 
-	const dstartMin = itemModStart.diff(slotStart, "minute")
-	let left = dstartMin / timeSlotMinutes
+	const dayStartDiff =
+		viewType === "hours"
+			? 0
+			: timeFrameDay.startHour * 60 + timeFrameDay.startMinute
+	const startSum = startDiffDays + dayStartDiff
+
+	const slotStartDiff = itemModStart.diff(slotStart, "minute")
+
+	const left = (slotStartDiff - startSum) / timeSlotMinutes
+
 	if (left < 0) {
 		console.error(
 			"LPTimeTable - item with negative left found:",
@@ -445,35 +455,15 @@ export function getLeftAndWidth(
 			slotsArray,
 			timeSlotMinutes,
 		)
-		// if the start is before the time slot, we need to set the left to 0
-		left = 0
 	}
 
 	const timeSpanMin = itemModEnd.diff(itemModStart, "minute")
 	const width = timeSpanMin / timeSlotMinutes
 
-	/*let dmin = itemModEnd.diff(slotsArray[endSlot], "minute")
-	// because of the time frame of the day, i need to remove the amount if minutes missing to the days end  * the amount of days of the time slot to get the correct end
-	if (viewType !== "hours") {
-		const daysCount = Math.floor(dmin / (26 * 60))
-		if (daysCount > 0) {
-			const diffToDayEnd = itemModEnd.diff(
-				itemModEnd.endOf("day"),
-				"minute",
-			)
-			dmin -= daysCount * diffToDayEnd
-		}
-	}
-	let width = dmin / timeSteps*/
-
-	// check if this is the last time slot of the day
-	//width = endSlot + 1 - startSlot - (left + width)
-	//width = endSlot - startSlot + width - left
-
 	if (width <= 0) {
 		// this should not happen, but if it does, we need to log it to find the error
 		console.error(
-			"LPTimeTable - item with negative width found:",
+			"LPTimeTable - item with negative/zero width found:",
 			width,
 			item,
 			startSlot,
@@ -485,6 +475,24 @@ export function getLeftAndWidth(
 			itemModEnd,
 		)
 	}
+
+	/*console.log(
+		"LEFT",
+		left,
+		item,
+		itemModStart,
+		slotStart,
+		timeSlotMinutes,
+		slotStart,
+		"DAY STARTDIFF",
+		dayStartDiff,
+		"STARTSUM",
+		startSum,
+		"TFD",
+		timeFrameDay,
+		"SLOTSTARTDIFF",
+		slotStartDiff,
+	)*/
 
 	return { left, width }
 }
