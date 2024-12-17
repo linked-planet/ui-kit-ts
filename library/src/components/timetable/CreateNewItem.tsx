@@ -21,6 +21,7 @@ const CreateNewTimeTableItemDialog = function CreateNewTimeTableItemDialog({
 	onCancel: () => void
 	timeSteps: number
 }) {
+	const [key, setKey] = useState<string>(crypto.randomUUID())
 	const [title, setTitle] = useState("new time slot booking")
 	const [startDateUsed, setStartDate] = useState(startDate)
 	const [endDateUsed, setEndDate] = useState(endDate)
@@ -34,12 +35,13 @@ const CreateNewTimeTableItemDialog = function CreateNewTimeTableItemDialog({
 			<form
 				onSubmit={(e) => {
 					e.preventDefault()
-					if (!title) {
-						setError("The title cannot be empty.")
+					if (!key) {
+						setError("The key cannot be empty.")
 						return
 					}
 					if (!title) {
 						setError("The title cannot be empty.")
+						return
 					}
 					if (!startDate) {
 						setError("The start date cannot be empty.")
@@ -57,6 +59,7 @@ const CreateNewTimeTableItemDialog = function CreateNewTimeTableItemDialog({
 						return
 					}
 					const newBookingItem: TimeSlotBooking = {
+						key,
 						title,
 						startDate,
 						endDate,
@@ -77,6 +80,19 @@ const CreateNewTimeTableItemDialog = function CreateNewTimeTableItemDialog({
 							gap: "1rem",
 						}}
 					>
+						<label htmlFor="keyinput">Key</label>
+						<input
+							id="keyinput"
+							name="keyinput"
+							type="text"
+							value={key}
+							onChange={(e) => {
+								setError("")
+								setKey(e.target.value)
+							}}
+							minLength={1}
+						/>
+						<label htmlFor="startDate">Start</label>
 						<label htmlFor="title">Title</label>
 						<input
 							id="title"
