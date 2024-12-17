@@ -53,6 +53,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 		},
 		items: [
 			{
+				key: crypto.randomUUID(),
 				// expected to be on group row 0
 				startDate: dayjs()
 					.startOf("day")
@@ -65,12 +66,14 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 1-1",
 			},
 			{
+				key: crypto.randomUUID(),
 				// expected to be on group row 0
 				startDate: dayjs().startOf("day").add(13, "hours"),
 				endDate: dayjs().startOf("day").add(15, "hours"),
 				title: "Item 1-2",
 			},
 			{
+				key: crypto.randomUUID(),
 				// expected to be on group row 0
 				startDate: dayjs()
 					.startOf("day")
@@ -80,6 +83,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 1-3",
 			},
 			{
+				key: crypto.randomUUID(),
 				// expected to be on group row 0
 				startDate: dayjs().startOf("day").add(7, "hours"),
 				endDate: dayjs()
@@ -89,18 +93,21 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 1-3-1",
 			},
 			{
+				key: crypto.randomUUID(),
 				// expected to be on group row 0
 				startDate: dayjs().startOf("day").add(1, "day").add(8, "hours"),
 				endDate: dayjs().startOf("day").add(1, "day").add(9, "hours"),
 				title: "Item 1-4",
 			},
 			{
+				key: crypto.randomUUID(),
 				// expected to be on group row 1
 				startDate: dayjs().startOf("day").add(9, "hours"),
 				endDate: dayjs().startOf("day").add(15, "hours"),
 				title: "Item 1-5",
 			},
 			{
+				key: crypto.randomUUID(),
 				// expected to be on group row 2
 				startDate: dayjs()
 					.startOf("day")
@@ -113,6 +120,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 1-6",
 			},
 			{
+				key: crypto.randomUUID(),
 				// expected to be on group row 0
 				startDate: dayjs()
 					.startOf("day")
@@ -125,6 +133,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 1-1-2",
 			},
 			{
+				key: crypto.randomUUID(),
 				// expected to be on group row 0
 				startDate: dayjs().startOf("day").add(13, "hours"),
 				endDate: dayjs().startOf("day").add(15, "hours"),
@@ -140,6 +149,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 		},
 		items: [
 			{
+				key: crypto.randomUUID(),
 				startDate: dayjs()
 					.startOf("day")
 					.add(8, "hours")
@@ -151,6 +161,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 2-1",
 			},
 			{
+				key: crypto.randomUUID(),
 				startDate: dayjs()
 					.startOf("day")
 					.add(8, "hours")
@@ -162,6 +173,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 2-2",
 			},
 			{
+				key: crypto.randomUUID(),
 				startDate: dayjs()
 					.startOf("day")
 					.add(8, "hours")
@@ -173,6 +185,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 2-3",
 			},
 			{
+				key: crypto.randomUUID(),
 				startDate: dayjs()
 					.startOf("day")
 					.add(8, "hours")
@@ -184,6 +197,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 2-3-1",
 			},
 			{
+				key: crypto.randomUUID(),
 				startDate: dayjs().startOf("day").add(8, "hours"),
 				endDate: dayjs().startOf("day").add(10, "hours"),
 				title: "Item 2-4",
@@ -198,17 +212,20 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 		},
 		items: [
 			{
+				key: crypto.randomUUID(),
 				// this entry is totally before the available slots of the day
 				startDate: dayjs().startOf("day").add(5, "hours"),
 				endDate: dayjs().startOf("day").add(6, "hours"),
 				title: "Item 3-1",
 			},
 			{
+				key: crypto.randomUUID(),
 				startDate: dayjs().startOf("day").add(1, "day").add(9, "hours"),
 				endDate: dayjs().startOf("day").add(2, "days").add(9, "hours"),
 				title: "Item 3-2",
 			},
 			{
+				key: crypto.randomUUID(),
 				// this entry is totally after the available slots of the day
 				startDate: dayjs().startOf("day").add(17, "hours"),
 				endDate: dayjs().startOf("day").add(20, "hours"),
@@ -224,6 +241,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 		},
 		items: [
 			{
+				key: crypto.randomUUID(),
 				// this case ends after the end of the day
 				startDate: dayjs()
 					.startOf("day")
@@ -233,6 +251,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 4-1",
 			},
 			{
+				key: crypto.randomUUID(),
 				startDate: dayjs()
 					.startOf("day")
 					.add(-1, "day")
@@ -244,6 +263,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 4-2",
 			},
 			{
+				key: crypto.randomUUID(),
 				// this case starts before the start of the day
 				startDate: dayjs()
 					.startOf("day")
@@ -256,6 +276,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 4-3",
 			},
 			{
+				key: crypto.randomUUID(),
 				startDate: dayjs()
 					.startOf("day")
 					.add(-1, "day")
@@ -267,6 +288,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 4-4",
 			},
 			{
+				key: crypto.randomUUID(),
 				startDate: dayjs().startOf("day").add(-1, "day"),
 				endDate: dayjs().startOf("day").add(3, "day"),
 				title: "Item 4-4-5",
@@ -281,18 +303,21 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 		},
 		items: [
 			{
+				key: crypto.randomUUID(),
 				// this case ends after the end of the day and starts before
 				startDate: dayjs().startOf("day").add(-2, "day"),
 				endDate: dayjs().startOf("day").add(7, "days"),
 				title: "Item 5-1",
 			},
 			{
+				key: crypto.randomUUID(),
 				// this case ends after the end of the day and starts before
 				startDate: dayjs().startOf("day").add(12, "hours"),
 				endDate: dayjs().startOf("day").add(1, "day").add(12, "hours"),
 				title: "Item 5-2",
 			},
 			{
+				key: crypto.randomUUID(),
 				startDate: dayjs().startOf("day").add(1, "day"), // 00:00-00:00
 				endDate: dayjs().startOf("day").add(1, "day"),
 				title: "Item 5-3",
@@ -307,23 +332,27 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 		},
 		items: [
 			{
+				key: crypto.randomUUID(),
 				// this case ends after the end of the day and starts before
 				startDate: dayjs().startOf("day").add(7, "hours"),
 				endDate: dayjs().startOf("day").add(12, "hours"),
 				title: "Item 6-1",
 			},
 			{
+				key: crypto.randomUUID(),
 				// this case ends after the end of the day and starts before
 				startDate: dayjs().startOf("day").add(12, "hours"),
 				endDate: dayjs().startOf("day").add(16, "hours"),
 				title: "Item 6-1-1",
 			},
 			{
+				key: crypto.randomUUID(),
 				startDate: dayjs().startOf("day").add(1, "day"),
 				endDate: dayjs().startOf("day").add(2, "day"),
 				title: "Item 6-2-1",
 			},
 			{
+				key: crypto.randomUUID(),
 				startDate: dayjs().startOf("day").add(2, "day"),
 				endDate: dayjs().startOf("day").add(3, "day"),
 				title: "Item 6-2-2",
@@ -338,6 +367,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 		},
 		items: [
 			{
+				key: crypto.randomUUID(),
 				// this case ends after the end of the day and starts before
 				startDate: dayjs().startOf("day"),
 				endDate: dayjs().endOf("day"),
@@ -365,6 +395,7 @@ function createTestItems(
 			.add(addStartMinutes, "minutes")
 		const itemEndDate = itemStartDate.add(addEndMinutes, "minutes")
 		ret.push({
+			key: crypto.randomUUID(),
 			startDate: itemStartDate,
 			endDate: itemEndDate,
 			title: `Random Item ${groupNumber}-${i}`,
