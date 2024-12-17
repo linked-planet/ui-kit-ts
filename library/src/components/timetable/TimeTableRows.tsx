@@ -367,7 +367,24 @@ export default function TimeTableRows<
 				`Timetable - shorten rendered elements array from ${groupRowsRendered.length} to ${groupRows.size}`,
 			)
 			setGroupRowsRendered(groupRowsRendered.slice(0, groupRows.size))
+			for (const changedG of changedGroupRows.current) {
+				if (changedG > groupRows.size - 1) {
+					changedGroupRows.current.delete(changedG)
+				}
+			}
+			for (const renderedG of renderedGroups.current) {
+				if (renderedG > groupRows.size - 1) {
+					renderedGroups.current.delete(renderedG)
+				}
+			}
 			refCollection.current.length = groupRows.size
+			if (renderGroupRangeRef.current[0] > groupRows.size - 1) {
+				renderGroupRangeRef.current = [0, groupRows.size - 1]
+				setRenderGroupRange([0, groupRows.size - 1])
+			}
+			if (refCollection.current.length < groupRows.size) {
+				refCollection.current.length = groupRows.size
+			}
 		}
 
 		// determine when new ones start
@@ -398,18 +415,11 @@ export default function TimeTableRows<
 				changedGroupRows.current.delete(changedG)
 			}
 		}
-		for (const renderedG of renderedGroups.current) {
-			if (renderedG > keys.length - 1) {
-				// delete obsolete change
-				renderedGroups.current.delete(renderedG)
-			}
-		}
 
 		if (updateCounter) {
 			console.log(
 				`TimeTable - group rows require updated rendering ${updateCounter}, with first ${changedFound}`,
 				renderGroupRangeRef.current,
-				currentGroupRowsRef.current.size,
 				groupRows.size,
 			)
 		} else {
@@ -556,6 +566,9 @@ export default function TimeTableRows<
 					viewType,
 				)
 				++counter
+			}
+			if (groupRowsRendered.length > currentGroupRowsRef.current.size) {
+				groupRowsRendered.length = currentGroupRowsRef.current.size
 			}
 			rateLimiterIntersection(handleIntersections)
 			return groupRowsRendered
