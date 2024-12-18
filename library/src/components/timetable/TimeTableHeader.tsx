@@ -2,9 +2,11 @@ import dayjs, { type Dayjs } from "dayjs"
 import weekOfYear from "dayjs/plugin/weekOfYear"
 import weekYear from "dayjs/plugin/weekYear"
 import localeData from "dayjs/plugin/localeData"
+import utc from "dayjs/plugin/utc"
 dayjs.extend(weekOfYear)
 dayjs.extend(weekYear)
 dayjs.extend(localeData)
+dayjs.extend(utc)
 import type React from "react"
 import { Fragment, type RefObject, useCallback, useRef, useState } from "react"
 
