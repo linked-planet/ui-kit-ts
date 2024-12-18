@@ -458,7 +458,26 @@ export function getLeftAndWidth(
 	}
 
 	const timeSpanMin = itemModEnd.diff(itemModStart, "minute")
-	const width = timeSpanMin / timeSlotMinutes
+	const timeSpanDayDiff = itemModEnd.diff(itemModStart, "day")
+	const overnightDiff =
+		24 * 60 * timeSpanDayDiff - timeSpanDayDiff * timeFrameDay.oneDayMinutes
+	const timeSpanMinWithoutOvernight = timeSpanMin - overnightDiff
+
+	// remove night if it is not in the time frame
+
+	const width = timeSpanMinWithoutOvernight / timeSlotMinutes
+
+	console.log(
+		"WIDTH TEST",
+		width,
+		timeSpanMin / timeSlotMinutes,
+		overnightDiff,
+		dayStartDiff,
+		itemModStart.format(),
+		itemModEnd.format(),
+		item.startDate.format(),
+		item.endDate.format(),
+	)
 
 	if (width <= 0) {
 		// this should not happen, but if it does, we need to log it to find the error
