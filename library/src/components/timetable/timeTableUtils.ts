@@ -424,85 +424,6 @@ export function getLeftAndWidth(
 		itemModEnd = slotEnd
 	}
 
-	/*const timeFrameStartStart = slotsArray[0]
-		.startOf("day")
-		.add(timeFrameDay.startHour, "hours")
-		.add(timeFrameDay.startMinute, "minutes")
-	if (item.startDate.isBefore(timeFrameStartStart)) {
-		itemModStart = timeFrameStartStart
-	} else if (
-		item.startDate.hour() < timeFrameDay.startHour ||
-		(item.startDate.hour() === timeFrameDay.startHour &&
-			item.startDate.minute() < timeFrameDay.startMinute)
-	) {
-		itemModStart = item.startDate
-			.startOf("day")
-			.add(timeFrameDay.startHour, "hour")
-			.add(timeFrameDay.startMinute, "minutes")
-	}*/
-
-	/*let itemModEnd = item.endDate
-	if (item.endDate.isBefore(item.startDate)) {
-		console.error(
-			"TimeTable - item with end date before start date found:",
-			item,
-			itemModStart,
-			itemModEnd,
-		)
-		itemModEnd = itemModStart
-	} else if (item.endDate.isSame(item.startDate)) {
-		console.error(
-			"TimeTable - item with end date same as start date found:",
-			item,
-			itemModStart,
-			itemModEnd,
-		)
-		itemModEnd = itemModStart
-	} else {
-		const timeSlotMinutesLastTS = getTimeSlotMinutes(
-			slotsArray[slotsArray.length - 1],
-			timeFrameDay,
-			viewType,
-		)
-		const timeFrameEndEnd = slotsArray[slotsArray.length - 1].add(
-			timeSlotMinutesLastTS,
-			"minutes",
-		)
-
-		if (itemModEnd.isAfter(timeFrameEndEnd)) {
-			itemModEnd = timeFrameEndEnd
-			//} else if (item.endDate.hour() === 0 && item.endDate.minute() === 0) {
-			//itemModEnd = itemModEnd.subtract(1, "second") // this is a hack to make the end time of the day inclusive
-			//console.log("HACK APPLIED", itemModEnd)
-			itemModEnd = timeFrameEndEnd
-				.startOf("day")
-				.add(timeFrameDay.endHour, "hour")
-				.add(timeFrameDay.endMinute, "minutes")
-		} else if (
-			((timeFrameDay.endHour > timeFrameDay.startHour ||
-				(timeFrameDay.endHour === timeFrameDay.startHour &&
-					timeFrameDay.endMinute > timeFrameDay.startMinute)) &&
-				item.endDate.hour() > timeFrameDay.endHour) ||
-			(item.endDate.hour() === timeFrameDay.endHour &&
-				item.endDate.minute() > timeFrameDay.endMinute)
-		) {
-			console.log("WARG", item, itemModEnd, timeFrameDay)
-			itemModEnd = itemModEnd
-				.startOf("day")
-				.add(timeFrameDay.endHour, "hour")
-				.add(timeFrameDay.endMinute, "minutes")
-			if (
-				timeFrameDay.endHour < timeFrameDay.startHour ||
-				(timeFrameDay.endHour === timeFrameDay.startHour &&
-					timeFrameDay.endMinute <= timeFrameDay.startMinute)
-			) {
-				if (viewType !== "hours") {
-					itemModEnd = itemModEnd.add(1, "day")
-				}
-			}
-		}
-	}*/
-
 	const slotStartDiff = itemModStart.diff(slotStart, "minute")
 	let daysModificator = 0
 	if (viewType === "weeks") {
@@ -570,24 +491,6 @@ export function getLeftAndWidth(
 			itemModEnd,
 		)
 	}
-
-	/*console.log(
-		"LEFT",
-		left,
-		item,
-		itemModStart,
-		slotStart,
-		timeSlotMinutes,
-		slotStart,
-		"DAY STARTDIFF",
-		dayStartDiff,
-		"STARTSUM",
-		startSum,
-		"TFD",
-		timeFrameDay,
-		"SLOTSTARTDIFF",
-		slotStartDiff,
-	)*/
 
 	return { left, width }
 }
