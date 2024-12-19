@@ -942,3 +942,100 @@ describe("bugfix test for left and width calculation", () => {
 		expect(leftAndWidth.width).toBe(1)
 	})
 })
+
+describe("bugfix test for left and width calculation when item starts after end of day time", () => {
+	it("should calculate left and width correctly for weeks view", () => {
+		const item: TimeSlotBooking = {
+			key: "1",
+			title: "Test",
+			startDate: dayjs()
+				.startOf("week")
+				.add(1, "days")
+				.subtract(1, "minute"),
+			endDate: dayjs().startOf("week").add(2, "days"),
+		}
+
+		const timeSteps = 60
+
+		const props = calculateTimeSlotPropertiesForView(
+			dayjs().startOf("week").add(6, "hours"),
+			dayjs().startOf("week").add(1, "week").add(22, "hours"),
+			timeSteps,
+			"days",
+			false,
+		)
+
+		// get slots
+		const result = getStartAndEndSlot(
+			item,
+			props.slotsArray,
+			props.timeFrameDay,
+			props.viewType,
+		)
+
+		expect(result.status).toBe("in")
+		expect(result.startSlot).toBe(1) // should be 1 because past 22:00 when the time frame of day ends
+		expect(result.endSlot).toBe(2)
+
+		// calculate left and width
+		const leftAndWidth = getLeftAndWidth(
+			item,
+			result.startSlot,
+			result.endSlot,
+			props.slotsArray,
+			props.timeFrameDay,
+			props.viewType,
+			timeSteps,
+		)
+
+		expect(leftAndWidth.left).toBe(0)
+		expect(leftAndWidth.width).toBe(1)
+	})
+})
+
+describe("bugfix test for left and width calculation when item starts before start of day time", () => {
+	it("should calculate left and width correctly for weeks view", () => {
+		const item: TimeSlotBooking = {
+			key: "1",
+			title: "Test",
+			startDate: dayjs().startOf("week").add(1, "days").add(1, "hour"),
+			endDate: dayjs().startOf("week").add(2, "days"),
+		}
+
+		const timeSteps = 60
+
+		const props = calculateTimeSlotPropertiesForView(
+			dayjs().startOf("week").add(6, "hours"),
+			dayjs().startOf("week").add(1, "week").add(22, "hours"),
+			timeSteps,
+			"days",
+			false,
+		)
+
+		// get slots
+		const result = getStartAndEndSlot(
+			item,
+			props.slotsArray,
+			props.timeFrameDay,
+			props.viewType,
+		)
+
+		expect(result.status).toBe("in")
+		expect(result.startSlot).toBe(1) // should be 1 because past 22:00 when the time frame of day ends
+		expect(result.endSlot).toBe(2)
+
+		// calculate left and width
+		const leftAndWidth = getLeftAndWidth(
+			item,
+			result.startSlot,
+			result.endSlot,
+			props.slotsArray,
+			props.timeFrameDay,
+			props.viewType,
+			timeSteps,
+		)
+
+		expect(leftAndWidth.left).toBe(0)
+		expect(leftAndWidth.width).toBe(1)
+	})
+})

@@ -577,13 +577,23 @@ export function getStartAndEndSlot(
 	if (startSlot > 0) {
 		// if the item starts in the middle of a slot, we need to go back one slot to get the start slot
 		// but only if the time slot before is on the same day, else it means that the booking starts before the time frame range of the day
-		startSlot--
 		if (viewType === "hours") {
 			// if the previous timeslot is on a different day, we know item starts before the first time slot of a day
 			if (
-				slotsArray[startSlot].day() !== slotsArray[startSlot + 1].day()
+				slotsArray[startSlot - 1].day() === slotsArray[startSlot].day()
 			) {
-				startSlot++
+				startSlot--
+			}
+		} else {
+			let startSlotEnd = slotsArray[startSlot - 1]
+				.startOf(viewType)
+				.add(timeFrameDay.endHour, "hours")
+				.add(timeFrameDay.endMinute, "minutes")
+			if (timeFrameDay.endHour === 0 && timeFrameDay.endMinute === 0) {
+				startSlotEnd = startSlotEnd.add(1, viewType)
+			}
+			if (item.startDate.isBefore(startSlotEnd)) {
+				startSlot--
 			}
 		}
 	}
