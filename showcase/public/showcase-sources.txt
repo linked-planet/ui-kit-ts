@@ -7784,9 +7784,24 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			id: "group-empty",
 			title: "Empty Group",
 		},
-		items: [],
+		items: [
+			{
+				key: crypto.randomUUID(),
+				// expected to be on group row 0
+				startDate: dayjs()
+					.startOf("day")
+					.add(9, "hours")
+					.add(10, "minutes"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(9, "hours")
+					.add(10, "minutes")
+					.add(2, "day"),
+				title: "Item 1-1",
+			},
+		],
 	},
-	{
+	/*{
 		group: {
 			id: "group-1",
 			title: "Group 1",
@@ -8108,14 +8123,14 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 		},
 		items: [
 			{
-				key: randomUUID(),
+				key: crypto.randomUUID(),
 				// this case ends after the end of the day and starts before
 				startDate: dayjs().startOf("day"),
 				endDate: dayjs().endOf("day"),
 				title: "Item 7-1",
 			},
 		],
-	},
+	},*/
 ]
 
 function createTestItems(
@@ -8435,7 +8450,7 @@ function Example() {
 	)
 
 	useEffect(() => {
-		requestMoreEntriesCB()
+		//requestMoreEntriesCB()
 		/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()

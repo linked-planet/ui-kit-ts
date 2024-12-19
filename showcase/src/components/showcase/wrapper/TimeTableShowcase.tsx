@@ -43,7 +43,22 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			id: "group-empty",
 			title: "Empty Group",
 		},
-		items: [],
+		items: [
+			/*{
+				key: crypto.randomUUID(),
+				// expected to be on group row 0
+				startDate: dayjs()
+					.startOf("day")
+					.add(9, "hours")
+					.add(10, "minutes"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(9, "hours")
+					.add(10, "minutes")
+					.add(2, "day"),
+				title: "Item 1-1",
+			},*/
+		],
 	},
 	{
 		group: {
@@ -694,7 +709,7 @@ function Example() {
 	)
 
 	useEffect(() => {
-		requestMoreEntriesCB()
+		//requestMoreEntriesCB()
 		/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
