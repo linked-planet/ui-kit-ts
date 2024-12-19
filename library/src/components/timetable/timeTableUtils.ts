@@ -414,6 +414,9 @@ export function getLeftAndWidth(
 		if (timeFrameDay.endHour === 0 && timeFrameDay.endMinute === 0) {
 			slotEnd = slotEnd.add(1, "day")
 		}
+		if (viewType !== "days") {
+			slotEnd = slotEnd.add(1, viewType).subtract(1, "day")
+		}
 	} else {
 		slotEnd = slotEnd.add(timeSlotMinutes, "minutes")
 	}
@@ -501,11 +504,20 @@ export function getLeftAndWidth(
 	}*/
 
 	const slotStartDiff = itemModStart.diff(slotStart, "minute")
+	let daysModificator = 0
+	if (viewType === "weeks") {
+		daysModificator = 6
+	} else if (viewType === "months") {
+		daysModificator = slotStart.daysInMonth() - 1
+	} else if (viewType === "years") {
+		daysModificator = (slotStart.isLeapYear() ? 365 : 364) - 1
+	}
 
 	const left =
 		viewType === "hours"
 			? slotStartDiff / timeSlotMinutes
-			: slotStartDiff / timeFrameDay.oneDayMinutes
+			: slotStartDiff /
+				(daysModificator * 24 * 60 + timeFrameDay.oneDayMinutes)
 
 	if (left < 0) {
 		console.error(
@@ -530,10 +542,17 @@ export function getLeftAndWidth(
 		diffEndSlot = 0
 	}
 
+	if (viewType === "months") {
+		daysModificator = slotEnd.daysInMonth() - 1
+	} else if (viewType === "years") {
+		daysModificator = (slotEnd.isLeapYear() ? 365 : 364) - 1
+	}
+
 	const widthInLastTimeSlot =
 		viewType === "hours"
 			? diffEndSlot / timeSlotMinutes
-			: diffEndSlot / timeFrameDay.oneDayMinutes
+			: diffEndSlot /
+				(daysModificator * 24 * 60 + timeFrameDay.oneDayMinutes)
 	const width = widthInLastTimeSlot + (endSlot - startSlot) - left
 
 	if (width <= 0) {

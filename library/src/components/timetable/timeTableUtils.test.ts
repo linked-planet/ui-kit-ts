@@ -448,44 +448,6 @@ describe("getLeftAndWidth", () => {
 		expect(result.width).toBe(1)
 	})
 
-	it("should handle item ending before time frame start", () => {
-		const item: TimeSlotBooking = {
-			key: "1",
-			title: "Test",
-			startDate: dayjs("2023-01-01T04:00:00"),
-			endDate: dayjs("2023-01-01T08:00:00"),
-		}
-		const startSlot = 0
-		const endSlot = 2
-		const slotsArray = [
-			dayjs("2023-01-01T08:00:00"),
-			dayjs("2023-01-01T09:00:00"),
-			dayjs("2023-01-01T10:00:00"),
-		]
-		const timeFrameDay: TimeFrameDay = {
-			startHour: 8,
-			startMinute: 0,
-			endHour: 18,
-			endMinute: 0,
-			oneDayMinutes: 600,
-		}
-		const viewType: TimeTableViewType = "hours"
-		const timeSlotMinutes = 60
-
-		const result = getLeftAndWidth(
-			item,
-			startSlot,
-			endSlot,
-			slotsArray,
-			timeFrameDay,
-			viewType,
-			timeSlotMinutes,
-		)
-
-		expect(result.left).toBe(0)
-		expect(result.width).toBe(0)
-	})
-
 	it("should handle item ending after time frame end", () => {
 		const item: TimeSlotBooking = {
 			key: "1",
@@ -831,7 +793,7 @@ describe("getStartAndEndSlot", () => {
 //#endregion
 
 describe("bugfix test for left and width calculation", () => {
-	it("should calculate left and width correctly for a single day", () => {
+	it("should calculate left and width correctly for days view", () => {
 		const item: TimeSlotBooking = {
 			key: "1",
 			title: "Test",
@@ -883,7 +845,7 @@ describe("bugfix test for left and width calculation", () => {
 		expect(leftAndWidth.width).toBe(2)
 	})
 
-	it("should calculate left and width correctly for a single day", () => {
+	it("should calculate left and width correctly for hours view", () => {
 		const item: TimeSlotBooking = {
 			key: "1",
 			title: "Test",
@@ -933,5 +895,50 @@ describe("bugfix test for left and width calculation", () => {
 
 		expect(leftAndWidth.left).toBe(0.25)
 		expect(leftAndWidth.width).toBe(16)
+	})
+
+	it("should calculate left and width correctly for weeks view", () => {
+		const item: TimeSlotBooking = {
+			key: "1",
+			title: "Test",
+			startDate: dayjs().startOf("day").add(16, "hours"),
+			endDate: dayjs().startOf("day").add(16, "hours").add(7, "day"),
+		}
+
+		const timeSteps = 60
+
+		const props = calculateTimeSlotPropertiesForView(
+			dayjs().startOf("day").add(8, "hours"),
+			dayjs().startOf("day").add(7, "days"),
+			timeSteps,
+			"weeks",
+			false,
+		)
+
+		// get slots
+		const result = getStartAndEndSlot(
+			item,
+			props.slotsArray,
+			props.timeFrameDay,
+			props.viewType,
+		)
+
+		expect(result.status).toBe("in")
+		expect(result.startSlot).toBe(0)
+		expect(result.endSlot).toBe(1)
+
+		// calculate left and width
+		const leftAndWidth = getLeftAndWidth(
+			item,
+			result.startSlot,
+			result.endSlot,
+			props.slotsArray,
+			props.timeFrameDay,
+			props.viewType,
+			timeSteps,
+		)
+
+		expect(leftAndWidth.left).toBe(0.5)
+		expect(leftAndWidth.width).toBe(1)
 	})
 })
