@@ -7893,7 +7893,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			},
 		],
 	},
-	/*{
+	{
 		group: {
 			id: "group-1",
 			title: "Group 1",
@@ -8222,7 +8222,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 7-1",
 			},
 		],
-	},*/
+	},
 ]
 
 function createTestItems(
