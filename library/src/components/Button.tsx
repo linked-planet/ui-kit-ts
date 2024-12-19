@@ -208,6 +208,10 @@ export const LoadingButton = ({
 	iconBefore,
 	children,
 	loadingSpinnerClassName,
+	onClick,
+	onKeyUp,
+	onKeyDown,
+	onDoubleClick,
 	...props
 }: ButtonProps & { loading: boolean; loadingSpinnerClassName?: string }) => {
 	const ref = useRef<HTMLDivElement>(null)
@@ -218,6 +222,10 @@ export const LoadingButton = ({
 		<Button
 			iconAfter={!loading && iconAfter}
 			iconBefore={!loading && iconBefore}
+			onClick={loading ? undefined : onClick}
+			onKeyUp={loading ? undefined : onKeyUp}
+			onKeyDown={loading ? undefined : onKeyDown}
+			onDoubleClick={loading ? undefined : onDoubleClick}
 			{...props}
 		>
 			<div className={loading ? "opacity-0" : undefined}>{children}</div>

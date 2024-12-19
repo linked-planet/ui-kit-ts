@@ -43,7 +43,114 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			id: "group-empty",
 			title: "Empty Group",
 		},
-		items: [],
+		items: [
+			/*{
+				key: crypto.randomUUID(),
+				// expected to be on group row 0
+				startDate: dayjs()
+					.startOf("day")
+					.add(9, "hours")
+					.add(10, "minutes"),
+				endDate: dayjs()
+					.startOf("day")
+					.add(9, "hours")
+					.add(10, "minutes")
+					.add(2, "day"),
+				title: "Item 1-1",
+			},*/
+		],
+	},
+	{
+		group: {
+			id: "week-test",
+			title: "Week Test",
+		},
+		items: [
+			{
+				key: crypto.randomUUID(),
+				startDate: dayjs()
+					.startOf("week")
+					.add(1, "day") // week starts on monday
+					.add(9, "hours")
+					.add(10, "minutes"),
+				endDate: dayjs()
+					.startOf("week")
+					.add(1, "day")
+					.add(9, "hours")
+					.add(10, "minutes")
+					.add(1, "week"),
+				title: "Item Weektest",
+			},
+			{
+				key: crypto.randomUUID(),
+				startDate: dayjs()
+					.startOf("week")
+					.add(8, "day")
+					.add(9, "hours")
+					.add(10, "minutes"),
+				endDate: dayjs()
+					.startOf("week")
+					.add(8, "day")
+					.add(9, "hours")
+					.add(10, "minutes")
+					.add(1, "week"),
+				title: "Item Weektest 1",
+			},
+		],
+	},
+	{
+		group: {
+			id: "month-test",
+			title: "Month Test",
+		},
+		items: [
+			{
+				key: crypto.randomUUID(),
+				startDate: dayjs()
+					.startOf("month")
+					.add(19, "hours")
+					.add(10, "minutes"),
+				endDate: dayjs()
+					.startOf("month")
+					.add(19, "hours")
+					.add(10, "minutes")
+					.add(1, "month"),
+				title: "Item Monthtest",
+			},
+			{
+				key: crypto.randomUUID(),
+				startDate: dayjs()
+					.startOf("month")
+					.add(19, "hours")
+					.add(2, "weeks"),
+				endDate: dayjs()
+					.startOf("month")
+					.add(19, "hours")
+					.add(1, "month")
+					.add(2, "weeks"),
+				title: "Item Monthtest 1",
+			},
+		],
+	},
+	{
+		group: {
+			id: "year-test",
+			title: "Year Test",
+		},
+		items: [
+			{
+				key: crypto.randomUUID(),
+				startDate: dayjs().startOf("year").add(10, "days"),
+				endDate: dayjs().startOf("year").add(10, "days").add(1, "year"),
+				title: "Item Monthtest",
+			},
+			{
+				key: crypto.randomUUID(),
+				startDate: dayjs().startOf("year").add(6, "month"),
+				endDate: dayjs().startOf("year").add(6, "month").add(1, "year"),
+				title: "Item Monthtest 2",
+			},
+		],
 	},
 	{
 		group: {
@@ -694,7 +801,7 @@ function Example() {
 	)
 
 	useEffect(() => {
-		requestMoreEntriesCB()
+		//requestMoreEntriesCB()
 		/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()

@@ -1,6 +1,8 @@
 import dayjs, { type Dayjs } from "dayjs"
 import isoWeek from "dayjs/plugin/isoWeek"
+import isLeapYear from "dayjs/plugin/isLeapYear"
 dayjs.extend(isoWeek)
+dayjs.extend(isLeapYear)
 import type { TimeSlotBooking, TimeTableViewType } from "./TimeTable"
 import type { TimeTableMessage } from "./TimeTableMessageContext"
 import type { TimeFrameDay } from "./TimeTableConfigStore"
@@ -83,6 +85,28 @@ function calculateTimeSlotPropertiesForHoursView(
 	_timeStepsMinute: number,
 	setMessage?: (message: TimeTableMessage) => void,
 ) {
+	if (startDate.isAfter(endDate)) {
+		setMessage?.({
+			appearance: "danger",
+			messageKey: "timetable.endDateAfterStartDate",
+		})
+		console.info(
+			"TimeTable - end date after start date",
+			endDate,
+			startDate,
+		)
+		return {
+			timeFrameDay: {
+				startHour: 0,
+				startMinute: 0,
+				endHour: 0,
+				endMinute: 0,
+				oneDayMinutes: 0,
+			},
+			slotsArray: [],
+			timeSlotMinutes: 0,
+		}
+	}
 	let timeStepsMinute = _timeStepsMinute
 	let timeSlotsPerDay = 0 // how many time slots per day
 	if (startDate.add(timeStepsMinute, "minutes").day() !== startDate.day()) {
@@ -260,10 +284,16 @@ export function calculateTimeSlotPropertiesForView(
 		.startOf("day")
 		.add(startHour, "hours")
 		.add(startMinute, "minutes")
-	while (endDateTime.isBefore(endDate) || endDateTime.isSame(endDate)) {
+	if (
+		endHour < startHour ||
+		(startHour === endHour && endMinute < startMinute)
+	) {
+		endDateTime = endDateTime.subtract(1, "day")
+	}
+	while (endDateTime.isBefore(endDate)) {
 		endDateTime = endDateTime.add(timeStepsMinute, "minutes")
 	}
-	endDateTime = endDateTime.subtract(timeStepsMinute, "minutes")
+	//endDateTime = endDateTime.subtract(timeStepsMinute, "minutes")
 	endHour = endDateTime.hour()
 	endMinute = endDateTime.minute()
 
@@ -283,16 +313,17 @@ export function calculateTimeSlotPropertiesForView(
 	const start = startDate.startOf(
 		unit === "weeks" && !weekStartsOnSunday ? "isoWeek" : unit,
 	)
-	const end = endDate.endOf(
+	const end = endDateTime.endOf(
 		unit === "weeks" && !weekStartsOnSunday ? "isoWeek" : unit,
 	)
-	let diff = end.diff(start, unit)
-	if (startDate.add(diff, unit).isBefore(endDate)) {
-		diff++
+	let slotCount = end.diff(start, unit)
+	const countTest = start.add(slotCount, unit)
+	if (countTest.isBefore(endDate)) {
+		slotCount++
 	}
 
 	const slotsArray: Dayjs[] = []
-	for (let i = 0; i < diff; i++) {
+	for (let i = 0; i < slotCount; i++) {
 		const ret = start.add(i, unit)
 		slotsArray.push(ret)
 	}
@@ -315,6 +346,17 @@ export function calculateTimeSlotPropertiesForView(
 	if (oneDayMinutes === 0) {
 		oneDayMinutes = 24 * 60
 	}
+	console.log(
+		"ONE DAY MINUTES",
+		oneDayMinutes,
+		endOfDay,
+		startOfDay,
+		startDate,
+		endDate,
+		endHour,
+		endMinute,
+		endDateTime,
+	)
 
 	const timeFrameDay: TimeFrameDay = Object.freeze({
 		startHour,
@@ -352,102 +394,55 @@ export function getLeftAndWidth(
 	timeSlotMinutes: number,
 ) {
 	let itemModStart = item.startDate
-	const timeFrameStartStart = slotsArray[0]
-		.startOf("day")
-		.add(timeFrameDay.startHour, "hours")
-		.add(timeFrameDay.startMinute, "minutes")
-	if (item.startDate.isBefore(timeFrameStartStart)) {
-		itemModStart = timeFrameStartStart
-	} else if (
-		item.startDate.hour() < timeFrameDay.startHour ||
-		(item.startDate.hour() === timeFrameDay.startHour &&
-			item.startDate.minute() < timeFrameDay.startMinute)
-	) {
-		itemModStart = item.startDate
-			.startOf("day")
-			.add(timeFrameDay.startHour, "hour")
+	let slotStart = slotsArray[startSlot]
+	if (viewType !== "hours") {
+		slotStart = slotStart
+			.add(timeFrameDay.startHour, "hours")
 			.add(timeFrameDay.startMinute, "minutes")
 	}
 
-	let itemModEnd = item.endDate
-	if (item.endDate.isBefore(item.startDate)) {
-		console.error(
-			"LPTimeTable - item with end date before start date found:",
-			item,
-			itemModStart,
-			itemModEnd,
-		)
-		itemModEnd = itemModStart
-	} else if (item.endDate.isSame(item.startDate)) {
-		console.error(
-			"LPTimeTable - item with end date same as start date found:",
-			item,
-			itemModStart,
-			itemModEnd,
-		)
-		itemModEnd = itemModStart
-	} else {
-		const timeSlotMinutesLastTS = getTimeSlotMinutes(
-			slotsArray[slotsArray.length - 1],
-			timeFrameDay,
-			viewType,
-		)
-		const timeFrameEndEnd = slotsArray[slotsArray.length - 1].add(
-			timeSlotMinutesLastTS,
-			"minutes",
-		)
-
-		if (itemModEnd.isAfter(timeFrameEndEnd)) {
-			itemModEnd = timeFrameEndEnd
-			//} else if (item.endDate.hour() === 0 && item.endDate.minute() === 0) {
-			//itemModEnd = itemModEnd.subtract(1, "second") // this is a hack to make the end time of the day inclusive
-			//console.log("HACK APPLIED", itemModEnd)
-			itemModEnd = timeFrameEndEnd
-				.startOf("day")
-				.add(timeFrameDay.endHour, "hour")
-				.add(timeFrameDay.endMinute, "minutes")
-		} else if (
-			((timeFrameDay.endHour > timeFrameDay.startHour ||
-				(timeFrameDay.endHour === timeFrameDay.startHour &&
-					timeFrameDay.endMinute > timeFrameDay.startMinute)) &&
-				item.endDate.hour() > timeFrameDay.endHour) ||
-			(item.endDate.hour() === timeFrameDay.endHour &&
-				item.endDate.minute() > timeFrameDay.endMinute)
-		) {
-			console.log("WARG", item, itemModEnd, timeFrameDay)
-			itemModEnd = itemModEnd
-				.startOf("day")
-				.add(timeFrameDay.endHour, "hour")
-				.add(timeFrameDay.endMinute, "minutes")
-			if (
-				timeFrameDay.endHour < timeFrameDay.startHour ||
-				(timeFrameDay.endHour === timeFrameDay.startHour &&
-					timeFrameDay.endMinute <= timeFrameDay.startMinute)
-			) {
-				if (viewType !== "hours") {
-					itemModEnd = itemModEnd.add(1, "day")
-				}
-			}
-		}
+	if (item.startDate.isBefore(slotStart)) {
+		itemModStart = slotStart
 	}
 
-	const slotStart = slotsArray[startSlot]
-	const ddaysDiff = itemModStart.diff(slotStart, "day")
-	const startDiffDays = ddaysDiff * timeFrameDay.oneDayMinutes
-
-	const dayStartDiff =
-		viewType === "hours"
-			? 0
-			: timeFrameDay.startHour * 60 + timeFrameDay.startMinute
-	const startSum = startDiffDays + dayStartDiff
+	let itemModEnd = item.endDate
+	let slotEnd = slotsArray[endSlot]
+	if (viewType !== "hours") {
+		slotEnd = slotEnd
+			.add(timeFrameDay.endHour, "hours")
+			.add(timeFrameDay.endMinute, "minutes")
+		if (timeFrameDay.endHour === 0 && timeFrameDay.endMinute === 0) {
+			slotEnd = slotEnd.add(1, "day")
+		}
+		if (viewType !== "days") {
+			slotEnd = slotEnd.add(1, viewType).subtract(1, "day")
+		}
+	} else {
+		slotEnd = slotEnd.add(timeSlotMinutes, "minutes")
+	}
+	if (item.endDate.isAfter(slotEnd)) {
+		itemModEnd = slotEnd
+	}
 
 	const slotStartDiff = itemModStart.diff(slotStart, "minute")
+	let daysModificator = 0
+	if (viewType === "weeks") {
+		daysModificator = 6
+	} else if (viewType === "months") {
+		daysModificator = slotStart.daysInMonth() - 1
+	} else if (viewType === "years") {
+		daysModificator = (slotStart.isLeapYear() ? 365 : 364) - 1
+	}
 
-	const left = (slotStartDiff - startSum) / timeSlotMinutes
+	const left =
+		viewType === "hours"
+			? slotStartDiff / timeSlotMinutes
+			: slotStartDiff /
+				(daysModificator * 24 * 60 + timeFrameDay.oneDayMinutes)
 
 	if (left < 0) {
 		console.error(
-			"LPTimeTable - item with negative left found:",
+			"TimeTable - item with negative left found:",
 			left,
 			item,
 			startSlot,
@@ -457,27 +452,29 @@ export function getLeftAndWidth(
 		)
 	}
 
-	const timeSpanMin = itemModEnd.diff(itemModStart, "minute")
-	const timeSpanDayDiff = itemModEnd.diff(itemModStart, "day")
-	const overnightDiff =
-		24 * 60 * timeSpanDayDiff - timeSpanDayDiff * timeFrameDay.oneDayMinutes
-	const timeSpanMinWithoutOvernight = timeSpanMin - overnightDiff
+	slotEnd = slotsArray[endSlot]
+	if (viewType !== "hours") {
+		slotEnd = slotEnd
+			.add(timeFrameDay.startHour, "hours")
+			.add(timeFrameDay.startMinute, "minutes")
+	}
+	let diffEndSlot = itemModEnd.diff(slotEnd, "minute")
+	if (diffEndSlot < 0) {
+		diffEndSlot = 0
+	}
 
-	// remove night if it is not in the time frame
+	if (viewType === "months") {
+		daysModificator = slotEnd.daysInMonth() - 1
+	} else if (viewType === "years") {
+		daysModificator = (slotEnd.isLeapYear() ? 365 : 364) - 1
+	}
 
-	const width = timeSpanMinWithoutOvernight / timeSlotMinutes
-
-	console.log(
-		"WIDTH TEST",
-		width,
-		timeSpanMin / timeSlotMinutes,
-		overnightDiff,
-		dayStartDiff,
-		itemModStart.format(),
-		itemModEnd.format(),
-		item.startDate.format(),
-		item.endDate.format(),
-	)
+	const widthInLastTimeSlot =
+		viewType === "hours"
+			? diffEndSlot / timeSlotMinutes
+			: diffEndSlot /
+				(daysModificator * 24 * 60 + timeFrameDay.oneDayMinutes)
+	const width = widthInLastTimeSlot + (endSlot - startSlot) - left
 
 	if (width <= 0) {
 		// this should not happen, but if it does, we need to log it to find the error
@@ -487,31 +484,13 @@ export function getLeftAndWidth(
 			item,
 			startSlot,
 			endSlot,
-			slotsArray,
+			slotStart,
+			slotEnd,
 			timeSlotMinutes,
-			timeSpanMin,
 			itemModStart,
 			itemModEnd,
 		)
 	}
-
-	/*console.log(
-		"LEFT",
-		left,
-		item,
-		itemModStart,
-		slotStart,
-		timeSlotMinutes,
-		slotStart,
-		"DAY STARTDIFF",
-		dayStartDiff,
-		"STARTSUM",
-		startSum,
-		"TFD",
-		timeFrameDay,
-		"SLOTSTARTDIFF",
-		slotStartDiff,
-	)*/
 
 	return { left, width }
 }
@@ -521,6 +500,9 @@ export function getLeftAndWidth(
  * respective if the item end after the last time slot of the day, the last time slot of the day is returned.
  * @param item
  * @param slotsArray
+ * @param timeFrameDay
+ * @param viewType
+ * @returns the start and end slot of the item
  */
 export function getStartAndEndSlot(
 	item: TimeSlotBooking,
@@ -613,18 +595,18 @@ export function getStartAndEndSlot(
 	let endSlot = -1
 	for (let i = startSlot; i < slotsArray.length; i++) {
 		if (slotsArray[i].isAfter(item.endDate)) {
-			endSlot = i
+			endSlot = i - 1
 			break
 		}
 	}
 	if (endSlot === -1) {
 		endSlot = slotsArray.length - 1
-	} else {
+	} /*else {
 		// if the item end after the last time slot of the day, we still set the end slot to the last time slot of the day
 		if (slotsArray[endSlot].date() !== slotsArray[endSlot - 1].date()) {
 			endSlot--
 		}
-	}
+	}*/
 
 	// if endSlot < startSlot its before the range of the day
 	if (endSlot < startSlot) {
