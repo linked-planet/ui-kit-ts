@@ -897,19 +897,19 @@ describe("bugfix test for left and width calculation", () => {
 		expect(leftAndWidth.width).toBe(16)
 	})
 
-	it("should calculate left and width correctly for weeks view", () => {
+	it("should calculate left and width correctly for weeks view width 1 week width", () => {
 		const item: TimeSlotBooking = {
 			key: "1",
 			title: "Test",
-			startDate: dayjs().startOf("day").add(16, "hours"),
-			endDate: dayjs().startOf("day").add(16, "hours").add(7, "day"),
+			startDate: dayjs().startOf("isoWeek").add(16, "hours"),
+			endDate: dayjs().startOf("isoWeek").add(1, "week").add(16, "hours"),
 		}
 
 		const timeSteps = 60
 
 		const props = calculateTimeSlotPropertiesForView(
-			dayjs().startOf("day").add(8, "hours"),
-			dayjs().startOf("day").add(7, "days"),
+			dayjs().startOf("isoWeek").add(8, "hours"),
+			dayjs().startOf("isoWeek").add(2, "week"),
 			timeSteps,
 			"weeks",
 			false,
@@ -938,8 +938,102 @@ describe("bugfix test for left and width calculation", () => {
 			timeSteps,
 		)
 
-		expect(leftAndWidth.left).toBe(0.5)
 		expect(leftAndWidth.width).toBe(1)
+		expect(leftAndWidth.left).toBe(0.05)
+	})
+
+	it("should calculate left and width correctly for weeks view 1 week width but not 00:00 end time", () => {
+		const item: TimeSlotBooking = {
+			key: "1",
+			title: "Test",
+			startDate: dayjs().startOf("isoWeek").add(16, "hours"),
+			endDate: dayjs().startOf("isoWeek").add(1, "week").add(16, "hours"),
+		}
+
+		const timeSteps = 60
+
+		const props = calculateTimeSlotPropertiesForView(
+			dayjs().startOf("isoWeek").add(8, "hours"),
+			dayjs().startOf("isoWeek").add(2, "week").add(8, "hours"),
+			timeSteps,
+			"weeks",
+			false,
+		)
+
+		// get slots
+		const result = getStartAndEndSlot(
+			item,
+			props.slotsArray,
+			props.timeFrameDay,
+			props.viewType,
+		)
+
+		expect(result.status).toBe("in")
+		expect(result.startSlot).toBe(0)
+		expect(result.endSlot).toBe(1)
+
+		// calculate left and width
+		const leftAndWidth = getLeftAndWidth(
+			item,
+			result.startSlot,
+			result.endSlot,
+			props.slotsArray,
+			props.timeFrameDay,
+			props.viewType,
+			timeSteps,
+		)
+
+		expect(leftAndWidth.width).toBe(1)
+		expect(leftAndWidth.left).toBe(0.05)
+	})
+
+	it("should calculate left and width correctly for weeks view 1 week width + 8 extra hours", () => {
+		const item: TimeSlotBooking = {
+			key: "1",
+			title: "Test",
+			startDate: dayjs().startOf("isoWeek").add(16, "hours"),
+			endDate: dayjs()
+				.startOf("isoWeek")
+				.add(1, "week")
+				.add(16, "hours")
+				.add(8, "hours"),
+		}
+
+		const timeSteps = 60
+
+		const props = calculateTimeSlotPropertiesForView(
+			dayjs().startOf("isoWeek").add(8, "hours"),
+			dayjs().startOf("isoWeek").add(2, "week").add(8, "hours"),
+			timeSteps,
+			"weeks",
+			false,
+		)
+
+		// get slots
+		const result = getStartAndEndSlot(
+			item,
+			props.slotsArray,
+			props.timeFrameDay,
+			props.viewType,
+		)
+
+		expect(result.status).toBe("in")
+		expect(result.startSlot).toBe(0)
+		expect(result.endSlot).toBe(1)
+
+		// calculate left and width
+		const leftAndWidth = getLeftAndWidth(
+			item,
+			result.startSlot,
+			result.endSlot,
+			props.slotsArray,
+			props.timeFrameDay,
+			props.viewType,
+			timeSteps,
+		)
+
+		expect(leftAndWidth.width).toBe(1.05)
+		expect(leftAndWidth.left).toBe(0.05)
 	})
 })
 
@@ -975,7 +1069,7 @@ describe("bugfix test for left and width calculation when item starts after end 
 
 		expect(result.status).toBe("in")
 		expect(result.startSlot).toBe(1) // should be 1 because past 22:00 when the time frame of day ends
-		expect(result.endSlot).toBe(2)
+		expect(result.endSlot).toBe(1)
 
 		// calculate left and width
 		const leftAndWidth = getLeftAndWidth(
@@ -998,15 +1092,15 @@ describe("bugfix test for left and width calculation when item starts before sta
 		const item: TimeSlotBooking = {
 			key: "1",
 			title: "Test",
-			startDate: dayjs().startOf("week").add(1, "days").add(1, "hour"),
-			endDate: dayjs().startOf("week").add(2, "days"),
+			startDate: dayjs().startOf("isoWeek").add(1, "days").add(1, "hour"),
+			endDate: dayjs().startOf("isoWeek").add(2, "days"),
 		}
 
 		const timeSteps = 60
 
 		const props = calculateTimeSlotPropertiesForView(
-			dayjs().startOf("week").add(6, "hours"),
-			dayjs().startOf("week").add(1, "week").add(22, "hours"),
+			dayjs().startOf("isoWeek").add(6, "hours"),
+			dayjs().startOf("isoWeek").add(1, "week").add(22, "hours"),
 			timeSteps,
 			"days",
 			false,
@@ -1022,7 +1116,7 @@ describe("bugfix test for left and width calculation when item starts before sta
 
 		expect(result.status).toBe("in")
 		expect(result.startSlot).toBe(1) // should be 1 because past 22:00 when the time frame of day ends
-		expect(result.endSlot).toBe(2)
+		expect(result.endSlot).toBe(1)
 
 		// calculate left and width
 		const leftAndWidth = getLeftAndWidth(

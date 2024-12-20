@@ -121,7 +121,7 @@ function calculateTimeSlotPropertiesForHoursView(
 			},
 		})
 		console.info(
-			"LPTimeTable - unfitting time slot",
+			"TimeTable - unfitting time slot",
 			timeStepsMinute,
 			startDate,
 			endDate,
@@ -143,7 +143,7 @@ function calculateTimeSlotPropertiesForHoursView(
 			messageKey: "timetable.endDateAfterStartDate",
 		})
 		console.info(
-			"LPTimeTable - end date after start date",
+			"TimeTable - end date after start date",
 			endDate,
 			startDate,
 		)
@@ -160,7 +160,7 @@ function calculateTimeSlotPropertiesForHoursView(
 			messageKey: "timetable.timeSlotSizeGreaterZero",
 		})
 		console.info(
-			"LPTimeTable - time slot size must be greater than zero",
+			"TimeTable - time slot size must be greater than zero",
 			timeStepsMinute,
 			startDate,
 			endDate,
@@ -252,7 +252,7 @@ export function calculateTimeSlotPropertiesForView(
 			messageKey: "timetable.endDateAfterStartDate",
 		})
 		console.info(
-			"LPTimeTable - end date after start date",
+			"TimeTable - end date after start date",
 			endDate,
 			startDate,
 		)
@@ -416,7 +416,7 @@ export function getLeftAndWidth(
 	const slotStartDiff = itemModStart.diff(slotStart, "minute")
 	let daysModificator = 0
 	if (viewType === "weeks") {
-		daysModificator = 6
+		daysModificator = 7
 	} else if (viewType === "months") {
 		daysModificator = slotStart.daysInMonth() - 1
 	} else if (viewType === "years") {
@@ -426,8 +426,12 @@ export function getLeftAndWidth(
 	const left =
 		viewType === "hours"
 			? slotStartDiff / timeSlotMinutes
-			: slotStartDiff /
-				(daysModificator * 24 * 60 + timeFrameDay.oneDayMinutes)
+			: viewType === "days"
+				? slotStartDiff / timeFrameDay.oneDayMinutes
+				: slotStartDiff /
+					(daysModificator * 24 * 60 -
+						timeFrameDay.startHour * 60 +
+						timeFrameDay.startMinute)
 
 	if (left < 0) {
 		console.error(
@@ -441,28 +445,33 @@ export function getLeftAndWidth(
 		)
 	}
 
-	slotEnd = slotsArray[endSlot]
+	let endSlotStart = slotsArray[endSlot]
 	if (viewType !== "hours") {
-		slotEnd = slotEnd
+		endSlotStart = endSlotStart
 			.add(timeFrameDay.startHour, "hours")
 			.add(timeFrameDay.startMinute, "minutes")
+		/*if (
+			viewType !== "days" &&
+			(timeFrameDay.endHour !== 0 ||
+				(timeFrameDay.endHour === 0 && timeFrameDay.endMinute !== 0))
+		) {
+			endSlotEnd = endSlotEnd.add(1, viewType).subtract(1, "day")
+		}*/
 	}
-	let diffEndSlot = itemModEnd.diff(slotEnd, "minute")
+	const diffEndSlot = itemModEnd.diff(endSlotStart, "minute")
 	if (diffEndSlot < 0) {
-		diffEndSlot = 0
-	}
-
-	if (viewType === "months") {
-		daysModificator = slotEnd.daysInMonth() - 1
-	} else if (viewType === "years") {
-		daysModificator = (slotEnd.isLeapYear() ? 365 : 364) - 1
+		throw new Error("diffEndSlot is negative, wrong end slot detected?")
 	}
 
 	const widthInLastTimeSlot =
 		viewType === "hours"
 			? diffEndSlot / timeSlotMinutes
-			: diffEndSlot /
-				(daysModificator * 24 * 60 + timeFrameDay.oneDayMinutes)
+			: viewType === "days"
+				? diffEndSlot / timeFrameDay.oneDayMinutes
+				: diffEndSlot /
+					(daysModificator * 24 * 60 -
+						timeFrameDay.startHour * 60 -
+						timeFrameDay.endMinute)
 	const width = widthInLastTimeSlot + (endSlot - startSlot) - left
 
 	if (width <= 0) {
@@ -578,8 +587,11 @@ export function getStartAndEndSlot(
 				.startOf(viewType)
 				.add(timeFrameDay.endHour, "hours")
 				.add(timeFrameDay.endMinute, "minutes")
-			if (timeFrameDay.endHour === 0 && timeFrameDay.endMinute === 0) {
+			if (viewType !== "days") {
 				startSlotEnd = startSlotEnd.add(1, viewType)
+			}
+			if (timeFrameDay.endHour === 0 && timeFrameDay.endMinute === 0) {
+				startSlotEnd = startSlotEnd.add(1, "day")
 			}
 			if (item.startDate.isBefore(startSlotEnd)) {
 				startSlot--
@@ -599,6 +611,17 @@ export function getStartAndEndSlot(
 		}
 	}
 	if (endSlot === -1) {
+		endSlot = slotsArray.length - 1
+	}
+	if (viewType !== "hours") {
+		const endSlotSlot = slotsArray[endSlot]
+			.add(timeFrameDay.startHour, "hours")
+			.add(timeFrameDay.startMinute, "minutes")
+		if (item.endDate.isBefore(endSlotSlot)) {
+			endSlot--
+		}
+	}
+	if (endSlot < 0) {
 		endSlot = slotsArray.length - 1
 	} /*else {
 		// if the item end after the last time slot of the day, we still set the end slot to the last time slot of the day
