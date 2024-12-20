@@ -323,7 +323,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 	if (!slotsArray || slotsArray.length === 0) {
 		console.warn(
-			"LPTimeTable - no slots array, or slots array is empty",
+			"TimeTable - no slots array, or slots array is empty",
 			slotsArray,
 		)
 		return <div>No slots array</div>
@@ -333,7 +333,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		if (!setMessage) return
 		if (Object.keys(itemsOutsideOfDayRange).length > 0) {
 			console.info(
-				"LPTimeTable - items outside of day range:",
+				"TimeTable - items outside of day range:",
 				itemsOutsideOfDayRange,
 			)
 			let itemCount = 0
@@ -353,7 +353,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			}
 		} else if (Object.keys(itemsWithSameStartAndEnd).length > 0) {
 			console.info(
-				"LPTimeTable - items with same start and end:",
+				"TimeTable - items with same start and end:",
 				itemsWithSameStartAndEnd,
 			)
 			let itemCount = 0
@@ -579,7 +579,7 @@ function moveNowBar(
 	setMessage?: (message: TimeTableMessage) => void,
 ) {
 	if (!tableHeaderRef.current || !tableBodyRef.current) {
-		console.info("LPTimeTable - time table header or body ref not yet set")
+		console.info("TimeTable - time table header or body ref not yet set")
 		return
 	}
 
@@ -596,7 +596,7 @@ function moveNowBar(
 			appearance: "danger",
 			messageKey: "timetable.noHeaderTimeSlotRow",
 		})
-		console.info("LPTimeTable - no header time slot row found")
+		console.info("TimeTable - no header time slot row found")
 		return
 	}
 	const headerTimeSlotCells = headerTimeslotRow.children
@@ -622,7 +622,7 @@ function moveNowBar(
 	}
 
 	if (!slotsArray || slotsArray.length === 0) {
-		console.info("LPTimeTable - no time slots found")
+		console.info("TimeTable - no time slots found")
 		return
 	}
 
