@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react"
 import { twMerge } from "tailwind-merge"
-type Size = "xsmall" | "small" | "medium" | "large" | "xlarge"
+type Size = "xsmall" | "small" | "medium" | "large" | "xlarge" | "unset"
 
 const xsmallStyle = "size-2 border"
 const smallStyle = "size-4 border-2"
@@ -14,6 +14,7 @@ const sizeStyles: { [size in Size]: string } = {
 	medium: mediumStyle,
 	large: largeStyle,
 	xlarge: xlargeStyle,
+	unset: "",
 }
 
 export function LoadingSpinner({

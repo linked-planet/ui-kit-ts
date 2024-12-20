@@ -191,15 +191,15 @@ Button.displayName = "LPButton"
 export { Button }
 
 const loadingSpinnerClassNames: { [appearance in ButtonAppearance]: string } = {
-	primary: "border-t-text-inverse",
-	default: "border-t-border-bold",
-	subtle: "border-t-border-bold",
-	link: "border-t-border-bold",
-	"subtle-link": "border-t-border-bold",
-	warning: "border-t-text-inverse",
-	danger: "border-t-text-inverse",
-	success: "border-t-text-inverse",
-	information: "border-t-text-inverse",
+	primary: "border-t-text-inverse border-2",
+	default: "border-t-border-bold border-2",
+	subtle: "border-t-border-bold border-2",
+	link: "border-t-border-bold border-2",
+	"subtle-link": "border-t-border-bold border-2",
+	warning: "border-t-text-inverse border-2",
+	danger: "border-t-text-inverse border-2",
+	success: "border-t-text-inverse border-2",
+	information: "border-t-text-inverse border-2",
 }
 
 export const LoadingButton = ({
@@ -242,6 +242,7 @@ export const LoadingButton = ({
 						height: `${height * 0.8}px`,
 						width: `${height * 0.8}px`,
 					}}
+					size="unset"
 				/>
 			</div>
 		</Button>
