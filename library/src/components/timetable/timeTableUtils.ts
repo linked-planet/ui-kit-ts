@@ -346,17 +346,6 @@ export function calculateTimeSlotPropertiesForView(
 	if (oneDayMinutes === 0) {
 		oneDayMinutes = 24 * 60
 	}
-	console.log(
-		"ONE DAY MINUTES",
-		oneDayMinutes,
-		endOfDay,
-		startOfDay,
-		startDate,
-		endDate,
-		endHour,
-		endMinute,
-		endDateTime,
-	)
 
 	const timeFrameDay: TimeFrameDay = Object.freeze({
 		startHour,

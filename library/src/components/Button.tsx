@@ -235,7 +235,6 @@ export const LoadingButton = ({
 			>
 				<LoadingSpinner
 					className={twMerge(
-						"size-auto",
 						loadingSpinnerClassNames[props.appearance ?? "default"],
 						loadingSpinnerClassName,
 					)}
