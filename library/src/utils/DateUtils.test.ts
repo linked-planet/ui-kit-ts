@@ -1,4 +1,4 @@
-import dayjs from "dayjs"
+import dayjs from "dayjs/esm"
 import { describe, expect, test } from "vitest"
 import { DateUtils } from "."
 import { dateFromString, toDateType, toTimeType } from "./DateUtils"

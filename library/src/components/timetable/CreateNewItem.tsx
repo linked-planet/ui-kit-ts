@@ -1,4 +1,4 @@
-import dayjs, { type Dayjs } from "dayjs"
+import dayjs, { type Dayjs } from "dayjs/esm"
 import { useState } from "react"
 import type { TimeSlotBooking, TimeTableGroup } from "./TimeTable"
 import { Modal } from "../Modal"

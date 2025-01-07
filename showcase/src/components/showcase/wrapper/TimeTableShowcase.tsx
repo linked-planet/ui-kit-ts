@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from "react"
 import { useState } from "react"
-import dayjs, { type Dayjs } from "dayjs"
+import dayjs, { type Dayjs } from "dayjs/esm"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"

@@ -20,7 +20,7 @@ import {
 
 import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
 import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
-import dayjs, { type Dayjs } from "dayjs"
+import dayjs, { type Dayjs } from "dayjs/esm"
 import {
 	type Control,
 	Controller,

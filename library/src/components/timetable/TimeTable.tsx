@@ -1,4 +1,4 @@
-import dayjs, { type Dayjs } from "dayjs"
+import dayjs, { type Dayjs } from "dayjs/esm"
 import type React from "react"
 import { type MutableRefObject, useCallback, useEffect, useRef } from "react"
 import { InlineMessage } from "../InlineMessage"

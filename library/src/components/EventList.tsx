@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import type { Dayjs } from "dayjs"
+import type { Dayjs } from "dayjs/esm"
 import { twMerge } from "tailwind-merge"
 import type { TimeType } from "../utils"
 

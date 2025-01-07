@@ -10,8 +10,8 @@ import {
 	dateFromString,
 	toDateType,
 } from "@linked-planet/ui-kit-ts/utils/DateUtils"
-import dayjs from "dayjs"
-import React, { useCallback, useState } from "react"
+import dayjs from "dayjs/esm"
+import { useCallback, useState } from "react"
 import type { DateRange } from "react-day-picker"
 import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
