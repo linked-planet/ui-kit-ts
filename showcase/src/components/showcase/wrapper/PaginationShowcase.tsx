@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Pagination } from "@linked-planet/ui-kit-ts"
 //import { default as AKPagination } from "@atlaskit/pagination"
