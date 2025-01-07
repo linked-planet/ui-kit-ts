@@ -7,7 +7,7 @@
 	"publishConfig": {
 		"@linked-planet:registry": "https://registry.npmjs.org"
 	},
-	"version": "0.10.0",
+	"version": "0.39.12",
 	"description": "",
 	"module": "dist/index.js",
 	"type": "module",
