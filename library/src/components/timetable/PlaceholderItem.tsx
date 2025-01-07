@@ -1,4 +1,4 @@
-import type { Dayjs } from "dayjs"
+import type { Dayjs } from "dayjs/esm"
 import type { TimeTableGroup } from "./TimeTable"
 import { usePlaceHolderItemComponent } from "./TimeTableComponentStore"
 import { useTimeTableIdent } from "./TimeTableIdentContext"

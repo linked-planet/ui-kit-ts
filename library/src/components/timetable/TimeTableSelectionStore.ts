@@ -1,7 +1,7 @@
 import { proxy, snapshot, useSnapshot } from "valtio"
 import type { TimeTableGroup } from "./TimeTable"
 import { getTTCBasicProperties } from "./TimeTableConfigStore"
-import type { Dayjs } from "dayjs"
+import type { Dayjs } from "dayjs/esm"
 import { getTimeSlotMinutes } from "./timeTableUtils"
 
 export type onTimeRangeSelectedType<G extends TimeTableGroup> =

@@ -1,8 +1,8 @@
-import dayjs, { type Dayjs } from "dayjs"
-import weekOfYear from "dayjs/plugin/weekOfYear"
-import weekYear from "dayjs/plugin/weekYear"
-import localeData from "dayjs/plugin/localeData"
-import utc from "dayjs/plugin/utc"
+import dayjs, { type Dayjs } from "dayjs/esm"
+import weekOfYear from "dayjs/esm/plugin/weekOfYear"
+import weekYear from "dayjs/esm/plugin/weekYear"
+import localeData from "dayjs/esm/plugin/localeData"
+import utc from "dayjs/esm/plugin/utc"
 dayjs.extend(weekOfYear)
 dayjs.extend(weekYear)
 dayjs.extend(localeData)
@@ -11,11 +11,11 @@ import type React from "react"
 import { Fragment, type RefObject, useCallback, useRef, useState } from "react"
 
 // if more locales then english and germans are needed, we need to enable them first here
-import "dayjs/locale/de"
-//import "dayjs/locale/es"
-//import "dayjs/locale/fr"
-//import "dayjs/locale/it"
-//import "dayjs/locale/nl"
+import "dayjs/esm/locale/de"
+//import "dayjs/esm/locale/es"
+//import "dayjs/esm/locale/fr"
+//import "dayjs/esm/locale/it"
+//import "dayjs/esm/locale/nl"
 
 import type {
 	TimeSlotBooking,

@@ -3,7 +3,7 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { EventList } from "@linked-planet/ui-kit-ts/components/EventList"
-import dayjs, { type Dayjs } from "dayjs"
+import dayjs, { type Dayjs } from "dayjs/esm"
 import { useState } from "react"
 
 //#region event-list

@@ -47,6 +47,9 @@ export default defineConfig({
 		target: "es2022",
 		minify: false,
 		cssCodeSplit: true,
+		commonjsOptions: {
+			transformMixedEsModules: true,
+		},
 		// like this rollup is used for the library build, each file is its own module, and a css bundle is build as well
 		lib: {
 			entry: resolve(__dirname, "library/src/index.ts"),

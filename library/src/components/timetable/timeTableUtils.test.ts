@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest"
-import dayjs from "dayjs"
+import dayjs from "dayjs/esm"
 import {
 	calculateTimeSlotPropertiesForView,
 	getStartAndEndSlot,

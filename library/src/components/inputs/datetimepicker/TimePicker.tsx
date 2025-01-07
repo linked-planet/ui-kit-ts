@@ -7,7 +7,7 @@ import {
 } from "react"
 import type { TimeType } from "../../../utils/DateUtils"
 import { DateUtils } from "../../../utils"
-import dayjs from "dayjs"
+import dayjs from "dayjs/esm"
 import type { FieldValues } from "react-hook-form"
 import { Select, type SelectInFormProps, type SelectProps } from "../Select"
 import { twMerge } from "tailwind-merge"

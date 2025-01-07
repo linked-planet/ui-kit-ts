@@ -1,8 +1,14 @@
-import dayjs, { type Dayjs } from "dayjs"
-import isoWeek from "dayjs/plugin/isoWeek"
-import isLeapYear from "dayjs/plugin/isLeapYear"
+import dayjs, { type Dayjs } from "dayjs/esm"
+import isoWeek from "dayjs/esm/plugin/isoWeek"
+import isLeapYear from "dayjs/esm/plugin/isLeapYear"
+import localeData from "dayjs/esm/plugin/localeData"
+import utc from "dayjs/esm/plugin/utc"
+import timezone from "dayjs/esm/plugin/timezone"
 dayjs.extend(isoWeek)
 dayjs.extend(isLeapYear)
+dayjs.extend(localeData)
+dayjs.extend(utc)
+dayjs.extend(timezone)
 import type { TimeSlotBooking, TimeTableViewType } from "./TimeTable"
 import type { TimeTableMessage } from "./TimeTableMessageContext"
 import type { TimeFrameDay } from "./TimeTableConfigStore"

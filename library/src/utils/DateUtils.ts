@@ -1,6 +1,7 @@
-import dayjs, { type Dayjs, isDayjs } from "dayjs"
-import timezone from "dayjs/plugin/timezone"
-import utc from "dayjs/plugin/utc"
+import dayjs, { type Dayjs } from "dayjs/esm"
+import { isDayjs } from "dayjs"
+import timezone from "dayjs/esm/plugin/timezone"
+import utc from "dayjs/esm/plugin/utc"
 dayjs.extend(utc)
 dayjs.extend(timezone)
 

@@ -1,7 +1,7 @@
 import { proxy, snapshot, useSnapshot } from "valtio"
 import type { TimeTableGroup, TimeTableViewType } from "./TimeTable"
 import { calculateTimeSlotPropertiesForView } from "./timeTableUtils"
-import type { Dayjs } from "dayjs"
+import type { Dayjs } from "dayjs/esm"
 import { clearTimeSlotSelection } from "./TimeTableSelectionStore"
 
 export type TimeTableConfig<G extends TimeTableGroup> = {
