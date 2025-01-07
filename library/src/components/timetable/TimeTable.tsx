@@ -106,8 +106,8 @@ export interface LPTimeTableProps<
 	/* overwrite current time, mostly useful for debugging */
 	nowOverwrite?: Dayjs
 
-	/* FirstColumnWidth sets the width of the group header column */
-	groupHeaderColumnWidth: string | number
+	/* groupHeaderColumnWidth sets the width of the group header column */
+	groupHeaderColumnWidth: number
 
 	/* columnWidth sets the minimal width of the time slot column. If there is space, the columns will expand. */
 	columnWidth: number
@@ -390,10 +390,11 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					nowBarRef,
 					tableHeaderRef,
 					nowTimeSlotRef,
+					groupHeaderColumnWidth,
 				),
 			)
 		}
-	}, [rateLimiter])
+	}, [rateLimiter, groupHeaderColumnWidth])
 
 	useEffect(() => {
 		if (intersectionContainerRef.current) {
@@ -652,11 +653,7 @@ function moveNowBar(
 	}
 	nowTimeSlotRef.current = nowTimeSlotCell as HTMLTableCellElement
 
-	if (nowBar) {
-		if (nowBar.parentElement !== nowTimeSlotCell) {
-			nowTimeSlotCell.appendChild(nowBar)
-		}
-	} else {
+	if (!nowBar) {
 		nowBar = document.createElement("div")
 		//nowBar.className = styles.nowBar
 		nowBar.className =
@@ -722,17 +719,19 @@ function nowbarRemoveCoveredCheck(
 	nowBarRef: MutableRefObject<HTMLDivElement | undefined>,
 	tableHeaderRef: MutableRefObject<HTMLTableSectionElement | null>,
 	nowTimeSlotRef: MutableRefObject<HTMLTableCellElement | undefined>,
+	groupHeaderColumnWidth: number,
 ) {
 	if (!nowTimeSlotRef.current) {
 		return
 	}
 	const tableHeader = tableHeaderRef.current
+	// the first TH is the sticky group header column
 	const tableHeaderFirstTH = tableHeader?.children[0]?.children[0]
 	const rightNowbarBorder =
-		tableHeaderFirstTH?.getBoundingClientRect().right || 0
-	if (
-		nowTimeSlotRef.current.getBoundingClientRect().left <= rightNowbarBorder
-	) {
+		tableHeaderFirstTH?.getBoundingClientRect().right ||
+		groupHeaderColumnWidth
+	const nowTimeSlotLeft = nowTimeSlotRef.current.getBoundingClientRect().left
+	if (nowTimeSlotLeft <= rightNowbarBorder) {
 		if (nowBarRef.current?.parentElement) {
 			const nowBarRect = nowBarRef.current.getBoundingClientRect()
 			if (nowBarRect.left <= rightNowbarBorder) {

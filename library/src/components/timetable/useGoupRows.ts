@@ -288,10 +288,12 @@ export function useGroupRows<
 			}
 		}
 		currentEntries.current = entries
-		console.info(
-			`TimeTable - entries changed, updating ${updateCounter} group rows with ${stillCalcRequired} still requiring calculation`,
-			updatedGroupRows,
-		)
+		if (updateCounter > 0) {
+			console.info(
+				`TimeTable - entries changed, updating ${updateCounter} group rows with ${stillCalcRequired} still requiring calculation`,
+				updatedGroupRows,
+			)
+		}
 		rowCount.current = updatedRowCount
 		maxRowCountOfSingleGroup.current = updatedMaxRowCountOfSingleGroup
 		itemsOutsideOfDayRange.current = updatedItemsOutsideOfDayRange

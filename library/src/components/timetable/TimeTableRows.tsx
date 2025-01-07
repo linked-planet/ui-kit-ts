@@ -417,14 +417,10 @@ export default function TimeTableRows<
 		}
 
 		if (updateCounter) {
-			console.log(
-				`TimeTable - group rows require updated rendering ${updateCounter}, with first ${changedFound}`,
+			console.info(
+				`TimeTable - group rows require updated rendering of ${updateCounter} rows, with first ${changedFound}`,
 				renderGroupRangeRef.current,
 				groupRows.size,
-			)
-		} else {
-			console.log(
-				"TimeTable - group rows do not require updated rendering",
 			)
 		}
 		currentGroupRowsRef.current = groupRows
