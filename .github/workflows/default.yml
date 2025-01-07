@@ -17,9 +17,7 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   fetch-depth: 0 #checkout full history so we can get the latest tag
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: "20.18.0"
+            - uses: oven-sh/setup-bun@v2
 
               # if i run the deployment of the github pages from the github web ui, without a release, then there is no github.event.release...
             - name: get latest tag
@@ -28,19 +26,19 @@ jobs:
                   LATEST_TAG=$(git tag --sort=-version:refname | head -n 1)
                   echo latest_tag=${LATEST_TAG} >> $GITHUB_OUTPUT
 
-            - name: npm install
-              run: npm install
+            - name: Install
+              run: bun install
 
-            - name: npm build library
-              run: npm run build:lib
+            - name: Build Library
+              run: bun run build:lib
 
-            - name: npm build showcase
-              run: VITE_GH_RELEASE_TAG=${{ steps.get_latest_tag.outputs.latest_tag }} npm run build:sc
+            - name: Build Showcase
+              run: VITE_GH_RELEASE_TAG=${{ steps.get_latest_tag.outputs.latest_tag }} bun run build:sc
 
-            - name: deploy Showcase to Github Pages
+            - name: Deploy Showcase to Github Pages
               # run deploy either on release or ...
               if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'release')  }}
-              uses: JamesIves/github-pages-deploy-action@v4.4.1
+              uses: JamesIves/github-pages-deploy-action@v4
               with:
                   branch: docs
                   folder: dist-showcase
@@ -54,8 +52,8 @@ jobs:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
               with:
-                  node-version: "20.18.0"
-                  registry-url: "https://registry.npmjs.org"
+                node-version: "21"
+            - uses: oven-sh/setup-bun@v2
 
             - name: Get release version
               id: release
@@ -72,13 +70,13 @@ jobs:
             - name: Update release version
               run: npm version --no-git-tag-version ${{ steps.release.outputs.short_version }}
 
-            - name: Install dependencies
-              run: npm install
+            - name: Install Dependencies
+              run: bun install
 
-            - name: Build release
-              run: npm run build:lib
+            - name: Build Release
+              run: bun run build:lib
 
             - name: Publish to npmjs
-              run: npm publish --access public
+              run: bun publish --access public
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
