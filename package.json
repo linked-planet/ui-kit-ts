@@ -11,7 +11,9 @@
 	"description": "",
 	"module": "dist/index.js",
 	"type": "module",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"types": "./dist/index.d.ts",
 	"style": [
 		"dist/styles.css",
@@ -56,10 +58,17 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": ["en", "de"],
+	"supportedLocales": [
+		"en",
+		"de"
+	],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [">0.2%", "not dead", "not op_mini all"],
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -74,7 +83,7 @@
 	],
 	"dependencies": {
 		"@atlaskit/empty-state": "^8.1.0",
-		"@atlaskit/icon": "^23.1.1",
+		"@atlaskit/icon": "^23.2.0",
 		"@emotion/css": "^11.13.5",
 		"@hello-pangea/dnd": "^17.0.0",
 		"@radix-ui/react-accordion": "^1.2.2",
@@ -91,7 +100,7 @@
 		"@radix-ui/react-visually-hidden": "^1.1.1",
 		"@tanstack/react-table": "^8.20.6",
 		"dayjs": "^1.11.13",
-		"framer-motion": "^11.16.0",
+		"framer-motion": "^11.16.1",
 		"hast-util-to-jsx-runtime": "^2.3.2",
 		"highlight.js": "^11.11.1",
 		"intl-messageformat": "^10.7.11",
@@ -110,7 +119,7 @@
 		"use-resize-observer": "^9.1.0"
 	},
 	"devDependencies": {
-		"@atlaskit/atlassian-navigation": "^4.10.1",
+		"@atlaskit/atlassian-navigation": "^4.10.2",
 		"@atlaskit/code": "^15.6.8",
 		"@atlaskit/css-reset": "^6.11.2",
 		"@atlaskit/lozenge": "^11.12.4",
@@ -164,8 +173,8 @@
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
 		"react-hook-form": "^7.54.2",
-		"tailwindcss": "^3.4.7",
 		"tailwind-merge": "2.6.0",
+		"tailwindcss": "^3.4.7",
 		"valtio": "^2.1.2"
 	}
 }

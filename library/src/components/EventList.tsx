@@ -1,9 +1,10 @@
-import { useMemo } from "react"
+import { type ComponentType, useMemo } from "react"
 import type { Dayjs } from "dayjs/esm"
-import { twMerge } from "tailwind-merge"
-import type { TimeType } from "../utils"
+import type { DateType, TimeType } from "../utils/DateUtils"
+import { DateUtils } from "../utils"
+import dayjs from "dayjs/esm"
 
-export interface EventListObject {
+export type EventListItem = {
 	key: string
 	title?: string
 	subtitle?: string
@@ -11,31 +12,38 @@ export interface EventListObject {
 	endDate: Dayjs | undefined
 }
 
-interface EventWrapper<T extends EventListObject> {
-	booking: T
-	renderStartDate: Dayjs
-	renderEndDate: Dayjs
+export type EventListItemComponentProps<T extends EventListItem> = {
+	event: T
+	onEventClick?: (event: T) => void
+	overrideStartDate?: Dayjs
+	overrideEndDate?: Dayjs
+	style?: React.CSSProperties
+	className?: string
 }
 
-export interface EventListProps<T extends EventListObject> {
+export type EventListProps<T extends EventListItem> = {
 	items: T[]
-	minStartTime: Dayjs
-	maxEndTime: Dayjs
+	minStartDateTime: Dayjs
+	maxEndDateTime: Dayjs
+	HeaderComponent?: ComponentType<{ date: Dayjs }>
+	ItemComponent: ComponentType<EventListItemComponentProps<T>>
+	onEventClick?: (event: T) => void
 	dayStart: TimeType
 	dayEnd: TimeType
-	renderEvent?: (
-		event: T,
-		startDate?: Dayjs,
-		endDate?: Dayjs,
-	) => React.JSX.Element
-	renderTimeHeader?: (date: Dayjs) => React.JSX.Element
-	className?: string
-	style?: React.CSSProperties
 }
 
-function useOrderByDateBookings<T extends EventListObject>(
+/**
+ * This also filters out when there is no place or room booked
+ * @param items
+ * @param minStartTime
+ * @param maxEndTime
+ * @param dayStart
+ * @param dayEnd
+ * @returns
+ */
+function useOrderByDate<T extends EventListItem>(
 	items: T[],
-	_minStartTime: Dayjs,
+	minStartTime: Dayjs,
 	maxEndTime: Dayjs,
 	dayStart: TimeType,
 	dayEnd: TimeType,
@@ -43,11 +51,8 @@ function useOrderByDateBookings<T extends EventListObject>(
 	return useMemo(() => {
 		const dayStartTime = dayStart.split(":").map(Number)
 		const dayEndTime = dayEnd.split(":").map(Number)
-		const minStartTime = _minStartTime
-			.set("hour", dayStartTime[0])
-			.set("minute", dayStartTime[1])
 
-		const withinTimeRange = (items as T[]).filter((it) => {
+		const withinTimeRange = items.filter((it) => {
 			if (!it.endDate) return true
 			if (it.startDate?.isAfter(maxEndTime)) return false
 			if (it.endDate?.isBefore(minStartTime)) return false
@@ -61,58 +66,98 @@ function useOrderByDateBookings<T extends EventListObject>(
 			)
 		})
 
-		const datesMap: Map<Dayjs, EventWrapper<T>[]> = new Map()
-		let currentStartDate = minStartTime
+		const datesMap: {
+			[date: DateType]: {
+				event: T
+				renderStartDate: Dayjs
+				renderEndDate: Dayjs
+			}[]
+		} = {}
 		for (const it of sortedItems) {
 			let startDate = it.startDate ?? minStartTime
 			const endDate = it.endDate ?? maxEndTime
-			if (startDate.isBefore(minStartTime)) {
-				startDate = minStartTime
-			}
-
-			const timelineStartDay = startDate
-				.hour(dayStartTime[0])
-				.minute(dayStartTime[1])
 
 			while (startDate.isBefore(endDate)) {
-				//const dt = DateUtils.toDateType(startDate)
-				const startOfDay = startDate
-					.hour(dayStartTime[0])
-					.minute(dayStartTime[1])
-				if (!startOfDay.isSame(currentStartDate)) {
-					currentStartDate = startDate.add(1, "day")
-				}
-				const bookingOfThisDay = {
-					booking: it,
+				const dt = DateUtils.toDateType(startDate)
+				const eventOfThisDay = {
+					event: it,
 					renderStartDate: startDate,
 					renderEndDate: endDate,
 				}
+				// out of the days time range
+				if (
+					startDate.hour() > dayEndTime[0] ||
+					(startDate.hour() === dayEndTime[0] &&
+						startDate.minute() > dayEndTime[1])
+				) {
+					startDate = startDate
+						.startOf("day")
+						.add(1, "day")
+						.add(dayStartTime[0], "hour")
+						.add(dayStartTime[1], "minute")
+					continue
+				}
 
-				if (it.startDate?.isBefore(timelineStartDay)) {
-					bookingOfThisDay.renderStartDate = startDate
-						.hour(dayStartTime[0])
-						.minute(dayStartTime[1])
-				} else if (!it.startDate || it.startDate.isBefore(startDate)) {
-					bookingOfThisDay.renderStartDate = startDate
+				if (!it.startDate || it.startDate.isBefore(startDate)) {
+					eventOfThisDay.renderStartDate = startDate
 						.hour(dayStartTime[0])
 						.minute(dayStartTime[1])
 				}
+				if (
+					eventOfThisDay.renderStartDate.hour() < dayStartTime[0] ||
+					(eventOfThisDay.renderStartDate.hour() ===
+						dayStartTime[0] &&
+						eventOfThisDay.renderStartDate.minute() <
+							dayStartTime[1])
+				) {
+					eventOfThisDay.renderStartDate =
+						eventOfThisDay.renderStartDate
+							.hour(dayStartTime[0])
+							.minute(dayStartTime[1])
+				}
 
-				const currEndDate = startDate
+				let currEndDate = startDate
 					.hour(dayEndTime[0])
 					.minute(dayEndTime[1])
-				if (!it.endDate || currEndDate.isBefore(it.endDate)) {
-					bookingOfThisDay.renderEndDate = currEndDate
+				if (dayEnd === "00:00") {
+					currEndDate = currEndDate.add(1, "day")
+				} else if (
+					currEndDate.hour() > dayEndTime[0] ||
+					(currEndDate.hour() === dayEndTime[0] &&
+						currEndDate.minute() > dayEndTime[1])
+				) {
+					currEndDate = currEndDate
+						.hour(dayEndTime[0])
+						.minute(dayEndTime[1])
 				}
-				datesMap.set(currentStartDate, [
-					...(datesMap.get(currentStartDate) ?? []),
-					bookingOfThisDay,
-				])
-				startDate = startDate.add(1, "day")
+
+				if (!it.endDate || currEndDate.isBefore(it.endDate)) {
+					eventOfThisDay.renderEndDate = currEndDate
+				}
+				if (
+					eventOfThisDay.renderStartDate.isAfter(
+						eventOfThisDay.renderEndDate,
+					)
+				) {
+					console.log(
+						"BookingList - render start date is after end date",
+						it,
+						eventOfThisDay,
+					)
+					eventOfThisDay.renderStartDate =
+						eventOfThisDay.renderEndDate
+				}
+
+				datesMap[dt] = [...(datesMap[dt] ?? []), eventOfThisDay]
+				startDate = startDate
+					.startOf("day")
+					.add(1, "day")
+					.add(dayStartTime[0], "hour")
+					.add(dayStartTime[1], "minute")
 			}
 		}
 		return datesMap
-	}, [items, dayEnd, dayStart, maxEndTime, _minStartTime])
+	}, [items, dayEnd, dayStart, maxEndTime, minStartTime])
 }
 
 const dateFormat = Intl.DateTimeFormat(undefined, {
@@ -122,82 +167,54 @@ const dateFormat = Intl.DateTimeFormat(undefined, {
 	year: "numeric",
 })
 
-function defaultRenderEvent<T extends EventListObject>(
-	booking: T,
-	startDate: Dayjs | undefined,
-	endDate: Dayjs | undefined,
-) {
-	return (
-		<div
-			data-id={booking.key}
-			className="flex justify-between py-1 cursor-pointer border-solid border-l-8 border-l-border-bold overflow-hidden bg-surface-sunken"
-		>
-			<div className="flex pl-2.5 flex-col overflow-hidden">
-				<div className="text-text-subtle text-xl flex-0 truncate">
-					<span>{booking.title ?? "no title"}</span>
-				</div>
-				{booking.subtitle && (
-					<div className="text-text-subtle text-sm flex-0 truncate">
-						<span>{booking.subtitle}</span>
-					</div>
-				)}
-				<div className="text-text">
-					{startDate?.format("HH:mm")} - {endDate?.format("HH:mm")}
-				</div>
-			</div>
-		</div>
-	)
-}
-
-export function EventList<T extends EventListObject>({
+export function EventList<T extends EventListItem>({
 	items,
-	renderEvent = defaultRenderEvent,
-	renderTimeHeader,
-	minStartTime,
-	maxEndTime,
+	HeaderComponent,
+	ItemComponent,
+	minStartDateTime,
+	maxEndDateTime,
+	onEventClick,
 	dayStart,
 	dayEnd,
-	className,
-	style,
 }: EventListProps<T>) {
-	const datesMap: Map<Dayjs, EventWrapper<T>[]> = useOrderByDateBookings(
+	const datesMap = useOrderByDate(
 		items,
-		minStartTime,
-		maxEndTime,
-		dayStart || "00:00",
-		dayEnd || "00:00",
+		minStartDateTime,
+		maxEndDateTime,
+		dayStart,
+		dayEnd,
 	)
 
-	const content = useMemo(() => {
-		const content: JSX.Element[] = []
-		for (const [date, eventObjects] of datesMap) {
-			const dateStr = dateFormat.format(date.toDate())
-			content.push(
-				<div key={dateStr} className="mt-4 first:mt-0">
-					<div className="text-text-subtle text-sm flex items-center font-bold mt-4">
-						{renderTimeHeader ? renderTimeHeader(date) : dateStr}
+	const list = useMemo(
+		() =>
+			Object.entries(datesMap).map(([date, bookings]) => {
+				const hdate = DateUtils.dateFromString(date, true)
+				const header = HeaderComponent ? (
+					<HeaderComponent date={dayjs(hdate)} />
+				) : (
+					dateFormat.format(hdate)
+				)
+				return (
+					<div key={date}>
+						{header}
+						<div className="flex flex-1 flex-col gap-1">
+							{bookings.map((it, index) => {
+								return (
+									<ItemComponent
+										event={it.event}
+										key={it.event.key}
+										overrideStartDate={it.renderStartDate}
+										overrideEndDate={it.renderEndDate}
+										onEventClick={onEventClick}
+									/>
+								)
+							})}
+						</div>
 					</div>
-					<div className="flex flex-1 flex-col gap-1">
-						{eventObjects.map((eventObject: EventWrapper<T>) => {
-							return renderEvent(
-								eventObject.booking,
-								eventObject.renderStartDate,
-								eventObject.renderEndDate,
-							)
-						})}
-					</div>
-				</div>,
-			)
-		}
-		return content
-	}, [datesMap, renderTimeHeader, renderEvent])
-
-	return (
-		<div
-			className={twMerge("min-h-0 overflow-auto", className)}
-			style={style}
-		>
-			{content}
-		</div>
+				)
+			}),
+		[datesMap, ItemComponent, onEventClick, HeaderComponent],
 	)
+
+	return <div className="min-h-0 overflow-auto">{list}</div>
 }

@@ -1,5 +1,9 @@
 import { proxy, snapshot, useSnapshot } from "valtio"
-import type { TimeTableGroup, TimeTableViewType } from "./TimeTable"
+import {
+	timeTableDebugLogs,
+	type TimeTableGroup,
+	type TimeTableViewType,
+} from "./TimeTable"
 import { calculateTimeSlotPropertiesForView } from "./timeTableUtils"
 import type { Dayjs } from "dayjs/esm"
 import { clearTimeSlotSelection } from "./TimeTableSelectionStore"
@@ -114,44 +118,31 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 			viewType,
 			weekStartsOnSunday,
 		)
-		console.info(
-			"TimeTable - basic properties updated:",
-			basicProperties,
-			timeTableConfigStore[ident].basicProperties,
-			"start date updated",
-			timeTableConfigStore[ident].startDate !== startDateString,
-			timeTableConfigStore[ident].startDate !== startDateString
-				? `${timeTableConfigStore[ident].startDate} !== ${startDateString}`
-				: "",
-			"end date updated",
-			timeTableConfigStore[ident].endDate !== endDateString,
-			timeTableConfigStore[ident].endDate !== endDateString
-				? `${timeTableConfigStore[ident].endDate} !== ${endDateString}`
-				: "",
-			"time slot minutes updated",
-			timeTableConfigStore[ident].propTimeSlotMinutes !==
-				propTimeSlotMinutes,
-			"view type updated",
-			timeTableConfigStore[ident].basicProperties.viewType !== viewType,
-		)
+		if (timeTableDebugLogs) {
+			console.info(
+				"TimeTable - basic properties updated:",
+				basicProperties,
+				timeTableConfigStore[ident].basicProperties,
+				"start date updated",
+				timeTableConfigStore[ident].startDate !== startDateString,
+				timeTableConfigStore[ident].startDate !== startDateString
+					? `${timeTableConfigStore[ident].startDate} !== ${startDateString}`
+					: "",
+				"end date updated",
+				timeTableConfigStore[ident].endDate !== endDateString,
+				timeTableConfigStore[ident].endDate !== endDateString
+					? `${timeTableConfigStore[ident].endDate} !== ${endDateString}`
+					: "",
+				"time slot minutes updated",
+				timeTableConfigStore[ident].propTimeSlotMinutes !==
+					propTimeSlotMinutes,
+				"view type updated",
+				timeTableConfigStore[ident].basicProperties.viewType !==
+					viewType,
+			)
+		}
 
 		clearTimeSlotSelection(ident, true)
-
-		/*if (timeTableConfigStore[ident].viewType !== viewType) {
-			console.info("TimeTable - view type changed")
-		}
-		if (
-			timeTableConfigStore[ident].basicProperties.timeSlotMinutes !==
-			propTimeSlotMinutes
-		) {
-			console.info("TimeTable - time slot minutes changed")
-		}
-		if (timeTableConfigStore[ident].startDate !== startDate.format()) {
-			console.info("TimeTable - start date changed")
-		}
-		if (timeTableConfigStore[ident].endDate !== endDate.format()) {
-			console.info("TimeTable - end date changed")
-		}*/
 
 		timeTableConfigStore[ident].basicProperties = basicProperties
 		timeTableConfigStore[ident].propTimeSlotMinutes = propTimeSlotMinutes

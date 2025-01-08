@@ -2,8 +2,8 @@ import { DateUtils, Label } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { EventList } from "@linked-planet/ui-kit-ts/components/EventList"
-import dayjs, { type Dayjs } from "dayjs/esm"
+import { EventList } from "@linked-planet/ui-kit-ts"
+import dayjs from "dayjs/esm"
 import { useState } from "react"
 
 //#region event-list
@@ -50,40 +50,44 @@ function EventListExample() {
 			/>
 			<EventList
 				items={data}
-				minStartTime={dayjs("2024-01-01", "YYYY-MM-DD")}
-				maxEndTime={dayjs("2024-01-31", "YYYY-MM-DD")}
+				minStartDateTime={dayjs("2024-01-01", "YYYY-MM-DD")}
+				maxEndDateTime={dayjs("2024-01-31", "YYYY-MM-DD")}
 				dayStart="00:00"
 				dayEnd="23:59"
-				renderTimeHeader={
+				HeaderComponent={
 					useCustomHeader
-						? (date: Dayjs) => (
+						? ({ date }) => (
 								<span className="text-text-subtle text-lg">
 									{DateUtils.toDateType(date)}
 								</span>
 							)
 						: undefined
 				}
-				/*renderEvent={(obj, startDate, endDate) => {
+				ItemComponent={({
+					event,
+					overrideStartDate,
+					overrideEndDate,
+				}) => {
 					return (
 						<div
-							data-id={obj.key}
+							key={event.key}
 							className="flex justify-between py-1 cursor-pointer border-solid border-l-8 overflow-hidden"
 						>
 							<div className="flex pl-2.5 flex-col overflow-hidden">
 								<div className="text-text-subtle text-xl flex-0 truncate">
-									<span>{obj.title}</span>
+									<span>{event.title}</span>
 								</div>
 								<div className="text-text-subtle text-sm flex-0 truncate">
-									<span>{obj.subtitle}</span>
+									<span>{event.subtitle}</span>
 								</div>
 								<div className="text-text">
-									{startDate?.format("HH:mm")} -{" "}
-									{endDate?.format("HH:mm")}
+									{overrideStartDate?.format("HH:mm")} -{" "}
+									{overrideEndDate?.format("HH:mm")}
 								</div>
 							</div>
 						</div>
 					)
-				}}*/
+				}}
 			/>
 		</div>
 	)
@@ -123,31 +127,35 @@ function EventListStartEndExample() {
 		<div className="">
 			<EventList
 				items={data}
-				minStartTime={dayjs("2024-01-01", "YYYY-MM-DD")}
-				maxEndTime={dayjs("2024-01-31", "YYYY-MM-DD")}
+				minStartDateTime={dayjs("2024-01-01", "YYYY-MM-DD")}
+				maxEndDateTime={dayjs("2024-01-31", "YYYY-MM-DD")}
 				dayStart="08:00"
 				dayEnd="18:00"
-				renderTimeHeader={(date) => (
+				HeaderComponent={({ date }) => (
 					<span className="text-text-subtle text-lg">
 						{DateUtils.toDateType(date)}
 					</span>
 				)}
-				renderEvent={(obj, startDate, endDate) => {
+				ItemComponent={({
+					event,
+					overrideStartDate,
+					overrideEndDate,
+				}) => {
 					return (
 						<div
-							data-id={obj.key}
+							key={event.key}
 							className="flex justify-between py-1 cursor-pointer border-solid border-l-8 border-l-danger-bold overflow-hidden bg-danger"
 						>
 							<div className="flex pl-2.5 flex-col overflow-hidden">
 								<div className="text-text-subtle text-xl flex-0 truncate">
-									<span>{obj.title}</span>
+									<span>{event.title}</span>
 								</div>
 								<div className="text-text-subtle text-sm flex-0 truncate">
-									<span>{obj.subtitle}</span>
+									<span>{event.subtitle}</span>
 								</div>
 								<div className="text-text">
-									{startDate?.format("HH:mm")} -{" "}
-									{endDate?.format("HH:mm")}
+									{overrideStartDate?.format("HH:mm")} -{" "}
+									{overrideEndDate?.format("HH:mm")}
 								</div>
 							</div>
 						</div>

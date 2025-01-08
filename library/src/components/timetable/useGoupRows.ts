@@ -1,9 +1,10 @@
 import type { Dayjs } from "dayjs/esm"
-import type {
-	TimeSlotBooking,
-	TimeTableEntry,
-	TimeTableGroup,
-	TimeTableViewType,
+import {
+	timeTableDebugLogs,
+	type TimeSlotBooking,
+	type TimeTableEntry,
+	type TimeTableGroup,
+	type TimeTableViewType,
 } from "./TimeTable"
 import {
 	getTTCBasicProperties,
@@ -51,26 +52,6 @@ export function useGroupRows<
 
 	const [calcBatch, setCalcBatch] = useState<number>(-1)
 
-	// is one of those properties changes we need to recalculate all group rows
-	/*if (
-		currentTimeSlots.current !== slotsArray ||
-		currentTimeFrameDay.current !== timeFrameDay ||
-		currentViewType.current !== viewType
-		//currentEntries.current !== entries
-	) {
-		console.log(
-			"REQUIRE NEW GROUP ROWS",
-			"ENTRIES",
-			currentEntries.current !== entries,
-			"TIME SLOTS",
-			currentTimeSlots.current !== slotsArray,
-			"TIME FRAME DAY",
-			currentTimeFrameDay.current !== timeFrameDay,
-			"VIEW TYPE",
-			currentViewType.current !== viewType,
-		)
-	}*/
-
 	const requireNewGroupRows =
 		currentTimeSlots.current !== slotsArray ||
 		currentTimeFrameDay.current !== timeFrameDay ||
@@ -82,9 +63,11 @@ export function useGroupRows<
 		maxRowCountOfSingleGroup.current = 0
 		itemsOutsideOfDayRange.current = {}
 		itemsWithSameStartAndEnd.current = {}
-		console.info(
-			`TimeTable - clearing group rows in clearGroupRows callback - recalculating ${currentEntries.current?.length || 0} group rows`,
-		)
+		if (timeTableDebugLogs) {
+			console.info(
+				`TimeTable - clearing group rows in clearGroupRows callback - recalculating ${currentEntries.current?.length || 0} group rows`,
+			)
+		}
 		groupRowsToCalc.current.clear()
 		if (currentEntries.current?.length) {
 			for (let i = 0; i < currentEntries.current.length; i++) {
@@ -97,9 +80,11 @@ export function useGroupRows<
 	const calculateGroupRows = useCallback(() => {
 		if (!currentEntries.current) {
 			if (Object.keys(groupRowsState.current).length) {
-				console.info(
-					"TimeTable - no entries, clearing group rows in calculateGroupRows",
-				)
+				if (timeTableDebugLogs) {
+					console.info(
+						"TimeTable - no entries, clearing group rows in calculateGroupRows",
+					)
+				}
 				rowCount.current = 0
 				maxRowCountOfSingleGroup.current = 0
 				itemsOutsideOfDayRange.current = {}
@@ -114,7 +99,9 @@ export function useGroupRows<
 		}
 
 		if (groupRowsToCalc.current.size === 0) {
-			console.info("TimeTable - no group rows to calculate")
+			if (timeTableDebugLogs) {
+				console.info("TimeTable - no group rows to calculate")
+			}
 			return
 		}
 
@@ -132,7 +119,6 @@ export function useGroupRows<
 		}
 
 		for (const i of groupRowsToCalc.current) {
-			//console.log(`TimeTable - calculating group rows of ${i}. group`)
 			const entry = currEntries[i]
 			if (!entry) {
 				console.error("TimeTable - entry not found", i)
@@ -141,17 +127,6 @@ export function useGroupRows<
 				)
 			}
 			if (updatedGroupRows.get(entry.group)) {
-				console.error(
-					"Group rows already exists:",
-					entry.group.id,
-					entry,
-					currentEntries.current,
-					i,
-					currEntries.length,
-					updatedGroupRows,
-					groupRowsToCalc.current,
-					updatedGroupRows.get(entry.group),
-				)
 				console.error(
 					"Group rows already exists",
 					entry.group.id,
@@ -221,9 +196,11 @@ export function useGroupRows<
 		currentTimeSlots.current = slotsArray
 		currentTimeFrameDay.current = timeFrameDay
 		currentViewType.current = viewType
-		console.info(
-			`TimeTable - require new group rows, clearing group rows, new entry count ${entries.length}`,
-		)
+		if (timeTableDebugLogs) {
+			console.info(
+				`TimeTable - require new group rows, clearing group rows, new entry count ${entries.length}`,
+			)
+		}
 		clearGroupRows()
 		rateLimiterCalc(calculateGroupRows)
 	}
@@ -288,7 +265,7 @@ export function useGroupRows<
 			}
 		}
 		currentEntries.current = entries
-		if (updateCounter > 0) {
+		if (updateCounter > 0 && timeTableDebugLogs) {
 			console.info(
 				`TimeTable - entries changed, updating ${updateCounter} group rows with ${stillCalcRequired} still requiring calculation`,
 				updatedGroupRows,

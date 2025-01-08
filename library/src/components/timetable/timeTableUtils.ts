@@ -44,7 +44,7 @@ function calculateTimeSlotsHoursView(
 	startDate: Dayjs,
 ) {
 	if (!Number.isFinite(timeSlotsPerDay)) {
-		console.log(
+		console.error(
 			"TimeTable - timeSlotsPerDay is not finite",
 			timeSlotsPerDay,
 		)
@@ -52,7 +52,7 @@ function calculateTimeSlotsHoursView(
 	}
 
 	if (daysDifference <= 0) {
-		console.log(
+		console.error(
 			"TimeTable - daysDifference is not greater than 0",
 			daysDifference,
 		)
@@ -96,7 +96,7 @@ function calculateTimeSlotPropertiesForHoursView(
 			appearance: "danger",
 			messageKey: "timetable.endDateAfterStartDate",
 		})
-		console.info(
+		console.error(
 			"TimeTable - end date after start date",
 			endDate,
 			startDate,
@@ -126,7 +126,7 @@ function calculateTimeSlotPropertiesForHoursView(
 				timeSteps: timeStepsMinute,
 			},
 		})
-		console.info(
+		console.error(
 			"TimeTable - unfitting time slot",
 			timeStepsMinute,
 			startDate,
@@ -148,7 +148,7 @@ function calculateTimeSlotPropertiesForHoursView(
 			appearance: "danger",
 			messageKey: "timetable.endDateAfterStartDate",
 		})
-		console.info(
+		console.error(
 			"TimeTable - end date after start date",
 			endDate,
 			startDate,
@@ -165,7 +165,7 @@ function calculateTimeSlotPropertiesForHoursView(
 			appearance: "danger",
 			messageKey: "timetable.timeSlotSizeGreaterZero",
 		})
-		console.info(
+		console.error(
 			"TimeTable - time slot size must be greater than zero",
 			timeStepsMinute,
 			startDate,
@@ -204,7 +204,7 @@ function calculateTimeSlotPropertiesForHoursView(
 	)
 
 	if (!slotsArray || slotsArray.length === 0) {
-		console.warn(
+		console.error(
 			"timeTableUtils - calculateTimeSlotPropertiesForHoursView - no slotsArray",
 		)
 		return { timeFrameDay, slotsArray: [], timeSlotMinutes: 0 }
@@ -257,7 +257,7 @@ export function calculateTimeSlotPropertiesForView(
 			appearance: "danger",
 			messageKey: "timetable.endDateAfterStartDate",
 		})
-		console.info(
+		console.error(
 			"TimeTable - end date after start date",
 			endDate,
 			startDate,
