@@ -139,7 +139,7 @@ const TabList = forwardRef(
 					)
 				}
 				if (child.type !== Tab && !allowNonTabComponents) {
-					console.warn(
+					console.info(
 						"Only Tab components are allowed as children of TabList, but was",
 						child.type,
 						"(use allowNonTabComponents prop to allow other components)",

@@ -1651,8 +1651,8 @@ import {
 	dateFromString,
 	toDateType,
 } from "@linked-planet/ui-kit-ts/utils/DateUtils"
-import dayjs from "dayjs"
-import React, { useCallback, useState } from "react"
+import dayjs from "dayjs/esm"
+import { useCallback, useState } from "react"
 import type { DateRange } from "react-day-picker"
 import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
@@ -3529,7 +3529,7 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { EventList } from "@linked-planet/ui-kit-ts/components/EventList"
-import dayjs, { type Dayjs } from "dayjs"
+import dayjs, { type Dayjs } from "dayjs/esm"
 import { useState } from "react"
 
 //#region event-list
@@ -7741,7 +7741,7 @@ export default TextFieldShowcase
 
 import { useCallback, useEffect, useMemo } from "react"
 import { useState } from "react"
-import dayjs, { type Dayjs } from "dayjs"
+import dayjs, { type Dayjs } from "dayjs/esm"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
