@@ -100,7 +100,7 @@
 		"@radix-ui/react-visually-hidden": "^1.1.1",
 		"@tanstack/react-table": "^8.20.6",
 		"dayjs": "^1.11.13",
-		"framer-motion": "^11.16.0",
+		"framer-motion": "^11.16.1",
 		"hast-util-to-jsx-runtime": "^2.3.2",
 		"highlight.js": "^11.11.1",
 		"intl-messageformat": "^10.7.11",

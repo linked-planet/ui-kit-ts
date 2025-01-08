@@ -11,6 +11,7 @@ import {
 	useState,
 } from "react"
 import {
+	timeTableDebugLogs,
 	timeTableGroupRenderBatchSize,
 	type TimeSlotBooking,
 	type TimeTableGroup,
@@ -116,7 +117,7 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 	const rows = groupRows.get(groupEntry)
 	if (!rows) {
 		// rows not yet calculated
-		console.log(
+		console.error(
 			"TimeTable - rendering: rows not yet calculated",
 			g,
 			groupEntry,
@@ -231,7 +232,9 @@ export default function TimeTableRows<
 			return
 		}
 		if (!intersectionContainerRef.current || !headerRef.current) {
-			console.warn("TimeTable - intersection container not found")
+			if (timeTableDebugLogs) {
+				console.warn("TimeTable - intersection container not yet found")
+			}
 			return
 		}
 		const intersectionbb =
@@ -317,18 +320,10 @@ export default function TimeTableRows<
 						}
 					}
 				}
-				/*console.log(
-					"TimeTable - updated intersected group rows from",
-					prev,
-					"to",
-					newRenderCells,
-					changedGroupRows.current,
-					currentGroupRowsRef.current,
-				)*/
+
 				renderGroupRangeRef.current = newRenderCells
 				return newRenderCells
 			}
-			//console.log("TimeTable - intersected group rows not changed", prev)
 			return prev
 		})
 	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
@@ -357,15 +352,11 @@ export default function TimeTableRows<
 			renderedGroups.current.clear()
 			refCollection.current = []
 			setGroupRowsRendered([])
-			console.log("TimeTable - group rows are null")
 			return groupRows
 		}
 
 		if (groupRowsRendered.length > groupRows.size) {
 			// shorten and remove rendered elements array, if too long
-			console.info(
-				`Timetable - shorten rendered elements array from ${groupRowsRendered.length} to ${groupRows.size}`,
-			)
 			setGroupRowsRendered(groupRowsRendered.slice(0, groupRows.size))
 			for (const changedG of changedGroupRows.current) {
 				if (changedG > groupRows.size - 1) {
@@ -416,7 +407,7 @@ export default function TimeTableRows<
 			}
 		}
 
-		if (updateCounter) {
+		if (updateCounter && timeTableDebugLogs) {
 			console.info(
 				`TimeTable - group rows require updated rendering of ${updateCounter} rows, with first ${changedFound}`,
 				renderGroupRangeRef.current,

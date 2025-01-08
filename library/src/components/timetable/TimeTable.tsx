@@ -197,6 +197,12 @@ export interface LPTimeTableProps<
 	 * @default 1
 	 */
 	renderBatch?: number
+
+	/**
+	 * Debug logs
+	 * @default false
+	 */
+	debugLogs?: boolean
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -220,6 +226,7 @@ export default function LPTimeTable<
 }
 
 export let timeTableGroupRenderBatchSize = 1
+export let timeTableDebugLogs = false
 
 /**
  * The LPTimeTable depends on the localization messages. It needs to be wrapped in an
@@ -260,11 +267,14 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	style,
 	customHeaderRow,
 	renderBatch = timeTableGroupRenderBatchSize,
+	debugLogs = false,
 }: LPTimeTableProps<G, I>) => {
 	// if we have viewType of days, we need to round the start and end date to the start and end of the day
 	const { setMessage, translatedMessage } = useTimeTableMessage(
 		!disableMessages,
 	)
+
+	timeTableDebugLogs = debugLogs
 
 	timeTableGroupRenderBatchSize = renderBatch
 
@@ -589,7 +599,11 @@ function moveNowBar(
 	setMessage?: (message: TimeTableMessage) => void,
 ) {
 	if (!tableHeaderRef.current || !tableBodyRef.current) {
-		console.info("TimeTable - time table header or body ref not yet set")
+		if (timeTableDebugLogs) {
+			console.info(
+				"TimeTable - time table header or body ref not yet set",
+			)
+		}
 		return
 	}
 
@@ -606,7 +620,9 @@ function moveNowBar(
 			appearance: "danger",
 			messageKey: "timetable.noHeaderTimeSlotRow",
 		})
-		console.info("TimeTable - no header time slot row found")
+		if (timeTableDebugLogs) {
+			console.info("TimeTable - no header time slot row found")
+		}
 		return
 	}
 	const headerTimeSlotCells = headerTimeslotRow.children
@@ -632,7 +648,9 @@ function moveNowBar(
 	}
 
 	if (!slotsArray || slotsArray.length === 0) {
-		console.info("TimeTable - no time slots found")
+		if (timeTableDebugLogs) {
+			console.info("TimeTable - no time slots found")
+		}
 		return
 	}
 
@@ -656,7 +674,11 @@ function moveNowBar(
 	// add orange border
 	const nowTimeSlotCell = headerTimeSlotCells[startSlot + 1]
 	if (!nowTimeSlotCell) {
-		console.error("unable to find header for time slot of the current time")
+		if (timeTableDebugLogs) {
+			console.error(
+				"unable to find header for time slot of the current time",
+			)
+		}
 		nowTimeSlotRef.current = undefined
 		return
 	}
