@@ -438,9 +438,17 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			tableBodyRef,
 			timeFrameDay,
 			currViewType,
+			groupHeaderColumnWidth,
 			setMessage,
 		)
-	}, [slotsArray, nowOverwrite, timeFrameDay, currViewType, setMessage])
+	}, [
+		slotsArray,
+		nowOverwrite,
+		timeFrameDay,
+		currViewType,
+		setMessage,
+		groupHeaderColumnWidth,
+	])
 
 	// initial run, and start interval to move the now bar
 	useEffect(() => {
@@ -577,6 +585,7 @@ function moveNowBar(
 	tableBodyRef: MutableRefObject<HTMLTableSectionElement | null>,
 	timeFrameDay: TimeFrameDay,
 	viewType: TimeTableViewType,
+	groupHeaderColumnWidth: number,
 	setMessage?: (message: TimeTableMessage) => void,
 ) {
 	if (!tableHeaderRef.current || !tableBodyRef.current) {
@@ -660,6 +669,12 @@ function moveNowBar(
 			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-[2] w-[2px]"
 		//slotBar.appendChild(nowBar)
 		nowBarRef.current = nowBar
+		nowbarRemoveCoveredCheck(
+			nowBarRef,
+			tableHeaderRef,
+			nowTimeSlotRef,
+			groupHeaderColumnWidth,
+		)
 	}
 
 	const currentTimeSlot = slotsArray[startSlot]
