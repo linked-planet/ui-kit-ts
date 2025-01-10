@@ -10,28 +10,52 @@ import { useState } from "react"
 function EventListExample() {
 	const data = [
 		{
-			title: "Event 1",
-			subtitle: "This is my first event 00:00 - 23:59",
+			title: "Event 1 Dez",
+			subtitle: "2023-12-31 01:00 - 2023-12-31 18:00",
 			// down here required fields
 			key: "1",
+			startDate: dayjs("2023-12-31 01:00", "YYYY-MM-DD HH:mm"),
+			endDate: dayjs("2023-12-31 18:00", "YYYY-MM-DD HH:mm"),
+		},
+		{
+			title: "Event 2 Dez-Jan",
+			subtitle: "2023-12-31 01:00 - 2024-01-01 18:00",
+			// down here required fields
+			key: "2",
+			startDate: dayjs("2023-12-31 01:00", "YYYY-MM-DD HH:mm"),
+			endDate: dayjs("2024-01-01 18:00", "YYYY-MM-DD HH:mm"),
+		},
+		{
+			title: "Event 3 Jan",
+			subtitle: "This is my first event 00:00 - 23:59",
+			// down here required fields
+			key: "3",
 			startDate: dayjs("2024-01-01 00:00", "YYYY-MM-DD HH:mm"),
 			endDate: dayjs("2024-01-01 23:59", "YYYY-MM-DD HH:mm"),
 		},
 		{
-			title: "Event 2",
+			title: "Event 4 Jan",
 			subtitle: "This event goes 13:00 to 15:00",
 			// down here required fields
-			key: "2",
+			key: "4",
 			startDate: dayjs("2024-01-01 13:00", "YYYY-MM-DD HH:mm"),
 			endDate: dayjs("2024-01-01 15:00", "YYYY-MM-DD HH:mm"),
 		},
 		{
-			title: "Event 3",
+			title: "Event 5 Jan",
 			subtitle: "This event goes over 2 days 08:00 - 16:00",
 			// down here required fields
-			key: "3",
+			key: "5",
 			startDate: dayjs("2024-01-02 08:00", "YYYY-MM-DD HH:mm"),
 			endDate: dayjs("2024-01-03 16:00", "YYYY-MM-DD HH:mm"),
+		},
+		{
+			title: "Event 6 Feb",
+			subtitle: "2024-02-01 08:00 - 16:00",
+			// down here required fields
+			key: "5",
+			startDate: dayjs("2024-02-01 08:00", "YYYY-MM-DD HH:mm"),
+			endDate: dayjs("2024-02-01 16:00", "YYYY-MM-DD HH:mm"),
 		},
 	]
 
