@@ -74,9 +74,9 @@ function useOrderByDate<T extends EventListItem>(
 			}[]
 		} = {}
 		for (const it of sortedItems) {
-			let startDate = it.startDate ?? minStartTime
+			const minBegin = it.startDate??minStartTime
+			let startDate = minBegin >= minStartTime ? minBegin : minStartTime
 			const endDate = it.endDate ?? maxEndTime
-
 			while (startDate.isBefore(endDate)) {
 				const dt = DateUtils.toDateType(startDate)
 				const eventOfThisDay = {

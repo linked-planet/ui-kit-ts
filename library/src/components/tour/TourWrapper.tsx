@@ -144,7 +144,6 @@ export function Tour({
 	const callback = useCallback(
 		(joyrideState: CallBackProps) => {
 			const { action, index, lifecycle, type, step } = joyrideState
-
 			switch (type) {
 				case "tour:start":
 					beforeAll()
@@ -188,13 +187,14 @@ export function Tour({
 					break
 				case "error:target_not_found":
 					if (skipOnError) {
+						console.info("Skipped", joyrideState)
 						if (showInfoAndError) {
 							showInformationFlag({
 								title: "Tour-Info",
 								description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen, das Element ${steps[index].step.target} wurde nicht gefunden.`,
 							})
 						}
-						next(1)
+						next(action === "next" ? 1: -1)
 					} else {
 						if (showInfoAndError) {
 							showErrorFlag({
@@ -213,7 +213,7 @@ export function Tour({
 								description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen.`,
 							})
 						}
-						next(1)
+						next(action === "next" ? 1: -1)
 					} else {
 						if (showInfoAndError) {
 							showErrorFlag({
