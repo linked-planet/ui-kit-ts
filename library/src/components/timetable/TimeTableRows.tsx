@@ -174,7 +174,7 @@ export default function TimeTableRows<
 	slotsArray,
 	timeFrameDay,
 	viewType,
-}: TimeTableRowsProps<G, I>) {
+}: TimeTableRowsProps<G, I>): JSX.Element[] {
 	const storeIdent = useTimeTableIdent()
 	const { rowHeight, columnWidth, placeHolderHeight } =
 		useTTCCellDimentions(storeIdent)
@@ -348,11 +348,13 @@ export default function TimeTableRows<
 	// handle changes in the group rows
 	if (groupRows !== currentGroupRowsRef.current) {
 		//changedGroupRows.current.clear() -> this misses changes on fast updates where the currentGroupRowsRef is not yet updated
-		if (!groupRows) {
+		if (!groupRows || !groupRows.size) {
 			renderedGroups.current.clear()
 			refCollection.current = []
 			setGroupRowsRendered([])
-			return groupRows
+			changedGroupRows.current.clear()
+			currentGroupRowsRef.current = groupRows
+			return []
 		}
 
 		if (groupRowsRendered.length > groupRows.size) {
@@ -382,6 +384,7 @@ export default function TimeTableRows<
 		let changedFound = -1
 		const keys = groupRows.keys().toArray()
 		let updateCounter = 0
+
 		for (let i = 0; i < keys.length; i++) {
 			const group = keys[i]
 			const rows = groupRows.get(group)
@@ -400,6 +403,8 @@ export default function TimeTableRows<
 				changedGroupRows.current.add(i)
 			}
 		}
+
+		console.log("CHANGED", changedGroupRows.current, changedFound)
 		for (const changedG of changedGroupRows.current) {
 			if (changedG > keys.length - 1) {
 				// delete obsolete change
