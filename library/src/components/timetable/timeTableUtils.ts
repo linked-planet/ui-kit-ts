@@ -189,7 +189,6 @@ function calculateTimeSlotPropertiesForHoursView(
 	}
 
 	let timeDiff = endOfDay.diff(startOfDay, "minutes")
-
 	if (timeDiff === 0) {
 		timeDiff = 24 * 60
 	}
@@ -215,6 +214,7 @@ function calculateTimeSlotPropertiesForHoursView(
 		timeStepsMinute,
 		"minutes",
 	)
+
 	timeFrameDay.endHour = timeSlotEndEnd.hour()
 	timeFrameDay.endMinute = timeSlotEndEnd.minute()
 	timeFrameDay.oneDayMinutes = timeStepsMinute * timeSlotsPerDay
@@ -246,6 +246,7 @@ export function calculateTimeSlotPropertiesForView(
 	timeFrameDay: TimeFrameDay
 	slotsArray: Dayjs[]
 	viewType: TimeTableViewType
+	timeStepMinutesHoursView: number
 } {
 	const startHour = startDate.hour()
 	const startMinute = startDate.minute()
@@ -272,6 +273,7 @@ export function calculateTimeSlotPropertiesForView(
 			},
 			slotsArray: [],
 			viewType,
+			timeStepMinutesHoursView: timeStepsMinute,
 		}
 	}
 
@@ -282,7 +284,11 @@ export function calculateTimeSlotPropertiesForView(
 			timeStepsMinute,
 			setMessage,
 		)
-		return Object.freeze({ ...res, viewType })
+		return Object.freeze({
+			...res,
+			viewType,
+			timeStepMinutesHoursView: timeStepsMinute,
+		})
 	}
 
 	// get the actual end time fitting to the time slots
@@ -296,8 +302,12 @@ export function calculateTimeSlotPropertiesForView(
 	) {
 		endDateTime = endDateTime.subtract(1, "day")
 	}
-	while (endDateTime.isBefore(endDate)) {
-		endDateTime = endDateTime.add(timeStepsMinute, "minutes")
+	while (true) {
+		const nextEndDateTime = endDateTime.add(timeStepsMinute, "minutes")
+		if (nextEndDateTime.isAfter(endDate)) {
+			break
+		}
+		endDateTime = nextEndDateTime
 	}
 	//endDateTime = endDateTime.subtract(timeStepsMinute, "minutes")
 	endHour = endDateTime.hour()
@@ -365,6 +375,7 @@ export function calculateTimeSlotPropertiesForView(
 		timeFrameDay,
 		slotsArray,
 		viewType,
+		timeStepMinutesHoursView: timeStepsMinute,
 	})
 }
 
@@ -456,16 +467,19 @@ export function getLeftAndWidth(
 		endSlotStart = endSlotStart
 			.add(timeFrameDay.startHour, "hours")
 			.add(timeFrameDay.startMinute, "minutes")
-		/*if (
-			viewType !== "days" &&
-			(timeFrameDay.endHour !== 0 ||
-				(timeFrameDay.endHour === 0 && timeFrameDay.endMinute !== 0))
-		) {
-			endSlotEnd = endSlotEnd.add(1, viewType).subtract(1, "day")
-		}*/
 	}
 	const diffEndSlot = itemModEnd.diff(endSlotStart, "minute")
 	if (diffEndSlot < 0) {
+		console.error(
+			"TimeTable - diffEndSlot is negative, wrong end slot detected?",
+			diffEndSlot,
+			item,
+			itemModEnd,
+			startSlot,
+			endSlot,
+			slotsArray,
+			timeSlotMinutes,
+		)
 		throw new Error("diffEndSlot is negative, wrong end slot detected?")
 	}
 
@@ -682,10 +696,11 @@ export function getTimeSlotMinutes(
 	slotStart: Dayjs,
 	timeFrameDay: TimeFrameDay,
 	viewType: TimeTableViewType,
+	timeStepMinutesHoursView: number,
 ) {
 	switch (viewType) {
 		case "hours":
-			return 60
+			return timeStepMinutesHoursView
 		case "days":
 			return timeFrameDay.oneDayMinutes
 		case "weeks":

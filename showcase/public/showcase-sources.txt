@@ -9758,6 +9758,107 @@ function TourExample() {
 
 //#endregion tour
 
+//#region tour-skip
+function TourSkipExample() {
+	const [isActive, setActive] = useState(false)
+
+	const steps = useMemo(() => {
+		const InitStep = new TourStep({
+			step: {
+				title: "Tour starten",
+				target: "#tour-start",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "bottom",
+				locale: { ...defaultLocale, next: "Start Tour" },
+				content: (
+					<span>
+						The first step selects the tour start to start the tour.
+					</span>
+				),
+			},
+		})
+
+		const SecondStep = new TourStep({
+			step: {
+				title: "Button",
+				target: "#joyride-second",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "right",
+				locale: defaultLocale,
+				content: (
+					<span>
+						This step selects the popup which would open the popup.
+					</span>
+				),
+			},
+		})
+
+		const ThirdStep = new TourStep({
+			step: {
+				title: "Button",
+				target: "#joyride-third",
+				disableBeacon: true,
+				showSkipButton: false,
+				placement: "right",
+				locale: defaultLocale,
+				content: (
+					<span>
+						This step opens the popup and selects the dropdown in
+						it.
+					</span>
+				),
+			}
+		})
+		return [InitStep, SecondStep, ThirdStep]
+	}, [])
+
+	return (
+		<div className="bg-surface">
+			<ButtonGroup>
+				<div id="tour-start" className="flex justify-center flex-1">
+					<Button
+						type="button"
+						className="px-2"
+						onClick={() => setActive(true)}
+						appearance="primary"
+					>
+						Tour starten
+					</Button>
+					<Tour
+						isActive={isActive}
+						setActive={setActive}
+						steps={steps}
+						skipOnError={true}
+						showInfoAndError={true}
+						beforeAll={() => {
+							// initialize dummy data or other inits before tour starts
+							console.info("Starting Tour")
+						}}
+						afterAll={() => {
+							// cleanup dummy data or other inits after tour finished
+							console.info("Ending Tour")
+						}}
+					/>
+				</div>
+				<Button
+					data-id="Test-1"
+					id="joyride-first"
+				>
+					First step
+				</Button>
+				<Button data-id="Test-2" id="joyride-third">
+					Third step
+				</Button>
+			</ButtonGroup>
+			<ToastFlagContainer />
+		</div>
+	)
+}
+
+//#endregion tour-skip
+
 export default function TourShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -9775,6 +9876,11 @@ export default function TourShowcase(props: ShowcaseProps) {
 					title: "Tour",
 					example: <TourExample />,
 					sourceCodeExampleId: "tour",
+				},
+				{
+					title: "Tour-Skip",
+					example: <TourSkipExample />,
+					sourceCodeExampleId: "tour-skip",
 				},
 			]}
 		/>

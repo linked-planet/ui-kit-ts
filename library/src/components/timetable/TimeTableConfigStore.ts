@@ -13,13 +13,12 @@ export type TimeTableConfig<G extends TimeTableGroup> = {
 		timeFrameDay: TimeFrameDay
 		slotsArray: readonly Dayjs[]
 		viewType: TimeTableViewType
+		// this is the timeSlotMinutes set through the props, which can be different then the one calculated to fit the time slots
+		timeStepMinutesHoursView: number
 	}
 	disableWeekendInteractions: boolean
 	hideOutOfRangeMarkers: boolean
 	timeSlotSelectionDisabled: boolean
-
-	// this is the timeSlotMinutes set through the props, which can be different then the one calculated to fit the time slots
-	propTimeSlotMinutes: number
 
 	dimensions: {
 		placeHolderHeight: number
@@ -51,7 +50,7 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 	startDate: Dayjs,
 	endDate: Dayjs,
 	viewType: TimeTableViewType,
-	propTimeSlotMinutes: number,
+	timeStepMinutesHoursView: number,
 	columnWidth: number,
 	rowHeight: number,
 	placeHolderHeight: number,
@@ -69,15 +68,13 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 		const basicProperties = calculateTimeSlotPropertiesForView(
 			startDate,
 			endDate,
-			propTimeSlotMinutes,
+			timeStepMinutesHoursView,
 			viewType,
 			weekStartsOnSunday,
 		)
 
 		timeTableConfigStore[ident] = proxy<TimeTableConfig<G>>({
 			basicProperties,
-
-			propTimeSlotMinutes,
 
 			disableWeekendInteractions,
 			hideOutOfRangeMarkers,
@@ -107,14 +104,14 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 	if (
 		timeTableConfigStore[ident].startDate !== startDateString ||
 		timeTableConfigStore[ident].endDate !== endDateString ||
-		timeTableConfigStore[ident].propTimeSlotMinutes !==
-			propTimeSlotMinutes ||
+		timeTableConfigStore[ident].basicProperties.timeStepMinutesHoursView !==
+			timeStepMinutesHoursView ||
 		timeTableConfigStore[ident].basicProperties.viewType !== viewType
 	) {
 		const basicProperties = calculateTimeSlotPropertiesForView(
 			startDate,
 			endDate,
-			propTimeSlotMinutes,
+			timeStepMinutesHoursView,
 			viewType,
 			weekStartsOnSunday,
 		)
@@ -134,8 +131,8 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 					? `${timeTableConfigStore[ident].endDate} !== ${endDateString}`
 					: "",
 				"time slot minutes updated",
-				timeTableConfigStore[ident].propTimeSlotMinutes !==
-					propTimeSlotMinutes,
+				timeTableConfigStore[ident].basicProperties
+					.timeStepMinutesHoursView !== timeStepMinutesHoursView,
 				"view type updated",
 				timeTableConfigStore[ident].basicProperties.viewType !==
 					viewType,
@@ -145,10 +142,10 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 		clearTimeSlotSelection(ident, true)
 
 		timeTableConfigStore[ident].basicProperties = basicProperties
-		timeTableConfigStore[ident].propTimeSlotMinutes = propTimeSlotMinutes
 		timeTableConfigStore[ident].startDate = startDateString
 		timeTableConfigStore[ident].endDate = endDateString
-		timeTableConfigStore[ident].propTimeSlotMinutes = propTimeSlotMinutes
+		timeTableConfigStore[ident].basicProperties.timeStepMinutesHoursView =
+			timeStepMinutesHoursView
 	}
 
 	if (isCellDisabled !== timeTableConfigStore[ident].isCellDisabled) {

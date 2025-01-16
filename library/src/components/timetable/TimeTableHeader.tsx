@@ -108,7 +108,7 @@ type TimeTableHeaderProps<
 		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => React.ReactNode
 		header: (props: CustomHeaderRowHeaderProps<G, I>) => React.ReactNode
 	}
-
+	timeStepMinutesHoursView: number
 	tableHeaderRef: React.Ref<HTMLTableSectionElement>
 }
 
@@ -134,6 +134,7 @@ export const LPTimeTableHeader = function TimeTableHeader<
 	locale,
 	customHeaderRow,
 	entries,
+	timeStepMinutesHoursView,
 	tableHeaderRef,
 }: TimeTableHeaderProps<G, I>) {
 	const currentLocale = dayjs.locale()
@@ -316,6 +317,7 @@ export const LPTimeTableHeader = function TimeTableHeader<
 								slotsArray[i],
 								timeFrameDay,
 								viewType,
+								timeStepMinutesHoursView,
 							)
 							return (
 								<CustomHeaderRowCell

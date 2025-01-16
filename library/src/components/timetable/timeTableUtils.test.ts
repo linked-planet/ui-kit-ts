@@ -188,9 +188,9 @@ describe("calculateTimeSlotPropertiesForDaysView", () => {
 		expect(result.slotsArray.length).toBe(2)
 	})
 
-	it("time slots for ts 200 min and frame day: start 08:00 end 00:00", () => {
+	it("time slots for ts 200 min and frame day: start 08:00 end 00:40", () => {
 		const startDate = dayjs("2023-01-01T08:00:00")
-		const endDate = dayjs("2023-01-03T00:10:00")
+		const endDate = dayjs("2023-01-03T00:40:00")
 		const timeStepsMinute = 200
 
 		const result = calculateTimeSlotPropertiesForView(
@@ -268,11 +268,11 @@ describe("calculateTimeSlotPropertiesForWeeksView", () => {
 			false,
 		)
 
-		expect(result.timeFrameDay.oneDayMinutes).toBe(1000)
+		expect(result.timeFrameDay.oneDayMinutes).toBe(800)
 		expect(result.timeFrameDay.startHour).toBe(8)
 		expect(result.timeFrameDay.startMinute).toBe(0)
-		expect(result.timeFrameDay.endHour).toBe(0) // 24 hours
-		expect(result.timeFrameDay.endMinute).toBe(40)
+		expect(result.timeFrameDay.endHour).toBe(21) // 24 hours
+		expect(result.timeFrameDay.endMinute).toBe(20)
 		expect(result.slotsArray.length).toBe(3)
 	})
 })

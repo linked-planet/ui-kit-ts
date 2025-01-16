@@ -396,7 +396,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const nowbarScrollHandling = useCallback(() => {
 		if (nowTimeSlotRef?.current) {
 			rateLimiter(() =>
-				nowbarRemoveCoveredCheck(
+				nowbarCoveredCheck(
 					nowBarRef,
 					tableHeaderRef,
 					nowTimeSlotRef,
@@ -449,6 +449,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			timeFrameDay,
 			currViewType,
 			groupHeaderColumnWidth,
+			timeStepsMinutes,
 			setMessage,
 		)
 	}, [
@@ -458,6 +459,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		currViewType,
 		setMessage,
 		groupHeaderColumnWidth,
+		timeStepsMinutes,
 	])
 
 	// initial run, and start interval to move the now bar
@@ -553,6 +555,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 							customHeaderRow={customHeaderRow}
 							entries={entries}
 							tableHeaderRef={tableHeaderRef}
+							timeStepMinutesHoursView={timeStepsMinutes}
 						/>
 						<tbody ref={tableBodyRef} className="table-fixed">
 							<TimeTableRows<G, I>
@@ -567,6 +570,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								slotsArray={slotsArray}
 								timeFrameDay={timeFrameDay}
 								viewType={currViewType}
+								timeStepMinutesHoursView={timeStepsMinutes}
 							/>
 						</tbody>
 					</table>
@@ -596,6 +600,7 @@ function moveNowBar(
 	timeFrameDay: TimeFrameDay,
 	viewType: TimeTableViewType,
 	groupHeaderColumnWidth: number,
+	timeStepMinutes: number,
 	setMessage?: (message: TimeTableMessage) => void,
 ) {
 	if (!tableHeaderRef.current || !tableBodyRef.current) {
@@ -660,6 +665,15 @@ function moveNowBar(
 		timeFrameDay,
 		viewType,
 	)
+
+	/*const insideOfTimeFrameOfDay =
+		now.hour() > timeFrameDay.startHour ||
+		(now.hour() === timeFrameDay.startHour &&
+			now.minute() > timeFrameDay.startMinute &&
+			now.hour() < timeFrameDay.endHour) ||
+		(now.hour() === timeFrameDay.endHour &&
+			now.minute() < timeFrameDay.endMinute)*/
+
 	if (startAndEndSlot.status !== "in") {
 		// we need to remove the now bar, if it is there
 		if (nowBar) {
@@ -686,12 +700,38 @@ function moveNowBar(
 
 	if (!nowBar) {
 		nowBar = document.createElement("div")
-		//nowBar.className = styles.nowBar
 		nowBar.className =
 			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-[2] w-[2px]"
-		//slotBar.appendChild(nowBar)
+		nowBar.id = "nowBar"
 		nowBarRef.current = nowBar
-		nowbarRemoveCoveredCheck(
+	}
+
+	let currentTimeSlot = slotsArray[startSlot]
+	const timeSlotMinutes = getTimeSlotMinutes(
+		currentTimeSlot,
+		timeFrameDay,
+		viewType,
+		timeStepMinutes,
+	)
+
+	if (viewType !== "hours") {
+		// see getTimeSlotMinutes in timeTableUtils
+		currentTimeSlot = currentTimeSlot
+			.add(timeFrameDay.startHour, "hours")
+			.add(timeFrameDay.startMinute, "minutes")
+	}
+
+	const diffNow = now.diff(currentTimeSlot, "minutes")
+
+	const diffPerc = diffNow / timeSlotMinutes
+
+	nowBar.style.left = `${diffPerc * 100}%`
+	nowBar.style.top = "100%"
+	nowBar.style.height = `${tableBody.getBoundingClientRect().bottom - nowTimeSlotCell.getBoundingClientRect().top - nowTimeSlotCell.clientHeight}px`
+
+	if (nowBarRef.current && nowTimeSlotRef.current) {
+		nowTimeSlotRef.current.appendChild(nowBarRef.current)
+		nowbarCoveredCheck(
 			nowBarRef,
 			tableHeaderRef,
 			nowTimeSlotRef,
@@ -699,19 +739,7 @@ function moveNowBar(
 		)
 	}
 
-	const currentTimeSlot = slotsArray[startSlot]
-	const timeSlotMinutes = getTimeSlotMinutes(
-		currentTimeSlot,
-		timeFrameDay,
-		viewType,
-	)
-	const diffNow = now.diff(currentTimeSlot, "minutes")
-
-	const diffPerc = diffNow / timeSlotMinutes
-	nowBar.style.left = `${diffPerc * 100}%`
-	nowBar.style.top = "100%"
-	nowBar.style.height = `${tableBody.getBoundingClientRect().bottom - nowTimeSlotCell.getBoundingClientRect().top - nowTimeSlotCell.clientHeight}px`
-
+	// orange bottom border of the now time slot cell
 	nowTimeSlotCell.classList.remove(
 		"border-b-border-bold",
 		"font-normal",
@@ -752,7 +780,7 @@ function moveNowBar(
  * @param nowBarRef
  * @param tableHeaderRef
  */
-function nowbarRemoveCoveredCheck(
+function nowbarCoveredCheck(
 	nowBarRef: MutableRefObject<HTMLDivElement | undefined>,
 	tableHeaderRef: MutableRefObject<HTMLTableSectionElement | null>,
 	nowTimeSlotRef: MutableRefObject<HTMLTableCellElement | undefined>,
@@ -761,6 +789,7 @@ function nowbarRemoveCoveredCheck(
 	if (!nowTimeSlotRef.current) {
 		return
 	}
+
 	const tableHeader = tableHeaderRef.current
 	// the first TH is the sticky group header column
 	const tableHeaderFirstTH = tableHeader?.children[0]?.children[0]
@@ -768,16 +797,15 @@ function nowbarRemoveCoveredCheck(
 		tableHeaderFirstTH?.getBoundingClientRect().right ||
 		groupHeaderColumnWidth
 	const nowTimeSlotLeft = nowTimeSlotRef.current.getBoundingClientRect().left
+
 	if (nowTimeSlotLeft <= rightNowbarBorder) {
 		if (nowBarRef.current?.parentElement) {
 			const nowBarRect = nowBarRef.current.getBoundingClientRect()
 			if (nowBarRect.left <= rightNowbarBorder) {
-				nowBarRef.current.remove()
+				nowBarRef.current.classList.add("hidden")
 			}
 		}
 	} else {
-		if (nowBarRef.current && !nowBarRef.current.parentElement) {
-			nowTimeSlotRef.current.appendChild(nowBarRef.current)
-		}
+		nowBarRef.current?.classList.remove("hidden")
 	}
 }
