@@ -44,7 +44,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			title: "Empty Group",
 		},
 		items: [
-			/*{
+			{
 				key: crypto.randomUUID(),
 				// expected to be on group row 0
 				startDate: dayjs()
@@ -57,7 +57,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 					.add(10, "minutes")
 					.add(2, "day"),
 				title: "Item 1-1",
-			},*/
+			},
 		],
 	},
 	{
@@ -668,7 +668,7 @@ window.addEventListener(allGroupsRenderedEvent, () => {
 function Example() {
 	//#region timetable
 
-	const [timeSteps, setTimeSteps] = useState(60)
+	const [timeSteps, setTimeSteps] = useState(50)
 	const [timeStepsInputValue, setTimeStepsInputValue] = useState(timeSteps)
 	const [groupHeaderColumnWidth, setGroupHeaderColumnWidth] = useState(150)
 	const [columnWidth, setColumnWidth] = useState(70)

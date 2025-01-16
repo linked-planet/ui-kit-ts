@@ -168,6 +168,7 @@ function setTimeSlotSelectionByDateRange<G extends TimeTableGroup>(
 			slot,
 			basicConfig.timeFrameDay,
 			basicConfig.viewType,
+			basicConfig.timeStepMinutesHoursView,
 		)
 
 		const slotEnd = slot.add(timeSlotMinutes, "minutes")
@@ -374,6 +375,7 @@ function notifyOnTimeRangeSelected<G extends TimeTableGroup>(
 			basicProps.slotsArray[lastSlot],
 			basicProps.timeFrameDay,
 			basicProps.viewType,
+			basicProps.timeStepMinutesHoursView,
 		)
 		const endDate = basicProps.slotsArray[lastSlot].add(
 			timeSlotMinutes,
