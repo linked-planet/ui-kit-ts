@@ -7421,7 +7421,6 @@ function TabsShowcase(props: ShowcaseProps) {
 
 export default TabsShowcase
 
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -7475,6 +7474,7 @@ function TagShowcase(props: ShowcaseProps) {
 						console.log("on after remove", str)
 					}
 					removable
+					className="min-w-36"
 				>
 					Removable Tag
 				</Tag>

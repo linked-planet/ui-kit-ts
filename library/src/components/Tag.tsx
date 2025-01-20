@@ -175,7 +175,9 @@ function SimpleTag({
 			id={id}
 			data-testid={testId}
 		>
-			<div className={truncate ? "truncate" : undefined}>{children}</div>
+			<div className={`${truncate ? "truncate" : ""} w-full`}>
+				{children}
+			</div>
 		</output>
 	)
 }
@@ -221,8 +223,8 @@ export function Tag({
 			return children
 		}
 		return (
-			<div className="flex items-center">
-				<div className="truncate">{children}</div>
+			<div className="flex items-center justify-between w-full">
+				{children}
 
 				<button
 					type="button"
