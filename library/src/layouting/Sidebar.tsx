@@ -327,7 +327,7 @@ function Sidebar({
 		>
 			{/* resize button and grab handle area */}
 			<div
-				className={`absolute inset-y-0 z-[3] h-full ${position === "left" ? "-right-3 border-l-2" : "-left-3 border-r-2"} ${collapsed === "expanded" ? "hover:border-brand-bold group cursor-col-resize" : ""} border-border w-3 select-none border-solid bg-transparent`}
+				className={`absolute inset-y-0 z-[3] h-full border-y-0 ${position === "left" ? "-right-3 border-l-2 border-r-0" : "-left-3 border-r-2 border-l-0"} ${collapsed === "expanded" ? "hover:border-brand-bold group cursor-col-resize" : ""} border-border w-3 select-none border-solid bg-transparent`}
 				onMouseDown={onResizeCB}
 				onMouseEnter={() => {
 					if (!isResizing && !isHovered) {
