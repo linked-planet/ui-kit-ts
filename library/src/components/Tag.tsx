@@ -223,8 +223,8 @@ export function Tag({
 			return children
 		}
 		return (
-			<div className="flex items-center justify-between w-full">
-				{children}
+			<div className="flex items-center justify-between w-full overflow-hidden">
+				<div className="truncate">{children}</div>
 
 				<button
 					type="button"
