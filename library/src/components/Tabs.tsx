@@ -72,7 +72,7 @@ const Tab = forwardRef(
 				disabled={disabled}
 				className={twMerge(
 					twJoin(
-						"data-[state=active]:text-selected-text hover:text-text disabled:text-disabled-text text-text-subtlest data-[state=active]:after:bg-selected-border hover:after:bg-border relative text-ellipsis whitespace-nowrap font-[500] after:absolute after:rounded-sm hover:disabled:after:bg-transparent",
+						"hover:cursor-pointer disabled:hover:cursor-auto data-[state=active]:text-selected-text hover:text-text disabled:text-disabled-text bg-transparent text-sm p-0 m-0 border-none text-text-subtlest data-[state=active]:after:bg-selected-border hover:after:bg-border relative text-ellipsis whitespace-nowrap font-[500] after:absolute after:rounded-sm hover:disabled:after:bg-transparent after:content-['']",
 						tabSideClassName,
 					),
 					className,
@@ -170,7 +170,7 @@ const TabList = forwardRef(
 			<RTabs.TabsList
 				className={twMerge(
 					twJoin(
-						"before:bg-border relative flex flex-wrap gap-4 before:absolute before:rounded-sm",
+						"before:bg-border before:content-[''] relative flex flex-wrap gap-4 before:absolute before:rounded-sm",
 						tabListSideClassName,
 					),
 					className,
