@@ -7474,7 +7474,6 @@ function TagShowcase(props: ShowcaseProps) {
 						console.log("on after remove", str)
 					}
 					removable
-					className="min-w-36"
 				>
 					Removable Tag
 				</Tag>
@@ -7494,7 +7493,7 @@ function TagShowcase(props: ShowcaseProps) {
 				<Tag appearance="information" truncate>
 					Information Simple Tag
 				</Tag>
-				<Tag appearance="discovery" truncate>
+				<Tag appearance="discovery" truncate removable>
 					Discovery Simple Tag
 				</Tag>
 			</TagGroup>
