@@ -27,14 +27,18 @@ export type SidebarProps = {
 	onExpand?: () => void
 	onResizeStart?: () => void
 	onResizeEnd?: () => void
-	onButtonClick?: (nextState: CollapsedState) => void
+	onCloseButtonClick?: (nextState: CollapsedState) => void
 	sticky?: boolean
 	valueTextLabel?: string
 	resizeGrabAreaLabel?: string
 	className?: string
 	style?: CSSProperties
 	children: React.ReactNode
-	resizeButton?: React.ReactNode
+	closeButton?: React.ReactNode
+	closeButtonClassName?: string
+	closeButtonStyle?: CSSProperties
+	closeButtonTitle?: string
+	closeButtonAriaLabel?: string
 	widthVar?: `--${string}`
 	flyoutVar?: `--${string}`
 	localStorageWidthKey?: string
@@ -176,14 +180,18 @@ function Sidebar({
 	onExpand,
 	onResizeStart,
 	onResizeEnd,
-	onButtonClick,
+	onCloseButtonClick,
 	sticky,
 	valueTextLabel,
 	resizeGrabAreaLabel,
 	className,
 	style,
 	children,
-	resizeButton,
+	closeButton,
+	closeButtonClassName,
+	closeButtonStyle,
+	closeButtonTitle,
+	closeButtonAriaLabel,
 	position,
 	widthVar,
 	flyoutVar,
@@ -301,7 +309,7 @@ function Sidebar({
 			resetToExpanded(position, widthVar, flyoutVar, localStorageWidthKey)
 			onExpand?.()
 		}
-		onButtonClick?.(newState)
+		onCloseButtonClick?.(newState)
 
 		localStorage.setItem(
 			localStorageCollapsedKey ??
@@ -354,8 +362,8 @@ function Sidebar({
 							: undefined,
 					}}
 				>
-					{resizeButton ? (
-						<>{resizeButton}</>
+					{closeButton ? (
+						<>{closeButton}</>
 					) : (
 						<button
 							onClick={onCollapsedCB}
@@ -365,12 +373,18 @@ function Sidebar({
 								}
 							}}
 							aria-label={
-								collapsed === "collapsed"
+								(closeButtonAriaLabel ??
+								collapsed === "collapsed")
 									? "expand sidebar"
 									: "collapse sidebar"
 							}
-							className={`bg-surface-raised border-border shadow-raised rounded-full border border-solid ${collapsed === "expanded" ? "group-hover:bg-selected-bold group-hover:text-text-inverse" : "hover:bg-selected-bold hover:text-text-inverse"} active:bg-selected-bold-hovered text-text absolute ${position === "left" ? "-left-[0.875rem]" : "-right-[0.875rem]"} top-8 box-border flex h-7 w-7 items-center justify-center rounded-full duration-150`}
+							className={twMerge(
+								`bg-surface-raised border-border shadow-raised rounded-full cursor-pointer border border-solid ${collapsed === "expanded" ? "group-hover:bg-selected-bold group-hover:text-text-inverse" : "hover:bg-selected-bold hover:text-text-inverse"} active:bg-selected-bold-hovered text-text absolute ${position === "left" ? "-left-[0.875rem]" : "-right-[0.875rem]"} top-8 box-border flex h-7 w-7 items-center justify-center rounded-full duration-150`,
+								closeButtonClassName,
+							)}
+							style={closeButtonStyle}
 							type="button"
+							title={closeButtonTitle}
 						>
 							{collapsed === "collapsed" ? (
 								<>
