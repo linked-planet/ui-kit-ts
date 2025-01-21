@@ -27,6 +27,7 @@ export type SidebarProps = {
 	onExpand?: () => void
 	onResizeStart?: () => void
 	onResizeEnd?: () => void
+	onButtonClick?: (nextState: CollapsedState) => void
 	sticky?: boolean
 	valueTextLabel?: string
 	resizeGrabAreaLabel?: string
@@ -52,10 +53,10 @@ export function RightSidebar(props: SidebarProps) {
 	return <Sidebar {...props} position="right" />
 }
 
-const localStorageKeyWidthLeft = "leftSidebarWidth"
-const localStorageKeyWidthRight = "rightSidebarWidth"
-const localStorageKeyLeftCollapsed = "leftSidebarCollapsed"
-const localStorageKeyRightCollapsed = "rightSidebarCollapsed"
+const localStorageKey_LeftSidebarWidth = "leftSidebarWidth"
+const localStorageKey_RightSidebarWidth = "rightSidebarWidth"
+export const localStorageKey_LeftSidebarCollapsed = "leftSidebarCollapsed"
+const localStorageKey_RightSidebarCollapsed = "rightSidebarCollapsed"
 const defaultWidth = 180 as const
 const collapsedWidth = 20 as const
 
@@ -80,7 +81,7 @@ function setSidebarWidthVars(
 				`${width}px`,
 			)
 			localStorage.setItem(
-				localStorageVar ?? localStorageKeyWidthLeft,
+				localStorageVar ?? localStorageKey_LeftSidebarWidth,
 				width.toString(),
 			)
 		}
@@ -95,7 +96,7 @@ function setSidebarWidthVars(
 				`${width}px`,
 			)
 			localStorage.setItem(
-				localStorageVar ?? localStorageKeyWidthRight,
+				localStorageVar ?? localStorageKey_RightSidebarWidth,
 				width.toString(),
 			)
 		}
@@ -118,7 +119,7 @@ function resetToExpanded(
 			) ?? `${defaultWidth}px`
 		const num = original.substring(0, original.length - 2)
 		localStorage.setItem(
-			localStorageVar ?? localStorageKeyWidthLeft,
+			localStorageVar ?? localStorageKey_LeftSidebarWidth,
 			num.toString(),
 		)
 		document.documentElement.style.setProperty(
@@ -131,7 +132,7 @@ function resetToExpanded(
 				flyoutVar ?? rightSidebarFlyoutVar,
 			) ?? defaultWidth
 		localStorage.setItem(
-			localStorageVar ?? localStorageKeyWidthRight,
+			localStorageVar ?? localStorageKey_RightSidebarWidth,
 			original.toString(),
 		)
 		document.documentElement.style.setProperty(
@@ -147,8 +148,9 @@ function getWidthFromLocalStorage(
 ) {
 	if (position === "left") {
 		const locVal = Number.parseInt(
-			localStorage.getItem(localStorageVar ?? localStorageKeyWidthLeft) ??
-				"",
+			localStorage.getItem(
+				localStorageVar ?? localStorageKey_LeftSidebarWidth,
+			) ?? "",
 		)
 		if (!Number.isNaN(locVal)) {
 			return locVal
@@ -156,8 +158,9 @@ function getWidthFromLocalStorage(
 		return defaultWidth
 	}
 	const locVal = Number.parseInt(
-		localStorage.getItem(localStorageVar ?? localStorageKeyWidthRight) ??
-			"",
+		localStorage.getItem(
+			localStorageVar ?? localStorageKey_RightSidebarWidth,
+		) ?? "",
 	)
 	if (!Number.isNaN(locVal)) {
 		return locVal
@@ -173,6 +176,7 @@ function Sidebar({
 	onExpand,
 	onResizeStart,
 	onResizeEnd,
+	onButtonClick,
 	sticky,
 	valueTextLabel,
 	resizeGrabAreaLabel,
@@ -195,8 +199,8 @@ function Sidebar({
 		(localStorage.getItem(
 			localStorageCollapsedKey ??
 				(position === "left"
-					? localStorageKeyLeftCollapsed
-					: localStorageKeyRightCollapsed),
+					? localStorageKey_LeftSidebarCollapsed
+					: localStorageKey_RightSidebarCollapsed),
 		) as CollapsedState | null) ??
 		_collapsed ??
 		"expanded"
@@ -297,12 +301,13 @@ function Sidebar({
 			resetToExpanded(position, widthVar, flyoutVar, localStorageWidthKey)
 			onExpand?.()
 		}
+		onButtonClick?.(newState)
 
 		localStorage.setItem(
 			localStorageCollapsedKey ??
 				(position === "left"
-					? localStorageKeyLeftCollapsed
-					: localStorageKeyRightCollapsed),
+					? localStorageKey_LeftSidebarCollapsed
+					: localStorageKey_RightSidebarCollapsed),
 			newState,
 		)
 	}
