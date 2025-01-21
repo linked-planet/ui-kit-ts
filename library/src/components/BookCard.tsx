@@ -113,7 +113,7 @@ const CardHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface-overlay box-border flex w-full flex-1 justify-between px-4 py-3",
+			"bg-surface-overlay box-border flex flex-1 justify-between px-4 py-3",
 			className,
 		)}
 		style={style}
