@@ -267,15 +267,23 @@ const CardHeaderActions = ({
 	children,
 	id,
 	testId,
+	className,
+	style,
 }: {
 	children: React.ReactNode
 	id?: string
 	testId?: string
+	className?: string
+	style?: CSSProperties
 }) => (
 	<div
-		className="flex flex-none box-border items-center justify-end pl-2"
+		className={twMerge(
+			"flex flex-none box-border items-center justify-end pl-2",
+			className,
+		)}
 		id={id}
 		data-testid={testId}
+		style={style}
 	>
 		{children}
 	</div>
@@ -285,15 +293,20 @@ const CardHeaderActionsInfo = ({
 	children,
 	id,
 	testId,
+	className,
+	style,
 }: {
 	children: React.ReactNode
 	id?: string
 	testId?: string
+	className?: string
+	style?: CSSProperties
 }) => (
 	<div
-		className="mr-2 box-border items-center text-sm"
+		className={twMerge("mr-2 box-border items-center text-sm", className)}
 		id={id}
 		data-testid={testId}
+		style={style}
 	>
 		{children}
 	</div>
