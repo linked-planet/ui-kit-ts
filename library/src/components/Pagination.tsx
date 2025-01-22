@@ -180,7 +180,7 @@ function PaginationPageHandler<P extends string | number>({
 					<button
 						disabled={currentIdx <= 0}
 						className={twMerge(
-							`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 border-0 border-none border-transparent bg-transparent ${
+							`flex cursor-pointer disabled:cursor-default h-8 w-8 select-none items-center justify-center rounded p-1.5 border-0 border-none border-transparent bg-transparent ${
 								currentIdx > 0
 									? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
 									: "text-disabled-text"
@@ -208,8 +208,8 @@ function PaginationPageHandler<P extends string | number>({
 						{page !== "..." ? (
 							<button
 								className={twMerge(
-									"flex h-8 min-w-8 select-none items-center justify-center rounded p-1.5 border-0 border-none border-transparent bg-transparent",
-									"data-[current=true]:bg-selected data-[current=true]:text-selected-text-inverse",
+									"flex cursor-pointer h-8 min-w-8 select-none items-center justify-center rounded p-1.5 border-0 border-none border-transparent bg-transparent",
+									"data-[current=true]:bg-selected data-[current=true]:text-selected-text-inverse data-[current=true]:cursor-default",
 									"hover:bg-neutral-hovered active:bg-neutral-pressed",
 									pageButtonClassName,
 								)}
@@ -255,7 +255,7 @@ function PaginationPageHandler<P extends string | number>({
 				<li className="m-0">
 					<button
 						className={twMerge(
-							`flex h-8 w-8 select-none items-center justify-center rounded p-1.5 bg-transparent border-none border-0 border-transparent ${
+							`flex cursor-pointer disabled:cursor-default h-8 w-8 select-none items-center justify-center rounded p-1.5 bg-transparent border-none border-0 border-transparent ${
 								currentIdx < pages.length - 1
 									? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
 									: "text-disabled-text"
