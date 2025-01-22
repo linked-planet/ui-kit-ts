@@ -72,7 +72,7 @@ const TruncatedText = ({
 					transitionDuration: `${duration}ms`,
 				}}
 			>
-				<p
+				<div
 					style={{
 						...textStyle,
 						display: open || animating ? "block" : "-webkit-box",
@@ -86,7 +86,7 @@ const TruncatedText = ({
 					className={textClassName}
 				>
 					{children}
-				</p>
+				</div>
 			</div>
 			{(isTruncated || open) && (
 				<Button

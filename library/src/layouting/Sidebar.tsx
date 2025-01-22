@@ -6,8 +6,8 @@ import { bannerHeightVar, topNavigationHeightVar } from "./AppLayout"
 
 import { rateLimitHelper } from "../utils"
 
-import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
-import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
+import { ChevronRightIcon } from "lucide-react"
+import { ChevronLeftIcon } from "lucide-react"
 
 const rateLimited = rateLimitHelper(15) //59fps
 
@@ -389,17 +389,29 @@ function Sidebar({
 							{collapsed === "collapsed" ? (
 								<>
 									{position === "right" ? (
-										<ChevronLeftIcon label="expand" />
+										<ChevronLeftIcon
+											aria-label="expand"
+											className="stroke-[3]"
+										/>
 									) : (
-										<ChevronRightIcon label="expand" />
+										<ChevronRightIcon
+											aria-label="expand"
+											className="stroke-[3]"
+										/>
 									)}
 								</>
 							) : (
 								<>
 									{position === "right" ? (
-										<ChevronRightIcon label="collapse" />
+										<ChevronRightIcon
+											aria-label="collapse"
+											className="stroke-[3]"
+										/>
 									) : (
-										<ChevronLeftIcon label="collapse" />
+										<ChevronLeftIcon
+											aria-label="collapse"
+											className="stroke-[3]"
+										/>
 									)}
 								</>
 							)}

@@ -1,9 +1,12 @@
 import * as CollapsibleRUI from "@radix-ui/react-collapsible"
-import {
+/*import {
 	ChevronDownIcon,
 	ChevronRightIcon,
 	ChevronUpIcon,
-} from "@radix-ui/react-icons"
+} from "@radix-ui/react-icons"*/
+
+import { ChevronDownIcon, ChevronUpIcon, ChevronRightIcon } from "lucide-react"
+
 import { forwardRef, type HTMLProps } from "react"
 import { twMerge } from "tailwind-merge"
 
@@ -14,6 +17,8 @@ type CollapsibleProps = {
 	header: React.ReactNode
 	triggerClassName?: string
 	triggerStyle?: React.CSSProperties
+	chevronClassName?: string
+	chevronStyle?: React.CSSProperties
 	headerContainerStyle?: React.CSSProperties
 	headerContainerClassName?: string
 	contentClassName?: string
@@ -38,6 +43,8 @@ export const Collapsible = forwardRef(
 			triggerStyle,
 			headerContainerStyle,
 			headerContainerClassName,
+			chevronClassName,
+			chevronStyle,
 			contentClassName,
 			contentStyle,
 			className,
@@ -66,7 +73,7 @@ export const Collapsible = forwardRef(
 			>
 				<CollapsibleRUI.Trigger
 					className={twMerge(
-						`flex w-full p-1.5 flex-1 items-center hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none ${
+						`flex p-1.5 flex-1 items-center hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none ${
 							openButtonPosition === "hidden"
 								? "cursor-default"
 								: "cursor-pointer disabled:cursor-default"
@@ -78,7 +85,12 @@ export const Collapsible = forwardRef(
 				>
 					<div>
 						{openButtonPosition === "left" && (
-							<div className="flex h-full flex-none items-center justify-center">
+							<div
+								className={twMerge(
+									"flex h-full flex-none items-center justify-center size-4 pr-1",
+									chevronClassName,
+								)}
+							>
 								<ChevronDownIcon
 									aria-label="close"
 									className="group-data-[state=open]:block group-data-[state=closed]:hidden"
@@ -99,7 +111,13 @@ export const Collapsible = forwardRef(
 							{header}
 						</div>
 						{openButtonPosition === "right" && (
-							<div className="flex h-full flex-none items-center justify-center">
+							<div
+								className={twMerge(
+									"flex h-full flex-none items-center justify-center size-5 px-1",
+									chevronClassName,
+								)}
+								style={chevronStyle}
+							>
 								<ChevronDownIcon
 									aria-label="close"
 									className="group-data-[state=open]:block group-data-[state=closed]:hidden"
@@ -118,9 +136,7 @@ export const Collapsible = forwardRef(
 						"overflow-hidden data-[state=closed]:animate-slideUpCollapsible data-[state=open]:animate-slideDownCollapsible",
 						contentClassName,
 					)}
-					style={{
-						...contentStyle,
-					}}
+					style={contentStyle}
 				>
 					{children}
 				</CollapsibleRUI.Content>
