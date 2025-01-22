@@ -23,6 +23,10 @@ export const CardBase = forwardRef(
 			testId,
 			className,
 			style,
+			triggerClassName,
+			triggerStyle,
+			chevronClassName,
+			chevronStyle,
 		}: {
 			header: React.ReactNode
 			closed?: boolean
@@ -33,6 +37,10 @@ export const CardBase = forwardRef(
 			testId?: string
 			className?: string
 			style?: CSSProperties
+			triggerClassName?: string
+			triggerStyle?: React.CSSProperties
+			chevronClassName?: string
+			chevronStyle?: React.CSSProperties
 		},
 		ref: React.ForwardedRef<HTMLDivElement>,
 	) => {
@@ -50,14 +58,20 @@ export const CardBase = forwardRef(
 				defaultOpen={defaultOpen}
 				onChanged={onOpenChanged}
 				className={twMerge(
-					"border-border box-border shadow-overlay-bold border",
+					"border-border box-border border-2 border-solid",
 					className,
 				)}
-				triggerClassName="rounded-t border-b box-border border-border overflow-hidden"
+				triggerClassName={twMerge(
+					"rounded-t data-[state=closed]:border-b-0 data-[state=open]:border-b box-border border-solid border-x-0 border-t-0 border-border overflow-hidden",
+					triggerClassName,
+				)}
+				triggerStyle={triggerStyle}
 				id={id}
 				testId={testId}
 				ref={ref}
 				style={style}
+				chevronClassName={chevronClassName}
+				chevronStyle={chevronStyle}
 			>
 				<div className="bg-surface box-border flex w-full rounded-b">
 					{children}
@@ -133,13 +147,21 @@ const CardHeaderMeta = ({
 	children,
 	id,
 	testId,
+	className,
+	style,
 }: {
 	children: React.ReactNode
 	id?: string
 	testId?: string
+	className?: string
+	style?: CSSProperties
 }) => (
 	<div
-		className="w-full items-baseline box-border overflow-hidden"
+		className={twMerge(
+			"w-full items-baseline box-border overflow-hidden",
+			className,
+		)}
+		style={style}
 		id={id}
 		data-testid={testId}
 	>
@@ -269,12 +291,18 @@ const CardHeaderActions = ({
 	testId,
 	className,
 	style,
+	onClick,
+	onKeyDown,
+	onKeyUp,
 }: {
 	children: React.ReactNode
 	id?: string
 	testId?: string
 	className?: string
 	style?: CSSProperties
+	onClick?: (event: React.MouseEvent<HTMLDivElement>) => void
+	onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void
+	onKeyUp?: (event: React.KeyboardEvent<HTMLDivElement>) => void
 }) => (
 	<div
 		className={twMerge(
@@ -284,6 +312,9 @@ const CardHeaderActions = ({
 		id={id}
 		data-testid={testId}
 		style={style}
+		onClick={onClick}
+		onKeyDown={onKeyDown}
+		onKeyUp={onKeyUp}
 	>
 		{children}
 	</div>
