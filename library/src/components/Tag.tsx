@@ -175,9 +175,11 @@ function SimpleTag({
 			id={id}
 			data-testid={testId}
 		>
-			<div className={`${truncate ? "truncate" : ""} w-full`}>
-				{children}
-			</div>
+			{truncate ? (
+				<div className={"truncate w-full"}>{children}</div>
+			) : (
+				<>{children}</>
+			)}
 		</output>
 	)
 }
