@@ -13,6 +13,6 @@ export default {
 	theme,
 	plugins: [],
 	corePlugins: {
-		preflight: false,
+		preflight: true,
 	},
 }
