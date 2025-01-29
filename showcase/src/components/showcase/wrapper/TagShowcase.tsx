@@ -1,4 +1,3 @@
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -71,7 +70,7 @@ function TagShowcase(props: ShowcaseProps) {
 				<Tag appearance="information" truncate>
 					Information Simple Tag
 				</Tag>
-				<Tag appearance="discovery" truncate>
+				<Tag appearance="discovery" truncate removable>
 					Discovery Simple Tag
 				</Tag>
 			</TagGroup>

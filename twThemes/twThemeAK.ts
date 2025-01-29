@@ -102,6 +102,13 @@ export const theme = {
 		/* responsive breakpoints */
 		screens: {
 			xs: "480px",
+			"3xl": "1920px",
+			"4xl": "2560px",
+			"5xl": "3840px",
+			"4k": "4096px", //4k
+			"5k": "5120px", //5k
+			"8k": "8192px", //8k
+			"16k": "16384px", //16k
 		},
 	},
 	colors: {
@@ -767,7 +774,7 @@ export const theme = {
 		overflow: `var(--ds-shadow-overflow, 0px 0px 8px #091E4229, 0px 0px 1px #091E421F)`,
 
 		overlay: `var(--ds-shadow-overlay, 0px 8px 12px #091E4226, 0px 0px 1px #091E424F)`,
-		"overlay-bold": `0 5px 8px -2px #091E4226, 0px 0px 2px #091E424F`,
+		overlaybold: `0 5px 8px -2px #091E4226, 0px 0px 2px #091E424F`,
 		raised: `var(--ds-shadow-raised, 0px 1px 1px #091E4240, 0px 0px 1px #091E424F)`,
 		strong: `0px 0px 15px #091E4226`,
 		//border: `0 0 0 var(--ds-border-width, 2px) var(--tw-shadow-color, 0 0 #0000)`, // this doesnt work currently, the var(--ds-border-width, 2px) simply vanishes in TW version 3.4.5

@@ -2,7 +2,11 @@ export { Label } from "./Label"
 export { Input, Fieldset } from "./Inputs"
 //export { RadixSelect } from "./RadixSelect"
 export { Select } from "./Select"
-export { components as selectComponents } from "react-select"
+export {
+	components as selectComponents,
+	type SingleValue as SelectSingleValue,
+	type MultiValue as SelectMultiValue,
+} from "react-select"
 export { DatePicker } from "./datetimepicker/DatePicker"
 export { TimePicker } from "./datetimepicker/TimePicker"
 export { DateTimePicker } from "./datetimepicker/DateTimePicker"

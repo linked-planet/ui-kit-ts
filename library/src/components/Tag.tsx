@@ -164,7 +164,7 @@ function SimpleTag({
 				twJoin(
 					colors,
 					looks === "default" ? "rounded-[3px]" : "rounded-full",
-					"box-border inline-flex max-w-max flex-1 cursor-default select-none items-center whitespace-nowrap px-1 align-middle text-sm",
+					"box-border inline-flex max-w-max cursor-default select-none items-center whitespace-nowrap px-1 align-middle text-sm",
 					bold ? "font-bold" : undefined,
 					truncate ? "overflow-hidden" : undefined,
 				),
@@ -175,7 +175,11 @@ function SimpleTag({
 			id={id}
 			data-testid={testId}
 		>
-			<div className={truncate ? "truncate" : undefined}>{children}</div>
+			{truncate ? (
+				<div className={"truncate w-full"}>{children}</div>
+			) : (
+				<>{children}</>
+			)}
 		</output>
 	)
 }
@@ -221,7 +225,7 @@ export function Tag({
 			return children
 		}
 		return (
-			<div className="flex items-center">
+			<div className="flex items-center justify-between w-full overflow-hidden">
 				<div className="truncate">{children}</div>
 
 				<button
@@ -249,11 +253,15 @@ export function Tag({
 		)
 	}, [removable, removeButtonLabel, children, onClick])
 
-	const classNameUsed = hovered
-		? `bg-danger text-danger-text ${className} ${
-				removable ? "pr-0" : "pr-1"
-			}`
-		: `${className} ${removable ? "pr-0" : "pr-1"}`
+	let classNameUsed = hovered
+		? `bg-danger text-danger-text ${removable ? "pr-0" : "px-1"}`
+		: `${removable ? "pr-0" : "px-1"}`
+
+	classNameUsed = useMemo(
+		() => twMerge(classNameUsed, className),
+		[classNameUsed, className],
+	)
+
 	const styleUsed = hovered
 		? { backgroundColor: undefined, textColor: undefined, ...style }
 		: style

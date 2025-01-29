@@ -35,7 +35,7 @@ function SidebarToggle({
 	setSidebarPosition: React.Dispatch<React.SetStateAction<"left" | "right">>
 }) {
 	return (
-		<div className="border-border flex items-center border-r-2 border-solid pr-2">
+		<div className="flex items-center pr-2">
 			<Label className="p-0">Sidebar:</Label>
 			<div className="">
 				<Toggle

@@ -37,7 +37,7 @@ export function Toggle({
 		<Switch.Root
 			id={id}
 			className={twMerge(
-				"bg-neutral-full hover:bg-neutral-full-pressed data-[state=checked]:bg-success-bold-hovered data-[state=checked]:hover:bg-success-bold-pressed relative mx-1.5 flex h-[15px] w-[32px] items-center overflow-hidden rounded-full",
+				"border-none bg-neutral-full hover:bg-neutral-full-pressed data-[state=checked]:bg-success-bold-hovered data-[state=checked]:hover:bg-success-bold-pressed relative mx-1.5 p-0 flex h-[15px] w-[32px] items-center overflow-hidden rounded-full",
 				className,
 			)}
 			style={style}

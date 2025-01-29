@@ -18,7 +18,6 @@ export function Blanket({
 	...props
 }: BlanketProps) {
 	const ele = (
-		// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 		<div
 			className={twMerge(
 				"bg-blanket fixed inset-0 z-50 flex items-center justify-center",

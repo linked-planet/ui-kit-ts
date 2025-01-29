@@ -54,6 +54,7 @@ import GlobalStateShowcase from "./components/showcase/wrapper/GlobalStateShowca
 import TourShowcase from "./components/showcase/wrapper/TourShowcase"
 import FormShowcase from "./components/showcase/wrapper/FormShowcase"
 import EventListShowcase from "./components/showcase/wrapper/EventListShowcase"
+import HighlightedTextShowcase from "./components/showcase/wrapper/HighlightedTextShowcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -120,6 +121,11 @@ export default function useShowcases({
 			Form: <FormShowcase overallSourceCode={overallSourceCode} />,
 			"Global State": (
 				<GlobalStateShowcase overallSourceCode={overallSourceCode} />
+			),
+			"Highlighted Text": (
+				<HighlightedTextShowcase
+					overallSourceCode={overallSourceCode}
+				/>
 			),
 			Icon: <IconShowcase overallSourceCode={overallSourceCode} />,
 			"Icon Size Helper": (

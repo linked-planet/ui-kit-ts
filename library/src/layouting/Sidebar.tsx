@@ -6,8 +6,8 @@ import { bannerHeightVar, topNavigationHeightVar } from "./AppLayout"
 
 import { rateLimitHelper } from "../utils"
 
-import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
-import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
+import { ChevronRightIcon } from "lucide-react"
+import { ChevronLeftIcon } from "lucide-react"
 
 const rateLimited = rateLimitHelper(15) //59fps
 
@@ -27,13 +27,18 @@ export type SidebarProps = {
 	onExpand?: () => void
 	onResizeStart?: () => void
 	onResizeEnd?: () => void
+	onCloseButtonClick?: (nextState: CollapsedState) => void
 	sticky?: boolean
 	valueTextLabel?: string
 	resizeGrabAreaLabel?: string
 	className?: string
 	style?: CSSProperties
 	children: React.ReactNode
-	resizeButton?: React.ReactNode
+	closeButton?: React.ReactNode
+	closeButtonClassName?: string
+	closeButtonStyle?: CSSProperties
+	closeButtonTitle?: string
+	closeButtonAriaLabel?: string
 	widthVar?: `--${string}`
 	flyoutVar?: `--${string}`
 	localStorageWidthKey?: string
@@ -52,10 +57,10 @@ export function RightSidebar(props: SidebarProps) {
 	return <Sidebar {...props} position="right" />
 }
 
-const localStorageKeyWidthLeft = "leftSidebarWidth"
-const localStorageKeyWidthRight = "rightSidebarWidth"
-const localStorageKeyLeftCollapsed = "leftSidebarCollapsed"
-const localStorageKeyRightCollapsed = "rightSidebarCollapsed"
+const localStorageKey_LeftSidebarWidth = "leftSidebarWidth"
+const localStorageKey_RightSidebarWidth = "rightSidebarWidth"
+export const localStorageKey_LeftSidebarCollapsed = "leftSidebarCollapsed"
+const localStorageKey_RightSidebarCollapsed = "rightSidebarCollapsed"
 const defaultWidth = 180 as const
 const collapsedWidth = 20 as const
 
@@ -80,7 +85,7 @@ function setSidebarWidthVars(
 				`${width}px`,
 			)
 			localStorage.setItem(
-				localStorageVar ?? localStorageKeyWidthLeft,
+				localStorageVar ?? localStorageKey_LeftSidebarWidth,
 				width.toString(),
 			)
 		}
@@ -95,7 +100,7 @@ function setSidebarWidthVars(
 				`${width}px`,
 			)
 			localStorage.setItem(
-				localStorageVar ?? localStorageKeyWidthRight,
+				localStorageVar ?? localStorageKey_RightSidebarWidth,
 				width.toString(),
 			)
 		}
@@ -118,7 +123,7 @@ function resetToExpanded(
 			) ?? `${defaultWidth}px`
 		const num = original.substring(0, original.length - 2)
 		localStorage.setItem(
-			localStorageVar ?? localStorageKeyWidthLeft,
+			localStorageVar ?? localStorageKey_LeftSidebarWidth,
 			num.toString(),
 		)
 		document.documentElement.style.setProperty(
@@ -131,7 +136,7 @@ function resetToExpanded(
 				flyoutVar ?? rightSidebarFlyoutVar,
 			) ?? defaultWidth
 		localStorage.setItem(
-			localStorageVar ?? localStorageKeyWidthRight,
+			localStorageVar ?? localStorageKey_RightSidebarWidth,
 			original.toString(),
 		)
 		document.documentElement.style.setProperty(
@@ -147,8 +152,9 @@ function getWidthFromLocalStorage(
 ) {
 	if (position === "left") {
 		const locVal = Number.parseInt(
-			localStorage.getItem(localStorageVar ?? localStorageKeyWidthLeft) ??
-				"",
+			localStorage.getItem(
+				localStorageVar ?? localStorageKey_LeftSidebarWidth,
+			) ?? "",
 		)
 		if (!Number.isNaN(locVal)) {
 			return locVal
@@ -156,8 +162,9 @@ function getWidthFromLocalStorage(
 		return defaultWidth
 	}
 	const locVal = Number.parseInt(
-		localStorage.getItem(localStorageVar ?? localStorageKeyWidthRight) ??
-			"",
+		localStorage.getItem(
+			localStorageVar ?? localStorageKey_RightSidebarWidth,
+		) ?? "",
 	)
 	if (!Number.isNaN(locVal)) {
 		return locVal
@@ -173,13 +180,18 @@ function Sidebar({
 	onExpand,
 	onResizeStart,
 	onResizeEnd,
+	onCloseButtonClick,
 	sticky,
 	valueTextLabel,
 	resizeGrabAreaLabel,
 	className,
 	style,
 	children,
-	resizeButton,
+	closeButton,
+	closeButtonClassName,
+	closeButtonStyle,
+	closeButtonTitle,
+	closeButtonAriaLabel,
 	position,
 	widthVar,
 	flyoutVar,
@@ -195,8 +207,8 @@ function Sidebar({
 		(localStorage.getItem(
 			localStorageCollapsedKey ??
 				(position === "left"
-					? localStorageKeyLeftCollapsed
-					: localStorageKeyRightCollapsed),
+					? localStorageKey_LeftSidebarCollapsed
+					: localStorageKey_RightSidebarCollapsed),
 		) as CollapsedState | null) ??
 		_collapsed ??
 		"expanded"
@@ -297,12 +309,13 @@ function Sidebar({
 			resetToExpanded(position, widthVar, flyoutVar, localStorageWidthKey)
 			onExpand?.()
 		}
+		onCloseButtonClick?.(newState)
 
 		localStorage.setItem(
 			localStorageCollapsedKey ??
 				(position === "left"
-					? localStorageKeyLeftCollapsed
-					: localStorageKeyRightCollapsed),
+					? localStorageKey_LeftSidebarCollapsed
+					: localStorageKey_RightSidebarCollapsed),
 			newState,
 		)
 	}
@@ -327,7 +340,7 @@ function Sidebar({
 		>
 			{/* resize button and grab handle area */}
 			<div
-				className={`absolute inset-y-0 z-[3] h-full ${position === "left" ? "-right-3 border-l-2" : "-left-3 border-r-2"} ${collapsed === "expanded" ? "hover:border-brand-bold group cursor-col-resize" : ""} border-border w-3 select-none border-solid bg-transparent`}
+				className={`absolute inset-y-0 z-[3] h-full border-y-0 ${position === "left" ? "-right-3 border-l-2 border-r-0" : "-left-3 border-r-2 border-l-0"} ${collapsed === "expanded" ? "hover:border-brand-bold group cursor-col-resize" : ""} border-border w-3 select-none border-solid bg-transparent`}
 				onMouseDown={onResizeCB}
 				onMouseEnter={() => {
 					if (!isResizing && !isHovered) {
@@ -349,8 +362,8 @@ function Sidebar({
 							: undefined,
 					}}
 				>
-					{resizeButton ? (
-						<>{resizeButton}</>
+					{closeButton ? (
+						<>{closeButton}</>
 					) : (
 						<button
 							onClick={onCollapsedCB}
@@ -360,27 +373,45 @@ function Sidebar({
 								}
 							}}
 							aria-label={
-								collapsed === "collapsed"
+								(closeButtonAriaLabel ??
+								collapsed === "collapsed")
 									? "expand sidebar"
 									: "collapse sidebar"
 							}
-							className={`bg-surface-raised border-border shadow-raised rounded-full border border-solid ${collapsed === "expanded" ? "group-hover:bg-selected-bold group-hover:text-text-inverse" : "hover:bg-selected-bold hover:text-text-inverse"} active:bg-selected-bold-hovered text-text absolute ${position === "left" ? "-left-[0.875rem]" : "-right-[0.875rem]"} top-8 box-border flex h-7 w-7 items-center justify-center rounded-full duration-150`}
+							className={twMerge(
+								`bg-surface-raised border-border shadow-raised rounded-full cursor-pointer border border-solid ${collapsed === "expanded" ? "group-hover:bg-selected-bold group-hover:text-text-inverse" : "hover:bg-selected-bold hover:text-text-inverse"} active:bg-selected-bold-hovered text-text absolute ${position === "left" ? "-left-[0.875rem]" : "-right-[0.875rem]"} top-8 box-border flex h-7 w-7 items-center justify-center rounded-full duration-150`,
+								closeButtonClassName,
+							)}
+							style={closeButtonStyle}
 							type="button"
+							title={closeButtonTitle}
 						>
 							{collapsed === "collapsed" ? (
 								<>
 									{position === "right" ? (
-										<ChevronLeftIcon label="expand" />
+										<ChevronLeftIcon
+											aria-label="expand"
+											className="stroke-[3]"
+										/>
 									) : (
-										<ChevronRightIcon label="expand" />
+										<ChevronRightIcon
+											aria-label="expand"
+											className="stroke-[3]"
+										/>
 									)}
 								</>
 							) : (
 								<>
 									{position === "right" ? (
-										<ChevronRightIcon label="collapse" />
+										<ChevronRightIcon
+											aria-label="collapse"
+											className="stroke-[3]"
+										/>
 									) : (
-										<ChevronLeftIcon label="collapse" />
+										<ChevronLeftIcon
+											aria-label="collapse"
+											className="stroke-[3]"
+										/>
 									)}
 								</>
 							)}

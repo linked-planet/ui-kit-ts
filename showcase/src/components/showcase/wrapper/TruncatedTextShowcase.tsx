@@ -1,6 +1,5 @@
-import React from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { TruncatedText } from "@linked-planet/ui-kit-ts"
 
