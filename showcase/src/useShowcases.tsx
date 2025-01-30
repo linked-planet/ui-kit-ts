@@ -55,6 +55,7 @@ import TourShowcase from "./components/showcase/wrapper/TourShowcase"
 import FormShowcase from "./components/showcase/wrapper/FormShowcase"
 import EventListShowcase from "./components/showcase/wrapper/EventListShowcase"
 import HighlightedTextShowcase from "./components/showcase/wrapper/HighlightedTextShowcase"
+import SLideOpenShowcase from "./components/showcase/wrapper/SlideOpenShowcase"
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -163,6 +164,9 @@ export default function useShowcases({
 			Sidebar: <SidebarShowcase overallSourceCode={overallSourceCode} />,
 			"Side Navigation": (
 				<SideNavigationShowcase overallSourceCode={overallSourceCode} />
+			),
+			"Slide Open": (
+				<SLideOpenShowcase overallSourceCode={overallSourceCode} />
 			),
 			Tabs: <TabsShowcase overallSourceCode={overallSourceCode} />,
 			Tag: <TagShowcase overallSourceCode={overallSourceCode} />,
