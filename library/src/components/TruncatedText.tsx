@@ -15,7 +15,6 @@ const TruncatedText = ({
 	moreButtonStyle,
 	className,
 	style,
-	testId,
 	duration = 150,
 }: {
 	children: React.ReactNode
@@ -29,7 +28,6 @@ const TruncatedText = ({
 	moreButtonStyle?: React.CSSProperties
 	className?: string
 	style?: React.CSSProperties
-	testId?: string
 	duration?: number
 }) => {
 	const ref = useRef<HTMLParagraphElement>(null)
@@ -56,7 +54,6 @@ const TruncatedText = ({
 				className,
 			)}
 			style={style}
-			data-testid={testId}
 		>
 			<div
 				className={`transition-[grid-template-rows] ease-in-out ${
@@ -75,12 +72,15 @@ const TruncatedText = ({
 				<div
 					style={{
 						...textStyle,
-						display: open || animating ? "block" : "-webkit-box",
+						display: open ? "block" : "-webkit-box",
+						//display: "-webkit-box",
 						WebkitLineClamp: lines,
 						WebkitBoxOrient: "vertical",
 						overflow: "hidden",
 						textOverflow: "ellipsis",
 						whiteSpace: "normal",
+						lineClamp: lines,
+						minHeight: `${lines + 0.5}rem`,
 					}}
 					ref={ref}
 					className={textClassName}
