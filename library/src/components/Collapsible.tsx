@@ -5,7 +5,7 @@ import * as CollapsibleRUI from "@radix-ui/react-collapsible"
 	ChevronUpIcon,
 } from "@radix-ui/react-icons"*/
 
-import { ChevronDownIcon, ChevronUpIcon, ChevronRightIcon } from "lucide-react"
+import { ChevronRightIcon, ChevronLeftIcon } from "lucide-react"
 
 import { forwardRef, type HTMLProps } from "react"
 import { twMerge } from "tailwind-merge"
@@ -91,13 +91,9 @@ export const Collapsible = forwardRef(
 									chevronClassName,
 								)}
 							>
-								<ChevronDownIcon
-									aria-label="close"
-									className="group-data-[state=open]:block group-data-[state=closed]:hidden"
-								/>
 								<ChevronRightIcon
-									aria-label="open"
-									className="group-data-[state=closed]:block group-data-[state=open]:hidden"
+									aria-label={opened ? "close" : "open"}
+									className="group-data-[state=closed]:rotate-0 group-data-[state=open]:rotate-90 transform transition-transform"
 								/>
 							</div>
 						)}
@@ -118,13 +114,9 @@ export const Collapsible = forwardRef(
 								)}
 								style={chevronStyle}
 							>
-								<ChevronDownIcon
-									aria-label="close"
-									className="group-data-[state=open]:block group-data-[state=closed]:hidden"
-								/>
-								<ChevronUpIcon
-									aria-label="open"
-									className="group-data-[state=closed]:block group-data-[state=open]:hidden"
+								<ChevronLeftIcon
+									aria-label={opened ? "close" : "open"}
+									className="group-data-[state=closed]:rotate-0 group-data-[state=open]:-rotate-90 transform transition-transform"
 								/>
 							</div>
 						)}
