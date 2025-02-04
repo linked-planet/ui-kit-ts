@@ -7101,7 +7101,7 @@ function SlideOpenBottomUpExample() {
 			<div className="h-96 bg-surface-overlay relative">
 				<SlideOpen
 					open={opened}
-					contentClassName="p-2 border-border border-solid rounded border bg-surface max-w-[50%]"
+					contentClassName="max-w-[50%]"
 					containerClassName="absolute duration-1000 bottom-0 inset-x-0 data-[open=true]:top-0 data-[open=false]:top-full"
 				>
 					Lorem ipsum dolor sit, amet consectetur adipisicing elit.
