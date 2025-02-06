@@ -1,8 +1,8 @@
-import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
 import { Calendar, Popover, Select } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { XIcon } from "lucide-react"
 
 //#region popover-example
 function PopoverExample() {
@@ -12,7 +12,7 @@ function PopoverExample() {
 				appearance="primary"
 				side="top"
 				trigger="open popover"
-				closer={<EditorCloseIcon label="Close Popover" />}
+				closer={<XIcon aria-label="Close Popover" size="12" />}
 				className="w-96"
 				contentClassName="w-96"
 				usePortal

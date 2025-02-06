@@ -1,4 +1,3 @@
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -218,6 +217,19 @@ function Colors() {
 				<div className="bg-indigo-bold border-indigo-border hover:bg-indigo-bold-hovered active:bg-indigo-bold-pressed text-indigo-text-inverse border-2 p-1">
 					indigo-bold
 				</div>
+				{/* slate */}
+				<div className="bg-slate border-slate-border hover:bg-slate-hovered active:bg-slate-pressed text-slate-text-bold border-2 p-1">
+					slate
+				</div>
+				<div className="bg-slate-subtle border-slate-border hover:bg-slate-subtle-hovered active:bg-slate-subtle-pressed text-slate-text border-2 p-1">
+					slate-subtle
+				</div>
+				<div className="bg-slate-subtlest border-slate-border hover:bg-slate-subtlest-hovered active:bg-slate-subtlest-pressed text-slate-text border-2 p-1">
+					slate-subtlest
+				</div>
+				<div className="bg-slate-bold border-slate-border hover:bg-slate-bold-hovered active:bg-slate-bold-pressed text-slate-text-inverse border-2 p-1">
+					slate-bold
+				</div>
 				{/* gray */}
 				<div className="bg-gray border-gray-border hover:bg-gray-hovered active:bg-gray-pressed text-gray-text-bold border-2 p-1">
 					gray
@@ -230,6 +242,18 @@ function Colors() {
 				</div>
 				<div className="bg-gray-bold border-gray-border hover:bg-gray-bold-hovered active:bg-gray-bold-pressed text-gray-text-inverse border-2 p-1">
 					gray-bold
+				</div>
+				<div className="bg-zinc border-zinc-border hover:bg-zinc-hovered active:bg-zinc-pressed text-zinc-text-bold border-2 p-1">
+					zinc
+				</div>
+				<div className="bg-zinc-subtle border-zinc-border hover:bg-zinc-subtle-hovered active:bg-zinc-subtle-pressed text-zinc-text border-2 p-1">
+					zinc-subtle
+				</div>
+				<div className="bg-zinc-subtlest border-zinc-border hover:bg-zinc-subtlest-hovered active:bg-zinc-subtlest-pressed text-zinc-text border-2 p-1">
+					zinc-subtlest
+				</div>
+				<div className="bg-zinc-bold border-zinc-border hover:bg-zinc-bold-hovered active:bg-zinc-bold-pressed text-zinc-text-inverse border-2 p-1">
+					zinc-bold
 				</div>
 			</div>
 			<hr className="mt-4" />

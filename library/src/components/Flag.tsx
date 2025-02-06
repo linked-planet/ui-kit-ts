@@ -1,15 +1,16 @@
 import type React from "react"
 import type { CSSProperties } from "react"
 
-import Tick from "@atlaskit/icon/glyph/check-circle"
-import ErrorIcon from "@atlaskit/icon/glyph/error"
-import Info from "@atlaskit/icon/glyph/info"
-import Warning from "@atlaskit/icon/glyph/warning"
-import QuestionCircleIcon from "@atlaskit/icon/glyph/question-circle"
-
 import { twMerge } from "tailwind-merge"
 import { assertUnreachable } from "../utils/assertUnreachable"
 import { IconSizeHelper } from "./IconSizeHelper"
+import {
+	CheckIcon,
+	HelpCircleIcon,
+	InfoIcon,
+	XIcon,
+	TriangleAlertIcon,
+} from "lucide-react"
 
 export type FlagAppearance =
 	| "default"
@@ -144,35 +145,35 @@ export function FlagIcon({
 		case "success": {
 			return (
 				<IconSizeHelper className={iconStyle}>
-					<Tick label="Success" />
+					<CheckIcon aria-label="Success" size="12" />
 				</IconSizeHelper>
 			)
 		}
 		case "warning": {
 			return (
 				<IconSizeHelper className={iconStyle}>
-					<Warning label="Warning" />
+					<TriangleAlertIcon aria-label="Warning" size="12" />
 				</IconSizeHelper>
 			)
 		}
 		case "information": {
 			return (
 				<IconSizeHelper className={iconStyle}>
-					<Info label="Info" />
+					<InfoIcon aria-label="Info" size="12" />
 				</IconSizeHelper>
 			)
 		}
 		case "error": {
 			return (
 				<IconSizeHelper className={iconStyle}>
-					<ErrorIcon label="Error" />
+					<XIcon aria-label="Error" size="12" />
 				</IconSizeHelper>
 			)
 		}
 		case "discovery": {
 			return (
 				<IconSizeHelper className={iconStyle}>
-					<QuestionCircleIcon label="Discovery" />
+					<HelpCircleIcon aria-label="Discovery" size="12" />
 				</IconSizeHelper>
 			)
 		}

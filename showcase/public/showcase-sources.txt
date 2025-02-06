@@ -630,12 +630,10 @@ function BadgeShowcase(props: ShowcaseProps) {
 
 export default BadgeShowcase
 
-import React from "react"
+import { CheckCircleIcon, OctagonAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import ErrorIcon from "@atlaskit/icon/glyph/error"
-import CheckCircleOutlineIcon from "@atlaskit/icon/glyph/check-circle-outline"
 import { Banner, IconSizeHelper } from "@linked-planet/ui-kit-ts"
 
 function BannerShowcase(props: ShowcaseProps) {
@@ -648,9 +646,9 @@ function BannerShowcase(props: ShowcaseProps) {
 				appearance="error"
 				icon={
 					<IconSizeHelper>
-						<ErrorIcon
-							label=""
-							secondaryColor="var(--ds-background-danger-bold, #DE350B)"
+						<OctagonAlertIcon
+							aria-label="Octagon Alert"
+							size="12"
 						/>
 					</IconSizeHelper>
 				}
@@ -661,7 +659,7 @@ function BannerShowcase(props: ShowcaseProps) {
 				appearance="success"
 				icon={
 					<IconSizeHelper>
-						<CheckCircleOutlineIcon label="" />
+						<CheckCircleIcon aria-label="Check Circle" size="12" />
 					</IconSizeHelper>
 				}
 			>
@@ -1091,7 +1089,7 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Breadcrumbs, Checkbox, Input, Label } from "@linked-planet/ui-kit-ts"
 
-import AddCircleIcon from "@atlaskit/icon/glyph/add-circle"
+import { PlusCircleIcon } from "lucide-react"
 
 //#region bread-crumbs-max-items-example
 function MaxItemsExample() {
@@ -1148,8 +1146,12 @@ function MaxItemsExample() {
 				>
 					<Breadcrumbs.Item
 						href="#"
-						iconBefore={<AddCircleIcon label="" />}
-						iconAfter={<AddCircleIcon label="" />}
+						iconBefore={
+							<PlusCircleIcon aria-label="Plus" size="12" />
+						}
+						iconAfter={
+							<PlusCircleIcon aria-label="Plus" size="12" />
+						}
 					>
 						Home
 					</Breadcrumbs.Item>
@@ -1187,8 +1189,12 @@ function ConstrainedExample() {
 				>
 					<Breadcrumbs.Item
 						href="#"
-						iconBefore={<AddCircleIcon label="" />}
-						iconAfter={<AddCircleIcon label="" />}
+						iconBefore={
+							<PlusCircleIcon aria-label="Plus" size="12" />
+						}
+						iconAfter={
+							<PlusCircleIcon aria-label="Plus" size="12" />
+						}
 					>
 						Home
 					</Breadcrumbs.Item>
@@ -1211,8 +1217,8 @@ function BannerShowcase(props: ShowcaseProps) {
 			<Breadcrumbs>
 				<Breadcrumbs.Item
 					href="#"
-					iconBefore={<AddCircleIcon label="" />}
-					iconAfter={<AddCircleIcon label="" />}
+					iconBefore={<PlusCircleIcon aria-label="Plus" size="12" />}
+					iconAfter={<PlusCircleIcon aria-label="Plus" size="12" />}
 				>
 					Home
 				</Breadcrumbs.Item>
@@ -1267,7 +1273,7 @@ import ShowcaseWrapperItem, {
 	LoadingButton as AKLoadingButton,
 } from "@atlaskit/button"*/
 import { Button, LoadingButton, ButtonGroup } from "@linked-planet/ui-kit-ts"
-import SearchIcon from "@atlaskit/icon/glyph/search"
+import { SearchIcon } from "lucide-react"
 
 function ButtonShowcase(props: ShowcaseProps) {
 	const [isLoading, setIsLoading] = useState(false)
@@ -1549,8 +1555,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 			<Button
 				appearance="information"
 				onClick={() => console.log("Button pressed")}
-				iconAfter={<SearchIcon label="" />}
-				iconBefore={<SearchIcon label="" />}
+				iconAfter={<SearchIcon aria-label="Search" size="12" />}
+				iconBefore={<SearchIcon aria-label="Search" size="12" />}
 			>
 				Information Button
 			</Button>
@@ -1558,8 +1564,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 			<Button
 				appearance="information"
 				onClick={() => console.log("Button pressed")}
-				iconAfter={<SearchIcon label="" />}
-				iconBefore={<SearchIcon label="" />}
+				iconAfter={<SearchIcon aria-label="Search" size="12" />}
+				iconBefore={<SearchIcon aria-label="Search" size="12" />}
 				inverted
 			>
 				Information Inverted Button
@@ -1571,8 +1577,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 					window.setTimeout(() => setIsLoading(false), 3000)
 				}}
 				loading={isLoading}
-				iconBefore={<SearchIcon label="" />}
-				iconAfter={<SearchIcon label="" />}
+				iconBefore={<SearchIcon aria-label="Search" size="12" />}
+				iconAfter={<SearchIcon aria-label="Search" size="12" />}
 				className="h-6"
 			>
 				Icon Loading Button
@@ -1584,8 +1590,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 					window.setTimeout(() => setIsLoading(false), 3000)
 				}}
 				loading={isLoading}
-				iconBefore={<SearchIcon label="" />}
-				iconAfter={<SearchIcon label="" />}
+				iconBefore={<SearchIcon aria-label="Search" size="12" />}
+				iconAfter={<SearchIcon aria-label="Search" size="12" />}
 				appearance="subtle-link"
 			>
 				Primary Icon Loading Button
@@ -2167,7 +2173,7 @@ import { CodeBlock } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { CodeBlock as AKCodeBlock } from "@atlaskit/code"
+//import { CodeBlock as AKCodeBlock } from "@atlaskit/code"
 
 function CodeBlockShowcase(props: ShowcaseProps) {
 	//#region code-block
@@ -2176,7 +2182,7 @@ function CodeBlockShowcase(props: ShowcaseProps) {
         System.out.println('Hello world')
     }
 }`
-	const example = <AKCodeBlock language="java" text={code} />
+	//const example = <AKCodeBlock language="java" text={code} />
 	//#endregion code-block
 
 	//#region code-block-own
@@ -2190,7 +2196,7 @@ function CodeBlockShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@atlaskit/code",
-					url: "https://atlassian.design/components/code/code-block/examples",
+					url: "/ui-kit-ts/single#CodeBlock",
 				},
 			]}
 			examples={[
@@ -2199,11 +2205,11 @@ function CodeBlockShowcase(props: ShowcaseProps) {
 					example: exampleOwn,
 					sourceCodeExampleId: "code-block-own",
 				},
-				{
+				/*{
 					title: "Example",
 					example,
 					sourceCodeExampleId: "code-block",
-				},
+				},*/
 			]}
 		/>
 	)
@@ -3482,48 +3488,6 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 export default DropDownMenuShowcase
 
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import EmptyState from "@atlaskit/empty-state"
-import { Button } from "@linked-planet/ui-kit-ts"
-
-function EmptyStateShowcase(props: ShowcaseProps) {
-	//#region empty-state
-	const example = (
-		<div style={{ minWidth: 300 }}>
-			<EmptyState
-				header="Empty state"
-				description={<span>Content of this state</span>}
-				primaryAction={<Button>Dummy button</Button>}
-			/>
-		</div>
-	)
-	//#endregion empty-state
-
-	return (
-		<ShowcaseWrapperItem
-			name="Empty state"
-			{...props}
-			packages={[
-				{
-					name: "@atlaskit/empty-state",
-					url: "https://atlassian.design/components/empty-state/examples",
-				},
-			]}
-			examples={[
-				{
-					title: "Example",
-					example,
-					sourceCodeExampleId: "empty-state",
-				},
-			]}
-		/>
-	)
-}
-
-export default EmptyStateShowcase
-
 import { DateUtils, Label } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
@@ -4037,12 +4001,11 @@ function FiltersShowcase(props: ShowcaseProps) {
 
 export default FiltersShowcase
 
-import React from "react"
+import { TriangleAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Flag, ToastFlagContainer, showFlag } from "@linked-planet/ui-kit-ts"
-import WarningIcon from "@atlaskit/icon/glyph/warning"
 
 function FlagShowcase(props: ShowcaseProps) {
 	//#region flag
@@ -4050,7 +4013,9 @@ function FlagShowcase(props: ShowcaseProps) {
 		<div className="flex flex-col gap-3">
 			<Flag
 				title="Flag"
-				icon={<WarningIcon label="" />}
+				icon={
+					<TriangleAlertIcon aria-label="Triangle Alert" size="12" />
+				}
 				description="Action Flag"
 				id="testflag"
 				testId="testflag"
@@ -4191,7 +4156,7 @@ function FlagShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://atlassian.design/components/flag/examples",
+					url: "/ui-kit-ts/single#Flag",
 				},
 			]}
 			description="Drop in replacement for the @atlaskit/flag component."
@@ -4662,67 +4627,19 @@ function HighlightedTextShowcase(props: ShowcaseProps) {
 
 export default HighlightedTextShowcase
 
-import React from "react"
+import { PlusCircleIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import ArrowDownIcon from "@atlaskit/icon/glyph/arrow-down"
-import BulletListIcon from "@atlaskit/icon/glyph/bullet-list"
-import CheckCircleIcon from "@atlaskit/icon/glyph/check-circle"
-import LogIcon from "@atlaskit/icon/glyph/backlog"
-import RefreshIcon from "@atlaskit/icon/glyph/refresh"
-import SendIcon from "@atlaskit/icon/glyph/send"
-import TrashIcon from "@atlaskit/icon/glyph/trash"
-
-function IconShowcase(props: ShowcaseProps) {
-	//#region icon
-	const example = (
-		<div>
-			<ArrowDownIcon label="" />
-			<BulletListIcon label="" />
-			<CheckCircleIcon label="" />
-			<LogIcon label="" />
-			<RefreshIcon label="" />
-			<SendIcon label="" />
-			<TrashIcon label="" primaryColor="red" />
-		</div>
-	)
-	//#endregion icon
-
-	return (
-		<ShowcaseWrapperItem
-			name="Icon"
-			{...props}
-			packages={[
-				{
-					name: "@atlaskit/icon",
-					url: "https://atlassian.design/components/icon/icon-explorer",
-				},
-			]}
-			examples={[
-				{ title: "Example", example, sourceCodeExampleId: "icon" },
-			]}
-		/>
-	)
-}
-
-export default IconShowcase
-
-import React from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { IconSizeHelper } from "@linked-planet/ui-kit-ts"
-
-import AddItemIcon from "@atlaskit/icon/glyph/add-item"
 
 export default function IconSizeHelperShowcase(props: ShowcaseProps) {
 	//#region iconsizehelper
 	const example = (
 		<>
 			<IconSizeHelper size={67}>
-				<AddItemIcon label="" />
+				<PlusCircleIcon aria-label="Plus" size="12" />
 			</IconSizeHelper>
 			<IconSizeHelper
 				size={"2.3rem"}
@@ -4731,7 +4648,7 @@ export default function IconSizeHelperShowcase(props: ShowcaseProps) {
 					borderRadius: "50%",
 				}}
 			>
-				<AddItemIcon label="" />
+				<PlusCircleIcon aria-label="Plus" size="12" />
 			</IconSizeHelper>
 		</>
 	)
@@ -4744,7 +4661,7 @@ export default function IconSizeHelperShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts/single#IconSizeHelper",
+					url: "/ui-kit-ts/single#IconSizeHelper",
 				},
 			]}
 			examples={[
@@ -4853,7 +4770,6 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKTextField from "@atlaskit/textfield"
 import {
 	Button,
 	ButtonGroup,
@@ -4863,9 +4779,7 @@ import {
 	TextArea,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
-
-import ScheduleIcon from "@atlaskit/icon/glyph/schedule"
-
+import { CalendarIcon } from "lucide-react"
 //#region input-form-example
 type FormData = {
 	testInput: string
@@ -4924,13 +4838,13 @@ function FormExample() {
 export default function InputShowcase(props: ShowcaseProps) {
 	const exampleAK = (
 		<Fieldset legend="Input Example">
-			<AKTextField />
+			{/*<AKTextField />
 			<AKTextField isDisabled />
 			<AKTextField placeholder="Placeholder" />
 			<AKTextField isInvalid value={"invalid"} />
 			<AKTextField isReadOnly value={"readonly"} />
 			<AKTextField type="number" defaultValue={1} />
-			<AKTextField type="number" defaultValue={1} appearance="subtle" />
+			<AKTextField type="number" defaultValue={1} appearance="subtle" />*/}
 			{/*<AKTextArea placeholder="Text Area">It wants children</AKTextArea>*/}
 		</Fieldset>
 	)
@@ -4966,8 +4880,8 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<Input
 				type="text"
 				defaultValue={"default text"}
-				iconAfter={<ScheduleIcon label="" />}
-				iconBefore={<ScheduleIcon label="" />}
+				iconAfter={<CalendarIcon aria-label="Calendar" size="12" />}
+				iconBefore={<CalendarIcon aria-label="Calendar" size="12" />}
 			/>
 			<TextArea placeholder="Placeholder" />
 			<TextArea placeholder="Placeholder" disabled />
@@ -5315,11 +5229,9 @@ export default function LoadingSpinnerShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKLozenge from "@atlaskit/lozenge"
 import { Lozenge } from "@linked-planet/ui-kit-ts"
 
 function LozengeShowcase(props: ShowcaseProps) {
@@ -5327,7 +5239,7 @@ function LozengeShowcase(props: ShowcaseProps) {
 	const example = (
 		<div className="flex flex-col gap-8">
 			<div className="">
-				<AKLozenge>First lozenge</AKLozenge>
+				{/*<AKLozenge>First lozenge</AKLozenge>
 				<AKLozenge appearance="new">new</AKLozenge>
 				<AKLozenge appearance="new" isBold>
 					new bold
@@ -5347,7 +5259,7 @@ function LozengeShowcase(props: ShowcaseProps) {
 				<AKLozenge appearance="removed">removed</AKLozenge>
 				<AKLozenge appearance="removed" isBold>
 					removed bold
-				</AKLozenge>
+				</AKLozenge>*/}
 			</div>
 			<div>
 				<Lozenge>First lozenge</Lozenge>
@@ -5472,7 +5384,7 @@ import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import CrossIcon from "@atlaskit/icon/glyph/cross"
+import { XIcon } from "lucide-react"
 /*import {
 	default as AKModal,
 	ModalBody as AKModalBody,
@@ -5651,7 +5563,7 @@ function ControlledExample() {
 							onClick={() => setIsModalActive(false)}
 							className="text-text p-0"
 						>
-							<CrossIcon label="Close popup" />
+							<XIcon aria-label="Close popup" size="12" />
 						</Button>
 					</Modal.Header>
 					<Modal.Body>
@@ -6088,11 +6000,11 @@ function PaginationShowcase(props: ShowcaseProps) {
 
 export default PaginationShowcase
 
-import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
 import { Calendar, Popover, Select } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { XIcon } from "lucide-react"
 
 //#region popover-example
 function PopoverExample() {
@@ -6102,7 +6014,7 @@ function PopoverExample() {
 				appearance="primary"
 				side="top"
 				trigger="open popover"
-				closer={<EditorCloseIcon label="Close Popover" />}
+				closer={<XIcon aria-label="Close Popover" size="12" />}
 				className="w-96"
 				contentClassName="w-96"
 				usePortal
@@ -6703,7 +6615,7 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { IconSizeHelper, SideNavigation } from "@linked-planet/ui-kit-ts"
-import {
+/*import {
 	SideNavigation as AKSideNavigation,
 	NavigationHeader as AKNavigationHeader,
 	NavigationContent as AKNavigationContent,
@@ -6716,9 +6628,9 @@ import {
 	Header as AKHeader,
 	NestingItem as AKNestingItem,
 	NestableNavigationContent as AKNestableNavigationContent,
-} from "@atlaskit/side-navigation"
+} from "@atlaskit/side-navigation"*/
 
-import ActivityIcon from "@atlaskit/icon/glyph/activity"
+import { ActivityIcon } from "lucide-react"
 
 //#region side-nav-example
 function SideNavExample() {
@@ -6753,8 +6665,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="12"
 									/>
 								</IconSizeHelper>
 							}
@@ -6771,8 +6683,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="16"
 									/>
 								</IconSizeHelper>
 							}
@@ -6785,8 +6697,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="16"
 									/>
 								</IconSizeHelper>
 							}
@@ -6827,7 +6739,7 @@ function SideNavExample() {
 			</div>
 
 			<div className="h-[350px]">
-				<AKSideNavigation label="">
+				{/*<AKSideNavigation label="">
 					<AKNavigationHeader>
 						<AKHeader>test header</AKHeader>
 					</AKNavigationHeader>
@@ -6837,8 +6749,8 @@ function SideNavExample() {
 								iconBefore={
 									<IconSizeHelper>
 										<ActivityIcon
-											label="Activity"
-											size="large"
+											aria-label="Activity"
+											size="12"
 										/>
 									</IconSizeHelper>
 								}
@@ -6855,8 +6767,8 @@ function SideNavExample() {
 										iconBefore={
 											<IconSizeHelper>
 												<ActivityIcon
-													label="Activity"
-													size="large"
+													aria-label="Activity"
+													size="12"
 												/>
 											</IconSizeHelper>
 										}
@@ -6873,8 +6785,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="12"
 									/>
 								</IconSizeHelper>
 							}
@@ -6888,8 +6800,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="16"
 									/>
 								</IconSizeHelper>
 							}
@@ -6902,8 +6814,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="16"
 									/>
 								</IconSizeHelper>
 							}
@@ -6933,7 +6845,7 @@ function SideNavExample() {
 					<AKNavigationFooter>
 						<div>test footer</div>
 					</AKNavigationFooter>
-				</AKSideNavigation>
+				</AKSideNavigation>*/}
 			</div>
 		</div>
 	)
@@ -7601,14 +7513,14 @@ export default TabsShowcase
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
-import AKTagGroup from "@atlaskit/tag-group"
+/*import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
+import AKTagGroup from "@atlaskit/tag-group"*/
 import { TagGroup, Tag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
 		<>
-			<AKTagGroup alignment="end">
+			{/*<AKTagGroup alignment="end">
 				<AKTag
 					onBeforeRemoveAction={() => {
 						console.log("on before remove")
@@ -7634,7 +7546,7 @@ function TagShowcase(props: ShowcaseProps) {
 			</AKTagGroup>
 			<AKTagGroup>
 				<AKSimpleTag text="Simple Tag" color="blue" />
-			</AKTagGroup>
+			</AKTagGroup>*/}
 		</>
 	)
 
@@ -7679,7 +7591,8 @@ function TagShowcase(props: ShowcaseProps) {
 	//#endregion tags
 
 	const akColorTags = (
-		<AKTagGroup>
+		<>
+			{/*<AKTagGroup>
 			<AKTag color="blue" text="Blue" />
 			<AKTag color="blueLight" text="blueLight" />
 			<AKSimpleTag color="green" text="green" />
@@ -7701,7 +7614,8 @@ function TagShowcase(props: ShowcaseProps) {
 			<AKSimpleTag color="orange" text="orange" />
 			<AKSimpleTag color="orangeLight" text="orangeLight" />
 			<AKSimpleTag color="standard" text="standard" />
-		</AKTagGroup>
+		</AKTagGroup>*/}
+		</>
 	)
 
 	//#region tagscolors
@@ -7957,14 +7871,16 @@ import ShowcaseWrapperItem, {
 import { Button, TimeTable, timeTableUtils } from "@linked-planet/ui-kit-ts"
 
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
-import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
-import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
 import { allGroupsRenderedEvent } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableRows"
+import {
+	ChevronDownIcon,
+	ChevronLeftIcon,
+	ChevronRightIcon,
+} from "lucide-react"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -8986,14 +8902,14 @@ function Example() {
 					title="Previous Time Frame"
 					className="mb-2 mr-2"
 				>
-					<ChevronLeftIcon label="prevtimeframe" />
+					<ChevronLeftIcon aria-label="prevtimeframe" />
 				</Button>
 				<Button
 					onClick={requestNextTimeFrameCB}
 					title="Next Time Frame"
 					className="mb-2 mr-2"
 				>
-					<ChevronRightIcon label="nexttimeframe" />
+					<ChevronRightIcon aria-label="nexttimeframe" />
 				</Button>
 				<Button
 					disabled={!selectedTimeRange}
@@ -9072,7 +8988,7 @@ function Example() {
 				/>
 			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
-				<ChevronDownIcon label="entryloader" />
+				<ChevronDownIcon aria-label="entryloader" />
 			</Button>
 			{showCreateNewItemModal && selectedTimeRange && (
 				<CreateNewTimeTableItemDialog
@@ -9602,14 +9518,16 @@ function ToggleShowcase(props: ShowcaseProps) {
 
 export default ToggleShowcase
 
+import {
+	ActivityIcon,
+	CameraIcon,
+	SearchIcon,
+	EyeIcon,
+	SquareCheckIcon,
+} from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import SearchIcon from "@atlaskit/icon/glyph/search"
-import WatchIcon from "@atlaskit/icon/glyph/watch"
-import ActivityIcon from "@atlaskit/icon/glyph/activity"
-import CameraIcon from "@atlaskit/icon/glyph/camera"
-import TaskIcon from "@atlaskit/icon/glyph/task"
 import { Tooltip, TooltipProvider, Button } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
@@ -9627,7 +9545,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						align="start"
 					>
 						<div>
-							<SearchIcon label="" />
+							<SearchIcon aria-label="Search" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -9639,7 +9557,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						align="end"
 					>
 						<div>
-							<ActivityIcon label="" />
+							<ActivityIcon aria-label="Activity" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -9648,7 +9566,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						tooltipContent={"I'm a top tooltip"}
 					>
 						<div>
-							<CameraIcon label="" />
+							<CameraIcon aria-label="Camera" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -9662,7 +9580,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						}
 					>
 						<div>
-							<TaskIcon label="" />
+							<SquareCheckIcon aria-label="Task" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -9681,7 +9599,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						Ältere Pilzkörper bilden im Becherstadium eine Vertiefung in ihrem Hut, in dem sich Regenwasser sammeln kann, der sogenannte Zwergenwein.[5]`}
 					>
 						<div>
-							<WatchIcon label="" />
+							<EyeIcon aria-label="Watch" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -9741,7 +9659,6 @@ function TooltipShowcase(props: ShowcaseProps) {
 
 export default TooltipShowcase
 
-import CrossIcon from "@atlaskit/icon/glyph/cross"
 import {
 	Button,
 	ButtonGroup,
@@ -9754,6 +9671,7 @@ import { useMemo, useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { CrossIcon } from "lucide-react"
 
 //#region tour
 const defaultLocale = {
@@ -9905,7 +9823,7 @@ function TourExample() {
 						onClick={() => setPopup(false)}
 						className="text-text p-0"
 					>
-						<CrossIcon label="Close popup" />
+						<CrossIcon aria-label="Close popup" size="12" />
 					</Button>
 				</Modal.Header>
 				<Modal.Body>
@@ -9985,7 +9903,7 @@ function TourSkipExample() {
 						it.
 					</span>
 				),
-			}
+			},
 		})
 		return [InitStep, SecondStep, ThirdStep]
 	}, [])
@@ -10018,10 +9936,7 @@ function TourSkipExample() {
 						}}
 					/>
 				</div>
-				<Button
-					data-id="Test-1"
-					id="joyride-first"
-				>
+				<Button data-id="Test-1" id="joyride-first">
 					First step
 				</Button>
 				<Button data-id="Test-2" id="joyride-third">
@@ -10273,7 +10188,6 @@ export default function UtilsShowCase(props: ShowcaseProps) {
 import { useState } from "react"
 import { AppLayout, Checkbox, PageLayout } from "@linked-planet/ui-kit-ts"
 
-import "@atlaskit/css-reset" // sets base styles of AK
 import Fillers from "./Fillers"
 
 //#region applayoutexample

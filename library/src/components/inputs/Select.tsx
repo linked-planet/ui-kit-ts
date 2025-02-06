@@ -41,10 +41,6 @@ export type SelectAriaOnFocus<V> = AriaOnFocus<OptionType<V>>
 
 import { getPortal } from "../../utils/getPortal"
 
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
-import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
-import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
-import SelectClearIcon from "@atlaskit/icon/glyph/select-clear"
 import ReactSelectCreatable, {
 	type CreatableProps,
 } from "react-select/creatable"
@@ -52,8 +48,10 @@ import { twJoin, twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./ErrorHelpWrapper"
 import { IconSizeHelper } from "../IconSizeHelper"
 import { inputBaseStyles } from "../styleHelper"
+import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react"
 
-const menuStyles = "bg-surface min-w-min shadow-overlay rounded overflow-hidden" // some styles like zIndex are overwritten by react-select, use the custom-styles below for those
+const menuStyles =
+	"bg-surface min-w-min shadow-overlay rounded-xs overflow-hidden" // some styles like zIndex are overwritten by react-select, use the custom-styles below for those
 
 const optionStyles =
 	"py-2 px-3 border-l-2 border-l-transparent border-transparent border-solid"
@@ -118,7 +116,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 					twMerge(menuStyles, classNamesConfig?.menu?.(provided)),
 				clearIndicator: (provided) =>
 					twMerge(
-						"w-4 cursor-pointer text-text-subtlest hover:text-text focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline",
+						"size-3.5 cursor-pointer focus-visible:outline-selected-bold focus-visible:outline-2 bg-gray-bold hover:bg-gray-bold-hovered active:bg-gray-bold-pressed rounded-full text-text-inverse p-0.5 flex items-center justify-center",
 						classNamesConfig?.clearIndicator?.(provided),
 					),
 				dropdownIndicator: (provided) =>
@@ -160,7 +158,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 				multiValue: (provided) => {
 					return twJoin(
 						twMerge(
-							"bg-neutral w-auto rounded-sm pl-1 mr-2 my-1 text-text",
+							"bg-neutral w-auto rounded-xs pl-1 mr-2 my-1 text-text",
 							provided.isDisabled
 								? "bg-disabled text-disabled-text"
 								: undefined,
@@ -172,7 +170,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 				},
 				multiValueRemove: (provided) =>
 					twMerge(
-						"hover:bg-danger-hovered flex-none active:bg-danger-pressed focus-visible:outline-offset-0 focus-visible:outline-selected-bold focus-visible:outline focus-visible:outline-2 px-1 cursor-pointer ml-1 flex items-center rounded-r-sm " as const,
+						"hover:bg-danger-hovered flex-none active:bg-danger-pressed focus-visible:outline-offset-0 focus-visible:outline-selected-bold focus-visible:outline-2 px-1 cursor-pointer ml-1 flex items-center rounded-r-sm " as const,
 						classNamesConfig?.multiValueRemove?.(provided),
 					),
 				option: (provided) =>
@@ -409,10 +407,10 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 						data-action="clear_all_selected"
 					>
 						<IconSizeHelper>
-							<SelectClearIcon
-								size="small"
-								label=""
-								secondaryColor="var(--ds-surface, #fff)"
+							<XIcon
+								size="10"
+								strokeWidth={3}
+								//className="p-0.5 bg-gray-bold text-text-inverse rounded-full"
 							/>
 						</IconSizeHelper>
 					</div>
@@ -435,7 +433,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 						data-action={`remove_selected_${_props.data.label}`}
 					>
 						<IconSizeHelper data-action="clear_selected">
-							<EditorCloseIcon size="small" label="" />
+							<XIcon size="10" strokeWidth={3} />
 						</IconSizeHelper>
 					</div>
 				)
@@ -507,9 +505,9 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 					>
 						<IconSizeHelper>
 							{_props.selectProps.menuIsOpen ? (
-								<ChevronUpIcon size="medium" label="" />
+								<ChevronUpIcon size="12" />
 							) : (
-								<ChevronDownIcon size="medium" label="" />
+								<ChevronDownIcon size="12" />
 							)}
 						</IconSizeHelper>
 					</div>

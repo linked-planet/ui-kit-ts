@@ -326,7 +326,7 @@ function Sidebar({
 			ref={asideRef}
 			aria-label={valueTextLabel ?? "sidebar"}
 			className={twMerge(
-				`bg-surface-overlay relative z-[2] m-0 box-border h-full transform ease-in-out ${
+				`bg-surface-overlay relative z-2 m-0 box-border h-full transform ease-in-out ${
 					isResizing ? "duration-0" : "duration-300"
 				}`,
 				className,
@@ -340,7 +340,7 @@ function Sidebar({
 		>
 			{/* resize button and grab handle area */}
 			<div
-				className={`absolute inset-y-0 z-[3] h-full border-y-0 ${position === "left" ? "-right-3 border-l-2 border-r-0" : "-left-3 border-r-2 border-l-0"} ${collapsed === "expanded" ? "hover:border-brand-bold group cursor-col-resize" : ""} border-border w-3 select-none border-solid bg-transparent`}
+				className={`absolute inset-y-0 z-3 h-full border-y-0 ${position === "left" ? "-right-3 border-l-2 border-r-0" : "-left-3 border-r-2 border-l-0"} ${collapsed === "expanded" ? "hover:border-brand-bold group cursor-col-resize" : ""} border-border w-3 select-none border-solid bg-transparent`}
 				onMouseDown={onResizeCB}
 				onMouseEnter={() => {
 					if (!isResizing && !isHovered) {
@@ -391,12 +391,12 @@ function Sidebar({
 									{position === "right" ? (
 										<ChevronLeftIcon
 											aria-label="expand"
-											className="stroke-[3]"
+											className="stroke-3"
 										/>
 									) : (
 										<ChevronRightIcon
 											aria-label="expand"
-											className="stroke-[3]"
+											className="stroke-3"
 										/>
 									)}
 								</>
@@ -405,12 +405,12 @@ function Sidebar({
 									{position === "right" ? (
 										<ChevronRightIcon
 											aria-label="collapse"
-											className="stroke-[3]"
+											className="stroke-3"
 										/>
 									) : (
 										<ChevronLeftIcon
 											aria-label="collapse"
-											className="stroke-[3]"
+											className="stroke-3"
 										/>
 									)}
 								</>

@@ -45,6 +45,7 @@ import {
 	P100,
 	P50,
 	P200,
+	N20A,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -181,7 +182,7 @@ export const theme = {
 				pressed: `var(--ds-neutral-bold-pressed, ${N90})`,
 			},
 			subtle: {
-				DEFAULT: `var(--ds-background-neutral-subtle, none)`,
+				DEFAULT: `var(--ds-background-neutral-subtle, ${N20A})`,
 				hovered: `var(--ds-background-neutral-subtle-hovered, ${N30A})`,
 				pressed: `var(--ds-background-neutral-subtle-pressed, ${N40A})`,
 			},
@@ -774,7 +775,6 @@ export const theme = {
 		overflow: `var(--ds-shadow-overflow, 0px 0px 8px #091E4229, 0px 0px 1px #091E421F)`,
 
 		overlay: `var(--ds-shadow-overlay, 0px 8px 12px #091E4226, 0px 0px 1px #091E424F)`,
-		overlaybold: `0 5px 8px -2px #091E4226, 0px 0px 2px #091E424F`,
 		raised: `var(--ds-shadow-raised, 0px 1px 1px #091E4240, 0px 0px 1px #091E424F)`,
 		strong: `0px 0px 15px #091E4226`,
 		//border: `0 0 0 var(--ds-border-width, 2px) var(--tw-shadow-color, 0 0 #0000)`, // this doesnt work currently, the var(--ds-border-width, 2px) simply vanishes in TW version 3.4.5

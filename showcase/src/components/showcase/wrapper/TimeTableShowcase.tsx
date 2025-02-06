@@ -8,14 +8,16 @@ import ShowcaseWrapperItem, {
 import { Button, TimeTable, timeTableUtils } from "@linked-planet/ui-kit-ts"
 
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
-import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
-import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
 import { allGroupsRenderedEvent } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableRows"
+import {
+	ChevronDownIcon,
+	ChevronLeftIcon,
+	ChevronRightIcon,
+} from "lucide-react"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -1037,14 +1039,14 @@ function Example() {
 					title="Previous Time Frame"
 					className="mb-2 mr-2"
 				>
-					<ChevronLeftIcon label="prevtimeframe" />
+					<ChevronLeftIcon aria-label="prevtimeframe" />
 				</Button>
 				<Button
 					onClick={requestNextTimeFrameCB}
 					title="Next Time Frame"
 					className="mb-2 mr-2"
 				>
-					<ChevronRightIcon label="nexttimeframe" />
+					<ChevronRightIcon aria-label="nexttimeframe" />
 				</Button>
 				<Button
 					disabled={!selectedTimeRange}
@@ -1123,7 +1125,7 @@ function Example() {
 				/>
 			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
-				<ChevronDownIcon label="entryloader" />
+				<ChevronDownIcon aria-label="entryloader" />
 			</Button>
 			{showCreateNewItemModal && selectedTimeRange && (
 				<CreateNewTimeTableItemDialog

@@ -148,7 +148,7 @@ function Banner({
 		<div
 			ref={localRef}
 			className={twMerge(
-				`bg-surface-overlay z-[3] m-0 box-border min-h-0 ${sticky ? "sticky left-0 right-0 top-0" : "relative"}`,
+				`bg-surface-overlay z-3 m-0 box-border min-h-0 ${sticky ? "sticky left-0 right-0 top-0" : "relative"}`,
 				className,
 			)}
 			data-layout-banner="true"
@@ -207,7 +207,7 @@ function TopNavigation({
 		<header
 			ref={localRef}
 			className={twMerge(
-				`bg-surface-overlay z-[3] m-0 box-border min-h-0 ${sticky ? "sticky left-0 right-0" : "relative"}`,
+				`bg-surface-overlay z-3 m-0 box-border min-h-0 ${sticky ? "sticky left-0 right-0" : "relative"}`,
 				className,
 			)}
 			data-layout-top-navigation="true"

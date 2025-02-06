@@ -6,12 +6,7 @@ import pkg from "./package.json"
 
 // types
 import dts from "vite-plugin-dts"
-
-//import classPrefixerPlugin from "./bundler_plugins/rollup_class_prefixer-plugin"
-
-// postcss:
-import tailwindcss from "tailwindcss"
-import autoprefixer from "autoprefixer"
+//import autoprefixer from "autoprefixer"
 //
 
 // list of problematic classes in WP Viewport Theme
@@ -28,18 +23,6 @@ const twConfig = twUseImportant
 //
 
 export default defineConfig({
-	css: {
-		postcss: {
-			plugins: [
-				tailwindcss(twConfig),
-				autoprefixer,
-				/*postcssClassPrefixerPlugin({
-					prefix,
-					classes: classesToPrefix,
-				}),*/
-			],
-		},
-	},
 	build: {
 		outDir: "dist",
 		emptyOutDir: false, // without this, the typescript declaration files are going to get deleted, and not recreated when I don't have a change in the types.
@@ -100,6 +83,7 @@ export default defineConfig({
 			insertTypesEntry: true,
 			tsconfigPath: resolve(__dirname, "tsconfig.lib.json"),
 		}),
+		//tailwindcss(),
 		react(),
 		/*{
 			// this is for emotion (need to test if it's still needed)

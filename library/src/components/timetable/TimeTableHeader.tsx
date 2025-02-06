@@ -115,7 +115,7 @@ type TimeTableHeaderProps<
 const headerCellBaseClassname =
 	"bg-surface border-transparent size-full border-b-border after:border-border relative select-none border-0 border-b-2 border-solid p-0 font-bold after:absolute after:bottom-[1px] after:right-0 after:top-0 after:h-full after:border-solid" as const
 const headerLeftHeaderClassname =
-	"bg-surface border-border sticky left-0 top-0 z-[5] select-none border-0 border-solid p-0 border-r-2" as const
+	"bg-surface border-border sticky left-0 top-0 z-5 select-none border-0 border-solid p-0 border-r-2" as const
 
 export const LPTimeTableHeader = function TimeTableHeader<
 	G extends TimeTableGroup,
@@ -206,7 +206,7 @@ export const LPTimeTableHeader = function TimeTableHeader<
 					)
 				})}
 			</colgroup>
-			<thead ref={tableHeaderRef} className="sticky top-0 z-[5]">
+			<thead ref={tableHeaderRef} className="sticky top-0 z-5">
 				<tr>
 					<th
 						style={{

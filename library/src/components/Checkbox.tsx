@@ -47,7 +47,7 @@ const checkBoxSize = "size-4 box-border" as const
 
 const checkBoxStyles = twJoin(
 	"bg-input hover:bg-input-hovered focus:bg-input-active border-border-bold border-solid border-2 box-border flex flex-none items-center justify-center ease-linear transition duration-150 cursor-default",
-	"rounded focus:outline outline-offset-1 outline-[1.5px] outline-brand-bold",
+	"rounded-sm focus:outline-offset-2 focus:outline-2 focus:outline-brand-bold",
 	checkBoxSize,
 )
 
@@ -59,7 +59,7 @@ const checkBoxInvalidStyles =
 
 //#region label styles
 const labelStyles =
-	"text-text-subtlest text-sm aria-disabled:text-disabled-text aria-required:after:content-['*'] aria-required:after:text-danger-bold aria-required:after:ml-0.5"
+	"text-text-subtlest text-sm ml-0.5 aria-disabled:text-disabled-text aria-required:after:content-['*'] aria-required:after:text-danger-bold aria-required:after:ml-0.5"
 //#endregion
 
 const CheckboxI = (
@@ -170,7 +170,7 @@ const CheckboxI = (
 					/>
 
 					<div
-						className={`flex justify-center items-center absolute inset-0 border-2 border-solid border-transparent ${invalid ? "border-danger-bold" : undefined} pointer-events-none duration-150 ease-linear ${checked ? "bg-brand-bold" : "bg-transparent"} rounded-[3px]`}
+						className={`flex justify-center items-center absolute inset-0 border-2 border-solid border-transparent ${invalid ? "border-danger-bold" : undefined} pointer-events-none duration-150 ease-linear ${checked ? "bg-brand-bold" : "bg-transparent"} rounded-sm`}
 					>
 						{!indeterminate ? (
 							<CheckIcon

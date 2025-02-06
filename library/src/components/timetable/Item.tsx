@@ -14,7 +14,7 @@ export function Item({
 	return (
 		<div
 			className={twJoin(
-				"box-border flex flex-1 w-full justify-center leading-8 bg-success-bold text-text relative z-[1] m-0 truncate border-solid border-2 rounded",
+				"box-border flex flex-1 w-full justify-center leading-8 bg-success-bold text-text relative z-1 m-0 truncate border-solid border-2 rounded-xs",
 				"active:bg-success-bold-pressed hover:bg-selected-bold",
 				isSelected ? "border-selected-border" : "border-success-border",
 			)}

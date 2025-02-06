@@ -1,11 +1,13 @@
+import {
+	ActivityIcon,
+	CameraIcon,
+	SearchIcon,
+	EyeIcon,
+	SquareCheckIcon,
+} from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import SearchIcon from "@atlaskit/icon/glyph/search"
-import WatchIcon from "@atlaskit/icon/glyph/watch"
-import ActivityIcon from "@atlaskit/icon/glyph/activity"
-import CameraIcon from "@atlaskit/icon/glyph/camera"
-import TaskIcon from "@atlaskit/icon/glyph/task"
 import { Tooltip, TooltipProvider, Button } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
@@ -23,7 +25,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						align="start"
 					>
 						<div>
-							<SearchIcon label="" />
+							<SearchIcon aria-label="Search" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -35,7 +37,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						align="end"
 					>
 						<div>
-							<ActivityIcon label="" />
+							<ActivityIcon aria-label="Activity" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -44,7 +46,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						tooltipContent={"I'm a top tooltip"}
 					>
 						<div>
-							<CameraIcon label="" />
+							<CameraIcon aria-label="Camera" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -58,7 +60,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						}
 					>
 						<div>
-							<TaskIcon label="" />
+							<SquareCheckIcon aria-label="Task" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -77,7 +79,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						Ältere Pilzkörper bilden im Becherstadium eine Vertiefung in ihrem Hut, in dem sich Regenwasser sammeln kann, der sogenannte Zwergenwein.[5]`}
 					>
 						<div>
-							<WatchIcon label="" />
+							<EyeIcon aria-label="Watch" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip

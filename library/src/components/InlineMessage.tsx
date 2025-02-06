@@ -1,9 +1,9 @@
-import CrossIcon from "@atlaskit/icon/glyph/cross"
 import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import type { Appearance } from "../utils/appearanceTypes"
 import { Button } from "./Button"
+import { XIcon } from "lucide-react"
 
 export type OpeningDirection = "topdown" | "bottomup"
 
@@ -124,7 +124,7 @@ export function InlineMessage({
 							)}
 							onClick={() => setOpen(false)}
 						>
-							<CrossIcon label="Close" size="small" />
+							<XIcon aria-label="close" size="6" />
 						</Button>
 					)}
 				</div>

@@ -79,7 +79,7 @@ export function FilterDropdown({
 	return useMemo(
 		() => (
 			<div
-				className="border-border bg-surface rounded border"
+				className="border-border bg-surface rounded-xs border"
 				id={id}
 				data-testid={testId}
 			>

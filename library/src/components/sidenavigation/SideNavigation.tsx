@@ -1,15 +1,14 @@
 import React, { useRef, useState } from "react"
 import type { ComponentPropsWithoutRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
-import ArrowLeftCircleIcon from "@atlaskit/icon/glyph/arrow-left-circle"
-import ArrowRightCircleIcon from "@atlaskit/icon/glyph/arrow-right-circle"
 import { IconSizeHelper } from "../IconSizeHelper"
 import { useSideNavigationStore } from "./SideNavigationStore"
 import { AnimatePresence, motion } from "framer-motion"
 import { flushSync } from "react-dom"
+import { ArrowLeftCircleIcon, ArrowRightCircleIcon } from "lucide-react"
 
 const itemBaseStyles = twJoin(
-	"px-1.5 data-[selected=true]:bg-neutral-subtle-hovered group flex w-full cursor-pointer select-none items-center overflow-hidden rounded",
+	"px-1.5 data-[selected=true]:bg-neutral-subtle-hovered group flex w-full cursor-pointer select-none items-center overflow-hidden rounded-xs",
 	"hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed border-transparent bg-transparent",
 	"disabled:bg-neutral-subtle disabled:cursor-not-allowed data-[selected=true]:disabled:bg-neutral-subtle",
 	"data-[selected=true]:bg-selected-subtle data-[selected=true]:hover:bg-selected-subtle-hovered data-[selected=true]:active:bg-selected-subtle-pressed",
@@ -103,9 +102,9 @@ function Content({
 					twJoin(
 						"size-full overflow-auto px-2",
 						"before:border-border-separator before:absolute before:left-0 before:top-0 before:w-[var(--sidenav-separator-width)] before:border-t-2 before:border-solid before:opacity-0 before:content-['']",
-						"before:transition-opacity before:duration-100 data-[separator-top]:before:opacity-100",
+						"before:transition-opacity before:duration-100 data-separator-top:before:opacity-100",
 						"after:border-border-separator after:absolute after:bottom-0 after:left-0 after:w-[var(--sidenav-separator-width)] after:border-b-2 after:border-solid after:opacity-0 after:content-['']",
-						"after:transition-opacity after:duration-100 data-[separator-bottom]:after:opacity-100",
+						"after:transition-opacity after:duration-100 data-separator-bottom:after:opacity-100",
 					),
 					className,
 				)}
@@ -210,7 +209,7 @@ function GoBackItem({ children, ...props }: Omit<_ButtonItemProps, "icon">) {
 		<ButtonItem
 			iconBefore={
 				<IconSizeHelper aria-hidden>
-					<ArrowLeftCircleIcon label="" size="medium" />
+					<ArrowLeftCircleIcon size="12" />
 				</IconSizeHelper>
 			}
 			{...props}
@@ -391,7 +390,7 @@ function SkeletonItem({
 		>
 			{hasIconBefore && (
 				<div
-					className={`bg-skeleton h-6 w-6 flex-none rounded ${shimmering && "animate-pulse"}`}
+					className={`bg-skeleton h-6 w-6 flex-none rounded-xs ${shimmering && "animate-pulse"}`}
 				/>
 			)}
 			{hasAvatarBefore && (
@@ -400,7 +399,7 @@ function SkeletonItem({
 				/>
 			)}
 			<div
-				className={`bg-skeleton h-3 w-full rounded ${shimmering && "animate-pulse"}`}
+				className={`bg-skeleton h-3 w-full rounded-xs ${shimmering && "animate-pulse"}`}
 			/>
 		</div>
 	)
@@ -497,7 +496,7 @@ function NestingItem({
 			}}
 			iconAfter={
 				<IconSizeHelper>
-					<ArrowRightCircleIcon label="" size="medium" />
+					<ArrowRightCircleIcon size="12" />
 				</IconSizeHelper>
 			}
 		>

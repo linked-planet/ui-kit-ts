@@ -1,4 +1,3 @@
-import CrossIcon from "@atlaskit/icon/glyph/cross"
 import {
 	Button,
 	ButtonGroup,
@@ -11,6 +10,7 @@ import { useMemo, useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { CrossIcon } from "lucide-react"
 
 //#region tour
 const defaultLocale = {
@@ -162,7 +162,7 @@ function TourExample() {
 						onClick={() => setPopup(false)}
 						className="text-text p-0"
 					>
-						<CrossIcon label="Close popup" />
+						<CrossIcon aria-label="Close popup" size="12" />
 					</Button>
 				</Modal.Header>
 				<Modal.Body>
@@ -242,7 +242,7 @@ function TourSkipExample() {
 						it.
 					</span>
 				),
-			}
+			},
 		})
 		return [InitStep, SecondStep, ThirdStep]
 	}, [])
@@ -275,10 +275,7 @@ function TourSkipExample() {
 						}}
 					/>
 				</div>
-				<Button
-					data-id="Test-1"
-					id="joyride-first"
-				>
+				<Button data-id="Test-1" id="joyride-first">
 					First step
 				</Button>
 				<Button data-id="Test-2" id="joyride-third">

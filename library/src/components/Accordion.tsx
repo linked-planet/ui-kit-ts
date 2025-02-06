@@ -1,5 +1,5 @@
 import * as RAccordion from "@radix-ui/react-accordion"
-import { ChevronDownIcon } from "@radix-ui/react-icons"
+import { ChevronDownIcon } from "lucide-react"
 import React, { type Ref } from "react"
 import { twMerge } from "tailwind-merge"
 
@@ -80,7 +80,7 @@ const AccordionTrigger = React.forwardRef(
 		<RAccordion.Header className="flex">
 			<RAccordion.Trigger
 				className={twMerge(
-					"text-text bg-surface hover:bg-surface-hovered active:bg-surface-pressed group flex min-h-12 flex-1 cursor-pointer disabled:cursor-default items-center justify-between px-4 text-base font-bold outline-none",
+					"text-text bg-surface hover:bg-surface-hovered active:bg-surface-pressed group flex min-h-12 flex-1 cursor-pointer disabled:cursor-default items-center justify-between px-4 text-base font-bold outline-hidden",
 					className,
 				)}
 				{...props}
@@ -90,6 +90,8 @@ const AccordionTrigger = React.forwardRef(
 				<ChevronDownIcon
 					className="transition-transform duration-300 ease-in-out group-data-[state=open]:rotate-180"
 					aria-hidden
+					size={12}
+					strokeWidth={3}
 				/>
 			</RAccordion.Trigger>
 		</RAccordion.Header>
@@ -109,7 +111,7 @@ const AccordionContent = React.forwardRef(
 	) => (
 		<RAccordion.Content
 			className={twMerge(
-				"data-[state=open]:animate-slideDownAccordion data-[state=closed]:animate-slideUpAccordion border-border bg-surface overflow-hidden border-t",
+				"data-[state=open]:animate-slide-down-accordion data-[state=closed]:animate-slide-up-accordion border-border bg-surface overflow-hidden border-t",
 				className,
 			)}
 			{...props}

@@ -2,7 +2,7 @@ import { CodeBlock } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { CodeBlock as AKCodeBlock } from "@atlaskit/code"
+//import { CodeBlock as AKCodeBlock } from "@atlaskit/code"
 
 function CodeBlockShowcase(props: ShowcaseProps) {
 	//#region code-block
@@ -11,7 +11,7 @@ function CodeBlockShowcase(props: ShowcaseProps) {
         System.out.println('Hello world')
     }
 }`
-	const example = <AKCodeBlock language="java" text={code} />
+	//const example = <AKCodeBlock language="java" text={code} />
 	//#endregion code-block
 
 	//#region code-block-own
@@ -25,7 +25,7 @@ function CodeBlockShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@atlaskit/code",
-					url: "https://atlassian.design/components/code/code-block/examples",
+					url: "/ui-kit-ts/single#CodeBlock",
 				},
 			]}
 			examples={[
@@ -34,11 +34,11 @@ function CodeBlockShowcase(props: ShowcaseProps) {
 					example: exampleOwn,
 					sourceCodeExampleId: "code-block-own",
 				},
-				{
+				/*{
 					title: "Example",
 					example,
 					sourceCodeExampleId: "code-block",
-				},
+				},*/
 			]}
 		/>
 	)

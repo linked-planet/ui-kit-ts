@@ -2,12 +2,9 @@ import * as RAvatar from "@radix-ui/react-avatar"
 import type React from "react"
 import { twMerge } from "tailwind-merge"
 
-import CheckIcon from "@atlaskit/icon/glyph/check"
-import CrossIcon from "@atlaskit/icon/glyph/cross"
-import LockFilledIcon from "@atlaskit/icon/glyph/lock-filled"
-import PersonIcon from "@atlaskit/icon/glyph/person"
-
 import { IconSizeHelper } from "./IconSizeHelper"
+import { XIcon, CheckIcon, LockKeyholeIcon, UserRoundIcon } from "lucide-react"
+import { useMemo } from "react"
 
 type PresenceStatus = "busy" | "focus" | "online" | "offline"
 type Status = "approved" | "declined" | "locked"
@@ -63,9 +60,9 @@ const statusStyles: { [status in Status]: string } = {
 } as const
 
 const statusSVGs: { [status in Status]: JSX.Element } = {
-	approved: <CheckIcon label="approved" size="small" />,
-	declined: <CrossIcon label="declined" size="small" />,
-	locked: <LockFilledIcon label="locked" size="small" />,
+	approved: <CheckIcon aria-label="approved" size="12" strokeWidth={4} />,
+	declined: <XIcon aria-label="declined" size="12" strokeWidth={4} />,
+	locked: <LockKeyholeIcon aria-label="locked" size="12" strokeWidth={4} />,
 } as const
 
 function PresenceIcon({
@@ -147,6 +144,7 @@ function StatusIcon({
 				transform: translate,
 				width: diameter,
 				height: diameter,
+				padding: 1,
 			}}
 		>
 			{statusSVGs[status]}
@@ -172,7 +170,7 @@ export function Avatar({
 	testId,
 }: AvatarProps) {
 	const diameter = sizes[size]
-	const shapeStyles = appearance === "circle" ? "rounded-full" : "rounded-sm"
+	const shapeStyles = appearance === "circle" ? "rounded-full" : "rounded-xs"
 	const colorStyles = isDisabled
 		? "bg-icon-disabled  cursor-not-allowed"
 		: src
@@ -193,17 +191,21 @@ export function Avatar({
 	) : null
 
 	const afterStyles = `after:bg-transparent after:absolute after:text-transparent after:contents-[' '] after:inset-0 ${
-		appearance === "circle" ? "after:rounded-full" : "after:rounded-sm"
+		appearance === "circle" ? "after:rounded-full" : "after:rounded-xs"
 	}`
 
-	const imageDisabledStyles = twMerge(
-		afterStyles,
-		"after:bg-surface-overlay after:opacity-60",
+	const imageDisabledStyles = useMemo(
+		() => twMerge(afterStyles, "after:bg-surface-overlay after:opacity-60"),
+		[afterStyles],
 	)
 
-	const hrefStyles = twMerge(
-		afterStyles,
-		"hover:after:bg-interaction-hovered active:after:bg-interaction-pressed duration-150 ease-in-out active:scale-90 cursor-pointer",
+	const hrefStyles = useMemo(
+		() =>
+			twMerge(
+				afterStyles,
+				"hover:after:bg-interaction-hovered active:after:bg-interaction-pressed duration-150 ease-in-out active:scale-90 cursor-pointer",
+			),
+		[afterStyles],
 	)
 
 	const avatarComp = (
@@ -250,7 +252,10 @@ export function Avatar({
 					nameLetters
 				) : (
 					<IconSizeHelper size={diameter}>
-						<PersonIcon label="fallback avatar icon" />
+						<UserRoundIcon
+							aria-label="fallback avatar icon"
+							size="12"
+						/>
 					</IconSizeHelper>
 					//<FallbackAvatarIcon diameter={diameter} />
 				)}

@@ -5,7 +5,6 @@ import { ToastContainer, toast } from "react-toastify"
 import type { ToastContainerProps, ToastOptions } from "react-toastify"
 
 //import "react-toastify/dist/ReactToastify.css"  -> needs to be imported in your app, probably before tailwindcss to make overrides work
-import CrossIcon from "@atlaskit/icon/glyph/cross"
 
 import type { CloseButtonProps } from "react-toastify/dist/components"
 import { twMerge } from "tailwind-merge"
@@ -19,6 +18,7 @@ import {
 	type FlagProps,
 	FlagStyles,
 } from "./Flag"
+import { XIcon } from "lucide-react"
 
 type ToastFlagProps = Omit<FlagProps, "type"> &
 	Omit<ToastOptions, "type"> & { flagType?: FlagProps["type"] }
@@ -87,7 +87,7 @@ function CloseButton({
 				}
 			}}
 		>
-			<CrossIcon label="Close" size="small" />
+			<XIcon size="6" />
 		</button>
 	)
 }

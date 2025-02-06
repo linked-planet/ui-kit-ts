@@ -1,9 +1,8 @@
-import React from "react"
+import { TriangleAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Flag, ToastFlagContainer, showFlag } from "@linked-planet/ui-kit-ts"
-import WarningIcon from "@atlaskit/icon/glyph/warning"
 
 function FlagShowcase(props: ShowcaseProps) {
 	//#region flag
@@ -11,7 +10,9 @@ function FlagShowcase(props: ShowcaseProps) {
 		<div className="flex flex-col gap-3">
 			<Flag
 				title="Flag"
-				icon={<WarningIcon label="" />}
+				icon={
+					<TriangleAlertIcon aria-label="Triangle Alert" size="12" />
+				}
 				description="Action Flag"
 				id="testflag"
 				testId="testflag"
@@ -152,7 +153,7 @@ function FlagShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://atlassian.design/components/flag/examples",
+					url: "/ui-kit-ts/single#Flag",
 				},
 			]}
 			description="Drop in replacement for the @atlaskit/flag component."

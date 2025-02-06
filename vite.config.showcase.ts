@@ -4,16 +4,16 @@ import { resolve } from "node:path"
 //import checker from "vite-plugin-checker"
 
 // postcss:
-import tailwindcss from "tailwindcss"
-import autoprefixer from "autoprefixer"
+import tailwindcss from "@tailwindcss/vite"
+//import autoprefixer from "autoprefixer"
 //
 
 export default defineConfig({
-	css: {
+	/*css: {
 		postcss: {
 			plugins: [tailwindcss("./tailwind.config.sc.js"), autoprefixer],
 		},
-	},
+	},*/
 	build: {
 		outDir: resolve(__dirname, "./dist-showcase"),
 		target: "es2022",
@@ -45,6 +45,7 @@ export default defineConfig({
 	root: "./showcase",
 	publicDir: "public",
 	plugins: [
+		tailwindcss(),
 		react(),
 		/*tsconfigPaths({
 			configNames: ["./tsconfig.showcase.json"],
