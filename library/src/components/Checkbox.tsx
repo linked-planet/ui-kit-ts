@@ -46,7 +46,7 @@ type CheckboxProps = Omit<
 const checkBoxSize = "size-4 box-border" as const
 
 const checkBoxStyles = twJoin(
-	"bg-input hover:bg-input-hovered focus:bg-input-active border-border-bold border-solid border-2 box-border flex flex-none items-center justify-center ease-linear transition duration-150 cursor-default",
+	"bg-input m-0 p-0 hover:bg-input-hovered focus:bg-input-active border-border-bold border-solid border-2 box-border flex flex-none items-center justify-center ease-linear transition duration-150 cursor-default",
 	"rounded-sm focus:outline-offset-2 focus:outline-2 focus:outline-brand-bold",
 	checkBoxSize,
 )

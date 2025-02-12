@@ -630,7 +630,7 @@ function BadgeShowcase(props: ShowcaseProps) {
 
 export default BadgeShowcase
 
-import { CheckCircleIcon, OctagonAlertIcon } from "lucide-react"
+import { CircleCheckIcon, OctagonAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -647,8 +647,9 @@ function BannerShowcase(props: ShowcaseProps) {
 				icon={
 					<IconSizeHelper>
 						<OctagonAlertIcon
-							aria-label="Octagon Alert"
-							size="12"
+							aria-label="Error"
+							size="24"
+							strokeWidth={2}
 						/>
 					</IconSizeHelper>
 				}
@@ -659,7 +660,11 @@ function BannerShowcase(props: ShowcaseProps) {
 				appearance="success"
 				icon={
 					<IconSizeHelper>
-						<CheckCircleIcon aria-label="Check Circle" size="12" />
+						<CircleCheckIcon
+							aria-label="Check Circle"
+							size="24"
+							strokeWidth={2}
+						/>
 					</IconSizeHelper>
 				}
 			>
@@ -1089,7 +1094,7 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Breadcrumbs, Checkbox, Input, Label } from "@linked-planet/ui-kit-ts"
 
-import { PlusCircleIcon } from "lucide-react"
+import { PlusIcon } from "lucide-react"
 
 //#region bread-crumbs-max-items-example
 function MaxItemsExample() {
@@ -1147,10 +1152,18 @@ function MaxItemsExample() {
 					<Breadcrumbs.Item
 						href="#"
 						iconBefore={
-							<PlusCircleIcon aria-label="Plus" size="12" />
+							<PlusIcon
+								aria-label="Plus"
+								size="12"
+								className="bg-gray-500 mr-1 text-text-inverse rounded-full"
+							/>
 						}
 						iconAfter={
-							<PlusCircleIcon aria-label="Plus" size="12" />
+							<PlusIcon
+								aria-label="Plus"
+								size="12"
+								className="bg-gray-500 ml-1 text-text-inverse rounded-full"
+							/>
 						}
 					>
 						Home
@@ -1190,10 +1203,18 @@ function ConstrainedExample() {
 					<Breadcrumbs.Item
 						href="#"
 						iconBefore={
-							<PlusCircleIcon aria-label="Plus" size="12" />
+							<PlusIcon
+								aria-label="Plus"
+								size="12"
+								className="bg-gray-500 mr-1 text-text-inverse rounded-full"
+							/>
 						}
 						iconAfter={
-							<PlusCircleIcon aria-label="Plus" size="12" />
+							<PlusIcon
+								aria-label="Plus"
+								size="12"
+								className="bg-gray-500 ml-1 text-text-inverse rounded-full"
+							/>
 						}
 					>
 						Home
@@ -1217,8 +1238,20 @@ function BannerShowcase(props: ShowcaseProps) {
 			<Breadcrumbs>
 				<Breadcrumbs.Item
 					href="#"
-					iconBefore={<PlusCircleIcon aria-label="Plus" size="12" />}
-					iconAfter={<PlusCircleIcon aria-label="Plus" size="12" />}
+					iconBefore={
+						<PlusIcon
+							aria-label="Plus"
+							size="12"
+							className="bg-gray-500 mr-1 text-text-inverse rounded-full"
+						/>
+					}
+					iconAfter={
+						<PlusIcon
+							aria-label="Plus"
+							size="12"
+							className="bg-gray-500 ml-1 text-text-inverse rounded-full"
+						/>
+					}
 				>
 					Home
 				</Breadcrumbs.Item>
@@ -2306,7 +2339,6 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -2526,6 +2558,19 @@ function Colors() {
 				<div className="bg-indigo-bold border-indigo-border hover:bg-indigo-bold-hovered active:bg-indigo-bold-pressed text-indigo-text-inverse border-2 p-1">
 					indigo-bold
 				</div>
+				{/* slate */}
+				<div className="bg-slate border-slate-border hover:bg-slate-hovered active:bg-slate-pressed text-slate-text-bold border-2 p-1">
+					slate
+				</div>
+				<div className="bg-slate-subtle border-slate-border hover:bg-slate-subtle-hovered active:bg-slate-subtle-pressed text-slate-text border-2 p-1">
+					slate-subtle
+				</div>
+				<div className="bg-slate-subtlest border-slate-border hover:bg-slate-subtlest-hovered active:bg-slate-subtlest-pressed text-slate-text border-2 p-1">
+					slate-subtlest
+				</div>
+				<div className="bg-slate-bold border-slate-border hover:bg-slate-bold-hovered active:bg-slate-bold-pressed text-slate-text-inverse border-2 p-1">
+					slate-bold
+				</div>
 				{/* gray */}
 				<div className="bg-gray border-gray-border hover:bg-gray-hovered active:bg-gray-pressed text-gray-text-bold border-2 p-1">
 					gray
@@ -2538,6 +2583,18 @@ function Colors() {
 				</div>
 				<div className="bg-gray-bold border-gray-border hover:bg-gray-bold-hovered active:bg-gray-bold-pressed text-gray-text-inverse border-2 p-1">
 					gray-bold
+				</div>
+				<div className="bg-zinc border-zinc-border hover:bg-zinc-hovered active:bg-zinc-pressed text-zinc-text-bold border-2 p-1">
+					zinc
+				</div>
+				<div className="bg-zinc-subtle border-zinc-border hover:bg-zinc-subtle-hovered active:bg-zinc-subtle-pressed text-zinc-text border-2 p-1">
+					zinc-subtle
+				</div>
+				<div className="bg-zinc-subtlest border-zinc-border hover:bg-zinc-subtlest-hovered active:bg-zinc-subtlest-pressed text-zinc-text border-2 p-1">
+					zinc-subtlest
+				</div>
+				<div className="bg-zinc-bold border-zinc-border hover:bg-zinc-bold-hovered active:bg-zinc-bold-pressed text-zinc-text-inverse border-2 p-1">
+					zinc-bold
 				</div>
 			</div>
 			<hr className="mt-4" />
