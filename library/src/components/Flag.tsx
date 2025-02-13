@@ -3,7 +3,6 @@ import type { CSSProperties } from "react"
 
 import { twMerge } from "tailwind-merge"
 import { assertUnreachable } from "../utils/assertUnreachable"
-import { IconSizeHelper } from "./IconSizeHelper"
 import {
 	CheckIcon,
 	HelpCircleIcon,
@@ -144,37 +143,52 @@ export function FlagIcon({
 		}
 		case "success": {
 			return (
-				<IconSizeHelper className={iconStyle}>
-					<CheckIcon aria-label="Success" size="12" />
-				</IconSizeHelper>
+				<CheckIcon
+					aria-label="Success"
+					size="16"
+					strokeWidth={3}
+					className={iconStyle}
+				/>
 			)
 		}
 		case "warning": {
 			return (
-				<IconSizeHelper className={iconStyle}>
-					<TriangleAlertIcon aria-label="Warning" size="12" />
-				</IconSizeHelper>
+				<TriangleAlertIcon
+					aria-label="Warning"
+					size="16"
+					strokeWidth={3}
+					className={iconStyle}
+				/>
 			)
 		}
 		case "information": {
 			return (
-				<IconSizeHelper className={iconStyle}>
-					<InfoIcon aria-label="Info" size="12" />
-				</IconSizeHelper>
+				<InfoIcon
+					aria-label="Info"
+					size="16"
+					strokeWidth={3}
+					className={iconStyle}
+				/>
 			)
 		}
 		case "error": {
 			return (
-				<IconSizeHelper className={iconStyle}>
-					<XIcon aria-label="Error" size="12" />
-				</IconSizeHelper>
+				<XIcon
+					aria-label="Error"
+					size="16"
+					strokeWidth={3}
+					className={iconStyle}
+				/>
 			)
 		}
 		case "discovery": {
 			return (
-				<IconSizeHelper className={iconStyle}>
-					<HelpCircleIcon aria-label="Discovery" size="12" />
-				</IconSizeHelper>
+				<HelpCircleIcon
+					aria-label="Discovery"
+					size="16"
+					strokeWidth={3}
+					className={iconStyle}
+				/>
 			)
 		}
 		default:

@@ -85,11 +85,11 @@ function ExampleShowExtendedFlag() {
 						description:
 							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
 						appearance: "information",
-						flagType: "inverted",
+						flagType: "bold",
 					})
 				}
 			>
-				Information Inverted
+				Information Bold
 			</Button>
 			<Button
 				onClick={() =>
@@ -203,7 +203,7 @@ function ExampleShowFlags() {
 					})
 				}
 			>
-				Success Inverted Style
+				Success Style
 			</Button>
 			<Button
 				onClick={() =>
@@ -215,7 +215,7 @@ function ExampleShowFlags() {
 					})
 				}
 			>
-				Success Default Flag Style
+				Success Bold Flag Style
 			</Button>
 
 			<Button
@@ -245,11 +245,21 @@ function ExampleShowFlags() {
 					showDiscoveryFlag({
 						title: "Discovery",
 						description: "This is a bold discovery toast.",
-						flagType: "bold",
 					})
 				}
 			>
 				Discovery
+			</Button>
+			<Button
+				onClick={() =>
+					showDiscoveryFlag({
+						title: "Discovery",
+						description: "This is a bold discovery toast.",
+						flagType: "bold",
+					})
+				}
+			>
+				Discovery Bold
 			</Button>
 			<Button
 				onClick={() =>
@@ -264,18 +274,6 @@ function ExampleShowFlags() {
 			</Button>
 			<Button
 				onClick={() =>
-					showDiscoveryFlag({
-						title: "Discovery",
-						description:
-							"This is a inverted (default) discovery toast.",
-						flagType: "inverted",
-					})
-				}
-			>
-				Discovery Inverted
-			</Button>
-			<Button
-				onClick={() =>
 					showErrorFlag({
 						title: "error flag",
 						description: "This is a error toast flag.",
@@ -283,6 +281,60 @@ function ExampleShowFlags() {
 				}
 			>
 				Error
+			</Button>
+			<Button
+				onClick={() =>
+					showErrorFlag({
+						title: "error flag",
+						description: "This is a error toast flag.",
+						flagType: "bold",
+					})
+				}
+			>
+				Error Bold
+			</Button>
+			<Button
+				onClick={() =>
+					showErrorFlag({
+						title: "error flag",
+						description: "This is a pale error toast flag.",
+						flagType: "pale",
+					})
+				}
+			>
+				Error Pale
+			</Button>
+			<Button
+				onClick={() =>
+					showWarningFlag({
+						title: "Warning Flag",
+						description: "This is a warning toast flag.",
+					})
+				}
+			>
+				Warning
+			</Button>
+			<Button
+				onClick={() =>
+					showWarningFlag({
+						title: "Warning Flag",
+						description: "This is a bold warning toast flag.",
+						flagType: "bold",
+					})
+				}
+			>
+				Warning Bold
+			</Button>
+			<Button
+				onClick={() =>
+					showWarningFlag({
+						title: "Warning Flag",
+						description: "This is a pale warning toast flag.",
+						flagType: "pale",
+					})
+				}
+			>
+				Warning Pale
 			</Button>
 			<Button
 				onClick={() =>

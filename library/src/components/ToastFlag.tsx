@@ -77,7 +77,7 @@ function CloseButton({
 			type="button"
 			data-id="flag-close-button"
 			ref={ref}
-			className={`cursor-pointer mb-auto bg-transparent border-none ${
+			className={`cursor-pointer mb-auto bg-transparent border-none m-0 p-0 ${
 				inverted ? "text-text" : "text-text-inverse"
 			}`}
 			onClick={closeToast}
@@ -87,7 +87,7 @@ function CloseButton({
 				}
 			}}
 		>
-			<XIcon size="6" />
+			<XIcon size="10" strokeWidth={3} />
 		</button>
 	)
 }

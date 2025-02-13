@@ -46,6 +46,7 @@ import {
 	P50,
 	P200,
 	N20A,
+	R400,
 } from "@atlaskit/theme/colors"
 import colors from "tailwindcss/colors"
 
@@ -291,7 +292,7 @@ export const theme = {
 			},
 			text: `var(--ds-text-discovery, ${P500})`,
 			border: `var(--ds-border-discovery, ${P500})`,
-			icon: `var(--ds-icon-discovery, ${P500})`,
+			icon: `var(--ds-icon-discovery, ${R400})`,
 		},
 
 		border: {
