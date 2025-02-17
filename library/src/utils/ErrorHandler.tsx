@@ -1,5 +1,5 @@
 import { type AxiosError, isAxiosError } from "axios"
-import { Button, showErrorFlag } from "../components"
+import { Button, Toast } from "../components"
 
 // in the handler function the returned boolean states if after the handler the error handling is done
 
@@ -100,7 +100,7 @@ export class ErrorHandler {
 
 			let errorObject = error.response?.data
 			if (!errorObject) {
-				showErrorFlag({
+				Toast.showErrorFlag({
 					title: "Unbekannter Fehlertyp",
 					autoClose: false,
 					description: `${error.name}: ${error.message}`,
@@ -117,7 +117,7 @@ export class ErrorHandler {
 						}response error was not in error format: ${e}`,
 						error.response,
 					)
-					showErrorFlag({
+					Toast.showErrorFlag({
 						title: "Fehler",
 						description: error.response?.data,
 						autoClose: false,
@@ -126,7 +126,7 @@ export class ErrorHandler {
 			}
 
 			if (!isDomainError(errorObject)) {
-				showErrorFlag({
+				Toast.showErrorFlag({
 					title: "Unbekannter Fehlertyp",
 					autoClose: false,
 					description: `${error.name}: ${error.message}`,
@@ -163,7 +163,7 @@ export class ErrorHandler {
 					`${caller ? `${caller} - ` : ""}response error stack trace: ${errorObject.stackTrace}`,
 				)
 			}
-			showErrorFlag({
+			Toast.showErrorFlag({
 				title: "Fehler",
 				autoClose: false,
 				description: (
@@ -240,19 +240,19 @@ export class ErrorHandler {
 				),
 			})
 		} else if (error instanceof Error) {
-			showErrorFlag({
+			Toast.showErrorFlag({
 				title: error.name ?? "Unbekannter Fehler",
 				autoClose: false,
 				description: error.message ?? "Wenden Sie sich an den Admin",
 			})
 		} else if (typeof error === "string") {
-			showErrorFlag({
+			Toast.showErrorFlag({
 				title: "Unbekannter Fehler",
 				autoClose: false,
 				description: error,
 			})
 		} else {
-			showErrorFlag({
+			Toast.showErrorFlag({
 				title: "Unbekannter Fehler",
 				autoClose: false,
 				description: JSON.stringify(error),

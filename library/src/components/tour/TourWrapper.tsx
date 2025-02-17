@@ -6,7 +6,7 @@ import ReactJoyride, {
 	type CallBackProps,
 } from "react-joyride"
 import { useCallback, useMemo, useRef, useState } from "react"
-import { showErrorFlag, showInformationFlag } from "../ToastFlag"
+import { Toast } from "../ToastFlag"
 import { flushSync } from "react-dom"
 
 export type TourStepProps = Step
@@ -189,15 +189,15 @@ export function Tour({
 					if (skipOnError) {
 						console.info("Skipped", joyrideState)
 						if (showInfoAndError) {
-							showInformationFlag({
+							Toast.showInformationFlag({
 								title: "Tour-Info",
 								description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen, das Element ${steps[index].step.target} wurde nicht gefunden.`,
 							})
 						}
-						next(action === "next" ? 1: -1)
+						next(action === "next" ? 1 : -1)
 					} else {
 						if (showInfoAndError) {
-							showErrorFlag({
+							Toast.showErrorFlag({
 								title: "Tour-Fehler",
 								description: `Fehler bei Step [${steps[index].step?.title ?? "Unbekannt"}]. Das Element ${step.target} wurde nicht gefunden.`,
 							})
@@ -208,15 +208,15 @@ export function Tour({
 				case "error":
 					if (skipOnError) {
 						if (showInfoAndError) {
-							showInformationFlag({
+							Toast.showInformationFlag({
 								title: "Tour-Info",
 								description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen.`,
 							})
 						}
-						next(action === "next" ? 1: -1)
+						next(action === "next" ? 1 : -1)
 					} else {
 						if (showInfoAndError) {
-							showErrorFlag({
+							Toast.showErrorFlag({
 								title: "Tour-Fehler",
 								description: `Fehler bei Step [${steps[index].step?.title ?? "Unbekannt"}].`,
 							})

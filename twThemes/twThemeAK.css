@@ -109,13 +109,13 @@
 	--color-icon-disabled: var(--ds-icon-disabled, oklch(from var(--color-gray-600) l c h / 30%));
 
 	/* Neutral */
-	--color-neutral: var(--ds-background-neutral, oklch(from var(--color-gray-500) l c h / 13%));
-	--color-neutral-hovered: var(--ds-background-neutral-hovered, oklch(from var(--color-gray-500) l c h / 23%));
-	--color-neutral-pressed: var(--ds-background-neutral-pressed, oklch(from var(--color-gray-500) l c h / 43%));
+	--color-neutral: var(--ds-background-neutral,  var(--color-gray-200));
+	--color-neutral-hovered: var(--ds-background-neutral-hovered, var(--color-gray-300));
+	--color-neutral-pressed: var(--ds-background-neutral-pressed, var(--color-gray-400));
 
-	--color-neutral-full: var(--ds-background-neutral-bold, color-mix(in oklch, var(--color-gray-300) 50%, var(--color-gray-400) 50%));
-	--color-neutral-full-hovered: var(--ds-background-neutral-bold-hovered, var(--color-gray-400));
-	--color-neutral-full-pressed: var(--ds-background-neutral-bold-pressed, color-mix(in oklch, var(--color-gray-400) 50%, var(--color-gray-500) 50%));
+	--color-neutral-full: var(--ds-background-neutral-bold, var(--color-gray-600));
+	--color-neutral-full-hovered: var(--ds-background-neutral-bold-hovered, var(--color-gray-700));
+	--color-neutral-full-pressed: var(--ds-background-neutral-bold-pressed, var(--color-gray-800));
 
 	--color-neutral-bold: var(--ds-neutral-bold, color-mix(in oklch, var(--color-gray-300) 50%, var(--color-gray-400) 50%));
 	--color-neutral-bold-hovered: var(--ds-neutral-bold-hovered, var(--color-gray-400));
@@ -126,9 +126,9 @@
 	--color-neutral-subtle-pressed: var(--ds-background-neutral-subtle-pressed, oklch( from var(--color-gray-400) l c h / 35%));
 
 	/* Selected */
-	--color-selected: var(--ds-background-selected, var(--color-slate-900));
-	--color-selected-hovered: var(--ds-background-selected-hovered, var(--color-slate-800));
-	--color-selected-pressed: var(--ds-background-selected-pressed, var(--color-slate-700));
+	--color-selected: var(--ds-background-selected, var(--color-slate-700));
+	--color-selected-hovered: var(--ds-background-selected-hovered, var(--color-slate-600));
+	--color-selected-pressed: var(--ds-background-selected-pressed, var(--color-slate-500));
 
 	--color-selected-bold: var(--ds-background-selected-bold, var(--color-blue-500));
 	--color-selected-bold-hovered: var(--ds-background-selected-bold-hovered, var(--color-blue-600));
@@ -188,13 +188,13 @@
 	--color-success-hovered: var(--ds-background-success-hovered, var(--color-emerald-200));
 	--color-success-pressed: var(--ds-background-success-pressed, var(--color-emerald-300));
 
-	--color-success-bold: var(--ds-background-success-bold, var(--color-emerald-500));
-	--color-success-bold-hovered: var(--ds-background-success-bold-hovered, var(--color-emerald-600));
-	--color-success-bold-pressed: var(--ds-background-success-bold-pressed, var(--color-emerald-700));
+	--color-success-bold: var(--ds-background-success-bold, var(--color-emerald-600));
+	--color-success-bold-hovered: var(--ds-background-success-bold-hovered, var(--color-emerald-700));
+	--color-success-bold-pressed: var(--ds-background-success-bold-pressed, var(--color-emerald-800));
 
 	--color-success-text: var(--ds-text-success, var(--color-emerald-800));
 	--color-success-border: var(--ds-border-success, var(--color-emerald-800));
-	--color-success-icon: var(--ds-icon-success, var(--color-emerald-800));
+	--color-success-icon: var(--ds-icon-success, var(--color-green-800));
 
 	/* Information */
 	--color-information: var(--ds-background-information,  var(--color-blue-200));

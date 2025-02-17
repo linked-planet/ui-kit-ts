@@ -4,11 +4,11 @@ import type { CSSProperties } from "react"
 import { twMerge } from "tailwind-merge"
 import { assertUnreachable } from "../utils/assertUnreachable"
 import {
-	CheckIcon,
 	HelpCircleIcon,
 	InfoIcon,
 	XIcon,
 	TriangleAlertIcon,
+	CheckCircleIcon,
 } from "lucide-react"
 
 export type FlagAppearance =
@@ -19,12 +19,13 @@ export type FlagAppearance =
 	| "information"
 	| "discovery"
 
+export type FlagType = "bold" | "inverted" | "pale"
 export type FlagProps = {
-	title: string
+	title: React.ReactNode
 	description: React.ReactNode
 	appearance?: FlagAppearance
-	type?: "bold" | "inverted" | "pale"
-	icon?: JSX.Element
+	type?: FlagType
+	icon?: React.JSX.Element
 	actions?: FlagActionType[]
 	style?: CSSProperties
 	className?: string
@@ -143,7 +144,7 @@ export function FlagIcon({
 		}
 		case "success": {
 			return (
-				<CheckIcon
+				<CheckCircleIcon
 					aria-label="Success"
 					size="16"
 					strokeWidth={3}

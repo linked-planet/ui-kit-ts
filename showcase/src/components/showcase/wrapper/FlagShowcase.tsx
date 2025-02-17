@@ -2,7 +2,9 @@ import { TriangleAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Flag, ToastFlagContainer, showFlag } from "@linked-planet/ui-kit-ts"
+import { Flag, Toast, ToastFlagContainer } from "@linked-planet/ui-kit-ts"
+
+import "react-toastify/dist/ReactToastify.min.css"
 
 function FlagShowcase(props: ShowcaseProps) {
 	//#region flag
@@ -21,7 +23,7 @@ function FlagShowcase(props: ShowcaseProps) {
 						content: "Action",
 						onClick: () => {
 							console.log("Action clicked")
-							showFlag({
+							Toast.showFlag({
 								title: "Flag",
 								description: "Action Flag",
 								autoClose: false,

@@ -108,7 +108,7 @@ export function ToastFlagContainer(
 	return <>{createPortal(<ToastContainer {...props} />, portalNode)}</>
 }
 
-export function showFlagExtended({
+function showFlagExtended({
 	style,
 	appearance = "default",
 	className: _className,
@@ -184,30 +184,37 @@ type SimpleFlagProps = {
 	flagType?: FlagProps["type"]
 }
 
-export function showFlag(props: SimpleFlagProps) {
+function showFlag(props: SimpleFlagProps) {
 	showFlagExtended({
 		...props,
 	})
 }
 
-export function showErrorFlag(props: Omit<SimpleFlagProps, "appearance">) {
+function showErrorFlag(props: Omit<SimpleFlagProps, "appearance">) {
 	showFlag({ ...props, appearance: "error" })
 }
 
-export function showSuccessFlag(props: Omit<SimpleFlagProps, "appearance">) {
+function showSuccessFlag(props: Omit<SimpleFlagProps, "appearance">) {
 	showFlag({ ...props, appearance: "success" })
 }
 
-export function showInformationFlag(
-	props: Omit<SimpleFlagProps, "appearance">,
-) {
+function showInformationFlag(props: Omit<SimpleFlagProps, "appearance">) {
 	showFlag({ ...props, appearance: "information" })
 }
 
-export function showWarningFlag(props: Omit<SimpleFlagProps, "appearance">) {
+function showWarningFlag(props: Omit<SimpleFlagProps, "appearance">) {
 	showFlag({ ...props, appearance: "warning" })
 }
 
-export function showDiscoveryFlag(props: Omit<SimpleFlagProps, "appearance">) {
+function showDiscoveryFlag(props: Omit<SimpleFlagProps, "appearance">) {
 	showFlag({ ...props, appearance: "discovery" })
+}
+
+export const Toast = {
+	showFlag,
+	showErrorFlag,
+	showSuccessFlag,
+	showInformationFlag,
+	showWarningFlag,
+	showDiscoveryFlag,
 }
