@@ -1,4 +1,3 @@
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -7,6 +6,59 @@ import ShowcaseWrapperItem, {
 function Colors() {
 	return (
 		<>
+			<div className="flex flex-wrap gap-4 mb-8 bg-surface p-2">
+				<span className="text-text">text</span>
+				<span className="text-text-inverse">text-inverse</span>
+				<span className="text-text-subtle">text-subtle</span>
+				<span className="text-text-subtlest">text-subtlest</span>
+				<span className="text-text-disabled">text-disabled</span>
+				<span className="text-link">link</span>
+				<span className="text-link-hovered">link-hovered</span>
+				<span className="text-link-pressed">link-pressed</span>
+				<span className="text-link-visited">link-visited</span>
+				<span className="text-selected-text">selected</span>
+				<span className="text-selected-subtle-text">
+					selected-subtle
+				</span>
+				<span className="text-selected-text-inverse">
+					selected-inverse
+				</span>
+			</div>
+			<div className="flex flex-wrap gap-4 mb-8">
+				<div className="bg-surface hover:bg-surface-hovered active:bg-surface-pressed p-2 rounded border border-border-bold">
+					surface
+				</div>
+				<div className="bg-surface-overlay hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed p-2 rounded border border-border-bold">
+					surface-overlay
+				</div>
+				<div className="bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed p-2 rounded border border-border-bold">
+					surface-raised
+				</div>
+				<div className="bg-surface-sunken hover:bg-surface-sunken-hovered active:bg-surface-sunken-pressed p-2 rounded border border-border-bold">
+					surface-sunken
+				</div>
+				<div className="bg-disabled text-text-disabled p-2 rounded border border-border-bold">
+					disabled
+				</div>
+				<div className="bg-blanket p-2 rounded border border-border-bold">
+					blanket
+				</div>
+				<div className="bg-blanket-subtle p-2 rounded border border-border-bold">
+					blanket-subtle
+				</div>
+				<div className="bg-skeleton p-2 rounded border border-border-bold">
+					skeleton
+				</div>
+				<div className="bg-icon p-2 text-text-inverse rounded border border-border-bold">
+					icon
+				</div>
+				<div className="bg-icon-inverse p-2 rounded border border-border-bold">
+					icon-inverse
+				</div>
+				<div className="hover:bg-interaction-hovered active:bg-interaction-pressed p-2 rounded border border-border-bold">
+					interaction
+				</div>
+			</div>
 			<div className="grid w-full grid-cols-4 gap-2">
 				{/* blue */}
 				<div className="bg-blue border-blue-border hover:bg-blue-hovered active:bg-blue-pressed text-blue-text-bold border-2 p-1">
@@ -218,6 +270,19 @@ function Colors() {
 				<div className="bg-indigo-bold border-indigo-border hover:bg-indigo-bold-hovered active:bg-indigo-bold-pressed text-indigo-text-inverse border-2 p-1">
 					indigo-bold
 				</div>
+				{/* slate */}
+				<div className="bg-slate border-slate-border hover:bg-slate-hovered active:bg-slate-pressed text-slate-text-bold border-2 p-1">
+					slate
+				</div>
+				<div className="bg-slate-subtle border-slate-border hover:bg-slate-subtle-hovered active:bg-slate-subtle-pressed text-slate-text border-2 p-1">
+					slate-subtle
+				</div>
+				<div className="bg-slate-subtlest border-slate-border hover:bg-slate-subtlest-hovered active:bg-slate-subtlest-pressed text-slate-text border-2 p-1">
+					slate-subtlest
+				</div>
+				<div className="bg-slate-bold border-slate-border hover:bg-slate-bold-hovered active:bg-slate-bold-pressed text-slate-text-inverse border-2 p-1">
+					slate-bold
+				</div>
 				{/* gray */}
 				<div className="bg-gray border-gray-border hover:bg-gray-hovered active:bg-gray-pressed text-gray-text-bold border-2 p-1">
 					gray
@@ -231,10 +296,22 @@ function Colors() {
 				<div className="bg-gray-bold border-gray-border hover:bg-gray-bold-hovered active:bg-gray-bold-pressed text-gray-text-inverse border-2 p-1">
 					gray-bold
 				</div>
+				<div className="bg-zinc border-zinc-border hover:bg-zinc-hovered active:bg-zinc-pressed text-zinc-text-bold border-2 p-1">
+					zinc
+				</div>
+				<div className="bg-zinc-subtle border-zinc-border hover:bg-zinc-subtle-hovered active:bg-zinc-subtle-pressed text-zinc-text border-2 p-1">
+					zinc-subtle
+				</div>
+				<div className="bg-zinc-subtlest border-zinc-border hover:bg-zinc-subtlest-hovered active:bg-zinc-subtlest-pressed text-zinc-text border-2 p-1">
+					zinc-subtlest
+				</div>
+				<div className="bg-zinc-bold border-zinc-border hover:bg-zinc-bold-hovered active:bg-zinc-bold-pressed text-zinc-text-inverse border-2 p-1">
+					zinc-bold
+				</div>
 			</div>
 			<hr className="mt-4" />
 
-			<div className="mt-4 grid w-full grid-cols-3 gap-2">
+			<div className="mt-4 grid w-full grid-cols-4 gap-2">
 				<div className="bg-selected hover:bg-selected-hovered text-selected-text-inverse active:bg-selected-pressed border-selected-border border-2 p-1">
 					selected
 				</div>
@@ -242,13 +319,17 @@ function Colors() {
 					selected-bold
 				</div>
 				<div className="bg-selected-subtle text-text hover:bg-selected-subtle-hovered active:bg-selected-subtle-pressed border-selected-border border-2 p-1">
-					selected-bold
+					selected-subtle
 				</div>
+				<div />
 				<div className="bg-neutral text-text hover:bg-neutral-hovered active:bg-neutral-pressed border-2 p-1">
 					neutral
 				</div>
 				<div className="bg-neutral-bold text-text hover:bg-neutral-bold-hovered active:bg-neutral-bold-pressed border-2 p-1">
 					neutral-bold
+				</div>
+				<div className="bg-neutral-full text-text hover:bg-neutral-full-hovered active:bg-neutral-full-pressed border-2 p-1">
+					neutral-full
 				</div>
 				<div className="bg-neutral-subtle text-text hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed border-2 p-1">
 					neutral-subtle
@@ -260,12 +341,14 @@ function Colors() {
 					warning-bold
 				</div>
 				<div />
+				<div />
 				<div className="bg-danger text-danger-text border-danger-border hover:bg-danger-hovered active:bg-danger-pressed border-2 p-1">
 					danger
 				</div>
-				<div className="bg-danger-bold text-text hover:bg-danger-bold-hovered active:bg-danger-bold-pressed border-2 p-1">
+				<div className="bg-danger-bold text-text-inverse hover:bg-danger-bold-hovered active:bg-danger-bold-pressed border-2 p-1">
 					danger-bold
 				</div>
+				<div />
 				<div />
 				<div className="bg-success text-success-text border-success-border hover:bg-success-hovered active:bg-success-pressed border-2 p-1">
 					success
@@ -274,6 +357,7 @@ function Colors() {
 					success-bold
 				</div>
 				<div />
+				<div />
 				<div className="bg-information text-information-text border-information-border hover:bg-information-hovered active:bg-information-pressed border-2 p-1">
 					information
 				</div>
@@ -281,10 +365,19 @@ function Colors() {
 					information-bold
 				</div>
 				<div />
+				<div />
+				<div className="bg-discovery text-discovery-text border-discovery-border hover:bg-discovery-hovered active:bg-discovery-pressed border-2 p-1">
+					discovery
+				</div>
+				<div className="bg-discovery-bold text-text-inverse hover:bg-discovery-bold-hovered active:bg-discovery-bold-pressed border-2 p-1">
+					discovery-bold
+				</div>
+				<div />
+				<div />
 				<div className="bg-brand text-brand-text border-brand-border hover:bg-brand-hovered active:bg-brand-pressed border-2 p-1">
 					brand
 				</div>
-				<div className="bg-brand-bold text-text hover:bg-brand-bold-hovered active:bg-brand-bold-pressed border-2 p-1">
+				<div className="bg-brand-bold text-text-inverse hover:bg-brand-bold-hovered active:bg-brand-bold-pressed border-2 p-1">
 					brand-bold
 				</div>
 			</div>
