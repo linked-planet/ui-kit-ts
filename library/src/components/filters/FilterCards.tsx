@@ -77,24 +77,10 @@ export function FilterCard({
 						"bg-surface-raised border-border flex items-center border-b px-1 py-0.5 font-bold"
 					}
 				>
-					<fieldset className="flex min-w-[1rem] flex-1 items-center">
-						<input
-							title={placeHolder}
-							ref={inputRef}
-							required
-							type="text"
-							placeholder={placeHolder}
-							className={`focus:bg-surface  focus:border-border placeholder:text-text focus:placeholder:text-disabled-text peer relative min-w-0 flex-1 truncate  bg-transparent px-0.5 outline-hidden transition-transform duration-100 ease-in-out focus:translate-y-0 focus:border ${
-								searchString || selectedValues.length > 0
-									? "translate-y-0"
-									: "-translate-y-1.5"
-							}`}
-							defaultValue={searchString}
-							onChange={onSearchInputChange}
-						/>
+					<fieldset className="flex min-w-4 flex-1 items-center">
 						{/* seems like that the peer-* dependent property needs to be after the peer tailwind definition usage */}
 						<legend
-							className={`text-text-subtle h-3 pl-0.5 text-[0.6rem] font-light transition duration-300 ease-in-out peer-focus:opacity-100 ${
+							className={`text-text-subtle h-4 pb-4 pl-0.5 text-[0.6rem] font-light transition duration-300 ease-in-out peer-focus:opacity-100 ${
 								searchString || selectedValues.length > 0
 									? "opacity-100"
 									: "opacity-0"
@@ -102,10 +88,24 @@ export function FilterCard({
 						>
 							{filter.attributeName}
 						</legend>
+						<input
+							title={placeHolder}
+							ref={inputRef}
+							required
+							type="text"
+							placeholder={placeHolder}
+							className={`focus:bg-surface focus:border-border mt-1 py-0.5 placeholder:text-text focus:placeholder:text-disabled-text peer relative min-w-0 flex-1 truncate  bg-transparent px-0.5 outline-hidden transition-transform duration-100 ease-in-out focus:translate-y-0 focus:border ${
+								searchString || selectedValues.length > 0
+									? "translate-y-0"
+									: "-translate-y-1.5"
+							}`}
+							defaultValue={searchString}
+							onChange={onSearchInputChange}
+						/>
 					</fieldset>
-					<div
+					<button
 						className={
-							"text-disabled-text hover:text-brand-bold-hovered active:text-brand-bold-pressed flex flex-none cursor-pointer items-center justify-center duration-100 ease-in-out peer-focus:translate-y-0"
+							"appearance-none text-icon hover:text-brand-bold-hovered active:text-brand-bold-pressed flex flex-none cursor-pointer items-center justify-center duration-100 ease-in-out peer-focus:translate-y-0 px-1"
 						}
 						onClick={() => {
 							inputRef.current?.focus()
@@ -125,16 +125,24 @@ export function FilterCard({
 								}
 							}
 						}}
-						role="button"
+						type="button"
 					>
 						{searchString ? (
-							<XIcon aria-label="Clear" size="12" />
+							<XIcon
+								aria-label="Clear"
+								size="12"
+								strokeWidth={4}
+							/>
 						) : (
-							<SearchIcon aria-label="Search" size="12" />
+							<SearchIcon
+								aria-label="Search"
+								size="12"
+								strokeWidth={4}
+							/>
 						)}
-					</div>
-					<div
-						className={`text-text-inverse hover:bg-danger-bold-hovered active:bg-danger-bold-pressed bg-danger-bold flex cursor-pointer items-center justify-center rounded text-xs duration-150 ease-in-out active:scale-90 ${
+					</button>
+					<button
+						className={`appearance-none text-text-inverse hover:bg-danger-bold-hovered active:bg-danger-bold-pressed bg-danger-bold flex cursor-pointer items-center justify-center rounded text-xs duration-150 ease-in-out active:scale-90 ${
 							!selectedValues.length ? "w-0" : "w-5"
 						}`}
 						onClick={() => {
@@ -147,11 +155,11 @@ export function FilterCard({
 								onSelectedChanged?.(filter.attributeName, [])
 							}
 						}}
-						role="button"
+						type="button"
 						title="klick löscht die Auswahl"
 					>
 						{selectedValues.length ? selectedValues.length : ""}
-					</div>
+					</button>
 				</div>
 				<div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
 					{visibleValues.length === 0 && (
