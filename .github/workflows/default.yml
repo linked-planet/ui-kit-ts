@@ -30,13 +30,13 @@ jobs:
                   echo latest_tag=${LATEST_TAG} >> $GITHUB_OUTPUT
 
             - name: Install
-              run: bun install
+              run: npm install
 
             - name: Build Library
-              run: bun run build:lib
+              run: npm run build:lib
 
             - name: Build Showcase
-              run: VITE_GH_RELEASE_TAG=${{ steps.get_latest_tag.outputs.latest_tag }} bun run build:sc
+              run: VITE_GH_RELEASE_TAG=${{ steps.get_latest_tag.outputs.latest_tag }} npm run build:sc
 
             - name: Deploy Showcase to Github Pages
               # run deploy either on release or ...
