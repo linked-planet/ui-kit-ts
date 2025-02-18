@@ -103,7 +103,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 								? "border-danger-border before:border-danger-border focus-within:before:border-danger-border"
 								: undefined,
 							provided.isFocused && !provided.isDisabled
-								? `bg-input-active hover:bg-input-active ${invalid ? "border-danger-border" : "border-input-border-focused"}`
+								? "bg-input-active hover:bg-input-active focus-within:shadow-borderstyle border-input-border-focused shadow-input-border-focused"
 								: undefined,
 							!provided.isFocused && !provided.isDisabled
 								? "bg-input hover:bg-input-hovered"
