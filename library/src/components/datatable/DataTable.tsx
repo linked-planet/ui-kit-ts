@@ -235,7 +235,7 @@ export function DataTable<TData, TValue = any>({
 									className={
 										header.column.getIsSorted() === "asc"
 											? "text-text text-3xs leading-[0.6rem]"
-											: "text-disabled-text text-3xs leading-[0.6rem]"
+											: "text-disabled-text text-3xs leading-[0.7rem]"
 									}
 								>
 									▲
@@ -244,7 +244,7 @@ export function DataTable<TData, TValue = any>({
 									className={
 										header.column.getIsSorted() === "desc"
 											? "text-text text-3xs leading-[0.6rem]"
-											: "text-disabled-text text-3xs leading-[0.6rem]"
+											: "text-disabled-text text-3xs leading-[0.7rem]"
 									}
 								>
 									▼

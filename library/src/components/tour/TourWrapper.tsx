@@ -189,7 +189,7 @@ export function Tour({
 					if (skipOnError) {
 						console.info("Skipped", joyrideState)
 						if (showInfoAndError) {
-							Toast.showInformationFlag({
+							Toast.showInformationToastFlag({
 								title: "Tour-Info",
 								description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen, das Element ${steps[index].step.target} wurde nicht gefunden.`,
 							})
@@ -197,7 +197,7 @@ export function Tour({
 						next(action === "next" ? 1 : -1)
 					} else {
 						if (showInfoAndError) {
-							Toast.showErrorFlag({
+							Toast.showErrorToastFlag({
 								title: "Tour-Fehler",
 								description: `Fehler bei Step [${steps[index].step?.title ?? "Unbekannt"}]. Das Element ${step.target} wurde nicht gefunden.`,
 							})
@@ -208,7 +208,7 @@ export function Tour({
 				case "error":
 					if (skipOnError) {
 						if (showInfoAndError) {
-							Toast.showInformationFlag({
+							Toast.showInformationToastFlag({
 								title: "Tour-Info",
 								description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen.`,
 							})
@@ -216,7 +216,7 @@ export function Tour({
 						next(action === "next" ? 1 : -1)
 					} else {
 						if (showInfoAndError) {
-							Toast.showErrorFlag({
+							Toast.showErrorToastFlag({
 								title: "Tour-Fehler",
 								description: `Fehler bei Step [${steps[index].step?.title ?? "Unbekannt"}].`,
 							})

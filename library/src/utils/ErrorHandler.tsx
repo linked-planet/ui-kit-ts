@@ -100,7 +100,7 @@ export class ErrorHandler {
 
 			let errorObject = error.response?.data
 			if (!errorObject) {
-				Toast.showErrorFlag({
+				Toast.showErrorToastFlag({
 					title: "Unbekannter Fehlertyp",
 					autoClose: false,
 					description: `${error.name}: ${error.message}`,
@@ -117,7 +117,7 @@ export class ErrorHandler {
 						}response error was not in error format: ${e}`,
 						error.response,
 					)
-					Toast.showErrorFlag({
+					Toast.showErrorToastFlag({
 						title: "Fehler",
 						description: error.response?.data,
 						autoClose: false,
@@ -126,7 +126,7 @@ export class ErrorHandler {
 			}
 
 			if (!isDomainError(errorObject)) {
-				Toast.showErrorFlag({
+				Toast.showErrorToastFlag({
 					title: "Unbekannter Fehlertyp",
 					autoClose: false,
 					description: `${error.name}: ${error.message}`,
@@ -163,7 +163,7 @@ export class ErrorHandler {
 					`${caller ? `${caller} - ` : ""}response error stack trace: ${errorObject.stackTrace}`,
 				)
 			}
-			Toast.showErrorFlag({
+			Toast.showErrorToastFlag({
 				title: "Fehler",
 				autoClose: false,
 				description: (
@@ -240,19 +240,19 @@ export class ErrorHandler {
 				),
 			})
 		} else if (error instanceof Error) {
-			Toast.showErrorFlag({
+			Toast.showErrorToastFlag({
 				title: error.name ?? "Unbekannter Fehler",
 				autoClose: false,
 				description: error.message ?? "Wenden Sie sich an den Admin",
 			})
 		} else if (typeof error === "string") {
-			Toast.showErrorFlag({
+			Toast.showErrorToastFlag({
 				title: "Unbekannter Fehler",
 				autoClose: false,
 				description: error,
 			})
 		} else {
-			Toast.showErrorFlag({
+			Toast.showErrorToastFlag({
 				title: "Unbekannter Fehler",
 				autoClose: false,
 				description: JSON.stringify(error),

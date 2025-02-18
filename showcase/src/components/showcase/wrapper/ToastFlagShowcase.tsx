@@ -2,13 +2,7 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import {
-	Button,
-	ToastFlagContainer,
-	Toast,
-	ToastR,
-	ToastFlagProvider,
-} from "@linked-planet/ui-kit-ts"
+import { Button, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 
 //#region toastflagShowExtendedFlag
 // add the ToastFlagContainer to the root of your app
@@ -16,7 +10,7 @@ function ExampleShowExtendedFlag() {
 	return (
 		<>
 			<div className="flex gap-4 mb-4 border-b border-b-solid border-b-border-bold pb-2">
-				<Button onClick={() => ToastR.removeAllToasts()} type="button">
+				<Button onClick={() => Toast.removeAllToasts()} type="button">
 					Remove All
 				</Button>
 			</div>
@@ -28,30 +22,18 @@ function ExampleShowExtendedFlag() {
 								title: "standard flag",
 								description: "test",
 								autoClose: false,
-								flagType: "bold",
+								type: "bold",
 							})
 						}}
 					>
 						Standard
 					</Button>
 					<Button
-						onClick={() => {
-							ToastR.showFlag({
-								title: "standard flag",
-								description: "test",
-								autoClose: false,
-								type: "bold",
-							})
-						}}
-					>
-						Standard R
-					</Button>
-					<Button
 						onClick={() =>
 							Toast.showFlag({
 								title: "1: Whoa a new flag!",
 								description: "This is a standard toast flag.",
-								flagType: "inverted",
+								type: "inverted",
 							})
 						}
 					>
@@ -59,18 +41,7 @@ function ExampleShowExtendedFlag() {
 					</Button>
 					<Button
 						onClick={() =>
-							ToastR.showFlag({
-								title: "1: Whoa a new flag!",
-								description: "This is a standard toast flag.",
-								type: "inverted",
-							})
-						}
-					>
-						Standard Inverted R
-					</Button>
-					<Button
-						onClick={() =>
-							ToastR.showFlag({
+							Toast.showFlag({
 								title: "1: This flag does not disappear!",
 								description:
 									"This is a standard not disappearing toast flag.",
@@ -95,19 +66,6 @@ function ExampleShowExtendedFlag() {
 					</Button>
 					<Button
 						onClick={() =>
-							ToastR.showFlag({
-								title: "1: Whoa a new flag!",
-								description:
-									"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
-								appearance: "success",
-								autoClose: 6000,
-							})
-						}
-					>
-						Success R
-					</Button>
-					<Button
-						onClick={() =>
 							Toast.showFlag({
 								title: "1: Whoa a new flag!",
 								description:
@@ -120,32 +78,7 @@ function ExampleShowExtendedFlag() {
 					</Button>
 					<Button
 						onClick={() =>
-							ToastR.showFlag({
-								title: "1: Whoa a new flag!",
-								description:
-									"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
-								appearance: "information",
-							})
-						}
-					>
-						Information R
-					</Button>
-					<Button
-						onClick={() =>
 							Toast.showFlag({
-								title: "1: Whoa a new flag!",
-								description:
-									"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
-								appearance: "information",
-								flagType: "bold",
-							})
-						}
-					>
-						Information Bold
-					</Button>
-					<Button
-						onClick={() =>
-							ToastR.showFlag({
 								title: "1: Whoa a new flag!",
 								description:
 									"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
@@ -154,7 +87,7 @@ function ExampleShowExtendedFlag() {
 							})
 						}
 					>
-						Information Bold R
+						Information Bold
 					</Button>
 
 					<Button
@@ -167,17 +100,6 @@ function ExampleShowExtendedFlag() {
 						}
 					>
 						Error
-					</Button>
-					<Button
-						onClick={() =>
-							ToastR.showFlag({
-								title: "error flag",
-								description: "This is a error toast flag.",
-								appearance: "error",
-							})
-						}
-					>
-						Error R
 					</Button>
 					<Button
 						onClick={() =>
@@ -214,32 +136,7 @@ function ExampleShowExtendedFlag() {
 					>
 						Warning
 					</Button>
-					<Button
-						onClick={() =>
-							ToastR.showFlag({
-								title: "warning flag",
-								description: (
-									<div>
-										<h2>This is a discovery!</h2>
-										<p>
-											Lorem ipsum, dolor sit amet
-											consectetur adipisicing elit. Maxime
-											doloribus unde laboriosam, beatae
-											accusantium quasi itaque, illum
-											necessitatibus amet aspernatur,
-											nostrum velit quo earum error nihil.
-											Obcaecati totam harum quibusdam!
-										</p>
-									</div>
-								),
-								appearance: "warning",
-							})
-						}
-					>
-						Warning R
-					</Button>
 				</ToastFlagProvider>
-				<ToastFlagContainer />
 			</div>
 		</>
 	)
@@ -264,22 +161,11 @@ function ExampleShowFlags() {
 				</Button>
 				<Button
 					onClick={() =>
-						ToastR.showFlag({
-							title: "1: Whoa a new flag!",
-							description: "This is a standard toast flag.",
-							autoClose: 2000,
-						})
-					}
-				>
-					Standard R
-				</Button>
-				<Button
-					onClick={() =>
 						Toast.showFlag({
 							title: "1: This flag does not disappear!",
 							description: "...and is at the bottom left",
 							autoClose: false,
-							position: "bottom-left",
+							//position: "bottom-left",
 						})
 					}
 				>
@@ -291,7 +177,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Default Style",
 							description: "The default style is rather dark.",
-							flagType: "bold",
+							type: "bold",
 							autoClose: false,
 						})
 					}
@@ -304,7 +190,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Pale Style",
 							description: "Pale colored background.",
-							flagType: "pale",
+							type: "pale",
 						})
 					}
 				>
@@ -314,7 +200,7 @@ function ExampleShowFlags() {
 					onClick={() =>
 						Toast.showFlag({
 							title: "1: Whoa a new flag! Inverted Style",
-							flagType: "inverted",
+							type: "inverted",
 							description:
 								"The inverted style is the default one for the simple flags.",
 						})
@@ -326,7 +212,7 @@ function ExampleShowFlags() {
 					onClick={() =>
 						Toast.showFlag({
 							title: "Default Style",
-							flagType: "bold",
+							type: "bold",
 							description:
 								"Using the default flag style (see flags).",
 						})
@@ -339,7 +225,7 @@ function ExampleShowFlags() {
 					onClick={() =>
 						Toast.showFlag({
 							title: "Pale Style",
-							flagType: "pale",
+							type: "pale",
 							description:
 								"Using the pale flag style (see flags).",
 						})
@@ -351,7 +237,7 @@ function ExampleShowFlags() {
 					onClick={() =>
 						Toast.showFlag({
 							title: "Information",
-							flagType: "pale",
+							type: "pale",
 							description: "Pale flag style (see flags).",
 						})
 					}
@@ -373,7 +259,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Discovery",
 							description: "This is a bold discovery toast.",
-							flagType: "bold",
+							type: "bold",
 						})
 					}
 				>
@@ -384,7 +270,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Discovery",
 							description: "This is a pale discovery toast.",
-							flagType: "pale",
+							type: "pale",
 						})
 					}
 				>
@@ -405,7 +291,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "error flag",
 							description: "This is a error toast flag.",
-							flagType: "bold",
+							type: "bold",
 						})
 					}
 				>
@@ -416,7 +302,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "error flag",
 							description: "This is a pale error toast flag.",
-							flagType: "pale",
+							type: "pale",
 						})
 					}
 				>
@@ -437,7 +323,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Warning Flag",
 							description: "This is a bold warning toast flag.",
-							flagType: "bold",
+							type: "bold",
 						})
 					}
 				>
@@ -448,7 +334,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Warning Flag",
 							description: "This is a pale warning toast flag.",
-							flagType: "pale",
+							type: "pale",
 						})
 					}
 				>
@@ -478,7 +364,6 @@ function ExampleShowFlags() {
 					Warning
 				</Button>
 			</ToastFlagProvider>
-			<ToastFlagContainer toastWidth={"400px"} />
 		</div>
 	)
 }

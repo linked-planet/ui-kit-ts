@@ -214,7 +214,7 @@ export function Avatar({
 			id={id}
 			data-testid={testId}
 			className={twMerge(
-				"text-icon-inverse bg-surface-overlay border-surface-overlay relative box-content inline-flex flex-none select-none items-center justify-center border-2 align-middle",
+				"text-icon-inverse bg-icon-subtle border-surface-overlay relative box-content inline-flex flex-none select-none items-center justify-center border-2 align-middle",
 				shapeStyles,
 				colorStyles,
 				!isDisabled && href ? hrefStyles : "",
@@ -231,7 +231,7 @@ export function Avatar({
 		>
 			<RAvatar.Image
 				className={twMerge(
-					"relative flex-none rounded-[inherit] bg-[inherit] object-cover",
+					"relative flex-none rounded-[inherit] object-cover bg-surface-overlay",
 				)}
 				src={src}
 				alt={name}

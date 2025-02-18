@@ -1,11 +1,10 @@
 import React, { useRef, useState } from "react"
 import type { ComponentPropsWithoutRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
-import { IconSizeHelper } from "../IconSizeHelper"
 import { useSideNavigationStore } from "./SideNavigationStore"
-import { AnimatePresence, motion } from "framer-motion"
+import { AnimatePresence, motion } from "motion/react"
 import { flushSync } from "react-dom"
-import { ArrowLeftCircleIcon, ArrowRightCircleIcon } from "lucide-react"
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
 
 const itemBaseStyles = twJoin(
 	"px-1.5 data-[selected=true]:bg-neutral-subtle-hovered group flex w-full cursor-pointer select-none items-center overflow-hidden rounded-xs",
@@ -208,9 +207,10 @@ function GoBackItem({ children, ...props }: Omit<_ButtonItemProps, "icon">) {
 	return (
 		<ButtonItem
 			iconBefore={
-				<IconSizeHelper aria-hidden>
-					<ArrowLeftCircleIcon size="12" />
-				</IconSizeHelper>
+				<ArrowLeftIcon
+					strokeWidth={3}
+					className="rounded-full p-1 bg-neutral-full size-5.5 text-text-inverse"
+				/>
 			}
 			{...props}
 		>
@@ -472,8 +472,6 @@ function NestingItem({
 		setTransitioning,
 	} = useSideNavigationStore(sideNavStoreIdent)
 
-	console.log("TRANSITIONING", _isOpen, title)
-
 	//const isOpen = getCurrentPathElement() === title && transitioning === null*/
 	if (_isOpen) {
 		return (
@@ -495,9 +493,10 @@ function NestingItem({
 				window.setTimeout(() => setTransitioning(null), animTime * 1000)
 			}}
 			iconAfter={
-				<IconSizeHelper>
-					<ArrowRightCircleIcon size="12" />
-				</IconSizeHelper>
+				<ArrowRightIcon
+					strokeWidth={3}
+					className="rounded-full p-1 bg-neutral-full size-5.5 text-text-inverse"
+				/>
 			}
 		>
 			{title}

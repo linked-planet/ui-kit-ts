@@ -106,7 +106,6 @@
 	/* Disabled */
 	--color-disabled: var(--ds-background-disabled, oklch(from var(--color-gray-50) l c h / 60%));
 	--color-disabled-text: var(--color-text-disabled);
-	--color-icon-disabled: var(--ds-icon-disabled, oklch(from var(--color-gray-600) l c h / 30%));
 
 	/* Neutral */
 	--color-neutral: var(--ds-background-neutral,  var(--color-gray-200));
@@ -228,8 +227,14 @@
 	--color-border-separator: var(--ds-menu-separator-color, var(--color-border));
 
 	/* Icon */
-	--color-icon: var(--ds-icon, var(--color-gray-600));
+	--color-icon: var(--ds-icon, var(--color-gray-500));
 	--color-icon-inverse: var(--ds-icon-inverse, var(--color-gray-50));
+	--color-icon-subtle: var(--ds-icon-subtle, var(--color-gray-400));
+	--color-icon-disabled: var(--ds-icon-disabled, var(--color-gray-200));
+	--color-icon-success: var(--ds-icon-success, var(--color-green-700));
+	--color-icon-warning: var(--ds-icon-warning, var(--color-yellow-700));
+	--color-icon-danger: var(--ds-icon-danger, var(--color-red-700));
+	--color-icon-discovery: var(--ds-icon-discovery, var(--color-violet-700));
 
 	/* Skeleton */
 	--color-skeleton: var(--ds-skeleton, var(--color-gray-100));

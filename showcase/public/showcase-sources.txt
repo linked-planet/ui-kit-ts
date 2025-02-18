@@ -4131,149 +4131,155 @@ import { TriangleAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Flag, Toast, ToastFlagContainer } from "@linked-planet/ui-kit-ts"
-
-import "react-toastify/dist/ReactToastify.min.css"
+import { Flag, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 
 function FlagShowcase(props: ShowcaseProps) {
 	//#region flag
 	const example = (
-		<div className="flex flex-col gap-3">
-			<Flag
-				title="Flag"
-				icon={
-					<TriangleAlertIcon aria-label="Triangle Alert" size="12" />
-				}
-				description="Action Flag"
-				id="testflag"
-				testId="testflag"
-				actions={[
-					{
-						content: "Action",
-						onClick: () => {
-							console.log("Action clicked")
-							Toast.showFlag({
-								title: "Flag",
-								description: "Action Flag",
-								autoClose: false,
-							})
+		<ToastFlagProvider>
+			<div className="flex flex-col gap-3">
+				<Flag
+					title="Flag"
+					icon={
+						<TriangleAlertIcon
+							aria-label="Triangle Alert"
+							size="12"
+						/>
+					}
+					description="Action Flag"
+					id="testflag"
+					testId="testflag"
+					actions={[
+						{
+							content: "Action",
+							onClick: () => {
+								console.log("Action clicked")
+								Toast.showFlag({
+									title: "Flag",
+									description: "Action Flag",
+									autoClose: false,
+								})
+							},
 						},
-					},
-				]}
-			/>
-			<Flag
-				title="Flag"
-				description="Action Flag"
-				actions={[{ content: "Action", onClick: () => {} }]}
-				type="inverted"
-			/>
+					]}
+				/>
+				<Flag
+					title="Flag"
+					description="Action Flag"
+					actions={[{ content: "Action", onClick: () => {} }]}
+					type="inverted"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Action Flag"
-				actions={[{ content: "Action", onClick: () => {} }]}
-				type="pale"
-			/>
+				<Flag
+					title="Flag"
+					description="Action Flag"
+					actions={[{ content: "Action", onClick: () => {} }]}
+					type="pale"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Success Flag"
-				appearance="success"
-			/>
+				<Flag
+					title="Flag"
+					description="Success Flag"
+					appearance="success"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Success Flag"
-				appearance="success"
-				type="inverted"
-			/>
+				<Flag
+					title="Flag"
+					description="Success Flag"
+					appearance="success"
+					type="inverted"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Success Flag"
-				appearance="success"
-				type="pale"
-			/>
+				<Flag
+					title="Flag"
+					description="Success Flag"
+					appearance="success"
+					type="pale"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Warning Flag"
-				appearance="warning"
-			/>
+				<Flag
+					title="Flag"
+					description="Warning Flag"
+					appearance="warning"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Warning Flag"
-				appearance="warning"
-				type="inverted"
-			/>
+				<Flag
+					title="Flag"
+					description="Warning Flag"
+					appearance="warning"
+					type="inverted"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Warning Flag"
-				appearance="warning"
-				type="pale"
-			/>
+				<Flag
+					title="Flag"
+					description="Warning Flag"
+					appearance="warning"
+					type="pale"
+				/>
 
-			<Flag title="Flag" description="Error Flag" appearance="error" />
+				<Flag
+					title="Flag"
+					description="Error Flag"
+					appearance="error"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Error Flag"
-				appearance="error"
-				type="inverted"
-			/>
+				<Flag
+					title="Flag"
+					description="Error Flag"
+					appearance="error"
+					type="inverted"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Error Flag"
-				appearance="error"
-				type="pale"
-			/>
+				<Flag
+					title="Flag"
+					description="Error Flag"
+					appearance="error"
+					type="pale"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Information Flag"
-				appearance="information"
-				actions={[{ content: "Action", onClick: () => {} }]}
-			/>
+				<Flag
+					title="Flag"
+					description="Information Flag"
+					appearance="information"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Information Flag"
-				appearance="information"
-				type="inverted"
-			/>
+				<Flag
+					title="Flag"
+					description="Information Flag"
+					appearance="information"
+					type="inverted"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Information Flag"
-				appearance="information"
-				type="pale"
-			/>
+				<Flag
+					title="Flag"
+					description="Information Flag"
+					appearance="information"
+					type="pale"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Discovery Flag"
-				appearance="discovery"
-				actions={[{ content: "Action", onClick: () => {} }]}
-			/>
+				<Flag
+					title="Flag"
+					description="Discovery Flag"
+					appearance="discovery"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Discovery Flag"
-				appearance="discovery"
-				type="inverted"
-			/>
+				<Flag
+					title="Flag"
+					description="Discovery Flag"
+					appearance="discovery"
+					type="inverted"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Discovery Flag"
-				appearance="discovery"
-				type="pale"
-			/>
-			<ToastFlagContainer />
-		</div>
+				<Flag
+					title="Flag"
+					description="Discovery Flag"
+					appearance="discovery"
+					type="pale"
+				/>
+			</div>
+		</ToastFlagProvider>
 	)
 	//#endregion flag
 
@@ -9248,13 +9254,7 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import {
-	Button,
-	ToastFlagContainer,
-	Toast,
-	ToastR,
-	ToastFlagProvider,
-} from "@linked-planet/ui-kit-ts"
+import { Button, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 
 //#region toastflagShowExtendedFlag
 // add the ToastFlagContainer to the root of your app
@@ -9262,7 +9262,7 @@ function ExampleShowExtendedFlag() {
 	return (
 		<>
 			<div className="flex gap-4 mb-4 border-b border-b-solid border-b-border-bold pb-2">
-				<Button onClick={() => ToastR.removeAllToasts()} type="button">
+				<Button onClick={() => Toast.removeAllToasts()} type="button">
 					Remove All
 				</Button>
 			</div>
@@ -9274,30 +9274,18 @@ function ExampleShowExtendedFlag() {
 								title: "standard flag",
 								description: "test",
 								autoClose: false,
-								flagType: "bold",
+								type: "bold",
 							})
 						}}
 					>
 						Standard
 					</Button>
 					<Button
-						onClick={() => {
-							ToastR.showFlag({
-								title: "standard flag",
-								description: "test",
-								autoClose: false,
-								type: "bold",
-							})
-						}}
-					>
-						Standard R
-					</Button>
-					<Button
 						onClick={() =>
 							Toast.showFlag({
 								title: "1: Whoa a new flag!",
 								description: "This is a standard toast flag.",
-								flagType: "inverted",
+								type: "inverted",
 							})
 						}
 					>
@@ -9305,18 +9293,7 @@ function ExampleShowExtendedFlag() {
 					</Button>
 					<Button
 						onClick={() =>
-							ToastR.showFlag({
-								title: "1: Whoa a new flag!",
-								description: "This is a standard toast flag.",
-								type: "inverted",
-							})
-						}
-					>
-						Standard Inverted R
-					</Button>
-					<Button
-						onClick={() =>
-							ToastR.showFlag({
+							Toast.showFlag({
 								title: "1: This flag does not disappear!",
 								description:
 									"This is a standard not disappearing toast flag.",
@@ -9341,19 +9318,6 @@ function ExampleShowExtendedFlag() {
 					</Button>
 					<Button
 						onClick={() =>
-							ToastR.showFlag({
-								title: "1: Whoa a new flag!",
-								description:
-									"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
-								appearance: "success",
-								autoClose: 6000,
-							})
-						}
-					>
-						Success R
-					</Button>
-					<Button
-						onClick={() =>
 							Toast.showFlag({
 								title: "1: Whoa a new flag!",
 								description:
@@ -9366,32 +9330,7 @@ function ExampleShowExtendedFlag() {
 					</Button>
 					<Button
 						onClick={() =>
-							ToastR.showFlag({
-								title: "1: Whoa a new flag!",
-								description:
-									"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
-								appearance: "information",
-							})
-						}
-					>
-						Information R
-					</Button>
-					<Button
-						onClick={() =>
 							Toast.showFlag({
-								title: "1: Whoa a new flag!",
-								description:
-									"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
-								appearance: "information",
-								flagType: "bold",
-							})
-						}
-					>
-						Information Bold
-					</Button>
-					<Button
-						onClick={() =>
-							ToastR.showFlag({
 								title: "1: Whoa a new flag!",
 								description:
 									"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
@@ -9400,7 +9339,7 @@ function ExampleShowExtendedFlag() {
 							})
 						}
 					>
-						Information Bold R
+						Information Bold
 					</Button>
 
 					<Button
@@ -9413,17 +9352,6 @@ function ExampleShowExtendedFlag() {
 						}
 					>
 						Error
-					</Button>
-					<Button
-						onClick={() =>
-							ToastR.showFlag({
-								title: "error flag",
-								description: "This is a error toast flag.",
-								appearance: "error",
-							})
-						}
-					>
-						Error R
 					</Button>
 					<Button
 						onClick={() =>
@@ -9460,32 +9388,7 @@ function ExampleShowExtendedFlag() {
 					>
 						Warning
 					</Button>
-					<Button
-						onClick={() =>
-							ToastR.showFlag({
-								title: "warning flag",
-								description: (
-									<div>
-										<h2>This is a discovery!</h2>
-										<p>
-											Lorem ipsum, dolor sit amet
-											consectetur adipisicing elit. Maxime
-											doloribus unde laboriosam, beatae
-											accusantium quasi itaque, illum
-											necessitatibus amet aspernatur,
-											nostrum velit quo earum error nihil.
-											Obcaecati totam harum quibusdam!
-										</p>
-									</div>
-								),
-								appearance: "warning",
-							})
-						}
-					>
-						Warning R
-					</Button>
 				</ToastFlagProvider>
-				<ToastFlagContainer />
 			</div>
 		</>
 	)
@@ -9510,22 +9413,11 @@ function ExampleShowFlags() {
 				</Button>
 				<Button
 					onClick={() =>
-						ToastR.showFlag({
-							title: "1: Whoa a new flag!",
-							description: "This is a standard toast flag.",
-							autoClose: 2000,
-						})
-					}
-				>
-					Standard R
-				</Button>
-				<Button
-					onClick={() =>
 						Toast.showFlag({
 							title: "1: This flag does not disappear!",
 							description: "...and is at the bottom left",
 							autoClose: false,
-							position: "bottom-left",
+							//position: "bottom-left",
 						})
 					}
 				>
@@ -9537,7 +9429,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Default Style",
 							description: "The default style is rather dark.",
-							flagType: "bold",
+							type: "bold",
 							autoClose: false,
 						})
 					}
@@ -9550,7 +9442,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Pale Style",
 							description: "Pale colored background.",
-							flagType: "pale",
+							type: "pale",
 						})
 					}
 				>
@@ -9560,7 +9452,7 @@ function ExampleShowFlags() {
 					onClick={() =>
 						Toast.showFlag({
 							title: "1: Whoa a new flag! Inverted Style",
-							flagType: "inverted",
+							type: "inverted",
 							description:
 								"The inverted style is the default one for the simple flags.",
 						})
@@ -9572,7 +9464,7 @@ function ExampleShowFlags() {
 					onClick={() =>
 						Toast.showFlag({
 							title: "Default Style",
-							flagType: "bold",
+							type: "bold",
 							description:
 								"Using the default flag style (see flags).",
 						})
@@ -9585,7 +9477,7 @@ function ExampleShowFlags() {
 					onClick={() =>
 						Toast.showFlag({
 							title: "Pale Style",
-							flagType: "pale",
+							type: "pale",
 							description:
 								"Using the pale flag style (see flags).",
 						})
@@ -9597,7 +9489,7 @@ function ExampleShowFlags() {
 					onClick={() =>
 						Toast.showFlag({
 							title: "Information",
-							flagType: "pale",
+							type: "pale",
 							description: "Pale flag style (see flags).",
 						})
 					}
@@ -9619,7 +9511,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Discovery",
 							description: "This is a bold discovery toast.",
-							flagType: "bold",
+							type: "bold",
 						})
 					}
 				>
@@ -9630,7 +9522,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Discovery",
 							description: "This is a pale discovery toast.",
-							flagType: "pale",
+							type: "pale",
 						})
 					}
 				>
@@ -9651,7 +9543,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "error flag",
 							description: "This is a error toast flag.",
-							flagType: "bold",
+							type: "bold",
 						})
 					}
 				>
@@ -9662,7 +9554,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "error flag",
 							description: "This is a pale error toast flag.",
-							flagType: "pale",
+							type: "pale",
 						})
 					}
 				>
@@ -9683,7 +9575,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Warning Flag",
 							description: "This is a bold warning toast flag.",
-							flagType: "bold",
+							type: "bold",
 						})
 					}
 				>
@@ -9694,7 +9586,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Warning Flag",
 							description: "This is a pale warning toast flag.",
-							flagType: "pale",
+							type: "pale",
 						})
 					}
 				>
@@ -9724,7 +9616,6 @@ function ExampleShowFlags() {
 					Warning
 				</Button>
 			</ToastFlagProvider>
-			<ToastFlagContainer toastWidth={"400px"} />
 		</div>
 	)
 }
@@ -9964,7 +9855,7 @@ import {
 	ButtonGroup,
 	Modal,
 	Select,
-	ToastFlagContainer,
+	ToastFlagProvider,
 } from "@linked-planet/ui-kit-ts"
 import { Tour, TourStep } from "@linked-planet/ui-kit-ts"
 import { useMemo, useState } from "react"
@@ -10066,87 +9957,88 @@ function TourExample() {
 	}, [])
 
 	return (
-		<div className="bg-surface">
-			<ButtonGroup>
-				<div id="tour-start" className="flex justify-center flex-1">
-					<Button
-						type="button"
-						className="px-2"
-						onClick={() => setActive(true)}
-						appearance="primary"
-					>
-						Tour starten
-					</Button>
-					<Tour
-						isActive={isActive}
-						setActive={setActive}
-						steps={steps}
-						skipOnError={false}
-						showInfoAndError={true}
-						beforeAll={() => {
-							// initialize dummy data or other inits before tour starts
-							console.info("Starting Tour")
-						}}
-						afterAll={() => {
-							// cleanup dummy data or other inits after tour finished
-							console.info("Ending Tour")
-						}}
-					/>
-				</div>
-				<Button
-					data-id="Test-1"
-					//onClick={() => setPopup(true)}
-					id="joyride-first"
-				>
-					First step
-				</Button>
-				<Button data-id="Test-2" id="joyride-second">
-					Second step
-				</Button>
-			</ButtonGroup>
-			<Modal.Container
-				open={popup}
-				//defaultOpen={true}
-				onOpenChange={(opened) => {
-					if (!opened) setPopup(false)
-				}}
-				//shouldCloseOnEscapePress={false}
-				shouldCloseOnOverlayClick={false} // this is required, the show "clicks" outside of the dialog closing the modal, which results in the failing of the next step because the element is not mounted anymore
-				accessibleDialogDescription="This is a modal dialog example"
-			>
-				<Modal.Header>
-					<Modal.Title accessibleDialogTitle="Sample Modal">
-						Sample Modal
-					</Modal.Title>
-					<Button
-						appearance="link"
-						onClick={() => setPopup(false)}
-						className="text-text p-0"
-					>
-						<CrossIcon aria-label="Close popup" size="12" />
-					</Button>
-				</Modal.Header>
-				<Modal.Body>
-					<div>
-						<p>This is the body of the modal.</p>
-					</div>
-					<Select
-						id="test-select"
-						data-id="test-select"
-						placeholder="Choose..."
-						options={[]}
-					/>
-				</Modal.Body>
-				<Modal.Footer>
-					<Modal.CloseTrigger>
-						<Button appearance="primary" className="z-0">
-							Close
+		<ToastFlagProvider>
+			<div className="bg-surface">
+				<ButtonGroup>
+					<div id="tour-start" className="flex justify-center flex-1">
+						<Button
+							type="button"
+							className="px-2"
+							onClick={() => setActive(true)}
+							appearance="primary"
+						>
+							Tour starten
 						</Button>
-					</Modal.CloseTrigger>
-				</Modal.Footer>
-			</Modal.Container>
-			<ToastFlagContainer />
-		</div>
+						<Tour
+							isActive={isActive}
+							setActive={setActive}
+							steps={steps}
+							skipOnError={false}
+							showInfoAndError={true}
+							beforeAll={() => {
+								// initialize dummy data or other inits before tour starts
+								console.info("Starting Tour")
+							}}
+							afterAll={() => {
+								// cleanup dummy data or other inits after tour finished
+								console.info("Ending Tour")
+							}}
+						/>
+					</div>
+					<Button
+						data-id="Test-1"
+						//onClick={() => setPopup(true)}
+						id="joyride-first"
+					>
+						First step
+					</Button>
+					<Button data-id="Test-2" id="joyride-second">
+						Second step
+					</Button>
+				</ButtonGroup>
+				<Modal.Container
+					open={popup}
+					//defaultOpen={true}
+					onOpenChange={(opened) => {
+						if (!opened) setPopup(false)
+					}}
+					//shouldCloseOnEscapePress={false}
+					shouldCloseOnOverlayClick={false} // this is required, the show "clicks" outside of the dialog closing the modal, which results in the failing of the next step because the element is not mounted anymore
+					accessibleDialogDescription="This is a modal dialog example"
+				>
+					<Modal.Header>
+						<Modal.Title accessibleDialogTitle="Sample Modal">
+							Sample Modal
+						</Modal.Title>
+						<Button
+							appearance="link"
+							onClick={() => setPopup(false)}
+							className="text-text p-0"
+						>
+							<CrossIcon aria-label="Close popup" size="12" />
+						</Button>
+					</Modal.Header>
+					<Modal.Body>
+						<div>
+							<p>This is the body of the modal.</p>
+						</div>
+						<Select
+							id="test-select"
+							data-id="test-select"
+							placeholder="Choose..."
+							options={[]}
+						/>
+					</Modal.Body>
+					<Modal.Footer>
+						<Modal.CloseTrigger>
+							<Button appearance="primary" className="z-0">
+								Close
+							</Button>
+						</Modal.CloseTrigger>
+					</Modal.Footer>
+				</Modal.Container>
+			</div>
+		</ToastFlagProvider>
 	)
 }
 
@@ -10209,42 +10101,43 @@ function TourSkipExample() {
 	}, [])
 
 	return (
-		<div className="bg-surface">
-			<ButtonGroup>
-				<div id="tour-start" className="flex justify-center flex-1">
-					<Button
-						type="button"
-						className="px-2"
-						onClick={() => setActive(true)}
-						appearance="primary"
-					>
-						Tour starten
+		<ToastFlagProvider>
+			<div className="bg-surface">
+				<ButtonGroup>
+					<div id="tour-start" className="flex justify-center flex-1">
+						<Button
+							type="button"
+							className="px-2"
+							onClick={() => setActive(true)}
+							appearance="primary"
+						>
+							Tour starten
+						</Button>
+						<Tour
+							isActive={isActive}
+							setActive={setActive}
+							steps={steps}
+							skipOnError={true}
+							showInfoAndError={true}
+							beforeAll={() => {
+								// initialize dummy data or other inits before tour starts
+								console.info("Starting Tour")
+							}}
+							afterAll={() => {
+								// cleanup dummy data or other inits after tour finished
+								console.info("Ending Tour")
+							}}
+						/>
+					</div>
+					<Button data-id="Test-1" id="joyride-first">
+						First step
 					</Button>
-					<Tour
-						isActive={isActive}
-						setActive={setActive}
-						steps={steps}
-						skipOnError={true}
-						showInfoAndError={true}
-						beforeAll={() => {
-							// initialize dummy data or other inits before tour starts
-							console.info("Starting Tour")
-						}}
-						afterAll={() => {
-							// cleanup dummy data or other inits after tour finished
-							console.info("Ending Tour")
-						}}
-					/>
-				</div>
-				<Button data-id="Test-1" id="joyride-first">
-					First step
-				</Button>
-				<Button data-id="Test-2" id="joyride-third">
-					Third step
-				</Button>
-			</ButtonGroup>
-			<ToastFlagContainer />
-		</div>
+					<Button data-id="Test-2" id="joyride-third">
+						Third step
+					</Button>
+				</ButtonGroup>
+			</div>
+		</ToastFlagProvider>
 	)
 }
 
