@@ -2,7 +2,7 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { IconSizeHelper, SideNavigation } from "@linked-planet/ui-kit-ts"
-import {
+/*import {
 	SideNavigation as AKSideNavigation,
 	NavigationHeader as AKNavigationHeader,
 	NavigationContent as AKNavigationContent,
@@ -15,9 +15,9 @@ import {
 	Header as AKHeader,
 	NestingItem as AKNestingItem,
 	NestableNavigationContent as AKNestableNavigationContent,
-} from "@atlaskit/side-navigation"
+} from "@atlaskit/side-navigation"*/
 
-import ActivityIcon from "@atlaskit/icon/glyph/activity"
+import { ActivityIcon } from "lucide-react"
 
 //#region side-nav-example
 function SideNavExample() {
@@ -52,8 +52,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="12"
 									/>
 								</IconSizeHelper>
 							}
@@ -70,8 +70,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="16"
 									/>
 								</IconSizeHelper>
 							}
@@ -84,8 +84,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="16"
 									/>
 								</IconSizeHelper>
 							}
@@ -126,7 +126,7 @@ function SideNavExample() {
 			</div>
 
 			<div className="h-[350px]">
-				<AKSideNavigation label="">
+				{/*<AKSideNavigation label="">
 					<AKNavigationHeader>
 						<AKHeader>test header</AKHeader>
 					</AKNavigationHeader>
@@ -136,8 +136,8 @@ function SideNavExample() {
 								iconBefore={
 									<IconSizeHelper>
 										<ActivityIcon
-											label="Activity"
-											size="large"
+											aria-label="Activity"
+											size="12"
 										/>
 									</IconSizeHelper>
 								}
@@ -154,8 +154,8 @@ function SideNavExample() {
 										iconBefore={
 											<IconSizeHelper>
 												<ActivityIcon
-													label="Activity"
-													size="large"
+													aria-label="Activity"
+													size="12"
 												/>
 											</IconSizeHelper>
 										}
@@ -172,8 +172,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="12"
 									/>
 								</IconSizeHelper>
 							}
@@ -187,8 +187,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="16"
 									/>
 								</IconSizeHelper>
 							}
@@ -201,8 +201,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="16"
 									/>
 								</IconSizeHelper>
 							}
@@ -232,7 +232,7 @@ function SideNavExample() {
 					<AKNavigationFooter>
 						<div>test footer</div>
 					</AKNavigationFooter>
-				</AKSideNavigation>
+				</AKSideNavigation>*/}
 			</div>
 		</div>
 	)

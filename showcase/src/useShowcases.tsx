@@ -15,10 +15,8 @@ import ColorsShowcase from "./components/showcase/wrapper/ColorsShowcase"
 import DateTimePickerShowcase from "./components/showcase/wrapper/DateTimePickerShowcase"
 import DropDownMenuShowcase from "./components/showcase/wrapper/DropdownMenuShowcase"
 import DataTableShowcase from "./components/showcase/wrapper/DataTableShowcase"
-import EmptyStateShowcase from "./components/showcase/wrapper/EmptyStateShowcase"
 import FiltersShowcase from "./components/showcase/wrapper/FiltersShowcase"
 import FlagShowcase from "./components/showcase/wrapper/FlagShowcase"
-import IconShowcase from "./components/showcase/wrapper/IconShowcase"
 import IconSizeHelperShowcase from "./components/showcase/wrapper/IconSizeHelperShowcase"
 import InlineMessageShowcase from "./components/showcase/wrapper/InlineMessageShowcase"
 import InputShowcase from "./components/showcase/wrapper/InputShowcase"
@@ -111,9 +109,6 @@ export default function useShowcases({
 			Dropdown: (
 				<DropDownMenuShowcase overallSourceCode={overallSourceCode} />
 			),
-			"Empty State": (
-				<EmptyStateShowcase overallSourceCode={overallSourceCode} />
-			),
 			"Event List": (
 				<EventListShowcase overallSourceCode={overallSourceCode} />
 			),
@@ -128,7 +123,6 @@ export default function useShowcases({
 					overallSourceCode={overallSourceCode}
 				/>
 			),
-			Icon: <IconShowcase overallSourceCode={overallSourceCode} />,
 			"Icon Size Helper": (
 				<IconSizeHelperShowcase overallSourceCode={overallSourceCode} />
 			),

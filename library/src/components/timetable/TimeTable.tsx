@@ -701,7 +701,7 @@ function moveNowBar(
 	if (!nowBar) {
 		nowBar = document.createElement("div")
 		nowBar.className =
-			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-[2] w-[2px]"
+			"absolute opacity-60 bg-orange-bold top-0 bottom-0 z-2 w-[2px]"
 		nowBar.id = "nowBar"
 		nowBarRef.current = nowBar
 	}

@@ -1,9 +1,7 @@
-import React from "react"
+import { CircleCheckIcon, OctagonAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import ErrorIcon from "@atlaskit/icon/glyph/error"
-import CheckCircleOutlineIcon from "@atlaskit/icon/glyph/check-circle-outline"
 import { Banner, IconSizeHelper } from "@linked-planet/ui-kit-ts"
 
 function BannerShowcase(props: ShowcaseProps) {
@@ -16,9 +14,10 @@ function BannerShowcase(props: ShowcaseProps) {
 				appearance="error"
 				icon={
 					<IconSizeHelper>
-						<ErrorIcon
-							label=""
-							secondaryColor="var(--ds-background-danger-bold, #DE350B)"
+						<OctagonAlertIcon
+							aria-label="Error"
+							size="24"
+							strokeWidth={2}
 						/>
 					</IconSizeHelper>
 				}
@@ -29,7 +28,11 @@ function BannerShowcase(props: ShowcaseProps) {
 				appearance="success"
 				icon={
 					<IconSizeHelper>
-						<CheckCircleOutlineIcon label="" />
+						<CircleCheckIcon
+							aria-label="Check Circle"
+							size="24"
+							strokeWidth={2}
+						/>
 					</IconSizeHelper>
 				}
 			>

@@ -2,7 +2,7 @@ import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import CrossIcon from "@atlaskit/icon/glyph/cross"
+import { XIcon } from "lucide-react"
 /*import {
 	default as AKModal,
 	ModalBody as AKModalBody,
@@ -181,7 +181,7 @@ function ControlledExample() {
 							onClick={() => setIsModalActive(false)}
 							className="text-text p-0"
 						>
-							<CrossIcon label="Close popup" />
+							<XIcon aria-label="Close popup" size="12" />
 						</Button>
 					</Modal.Header>
 					<Modal.Body>

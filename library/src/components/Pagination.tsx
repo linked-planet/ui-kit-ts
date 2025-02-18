@@ -1,12 +1,11 @@
-import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
-import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
 import { useEffect, useMemo, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Dropdown, type DropdownMenuProps } from "./DropdownMenu"
 import { IconSizeHelper } from "./IconSizeHelper"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
 const triggerClassName =
-	"h-8 hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded bg-transparent p-1.5"
+	"h-8 hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded-xs bg-transparent p-1.5"
 
 function PageSizeSelector({
 	pageSize,
@@ -199,7 +198,7 @@ function PaginationPageHandler<P extends string | number>({
 						type="button"
 					>
 						<IconSizeHelper>
-							<ChevronLeftLargeIcon size="medium" label="" />
+							<ChevronLeftIcon size="16" aria-label="page left" />
 						</IconSizeHelper>
 					</button>
 				</li>
@@ -208,7 +207,7 @@ function PaginationPageHandler<P extends string | number>({
 						{page !== "..." ? (
 							<button
 								className={twMerge(
-									"flex cursor-pointer h-8 min-w-8 select-none items-center justify-center rounded p-1.5 border-0 border-none border-transparent bg-transparent",
+									"flex cursor-pointer h-8 min-w-8 select-none items-center justify-center rounded-xs p-1.5 border-0 border-none border-transparent bg-transparent",
 									"data-[current=true]:bg-selected data-[current=true]:text-selected-text-inverse data-[current=true]:cursor-default",
 									"hover:bg-neutral-hovered active:bg-neutral-pressed",
 									pageButtonClassName,
@@ -244,7 +243,7 @@ function PaginationPageHandler<P extends string | number>({
 						) : (
 							<div
 								key={page}
-								className="flex h-8 w-8 select-none items-center justify-center rounded p-1.5"
+								className="flex h-8 w-8 select-none items-center justify-center rounded-xs p-1.5"
 								aria-hidden="true"
 							>
 								{page} {/* is "..." */}
@@ -276,7 +275,10 @@ function PaginationPageHandler<P extends string | number>({
 						style={pageButtonStyle}
 					>
 						<IconSizeHelper>
-							<ChevronRightLargeIcon size="medium" label="" />
+							<ChevronRightIcon
+								size="16"
+								laria-abel="page right"
+							/>
 						</IconSizeHelper>
 					</button>
 				</li>

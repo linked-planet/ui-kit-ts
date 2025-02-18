@@ -38,7 +38,7 @@ export function DragItem({
 							{...draggableProps}
 							style={dragStyle}
 							className={twMerge(
-								"flex h-full w-full bg-surface border-border border rounded-sm",
+								"flex h-full w-full bg-surface border-border border rounded-xs",
 								className,
 							)}
 							ref={innerRef}

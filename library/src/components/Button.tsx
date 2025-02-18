@@ -69,13 +69,13 @@ export type ButtonProps = {
 const ButtonStyles: { [style in ButtonAppearance]: string } = {
 	primary: twJoin(
 		"bg-brand-bold hover:bg-brand-bold-hovered active:bg-brand-bold-pressed text-text-inverse",
-		"data-[inverted]:bg-brand data-[inverted]:hover:bg-brand-hovered data-[inverted]:active:bg-brand-pressed",
-		"data-[inverted]:border-brand-bold data-[inverted]:text-brand-text data-[inverted]:border-solid",
+		"data-inverted:bg-brand data-inverted:hover:bg-brand-hovered data-inverted:active:bg-brand-pressed",
+		"data-inverted:border-brand-bold data-inverted:text-brand-text data-inverted:border-solid",
 	),
 
 	default: twJoin(
 		"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",
-		"data-[inverted]:bg-transparent data-[inverted]:border-neutral-bold data-[inverted]:border-solid data-[inverted]:hover:bg-neutral-hovered data-[inverted]:active:bg-neutral-pressed",
+		"data-inverted:bg-transparent data-inverted:border-neutral-bold data-inverted:border-solid data-inverted:hover:bg-neutral-hovered data-inverted:active:bg-neutral-pressed",
 	),
 	subtle: "bg-neutral-subtle hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed text-text",
 	link: "bg-transparent text-link hover:underline",
@@ -83,23 +83,23 @@ const ButtonStyles: { [style in ButtonAppearance]: string } = {
 		"bg-transparent text-text-subtlest hover:text-text-subtle hover:underline",
 	warning: twJoin(
 		"bg-warning-bold hover:bg-warning-bold-hovered active:bg-warning-bold-pressed text-text-inverse",
-		"data-[inverted]:bg-warning data-[inverted]:hover:bg-warning-hovered data-[inverted]:active:bg-warning-pressed",
-		"data-[inverted]:border-warning-bold data-[inverted]:text-warning-text data-[inverted]:border-solid",
+		"data-inverted:bg-warning data-inverted:hover:bg-warning-hovered data-inverted:active:bg-warning-pressed",
+		"data-inverted:border-warning-bold data-inverted:text-warning-text data-inverted:border-solid",
 	),
 	danger: twJoin(
 		"bg-danger-bold hover:bg-danger-bold-hovered active:bg-danger-bold-pressed text-text-inverse",
-		"data-[inverted]:bg-danger data-[inverted]:hover:bg-danger-hovered data-[inverted]:active:bg-danger-pressed",
-		"data-[inverted]:border-danger-bold data-[inverted]:text-danger-text data-[inverted]:border-solid",
+		"data-inverted:bg-danger data-inverted:hover:bg-danger-hovered data-inverted:active:bg-danger-pressed",
+		"data-inverted:border-danger-bold data-inverted:text-danger-text data-inverted:border-solid",
 	),
 	success: twJoin(
 		"bg-success-bold hover:bg-success-bold-hovered active:bg-success-bold-pressed text-text-inverse",
-		"data-[inverted]:bg-success data-[inverted]:hover:bg-success-hovered data-[inverted]:active:bg-success-pressed",
-		"data-[inverted]:border-success-bold data-[inverted]:text-success-text data-[inverted]:border-solid",
+		"data-inverted:bg-success data-inverted:hover:bg-success-hovered data-inverted:active:bg-success-pressed",
+		"data-inverted:border-success-bold data-inverted:text-success-text data-inverted:border-solid",
 	),
 	information: twJoin(
 		"bg-information-bold hover:bg-information-bold-hovered active:bg-information-bold-pressed text-text-inverse",
-		"data-[inverted]:bg-information data-[inverted]:hover:bg-information-hovered data-[inverted]:active:bg-information-pressed",
-		"data-[inverted]:border-information-bold data-[inverted]:text-information-text data-[inverted]:border-solid",
+		"data-inverted:bg-information data-inverted:hover:bg-information-hovered data-inverted:active:bg-information-pressed",
+		"data-inverted:border-information-bold data-inverted:text-information-text data-inverted:border-solid",
 	),
 } as const
 
@@ -167,13 +167,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				data-inverted={inverted}
 				id={id}
 				className={twMerge(
-					"focus-visible:outline-selected-bold relative box-border flex flex-shrink-0 cursor-pointer items-center justify-center gap-1 rounded border-2 border-transparent px-3 py-1 outline-none outline-2 outline-offset-4 focus-visible:outline",
+					"focus-visible:outline-selected-bold relative box-border flex shrink-0 cursor-pointer items-center justify-center gap-1 rounded-sm border-2 border-transparent px-3 py-1 outline-none outline-2 outline-offset-4 focus-visible:outline-solid",
 					!disabled ? ButtonStyles[appearance] : undefined,
 					`${
 						appearance !== "subtle" && appearance !== "link"
 							? "disabled:bg-disabled"
 							: ""
-					} disabled:text-disabled-text data-[inverted]:disabled:border-border disabled:cursor-not-allowed data-[inverted]:disabled:bg-transparent`,
+					} disabled:text-disabled-text data-inverted:disabled:border-border disabled:cursor-not-allowed data-inverted:disabled:bg-transparent`,
 					selected ? ButtonSelectedStyles : undefined,
 					className,
 				)}

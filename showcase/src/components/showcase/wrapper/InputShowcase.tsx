@@ -1,7 +1,6 @@
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKTextField from "@atlaskit/textfield"
 import {
 	Button,
 	ButtonGroup,
@@ -11,9 +10,7 @@ import {
 	TextArea,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
-
-import ScheduleIcon from "@atlaskit/icon/glyph/schedule"
-
+import { CalendarIcon } from "lucide-react"
 //#region input-form-example
 type FormData = {
 	testInput: string
@@ -72,13 +69,13 @@ function FormExample() {
 export default function InputShowcase(props: ShowcaseProps) {
 	const exampleAK = (
 		<Fieldset legend="Input Example">
-			<AKTextField />
+			{/*<AKTextField />
 			<AKTextField isDisabled />
 			<AKTextField placeholder="Placeholder" />
 			<AKTextField isInvalid value={"invalid"} />
 			<AKTextField isReadOnly value={"readonly"} />
 			<AKTextField type="number" defaultValue={1} />
-			<AKTextField type="number" defaultValue={1} appearance="subtle" />
+			<AKTextField type="number" defaultValue={1} appearance="subtle" />*/}
 			{/*<AKTextArea placeholder="Text Area">It wants children</AKTextArea>*/}
 		</Fieldset>
 	)
@@ -114,8 +111,8 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<Input
 				type="text"
 				defaultValue={"default text"}
-				iconAfter={<ScheduleIcon label="" />}
-				iconBefore={<ScheduleIcon label="" />}
+				iconAfter={<CalendarIcon aria-label="Calendar" size="12" />}
+				iconBefore={<CalendarIcon aria-label="Calendar" size="12" />}
 			/>
 			<TextArea placeholder="Placeholder" />
 			<TextArea placeholder="Placeholder" disabled />

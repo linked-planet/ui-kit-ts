@@ -6,4 +6,4 @@ export * from "./theming"
 export * from "./localization"
 export * from "./utils"
 
-import "./tailwind.css"
+import "../tailwind.css"

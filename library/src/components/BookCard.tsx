@@ -2,14 +2,10 @@ import type React from "react"
 import { forwardRef } from "react"
 import type { CSSProperties } from "react"
 
-import { token } from "@atlaskit/tokens"
-
 import { css } from "@emotion/css"
 
 import { twMerge } from "tailwind-merge"
 import { Collapsible } from "./Collapsible"
-
-const borderColor = token("color.border", "#091e4224")
 
 export const CardBase = forwardRef(
 	(
@@ -346,8 +342,8 @@ const CardHeaderActionsInfo = ({
 const cardBodyEntryBaseStyle = css`
 	> * {
 		padding: 12px 1rem;
-		border-bottom: 1px solid ${borderColor};
-		border-right: 1px solid ${borderColor};
+		border-bottom: 1px solid var(--color-border);
+		border-right: 1px solid var(--color-border);
 	}
 `
 const CardGridBody = ({

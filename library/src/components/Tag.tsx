@@ -1,9 +1,8 @@
-import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
 import type React from "react"
 import { type CSSProperties, useCallback, useMemo, useState } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import type { Appearance } from "../utils/appearanceTypes"
-import { IconSizeHelper } from "./IconSizeHelper"
+import { XIcon } from "lucide-react"
 
 export const TagColorOptions = [
 	"blue",
@@ -236,7 +235,7 @@ export function Tag({
 							onClick()
 						}
 					}}
-					className={`m-0 ml-0.5 flex size-4 flex-none items-center justify-center border-transparent text-[inherit] bg-transparent hover:cursor-pointer ${
+					className={`m-0 ml-0.5 p-0 flex size-4 flex-none items-center justify-center border-transparent text-inherit bg-transparent hover:cursor-pointer ${
 						!removable ? "hidden" : ""
 					}`}
 					aria-label={removeButtonLabel}
@@ -245,9 +244,7 @@ export function Tag({
 					onFocus={() => setHovered(true)}
 					onMouseLeave={() => setHovered(false)}
 				>
-					<IconSizeHelper>
-						<EditorCloseIcon size="small" label={""} />
-					</IconSizeHelper>
+					<XIcon size="10" strokeWidth={3} />
 				</button>
 			</div>
 		)

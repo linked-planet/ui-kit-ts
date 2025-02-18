@@ -12,7 +12,7 @@ import { inputBaseStyles } from "../styleHelper"
 import { ErrorHelpWrapper } from "./ErrorHelpWrapper"
 
 const inputNormalStyle =
-	"text-left border-0 border-transparent placeholder:text-text-subtlest placeholder:opacity-100 outline-none bg-transparent"
+	"text-left border-0 border-transparent placeholder:text-text-subtlest placeholder:opacity-100 outline-hidden bg-transparent"
 
 const inputDisabledStyle =
 	"disabled:text-disabled-text disabled:cursor-not-allowed"
@@ -82,7 +82,7 @@ const Input = forwardRef(
 				<input
 					ref={inputRef}
 					className={twMerge(
-						"m-0 px-[0.4rem] outline-none",
+						"m-0 px-[0.4rem] outline-hidden",
 						inputClassName,
 					)}
 					style={{

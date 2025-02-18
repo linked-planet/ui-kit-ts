@@ -7,7 +7,7 @@ import ShowcaseWrapperItem, {
 	LoadingButton as AKLoadingButton,
 } from "@atlaskit/button"*/
 import { Button, LoadingButton, ButtonGroup } from "@linked-planet/ui-kit-ts"
-import SearchIcon from "@atlaskit/icon/glyph/search"
+import { SearchIcon } from "lucide-react"
 
 function ButtonShowcase(props: ShowcaseProps) {
 	const [isLoading, setIsLoading] = useState(false)
@@ -289,8 +289,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 			<Button
 				appearance="information"
 				onClick={() => console.log("Button pressed")}
-				iconAfter={<SearchIcon label="" />}
-				iconBefore={<SearchIcon label="" />}
+				iconAfter={<SearchIcon aria-label="Search" size="12" />}
+				iconBefore={<SearchIcon aria-label="Search" size="12" />}
 			>
 				Information Button
 			</Button>
@@ -298,8 +298,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 			<Button
 				appearance="information"
 				onClick={() => console.log("Button pressed")}
-				iconAfter={<SearchIcon label="" />}
-				iconBefore={<SearchIcon label="" />}
+				iconAfter={<SearchIcon aria-label="Search" size="12" />}
+				iconBefore={<SearchIcon aria-label="Search" size="12" />}
 				inverted
 			>
 				Information Inverted Button
@@ -311,8 +311,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 					window.setTimeout(() => setIsLoading(false), 3000)
 				}}
 				loading={isLoading}
-				iconBefore={<SearchIcon label="" />}
-				iconAfter={<SearchIcon label="" />}
+				iconBefore={<SearchIcon aria-label="Search" size="12" />}
+				iconAfter={<SearchIcon aria-label="Search" size="12" />}
 				className="h-6"
 			>
 				Icon Loading Button
@@ -324,8 +324,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 					window.setTimeout(() => setIsLoading(false), 3000)
 				}}
 				loading={isLoading}
-				iconBefore={<SearchIcon label="" />}
-				iconAfter={<SearchIcon label="" />}
+				iconBefore={<SearchIcon aria-label="Search" size="12" />}
+				iconAfter={<SearchIcon aria-label="Search" size="12" />}
 				appearance="subtle-link"
 			>
 				Primary Icon Loading Button

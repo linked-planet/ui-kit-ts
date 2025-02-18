@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { AppLayout, Checkbox, PageLayout } from "@linked-planet/ui-kit-ts"
 
-import "@atlaskit/css-reset" // sets base styles of AK
 import Fillers from "./Fillers"
 
 //#region applayoutexample

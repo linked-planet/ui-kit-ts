@@ -1,15 +1,9 @@
 import type React from "react"
 import type { CSSProperties } from "react"
 
-import Tick from "@atlaskit/icon/glyph/check-circle"
-import ErrorIcon from "@atlaskit/icon/glyph/error"
-import Info from "@atlaskit/icon/glyph/info"
-import Warning from "@atlaskit/icon/glyph/warning"
-import QuestionCircleIcon from "@atlaskit/icon/glyph/question-circle"
-
 import { twMerge } from "tailwind-merge"
 import { assertUnreachable } from "../utils/assertUnreachable"
-import { IconSizeHelper } from "./IconSizeHelper"
+import { CheckIcon } from "lucide-react"
 
 export type FlagAppearance =
 	| "default"
@@ -19,12 +13,13 @@ export type FlagAppearance =
 	| "information"
 	| "discovery"
 
+export type FlagType = "bold" | "inverted" | "pale"
 export type FlagProps = {
-	title: string
+	title: React.ReactNode
 	description: React.ReactNode
 	appearance?: FlagAppearance
-	type?: "bold" | "inverted" | "pale"
-	icon?: JSX.Element
+	type?: FlagType
+	icon?: React.JSX.Element
 	actions?: FlagActionType[]
 	style?: CSSProperties
 	className?: string
@@ -94,11 +89,16 @@ export const FlagPaleStyles: {
 } as const
 
 const defaultIconStyle = "text-icon"
-const warningIconStyle = "text-warning-icon"
-const errorIconStyle = "text-danger-icon"
-const successIconStyle = "text-success-icon"
-const informationIconStyle = "text-information-icon"
-const discoveryIconStyle = "text-discovery-icon"
+const warningIconStyle =
+	"text-text-inverse font-extrabold relative border-l-transparent border-r-transparent border-t-transparent border-b-warning-border rounded-sm border-b-20 border-x-11 border-t-0 size-0"
+const errorIconStyle =
+	"bg-danger-icon rotate-45 transition text-text-inverse rounded-sm size-4 origin-center transform absolute inset-0"
+const successIconStyle =
+	"text-text-inverse bg-success-icon p-1.5 rounded-full size-6 flex items-center justify-center font-extrabold"
+const informationIconStyle =
+	"rounded-full bg-information-icon p-2 text-text-inverse size-6 flex items-center justify-center font-extrabold"
+const discoveryIconStyle =
+	"text-text-inverse font-extrabold rounded-full size-6 p-1 bg-discovery-icon flex items-center justify-center text-lg"
 
 const IconStyles: { [style in FlagAppearance]: string } = {
 	default: defaultIconStyle,
@@ -109,7 +109,7 @@ const IconStyles: { [style in FlagAppearance]: string } = {
 	discovery: discoveryIconStyle,
 } as const
 
-const defaultIconInvertedStyle = "text-text"
+/*const defaultIconInvertedStyle = "text-text"
 const warningIconInvertedStyle = "text-warning-icon"
 const errorIconInvertedStyle = "text-danger-icon"
 const successIconInvertedStyle = "text-success-icon"
@@ -123,7 +123,7 @@ const IconInvertedStyles: { [style in FlagAppearance]: string } = {
 	success: successIconInvertedStyle,
 	information: informationIconInvertedStyle,
 	discovery: discoveryIconInvertedStyle,
-} as const
+} as const*/
 
 export function FlagIcon({
 	appearance = "default",
@@ -132,10 +132,10 @@ export function FlagIcon({
 	appearance?: FlagAppearance
 	type: FlagProps["type"]
 }) {
-	const iconStyle =
-		type === "bold" || type === "pale"
+	const iconStyle = IconStyles[appearance]
+	/*type === "bold" || type === "pale"
 			? IconStyles[appearance]
-			: IconInvertedStyles[appearance]
+			: IconInvertedStyles[appearance]*/
 
 	switch (appearance) {
 		case "default": {
@@ -143,37 +143,45 @@ export function FlagIcon({
 		}
 		case "success": {
 			return (
-				<IconSizeHelper className={iconStyle}>
-					<Tick label="Success" />
-				</IconSizeHelper>
+				<CheckIcon
+					aria-label="Success"
+					strokeWidth={5}
+					className={iconStyle}
+				/>
 			)
 		}
 		case "warning": {
 			return (
-				<IconSizeHelper className={iconStyle}>
-					<Warning label="Warning" />
-				</IconSizeHelper>
+				<p aria-label="Warning" className={iconStyle}>
+					<span className="absolute -left-0.5 top-0.5">!</span>
+				</p>
 			)
 		}
 		case "information": {
 			return (
-				<IconSizeHelper className={iconStyle}>
-					<Info label="Info" />
-				</IconSizeHelper>
+				<span aria-label="Info" className={iconStyle}>
+					i
+				</span>
 			)
 		}
 		case "error": {
 			return (
-				<IconSizeHelper className={iconStyle}>
-					<ErrorIcon label="Error" />
-				</IconSizeHelper>
+				<div
+					aria-label="Error"
+					className="relative size-4 flex items-center justify-center z-0"
+				>
+					<span className={iconStyle} />
+					<span className="font-extrabold text-text-inverse z-1">
+						!
+					</span>
+				</div>
 			)
 		}
 		case "discovery": {
 			return (
-				<IconSizeHelper className={iconStyle}>
-					<QuestionCircleIcon label="Discovery" />
-				</IconSizeHelper>
+				<span aria-label="Discovery" className={iconStyle}>
+					?
+				</span>
 			)
 		}
 		default:
@@ -212,8 +220,10 @@ export function Flag({
 			}}
 			className={twMerge(
 				appStyle,
-				`grid gap-4 rounded-sm p-4 shadow-md ${
-					type === "inverted" || type === "pale" ? "border" : ""
+				`grid gap-4 rounded-xs p-4 shadow-md ${
+					type === "inverted" || type === "pale"
+						? "border border-solid"
+						: ""
 				}`,
 				className,
 			)}
@@ -231,7 +241,7 @@ export function Flag({
 						<>
 							<a
 								key={`action${i}`}
-								className="inline-block cursor-pointer text-sm"
+								className={`inline-block cursor-pointer text-sm ${type !== "bold" ? "text-link" : "text-blue-200"}`}
 								onClick={action.onClick}
 								href={action.href}
 								target={action.target}
@@ -240,7 +250,7 @@ export function Flag({
 							</a>
 							<span
 								key={`actionspacer${i}`}
-								className="bg-text-subtlest mx-1.5 inline-block h-0.5 w-0.5 rounded-full align-middle last:hidden"
+								className={`${type === "inverted" ? "bg-text-subtlest" : "bg-blue-300"} mx-1.5 inline-block h-0.5 w-0.5 rounded-full align-middle last:hidden`}
 							/>
 						</>
 					))}

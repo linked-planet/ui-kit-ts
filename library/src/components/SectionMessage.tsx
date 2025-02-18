@@ -64,7 +64,7 @@ export const SectionMessage = forwardRef(
 				}}
 				className={twMerge(
 					appStyle,
-					"grid gap-4 rounded-sm p-3.5",
+					"grid gap-4 rounded-xs p-3.5",
 					className,
 				)}
 				id={id}

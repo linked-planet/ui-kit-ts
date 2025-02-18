@@ -1,14 +1,14 @@
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
-import AKTagGroup from "@atlaskit/tag-group"
+/*import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
+import AKTagGroup from "@atlaskit/tag-group"*/
 import { TagGroup, Tag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
 		<>
-			<AKTagGroup alignment="end">
+			{/*<AKTagGroup alignment="end">
 				<AKTag
 					onBeforeRemoveAction={() => {
 						console.log("on before remove")
@@ -34,7 +34,7 @@ function TagShowcase(props: ShowcaseProps) {
 			</AKTagGroup>
 			<AKTagGroup>
 				<AKSimpleTag text="Simple Tag" color="blue" />
-			</AKTagGroup>
+			</AKTagGroup>*/}
 		</>
 	)
 
@@ -79,7 +79,8 @@ function TagShowcase(props: ShowcaseProps) {
 	//#endregion tags
 
 	const akColorTags = (
-		<AKTagGroup>
+		<>
+			{/*<AKTagGroup>
 			<AKTag color="blue" text="Blue" />
 			<AKTag color="blueLight" text="blueLight" />
 			<AKSimpleTag color="green" text="green" />
@@ -101,7 +102,8 @@ function TagShowcase(props: ShowcaseProps) {
 			<AKSimpleTag color="orange" text="orange" />
 			<AKSimpleTag color="orangeLight" text="orangeLight" />
 			<AKSimpleTag color="standard" text="standard" />
-		</AKTagGroup>
+		</AKTagGroup>*/}
+		</>
 	)
 
 	//#region tagscolors
