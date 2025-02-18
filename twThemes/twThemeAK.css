@@ -196,26 +196,26 @@
 	--color-success-icon: var(--ds-icon-success, var(--color-green-800));
 
 	/* Information */
-	--color-information: var(--ds-background-information,  var(--color-blue-200));
-	--color-information-hovered: var(--ds-background-information-hovered, var(--color-blue-300));
-	--color-information-pressed: var(--ds-background-information-pressed, var(--color-blue-400));
+	--color-information: var(--ds-background-information,  var(--color-blue-100));
+	--color-information-hovered: var(--ds-background-information-hovered, var(--color-blue-200));
+	--color-information-pressed: var(--ds-background-information-pressed, var(--color-blue-300));
 
-	--color-information-bold: var(--ds-background-information-bold,  var(--color-blue-400));
-	--color-information-bold-hovered: var(--ds-background-information-bold-hovered, var(--color-blue-500));
-	--color-information-bold-pressed: var(--ds-background-information-bold-pressed, var(--color-blue-600));
+	--color-information-bold: var(--ds-background-information-bold,  var(--color-blue-500));
+	--color-information-bold-hovered: var(--ds-background-information-bold-hovered, var(--color-blue-600));
+	--color-information-bold-pressed: var(--ds-background-information-bold-pressed, var(--color-blue-700));
 
 	--color-information-text: var(--ds-text-information, var(--color-blue-800));
 	--color-information-border: var(--ds-border-information, var(--color-blue-700));
 	--color-information-icon: var(--ds-icon-information, var(--color-blue-800));
 
 	/* Discovery */
-	--color-discovery: var(--ds-background-discovery, var(--color-violet-50));
+	--color-discovery: var(--ds-background-discovery, var(--color-violet-100));
 	--color-discovery-hovered: var(--ds-background-discovery-hovered, var(--color-violet-200));
 	--color-discovery-pressed: var(--ds-background-discovery-pressed, var(--color-violet-300));
 
-	--color-discovery-bold: var(--ds-background-discovery-bold, var(--color-violet-600));
-	--color-discovery-bold-hovered: var(--ds-background-discovery-bold-hovered, var(--color-violet-700));
-	--color-discovery-bold-pressed: var(--ds-background-discovery-bold-pressed, var(--color-violet-800));
+	--color-discovery-bold: var(--ds-background-discovery-bold, var(--color-violet-500));
+	--color-discovery-bold-hovered: var(--ds-background-discovery-bold-hovered, var(--color-violet-600));
+	--color-discovery-bold-pressed: var(--ds-background-discovery-bold-pressed, var(--color-violet-700));
 
 	--color-discovery-text: var(--ds-text-discovery, var(--color-violet-800));
 	--color-discovery-border: var(--ds-border-discovery, var(--color-violet-700));
