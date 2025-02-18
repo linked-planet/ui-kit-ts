@@ -59,7 +59,7 @@ const checkBoxInvalidStyles =
 
 //#region label styles
 const labelStyles =
-	"text-text-subtlest text-sm ml-0.5 aria-disabled:text-disabled-text aria-required:after:content-['*'] aria-required:after:text-danger-bold aria-required:after:ml-0.5"
+	"text-text-subtle text-sm ml-0.5 aria-disabled:text-disabled-text aria-required:after:content-['*'] aria-required:after:text-danger-bold aria-required:after:ml-0.5"
 //#endregion
 
 const CheckboxI = (

@@ -68,9 +68,9 @@
 	/* The Fallback colors are taken from Atlaskit/theme package: "@atlaskit/theme/colors" */
 	--color-text: var(--ds-text, var(--color-blue-950));
 	--color-text-inverse: var(--ds-text-inverse, var(--color-blue-50));
-	--color-text-subtle: var(--ds-text-subtle, var(--color-gray-500));
-	--color-text-subtlest: var(--ds-text-subtlest, var(--color-gray-400));
-	--color-text-disabled: var(--ds-text-disabled, var(--color-gray-300));
+	--color-text-subtle: var(--ds-text-subtle, var(--color-gray-600));
+	--color-text-subtlest: var(--ds-text-subtlest, var(--color-gray-500));
+	--color-text-disabled: var(--ds-text-disabled, var(--color-gray-400));
 
 	--color-surface: var(--ds-surface, white);
 	--color-surface-hovered: var(--ds-surface-hovered, var(--color-gray-50));
