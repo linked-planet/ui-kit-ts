@@ -11,9 +11,7 @@
 	"description": "",
 	"module": "dist/index.js",
 	"type": "module",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "./dist/index.d.ts",
 	"style": [
 		"dist/styles.css",
@@ -58,17 +56,10 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": [
-		"en",
-		"de"
-	],
+	"supportedLocales": ["en", "de"],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
+		"production": [">0.2%", "not dead", "not op_mini all"],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -108,6 +99,7 @@
 		"motion": "^12.4.4",
 		"react-awesome-slider": "^4.1.0",
 		"react-day-picker": "^8.10.1",
+		"react-intl": "^7.1.6",
 		"react-intl": "^7.1.6",
 		"react-joyride": "^2.9.3",
 		"react-router-dom": "^6.29.0",
