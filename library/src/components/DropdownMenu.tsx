@@ -6,17 +6,17 @@ import { Button, type ButtonProps } from "./Button"
 import { overlayBaseStyle } from "./styleHelper"
 import { IconSizeHelper } from "./IconSizeHelper"
 import {
+	CheckIcon,
 	ChevronDownIcon,
 	ChevronLeftIcon,
 	ChevronRightIcon,
 	ChevronUpIcon,
-	RadioIcon,
 } from "lucide-react"
-import { CheckboxIcon } from "@radix-ui/react-icons"
 
 const commonStyles =
 	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-hidden border-l-2 border-y-0 border-r-0 focus-visible:border-l-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-hidden focus-visible:border-selected-border" as const
-const disabledStyles = "text-disabled-text cursor-not-allowed" as const
+const disabledStyles =
+	"data-[disabled=true]:text-disabled-text data-[disabled=true]:cursor-not-allowed" as const
 const selectedStyles =
 	"data-[selected=true]:bg-selected-subtle data-[selected=true]:hover:bg-selected-subtle-hovered data-[selected=true]:border-l-selected-bold data-[selected=true]:active:bg-selected-subtle-pressed data-[selected=true]:text-selected-subtle-text" as const
 const normalStyles =
@@ -138,10 +138,11 @@ function ItemCheckbox({
 			disabled={disabled}
 			checked={checked}
 			defaultChecked={defaultChecked}
-			className={twMerge(
+			className={twJoin(
+				"group",
 				commonStyles,
-				!disabled && !checked ? normalStyles : undefined,
-				checked ? selectedStyles : undefined,
+				normalStyles,
+				selectedStyles,
 				disabled ? disabledStyles : undefined,
 				className,
 			)}
@@ -150,13 +151,17 @@ function ItemCheckbox({
 		>
 			<div
 				className={`${
-					disabled ? "border-border" : "border-border-bold"
+					disabled
+						? "border-border"
+						: "border-border-bold group-data-[state=checked]:border-selected-bold"
 				} relative ml-2 mr-4 flex h-4 w-4 flex-none items-center justify-center rounded border-2`}
 			>
 				<RDd.ItemIndicator asChild>
-					<IconSizeHelper className="text-brand-bold">
-						<CheckboxIcon />
-					</IconSizeHelper>
+					<CheckIcon
+						size="12"
+						strokeWidth="5"
+						className="text-text-inverse bg-selected-bold"
+					/>
 				</RDd.ItemIndicator>
 			</div>
 			<div>
@@ -232,6 +237,8 @@ type ItemRadioGroupProps = Pick<
 	| "className"
 	| "title"
 	| "children"
+	| "value"
+	| "onValueChange"
 > & {
 	hasSeparator?: boolean
 }
@@ -264,7 +271,7 @@ function ItemRadioGroup({
 }
 
 type ItemRadioProps = Pick<
-	RDd.DropdownMenuRadioGroupProps,
+	RDd.DropdownMenuRadioItemProps,
 	| "aria-label"
 	| "aria-disabled"
 	| "aria-selected"
@@ -282,14 +289,13 @@ type ItemRadioProps = Pick<
 > & {
 	description?: React.ReactNode
 	disabled?: boolean
-	selected?: boolean
+	//selected?: boolean
 	value: string
 }
 
 function ItemRadio({
 	onClick,
 	description,
-	selected,
 	disabled,
 	value,
 	children,
@@ -299,17 +305,13 @@ function ItemRadio({
 }: ItemRadioProps) {
 	return (
 		<RDd.RadioItem
-			onClick={(e) => {
-				e.preventDefault()
-				if (disabled) return
-				onClick?.(e)
-			}}
 			disabled={disabled}
 			value={value}
-			className={twMerge(
+			className={twJoin(
+				"group",
 				commonStyles,
-				!disabled && !selected ? normalStyles : undefined,
-				selected ? selectedStyles : undefined,
+				normalStyles,
+				selectedStyles,
 				disabled ? disabledStyles : undefined,
 				className,
 			)}
@@ -317,27 +319,16 @@ function ItemRadio({
 			{...props}
 		>
 			<div
-				className={twMerge(
-					`${
-						selected
-							? "border-selected-bold"
-							: `${
-									disabled
-										? "border-border"
-										: "border-border-bold"
-								} hover:border-selected-bold`
-					} relative ml-2 mr-4 flex h-3 w-3 flex-none items-center justify-center rounded-full border-2`,
+				className={twJoin(
+					"group-data-[selected=true]:border-selected-bold",
+					disabled
+						? "border-border"
+						: "border-border-bold group-hover:border-selected-bold",
+					"relative ml-2 mr-4 flex size-3.5 flex-none items-center justify-center rounded-full border-2",
 				)}
 			>
-				{selected && (
-					<IconSizeHelper className="text-brand-bold absolute inset-0 flex items-center justify-center">
-						<RadioIcon size="12" />
-					</IconSizeHelper>
-				)}
 				<RDd.ItemIndicator>
-					<IconSizeHelper>
-						<RadioIcon size="12" />
-					</IconSizeHelper>
+					<div className="size-3.5 rounded-full border-selected-bold border-4" />
 				</RDd.ItemIndicator>
 			</div>
 			<div>
@@ -381,7 +372,7 @@ function SubMenu({
 						<IconSizeHelper>
 							<ChevronLeftIcon
 								aria-label="open submenu"
-								size="12"
+								size="14"
 							/>
 						</IconSizeHelper>
 					)}
@@ -390,7 +381,7 @@ function SubMenu({
 						<IconSizeHelper>
 							<ChevronRightIcon
 								aria-label="close submenu"
-								size="12"
+								size="14"
 							/>
 						</IconSizeHelper>
 					)}
@@ -494,7 +485,7 @@ const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
 							: "group-data-[state=open]:flex group-data-[state=open]:visible"
 					}`}
 				>
-					<ChevronUpIcon size="6" />
+					<ChevronUpIcon size="12" strokeWidth="4" />
 				</IconSizeHelper>
 				<IconSizeHelper
 					className={`hidden h-4 w-4 items-center justify-center ${
@@ -503,7 +494,7 @@ const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
 							: "group-data-[state=closed]:flex group-data-[state=closed]:visible"
 					}`}
 				>
-					<ChevronDownIcon size="6" />
+					<ChevronDownIcon size="12" strokeWidth="4" />
 				</IconSizeHelper>
 			</Button>
 		)

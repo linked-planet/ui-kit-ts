@@ -3579,6 +3579,24 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 		</>
 	)
 
+	const lpExample3 = (
+		<>
+			<Dropdown.Menu usePortal>
+				<Dropdown.Item selected>Test 1</Dropdown.Item>
+				<Dropdown.Item>Test 2</Dropdown.Item>
+				<Dropdown.ItemCheckbox>Checkbox</Dropdown.ItemCheckbox>
+				<Dropdown.ItemRadioGroup title="radio group">
+					<Dropdown.ItemRadio value="radio-1">
+						Radio 1
+					</Dropdown.ItemRadio>
+					<Dropdown.ItemRadio value="radio-2">
+						Radio 2
+					</Dropdown.ItemRadio>
+				</Dropdown.ItemRadioGroup>
+			</Dropdown.Menu>
+		</>
+	)
+
 	//#endregion dropdown-menu
 
 	const example = (
@@ -3586,6 +3604,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			{/*akExample*/}
 			{lpExample}
 			{lpExample2}
+			{lpExample3}
 		</div>
 	)
 
