@@ -14,12 +14,8 @@ import ShowcaseWrapperItem, {
 import { Dropdown } from "@linked-planet/ui-kit-ts"
 
 function DropDownMenuShowcase(props: ShowcaseProps) {
-	const [radioValue, setRadioValue] = useState("testval1")
+	const [radioValue, setRadioValue] = useState("radio-1")
 	const [checkBoxes, setCheckBoxes] = useState<string[]>([])
-
-	const handleRadioChange = (value: string) => {
-		setRadioValue(value)
-	}
 
 	const handleCheckboxChange = (value: string) => {
 		if (checkBoxes.includes(value)) {
@@ -163,35 +159,25 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 				<Dropdown.SubMenu trigger="submenu">
 					<Dropdown.Item>Submenu Entry</Dropdown.Item>
 				</Dropdown.SubMenu>
-				<Dropdown.ItemRadioGroup hasSeparator title="test title">
+				<Dropdown.ItemRadioGroup
+					hasSeparator
+					title="test title"
+					value={radioValue}
+					onValueChange={setRadioValue}
+				>
 					<Dropdown.ItemRadio
 						value="radio-1"
 						description={"another description"}
-						selected={radioValue === "testval1"}
-						onClick={() => handleRadioChange("testval1")}
 					>
 						Radio 1
 					</Dropdown.ItemRadio>
-					<Dropdown.ItemRadio
-						value="radio-2"
-						selected={radioValue === "radio-2"}
-						onClick={() => handleRadioChange("radio-2")}
-					>
+					<Dropdown.ItemRadio value="radio-2">
 						Radio 2
 					</Dropdown.ItemRadio>
-					<Dropdown.ItemRadio
-						value="radio-3"
-						selected={radioValue === "radio-3"}
-						onClick={() => handleRadioChange("radio-3")}
-					>
+					<Dropdown.ItemRadio value="radio-3">
 						Radio 3
 					</Dropdown.ItemRadio>
-					<Dropdown.ItemRadio
-						value="radio-4"
-						disabled
-						selected={radioValue === "radio-4"}
-						onClick={() => handleRadioChange("radio-4")}
-					>
+					<Dropdown.ItemRadio value="radio-4" disabled>
 						Radio Disabled
 					</Dropdown.ItemRadio>
 				</Dropdown.ItemRadioGroup>
@@ -230,6 +216,24 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 		</>
 	)
 
+	const lpExample3 = (
+		<>
+			<Dropdown.Menu usePortal>
+				<Dropdown.Item selected>Test 1</Dropdown.Item>
+				<Dropdown.Item>Test 2</Dropdown.Item>
+				<Dropdown.ItemCheckbox>Checkbox</Dropdown.ItemCheckbox>
+				<Dropdown.ItemRadioGroup title="radio group">
+					<Dropdown.ItemRadio value="radio-1">
+						Radio 1
+					</Dropdown.ItemRadio>
+					<Dropdown.ItemRadio value="radio-2">
+						Radio 2
+					</Dropdown.ItemRadio>
+				</Dropdown.ItemRadioGroup>
+			</Dropdown.Menu>
+		</>
+	)
+
 	//#endregion dropdown-menu
 
 	const example = (
@@ -237,6 +241,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			{/*akExample*/}
 			{lpExample}
 			{lpExample2}
+			{lpExample3}
 		</div>
 	)
 
