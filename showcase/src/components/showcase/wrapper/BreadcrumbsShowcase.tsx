@@ -4,7 +4,7 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Breadcrumbs, Checkbox, Input, Label } from "@linked-planet/ui-kit-ts"
 
-import AddCircleIcon from "@atlaskit/icon/glyph/add-circle"
+import { PlusIcon } from "lucide-react"
 
 //#region bread-crumbs-max-items-example
 function MaxItemsExample() {
@@ -61,8 +61,20 @@ function MaxItemsExample() {
 				>
 					<Breadcrumbs.Item
 						href="#"
-						iconBefore={<AddCircleIcon label="" />}
-						iconAfter={<AddCircleIcon label="" />}
+						iconBefore={
+							<PlusIcon
+								aria-label="Plus"
+								size="12"
+								className="bg-gray-500 mr-1 text-text-inverse rounded-full"
+							/>
+						}
+						iconAfter={
+							<PlusIcon
+								aria-label="Plus"
+								size="12"
+								className="bg-gray-500 ml-1 text-text-inverse rounded-full"
+							/>
+						}
 					>
 						Home
 					</Breadcrumbs.Item>
@@ -100,8 +112,20 @@ function ConstrainedExample() {
 				>
 					<Breadcrumbs.Item
 						href="#"
-						iconBefore={<AddCircleIcon label="" />}
-						iconAfter={<AddCircleIcon label="" />}
+						iconBefore={
+							<PlusIcon
+								aria-label="Plus"
+								size="12"
+								className="bg-gray-500 mr-1 text-text-inverse rounded-full"
+							/>
+						}
+						iconAfter={
+							<PlusIcon
+								aria-label="Plus"
+								size="12"
+								className="bg-gray-500 ml-1 text-text-inverse rounded-full"
+							/>
+						}
 					>
 						Home
 					</Breadcrumbs.Item>
@@ -124,8 +148,20 @@ function BannerShowcase(props: ShowcaseProps) {
 			<Breadcrumbs>
 				<Breadcrumbs.Item
 					href="#"
-					iconBefore={<AddCircleIcon label="" />}
-					iconAfter={<AddCircleIcon label="" />}
+					iconBefore={
+						<PlusIcon
+							aria-label="Plus"
+							size="12"
+							className="bg-gray-500 mr-1 text-text-inverse rounded-full"
+						/>
+					}
+					iconAfter={
+						<PlusIcon
+							aria-label="Plus"
+							size="12"
+							className="bg-gray-500 ml-1 text-text-inverse rounded-full"
+						/>
+					}
 				>
 					Home
 				</Breadcrumbs.Item>

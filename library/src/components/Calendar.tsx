@@ -18,8 +18,6 @@ import {
 } from "react-day-picker"
 //import { default as defaultStyles } from "react-day-picker/dist/style.module.css"; .. all styles are set in the classNames config below
 
-import ChevronLeftLargeIcon from "@atlaskit/icon/glyph/chevron-left-large"
-import ChevronRightLargeIcon from "@atlaskit/icon/glyph/chevron-right-large"
 import dayjs, { type Dayjs } from "dayjs/esm"
 import {
 	type Control,
@@ -29,6 +27,7 @@ import {
 } from "react-hook-form"
 import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
 import { IconSizeHelper } from "./IconSizeHelper"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
 //import "react-day-picker/dist/style.css" -> is imported in index.ts of the library that it is before TW
 
@@ -179,7 +178,7 @@ const daySelectedStyles =
 	"rounded-none bg-selected group-data-[disabled=false]:hover:bg-selected-hovered group-data-[disabled=false]:active:bg-selected-pressed text-selected-text-inverse font-bold w-full h-full"
 const headStyles = "text-text-subtle text-sm border-b-0"
 const dayTodayStyles =
-	"font-bold relative text-brand-text aria-selected:text-text-inverse after:absolute after:block after:left-1 after:right-1 after:bg-brand-text after:aria-selected:bg-text-inverse after:h-[2px]"
+	"font-bold relative text-brand-text aria-selected:text-text-inverse after:absolute after:block after:left-1 after:right-1 after:bg-brand-text aria-selected:after:bg-text-inverse after:h-[2px]"
 const navStyles =
 	"whitespace-nowrap absolute w-full flex justify-between items-center"
 
@@ -194,7 +193,7 @@ const classNames: DayPickerProps["classNames"] = {
 	button: buttonStyles,
 	nav: navStyles,
 	nav_button:
-		"p-1 rounded hover:bg-neutral-subtle-hovered flex items-center justify-center",
+		"p-1 rounded-xs hover:bg-neutral-subtle-hovered flex items-center justify-center",
 	nav_button_previous: "h-max max-w-max",
 	nav_button_next: "h-max max-w-max",
 	table: "w-full",
@@ -307,12 +306,12 @@ export function CalendarBase(
 			components={{
 				IconLeft: () => (
 					<IconSizeHelper>
-						<ChevronLeftLargeIcon label="" />
+						<ChevronLeftIcon size={16} strokeWidth={3} />
 					</IconSizeHelper>
 				),
 				IconRight: () => (
 					<IconSizeHelper>
-						<ChevronRightLargeIcon label="" />
+						<ChevronRightIcon size={16} strokeWidth={3} />
 					</IconSizeHelper>
 				),
 				Day,

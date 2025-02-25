@@ -11,8 +11,6 @@ import {
 } from "react"
 import { Calendar, type CalendarSingleProps } from "../../Calendar"
 import type { Labels } from "react-day-picker"
-import CalendarIcon from "@atlaskit/icon/glyph/calendar"
-import SelectClearIcon from "@atlaskit/icon/glyph/select-clear"
 
 import { Input } from "../Inputs"
 import { IconSizeHelper } from "../../IconSizeHelper"
@@ -24,6 +22,7 @@ import {
 	useController,
 } from "react-hook-form"
 import { Button } from "../../Button"
+import { CalendarIcon, XIcon } from "lucide-react"
 
 export type DatePickerProps = Pick<
 	CalendarSingleProps,
@@ -293,10 +292,7 @@ const DatePickerBase = forwardRef(
 												size="medium"
 												className=""
 											>
-												<SelectClearIcon
-													label=""
-													size="small"
-												/>
+												<XIcon size="12" />
 											</IconSizeHelper>
 										</Button>
 									</div>
@@ -306,7 +302,10 @@ const DatePickerBase = forwardRef(
 										size="medium"
 										className="w-8"
 									>
-										<CalendarIcon label="calendar" />
+										<CalendarIcon
+											aria-label="calendar"
+											size="12"
+										/>
 									</IconSizeHelper>
 								)}
 							</>

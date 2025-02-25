@@ -9,6 +9,8 @@ function MenuShowcase(props: ShowcaseProps) {
 	const [selectedItems, setSelectedItems] = useState(["Menu A"])
 	const example = (
 		<div>
+			Todo: pull menu components out of dropdown menu and maybe also
+			consolide with side nav menu.
 			{/*<MenuGroup>
 				<HeadingItem>
 					<h4>Filter</h4>

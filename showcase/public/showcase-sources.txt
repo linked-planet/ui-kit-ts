@@ -233,7 +233,6 @@ export default function AppLayoutShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -325,7 +324,7 @@ function AvatarShowcase(props: ShowcaseProps) {
 	const example1 = (
 		<div>
 			{example1AK}
-			<div className="flex gap-4">
+			<div className="flex flex-wrap gap-4">
 				<LPAvatar
 					size="xsmall"
 					appearance="circle"
@@ -630,12 +629,10 @@ function BadgeShowcase(props: ShowcaseProps) {
 
 export default BadgeShowcase
 
-import React from "react"
+import { CircleCheckIcon, OctagonAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import ErrorIcon from "@atlaskit/icon/glyph/error"
-import CheckCircleOutlineIcon from "@atlaskit/icon/glyph/check-circle-outline"
 import { Banner, IconSizeHelper } from "@linked-planet/ui-kit-ts"
 
 function BannerShowcase(props: ShowcaseProps) {
@@ -648,9 +645,10 @@ function BannerShowcase(props: ShowcaseProps) {
 				appearance="error"
 				icon={
 					<IconSizeHelper>
-						<ErrorIcon
-							label=""
-							secondaryColor="var(--ds-background-danger-bold, #DE350B)"
+						<OctagonAlertIcon
+							aria-label="Error"
+							size="24"
+							strokeWidth={2}
 						/>
 					</IconSizeHelper>
 				}
@@ -661,7 +659,11 @@ function BannerShowcase(props: ShowcaseProps) {
 				appearance="success"
 				icon={
 					<IconSizeHelper>
-						<CheckCircleOutlineIcon label="" />
+						<CircleCheckIcon
+							aria-label="Check Circle"
+							size="24"
+							strokeWidth={2}
+						/>
 					</IconSizeHelper>
 				}
 			>
@@ -1091,7 +1093,7 @@ import ShowcaseWrapperItem, {
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { Breadcrumbs, Checkbox, Input, Label } from "@linked-planet/ui-kit-ts"
 
-import AddCircleIcon from "@atlaskit/icon/glyph/add-circle"
+import { PlusIcon } from "lucide-react"
 
 //#region bread-crumbs-max-items-example
 function MaxItemsExample() {
@@ -1148,8 +1150,20 @@ function MaxItemsExample() {
 				>
 					<Breadcrumbs.Item
 						href="#"
-						iconBefore={<AddCircleIcon label="" />}
-						iconAfter={<AddCircleIcon label="" />}
+						iconBefore={
+							<PlusIcon
+								aria-label="Plus"
+								size="12"
+								className="bg-gray-500 mr-1 text-text-inverse rounded-full"
+							/>
+						}
+						iconAfter={
+							<PlusIcon
+								aria-label="Plus"
+								size="12"
+								className="bg-gray-500 ml-1 text-text-inverse rounded-full"
+							/>
+						}
 					>
 						Home
 					</Breadcrumbs.Item>
@@ -1187,8 +1201,20 @@ function ConstrainedExample() {
 				>
 					<Breadcrumbs.Item
 						href="#"
-						iconBefore={<AddCircleIcon label="" />}
-						iconAfter={<AddCircleIcon label="" />}
+						iconBefore={
+							<PlusIcon
+								aria-label="Plus"
+								size="12"
+								className="bg-gray-500 mr-1 text-text-inverse rounded-full"
+							/>
+						}
+						iconAfter={
+							<PlusIcon
+								aria-label="Plus"
+								size="12"
+								className="bg-gray-500 ml-1 text-text-inverse rounded-full"
+							/>
+						}
 					>
 						Home
 					</Breadcrumbs.Item>
@@ -1211,8 +1237,20 @@ function BannerShowcase(props: ShowcaseProps) {
 			<Breadcrumbs>
 				<Breadcrumbs.Item
 					href="#"
-					iconBefore={<AddCircleIcon label="" />}
-					iconAfter={<AddCircleIcon label="" />}
+					iconBefore={
+						<PlusIcon
+							aria-label="Plus"
+							size="12"
+							className="bg-gray-500 mr-1 text-text-inverse rounded-full"
+						/>
+					}
+					iconAfter={
+						<PlusIcon
+							aria-label="Plus"
+							size="12"
+							className="bg-gray-500 ml-1 text-text-inverse rounded-full"
+						/>
+					}
 				>
 					Home
 				</Breadcrumbs.Item>
@@ -1267,7 +1305,7 @@ import ShowcaseWrapperItem, {
 	LoadingButton as AKLoadingButton,
 } from "@atlaskit/button"*/
 import { Button, LoadingButton, ButtonGroup } from "@linked-planet/ui-kit-ts"
-import SearchIcon from "@atlaskit/icon/glyph/search"
+import { SearchIcon } from "lucide-react"
 
 function ButtonShowcase(props: ShowcaseProps) {
 	const [isLoading, setIsLoading] = useState(false)
@@ -1549,8 +1587,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 			<Button
 				appearance="information"
 				onClick={() => console.log("Button pressed")}
-				iconAfter={<SearchIcon label="" />}
-				iconBefore={<SearchIcon label="" />}
+				iconAfter={<SearchIcon aria-label="Search" size="12" />}
+				iconBefore={<SearchIcon aria-label="Search" size="12" />}
 			>
 				Information Button
 			</Button>
@@ -1558,8 +1596,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 			<Button
 				appearance="information"
 				onClick={() => console.log("Button pressed")}
-				iconAfter={<SearchIcon label="" />}
-				iconBefore={<SearchIcon label="" />}
+				iconAfter={<SearchIcon aria-label="Search" size="12" />}
+				iconBefore={<SearchIcon aria-label="Search" size="12" />}
 				inverted
 			>
 				Information Inverted Button
@@ -1571,8 +1609,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 					window.setTimeout(() => setIsLoading(false), 3000)
 				}}
 				loading={isLoading}
-				iconBefore={<SearchIcon label="" />}
-				iconAfter={<SearchIcon label="" />}
+				iconBefore={<SearchIcon aria-label="Search" size="12" />}
+				iconAfter={<SearchIcon aria-label="Search" size="12" />}
 				className="h-6"
 			>
 				Icon Loading Button
@@ -1584,8 +1622,8 @@ function ButtonShowcase(props: ShowcaseProps) {
 					window.setTimeout(() => setIsLoading(false), 3000)
 				}}
 				loading={isLoading}
-				iconBefore={<SearchIcon label="" />}
-				iconAfter={<SearchIcon label="" />}
+				iconBefore={<SearchIcon aria-label="Search" size="12" />}
+				iconAfter={<SearchIcon aria-label="Search" size="12" />}
 				appearance="subtle-link"
 			>
 				Primary Icon Loading Button
@@ -2167,7 +2205,7 @@ import { CodeBlock } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { CodeBlock as AKCodeBlock } from "@atlaskit/code"
+//import { CodeBlock as AKCodeBlock } from "@atlaskit/code"
 
 function CodeBlockShowcase(props: ShowcaseProps) {
 	//#region code-block
@@ -2176,7 +2214,7 @@ function CodeBlockShowcase(props: ShowcaseProps) {
         System.out.println('Hello world')
     }
 }`
-	const example = <AKCodeBlock language="java" text={code} />
+	//const example = <AKCodeBlock language="java" text={code} />
 	//#endregion code-block
 
 	//#region code-block-own
@@ -2190,7 +2228,7 @@ function CodeBlockShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@atlaskit/code",
-					url: "https://atlassian.design/components/code/code-block/examples",
+					url: "/ui-kit-ts/single#CodeBlock",
 				},
 			]}
 			examples={[
@@ -2199,11 +2237,11 @@ function CodeBlockShowcase(props: ShowcaseProps) {
 					example: exampleOwn,
 					sourceCodeExampleId: "code-block-own",
 				},
-				{
+				/*{
 					title: "Example",
 					example,
 					sourceCodeExampleId: "code-block",
-				},
+				},*/
 			]}
 		/>
 	)
@@ -2300,7 +2338,6 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -2309,6 +2346,59 @@ import ShowcaseWrapperItem, {
 function Colors() {
 	return (
 		<>
+			<div className="flex flex-wrap gap-4 mb-8 bg-surface p-2">
+				<span className="text-text">text</span>
+				<span className="text-text-inverse">text-inverse</span>
+				<span className="text-text-subtle">text-subtle</span>
+				<span className="text-text-subtlest">text-subtlest</span>
+				<span className="text-text-disabled">text-disabled</span>
+				<span className="text-link">link</span>
+				<span className="text-link-hovered">link-hovered</span>
+				<span className="text-link-pressed">link-pressed</span>
+				<span className="text-link-visited">link-visited</span>
+				<span className="text-selected-text">selected</span>
+				<span className="text-selected-subtle-text">
+					selected-subtle
+				</span>
+				<span className="text-selected-text-inverse">
+					selected-inverse
+				</span>
+			</div>
+			<div className="flex flex-wrap gap-4 mb-8">
+				<div className="bg-surface hover:bg-surface-hovered active:bg-surface-pressed p-2 rounded border border-border-bold">
+					surface
+				</div>
+				<div className="bg-surface-overlay hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed p-2 rounded border border-border-bold">
+					surface-overlay
+				</div>
+				<div className="bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed p-2 rounded border border-border-bold">
+					surface-raised
+				</div>
+				<div className="bg-surface-sunken hover:bg-surface-sunken-hovered active:bg-surface-sunken-pressed p-2 rounded border border-border-bold">
+					surface-sunken
+				</div>
+				<div className="bg-disabled text-text-disabled p-2 rounded border border-border-bold">
+					disabled
+				</div>
+				<div className="bg-blanket p-2 rounded border border-border-bold">
+					blanket
+				</div>
+				<div className="bg-blanket-subtle p-2 rounded border border-border-bold">
+					blanket-subtle
+				</div>
+				<div className="bg-skeleton p-2 rounded border border-border-bold">
+					skeleton
+				</div>
+				<div className="bg-icon p-2 text-text-inverse rounded border border-border-bold">
+					icon
+				</div>
+				<div className="bg-icon-inverse p-2 rounded border border-border-bold">
+					icon-inverse
+				</div>
+				<div className="hover:bg-interaction-hovered active:bg-interaction-pressed p-2 rounded border border-border-bold">
+					interaction
+				</div>
+			</div>
 			<div className="grid w-full grid-cols-4 gap-2">
 				{/* blue */}
 				<div className="bg-blue border-blue-border hover:bg-blue-hovered active:bg-blue-pressed text-blue-text-bold border-2 p-1">
@@ -2520,6 +2610,19 @@ function Colors() {
 				<div className="bg-indigo-bold border-indigo-border hover:bg-indigo-bold-hovered active:bg-indigo-bold-pressed text-indigo-text-inverse border-2 p-1">
 					indigo-bold
 				</div>
+				{/* slate */}
+				<div className="bg-slate border-slate-border hover:bg-slate-hovered active:bg-slate-pressed text-slate-text-bold border-2 p-1">
+					slate
+				</div>
+				<div className="bg-slate-subtle border-slate-border hover:bg-slate-subtle-hovered active:bg-slate-subtle-pressed text-slate-text border-2 p-1">
+					slate-subtle
+				</div>
+				<div className="bg-slate-subtlest border-slate-border hover:bg-slate-subtlest-hovered active:bg-slate-subtlest-pressed text-slate-text border-2 p-1">
+					slate-subtlest
+				</div>
+				<div className="bg-slate-bold border-slate-border hover:bg-slate-bold-hovered active:bg-slate-bold-pressed text-slate-text-inverse border-2 p-1">
+					slate-bold
+				</div>
 				{/* gray */}
 				<div className="bg-gray border-gray-border hover:bg-gray-hovered active:bg-gray-pressed text-gray-text-bold border-2 p-1">
 					gray
@@ -2533,10 +2636,22 @@ function Colors() {
 				<div className="bg-gray-bold border-gray-border hover:bg-gray-bold-hovered active:bg-gray-bold-pressed text-gray-text-inverse border-2 p-1">
 					gray-bold
 				</div>
+				<div className="bg-zinc border-zinc-border hover:bg-zinc-hovered active:bg-zinc-pressed text-zinc-text-bold border-2 p-1">
+					zinc
+				</div>
+				<div className="bg-zinc-subtle border-zinc-border hover:bg-zinc-subtle-hovered active:bg-zinc-subtle-pressed text-zinc-text border-2 p-1">
+					zinc-subtle
+				</div>
+				<div className="bg-zinc-subtlest border-zinc-border hover:bg-zinc-subtlest-hovered active:bg-zinc-subtlest-pressed text-zinc-text border-2 p-1">
+					zinc-subtlest
+				</div>
+				<div className="bg-zinc-bold border-zinc-border hover:bg-zinc-bold-hovered active:bg-zinc-bold-pressed text-zinc-text-inverse border-2 p-1">
+					zinc-bold
+				</div>
 			</div>
 			<hr className="mt-4" />
 
-			<div className="mt-4 grid w-full grid-cols-3 gap-2">
+			<div className="mt-4 grid w-full grid-cols-4 gap-2">
 				<div className="bg-selected hover:bg-selected-hovered text-selected-text-inverse active:bg-selected-pressed border-selected-border border-2 p-1">
 					selected
 				</div>
@@ -2544,13 +2659,17 @@ function Colors() {
 					selected-bold
 				</div>
 				<div className="bg-selected-subtle text-text hover:bg-selected-subtle-hovered active:bg-selected-subtle-pressed border-selected-border border-2 p-1">
-					selected-bold
+					selected-subtle
 				</div>
+				<div />
 				<div className="bg-neutral text-text hover:bg-neutral-hovered active:bg-neutral-pressed border-2 p-1">
 					neutral
 				</div>
 				<div className="bg-neutral-bold text-text hover:bg-neutral-bold-hovered active:bg-neutral-bold-pressed border-2 p-1">
 					neutral-bold
+				</div>
+				<div className="bg-neutral-full text-text hover:bg-neutral-full-hovered active:bg-neutral-full-pressed border-2 p-1">
+					neutral-full
 				</div>
 				<div className="bg-neutral-subtle text-text hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed border-2 p-1">
 					neutral-subtle
@@ -2562,12 +2681,14 @@ function Colors() {
 					warning-bold
 				</div>
 				<div />
+				<div />
 				<div className="bg-danger text-danger-text border-danger-border hover:bg-danger-hovered active:bg-danger-pressed border-2 p-1">
 					danger
 				</div>
-				<div className="bg-danger-bold text-text hover:bg-danger-bold-hovered active:bg-danger-bold-pressed border-2 p-1">
+				<div className="bg-danger-bold text-text-inverse hover:bg-danger-bold-hovered active:bg-danger-bold-pressed border-2 p-1">
 					danger-bold
 				</div>
+				<div />
 				<div />
 				<div className="bg-success text-success-text border-success-border hover:bg-success-hovered active:bg-success-pressed border-2 p-1">
 					success
@@ -2576,6 +2697,7 @@ function Colors() {
 					success-bold
 				</div>
 				<div />
+				<div />
 				<div className="bg-information text-information-text border-information-border hover:bg-information-hovered active:bg-information-pressed border-2 p-1">
 					information
 				</div>
@@ -2583,10 +2705,19 @@ function Colors() {
 					information-bold
 				</div>
 				<div />
+				<div />
+				<div className="bg-discovery text-discovery-text border-discovery-border hover:bg-discovery-hovered active:bg-discovery-pressed border-2 p-1">
+					discovery
+				</div>
+				<div className="bg-discovery-bold text-text-inverse hover:bg-discovery-bold-hovered active:bg-discovery-bold-pressed border-2 p-1">
+					discovery-bold
+				</div>
+				<div />
+				<div />
 				<div className="bg-brand text-brand-text border-brand-border hover:bg-brand-hovered active:bg-brand-pressed border-2 p-1">
 					brand
 				</div>
-				<div className="bg-brand-bold text-text hover:bg-brand-bold-hovered active:bg-brand-bold-pressed border-2 p-1">
+				<div className="bg-brand-bold text-text-inverse hover:bg-brand-bold-hovered active:bg-brand-bold-pressed border-2 p-1">
 					brand-bold
 				</div>
 			</div>
@@ -3482,48 +3613,6 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 export default DropDownMenuShowcase
 
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import EmptyState from "@atlaskit/empty-state"
-import { Button } from "@linked-planet/ui-kit-ts"
-
-function EmptyStateShowcase(props: ShowcaseProps) {
-	//#region empty-state
-	const example = (
-		<div style={{ minWidth: 300 }}>
-			<EmptyState
-				header="Empty state"
-				description={<span>Content of this state</span>}
-				primaryAction={<Button>Dummy button</Button>}
-			/>
-		</div>
-	)
-	//#endregion empty-state
-
-	return (
-		<ShowcaseWrapperItem
-			name="Empty state"
-			{...props}
-			packages={[
-				{
-					name: "@atlaskit/empty-state",
-					url: "https://atlassian.design/components/empty-state/examples",
-				},
-			]}
-			examples={[
-				{
-					title: "Example",
-					example,
-					sourceCodeExampleId: "empty-state",
-				},
-			]}
-		/>
-	)
-}
-
-export default EmptyStateShowcase
-
 import { DateUtils, Label } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
@@ -4037,150 +4126,171 @@ function FiltersShowcase(props: ShowcaseProps) {
 
 export default FiltersShowcase
 
-import React from "react"
+import { TriangleAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Flag, ToastFlagContainer, showFlag } from "@linked-planet/ui-kit-ts"
-import WarningIcon from "@atlaskit/icon/glyph/warning"
+import { Flag, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 
 function FlagShowcase(props: ShowcaseProps) {
 	//#region flag
 	const example = (
-		<div className="flex flex-col gap-3">
-			<Flag
-				title="Flag"
-				icon={<WarningIcon label="" />}
-				description="Action Flag"
-				id="testflag"
-				testId="testflag"
-				actions={[
-					{
-						content: "Action",
-						onClick: () => {
-							console.log("Action clicked")
-							showFlag({
-								title: "Flag",
-								description: "Action Flag",
-								autoClose: false,
-							})
+		<ToastFlagProvider>
+			<div className="flex flex-col gap-3">
+				<Flag
+					title="Flag"
+					icon={
+						<TriangleAlertIcon
+							aria-label="Triangle Alert"
+							size="12"
+						/>
+					}
+					description="Action Flag"
+					id="testflag"
+					testId="testflag"
+					actions={[
+						{
+							content: "Action",
+							onClick: () => {
+								console.log("Action clicked")
+								Toast.showFlag({
+									title: "Flag",
+									description: "Action Flag",
+									autoClose: false,
+								})
+							},
 						},
-					},
-				]}
-			/>
-			<Flag
-				title="Flag"
-				description="Action Flag"
-				actions={[{ content: "Action", onClick: () => {} }]}
-				type="inverted"
-			/>
+					]}
+				/>
+				<Flag
+					title="Flag"
+					description="Action Flag"
+					actions={[{ content: "Action", onClick: () => {} }]}
+					type="inverted"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Action Flag"
-				actions={[{ content: "Action", onClick: () => {} }]}
-				type="pale"
-			/>
+				<Flag
+					title="Flag"
+					description="Action Flag"
+					actions={[{ content: "Action", onClick: () => {} }]}
+					type="pale"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Success Flag"
-				appearance="success"
-			/>
+				<Flag
+					title="Flag"
+					description="Success Flag"
+					appearance="success"
+				/>
 
-			<Flag
-				title="Flag"
-				description="Success Flag"
-				appearance="success"
-				type="inverted"
-			/>
+				<Flag
+					title="Flag"
+					description="Success Flag"
+					appearance="success"
+					type="inverted"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Success Flag"
-				appearance="success"
-				type="pale"
-			/>
+				<Flag
+					title="Flag"
+					description="Success Flag"
+					appearance="success"
+					type="pale"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Warning Flag"
-				appearance="warning"
-			/>
+				<Flag
+					title="Flag"
+					description="Warning Flag"
+					appearance="warning"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Warning Flag"
-				appearance="warning"
-				type="inverted"
-			/>
+				<Flag
+					title="Flag"
+					description="Warning Flag"
+					appearance="warning"
+					type="inverted"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Warning Flag"
-				appearance="warning"
-				type="pale"
-			/>
+				<Flag
+					title="Flag"
+					description="Warning Flag"
+					appearance="warning"
+					type="pale"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag title="Flag" description="Error Flag" appearance="error" />
+				<Flag
+					title="Flag"
+					description="Error Flag"
+					appearance="error"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Error Flag"
-				appearance="error"
-				type="inverted"
-			/>
+				<Flag
+					title="Flag"
+					description="Error Flag"
+					appearance="error"
+					type="inverted"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Error Flag"
-				appearance="error"
-				type="pale"
-			/>
+				<Flag
+					title="Flag"
+					description="Error Flag"
+					appearance="error"
+					type="pale"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Information Flag"
-				appearance="information"
-				actions={[{ content: "Action", onClick: () => {} }]}
-			/>
+				<Flag
+					title="Flag"
+					description="Information Flag"
+					appearance="information"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Information Flag"
-				appearance="information"
-				type="inverted"
-			/>
+				<Flag
+					title="Flag"
+					description="Information Flag"
+					appearance="information"
+					type="inverted"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Information Flag"
-				appearance="information"
-				type="pale"
-			/>
+				<Flag
+					title="Flag"
+					description="Information Flag"
+					appearance="information"
+					type="pale"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Discovery Flag"
-				appearance="discovery"
-				actions={[{ content: "Action", onClick: () => {} }]}
-			/>
+				<Flag
+					title="Flag"
+					description="Discovery Flag"
+					appearance="discovery"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Discovery Flag"
-				appearance="discovery"
-				type="inverted"
-			/>
+				<Flag
+					title="Flag"
+					description="Discovery Flag"
+					appearance="discovery"
+					type="inverted"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
 
-			<Flag
-				title="Flag"
-				description="Discovery Flag"
-				appearance="discovery"
-				type="pale"
-			/>
-			<ToastFlagContainer />
-		</div>
+				<Flag
+					title="Flag"
+					description="Discovery Flag"
+					appearance="discovery"
+					type="pale"
+					actions={[{ content: "Action", onClick: () => {} }]}
+				/>
+			</div>
+		</ToastFlagProvider>
 	)
 	//#endregion flag
 
@@ -4191,7 +4301,7 @@ function FlagShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://atlassian.design/components/flag/examples",
+					url: "/ui-kit-ts/single#Flag",
 				},
 			]}
 			description="Drop in replacement for the @atlaskit/flag component."
@@ -4662,67 +4772,19 @@ function HighlightedTextShowcase(props: ShowcaseProps) {
 
 export default HighlightedTextShowcase
 
-import React from "react"
+import { PlusCircleIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import ArrowDownIcon from "@atlaskit/icon/glyph/arrow-down"
-import BulletListIcon from "@atlaskit/icon/glyph/bullet-list"
-import CheckCircleIcon from "@atlaskit/icon/glyph/check-circle"
-import LogIcon from "@atlaskit/icon/glyph/backlog"
-import RefreshIcon from "@atlaskit/icon/glyph/refresh"
-import SendIcon from "@atlaskit/icon/glyph/send"
-import TrashIcon from "@atlaskit/icon/glyph/trash"
-
-function IconShowcase(props: ShowcaseProps) {
-	//#region icon
-	const example = (
-		<div>
-			<ArrowDownIcon label="" />
-			<BulletListIcon label="" />
-			<CheckCircleIcon label="" />
-			<LogIcon label="" />
-			<RefreshIcon label="" />
-			<SendIcon label="" />
-			<TrashIcon label="" primaryColor="red" />
-		</div>
-	)
-	//#endregion icon
-
-	return (
-		<ShowcaseWrapperItem
-			name="Icon"
-			{...props}
-			packages={[
-				{
-					name: "@atlaskit/icon",
-					url: "https://atlassian.design/components/icon/icon-explorer",
-				},
-			]}
-			examples={[
-				{ title: "Example", example, sourceCodeExampleId: "icon" },
-			]}
-		/>
-	)
-}
-
-export default IconShowcase
-
-import React from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { IconSizeHelper } from "@linked-planet/ui-kit-ts"
-
-import AddItemIcon from "@atlaskit/icon/glyph/add-item"
 
 export default function IconSizeHelperShowcase(props: ShowcaseProps) {
 	//#region iconsizehelper
 	const example = (
 		<>
 			<IconSizeHelper size={67}>
-				<AddItemIcon label="" />
+				<PlusCircleIcon aria-label="Plus" size="12" />
 			</IconSizeHelper>
 			<IconSizeHelper
 				size={"2.3rem"}
@@ -4731,7 +4793,7 @@ export default function IconSizeHelperShowcase(props: ShowcaseProps) {
 					borderRadius: "50%",
 				}}
 			>
-				<AddItemIcon label="" />
+				<PlusCircleIcon aria-label="Plus" size="12" />
 			</IconSizeHelper>
 		</>
 	)
@@ -4744,7 +4806,7 @@ export default function IconSizeHelperShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts/single#IconSizeHelper",
+					url: "/ui-kit-ts/single#IconSizeHelper",
 				},
 			]}
 			examples={[
@@ -4853,7 +4915,6 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKTextField from "@atlaskit/textfield"
 import {
 	Button,
 	ButtonGroup,
@@ -4863,9 +4924,7 @@ import {
 	TextArea,
 } from "@linked-planet/ui-kit-ts"
 import { useForm } from "react-hook-form"
-
-import ScheduleIcon from "@atlaskit/icon/glyph/schedule"
-
+import { CalendarIcon } from "lucide-react"
 //#region input-form-example
 type FormData = {
 	testInput: string
@@ -4924,13 +4983,13 @@ function FormExample() {
 export default function InputShowcase(props: ShowcaseProps) {
 	const exampleAK = (
 		<Fieldset legend="Input Example">
-			<AKTextField />
+			{/*<AKTextField />
 			<AKTextField isDisabled />
 			<AKTextField placeholder="Placeholder" />
 			<AKTextField isInvalid value={"invalid"} />
 			<AKTextField isReadOnly value={"readonly"} />
 			<AKTextField type="number" defaultValue={1} />
-			<AKTextField type="number" defaultValue={1} appearance="subtle" />
+			<AKTextField type="number" defaultValue={1} appearance="subtle" />*/}
 			{/*<AKTextArea placeholder="Text Area">It wants children</AKTextArea>*/}
 		</Fieldset>
 	)
@@ -4966,8 +5025,8 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<Input
 				type="text"
 				defaultValue={"default text"}
-				iconAfter={<ScheduleIcon label="" />}
-				iconBefore={<ScheduleIcon label="" />}
+				iconAfter={<CalendarIcon aria-label="Calendar" size="12" />}
+				iconBefore={<CalendarIcon aria-label="Calendar" size="12" />}
 			/>
 			<TextArea placeholder="Placeholder" />
 			<TextArea placeholder="Placeholder" disabled />
@@ -5315,11 +5374,9 @@ export default function LoadingSpinnerShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKLozenge from "@atlaskit/lozenge"
 import { Lozenge } from "@linked-planet/ui-kit-ts"
 
 function LozengeShowcase(props: ShowcaseProps) {
@@ -5327,7 +5384,7 @@ function LozengeShowcase(props: ShowcaseProps) {
 	const example = (
 		<div className="flex flex-col gap-8">
 			<div className="">
-				<AKLozenge>First lozenge</AKLozenge>
+				{/*<AKLozenge>First lozenge</AKLozenge>
 				<AKLozenge appearance="new">new</AKLozenge>
 				<AKLozenge appearance="new" isBold>
 					new bold
@@ -5347,7 +5404,7 @@ function LozengeShowcase(props: ShowcaseProps) {
 				<AKLozenge appearance="removed">removed</AKLozenge>
 				<AKLozenge appearance="removed" isBold>
 					removed bold
-				</AKLozenge>
+				</AKLozenge>*/}
 			</div>
 			<div>
 				<Lozenge>First lozenge</Lozenge>
@@ -5410,6 +5467,8 @@ function MenuShowcase(props: ShowcaseProps) {
 	const [selectedItems, setSelectedItems] = useState(["Menu A"])
 	const example = (
 		<div>
+			Todo: pull menu components out of dropdown menu and maybe also
+			consolide with side nav menu.
 			{/*<MenuGroup>
 				<HeadingItem>
 					<h4>Filter</h4>
@@ -5472,7 +5531,7 @@ import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import CrossIcon from "@atlaskit/icon/glyph/cross"
+import { XIcon } from "lucide-react"
 /*import {
 	default as AKModal,
 	ModalBody as AKModalBody,
@@ -5651,7 +5710,7 @@ function ControlledExample() {
 							onClick={() => setIsModalActive(false)}
 							className="text-text p-0"
 						>
-							<CrossIcon label="Close popup" />
+							<XIcon aria-label="Close popup" size="12" />
 						</Button>
 					</Modal.Header>
 					<Modal.Body>
@@ -6088,11 +6147,11 @@ function PaginationShowcase(props: ShowcaseProps) {
 
 export default PaginationShowcase
 
-import EditorCloseIcon from "@atlaskit/icon/glyph/editor/close"
 import { Calendar, Popover, Select } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { XIcon } from "lucide-react"
 
 //#region popover-example
 function PopoverExample() {
@@ -6102,7 +6161,7 @@ function PopoverExample() {
 				appearance="primary"
 				side="top"
 				trigger="open popover"
-				closer={<EditorCloseIcon label="Close Popover" />}
+				closer={<XIcon aria-label="Close Popover" size="12" />}
 				className="w-96"
 				contentClassName="w-96"
 				usePortal
@@ -6703,7 +6762,7 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { IconSizeHelper, SideNavigation } from "@linked-planet/ui-kit-ts"
-import {
+/*import {
 	SideNavigation as AKSideNavigation,
 	NavigationHeader as AKNavigationHeader,
 	NavigationContent as AKNavigationContent,
@@ -6716,9 +6775,9 @@ import {
 	Header as AKHeader,
 	NestingItem as AKNestingItem,
 	NestableNavigationContent as AKNestableNavigationContent,
-} from "@atlaskit/side-navigation"
+} from "@atlaskit/side-navigation"*/
 
-import ActivityIcon from "@atlaskit/icon/glyph/activity"
+import { ActivityIcon } from "lucide-react"
 
 //#region side-nav-example
 function SideNavExample() {
@@ -6753,8 +6812,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="12"
 									/>
 								</IconSizeHelper>
 							}
@@ -6771,8 +6830,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="16"
 									/>
 								</IconSizeHelper>
 							}
@@ -6785,8 +6844,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="16"
 									/>
 								</IconSizeHelper>
 							}
@@ -6827,7 +6886,7 @@ function SideNavExample() {
 			</div>
 
 			<div className="h-[350px]">
-				<AKSideNavigation label="">
+				{/*<AKSideNavigation label="">
 					<AKNavigationHeader>
 						<AKHeader>test header</AKHeader>
 					</AKNavigationHeader>
@@ -6837,8 +6896,8 @@ function SideNavExample() {
 								iconBefore={
 									<IconSizeHelper>
 										<ActivityIcon
-											label="Activity"
-											size="large"
+											aria-label="Activity"
+											size="12"
 										/>
 									</IconSizeHelper>
 								}
@@ -6855,8 +6914,8 @@ function SideNavExample() {
 										iconBefore={
 											<IconSizeHelper>
 												<ActivityIcon
-													label="Activity"
-													size="large"
+													aria-label="Activity"
+													size="12"
 												/>
 											</IconSizeHelper>
 										}
@@ -6873,8 +6932,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="12"
 									/>
 								</IconSizeHelper>
 							}
@@ -6888,8 +6947,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="16"
 									/>
 								</IconSizeHelper>
 							}
@@ -6902,8 +6961,8 @@ function SideNavExample() {
 							iconBefore={
 								<IconSizeHelper>
 									<ActivityIcon
-										label="Activity"
-										size="large"
+										aria-label="Activity"
+										size="16"
 									/>
 								</IconSizeHelper>
 							}
@@ -6933,7 +6992,7 @@ function SideNavExample() {
 					<AKNavigationFooter>
 						<div>test footer</div>
 					</AKNavigationFooter>
-				</AKSideNavigation>
+				</AKSideNavigation>*/}
 			</div>
 		</div>
 	)
@@ -7601,14 +7660,14 @@ export default TabsShowcase
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
-import AKTagGroup from "@atlaskit/tag-group"
+/*import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
+import AKTagGroup from "@atlaskit/tag-group"*/
 import { TagGroup, Tag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
 		<>
-			<AKTagGroup alignment="end">
+			{/*<AKTagGroup alignment="end">
 				<AKTag
 					onBeforeRemoveAction={() => {
 						console.log("on before remove")
@@ -7634,7 +7693,7 @@ function TagShowcase(props: ShowcaseProps) {
 			</AKTagGroup>
 			<AKTagGroup>
 				<AKSimpleTag text="Simple Tag" color="blue" />
-			</AKTagGroup>
+			</AKTagGroup>*/}
 		</>
 	)
 
@@ -7679,7 +7738,8 @@ function TagShowcase(props: ShowcaseProps) {
 	//#endregion tags
 
 	const akColorTags = (
-		<AKTagGroup>
+		<>
+			{/*<AKTagGroup>
 			<AKTag color="blue" text="Blue" />
 			<AKTag color="blueLight" text="blueLight" />
 			<AKSimpleTag color="green" text="green" />
@@ -7701,7 +7761,8 @@ function TagShowcase(props: ShowcaseProps) {
 			<AKSimpleTag color="orange" text="orange" />
 			<AKSimpleTag color="orangeLight" text="orangeLight" />
 			<AKSimpleTag color="standard" text="standard" />
-		</AKTagGroup>
+		</AKTagGroup>*/}
+		</>
 	)
 
 	//#region tagscolors
@@ -7957,14 +8018,16 @@ import ShowcaseWrapperItem, {
 import { Button, TimeTable, timeTableUtils } from "@linked-planet/ui-kit-ts"
 
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
-import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
-import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
 
 import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
 import { allGroupsRenderedEvent } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableRows"
+import {
+	ChevronDownIcon,
+	ChevronLeftIcon,
+	ChevronRightIcon,
+} from "lucide-react"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
@@ -8986,14 +9049,14 @@ function Example() {
 					title="Previous Time Frame"
 					className="mb-2 mr-2"
 				>
-					<ChevronLeftIcon label="prevtimeframe" />
+					<ChevronLeftIcon aria-label="prevtimeframe" />
 				</Button>
 				<Button
 					onClick={requestNextTimeFrameCB}
 					title="Next Time Frame"
 					className="mb-2 mr-2"
 				>
-					<ChevronRightIcon label="nexttimeframe" />
+					<ChevronRightIcon aria-label="nexttimeframe" />
 				</Button>
 				<Button
 					disabled={!selectedTimeRange}
@@ -9072,7 +9135,7 @@ function Example() {
 				/>
 			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
-				<ChevronDownIcon label="entryloader" />
+				<ChevronDownIcon aria-label="entryloader" />
 			</Button>
 			{showCreateNewItemModal && selectedTimeRange && (
 				<CreateNewTimeTableItemDialog
@@ -9204,142 +9267,143 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
-import {
-	Button,
-	ToastFlagContainer,
-	showDiscoveryFlag,
-	showErrorFlag,
-	showFlag,
-	showFlagExtended,
-	showInformationFlag,
-	showSuccessFlag,
-	showWarningFlag,
-} from "@linked-planet/ui-kit-ts"
+import { Button, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 
 //#region toastflagShowExtendedFlag
 // add the ToastFlagContainer to the root of your app
 function ExampleShowExtendedFlag() {
 	return (
-		<div className="flex flex-col gap-3">
-			<Button
-				onClick={() => {
-					showFlagExtended({
-						title: "standard flag",
-						description: "test",
-						autoClose: false,
-						flagType: "bold",
-					})
-				}}
-			>
-				Standard
-			</Button>
-			<Button
-				onClick={() =>
-					showFlagExtended({
-						title: "1: Whoa a new flag!",
-						description: "This is a standard toast flag.",
-						flagType: "inverted",
-					})
-				}
-			>
-				Standard Inverted
-			</Button>
-			<Button
-				onClick={() =>
-					showFlagExtended({
-						title: "1: This flag does not disappear!",
-						description:
-							"This is a standard not disappearing toast flag.",
-						autoClose: false,
-					})
-				}
-			>
-				Standard Not Dissapearing
-			</Button>
-			<Button
-				onClick={() =>
-					showFlagExtended({
-						title: "1: Whoa a new flag!",
-						description:
-							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
-						appearance: "success",
-					})
-				}
-			>
-				Success
-			</Button>
-			<Button
-				onClick={() =>
-					showFlagExtended({
-						title: "1: Whoa a new flag!",
-						description:
-							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
-						appearance: "information",
-					})
-				}
-			>
-				Information
-			</Button>
-			<Button
-				onClick={() =>
-					showFlagExtended({
-						title: "1: Whoa a new flag!",
-						description:
-							"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
-						appearance: "information",
-						flagType: "inverted",
-					})
-				}
-			>
-				Information Inverted
-			</Button>
-			<Button
-				onClick={() =>
-					showFlagExtended({
-						title: "error flag",
-						description: "This is a error toast flag.",
-						appearance: "error",
-					})
-				}
-			>
-				Error
-			</Button>
-			<Button
-				onClick={() =>
-					showFlagExtended({
-						title: "discovery flag",
-						description: "This is a discovery toast flag.",
-						appearance: "discovery",
-					})
-				}
-			>
-				Discovery
-			</Button>
-			<Button
-				onClick={() =>
-					showFlagExtended({
-						title: "warning flag",
-						description: (
-							<div>
-								<h2>This is a discovery!</h2>
-								<p>
-									Lorem ipsum, dolor sit amet consectetur
-									adipisicing elit. Maxime doloribus unde
-									laboriosam, beatae accusantium quasi itaque,
-									illum necessitatibus amet aspernatur,
-									nostrum velit quo earum error nihil.
-									Obcaecati totam harum quibusdam!
-								</p>
-							</div>
-						),
-						appearance: "warning",
-					})
-				}
-			>
-				Warning
-			</Button>
-			<ToastFlagContainer />
-		</div>
+		<>
+			<div className="flex gap-4 mb-4 border-b border-b-solid border-b-border-bold pb-2">
+				<Button onClick={() => Toast.removeAllToasts()} type="button">
+					Remove All
+				</Button>
+			</div>
+			<div className="flex flex-col gap-3">
+				<ToastFlagProvider>
+					<Button
+						onClick={() => {
+							Toast.showFlag({
+								title: "standard flag",
+								description: "test",
+								autoClose: false,
+								type: "bold",
+							})
+						}}
+					>
+						Standard
+					</Button>
+					<Button
+						onClick={() =>
+							Toast.showFlag({
+								title: "1: Whoa a new flag!",
+								description: "This is a standard toast flag.",
+								type: "inverted",
+							})
+						}
+					>
+						Standard Inverted
+					</Button>
+					<Button
+						onClick={() =>
+							Toast.showFlag({
+								title: "1: This flag does not disappear!",
+								description:
+									"This is a standard not disappearing toast flag.",
+								autoClose: false,
+							})
+						}
+					>
+						Standard Not Dissapearing
+					</Button>
+
+					<Button
+						onClick={() =>
+							Toast.showFlag({
+								title: "1: Whoa a new flag!",
+								description:
+									"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
+								appearance: "success",
+							})
+						}
+					>
+						Success
+					</Button>
+					<Button
+						onClick={() =>
+							Toast.showFlag({
+								title: "1: Whoa a new flag!",
+								description:
+									"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
+								appearance: "information",
+							})
+						}
+					>
+						Information
+					</Button>
+					<Button
+						onClick={() =>
+							Toast.showFlag({
+								title: "1: Whoa a new flag!",
+								description:
+									"Marzipan croissant pie. Jelly beans gingerbread caramels brownie icing.",
+								appearance: "information",
+								type: "bold",
+							})
+						}
+					>
+						Information Bold
+					</Button>
+
+					<Button
+						onClick={() =>
+							Toast.showFlag({
+								title: "error flag",
+								description: "This is a error toast flag.",
+								appearance: "error",
+							})
+						}
+					>
+						Error
+					</Button>
+					<Button
+						onClick={() =>
+							Toast.showFlag({
+								title: "discovery flag",
+								description: "This is a discovery toast flag.",
+								appearance: "discovery",
+							})
+						}
+					>
+						Discovery
+					</Button>
+					<Button
+						onClick={() =>
+							Toast.showFlag({
+								title: "warning flag",
+								description: (
+									<div>
+										<h2>This is a discovery!</h2>
+										<p>
+											Lorem ipsum, dolor sit amet
+											consectetur adipisicing elit. Maxime
+											doloribus unde laboriosam, beatae
+											accusantium quasi itaque, illum
+											necessitatibus amet aspernatur,
+											nostrum velit quo earum error nihil.
+											Obcaecati totam harum quibusdam!
+										</p>
+									</div>
+								),
+								appearance: "warning",
+							})
+						}
+					>
+						Warning
+					</Button>
+				</ToastFlagProvider>
+			</div>
+		</>
 	)
 }
 //#endregion toastflagShowExtendedFlag
@@ -9348,167 +9412,223 @@ function ExampleShowExtendedFlag() {
 function ExampleShowFlags() {
 	return (
 		<div className="flex flex-col gap-3">
-			<Button
-				onClick={() =>
-					showFlag({
-						title: "1: Whoa a new flag!",
-						description: "This is a standard toast flag.",
-						autoClose: 2000,
-					})
-				}
-			>
-				Standard
-			</Button>
-			<Button
-				onClick={() =>
-					showFlag({
-						title: "1: This flag does not disappear!",
-						description: "...and is at the bottom left",
-						autoClose: false,
-						position: "bottom-left",
-					})
-				}
-			>
-				Standard Not Disappearing Bottom Left
-			</Button>
+			<ToastFlagProvider>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "1: Whoa a new flag!",
+							description: "This is a standard toast flag.",
+							autoClose: 2000,
+						})
+					}
+				>
+					Standard
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "1: This flag does not disappear!",
+							description: "...and is at the bottom left",
+							autoClose: false,
+							//position: "bottom-left",
+						})
+					}
+				>
+					Standard Not Disappearing Bottom Left
+				</Button>
 
-			<Button
-				onClick={() =>
-					showFlag({
-						title: "Default Style",
-						description: "The default style is rather dark.",
-						flagType: "bold",
-					})
-				}
-			>
-				Standard Bold
-			</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "Default Style",
+							description: "The default style is rather dark.",
+							type: "bold",
+							autoClose: false,
+						})
+					}
+				>
+					Standard Bold
+				</Button>
 
-			<Button
-				onClick={() =>
-					showFlag({
-						title: "Pale Style",
-						description: "Pale colored background.",
-						flagType: "pale",
-					})
-				}
-			>
-				Standard Pale
-			</Button>
-			<Button
-				onClick={() =>
-					showSuccessFlag({
-						title: "1: Whoa a new flag! Inverted Style",
-						flagType: "inverted",
-						description:
-							"The inverted style is the default one for the simple flags.",
-					})
-				}
-			>
-				Success Inverted Style
-			</Button>
-			<Button
-				onClick={() =>
-					showSuccessFlag({
-						title: "Default Style",
-						flagType: "bold",
-						description:
-							"Using the default flag style (see flags).",
-					})
-				}
-			>
-				Success Default Flag Style
-			</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "Pale Style",
+							description: "Pale colored background.",
+							type: "pale",
+						})
+					}
+				>
+					Standard Pale
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "1: Whoa a new flag! Inverted Style",
+							type: "inverted",
+							description:
+								"The inverted style is the default one for the simple flags.",
+						})
+					}
+				>
+					Success Style
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "Default Style",
+							type: "bold",
+							description:
+								"Using the default flag style (see flags).",
+						})
+					}
+				>
+					Success Bold Flag Style
+				</Button>
 
-			<Button
-				onClick={() =>
-					showSuccessFlag({
-						title: "Pale Style",
-						flagType: "pale",
-						description: "Using the pale flag style (see flags).",
-					})
-				}
-			>
-				Success Pale Flag Style
-			</Button>
-			<Button
-				onClick={() =>
-					showInformationFlag({
-						title: "Information",
-						flagType: "pale",
-						description: "Pale flag style (see flags).",
-					})
-				}
-			>
-				Information Pale
-			</Button>
-			<Button
-				onClick={() =>
-					showDiscoveryFlag({
-						title: "Discovery",
-						description: "This is a bold discovery toast.",
-						flagType: "bold",
-					})
-				}
-			>
-				Discovery
-			</Button>
-			<Button
-				onClick={() =>
-					showDiscoveryFlag({
-						title: "Discovery",
-						description: "This is a pale discovery toast.",
-						flagType: "pale",
-					})
-				}
-			>
-				Discovery Pale
-			</Button>
-			<Button
-				onClick={() =>
-					showDiscoveryFlag({
-						title: "Discovery",
-						description:
-							"This is a inverted (default) discovery toast.",
-						flagType: "inverted",
-					})
-				}
-			>
-				Discovery Inverted
-			</Button>
-			<Button
-				onClick={() =>
-					showErrorFlag({
-						title: "error flag",
-						description: "This is a error toast flag.",
-					})
-				}
-			>
-				Error
-			</Button>
-			<Button
-				onClick={() =>
-					showWarningFlag({
-						title: "warning flag",
-						description: (
-							<div>
-								<h2>This is a warning flag!</h2>
-								<p>
-									Lorem ipsum, dolor sit amet consectetur
-									adipisicing elit. Maxime doloribus unde
-									laboriosam, beatae accusantium quasi itaque,
-									illum necessitatibus amet aspernatur,
-									nostrum velit quo earum error nihil.
-									Obcaecati totam harum quibusdam!
-								</p>
-							</div>
-						),
-					})
-				}
-			>
-				Warning
-			</Button>
-			<ToastFlagContainer toastWidth={"400px"} />
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "Pale Style",
+							type: "pale",
+							description:
+								"Using the pale flag style (see flags).",
+						})
+					}
+				>
+					Success Pale Flag Style
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "Information",
+							type: "pale",
+							description: "Pale flag style (see flags).",
+						})
+					}
+				>
+					Information Pale
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "Discovery",
+							description: "This is a bold discovery toast.",
+						})
+					}
+				>
+					Discovery
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "Discovery",
+							description: "This is a bold discovery toast.",
+							type: "bold",
+						})
+					}
+				>
+					Discovery Bold
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "Discovery",
+							description: "This is a pale discovery toast.",
+							type: "pale",
+						})
+					}
+				>
+					Discovery Pale
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "error flag",
+							description: "This is a error toast flag.",
+						})
+					}
+				>
+					Error
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "error flag",
+							description: "This is a error toast flag.",
+							type: "bold",
+						})
+					}
+				>
+					Error Bold
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "error flag",
+							description: "This is a pale error toast flag.",
+							type: "pale",
+						})
+					}
+				>
+					Error Pale
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "Warning Flag",
+							description: "This is a warning toast flag.",
+						})
+					}
+				>
+					Warning
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "Warning Flag",
+							description: "This is a bold warning toast flag.",
+							type: "bold",
+						})
+					}
+				>
+					Warning Bold
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "Warning Flag",
+							description: "This is a pale warning toast flag.",
+							type: "pale",
+						})
+					}
+				>
+					Warning Pale
+				</Button>
+				<Button
+					onClick={() =>
+						Toast.showFlag({
+							title: "warning flag",
+							description: (
+								<div>
+									<h2>This is a warning flag!</h2>
+									<p>
+										Lorem ipsum, dolor sit amet consectetur
+										adipisicing elit. Maxime doloribus unde
+										laboriosam, beatae accusantium quasi
+										itaque, illum necessitatibus amet
+										aspernatur, nostrum velit quo earum
+										error nihil. Obcaecati totam harum
+										quibusdam!
+									</p>
+								</div>
+							),
+						})
+					}
+				>
+					Warning
+				</Button>
+			</ToastFlagProvider>
 		</div>
 	)
 }
@@ -9602,14 +9722,16 @@ function ToggleShowcase(props: ShowcaseProps) {
 
 export default ToggleShowcase
 
+import {
+	ActivityIcon,
+	CameraIcon,
+	SearchIcon,
+	EyeIcon,
+	SquareCheckIcon,
+} from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import SearchIcon from "@atlaskit/icon/glyph/search"
-import WatchIcon from "@atlaskit/icon/glyph/watch"
-import ActivityIcon from "@atlaskit/icon/glyph/activity"
-import CameraIcon from "@atlaskit/icon/glyph/camera"
-import TaskIcon from "@atlaskit/icon/glyph/task"
 import { Tooltip, TooltipProvider, Button } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
@@ -9627,7 +9749,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						align="start"
 					>
 						<div>
-							<SearchIcon label="" />
+							<SearchIcon aria-label="Search" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -9639,7 +9761,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						align="end"
 					>
 						<div>
-							<ActivityIcon label="" />
+							<ActivityIcon aria-label="Activity" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -9648,7 +9770,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						tooltipContent={"I'm a top tooltip"}
 					>
 						<div>
-							<CameraIcon label="" />
+							<CameraIcon aria-label="Camera" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -9662,7 +9784,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						}
 					>
 						<div>
-							<TaskIcon label="" />
+							<SquareCheckIcon aria-label="Task" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -9681,7 +9803,7 @@ function TooltipShowcase(props: ShowcaseProps) {
 						Ältere Pilzkörper bilden im Becherstadium eine Vertiefung in ihrem Hut, in dem sich Regenwasser sammeln kann, der sogenannte Zwergenwein.[5]`}
 					>
 						<div>
-							<WatchIcon label="" />
+							<EyeIcon aria-label="Watch" size="12" />
 						</div>
 					</Tooltip>
 					<Tooltip
@@ -9741,19 +9863,19 @@ function TooltipShowcase(props: ShowcaseProps) {
 
 export default TooltipShowcase
 
-import CrossIcon from "@atlaskit/icon/glyph/cross"
 import {
 	Button,
 	ButtonGroup,
 	Modal,
 	Select,
-	ToastFlagContainer,
+	ToastFlagProvider,
 } from "@linked-planet/ui-kit-ts"
 import { Tour, TourStep } from "@linked-planet/ui-kit-ts"
 import { useMemo, useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { CrossIcon } from "lucide-react"
 
 //#region tour
 const defaultLocale = {
@@ -9848,87 +9970,88 @@ function TourExample() {
 	}, [])
 
 	return (
-		<div className="bg-surface">
-			<ButtonGroup>
-				<div id="tour-start" className="flex justify-center flex-1">
-					<Button
-						type="button"
-						className="px-2"
-						onClick={() => setActive(true)}
-						appearance="primary"
-					>
-						Tour starten
-					</Button>
-					<Tour
-						isActive={isActive}
-						setActive={setActive}
-						steps={steps}
-						skipOnError={false}
-						showInfoAndError={true}
-						beforeAll={() => {
-							// initialize dummy data or other inits before tour starts
-							console.info("Starting Tour")
-						}}
-						afterAll={() => {
-							// cleanup dummy data or other inits after tour finished
-							console.info("Ending Tour")
-						}}
-					/>
-				</div>
-				<Button
-					data-id="Test-1"
-					//onClick={() => setPopup(true)}
-					id="joyride-first"
-				>
-					First step
-				</Button>
-				<Button data-id="Test-2" id="joyride-second">
-					Second step
-				</Button>
-			</ButtonGroup>
-			<Modal.Container
-				open={popup}
-				//defaultOpen={true}
-				onOpenChange={(opened) => {
-					if (!opened) setPopup(false)
-				}}
-				//shouldCloseOnEscapePress={false}
-				shouldCloseOnOverlayClick={false} // this is required, the show "clicks" outside of the dialog closing the modal, which results in the failing of the next step because the element is not mounted anymore
-				accessibleDialogDescription="This is a modal dialog example"
-			>
-				<Modal.Header>
-					<Modal.Title accessibleDialogTitle="Sample Modal">
-						Sample Modal
-					</Modal.Title>
-					<Button
-						appearance="link"
-						onClick={() => setPopup(false)}
-						className="text-text p-0"
-					>
-						<CrossIcon label="Close popup" />
-					</Button>
-				</Modal.Header>
-				<Modal.Body>
-					<div>
-						<p>This is the body of the modal.</p>
-					</div>
-					<Select
-						id="test-select"
-						data-id="test-select"
-						placeholder="Choose..."
-						options={[]}
-					/>
-				</Modal.Body>
-				<Modal.Footer>
-					<Modal.CloseTrigger>
-						<Button appearance="primary" className="z-0">
-							Close
+		<ToastFlagProvider>
+			<div className="bg-surface">
+				<ButtonGroup>
+					<div id="tour-start" className="flex justify-center flex-1">
+						<Button
+							type="button"
+							className="px-2"
+							onClick={() => setActive(true)}
+							appearance="primary"
+						>
+							Tour starten
 						</Button>
-					</Modal.CloseTrigger>
-				</Modal.Footer>
-			</Modal.Container>
-			<ToastFlagContainer />
-		</div>
+						<Tour
+							isActive={isActive}
+							setActive={setActive}
+							steps={steps}
+							skipOnError={false}
+							showInfoAndError={true}
+							beforeAll={() => {
+								// initialize dummy data or other inits before tour starts
+								console.info("Starting Tour")
+							}}
+							afterAll={() => {
+								// cleanup dummy data or other inits after tour finished
+								console.info("Ending Tour")
+							}}
+						/>
+					</div>
+					<Button
+						data-id="Test-1"
+						//onClick={() => setPopup(true)}
+						id="joyride-first"
+					>
+						First step
+					</Button>
+					<Button data-id="Test-2" id="joyride-second">
+						Second step
+					</Button>
+				</ButtonGroup>
+				<Modal.Container
+					open={popup}
+					//defaultOpen={true}
+					onOpenChange={(opened) => {
+						if (!opened) setPopup(false)
+					}}
+					//shouldCloseOnEscapePress={false}
+					shouldCloseOnOverlayClick={false} // this is required, the show "clicks" outside of the dialog closing the modal, which results in the failing of the next step because the element is not mounted anymore
+					accessibleDialogDescription="This is a modal dialog example"
+				>
+					<Modal.Header>
+						<Modal.Title accessibleDialogTitle="Sample Modal">
+							Sample Modal
+						</Modal.Title>
+						<Button
+							appearance="link"
+							onClick={() => setPopup(false)}
+							className="text-text p-0"
+						>
+							<CrossIcon aria-label="Close popup" size="12" />
+						</Button>
+					</Modal.Header>
+					<Modal.Body>
+						<div>
+							<p>This is the body of the modal.</p>
+						</div>
+						<Select
+							id="test-select"
+							data-id="test-select"
+							placeholder="Choose..."
+							options={[]}
+						/>
+					</Modal.Body>
+					<Modal.Footer>
+						<Modal.CloseTrigger>
+							<Button appearance="primary" className="z-0">
+								Close
+							</Button>
+						</Modal.CloseTrigger>
+					</Modal.Footer>
+				</Modal.Container>
+			</div>
+		</ToastFlagProvider>
 	)
 }
 
@@ -9985,51 +10108,49 @@ function TourSkipExample() {
 						it.
 					</span>
 				),
-			}
+			},
 		})
 		return [InitStep, SecondStep, ThirdStep]
 	}, [])
 
 	return (
-		<div className="bg-surface">
-			<ButtonGroup>
-				<div id="tour-start" className="flex justify-center flex-1">
-					<Button
-						type="button"
-						className="px-2"
-						onClick={() => setActive(true)}
-						appearance="primary"
-					>
-						Tour starten
+		<ToastFlagProvider>
+			<div className="bg-surface">
+				<ButtonGroup>
+					<div id="tour-start" className="flex justify-center flex-1">
+						<Button
+							type="button"
+							className="px-2"
+							onClick={() => setActive(true)}
+							appearance="primary"
+						>
+							Tour starten
+						</Button>
+						<Tour
+							isActive={isActive}
+							setActive={setActive}
+							steps={steps}
+							skipOnError={true}
+							showInfoAndError={true}
+							beforeAll={() => {
+								// initialize dummy data or other inits before tour starts
+								console.info("Starting Tour")
+							}}
+							afterAll={() => {
+								// cleanup dummy data or other inits after tour finished
+								console.info("Ending Tour")
+							}}
+						/>
+					</div>
+					<Button data-id="Test-1" id="joyride-first">
+						First step
 					</Button>
-					<Tour
-						isActive={isActive}
-						setActive={setActive}
-						steps={steps}
-						skipOnError={true}
-						showInfoAndError={true}
-						beforeAll={() => {
-							// initialize dummy data or other inits before tour starts
-							console.info("Starting Tour")
-						}}
-						afterAll={() => {
-							// cleanup dummy data or other inits after tour finished
-							console.info("Ending Tour")
-						}}
-					/>
-				</div>
-				<Button
-					data-id="Test-1"
-					id="joyride-first"
-				>
-					First step
-				</Button>
-				<Button data-id="Test-2" id="joyride-third">
-					Third step
-				</Button>
-			</ButtonGroup>
-			<ToastFlagContainer />
-		</div>
+					<Button data-id="Test-2" id="joyride-third">
+						Third step
+					</Button>
+				</ButtonGroup>
+			</div>
+		</ToastFlagProvider>
 	)
 }
 
@@ -10273,7 +10394,6 @@ export default function UtilsShowCase(props: ShowcaseProps) {
 import { useState } from "react"
 import { AppLayout, Checkbox, PageLayout } from "@linked-planet/ui-kit-ts"
 
-import "@atlaskit/css-reset" // sets base styles of AK
 import Fillers from "./Fillers"
 
 //#region applayoutexample

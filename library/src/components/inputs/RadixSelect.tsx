@@ -8,7 +8,7 @@ import React, {
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
+import { ChevronDownIcon } from "lucide-react"
 import { getPortal } from "../../utils/getPortal"
 
 type SelectOption = {
@@ -41,9 +41,9 @@ type SelectProps = {
 }
 
 const selectNormalStyles =
-	"p-2 select-none text-left bg-input-active rounded border border-input-border ease-in-out transition duration-200 flex items-center justify-between w-full"
+	"p-2 select-none text-left bg-input-active rounded-xs border border-input-border ease-in-out transition duration-200 flex items-center justify-between w-full"
 const selectFocusStyles =
-	"focus:border-selected-bold focus:bg-input-active outline-none hover:bg-input-hovered"
+	"focus:border-selected-bold focus:bg-input-active outline-hidden hover:bg-input-hovered"
 const selectDisabledStyles =
 	"disabled:bg-disabled disabled:text-disabled-text disabled:cursor-not-allowed disabled:border-transparent"
 const selectStyles = twJoin(
@@ -169,7 +169,7 @@ const RadixSelect = forwardRef(
 					/>
 
 					<RSelect.Icon className="flex items-center justify-center">
-						<ChevronDownIcon label="open select" />
+						<ChevronDownIcon aria-label="open select" size="12" />
 					</RSelect.Icon>
 				</RSelect.Trigger>
 
@@ -188,7 +188,7 @@ RadixSelect.displayName = "RadixSelect"
 export { RadixSelect }
 
 const normalStyles =
-	"px-4 normal-case font-normal text-sm text-text py-1.5 outline-none border-l-[2.5px] border-l-transparent cursor-pointer" as const
+	"px-4 normal-case font-normal text-sm text-text py-1.5 outline-hidden border-l-[2.5px] border-l-transparent cursor-pointer" as const
 const hoverStyles =
 	"hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed hover:border-l-selected-bold" as const
 const selectedStyles =

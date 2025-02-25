@@ -1,18 +1,16 @@
-import React from "react"
+import { PlusCircleIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { IconSizeHelper } from "@linked-planet/ui-kit-ts"
-
-import AddItemIcon from "@atlaskit/icon/glyph/add-item"
 
 export default function IconSizeHelperShowcase(props: ShowcaseProps) {
 	//#region iconsizehelper
 	const example = (
 		<>
 			<IconSizeHelper size={67}>
-				<AddItemIcon label="" />
+				<PlusCircleIcon aria-label="Plus" size="12" />
 			</IconSizeHelper>
 			<IconSizeHelper
 				size={"2.3rem"}
@@ -21,7 +19,7 @@ export default function IconSizeHelperShowcase(props: ShowcaseProps) {
 					borderRadius: "50%",
 				}}
 			>
-				<AddItemIcon label="" />
+				<PlusCircleIcon aria-label="Plus" size="12" />
 			</IconSizeHelper>
 		</>
 	)
@@ -34,7 +32,7 @@ export default function IconSizeHelperShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts/single#IconSizeHelper",
+					url: "/ui-kit-ts/single#IconSizeHelper",
 				},
 			]}
 			examples={[

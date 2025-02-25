@@ -835,7 +835,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		>
 			{beforeCount > 0 && !hideOutOfRangeMarkers && (
 				<div
-					className="bg-lime-bold absolute left-0 top-0 z-[2] h-full w-1 rounded-r-full opacity-50"
+					className="bg-lime-bold absolute left-0 top-0 z-2 h-full w-1 rounded-r-full opacity-50"
 					title={`${beforeCount} more items`}
 				/>
 			)}
@@ -851,7 +851,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			)}
 			{afterCount > 0 && !hideOutOfRangeMarkers && (
 				<div
-					className="bg-lime-bold absolute right-0 top-0 z-[2] h-full w-1 translate-x-0 translate-y-0 rounded-l-full opacity-50"
+					className="bg-lime-bold absolute right-0 top-0 z-2 h-full w-1 translate-x-0 translate-y-0 rounded-l-full opacity-50"
 					title={`${afterCount} more items`}
 				/>
 			)}
@@ -1081,7 +1081,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				rowSpan={rowSpanGroupHeader}
 				className={
 					renderCells
-						? `border-border overflow-hidden box-border border-b-border m-0 p-0 sticky left-0 z-[4] select-none border-0 border-b-2 border-r-2 border-solid ${
+						? `border-border overflow-hidden box-border border-b-border m-0 p-0 sticky left-0 z-4 select-none border-0 border-b-2 border-r-2 border-solid ${
 								groupNumber % 2 === 0
 									? "bg-surface"
 									: "bg-surface-hovered"

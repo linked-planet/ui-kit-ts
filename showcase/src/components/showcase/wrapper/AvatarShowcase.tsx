@@ -1,4 +1,3 @@
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -90,7 +89,7 @@ function AvatarShowcase(props: ShowcaseProps) {
 	const example1 = (
 		<div>
 			{example1AK}
-			<div className="flex gap-4">
+			<div className="flex flex-wrap gap-4">
 				<LPAvatar
 					size="xsmall"
 					appearance="circle"

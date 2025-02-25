@@ -1,9 +1,3 @@
-import CheckboxIcon from "@atlaskit/icon/glyph/checkbox"
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
-import ChevronLeftIcon from "@atlaskit/icon/glyph/chevron-left"
-import ChevronRightIcon from "@atlaskit/icon/glyph/chevron-right"
-import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
-import RadioIcon from "@atlaskit/icon/glyph/radio"
 import * as RDd from "@radix-ui/react-dropdown-menu"
 import { forwardRef, useMemo, useRef, type ForwardedRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
@@ -11,9 +5,17 @@ import { getPortal } from "../utils"
 import { Button, type ButtonProps } from "./Button"
 import { overlayBaseStyle } from "./styleHelper"
 import { IconSizeHelper } from "./IconSizeHelper"
+import {
+	ChevronDownIcon,
+	ChevronLeftIcon,
+	ChevronRightIcon,
+	ChevronUpIcon,
+	RadioIcon,
+} from "lucide-react"
+import { CheckboxIcon } from "@radix-ui/react-icons"
 
 const commonStyles =
-	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-none border-l-2 border-y-0 border-r-0 focus-visible:border-l-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-none focus-visible:border-selected-border" as const
+	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-hidden border-l-2 border-y-0 border-r-0 focus-visible:border-l-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-hidden focus-visible:border-selected-border" as const
 const disabledStyles = "text-disabled-text cursor-not-allowed" as const
 const selectedStyles =
 	"data-[selected=true]:bg-selected-subtle data-[selected=true]:hover:bg-selected-subtle-hovered data-[selected=true]:border-l-selected-bold data-[selected=true]:active:bg-selected-subtle-pressed data-[selected=true]:text-selected-subtle-text" as const
@@ -153,7 +155,7 @@ function ItemCheckbox({
 			>
 				<RDd.ItemIndicator asChild>
 					<IconSizeHelper className="text-brand-bold">
-						<CheckboxIcon label="" />
+						<CheckboxIcon />
 					</IconSizeHelper>
 				</RDd.ItemIndicator>
 			</div>
@@ -329,12 +331,12 @@ function ItemRadio({
 			>
 				{selected && (
 					<IconSizeHelper className="text-brand-bold absolute inset-0 flex items-center justify-center">
-						<RadioIcon label="" />
+						<RadioIcon size="12" />
 					</IconSizeHelper>
 				)}
 				<RDd.ItemIndicator>
 					<IconSizeHelper>
-						<RadioIcon label="" />
+						<RadioIcon size="12" />
 					</IconSizeHelper>
 				</RDd.ItemIndicator>
 			</div>
@@ -377,13 +379,19 @@ function SubMenu({
 				<div className={twJoin(commonStyles, normalStyles, "w-full")}>
 					{chevronSide === "left" && (
 						<IconSizeHelper>
-							<ChevronLeftIcon label="" />
+							<ChevronLeftIcon
+								aria-label="open submenu"
+								size="12"
+							/>
 						</IconSizeHelper>
 					)}
 					{trigger}
 					{chevronSide === "right" && (
 						<IconSizeHelper>
-							<ChevronRightIcon label="" />
+							<ChevronRightIcon
+								aria-label="close submenu"
+								size="12"
+							/>
 						</IconSizeHelper>
 					)}
 				</div>
@@ -403,7 +411,7 @@ function SubMenu({
 			<RDd.Portal>
 				<RDd.SubContent
 					className={twMerge(
-						"bg-surface-overlay shadow-overlay z-50 overflow-y-auto overflow-x-visible rounded",
+						"bg-surface-overlay shadow-overlay z-50 overflow-y-auto overflow-x-visible rounded-xs",
 						subClassName,
 					)}
 					style={subStyle}
@@ -486,7 +494,7 @@ const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
 							: "group-data-[state=open]:flex group-data-[state=open]:visible"
 					}`}
 				>
-					<ChevronUpIcon label="" size="small" />
+					<ChevronUpIcon size="6" />
 				</IconSizeHelper>
 				<IconSizeHelper
 					className={`hidden h-4 w-4 items-center justify-center ${
@@ -495,7 +503,7 @@ const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
 							: "group-data-[state=closed]:flex group-data-[state=closed]:visible"
 					}`}
 				>
-					<ChevronDownIcon label="" size="small" />
+					<ChevronDownIcon size="6" />
 				</IconSizeHelper>
 			</Button>
 		)

@@ -77,7 +77,7 @@ export default function ItemWrapper<
 		>
 			<div
 				ref={ref}
-				className="animate-fade-in relative z-[1] size-full"
+				className="animate-fade-in relative z-1 size-full"
 				onClick={() => {
 					if (onTimeSlotItemClick) onTimeSlotItemClick(group, item)
 				}}

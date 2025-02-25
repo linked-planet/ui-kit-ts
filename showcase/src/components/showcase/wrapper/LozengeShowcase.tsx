@@ -1,8 +1,6 @@
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import AKLozenge from "@atlaskit/lozenge"
 import { Lozenge } from "@linked-planet/ui-kit-ts"
 
 function LozengeShowcase(props: ShowcaseProps) {
@@ -10,7 +8,7 @@ function LozengeShowcase(props: ShowcaseProps) {
 	const example = (
 		<div className="flex flex-col gap-8">
 			<div className="">
-				<AKLozenge>First lozenge</AKLozenge>
+				{/*<AKLozenge>First lozenge</AKLozenge>
 				<AKLozenge appearance="new">new</AKLozenge>
 				<AKLozenge appearance="new" isBold>
 					new bold
@@ -30,7 +28,7 @@ function LozengeShowcase(props: ShowcaseProps) {
 				<AKLozenge appearance="removed">removed</AKLozenge>
 				<AKLozenge appearance="removed" isBold>
 					removed bold
-				</AKLozenge>
+				</AKLozenge>*/}
 			</div>
 			<div>
 				<Lozenge>First lozenge</Lozenge>

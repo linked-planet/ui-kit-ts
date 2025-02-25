@@ -21,7 +21,7 @@ export function PlaceHolderItemWrapper<G extends TimeTableGroup>(
 	const PlaceHolder = usePlaceHolderItemComponent(ident)
 
 	return (
-		<div className="z-[1] absolute w-full">
+		<div className="z-1 absolute w-full">
 			<PlaceHolder {...props} />
 		</div>
 	)
@@ -35,7 +35,7 @@ export function PlaceHolderItemPlaceHolder<G extends TimeTableGroup>({
 }: TimeTablePlaceholderItemProps<G>) {
 	return (
 		<div
-			className="flex justify-end w-full rounded bg-brand-bold shadow-overlay"
+			className="flex justify-end w-full rounded-xs bg-brand-bold shadow-overlay"
 			style={{
 				height,
 			}}

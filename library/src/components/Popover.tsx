@@ -1,5 +1,3 @@
-import ChevronDownIcon from "@atlaskit/icon/glyph/chevron-down"
-import ChevronUpIcon from "@atlaskit/icon/glyph/chevron-up"
 import * as RPo from "@radix-ui/react-popover"
 import { forwardRef, useMemo, useRef } from "react"
 import { twMerge } from "tailwind-merge"
@@ -7,6 +5,7 @@ import { getPortal } from "../utils"
 import { Button, type ButtonProps } from "./Button"
 import { overlayBaseStyle } from "./styleHelper"
 import { IconSizeHelper } from "./IconSizeHelper"
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
 const portalDivId = "uikts-popover" as const
 
@@ -44,14 +43,14 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 						hideChevron ? "" : "group-data-[state=open]:flex"
 					}`}
 				>
-					<ChevronUpIcon label="" size="medium" />
+					<ChevronUpIcon size="12" />
 				</IconSizeHelper>
 				<IconSizeHelper
 					className={`hidden h-full w-6 items-center justify-center ${
 						hideChevron ? "" : "group-data-[state=closed]:flex"
 					}`}
 				>
-					<ChevronDownIcon label="" size="medium" />
+					<ChevronDownIcon size="12" />
 				</IconSizeHelper>
 			</Button>
 		)

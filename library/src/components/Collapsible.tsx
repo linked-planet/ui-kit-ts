@@ -1,9 +1,4 @@
 import * as CollapsibleRUI from "@radix-ui/react-collapsible"
-/*import {
-	ChevronDownIcon,
-	ChevronRightIcon,
-	ChevronUpIcon,
-} from "@radix-ui/react-icons"*/
 
 import { ChevronRightIcon, ChevronLeftIcon } from "lucide-react"
 
@@ -60,7 +55,7 @@ export const Collapsible = forwardRef(
 			<CollapsibleRUI.Root
 				{...props}
 				className={twMerge(
-					"bg-surface-raised rounded group",
+					"bg-surface-raised rounded-xs group",
 					className,
 				)}
 				style={style}
@@ -93,6 +88,7 @@ export const Collapsible = forwardRef(
 							>
 								<ChevronRightIcon
 									aria-label={opened ? "close" : "open"}
+									strokeWidth={3}
 									className="group-data-[state=closed]:rotate-0 group-data-[state=open]:rotate-90 transform transition-transform"
 								/>
 							</div>
@@ -116,6 +112,7 @@ export const Collapsible = forwardRef(
 							>
 								<ChevronLeftIcon
 									aria-label={opened ? "close" : "open"}
+									strokeWidth={3}
 									className="group-data-[state=closed]:rotate-0 group-data-[state=open]:-rotate-90 transform transition-transform"
 								/>
 							</div>
@@ -125,7 +122,7 @@ export const Collapsible = forwardRef(
 
 				<CollapsibleRUI.Content
 					className={twMerge(
-						"overflow-hidden data-[state=closed]:animate-slideUpCollapsible data-[state=open]:animate-slideDownCollapsible",
+						"overflow-hidden data-[state=closed]:animate-slide-up-collapsible data-[state=open]:animate-slide-down-collapsible",
 						contentClassName,
 					)}
 					style={contentStyle}
