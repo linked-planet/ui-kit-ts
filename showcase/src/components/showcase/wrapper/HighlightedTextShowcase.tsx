@@ -1,37 +1,56 @@
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { HighlightedText } from "@linked-planet/ui-kit-ts"
+import { Button, HighlightedText, Input } from "@linked-planet/ui-kit-ts"
 
-function HighlightedTextShowcase(props: ShowcaseProps) {
-	//#region highlightedtext
-	const example = (
-		<div className="flex gap-4">
+function Example() {
+	const [caseSensitive, setCaseSensitive] = useState(false)
+	const [match, setMatch] = useState<string[]>(["Iusto", "porro"])
+	return (
+		<div>
+			<Button onClick={() => setCaseSensitive(!caseSensitive)}>
+				{caseSensitive ? "Case Sensitive" : "Case Insensitive"}
+			</Button>
+			<Input
+				value={match.join(",")}
+				onChange={(e) => setMatch(e.target.value.split(","))}
+			/>
 			<HighlightedText
 				text={
-					"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iusto quod libero hic accusantium porro. Temporibus quaerat molestiae recusandae tenetur maiores ab sit ullam deleniti eligendi, officia nobis! Id, natus qui?"
+					"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iusto iusto quod libero hic accusantium porro Porro. Temporibus quaerat molestiae recusandae tenetur maiores ab sit ullam deleniti eligendi, officia nobis! Id, natus qui?"
 				}
-				highlightedText={["Iusto", "porro"]}
+				highlightedText={match}
+				caseSensitive={caseSensitive}
 			/>
 		</div>
 	)
-	//#endregion highlightedtext
+}
 
-	//#region highlightedtext-containerElement
-	const containerExample = (
-		<div className="flex gap-4">
+function ContainerExample() {
+	const [caseSensitive, setCaseSensitive] = useState(false)
+	const [match, setMatch] = useState<string[]>(["Iusto", "porro"])
+	return (
+		<div>
+			<Button onClick={() => setCaseSensitive(!caseSensitive)}>
+				{caseSensitive ? "Case Sensitive" : "Case Insensitive"}
+			</Button>
+			<Input
+				value={match.join(",")}
+				onChange={(e) => setMatch(e.target.value.split(","))}
+			/>
 			<HighlightedText
-				text={
-					"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iusto quod libero hic accusantium porro. Temporibus quaerat molestiae recusandae tenetur maiores ab sit ullam deleniti eligendi, officia nobis! Id, natus qui?"
-				}
-				highlightedText={["Iusto", "porro"]}
+				text="Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iusto iusto quod libero hic accusantium porro Porro. Temporibus quaerat molestiae recusandae tenetur maiores ab sit ullam deleniti eligendi, officia nobis! Id, natus qui?"
 				containerElement="h3"
+				highlightedText={match}
+				caseSensitive={caseSensitive}
 				highlightClassName="text-red"
 			/>
 		</div>
 	)
-	//#endregion highlightedtext-containerElement
+}
 
+function HighlightedTextShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="HighlightedText"
@@ -51,12 +70,12 @@ function HighlightedTextShowcase(props: ShowcaseProps) {
 			examples={[
 				{
 					title: "Example",
-					example,
+					example: <Example />,
 					sourceCodeExampleId: "highlightedtext",
 				},
 				{
 					title: "Container Element",
-					example: containerExample,
+					example: <ContainerExample />,
 					sourceCodeExampleId: "highlightedtext-containerElement",
 				},
 			]}
