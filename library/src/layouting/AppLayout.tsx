@@ -313,7 +313,7 @@ function Content({
 	return (
 		<section
 			className={twMerge(
-				"relative grid h-full min-h-0 w-full",
+				"relative grid size-full min-h-0 overflow-hidden",
 				className,
 			)}
 			data-layout-content="true"
@@ -343,7 +343,7 @@ function Main({
 	return (
 		<main
 			className={twMerge(
-				"relative m-0 box-border min-h-0 w-full",
+				"relative m-0 box-border min-h-0 size-full overflow-hidden",
 				className,
 			)}
 			data-layout-main="true"
