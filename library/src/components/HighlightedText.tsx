@@ -7,6 +7,7 @@ export function HighlightedText({
 	highlightClassName,
 	style,
 	containerElement,
+	caseSensitive,
 }: {
 	text: string
 	highlightedText: string[] | string
@@ -14,6 +15,7 @@ export function HighlightedText({
 	className?: string
 	style?: React.CSSProperties
 	containerElement?: React.ElementType
+	caseSensitive?: boolean
 }) {
 	const parts = useMemo(() => {
 		const highlights = Array.isArray(highlightedText)
@@ -22,10 +24,11 @@ export function HighlightedText({
 		if (!highlights.length) return text
 		const delimiterRegex = new RegExp(
 			`(${highlights.map((it) => it.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`,
-			"g",
+			caseSensitive ? "g" : "gi",
 		)
+		console.log("Case sensitive:", delimiterRegex, highlightedText)
 		return text.split(delimiterRegex).reduce((acc, it, i) => {
-			if (highlights.includes(it)) {
+			if (delimiterRegex.test(it)) {
 				acc.push(
 					<span
 						key={i}
@@ -42,7 +45,7 @@ export function HighlightedText({
 			acc.push(it)
 			return acc
 		}, [] as React.ReactNode[])
-	}, [text, highlightClassName, highlightedText])
+	}, [text, highlightClassName, highlightedText, caseSensitive])
 
 	const ContainerElement = containerElement || "p"
 

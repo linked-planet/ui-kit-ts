@@ -3363,12 +3363,8 @@ import ShowcaseWrapperItem, {
 import { Dropdown } from "@linked-planet/ui-kit-ts"
 
 function DropDownMenuShowcase(props: ShowcaseProps) {
-	const [radioValue, setRadioValue] = useState("testval1")
+	const [radioValue, setRadioValue] = useState("radio-1")
 	const [checkBoxes, setCheckBoxes] = useState<string[]>([])
-
-	const handleRadioChange = (value: string) => {
-		setRadioValue(value)
-	}
 
 	const handleCheckboxChange = (value: string) => {
 		if (checkBoxes.includes(value)) {
@@ -3512,35 +3508,25 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 				<Dropdown.SubMenu trigger="submenu">
 					<Dropdown.Item>Submenu Entry</Dropdown.Item>
 				</Dropdown.SubMenu>
-				<Dropdown.ItemRadioGroup hasSeparator title="test title">
+				<Dropdown.ItemRadioGroup
+					hasSeparator
+					title="test title"
+					value={radioValue}
+					onValueChange={setRadioValue}
+				>
 					<Dropdown.ItemRadio
 						value="radio-1"
 						description={"another description"}
-						selected={radioValue === "testval1"}
-						onClick={() => handleRadioChange("testval1")}
 					>
 						Radio 1
 					</Dropdown.ItemRadio>
-					<Dropdown.ItemRadio
-						value="radio-2"
-						selected={radioValue === "radio-2"}
-						onClick={() => handleRadioChange("radio-2")}
-					>
+					<Dropdown.ItemRadio value="radio-2">
 						Radio 2
 					</Dropdown.ItemRadio>
-					<Dropdown.ItemRadio
-						value="radio-3"
-						selected={radioValue === "radio-3"}
-						onClick={() => handleRadioChange("radio-3")}
-					>
+					<Dropdown.ItemRadio value="radio-3">
 						Radio 3
 					</Dropdown.ItemRadio>
-					<Dropdown.ItemRadio
-						value="radio-4"
-						disabled
-						selected={radioValue === "radio-4"}
-						onClick={() => handleRadioChange("radio-4")}
-					>
+					<Dropdown.ItemRadio value="radio-4" disabled>
 						Radio Disabled
 					</Dropdown.ItemRadio>
 				</Dropdown.ItemRadioGroup>
@@ -4723,40 +4709,59 @@ export default function GlobalStateShowcase(props: ShowcaseProps) {
 	)
 }
 
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { HighlightedText } from "@linked-planet/ui-kit-ts"
+import { Button, HighlightedText, Input } from "@linked-planet/ui-kit-ts"
 
-function HighlightedTextShowcase(props: ShowcaseProps) {
-	//#region highlightedtext
-	const example = (
-		<div className="flex gap-4">
+function Example() {
+	const [caseSensitive, setCaseSensitive] = useState(false)
+	const [match, setMatch] = useState<string[]>(["Iusto", "porro"])
+	return (
+		<div>
+			<Button onClick={() => setCaseSensitive(!caseSensitive)}>
+				{caseSensitive ? "Case Sensitive" : "Case Insensitive"}
+			</Button>
+			<Input
+				value={match.join(",")}
+				onChange={(e) => setMatch(e.target.value.split(","))}
+			/>
 			<HighlightedText
 				text={
-					"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iusto quod libero hic accusantium porro. Temporibus quaerat molestiae recusandae tenetur maiores ab sit ullam deleniti eligendi, officia nobis! Id, natus qui?"
+					"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iusto iusto quod libero hic accusantium porro Porro. Temporibus quaerat molestiae recusandae tenetur maiores ab sit ullam deleniti eligendi, officia nobis! Id, natus qui?"
 				}
-				highlightedText={["Iusto", "porro"]}
+				highlightedText={match}
+				caseSensitive
 			/>
 		</div>
 	)
-	//#endregion highlightedtext
+}
 
-	//#region highlightedtext-containerElement
-	const containerExample = (
-		<div className="flex gap-4">
+function ContainerExample() {
+	const [caseSensitive, setCaseSensitive] = useState(false)
+	const [match, setMatch] = useState<string[]>(["Iusto", "porro"])
+	return (
+		<div>
+			<Button onClick={() => setCaseSensitive(!caseSensitive)}>
+				{caseSensitive ? "Case Sensitive" : "Case Insensitive"}
+			</Button>
+			<Input
+				value={match.join(",")}
+				onChange={(e) => setMatch(e.target.value.split(","))}
+			/>
 			<HighlightedText
-				text={
-					"Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iusto quod libero hic accusantium porro. Temporibus quaerat molestiae recusandae tenetur maiores ab sit ullam deleniti eligendi, officia nobis! Id, natus qui?"
-				}
-				highlightedText={["Iusto", "porro"]}
+				text="Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iusto iusto quod libero hic accusantium porro Porro. Temporibus quaerat molestiae recusandae tenetur maiores ab sit ullam deleniti eligendi, officia nobis! Id, natus qui?"
 				containerElement="h3"
+				highlightedText={match}
+				caseSensitive={caseSensitive}
 				highlightClassName="text-red"
 			/>
 		</div>
 	)
-	//#endregion highlightedtext-containerElement
+}
 
+function HighlightedTextShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="HighlightedText"
@@ -4776,12 +4781,12 @@ function HighlightedTextShowcase(props: ShowcaseProps) {
 			examples={[
 				{
 					title: "Example",
-					example,
+					example: <Example />,
 					sourceCodeExampleId: "highlightedtext",
 				},
 				{
 					title: "Container Element",
-					example: containerExample,
+					example: <ContainerExample />,
 					sourceCodeExampleId: "highlightedtext-containerElement",
 				},
 			]}
