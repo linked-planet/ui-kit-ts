@@ -82,7 +82,7 @@ const Input = forwardRef(
 				<input
 					ref={inputRef}
 					className={twMerge(
-						"m-0 px-[0.4rem] outline-hidden",
+						"m-0 px-[0.4rem] outline-hidden w-full",
 						inputClassName,
 					)}
 					style={{
