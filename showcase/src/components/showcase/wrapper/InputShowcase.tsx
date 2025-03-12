@@ -67,20 +67,20 @@ function FormExample() {
 //#endregion input-form-example
 
 export default function InputShowcase(props: ShowcaseProps) {
-	const exampleAK = (
-		<Fieldset legend="Input Example">
-			{/*<AKTextField />
+	const exampleAK = {
+		/*<Fieldset legend="Input Example">
+			<AKTextField />
 			<AKTextField isDisabled />
 			<AKTextField placeholder="Placeholder" />
 			<AKTextField isInvalid value={"invalid"} />
 			<AKTextField isReadOnly value={"readonly"} />
 			<AKTextField type="number" defaultValue={1} />
-			<AKTextField type="number" defaultValue={1} appearance="subtle" />*/}
-			{/*<AKTextArea placeholder="Text Area">It wants children</AKTextArea>*/}
-		</Fieldset>
-	)
+			<AKTextField type="number" defaultValue={1} appearance="subtle" />
+			<AKTextArea placeholder="Text Area">It wants children</AKTextArea>
+		</Fieldset>*/
+	}
 
-	//#region input
+	//#region text-input
 	const exampleLP = (
 		<Fieldset legend="Input Example">
 			<Label htmlFor="testInput" required>
@@ -118,11 +118,11 @@ export default function InputShowcase(props: ShowcaseProps) {
 			<TextArea placeholder="Placeholder" disabled />
 		</Fieldset>
 	)
-	//#endregion input
+	//#endregion text-input
 
 	const example = (
 		<div className="flex gap-4">
-			{exampleAK}
+			{/*exampleAK*/}
 			{exampleLP}
 		</div>
 	)
@@ -135,14 +135,14 @@ export default function InputShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts/single#Input",
+					url: "/ui-kit-ts/single#Input",
 				},
 			]}
 			examples={[
 				{
 					title: "TextInput",
 					example: example,
-					sourceCodeExampleId: "input",
+					sourceCodeExampleId: "text-input",
 				},
 				{
 					title: "Form Example",

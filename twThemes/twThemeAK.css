@@ -133,10 +133,10 @@
 	--color-selected-bold-hovered: var(--ds-background-selected-bold-hovered, var(--color-blue-600));
 	--color-selected-bold-pressed: var(--ds-background-selected-bold-pressed, var(--color-blue-700));
 
-	--color-selected-subtle: var(--ds-background-selected-subtle, var(--color-blue-100));
-	--color-selected-subtle-hovered: var(--ds-background-selected-subtle-hovered, var(--color-gray-200));
-	--color-selected-subtle-pressed: var(--ds-background-selected-subtle-pressed, var(--color-gray-300));
-	--color-selected-subtle-text: var(--ds-text-selected-subtle, var(--color-slate-600));
+	--color-selected-subtle: var(--ds-background-selected, var(--color-blue-100));
+	--color-selected-subtle-hovered: var(--ds-background-selected-hovered, var(--color-gray-200));
+	--color-selected-subtle-pressed: var(--ds-background-selected-pressed, var(--color-gray-300));
+	--color-selected-subtle-text: var(--ds-text-selected, var(--color-slate-600));
 
 	--color-selected-text: var(--ds-text-selected, var(--color-blue-600));
 	--color-selected-text-inverse: var(--ds-text-selected, white);
