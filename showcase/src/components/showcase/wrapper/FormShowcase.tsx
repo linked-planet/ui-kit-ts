@@ -1,6 +1,13 @@
-import ShowcaseWrapperItem, {type ShowcaseProps,} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import {Button, ButtonGroup, Checkbox, DynamicForm} from "@linked-planet/ui-kit-ts"
-import {useState} from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import {
+	Button,
+	ButtonGroup,
+	Checkbox,
+	DynamicForm,
+} from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
 
 interface TestObject {
 	firstname: string
@@ -39,7 +46,12 @@ function FormVerticalExample() {
 
 	return (
 		<div className="bg-surface">
-			<Checkbox label="Readonly" onChange={(event) => {setReadonly(event.target.checked)}} />
+			<Checkbox
+				label="Readonly"
+				onChange={(event) => {
+					setReadonly(event.target.checked)
+				}}
+			/>
 			<DynamicForm.Form<TestObject>
 				readonly={readonly}
 				obj={formObj}
