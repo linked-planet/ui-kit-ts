@@ -126,61 +126,122 @@ function PaginationPageHandler<P extends string | number>({
 		setCurrentPage(pages[currentPageIndex])
 	}
 
-	const visiblePages = useMemo(() => {
-		const halfMaxPageButtons = Math.floor(maxPageButtons / 2)
-		if (pages.length <= maxPageButtons) return pages
-		const _currentIndex = pages.indexOf(_currentPage)
+	const { visiblePages, currentIndex } = useMemo(() => {
+		const currentIndex = currentPageIndex ?? pages.indexOf(_currentPage)
+		const halfMaxPageButtons = Math.ceil(maxPageButtons / 2)
+		if (pages.length <= maxPageButtons)
+			return { visiblePages: pages, currentIndex }
 
-		let ret: (P | string)[] = []
-
-		if (_currentIndex < halfMaxPageButtons) {
-			ret = pages.slice(0, maxPageButtons)
-			if (maxPageButtons >= 5 && pages.length > maxPageButtons) {
-				ret[maxPageButtons - 2] = "..."
-				ret[maxPageButtons - 1] = pages[pages.length - 1]
-			}
-		} else if (_currentIndex > pages.length - halfMaxPageButtons) {
-			ret = pages.slice(pages.length - maxPageButtons)
-			if (maxPageButtons >= 5 && pages.length > maxPageButtons) {
-				ret[1] = "..."
-				ret[0] = pages[0]
-			}
-		} else {
-			let start = _currentIndex - halfMaxPageButtons
-			let addEnd = true
-			if (start >= pages.length - maxPageButtons) {
-				start = pages.length - maxPageButtons
-				addEnd = false
-			}
-			ret = pages.slice(start, start + maxPageButtons)
-			if (addEnd) {
-				if (maxPageButtons >= 5 && pages.length > maxPageButtons) {
-					ret[ret.length - 2] = "..."
-					ret[ret.length - 1] = pages[pages.length - 1]
-				}
-			}
-			if (start > 0) {
-				if (maxPageButtons >= 5 && pages.length > maxPageButtons) {
-					ret[1] = "..."
-					ret[0] = pages[0]
-				}
-			}
+		const ret: (P | string)[] = []
+		for (
+			let i = currentIndex;
+			i < currentIndex + halfMaxPageButtons && i < pages.length;
+			i++
+		) {
+			ret.push(pages[i])
+		}
+		for (
+			let i = currentIndex - 1;
+			i >= 0 &&
+			i >= currentIndex - maxPageButtons &&
+			ret.length < maxPageButtons;
+			i--
+		) {
+			ret.unshift(pages[i])
+		}
+		for (let i = ret.length; i < maxPageButtons && i < pages.length; i++) {
+			ret.push(pages[i])
 		}
 
-		return ret
-	}, [_currentPage, maxPageButtons, pages])
+		// ellipsis logic
+		if (ret[1] !== pages[1]) {
+			ret[1] = "..."
+			ret[0] = pages[0]
+		}
+		if (ret[ret.length - 2] !== pages[pages.length - 2]) {
+			ret[ret.length - 2] = "..."
+			ret[ret.length - 1] = pages[pages.length - 1]
+		}
+		return { visiblePages: ret, currentIndex }
+	}, [_currentPage, maxPageButtons, pages, currentPageIndex])
 
-	const currentIdx = pages.indexOf(_currentPage)
+	const pageButtons = useMemo(() => {
+		let ellipsisCountUsed = 0
+		return visiblePages.map((page, i) => {
+			if (page === "...") {
+				ellipsisCountUsed++
+			}
+			return (
+				<li
+					key={page.toString() + i}
+					aria-hidden={page === "..."}
+					className="m-0"
+				>
+					{page !== "..." ? (
+						<button
+							className={twMerge(
+								"flex cursor-pointer h-8 min-w-8 select-none items-center justify-center rounded-xs p-1.5 border-0 border-none border-transparent bg-transparent",
+								"data-[current=true]:bg-selected data-[current=true]:text-selected-text-inverse data-[current=true]:cursor-default",
+								"hover:bg-neutral-hovered active:bg-neutral-pressed",
+								pageButtonClassName,
+							)}
+							onClick={() => {
+								const currentIndex = pages.indexOf(page as P)
+								setCurrentPage(page as P)
+								onPageIndexChange?.(currentIndex)
+								onPageChange?.(page as P)
+							}}
+							onKeyUp={(e) => {
+								if (e.key === "Enter") {
+									const currentIndex = pages.indexOf(
+										page as P,
+									)
+									setCurrentPage(page as P)
+									onPageIndexChange?.(currentIndex)
+									onPageChange?.(page as P)
+								}
+							}}
+							aria-label={`${pageLabel} ${page}`}
+							type="button"
+							aria-current={
+								page === _currentPage ? "page" : undefined
+							}
+							style={pageButtonStyle}
+							data-current={page === _currentPage}
+						>
+							{page}
+						</button>
+					) : (
+						<div
+							className="flex h-8 w-8 select-none items-center justify-center rounded-xs p-1.5"
+							aria-hidden="true"
+						>
+							...
+						</div>
+					)}
+				</li>
+			)
+		})
+	}, [
+		visiblePages,
+		pageButtonClassName,
+		pageButtonStyle,
+		pageLabel,
+		_currentPage,
+		pages,
+		onPageIndexChange,
+		onPageChange,
+	])
 
 	return (
 		<nav className={className} style={style} aria-label={label}>
 			<ul className="flex list-none items-center">
 				<li className="m-0">
 					<button
-						disabled={currentIdx <= 0}
+						disabled={currentIndex <= 0}
 						className={twMerge(
 							`flex cursor-pointer disabled:cursor-default h-8 w-8 select-none items-center justify-center rounded p-1.5 border-0 border-none border-transparent bg-transparent ${
-								currentIdx > 0
+								currentIndex > 0
 									? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
 									: "text-disabled-text"
 							}`,
@@ -194,7 +255,7 @@ function PaginationPageHandler<P extends string | number>({
 						}}
 						title={previousLabel}
 						aria-label={previousLabel}
-						aria-disabled={currentIdx >= pages.length - 1}
+						aria-disabled={currentIndex >= pages.length - 1}
 						type="button"
 					>
 						<IconSizeHelper>
@@ -202,60 +263,12 @@ function PaginationPageHandler<P extends string | number>({
 						</IconSizeHelper>
 					</button>
 				</li>
-				{visiblePages.map((page) => (
-					<li key={page} aria-hidden={page === "..."} className="m-0">
-						{page !== "..." ? (
-							<button
-								className={twMerge(
-									"flex cursor-pointer h-8 min-w-8 select-none items-center justify-center rounded-xs p-1.5 border-0 border-none border-transparent bg-transparent",
-									"data-[current=true]:bg-selected data-[current=true]:text-selected-text-inverse data-[current=true]:cursor-default",
-									"hover:bg-neutral-hovered active:bg-neutral-pressed",
-									pageButtonClassName,
-								)}
-								onClick={() => {
-									const currentIndex = pages.indexOf(
-										page as P,
-									)
-									setCurrentPage(page as P)
-									onPageIndexChange?.(currentIndex)
-									onPageChange?.(page as P)
-								}}
-								onKeyUp={(e) => {
-									if (e.key === "Enter") {
-										const currentIndex = pages.indexOf(
-											page as P,
-										)
-										setCurrentPage(page as P)
-										onPageIndexChange?.(currentIndex)
-										onPageChange?.(page as P)
-									}
-								}}
-								aria-label={`${pageLabel} ${page}`}
-								type="button"
-								aria-current={
-									page === _currentPage ? "page" : undefined
-								}
-								style={pageButtonStyle}
-								data-current={page === _currentPage}
-							>
-								{page}
-							</button>
-						) : (
-							<div
-								key={page}
-								className="flex h-8 w-8 select-none items-center justify-center rounded-xs p-1.5"
-								aria-hidden="true"
-							>
-								{page} {/* is "..." */}
-							</div>
-						)}
-					</li>
-				))}
+				{pageButtons}
 				<li className="m-0">
 					<button
 						className={twMerge(
 							`flex cursor-pointer disabled:cursor-default h-8 w-8 select-none items-center justify-center rounded p-1.5 bg-transparent border-none border-0 border-transparent ${
-								currentIdx < pages.length - 1
+								currentIndex < pages.length - 1
 									? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
 									: "text-disabled-text"
 							}`,
@@ -267,10 +280,10 @@ function PaginationPageHandler<P extends string | number>({
 							onPageIndexChange?.(_currentIndex + 1)
 							onPageChange?.(pages[_currentIndex + 1])
 						}}
-						disabled={currentIdx >= pages.length - 1}
+						disabled={currentIndex >= pages.length - 1}
 						title={nextLabel}
 						aria-label={nextLabel}
-						aria-disabled={currentIdx >= pages.length - 1}
+						aria-disabled={currentIndex >= pages.length - 1}
 						type="button"
 						style={pageButtonStyle}
 					>
