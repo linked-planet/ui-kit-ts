@@ -82,7 +82,7 @@ export const Collapsible = forwardRef(
 						{openButtonPosition === "left" && (
 							<div
 								className={twMerge(
-									"flex h-full flex-none items-center justify-center size-4 pr-1",
+									"flex h-full flex-none items-center justify-center size-6 pr-1",
 									chevronClassName,
 								)}
 							>
@@ -105,7 +105,7 @@ export const Collapsible = forwardRef(
 						{openButtonPosition === "right" && (
 							<div
 								className={twMerge(
-									"flex h-full flex-none items-center justify-center size-5 px-1",
+									"flex h-full flex-none items-center justify-center size-6",
 									chevronClassName,
 								)}
 								style={chevronStyle}
