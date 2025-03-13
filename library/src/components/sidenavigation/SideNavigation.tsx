@@ -335,7 +335,7 @@ function Section({
 	return (
 		<div
 			className={twMerge(
-				`flex flex-col gap-2 ${hasSeparator && "border-border border-t-2 border-solid"}`,
+				`flex flex-col gap-2 box-border ${hasSeparator ? "border-border border-t-2 border-solid" : ""}`,
 				className,
 			)}
 			style={style}
@@ -495,7 +495,7 @@ function NestingItem({
 			iconAfter={
 				<ArrowRightIcon
 					strokeWidth={3}
-					className="rounded-full p-1 bg-neutral-full size-5.5 text-text-inverse"
+					className="rounded-full p-1 box-border bg-neutral-full size-5.5 text-text-inverse"
 				/>
 			}
 		>
@@ -635,7 +635,7 @@ function NestableNavigationContent({
 							ease: "easeInOut",
 							//delay: animTime * 0.5,
 						}}
-						className="border-b-border-separator border-t-border-separator flex size-full border-b-2 border-t-2 border-solid py-2"
+						className="border-b-border-separator border-t-border-separator box-border flex size-full border-b-2 border-t-2 border-solid py-2"
 					>
 						{React.cloneElement(renderChild, { _isOpen: true })}
 					</motion.div>

@@ -6618,7 +6618,6 @@ function SelectShowcase(props: ShowcaseProps) {
 					label: "Second option",
 					value: { test: "second" },
 				}}
-				menuIsOpen
 			/>
 
 			<Select<{ test: string }, true>

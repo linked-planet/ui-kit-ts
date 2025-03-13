@@ -117,9 +117,9 @@
 		"use-resize-observer": "^9.1.0"
 	},
 	"devDependencies": {
-		"@atlaskit/atlassian-navigation": "^5.0.1",
+		"@atlaskit/atlassian-navigation": "^5.0.2",
 		"@atlaskit/css-reset": "^7.0.1",
-		"@atlaskit/table-tree": "^11.1.0",
+		"@atlaskit/table-tree": "^11.1.1",
 		"@atlaskit/theme": "^18.0.0",
 		"@babel/generator": "^7.26.10",
 		"@babel/parser": "^7.26.10",
@@ -129,7 +129,7 @@
 		"@formatjs/cli": "^6.6.1",
 		"@hello-pangea/dnd": "^18.0.1",
 		"@monaco-editor/react": "^4.7.0",
-		"@tailwindcss/vite": "^4.0.13",
+		"@tailwindcss/vite": "^4.0.14",
 		"@total-typescript/ts-reset": "^0.6.1",
 		"@types/node": "^22.13.10",
 		"@types/react": "^18.3.18",
