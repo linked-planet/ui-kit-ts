@@ -1,5 +1,5 @@
 import { type AxiosError, isAxiosError } from "axios"
-import { Button, Toast } from "@linked-planet/ui-kit-ts"
+import { Button, Toast } from "../components/index"
 import type { QueryClient } from "@tanstack/react-query"
 
 // in the handler function the returned boolean states if after the handler the error handling is done

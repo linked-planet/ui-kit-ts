@@ -36,6 +36,7 @@ function SideNavExample() {
 							<SideNavigation.NestingItem
 								title="test nesting"
 								sideNavStoreIdent="side-nav-store-showcase"
+								id="test-nesting"
 							>
 								<SideNavigation.ButtonItem>
 									Test Nested Button
@@ -44,6 +45,7 @@ function SideNavExample() {
 									<SideNavigation.NestingItem
 										title="inner nesting"
 										sideNavStoreIdent="side-nav-store-showcase"
+										id="inner-nesting"
 									>
 										<SideNavigation.ButtonItem>
 											Inner Test Nested Button
@@ -255,15 +257,21 @@ function NestingSideNavExample() {
 			>
 				<SideNavigation.Content>
 					<SideNavigation.NestableNavigationContent>
-						<SideNavigation.NestingItem title="outer">
-							<SideNavigation.NestingItem title="inner">
+						<SideNavigation.NestingItem title="outer" id="outer">
+							<SideNavigation.NestingItem
+								title="inner"
+								id="inner"
+							>
 								<SideNavigation.Section title="Section">
 									<SideNavigation.SkeletonItem />
 									<SideNavigation.ButtonItem>
 										Inner Button
 									</SideNavigation.ButtonItem>
 								</SideNavigation.Section>
-								<SideNavigation.NestingItem title="inner2">
+								<SideNavigation.NestingItem
+									title="inner2"
+									id="inner2"
+								>
 									<SideNavigation.ButtonItem>
 										Inner Nested Button
 									</SideNavigation.ButtonItem>
@@ -285,12 +293,12 @@ function NestingSideNavExample() {
 
 //#region infinite-side-nav-example
 function nestingChildren({ count }: { count: number }) {
-	if (count > 5)
-		return <SideNavigation.ButtonItem>End</SideNavigation.ButtonItem>
+	if (count > 5) return null
 	return (
 		<SideNavigation.NestingItem
 			title={`Level${count}`}
 			id={`level-${count}`}
+			sideNavStoreIdent="side-nav-store-showcase-infinite"
 		>
 			{/* This needs to be in function calling form to avoid JSX from stop rendering the children, and therefore stopping the nesting */}
 			{nestingChildren({ count: count + 1 })}
@@ -306,7 +314,7 @@ function InfiniteSideNavExample() {
 				aria-label="Side navigation"
 			>
 				<SideNavigation.Content>
-					<SideNavigation.NestableNavigationContent>
+					<SideNavigation.NestableNavigationContent sideNavStoreIdent="side-nav-store-showcase-infinite">
 						{nestingChildren({ count: 0 })}
 					</SideNavigation.NestableNavigationContent>
 				</SideNavigation.Content>

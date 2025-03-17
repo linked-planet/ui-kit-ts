@@ -10,16 +10,20 @@ const store = proxy<Record<string, SideNavigationStore>>({})
 
 export function useSideNavigationStore(sideNavStoreIdent: string) {
 	if (!store[sideNavStoreIdent]) {
-		store[sideNavStoreIdent] = {
+		store[sideNavStoreIdent] = proxy<SideNavigationStore>({
 			path: [],
 			transitioning: null,
-		}
+		})
 	}
 
 	const path = useSnapshot(store[sideNavStoreIdent])
 	const setPath = useCallback(
 		(path: string[]) =>
-			store[sideNavStoreIdent].path.splice(0, path.length, ...path),
+			store[sideNavStoreIdent].path.splice(
+				0,
+				Number.POSITIVE_INFINITY,
+				...path,
+			),
 		[sideNavStoreIdent],
 	)
 

@@ -47,7 +47,7 @@ function Container({
 	return (
 		<nav
 			className={twMerge(
-				"bg-surface text-text-subtle relative flex size-full flex-col overflow-hidden truncate py-4",
+				"bg-surface text-text-subtle relative flex size-full flex-col overflow-hidden truncate",
 				className,
 			)}
 			role={role}
@@ -453,6 +453,7 @@ type _NestingItemProps = {
 	style?: React.CSSProperties
 	title: string // title is used to identify the item and as a key
 	sideNavStoreIdent?: string
+	id: string
 }
 
 function NestingItem({
@@ -463,7 +464,7 @@ function NestingItem({
 	title,
 	_isOpen,
 	id,
-}: _NestingItemProps & { _isOpen?: boolean; id?: string }) {
+}: _NestingItemProps & { _isOpen?: boolean }) {
 	const {
 		getCurrentPathElement,
 		pushPathElement,
@@ -487,7 +488,7 @@ function NestingItem({
 	return (
 		<ButtonItem
 			onClick={() => {
-				pushPathElement(title)
+				pushPathElement(id)
 				setTransitioning(true)
 				window.setTimeout(() => setTransitioning(null), animTime * 1000)
 			}}
@@ -510,24 +511,26 @@ type _NestableNavigationContentProps = {
 	className?: string
 	style?: React.CSSProperties
 	sideNavStoreIdent?: string
+	onAnimationStart?: () => void
+	onAnimationComplete?: () => void
 }
 
 function searchChild(
 	children: React.ReactNode,
-	currentOpenedTitle: string | undefined,
+	currentOpenedId: string | undefined,
 ) {
 	let renderChild: React.ReactElement<_NestingItemProps> | null = null
 	React.Children.forEach(children, (child) => {
 		if (renderChild) return
 		if (
 			React.isValidElement<_NestingItemProps>(child) &&
-			child.props.title === currentOpenedTitle
+			child.props.id === currentOpenedId
 		) {
 			renderChild = child
 			return
 		}
 		if (React.isValidElement(child)) {
-			const ret = searchChild(child.props.children, currentOpenedTitle)
+			const ret = searchChild(child.props.children, currentOpenedId)
 			if (ret) renderChild = ret
 		}
 	})
@@ -542,17 +545,17 @@ function NestableNavigationContent({
 	sideNavStoreIdent = "default",
 	className,
 	style,
+	onAnimationStart,
+	onAnimationComplete,
 }: _NestableNavigationContentProps) {
 	const { popPathElement, getCurrentPathElement, setTransitioning, path } =
 		useSideNavigationStore(sideNavStoreIdent)
 
-	const currentOpenedTitle = getCurrentPathElement()
+	const currentOpenedId = getCurrentPathElement()
 
-	const renderChild = currentOpenedTitle
-		? searchChild(children, currentOpenedTitle)
+	const renderChild = currentOpenedId
+		? searchChild(children, currentOpenedId)
 		: null
-
-	console.log("currentOpenedTitle", currentOpenedTitle, path, renderChild)
 
 	const [isBack, setIsBack] = useState(false)
 
@@ -563,7 +566,7 @@ function NestableNavigationContent({
 		>
 			<AnimatePresence initial={false} mode="popLayout">
 				{/* root level elements */}
-				{!currentOpenedTitle && (
+				{!currentOpenedId && (
 					<motion.div
 						key="outside"
 						//layout
@@ -576,13 +579,19 @@ function NestableNavigationContent({
 							duration: animTime,
 							ease: "easeInOut",
 						}}
+						onAnimationStart={() => {
+							onAnimationStart?.()
+						}}
+						onAnimationComplete={() => {
+							onAnimationComplete?.()
+						}}
 					>
 						{children}
 					</motion.div>
 				)}
 			</AnimatePresence>
 			<AnimatePresence initial={false} mode="popLayout">
-				{currentOpenedTitle && (
+				{currentOpenedId && (
 					<motion.div
 						key="go-back-btn"
 						initial={{ x: "100%" }}
@@ -617,12 +626,14 @@ function NestableNavigationContent({
 			<AnimatePresence
 				initial={false}
 				mode="popLayout"
-				onExitComplete={() => setIsBack(false)}
+				onExitComplete={() => {
+					setIsBack(false)
+				}}
 			>
 				{/* followed by the lower level elements */}
-				{renderChild && (
+				{renderChild != null && (
 					<motion.div
-						key={`inside-${currentOpenedTitle}`}
+						key={`inside-${currentOpenedId}`}
 						initial={{
 							x: isBack ? "-100%" : "100%",
 						}}
@@ -637,7 +648,13 @@ function NestableNavigationContent({
 							ease: "easeInOut",
 							//delay: animTime * 0.5,
 						}}
-						className="border-b-border-separator border-t-border-separator box-border flex size-full border-b-2 border-t-2 border-solid py-2"
+						className="border-b-border-separator border-t-border-separator box-border flex size-full border-b-2 border-t-2 border-solid"
+						onAnimationStart={() => {
+							onAnimationStart?.()
+						}}
+						onAnimationComplete={() => {
+							onAnimationComplete?.()
+						}}
 					>
 						{React.cloneElement(renderChild, { _isOpen: true })}
 					</motion.div>
