@@ -1,6 +1,19 @@
 import type { CSSProperties, RefObject } from "react"
 import { twMerge } from "tailwind-merge"
 
+type SlideOpenProps = /*ComponentPropsWithRef<"div"> &*/ {
+	open: boolean
+	containerClassName?: string
+	containerStyle?: CSSProperties
+	contentClassName?: string
+	contentStyle?: CSSProperties
+	tabIndex?: number
+	ariaLabel?: string
+	ariaExpanded?: boolean
+	children: React.ReactNode
+	ref?: RefObject<HTMLDivElement>
+}
+
 export function SlideOpen({
 	children,
 	containerClassName,
@@ -8,16 +21,12 @@ export function SlideOpen({
 	contentStyle,
 	contentClassName,
 	open,
+	ariaLabel,
+	ariaExpanded,
+	tabIndex,
 	ref,
-}: {
-	children: React.ReactNode
-	containerClassName?: string
-	containerStyle?: CSSProperties
-	contentClassName?: string
-	contentStyle?: CSSProperties
-	open: boolean
-	ref?: RefObject<HTMLDivElement>
-}) {
+	...props
+}: SlideOpenProps) {
 	return (
 		<div
 			className={twMerge(
@@ -27,6 +36,10 @@ export function SlideOpen({
 			style={containerStyle}
 			data-open={open}
 			ref={ref}
+			aria-label={ariaLabel}
+			aria-expanded={ariaExpanded ?? open}
+			tabIndex={tabIndex}
+			{...props}
 		>
 			<div
 				className={twMerge(

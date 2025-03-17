@@ -6827,14 +6827,22 @@ function SideNavExample() {
 					<SideNavigation.NavigationHeader>
 						<span>test header</span>
 					</SideNavigation.NavigationHeader>
-					<SideNavigation.Content storeIdent="side-nav-store-showcase">
-						<SideNavigation.NestableNavigationContent>
-							<SideNavigation.NestingItem title="test nesting">
+					<SideNavigation.Content>
+						<SideNavigation.NestableNavigationContent sideNavStoreIdent="side-nav-store-showcase">
+							<SideNavigation.NestingItem
+								title="test nesting"
+								sideNavStoreIdent="side-nav-store-showcase"
+								id="test-nesting"
+							>
 								<SideNavigation.ButtonItem>
 									Test Nested Button
 								</SideNavigation.ButtonItem>
 								<SideNavigation.NestableNavigationContent>
-									<SideNavigation.NestingItem title="inner nesting">
+									<SideNavigation.NestingItem
+										title="inner nesting"
+										sideNavStoreIdent="side-nav-store-showcase"
+										id="inner-nesting"
+									>
 										<SideNavigation.ButtonItem>
 											Inner Test Nested Button
 										</SideNavigation.ButtonItem>
@@ -7045,15 +7053,21 @@ function NestingSideNavExample() {
 			>
 				<SideNavigation.Content>
 					<SideNavigation.NestableNavigationContent>
-						<SideNavigation.NestingItem title="outer">
-							<SideNavigation.NestingItem title="inner">
+						<SideNavigation.NestingItem title="outer" id="outer">
+							<SideNavigation.NestingItem
+								title="inner"
+								id="inner"
+							>
 								<SideNavigation.Section title="Section">
 									<SideNavigation.SkeletonItem />
 									<SideNavigation.ButtonItem>
 										Inner Button
 									</SideNavigation.ButtonItem>
 								</SideNavigation.Section>
-								<SideNavigation.NestingItem title="inner2">
+								<SideNavigation.NestingItem
+									title="inner2"
+									id="inner2"
+								>
 									<SideNavigation.ButtonItem>
 										Inner Nested Button
 									</SideNavigation.ButtonItem>
@@ -7072,6 +7086,40 @@ function NestingSideNavExample() {
 	)
 }
 //#endregion side-nav-example-nesting
+
+//#region infinite-side-nav-example
+function nestingChildren({ count }: { count: number }) {
+	if (count > 5)
+		return <SideNavigation.ButtonItem>End</SideNavigation.ButtonItem>
+	return (
+		<SideNavigation.NestingItem
+			title={`Level${count}`}
+			id={`level-${count}`}
+			sideNavStoreIdent="side-nav-store-showcase-infinite"
+		>
+			{/* This needs to be in function calling form to avoid JSX from stop rendering the children, and therefore stopping the nesting */}
+			{nestingChildren({ count: count + 1 })}
+		</SideNavigation.NestingItem>
+	)
+}
+
+function InfiniteSideNavExample() {
+	return (
+		<div className="h-[350px]">
+			<SideNavigation.Container
+				className="max-w-sm"
+				aria-label="Side navigation"
+			>
+				<SideNavigation.Content>
+					<SideNavigation.NestableNavigationContent sideNavStoreIdent="side-nav-store-showcase-infinite">
+						{nestingChildren({ count: 0 })}
+					</SideNavigation.NestableNavigationContent>
+				</SideNavigation.Content>
+			</SideNavigation.Container>
+		</div>
+	)
+}
+//#endregion infinite-side-nav-example
 
 function SideNavigationShowcase(props: ShowcaseProps) {
 	return (
@@ -7094,6 +7142,11 @@ function SideNavigationShowcase(props: ShowcaseProps) {
 					title: "Nesting in Nesting",
 					example: <NestingSideNavExample />,
 					sourceCodeExampleId: "side-nav-example-nesting",
+				},
+				{
+					title: "Infinite Nesting",
+					example: <InfiniteSideNavExample />,
+					sourceCodeExampleId: "side-nav-example-infinite",
 				},
 			]}
 		/>

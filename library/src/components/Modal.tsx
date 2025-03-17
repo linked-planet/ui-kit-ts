@@ -33,6 +33,8 @@ type ModalDialogProps = {
 	triggerTestId?: string
 	/** The accessible description for the dialog, is visually hidden but announced by screen readers */
 	accessibleDialogDescription: string
+	role?: RDialog.DialogContentProps["role"]
+	tabIndex?: RDialog.DialogContentProps["tabIndex"]
 }
 
 const blanketStyles =
@@ -55,7 +57,9 @@ function Container({
 	triggerId,
 	testId,
 	triggerTestId,
+	role = "dialog",
 	accessibleDialogDescription,
+	tabIndex = 0,
 }: ModalDialogProps) {
 	const content = useMemo(
 		() => (
@@ -94,6 +98,8 @@ function Container({
 					onWheel={(e) => {
 						e.stopPropagation() // this is necessary or scrolling will not work in the select dropdown menu in the modal
 					}}
+					role={role}
+					tabIndex={tabIndex}
 				>
 					<VisuallyHidden>
 						<RDialog.DialogDescription>
@@ -115,6 +121,8 @@ function Container({
 			testId,
 			useModal,
 			accessibleDialogDescription,
+			role,
+			tabIndex,
 		],
 	)
 
