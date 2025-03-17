@@ -31,14 +31,20 @@ function SideNavExample() {
 					<SideNavigation.NavigationHeader>
 						<span>test header</span>
 					</SideNavigation.NavigationHeader>
-					<SideNavigation.Content storeIdent="side-nav-store-showcase">
-						<SideNavigation.NestableNavigationContent>
-							<SideNavigation.NestingItem title="test nesting">
+					<SideNavigation.Content>
+						<SideNavigation.NestableNavigationContent sideNavStoreIdent="side-nav-store-showcase">
+							<SideNavigation.NestingItem
+								title="test nesting"
+								sideNavStoreIdent="side-nav-store-showcase"
+							>
 								<SideNavigation.ButtonItem>
 									Test Nested Button
 								</SideNavigation.ButtonItem>
 								<SideNavigation.NestableNavigationContent>
-									<SideNavigation.NestingItem title="inner nesting">
+									<SideNavigation.NestingItem
+										title="inner nesting"
+										sideNavStoreIdent="side-nav-store-showcase"
+									>
 										<SideNavigation.ButtonItem>
 											Inner Test Nested Button
 										</SideNavigation.ButtonItem>
@@ -277,6 +283,39 @@ function NestingSideNavExample() {
 }
 //#endregion side-nav-example-nesting
 
+//#region infinite-side-nav-example
+function nestingChildren({ count }: { count: number }) {
+	if (count > 5)
+		return <SideNavigation.ButtonItem>End</SideNavigation.ButtonItem>
+	return (
+		<SideNavigation.NestingItem
+			title={`Level${count}`}
+			id={`level-${count}`}
+		>
+			{/* This needs to be in function calling form to avoid JSX from stop rendering the children, and therefore stopping the nesting */}
+			{nestingChildren({ count: count + 1 })}
+		</SideNavigation.NestingItem>
+	)
+}
+
+function InfiniteSideNavExample() {
+	return (
+		<div className="h-[350px]">
+			<SideNavigation.Container
+				className="max-w-sm"
+				aria-label="Side navigation"
+			>
+				<SideNavigation.Content>
+					<SideNavigation.NestableNavigationContent>
+						{nestingChildren({ count: 0 })}
+					</SideNavigation.NestableNavigationContent>
+				</SideNavigation.Content>
+			</SideNavigation.Container>
+		</div>
+	)
+}
+//#endregion infinite-side-nav-example
+
 function SideNavigationShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -298,6 +337,11 @@ function SideNavigationShowcase(props: ShowcaseProps) {
 					title: "Nesting in Nesting",
 					example: <NestingSideNavExample />,
 					sourceCodeExampleId: "side-nav-example-nesting",
+				},
+				{
+					title: "Infinite Nesting",
+					example: <InfiniteSideNavExample />,
+					sourceCodeExampleId: "side-nav-example-infinite",
 				},
 			]}
 		/>

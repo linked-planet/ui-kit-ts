@@ -6827,8 +6827,8 @@ function SideNavExample() {
 					<SideNavigation.NavigationHeader>
 						<span>test header</span>
 					</SideNavigation.NavigationHeader>
-					<SideNavigation.Content storeIdent="side-nav-store-showcase">
-						<SideNavigation.NestableNavigationContent>
+					<SideNavigation.Content>
+						<SideNavigation.NestableNavigationContent sideNavStoreIdent="side-nav-store-showcase">
 							<SideNavigation.NestingItem title="test nesting">
 								<SideNavigation.ButtonItem>
 									Test Nested Button
@@ -7073,6 +7073,36 @@ function NestingSideNavExample() {
 }
 //#endregion side-nav-example-nesting
 
+//#region infinite-side-nav-example
+function NestingChildren({ count }: { count: number }) {
+	console.log("ATTACHING", count)
+	if (count > 10) return null
+	const newCount = count + 1
+	return (
+		<SideNavigation.NestingItem title={`Level${newCount}`}>
+			<NestingChildren count={newCount} />
+		</SideNavigation.NestingItem>
+	)
+}
+
+function InfiniteSideNavExample() {
+	return (
+		<div className="h-[350px]">
+			<SideNavigation.Container
+				className="max-w-sm"
+				aria-label="Side navigation"
+			>
+				<SideNavigation.Content>
+					<SideNavigation.NestableNavigationContent>
+						<NestingChildren count={0} />
+					</SideNavigation.NestableNavigationContent>
+				</SideNavigation.Content>
+			</SideNavigation.Container>
+		</div>
+	)
+}
+//#endregion infinite-side-nav-example
+
 function SideNavigationShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -7094,6 +7124,11 @@ function SideNavigationShowcase(props: ShowcaseProps) {
 					title: "Nesting in Nesting",
 					example: <NestingSideNavExample />,
 					sourceCodeExampleId: "side-nav-example-nesting",
+				},
+				{
+					title: "Infinite Nesting",
+					example: <InfiniteSideNavExample />,
+					sourceCodeExampleId: "side-nav-example-infinite",
 				},
 			]}
 		/>

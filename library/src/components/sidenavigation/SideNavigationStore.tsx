@@ -17,12 +17,6 @@ export function useSideNavigationStore(sideNavStoreIdent: string) {
 	}
 
 	const path = useSnapshot(store[sideNavStoreIdent])
-	console.info(
-		"SideNavigationStore -",
-		sideNavStoreIdent,
-		path.path.map((e) => e),
-	)
-
 	const setPath = useCallback(
 		(path: string[]) =>
 			store[sideNavStoreIdent].path.splice(0, path.length, ...path),

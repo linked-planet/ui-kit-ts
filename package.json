@@ -11,9 +11,7 @@
 	"description": "",
 	"module": "dist/index.js",
 	"type": "module",
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"types": "./dist/index.d.ts",
 	"style": [
 		"dist/styles.css",
@@ -58,17 +56,10 @@
 		"url": "https://github.com/linked-planet/ui-kit-ts/issues"
 	},
 	"homepage": "https://linked-planet.github.io/ui-kit-ts",
-	"supportedLocales": [
-		"en",
-		"de"
-	],
+	"supportedLocales": ["en", "de"],
 	"lang": "dist/translations",
 	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
+		"production": [">0.2%", "not dead", "not op_mini all"],
 		"development": [
 			"last 1 chrome version",
 			"last 1 firefox version",
@@ -103,7 +94,7 @@
 		"highlight.js": "^11.11.1",
 		"intl-messageformat": "^10.7.14",
 		"lowlight": "^3.3.0",
-		"lucide-react": "^0.479.0",
+		"lucide-react": "^0.482.0",
 		"mime-types": "^2.1.35",
 		"motion": "^12.5.0",
 		"react-awesome-slider": "^4.1.0",
@@ -120,7 +111,7 @@
 		"@atlaskit/atlassian-navigation": "^5.0.2",
 		"@atlaskit/css-reset": "^7.0.1",
 		"@atlaskit/table-tree": "^11.1.2",
-		"@atlaskit/theme": "^18.0.0",
+		"@atlaskit/theme": "^18.0.1",
 		"@babel/generator": "^7.26.10",
 		"@babel/parser": "^7.26.10",
 		"@babel/traverse": "^7.26.10",
@@ -130,6 +121,7 @@
 		"@hello-pangea/dnd": "^18.0.1",
 		"@monaco-editor/react": "^4.7.0",
 		"@tailwindcss/vite": "^4.0.14",
+		"@tanstack/react-query": "^5.68.0",
 		"@total-typescript/ts-reset": "^0.6.1",
 		"@types/node": "^22.13.10",
 		"@types/react": "^18.3.18",
@@ -142,7 +134,7 @@
 		"react-dom": "^18.3.1",
 		"rollup": "~4.21.3",
 		"rollup-plugin-polyfill-node": "^0.13.0",
-		"stylelint": "^16.15.0",
+		"stylelint": "^16.16.0",
 		"stylelint-config-standard": "^37.0.0",
 		"stylelint-config-tailwindcss": "^1.0.0",
 		"stylelint-order": "^6.0.4",
@@ -156,6 +148,7 @@
 	},
 	"peerDependencies": {
 		"@tailwindcss/vite": "^4.0.3",
+		"@tanstack/react-query": "^5.68.0",
 		"axios": "^1.8.3",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",

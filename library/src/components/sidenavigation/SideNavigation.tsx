@@ -66,12 +66,10 @@ function Content({
 	children,
 	className,
 	style,
-	storeIdent = "side-nav-store",
 }: {
 	children: React.ReactNode
 	className?: string
 	style?: React.CSSProperties
-	storeIdent?: string
 }) {
 	const ref = useRef<HTMLDivElement>(null)
 
@@ -464,7 +462,8 @@ function NestingItem({
 	sideNavStoreIdent = "default",
 	title,
 	_isOpen,
-}: _NestingItemProps & { _isOpen?: boolean }) {
+	id,
+}: _NestingItemProps & { _isOpen?: boolean; id?: string }) {
 	const {
 		getCurrentPathElement,
 		pushPathElement,
@@ -498,6 +497,7 @@ function NestingItem({
 					className="rounded-full p-1 box-border bg-neutral-full size-5.5 text-text-inverse"
 				/>
 			}
+			id={id}
 		>
 			{title}
 		</ButtonItem>
@@ -543,7 +543,7 @@ function NestableNavigationContent({
 	className,
 	style,
 }: _NestableNavigationContentProps) {
-	const { popPathElement, getCurrentPathElement, setTransitioning } =
+	const { popPathElement, getCurrentPathElement, setTransitioning, path } =
 		useSideNavigationStore(sideNavStoreIdent)
 
 	const currentOpenedTitle = getCurrentPathElement()
@@ -551,6 +551,8 @@ function NestableNavigationContent({
 	const renderChild = currentOpenedTitle
 		? searchChild(children, currentOpenedTitle)
 		: null
+
+	console.log("currentOpenedTitle", currentOpenedTitle, path, renderChild)
 
 	const [isBack, setIsBack] = useState(false)
 
@@ -561,7 +563,7 @@ function NestableNavigationContent({
 		>
 			<AnimatePresence initial={false} mode="popLayout">
 				{/* root level elements */}
-				{!renderChild && (
+				{!currentOpenedTitle && (
 					<motion.div
 						key="outside"
 						//layout
@@ -580,7 +582,7 @@ function NestableNavigationContent({
 				)}
 			</AnimatePresence>
 			<AnimatePresence initial={false} mode="popLayout">
-				{renderChild && (
+				{currentOpenedTitle && (
 					<motion.div
 						key="go-back-btn"
 						initial={{ x: "100%" }}
