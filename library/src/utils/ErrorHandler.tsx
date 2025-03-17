@@ -1,5 +1,6 @@
 import { type AxiosError, isAxiosError } from "axios"
-import { Button, Toast } from "../components"
+import { Button, Toast } from "@linked-planet/ui-kit-ts"
+import type { QueryClient } from "@tanstack/react-query"
 
 // in the handler function the returned boolean states if after the handler the error handling is done
 
@@ -33,46 +34,78 @@ export interface DomainError {
 	stackTrace?: string
 }
 
-// this is to suppress the error flags in case of certain errors
-type SpecialErrorCases = Partial<
-	Record<
-		NonNullable<DomainError["id"]>,
-		(err: Error) => boolean // true states that the error handling is done and no error flag should be shown
-	>
->
-
-/*const ErrorHandlerFunctions: Partial<
+const ErrorHandlerFunctions: Partial<
 	Record<
 		NonNullable<DomainError["id"]>,
 		((err: Error, queryClient: QueryClient) => boolean) | undefined
 	>
 > = {
 	TICKET_COLLISION: () => true, // true states that the error handling is done and no error flag should be shown
-} as const*/
+} as const
 
 export function isDomainError(err: unknown): err is DomainError {
 	return !!(
 		(err as DomainError).id !== undefined ||
 		(err as DomainError).information ||
-		(err as DomainError).stackTrace ||
-		(err as DomainError).message ||
-		(err as DomainError).error
+		(err as DomainError).stackTrace
 	)
+}
+
+export type SuppressedError = {
+	error: Error
+	supress: true
+}
+
+export function isSuppressedError(
+	err: Error | unknown,
+): err is SuppressedError {
+	if (
+		typeof err === "object" &&
+		err !== null &&
+		"supress" in err &&
+		err.supress
+	) {
+		return true
+	}
+	return false
+}
+
+/**
+ * Suppresses the output of the error handler.
+ * @param err - The error object, must either be an Error with "supress" in the cause propertery, or an object with a `supress` property set to true.
+ * @returns True if the error should be suppressed, false otherwise.
+ */
+export function supressErrorOutput(err: Error | unknown) {
+	if (
+		err instanceof Error &&
+		typeof err.cause === "object" &&
+		err.cause !== null &&
+		"supress" in err.cause &&
+		err.cause.supress
+	) {
+		return true
+	}
+
+	if (
+		typeof err === "object" &&
+		err !== null &&
+		"supress" in err &&
+		err.supress
+	) {
+		return (err as { supress: boolean }).supress
+	}
+	return false
 }
 
 export class ErrorHandler {
 	private static instance: ErrorHandler | undefined
-	//queryClient: QueryClient | undefined
+	queryClient: QueryClient | undefined
 
-	specialErrorCases: SpecialErrorCases | undefined
+	private constructor() {}
 
-	private constructor(specialErrorCases?: SpecialErrorCases) {
-		this.specialErrorCases = specialErrorCases
-	}
-
-	/*static setQueryClient(queryClient: QueryClient) {
+	static setQueryClient(queryClient: QueryClient) {
 		ErrorHandler.getHandler().queryClient = queryClient
-	}*/
+	}
 
 	static getHandler() {
 		if (!ErrorHandler.instance) {
@@ -86,10 +119,13 @@ export class ErrorHandler {
 	}
 
 	handleError(error: unknown | Error | AxiosError, caller?: string) {
-		/*if (!this.queryClient) {
+		if (!this.queryClient) {
 			console.error("No queryClient set yet in error handler")
 			return
-		}*/
+		}
+		if (supressErrorOutput(error)) {
+			return
+		}
 		console.error(`${caller ? `${caller} - ` : ""}response error: ${error}`)
 		if (isAxiosError(error)) {
 			// logged out
@@ -135,8 +171,8 @@ export class ErrorHandler {
 			}
 
 			if (errorObject.id !== undefined) {
-				const handler = this.specialErrorCases?.[errorObject.id]
-				if (handler?.(error)) {
+				const handler = ErrorHandlerFunctions[errorObject.id]
+				if (handler?.(error, this.queryClient)) {
 					return
 				}
 			}
@@ -226,7 +262,7 @@ export class ErrorHandler {
 								</Button>
 							</div>
 						)}
-						{errorObject.information && (
+						{errorObject.message && (
 							<div
 								// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 								dangerouslySetInnerHTML={{
