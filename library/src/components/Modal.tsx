@@ -59,7 +59,7 @@ function Container({
 	triggerTestId,
 	role = "dialog",
 	accessibleDialogDescription,
-	tabIndex = 0,
+	tabIndex = undefined,
 }: ModalDialogProps) {
 	const content = useMemo(
 		() => (

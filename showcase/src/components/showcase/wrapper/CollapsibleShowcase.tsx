@@ -63,7 +63,7 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts",
+					url: "/ui-kit-ts/single#Collapsible",
 				},
 			]}
 			examples={[

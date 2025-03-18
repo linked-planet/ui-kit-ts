@@ -9,7 +9,9 @@ type CollapsibleProps = {
 	open?: boolean
 	defaultOpen?: boolean
 	onChanged?: (opened: boolean) => void
+	triggerTitle?: string
 	header: React.ReactNode
+	triggerDisabled?: boolean
 	triggerClassName?: string
 	triggerStyle?: React.CSSProperties
 	chevronClassName?: string
@@ -33,7 +35,9 @@ export const Collapsible = forwardRef(
 			defaultOpen = true,
 			onChanged,
 			openButtonPosition = "left",
+			triggerTitle = "Collapsible Toggle",
 			header,
+			triggerDisabled,
 			triggerClassName,
 			triggerStyle,
 			headerContainerStyle,
@@ -80,18 +84,20 @@ export const Collapsible = forwardRef(
 				>
 					<div>
 						{openButtonPosition === "left" && (
-							<div
+							<button
+								type="button"
 								className={twMerge(
 									"flex h-full flex-none items-center justify-center size-6 pr-1",
 									chevronClassName,
 								)}
+								title={triggerTitle}
 							>
 								<ChevronRightIcon
 									aria-label={opened ? "close" : "open"}
 									strokeWidth={3}
 									className="group-data-[state=closed]:rotate-0 group-data-[state=open]:rotate-90 transform transition-transform"
 								/>
-							</div>
+							</button>
 						)}
 						<div
 							className={twMerge(
@@ -103,19 +109,21 @@ export const Collapsible = forwardRef(
 							{header}
 						</div>
 						{openButtonPosition === "right" && (
-							<div
+							<button
+								type="button"
 								className={twMerge(
 									"flex h-full flex-none items-center justify-center size-6",
 									chevronClassName,
 								)}
 								style={chevronStyle}
+								title={triggerTitle}
 							>
 								<ChevronLeftIcon
 									aria-label={opened ? "close" : "open"}
 									strokeWidth={3}
 									className="group-data-[state=closed]:rotate-0 group-data-[state=open]:-rotate-90 transform transition-transform"
 								/>
-							</div>
+							</button>
 						)}
 					</div>
 				</CollapsibleRUI.Trigger>
