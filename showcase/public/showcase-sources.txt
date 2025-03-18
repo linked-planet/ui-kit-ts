@@ -3539,7 +3539,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const lpExample2 = (
 		<>
-			<Dropdown.Menu trigger="Dropdown Menu" appearance="danger">
+			<Dropdown.Menu trigger="Dropdown Menu" appearance="danger" disabled>
 				<Dropdown.Item>Test 1</Dropdown.Item>
 				<Dropdown.Item>Test 2</Dropdown.Item>
 			</Dropdown.Menu>
@@ -7089,8 +7089,7 @@ function NestingSideNavExample() {
 
 //#region infinite-side-nav-example
 function nestingChildren({ count }: { count: number }) {
-	if (count > 5)
-		return <SideNavigation.ButtonItem>End</SideNavigation.ButtonItem>
+	if (count > 5) return null
 	return (
 		<SideNavigation.NestingItem
 			title={`Level${count}`}

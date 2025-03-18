@@ -596,7 +596,13 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 				data-testid={testId}
 				modal={modal}
 			>
-				<RDd.Trigger asChild={triggerAsChild}>{_trigger}</RDd.Trigger>
+				<RDd.Trigger
+					asChild={triggerAsChild}
+					disabled={disabled}
+					aria-disabled={disabled}
+				>
+					{_trigger}
+				</RDd.Trigger>
 				{usePortal ? (
 					<RDd.Portal container={getPortal(portalDivId)}>
 						{content}
