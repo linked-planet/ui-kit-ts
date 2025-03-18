@@ -69,13 +69,12 @@ function Container({
 	children,
 	className,
 	style,
-	testId,
 	useBanner = false,
+	...props
 }: {
 	children: React.ReactNode
 	className?: string
 	style?: React.CSSProperties
-	testId?: string
 	useBanner?: boolean
 }) {
 	return (
@@ -85,7 +84,6 @@ function Container({
 				className,
 			)}
 			data-layout-container="true"
-			data-testid={testId}
 			style={{
 				gridTemplateAreas: useBanner
 					? `
@@ -107,6 +105,7 @@ function Container({
 					: `calc(100dvh - var(${bannerHeightVar}, 0px))`,
 				...style,
 			}}
+			{...props}
 		>
 			{children}
 		</div>
@@ -120,11 +119,10 @@ function Banner({
 	children,
 	className,
 	style,
-	testId,
 	sticky,
 	height,
+	...props
 }: React.ComponentPropsWithRef<"div"> & {
-	testId?: string
 	sticky?: boolean
 	height?: number | string
 }) {
@@ -152,7 +150,6 @@ function Banner({
 				className,
 			)}
 			data-layout-banner="true"
-			data-testid={testId}
 			style={{
 				height: `var(${bannerHeightVar}, min-content)`,
 				gridArea: "banner",
@@ -165,6 +162,7 @@ function Banner({
 					: undefined,*/
 				...style,
 			}}
+			{...props}
 		>
 			{children}
 		</div>
@@ -178,11 +176,10 @@ function TopNavigation({
 	children,
 	className,
 	style,
-	testId,
 	height,
 	sticky,
+	...props
 }: React.ComponentPropsWithRef<"header"> & {
-	testId?: string
 	height?: number | string
 	sticky?: boolean
 }) {
@@ -211,7 +208,6 @@ function TopNavigation({
 				className,
 			)}
 			data-layout-top-navigation="true"
-			data-testid={testId}
 			style={{
 				height: `var(${topNavigationHeightVar}, min-content)`,
 				gridArea: "top-navigation",
@@ -221,6 +217,7 @@ function TopNavigation({
 				insetInlineStart: "var(--leftPanelWidth, auto)",*/
 				...style,
 			}}
+			{...props}
 		>
 			{children}
 		</header>
@@ -236,6 +233,7 @@ function LeftPanel({
 	style,
 	sticky,
 	width = 128,
+	...props
 }: React.ComponentPropsWithRef<"aside"> & {
 	sticky?: boolean
 	width?: number
@@ -257,6 +255,7 @@ function LeftPanel({
 				gridArea: "left-panel",
 				...style,
 			}}
+			{...props}
 		>
 			{children}
 		</aside>
@@ -270,11 +269,10 @@ function RightPanel({
 	children,
 	className,
 	style,
-	testId,
 	sticky,
 	width = 128,
+	...props
 }: React.ComponentPropsWithRef<"aside"> & {
-	testId?: string
 	sticky?: boolean
 	width?: number
 }) {
@@ -290,12 +288,12 @@ function RightPanel({
 				className,
 			)}
 			data-layout-right-panel="true"
-			data-testid={testId}
 			style={{
 				width: `var(${rightPanelWidthVar}, 0px)`,
 				gridArea: "right-panel",
 				...style,
 			}}
+			{...props}
 		>
 			{children}
 		</aside>
@@ -306,10 +304,8 @@ function Content({
 	children,
 	className,
 	style,
-	testId,
-}: React.ComponentPropsWithRef<"section"> & {
-	testId?: string
-}) {
+	...props
+}: React.ComponentPropsWithRef<"section">) {
 	return (
 		<section
 			className={twMerge(
@@ -317,13 +313,13 @@ function Content({
 				className,
 			)}
 			data-layout-content="true"
-			data-testid={testId}
 			style={{
 				gridArea: "content",
 				gridTemplateAreas: '"left-sidebar main right-sidebar"',
 				gridTemplateColumns: "auto 1fr auto",
 				...style,
 			}}
+			{...props}
 		>
 			{children}
 		</section>
@@ -334,10 +330,9 @@ function Main({
 	children,
 	className,
 	style,
-	testId,
 	fixedHeight,
+	...props
 }: React.ComponentPropsWithRef<"main"> & {
-	testId?: string
 	fixedHeight?: boolean
 }) {
 	return (
@@ -347,7 +342,6 @@ function Main({
 				className,
 			)}
 			data-layout-main="true"
-			data-testid={testId}
 			style={{
 				gridArea: "main",
 				height: fixedHeight
@@ -356,6 +350,7 @@ function Main({
 				overflow: fixedHeight ? "hidden" : undefined,
 				...style,
 			}}
+			{...props}
 		>
 			{children}
 		</main>
