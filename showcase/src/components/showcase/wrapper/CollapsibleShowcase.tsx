@@ -19,7 +19,6 @@ function CollapsibleControlled() {
 			<Collapsible
 				header={<h4>Collapsible Title</h4>}
 				open={open}
-				onChanged={setOpen}
 			>
 				<div className="p-4">collapsible content</div>
 			</Collapsible>
