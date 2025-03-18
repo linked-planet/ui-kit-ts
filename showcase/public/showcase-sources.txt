@@ -2270,7 +2270,6 @@ function CollapsibleControlled() {
 			<Collapsible
 				header={<h4>Collapsible Title</h4>}
 				open={open}
-				onChanged={setOpen}
 			>
 				<div className="p-4">collapsible content</div>
 			</Collapsible>
@@ -3539,7 +3538,7 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 	const lpExample2 = (
 		<>
-			<Dropdown.Menu trigger="Dropdown Menu" appearance="danger" disabled>
+			<Dropdown.Menu trigger="Dropdown Menu" appearance="danger">
 				<Dropdown.Item>Test 1</Dropdown.Item>
 				<Dropdown.Item>Test 2</Dropdown.Item>
 			</Dropdown.Menu>

@@ -19,6 +19,7 @@ function CollapsibleControlled() {
 			<Collapsible
 				header={<h4>Collapsible Title</h4>}
 				open={open}
+				onChanged={setOpen}
 			>
 				<div className="p-4">collapsible content</div>
 			</Collapsible>
@@ -62,7 +63,7 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts",
+					url: "/ui-kit-ts/single#Collapsible",
 				},
 			]}
 			examples={[
