@@ -52,7 +52,6 @@ export const CardBase = forwardRef(
 				header={header}
 				open={openVal}
 				defaultOpen={defaultOpen}
-				onChanged={onOpenChanged}
 				className={twMerge(
 					"border-border box-border border-2 border-solid",
 					className,
