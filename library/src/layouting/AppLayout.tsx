@@ -187,18 +187,26 @@ function TopNavigation({
 
 	useEffect(() => {
 		const root = document.documentElement
+		console.log(
+			"UIKitTs - Top navigation height set to before:",
+			height,
+			topNavigationHeightVar,
+		)
 		if (height) {
 			const heightVal =
 				typeof height === "number" ? `${height}px` : height
 			root.style.setProperty(topNavigationHeightVar, heightVal)
-			//root.style.setProperty("--_topNavigationHeight", heightVal)
-		} else {
-			const h = localRef.current?.clientHeight
-			if (h) {
-				root.style.setProperty(topNavigationHeightVar, `${h}px`)
-			}
 		}
 	}, [height])
+
+	// set the height to the local ref height if it is not already set, this is to prevent the height from being set to 0
+	const root = document.documentElement
+	const h = localRef.current?.clientHeight
+	const currVal = root.style.getPropertyValue(topNavigationHeightVar)
+	if (h && currVal !== `${h}px`) {
+		root.style.setProperty(topNavigationHeightVar, `${h}px`)
+	}
+	//
 
 	return (
 		<header
