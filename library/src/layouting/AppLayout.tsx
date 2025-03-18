@@ -187,11 +187,6 @@ function TopNavigation({
 
 	useEffect(() => {
 		const root = document.documentElement
-		console.log(
-			"UIKitTs - Top navigation height set to before:",
-			height,
-			topNavigationHeightVar,
-		)
 		if (height) {
 			const heightVal =
 				typeof height === "number" ? `${height}px` : height
