@@ -9,6 +9,7 @@ type CollapsibleProps = {
 	open?: boolean
 	defaultOpen?: boolean
 	onChanged?: (opened: boolean) => void
+	triggerTitle?: string
 	header: React.ReactNode
 	triggerDisabled?: boolean
 	triggerClassName?: string
@@ -34,6 +35,7 @@ export const Collapsible = forwardRef(
 			defaultOpen = true,
 			onChanged,
 			openButtonPosition = "left",
+			triggerTitle = "Collapsible Toggle",
 			header,
 			triggerDisabled,
 			triggerClassName,
@@ -88,6 +90,7 @@ export const Collapsible = forwardRef(
 									"flex h-full flex-none items-center justify-center size-6 pr-1",
 									chevronClassName,
 								)}
+								title={triggerTitle}
 							>
 								<ChevronRightIcon
 									aria-label={opened ? "close" : "open"}
@@ -113,6 +116,7 @@ export const Collapsible = forwardRef(
 									chevronClassName,
 								)}
 								style={chevronStyle}
+								title={triggerTitle}
 							>
 								<ChevronLeftIcon
 									aria-label={opened ? "close" : "open"}
