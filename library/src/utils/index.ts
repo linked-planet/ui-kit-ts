@@ -20,3 +20,5 @@ export { isTimeType, isDateTimeType, isDateType }
 export * as DateUtils from "./DateUtils"
 
 export * from "./ErrorHandler"
+
+export * from "./GlobalState"

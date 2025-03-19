@@ -1,7 +1,7 @@
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { useGlobalState } from "@linked-planet/ui-kit-ts/GlobalState"
+import { useGlobalState } from "@linked-planet/ui-kit-ts"
 import { Input, Label } from "@linked-planet/ui-kit-ts"
 
 //#region global-state
@@ -99,7 +99,7 @@ export default function GlobalStateShowcase(props: ShowcaseProps) {
 			packages={[
 				{
 					name: "@linked-planet/ui-kit-ts",
-					url: "https://linked-planet.github.io/ui-kit-ts/single?component=GlobalState",
+					url: "/ui-kit-ts/single?component=GlobalState",
 				},
 			]}
 			examples={[
