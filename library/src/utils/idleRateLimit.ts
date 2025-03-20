@@ -13,8 +13,8 @@ export function idleRateLimitHelper(
 ) {
 	let lastTime = 0
 	let timeoutRunning = 0
-	if (timeoutMS !== undefined && timeoutMS <= 0) {
-		throw new Error("minDistanceMS must be positive and above 0")
+	if (timeoutMS !== undefined && timeoutMS < 0) {
+		throw new Error("timeoutMS must be a positive number")
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

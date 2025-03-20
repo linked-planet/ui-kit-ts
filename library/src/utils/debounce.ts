@@ -17,8 +17,8 @@ export function debounceHelper(delayMS = 300) {
 			clearTimeout(timer)
 		}
 
-		if (delayMS <= 0) {
-			throw new Error("delay must be positive and above 0")
+		if (delayMS < 0) {
+			throw new Error("delay must be a positive number")
 		}
 
 		timer = window.setTimeout(() => {
