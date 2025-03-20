@@ -454,6 +454,7 @@ type _NestingItemProps = {
 	title: string // title is used to identify the item and as a key
 	sideNavStoreIdent?: string
 	id: string
+	onClick?: () => void
 }
 
 function NestingItem({
@@ -462,6 +463,7 @@ function NestingItem({
 	style,
 	sideNavStoreIdent = "default",
 	title,
+	onClick,
 	_isOpen,
 	id,
 }: _NestingItemProps & { _isOpen?: boolean }) {
@@ -491,6 +493,7 @@ function NestingItem({
 				pushPathElement(id)
 				setTransitioning(true)
 				window.setTimeout(() => setTransitioning(null), animTime * 1000)
+				onClick?.()
 			}}
 			iconAfter={
 				<ArrowRightIcon
@@ -513,6 +516,7 @@ type _NestableNavigationContentProps = {
 	sideNavStoreIdent?: string
 	onAnimationStart?: () => void
 	onAnimationComplete?: () => void
+	onGoBackClick?: () => void
 }
 
 function searchChild(
@@ -547,6 +551,7 @@ function NestableNavigationContent({
 	style,
 	onAnimationStart,
 	onAnimationComplete,
+	onGoBackClick,
 }: _NestableNavigationContentProps) {
 	const { popPathElement, getCurrentPathElement, setTransitioning, path } =
 		useSideNavigationStore(sideNavStoreIdent)
@@ -616,6 +621,7 @@ function NestableNavigationContent({
 										)
 									})
 								}, 0)
+								onGoBackClick?.()
 							}}
 						>
 							{goBackLabel}
