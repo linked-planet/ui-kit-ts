@@ -30,7 +30,10 @@ function GlobalStateExample() {
 					id="myDataKey"
 					value={myData.key}
 					onChange={(e) => {
-						setMyData({ key: e.target.value, name: myData.name })
+						setMyData((prev) => ({
+							key: e.target.value,
+							name: prev.name,
+						}))
 					}}
 				/>
 				<Label htmlFor="myDataName">Name</Label>
@@ -39,7 +42,10 @@ function GlobalStateExample() {
 					id="myDataName"
 					value={myData.name}
 					onChange={(e) => {
-						setMyData({ key: myData.key, name: e.target.value })
+						setMyData((prev) => ({
+							key: prev.key,
+							name: e.target.value,
+						}))
 					}}
 				/>
 			</>
@@ -77,8 +83,8 @@ function GlobalArrayStateExample() {
 					id="myDataKey"
 					onKeyUp={(e) => {
 						if (e.key !== "Enter") return
-						setArrayData([
-							...arrayData,
+						setArrayData((prev) => [
+							...prev,
 							(e.target as HTMLInputElement).value,
 						])
 					}}

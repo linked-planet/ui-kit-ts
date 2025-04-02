@@ -7,7 +7,7 @@ const proxies: Record<string, { value: any }> = {}
 export function useGlobalState<T>(
 	typeName: string,
 	initialValue: T,
-): readonly [T, (value: T) => void] {
+): readonly [T, (prevEval: (prev: T) => T) => void] {
 	if (!proxies[typeName]) {
 		proxies[typeName] = proxy<{ value: T }>({ value: initialValue })
 	}
@@ -16,7 +16,8 @@ export function useGlobalState<T>(
 	const snapshot = useSnapshot(store)
 
 	const setter = useCallback(
-		(value: T) => {
+		(prevEval: (prev: T) => T) => {
+			const value = prevEval(store.value)
 			store.value = value
 		},
 		[store],
