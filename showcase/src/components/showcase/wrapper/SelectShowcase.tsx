@@ -242,8 +242,14 @@ function CustomComponentExample() {
 		/>
 	)
 }
+//#endregion select-custom-component
 
-//#endregion
+
+//#region select-async
+function SelectAsyncExample() {
+	
+}
+//#endregion select-async
 
 function SelectShowcase(props: ShowcaseProps) {
 	//#region select

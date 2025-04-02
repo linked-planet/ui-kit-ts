@@ -23,6 +23,7 @@ import {
 	type AriaOnFilter,
 	type AriaLiveMessages,
 } from "react-select"
+import ReactSelectAsync from "react-select/async"
 
 // usage aria stuff:
 // https://react-select.com/advanced
@@ -312,6 +313,7 @@ type InnerProps<
 	IsMulti extends boolean = boolean,
 > = PickedCreateableProps<ValueType, IsMulti> & {
 	isCreateable?: boolean
+	isAsync?: boolean
 	testId?: string
 	innerRef?: React.Ref<SelectInstance<
 		OptionType<ValueType>,
@@ -328,6 +330,7 @@ type InnerProps<
 
 const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 	isCreateable,
+	isAsync,
 	formatCreateLabel,
 	testId,
 	innerRef,
@@ -525,6 +528,12 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 		_components,
 	])
 
+	if (isAsync && isCreateable) {
+		throw new Error(
+			"Select - isAsync and isCreateable cannot be true at the same time",
+		)
+	}
+
 	if (isCreateable) {
 		return (
 			<ReactSelectCreatable<
@@ -554,6 +563,31 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 					...customStyles,
 					...styles,
 				}}
+				components={components}
+				{...props}
+			/>
+		)
+	}
+
+	if (isAsync) {
+		return (
+			<ReactSelectAsync<
+				OptionType<ValueType>,
+				IsMulti,
+				OptionGroupType<ValueType>
+			>
+				placeholder={
+					(props.placeholder ?? locale.startsWith("de"))
+						? "Auswahl..."
+						: "Select..."
+				}
+				ref={locRef}
+				unstyled
+				inputId={inputId}
+				classNames={classNamesConfig}
+				data-testid={testId}
+				data-invalid={invalid}
+				styles={customStyles}
 				components={components}
 				{...props}
 			/>
@@ -613,6 +647,7 @@ type SelectPropsProtoOld<
 	usePortal?: boolean
 	disabled?: boolean
 	isCreateable?: boolean
+	isAsync?: boolean
 	dropdownLabel?: (isOpen: boolean) => string
 	clearValuesButtonLabel?: string
 	removeValueButtonLabel?: string
@@ -764,6 +799,7 @@ function SelectInForm<
 	const innerProps: InnerProps<ValueType, IsMulti> = {
 		...props,
 		isCreateable: props.isCreateable,
+		isAsync: props.isAsync,
 		testId,
 		innerRef: ref,
 		invalid,
