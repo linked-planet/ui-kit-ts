@@ -15,6 +15,10 @@ import {
 	type SelectSingleFormFieldProps as _SelectSingleFormFieldProps,
 } from "./elements/SelectSingleFormField"
 import {
+	TextareaFormField,
+	type TextareaFormFieldProps as _TextareaFormFieldProps,
+} from "./elements/TextAreaFormField"
+import {
 	DynamicForm as Form,
 	type FormField as _FormField,
 	type FormProps as _FormProps,
@@ -28,6 +32,7 @@ const DynamicForm = {
 	SelectMultiFormField,
 	SelectSingleFormField,
 	Form,
+	TextareaFormField,
 }
 export { DynamicForm }
 
@@ -47,4 +52,6 @@ export namespace DynamicFormTypes {
 	export type FormField<T extends FieldValues> = _FormField<T>
 	export type FormProps<T extends FieldValues> = _FormProps<T>
 	export type DynamicFormProps<T extends FieldValues> = _DynamicFormProps<T>
+	export type TextareaFormFieldProps<T extends FieldValues> =
+		_TextareaFormFieldProps<T>
 }
