@@ -1,12 +1,13 @@
 import type React from "react"
 import {
-	type CSSProperties,
 	forwardRef,
 	type HTMLProps,
 	useMemo,
 	useRef,
+	type CSSProperties,
 } from "react"
-import { twJoin, twMerge } from "tailwind-merge"
+import { twMerge } from "tailwind-merge"
+import { cva, cx, type VariantProps } from "class-variance-authority"
 import { LoadingSpinner } from "./LoadingSpinner"
 
 export type ButtonAppearance =
@@ -20,93 +21,211 @@ export type ButtonAppearance =
 	| "success"
 	| "information"
 
+type ButtonVariantProps = VariantProps<typeof buttonVariants>
+const buttonVariants = cva(
+	"focus-visible:outline-selected-bold relative box-border flex shrink-0 cursor-pointer items-center justify-center gap-1 rounded-sm border-2 border-transparent px-3 py-1 outline-none outline-2 outline-offset-4 focus-visible:outline-solid",
+	{
+		variants: {
+			appearance: {
+				// those entries are undefined, they just establish the variant for the compoundVariants
+				default: undefined,
+				primary: undefined,
+
+				subtle: undefined,
+				link: undefined,
+				"subtle-link": undefined,
+				warning: undefined,
+
+				danger: undefined,
+
+				success: undefined,
+
+				information: undefined,
+			},
+			disabled: {
+				true: "disabled:bg-disabled disabled:text-disabled-text disabled:cursor-not-allowed",
+			},
+			selected: {
+				true: "bg-selected active:bg-selected hover:bg-selected text-selected-text-inverse cursor-pointer",
+			},
+			inverted: {
+				true: undefined,
+			},
+			loading: {
+				true: "cursor-progress",
+			},
+		},
+		compoundVariants: [
+			{
+				inverted: true,
+				disabled: true,
+				className: "disabled:border-border disabled:bg-transparent",
+			},
+			{
+				inverted: false,
+				appearance: "default",
+				disabled: false,
+				className:
+					"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",
+			},
+			{
+				inverted: false,
+				appearance: "primary",
+				disabled: false,
+				className:
+					"bg-brand-bold hover:bg-brand-bold-hovered active:bg-brand-bold-pressed text-text-inverse",
+			},
+			{
+				inverted: false,
+				appearance: "subtle",
+				disabled: false,
+				className:
+					"bg-neutral-subtle hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed text-text",
+			},
+			{
+				inverted: false,
+				appearance: "link",
+				disabled: false,
+				className:
+					"bg-transparent disabled:bg-transparent text-link hover:underline",
+			},
+			{
+				inverted: false,
+				appearance: "subtle-link",
+				disabled: false,
+				className:
+					"bg-transparent text-text-subtlest hover:text-text-subtle hover:underline",
+			},
+			{
+				inverted: false,
+				appearance: "warning",
+				disabled: false,
+				className:
+					"bg-warning-bold hover:bg-warning-bold-hovered active:bg-warning-bold-pressed text-text-inverse",
+			},
+			{
+				inverted: false,
+				appearance: "danger",
+				disabled: false,
+				className:
+					"bg-danger-bold hover:bg-danger-bold-hovered active:bg-danger-bold-pressed text-text-inverse",
+			},
+			{
+				inverted: false,
+				appearance: "success",
+				disabled: false,
+				className:
+					"bg-success-bold hover:bg-success-bold-hovered active:bg-success-bold-pressed text-text-inverse",
+			},
+			{
+				inverted: false,
+				appearance: "information",
+				disabled: false,
+				className:
+					"bg-information-bold hover:bg-information-bold-hovered active:bg-information-bold-pressed text-text-inverse",
+			},
+			{
+				inverted: true,
+				appearance: "default",
+				className:
+					"bg-transparent border-neutral-bold border-solid hover:bg-neutral-hovered active:bg-neutral-pressed",
+			},
+			{
+				inverted: true,
+				appearance: "primary",
+				className: cx(
+					"bg-brand hover:bg-brand-hovered active:bg-brand-pressed",
+					"border-brand-bold text-brand-text border-solid",
+				),
+			},
+			{
+				inverted: true,
+				appearance: "warning",
+				className: cx(
+					"bg-warning hover:bg-warning-hovered active:bg-warning-pressed",
+					"border-warning-bold text-warning-text border-solid",
+				),
+			},
+			{
+				inverted: true,
+				appearance: "danger",
+				className: cx(
+					"bg-danger hover:bg-danger-hovered active:bg-danger-pressed",
+					"border-danger-bold text-danger-text border-solid",
+				),
+			},
+			{
+				inverted: true,
+				appearance: "success",
+				className: cx(
+					"bg-success hover:bg-success-hovered active:bg-success-pressed",
+					"border-success-bold text-success-text border-solid",
+				),
+			},
+			{
+				inverted: true,
+				appearance: "information",
+				className: cx(
+					"bg-information hover:bg-information-hovered active:bg-information-pressed",
+					"border-information-bold text-information-text border-solid",
+				),
+			},
+		],
+		defaultVariants: {
+			appearance: "default",
+			disabled: false,
+			selected: false,
+			inverted: false,
+			loading: false,
+		},
+	},
+)
+
 export type ButtonProps = {
 	appearance?: ButtonAppearance
 	label?: string
 	title?: string
 	iconBefore?: React.ReactNode
 	iconAfter?: React.ReactNode
-	disabled?: boolean
-	selected?: boolean
 	autoFocus?: boolean
 	children?: React.ReactNode
 	style?: CSSProperties
 	className?: string
-	inverted?: boolean
 	id?: string
 	href?: string
 	download?: string | true
 	target?: "_blank" | "_self" | "_parent" | "_top"
 	"aria-label"?: string
 	testId?: string
-} & Pick<
-	React.ButtonHTMLAttributes<HTMLButtonElement>,
-	| "type"
-	| "onClick"
-	| "onDoubleClick"
-	| "onMouseDown"
-	| "onMouseUp"
-	| "onMouseEnter"
-	| "onMouseLeave"
-	| "onMouseOver"
-	| "onMouseOut"
-	| "onFocus"
-	| "onBlur"
-	| "onKeyDown"
-	| "onKeyPress"
-	| "onKeyUp"
-	| "onPointerDown"
-	| "onTouchStart"
-	| "onTouchEnd"
-	| "onTouchMove"
-	| "onTouchCancel"
-	| "title"
-	| "aria-label"
-	| "tabIndex"
-	| "aria-disabled"
->
+} & ButtonVariantProps &
+	Pick<
+		React.ButtonHTMLAttributes<HTMLButtonElement>,
+		| "type"
+		| "onClick"
+		| "onDoubleClick"
+		| "onMouseDown"
+		| "onMouseUp"
+		| "onMouseEnter"
+		| "onMouseLeave"
+		| "onMouseOver"
+		| "onMouseOut"
+		| "onFocus"
+		| "onBlur"
+		| "onKeyDown"
+		| "onKeyPress"
+		| "onKeyUp"
+		| "onPointerDown"
+		| "onTouchStart"
+		| "onTouchEnd"
+		| "onTouchMove"
+		| "onTouchCancel"
+		| "title"
+		| "aria-label"
+		| "tabIndex"
+		| "aria-disabled"
+	>
 
-const ButtonStyles: { [style in ButtonAppearance]: string } = {
-	primary: twJoin(
-		"bg-brand-bold hover:bg-brand-bold-hovered active:bg-brand-bold-pressed text-text-inverse",
-		"data-inverted:bg-brand data-inverted:hover:bg-brand-hovered data-inverted:active:bg-brand-pressed",
-		"data-inverted:border-brand-bold data-inverted:text-brand-text data-inverted:border-solid",
-	),
-
-	default: twJoin(
-		"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",
-		"data-inverted:bg-transparent data-inverted:border-neutral-bold data-inverted:border-solid data-inverted:hover:bg-neutral-hovered data-inverted:active:bg-neutral-pressed",
-	),
-	subtle: "bg-neutral-subtle hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed text-text",
-	link: "bg-transparent text-link hover:underline",
-	"subtle-link":
-		"bg-transparent text-text-subtlest hover:text-text-subtle hover:underline",
-	warning: twJoin(
-		"bg-warning-bold hover:bg-warning-bold-hovered active:bg-warning-bold-pressed text-text-inverse",
-		"data-inverted:bg-warning data-inverted:hover:bg-warning-hovered data-inverted:active:bg-warning-pressed",
-		"data-inverted:border-warning-bold data-inverted:text-warning-text data-inverted:border-solid",
-	),
-	danger: twJoin(
-		"bg-danger-bold hover:bg-danger-bold-hovered active:bg-danger-bold-pressed text-text-inverse",
-		"data-inverted:bg-danger data-inverted:hover:bg-danger-hovered data-inverted:active:bg-danger-pressed",
-		"data-inverted:border-danger-bold data-inverted:text-danger-text data-inverted:border-solid",
-	),
-	success: twJoin(
-		"bg-success-bold hover:bg-success-bold-hovered active:bg-success-bold-pressed text-text-inverse",
-		"data-inverted:bg-success data-inverted:hover:bg-success-hovered data-inverted:active:bg-success-pressed",
-		"data-inverted:border-success-bold data-inverted:text-success-text data-inverted:border-solid",
-	),
-	information: twJoin(
-		"bg-information-bold hover:bg-information-bold-hovered active:bg-information-bold-pressed text-text-inverse",
-		"data-inverted:bg-information data-inverted:hover:bg-information-hovered data-inverted:active:bg-information-pressed",
-		"data-inverted:border-information-bold data-inverted:text-information-text data-inverted:border-solid",
-	),
-} as const
-
-export const ButtonSelectedStyles =
-	"bg-selected active:bg-selected hover:bg-selected text-selected-text-inverse cursor-pointer" as const
-
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	(
 		{
 			label = "",
@@ -167,17 +286,16 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				data-inverted={inverted}
 				id={id}
 				className={twMerge(
-					"focus-visible:outline-selected-bold relative box-border flex shrink-0 cursor-pointer items-center justify-center gap-1 rounded-sm border-2 border-transparent px-3 py-1 outline-none outline-2 outline-offset-4 focus-visible:outline-solid",
-					!disabled ? ButtonStyles[appearance] : undefined,
-					`${
-						appearance !== "subtle" && appearance !== "link"
-							? "disabled:bg-disabled"
-							: ""
-					} disabled:text-disabled-text data-inverted:disabled:border-border disabled:cursor-not-allowed data-inverted:disabled:bg-transparent`,
-					selected ? ButtonSelectedStyles : undefined,
+					buttonVariants({
+						appearance,
+						disabled,
+						selected,
+						inverted,
+						loading: false,
+					}),
 					className,
 				)}
-				disabled={disabled}
+				disabled={disabled ?? false}
 				data-testid={testId}
 				{...props}
 			>
@@ -187,20 +305,28 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	},
 )
 
-Button.displayName = "LPButton"
-export { Button }
-
-const loadingSpinnerClassNames: { [appearance in ButtonAppearance]: string } = {
-	primary: "border-t-text-inverse border-2",
-	default: "border-t-border-bold border-2",
-	subtle: "border-t-border-bold border-2",
-	link: "border-t-border-bold border-2",
-	"subtle-link": "border-t-border-bold border-2",
-	warning: "border-t-text-inverse border-2",
-	danger: "border-t-text-inverse border-2",
-	success: "border-t-text-inverse border-2",
-	information: "border-t-text-inverse border-2",
-}
+const loadingSpinnerClassNames = cva(null, {
+	variants: {
+		appearance: {
+			primary: "border-t-text-inverse border-2",
+			default: "border-t-border-bold border-2",
+			subtle: "border-t-border-bold border-2",
+			link: "border-t-border-bold border-2",
+			"subtle-link": "border-t-border-bold border-2",
+			warning: "border-t-text-inverse border-2",
+			danger: "border-t-text-inverse border-2",
+			success: "border-t-text-inverse border-2",
+			information: "border-t-text-inverse border-2",
+		},
+		loading: {
+			false: "opacity-0",
+		},
+	},
+	defaultVariants: {
+		appearance: "default",
+		loading: false,
+	},
+})
 
 export const LoadingButton = ({
 	loading = false,
@@ -235,7 +361,10 @@ export const LoadingButton = ({
 			>
 				<LoadingSpinner
 					className={twMerge(
-						loadingSpinnerClassNames[props.appearance ?? "default"],
+						loadingSpinnerClassNames({
+							appearance: props.appearance ?? "default",
+							loading,
+						}),
 						loadingSpinnerClassName,
 					)}
 					style={{

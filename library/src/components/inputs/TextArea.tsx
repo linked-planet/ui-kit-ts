@@ -9,6 +9,7 @@ import {
 
 export type TextAreaProps = Pick<
 	ComponentPropsWithRef<"textarea">,
+	| "id"
 	| "aria-label"
 	| "aria-invalid"
 	| "aria-describedby"
@@ -46,6 +47,7 @@ export type TextAreaProps = Pick<
 	| "role"
 	| "minLength"
 	| "maxLength"
+	| "rows"
 > &
 	ErrorHelpWrapperProps & {
 		textAreaClassName?: string

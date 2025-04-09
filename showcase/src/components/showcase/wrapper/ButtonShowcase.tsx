@@ -7,6 +7,7 @@ import ShowcaseWrapperItem, {
 	LoadingButton as AKLoadingButton,
 } from "@atlaskit/button"*/
 import { Button, LoadingButton, ButtonGroup } from "@linked-planet/ui-kit-ts"
+
 import { SearchIcon } from "lucide-react"
 
 function ButtonShowcase(props: ShowcaseProps) {
@@ -135,221 +136,223 @@ function ButtonShowcase(props: ShowcaseProps) {
 
 	//#region button
 	const lpExample = (
-		<ButtonGroup data-id="test-data-id">
-			<Button
-				appearance="default"
-				onClick={() => console.log("Button pressed")}
-				autoFocus={true}
-			>
-				Default Button
-			</Button>
-			<Button
-				appearance="default"
-				onClick={() => console.log("Button pressed")}
-				autoFocus={true}
-				inverted
-			>
-				Default Inverted Button
-			</Button>
+		<div>
+			<ButtonGroup data-id="test-data-id">
+				<Button
+					appearance="default"
+					onClick={() => console.log("Button pressed")}
+					autoFocus={true}
+				>
+					Default Button
+				</Button>
+				<Button
+					appearance="default"
+					onClick={() => console.log("Button pressed")}
+					autoFocus={true}
+					inverted
+				>
+					Default Inverted Button
+				</Button>
 
-			<Button
-				appearance="default"
-				onClick={() => console.log("Button pressed")}
-				selected={true}
-			>
-				Selected Button
-			</Button>
+				<Button
+					appearance="default"
+					onClick={() => console.log("Button pressed")}
+					selected={true}
+				>
+					Selected Button
+				</Button>
 
-			<Button
-				appearance="default"
-				onClick={() => console.log("Button pressed")}
-				disabled={true}
-			>
-				Disabled Button
-			</Button>
+				<Button
+					appearance="default"
+					onClick={() => console.log("Button pressed")}
+					disabled={true}
+				>
+					Disabled Button
+				</Button>
 
-			<Button
-				appearance="default"
-				onClick={() => console.log("Button pressed")}
-				disabled
-				inverted
-			>
-				Disabled Inverted Button
-			</Button>
+				<Button
+					appearance="default"
+					onClick={() => console.log("Button pressed")}
+					disabled
+					inverted
+				>
+					Disabled Inverted Button
+				</Button>
 
-			<Button
-				appearance="primary"
-				onClick={() => console.log("Button pressed")}
-			>
-				Primary Button
-			</Button>
+				<Button
+					appearance="primary"
+					onClick={() => console.log("Button pressed")}
+				>
+					Primary Button
+				</Button>
 
-			<Button
-				appearance="primary"
-				onClick={() => console.log("Button pressed")}
-				inverted
-			>
-				Primary Inverted Button
-			</Button>
+				<Button
+					appearance="primary"
+					onClick={() => console.log("Button pressed")}
+					inverted
+				>
+					Primary Inverted Button
+				</Button>
 
-			<Button
-				appearance="primary"
-				onClick={() => console.log("Button pressed")}
-				inverted
-				disabled
-			>
-				Primary Inverted Disabled Button
-			</Button>
+				<Button
+					appearance="primary"
+					onClick={() => console.log("Button pressed")}
+					inverted
+					disabled
+				>
+					Primary Inverted Disabled Button
+				</Button>
 
-			<Button
-				onClick={() => console.log("Button pressed")}
-				disabled={true}
-			>
-				Disabled Button
-			</Button>
+				<Button
+					onClick={() => console.log("Button pressed")}
+					disabled={true}
+				>
+					Disabled Button
+				</Button>
 
-			<Button
-				appearance="subtle"
-				onClick={() => console.log("Button pressed")}
-			>
-				Subtle Button
-			</Button>
+				<Button
+					appearance="subtle"
+					onClick={() => console.log("Button pressed")}
+				>
+					Subtle Button
+				</Button>
 
-			<Button
-				appearance="subtle-link"
-				onClick={() => console.log("Button pressed")}
-			>
-				Subtle Link Button
-			</Button>
+				<Button
+					appearance="subtle-link"
+					onClick={() => console.log("Button pressed")}
+				>
+					Subtle Link Button
+				</Button>
 
-			<Button
-				appearance="subtle"
-				onClick={() => console.log("Button pressed")}
-				disabled
-			>
-				Subtle Disabled Button
-			</Button>
+				<Button
+					appearance="subtle"
+					onClick={() => console.log("Button pressed")}
+					disabled
+				>
+					Subtle Disabled Button
+				</Button>
 
-			<Button
-				appearance="link"
-				onClick={() => console.log("Button pressed")}
-			>
-				Link Button
-			</Button>
+				<Button
+					appearance="link"
+					onClick={() => console.log("Button pressed")}
+				>
+					Link Button
+				</Button>
 
-			<Button appearance="link" disabled>
-				Disabled Link Button
-			</Button>
+				<Button appearance="link" disabled>
+					Disabled Link Button
+				</Button>
 
-			<Button
-				appearance="warning"
-				onClick={() => console.log("Button pressed")}
-			>
-				Warning Button
-			</Button>
+				<Button
+					appearance="warning"
+					onClick={() => console.log("Button pressed")}
+				>
+					Warning Button
+				</Button>
 
-			<Button
-				appearance="warning"
-				onClick={() => console.log("Button pressed")}
-				inverted
-			>
-				Warning Inverted Button
-			</Button>
+				<Button
+					appearance="warning"
+					onClick={() => console.log("Button pressed")}
+					inverted
+				>
+					Warning Inverted Button
+				</Button>
 
-			<Button
-				appearance="danger"
-				onClick={() => console.log("Button pressed")}
-			>
-				Danger Button
-			</Button>
+				<Button
+					appearance="danger"
+					onClick={() => console.log("Button pressed")}
+				>
+					Danger Button
+				</Button>
 
-			<Button
-				appearance="danger"
-				onClick={() => console.log("Button pressed")}
-				inverted
-			>
-				Danger Inverted Button
-			</Button>
+				<Button
+					appearance="danger"
+					onClick={() => console.log("Button pressed")}
+					inverted
+				>
+					Danger Inverted Button
+				</Button>
 
-			<Button
-				appearance="success"
-				onClick={() => console.log("Button pressed")}
-			>
-				Success Button
-			</Button>
+				<Button
+					appearance="success"
+					onClick={() => console.log("Button pressed")}
+				>
+					Success Button
+				</Button>
 
-			<Button
-				appearance="success"
-				onClick={() => console.log("Button pressed")}
-				inverted
-			>
-				Success Inverted Button
-			</Button>
+				<Button
+					appearance="success"
+					onClick={() => console.log("Button pressed")}
+					inverted
+				>
+					Success Inverted Button
+				</Button>
 
-			<Button
-				appearance="information"
-				onClick={() => console.log("Button pressed")}
-				iconAfter={<SearchIcon aria-label="Search" size="12" />}
-				iconBefore={<SearchIcon aria-label="Search" size="12" />}
-			>
-				Information Button
-			</Button>
+				<Button
+					appearance="information"
+					onClick={() => console.log("Button pressed")}
+					iconAfter={<SearchIcon aria-label="Search" size="12" />}
+					iconBefore={<SearchIcon aria-label="Search" size="12" />}
+				>
+					Information Button
+				</Button>
 
-			<Button
-				appearance="information"
-				onClick={() => console.log("Button pressed")}
-				iconAfter={<SearchIcon aria-label="Search" size="12" />}
-				iconBefore={<SearchIcon aria-label="Search" size="12" />}
-				inverted
-			>
-				Information Inverted Button
-			</Button>
+				<Button
+					appearance="information"
+					onClick={() => console.log("Button pressed")}
+					iconAfter={<SearchIcon aria-label="Search" size="12" />}
+					iconBefore={<SearchIcon aria-label="Search" size="12" />}
+					inverted
+				>
+					Information Inverted Button
+				</Button>
 
-			<LoadingButton
-				onClick={() => {
-					setIsLoading(true)
-					window.setTimeout(() => setIsLoading(false), 3000)
-				}}
-				loading={isLoading}
-				iconBefore={<SearchIcon aria-label="Search" size="12" />}
-				iconAfter={<SearchIcon aria-label="Search" size="12" />}
-				className="h-6"
-			>
-				Icon Loading Button
-			</LoadingButton>
+				<LoadingButton
+					onClick={() => {
+						setIsLoading(true)
+						window.setTimeout(() => setIsLoading(false), 3000)
+					}}
+					loading={isLoading}
+					iconBefore={<SearchIcon aria-label="Search" size="12" />}
+					iconAfter={<SearchIcon aria-label="Search" size="12" />}
+					className="h-6"
+				>
+					Icon Loading Button
+				</LoadingButton>
 
-			<LoadingButton
-				onClick={() => {
-					setIsLoading(true)
-					window.setTimeout(() => setIsLoading(false), 3000)
-				}}
-				loading={isLoading}
-				iconBefore={<SearchIcon aria-label="Search" size="12" />}
-				iconAfter={<SearchIcon aria-label="Search" size="12" />}
-				appearance="subtle-link"
-			>
-				Primary Icon Loading Button
-			</LoadingButton>
+				<LoadingButton
+					onClick={() => {
+						setIsLoading(true)
+						window.setTimeout(() => setIsLoading(false), 3000)
+					}}
+					loading={isLoading}
+					iconBefore={<SearchIcon aria-label="Search" size="12" />}
+					iconAfter={<SearchIcon aria-label="Search" size="12" />}
+					appearance="subtle-link"
+				>
+					Primary Icon Loading Button
+				</LoadingButton>
 
-			<Button
-				appearance="primary"
-				href={"https://www.google.com/"}
-				target="_blank"
-			>
-				Href Button
-			</Button>
+				<Button
+					appearance="primary"
+					href={"https://www.google.com/"}
+					target="_blank"
+				>
+					Href Button
+				</Button>
 
-			<Button
-				appearance="primary"
-				href={
-					"https://pbs.twimg.com/profile_images/1311008414156423170/Kxu_7mQS_400x400.jpg"
-				}
-				target="_blank"
-				download
-			>
-				Download Button
-			</Button>
-		</ButtonGroup>
+				<Button
+					appearance="primary"
+					href={
+						"https://pbs.twimg.com/profile_images/1311008414156423170/Kxu_7mQS_400x400.jpg"
+					}
+					target="_blank"
+					download
+				>
+					Download Button
+				</Button>
+			</ButtonGroup>
+		</div>
 	)
 	//#endregion button
 

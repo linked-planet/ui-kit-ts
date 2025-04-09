@@ -1,6 +1,6 @@
 import * as RDd from "@radix-ui/react-dropdown-menu"
 import { forwardRef, useMemo, useRef, type ForwardedRef } from "react"
-import { twJoin, twMerge } from "tailwind-merge"
+import { twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
 import { Button, type ButtonProps } from "./Button"
 import { overlayBaseStyle } from "./styleHelper"
@@ -12,6 +12,7 @@ import {
 	ChevronRightIcon,
 	ChevronUpIcon,
 } from "lucide-react"
+import { cx } from "class-variance-authority"
 
 const commonStyles =
 	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-hidden border-l-2 border-y-0 border-r-0 focus-visible:border-l-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-hidden focus-visible:border-selected-border" as const
@@ -138,7 +139,7 @@ function ItemCheckbox({
 			disabled={disabled}
 			checked={checked}
 			defaultChecked={defaultChecked}
-			className={twJoin(
+			className={cx(
 				"group",
 				commonStyles,
 				normalStyles,
@@ -307,7 +308,7 @@ function ItemRadio({
 		<RDd.RadioItem
 			disabled={disabled}
 			value={value}
-			className={twJoin(
+			className={cx(
 				"group",
 				commonStyles,
 				normalStyles,
@@ -319,7 +320,7 @@ function ItemRadio({
 			{...props}
 		>
 			<div
-				className={twJoin(
+				className={cx(
 					"group-data-[selected=true]:border-selected-bold",
 					disabled
 						? "border-border"
@@ -367,7 +368,7 @@ function SubMenu({
 	const triggerNode: React.ReactNode = useMemo(() => {
 		if (typeof trigger === "string") {
 			return (
-				<div className={twJoin(commonStyles, normalStyles, "w-full")}>
+				<div className={cx(commonStyles, normalStyles, "w-full")}>
 					{chevronSide === "left" && (
 						<IconSizeHelper>
 							<ChevronLeftIcon
