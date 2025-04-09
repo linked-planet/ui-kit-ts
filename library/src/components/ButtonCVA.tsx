@@ -27,8 +27,8 @@ const buttonVariants = cva(
 	{
 		variants: {
 			appearance: {
+				// those entries are undefined, they just establish the variant for the compoundVariants
 				default: undefined,
-				//"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",*/
 				primary: undefined,
 
 				subtle: undefined,
@@ -305,31 +305,28 @@ export const ButtonCVA = forwardRef<HTMLButtonElement, ButtonPropsCVA>(
 	},
 )
 
-const loadingSpinnerClassNames = cva(
-	"absolute inset-0 flex items-center justify-center",
-	{
-		variants: {
-			appearance: {
-				default: "border-t-text-inverse border-2",
-				primary: "border-t-text-inverse border-2",
-				warning: "border-t-text-inverse border-2",
-				danger: "border-t-text-inverse border-2",
-				success: "border-t-text-inverse border-2",
-				information: "border-t-text-inverse border-2",
-				subtle: "border-t-text-inverse border-2",
-				link: "border-t-text-inverse border-2",
-				"subtle-link": "border-t-text-inverse border-2",
-			},
-			loading: {
-				false: "opacity-0",
-			},
+const loadingSpinnerClassNames = cva(null, {
+	variants: {
+		appearance: {
+			primary: "border-t-text-inverse border-2",
+			default: "border-t-border-bold border-2",
+			subtle: "border-t-border-bold border-2",
+			link: "border-t-border-bold border-2",
+			"subtle-link": "border-t-border-bold border-2",
+			warning: "border-t-text-inverse border-2",
+			danger: "border-t-text-inverse border-2",
+			success: "border-t-text-inverse border-2",
+			information: "border-t-text-inverse border-2",
 		},
-		defaultVariants: {
-			appearance: "default",
-			loading: false,
+		loading: {
+			false: "opacity-0",
 		},
 	},
-)
+	defaultVariants: {
+		appearance: "default",
+		loading: false,
+	},
+})
 
 export const LoadingButtonCVA = ({
 	loading = false,
@@ -360,6 +357,7 @@ export const LoadingButtonCVA = ({
 			<div className={loading ? "opacity-0" : undefined}>{children}</div>
 			<div
 				className={`absolute inset-0 flex items-center justify-center ${loading ? "" : "opacity-0"}`}
+				ref={ref}
 			>
 				<LoadingSpinner
 					className={twMerge(

@@ -1309,10 +1309,10 @@ import {
 	LoadingButton,
 	ButtonGroup,
 	LoadingButtonCVA,
+	ButtonCVA,
 } from "@linked-planet/ui-kit-ts"
 
 import { SearchIcon } from "lucide-react"
-import { ButtonCVA } from "@linked-planet/ui-kit-ts"
 
 function ButtonShowcase(props: ShowcaseProps) {
 	const [isLoading, setIsLoading] = useState(false)
@@ -1440,7 +1440,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 
 	//#region button
 	const lpExample = (
-		<>
+		<div>
 			<ButtonGroup data-id="test-data-id">
 				<Button
 					appearance="default"
@@ -1656,6 +1656,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 					Download Button
 				</Button>
 			</ButtonGroup>
+			<hr />
 			<ButtonGroup data-id="test-data-id">
 				<ButtonCVA
 					appearance="default"
@@ -1871,7 +1872,7 @@ function ButtonShowcase(props: ShowcaseProps) {
 					Download Button
 				</ButtonCVA>
 			</ButtonGroup>
-		</>
+		</div>
 	)
 	//#endregion button
 
