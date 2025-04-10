@@ -541,6 +541,8 @@ type _NestableNavigationContentProps = {
 	goBackButtonIconStyle?: React.CSSProperties
 	goBackButtonTitleClassName?: string
 	goBackButtonTitleStyle?: React.CSSProperties
+	contentClassName?: string
+	contentStyle?: React.CSSProperties
 	children: React.ReactNode
 	className?: string
 	style?: React.CSSProperties
