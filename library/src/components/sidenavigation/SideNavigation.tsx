@@ -201,13 +201,25 @@ export function ButtonItem({
 	)
 }
 
-function GoBackItem({ children, ...props }: Omit<_ButtonItemProps, "icon">) {
+function GoBackItem({
+	children,
+	iconClassName,
+	iconStyle,
+	...props
+}: Omit<_ButtonItemProps, "icon"> & {
+	iconClassName?: string
+	iconStyle?: React.CSSProperties
+}) {
 	return (
 		<ButtonItem
 			iconBefore={
 				<ArrowLeftIcon
 					strokeWidth={3}
-					className="rounded-full p-1 bg-neutral-full size-5.5 text-text-inverse"
+					className={twMerge(
+						"rounded-full p-1 bg-neutral-full size-5.5 text-text-inverse",
+						iconClassName,
+					)}
+					style={iconStyle}
 				/>
 			}
 			{...props}
@@ -450,7 +462,11 @@ function NavigationHeader({
 type _NestingItemProps = {
 	children: React.ReactNode
 	className?: string
+	buttonClassName?: string
+	titleClassName?: string
 	style?: React.CSSProperties
+	buttonStyle?: React.CSSProperties
+	titleStyle?: React.CSSProperties
 	title: string // title is used to identify the item and as a key
 	sideNavStoreIdent?: string
 	id: string
@@ -460,7 +476,11 @@ type _NestingItemProps = {
 function NestingItem({
 	children,
 	className,
+	buttonClassName,
+	titleClassName,
 	style,
+	buttonStyle,
+	titleStyle,
 	sideNavStoreIdent = "default",
 	title,
 	onClick,
@@ -495,6 +515,7 @@ function NestingItem({
 				window.setTimeout(() => setTransitioning(null), animTime * 1000)
 				onClick?.()
 			}}
+			title={title}
 			iconAfter={
 				<ArrowRightIcon
 					strokeWidth={3}
@@ -502,6 +523,10 @@ function NestingItem({
 				/>
 			}
 			id={id}
+			className={buttonClassName}
+			style={buttonStyle}
+			titleClassName={titleClassName}
+			titleStyle={titleStyle}
 		>
 			{title}
 		</ButtonItem>
@@ -510,6 +535,12 @@ function NestingItem({
 
 type _NestableNavigationContentProps = {
 	goBackLabel?: string
+	goBackButtonClassName?: string
+	goBackButtonStyle?: React.CSSProperties
+	goBackButtonIconClassName?: string
+	goBackButtonIconStyle?: React.CSSProperties
+	goBackButtonTitleClassName?: string
+	goBackButtonTitleStyle?: React.CSSProperties
 	children: React.ReactNode
 	className?: string
 	style?: React.CSSProperties
@@ -545,6 +576,12 @@ const animTime = 1
 
 function NestableNavigationContent({
 	goBackLabel = "Go Back",
+	goBackButtonClassName,
+	goBackButtonStyle,
+	goBackButtonIconClassName,
+	goBackButtonIconStyle,
+	goBackButtonTitleClassName,
+	goBackButtonTitleStyle,
 	children,
 	sideNavStoreIdent = "default",
 	className,
@@ -608,6 +645,12 @@ function NestableNavigationContent({
 						}}
 					>
 						<GoBackItem
+							className={goBackButtonClassName}
+							style={goBackButtonStyle}
+							iconClassName={goBackButtonIconClassName}
+							iconStyle={goBackButtonIconStyle}
+							titleClassName={goBackButtonTitleClassName}
+							titleStyle={goBackButtonTitleStyle}
 							onClick={() => {
 								setIsBack(true)
 								// this setTimeout is required else the animation will not work correctly
@@ -654,7 +697,7 @@ function NestableNavigationContent({
 							ease: "easeInOut",
 							//delay: animTime * 0.5,
 						}}
-						className="border-b-border-separator border-t-border-separator box-border flex size-full border-b-2 border-t-2 border-solid"
+						className="border-border-separator box-border flex size-full border-b-2 border-t-2 border-solid border-x-0"
 						onAnimationStart={() => {
 							onAnimationStart?.()
 						}}
