@@ -582,6 +582,8 @@ function NestableNavigationContent({
 	goBackButtonIconStyle,
 	goBackButtonTitleClassName,
 	goBackButtonTitleStyle,
+	contentClassName,
+	contentStyle,
 	children,
 	sideNavStoreIdent = "default",
 	className,
@@ -697,7 +699,11 @@ function NestableNavigationContent({
 							ease: "easeInOut",
 							//delay: animTime * 0.5,
 						}}
-						className="border-border-separator box-border flex size-full border-b-2 border-t-2 border-solid border-x-0"
+						className={twMerge(
+							"border-border-separator box-border flex size-full border-b-2 border-t-2 border-solid border-x-0",
+							contentClassName,
+						)}
+						style={contentStyle}
 						onAnimationStart={() => {
 							onAnimationStart?.()
 						}}
