@@ -224,7 +224,7 @@
 	/* Border */
 	--color-border: var(--ds-border, var(--color-gray-300));
 	--color-border-bold: var(--ds-border-bold, var(--color-gray-500));
-	--color-border-separator: var(--ds-menu-separator-color, var(--color-border));
+	--color-border-separator: var(--ds-menu-separator-color, var(--ds-border, var(--color-gray-300)));
 
 	/* Icon */
 	--color-icon: var(--ds-icon, var(--color-gray-500));
