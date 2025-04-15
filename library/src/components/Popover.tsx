@@ -4,7 +4,6 @@ import { twMerge } from "tailwind-merge"
 import { getPortal } from "../utils"
 import { Button, type ButtonProps } from "./Button"
 import { overlayBaseStyle } from "./styleHelper"
-import { IconSizeHelper } from "./IconSizeHelper"
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
 const portalDivId = "uikts-popover" as const
@@ -13,6 +12,8 @@ type TriggerProps = RPo.PopoverTriggerProps &
 	ButtonProps & {
 		"data-state"?: "open" | "closed" // coming from RDd, do not use, only for typechecking
 		hideChevron?: boolean
+		chevronClassName?: string
+		chevronStyle?: React.CSSProperties
 	}
 
 // this is basically a copy of the dropdown trigger
@@ -22,7 +23,10 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 			children,
 			style,
 			className,
+			chevronClassName,
+			chevronStyle,
 			hideChevron = false,
+			disabled,
 			...rest
 		} = props
 		return (
@@ -36,22 +40,30 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 					...style,
 				}}
 				{...rest}
+				disabled={disabled}
 			>
 				{children}
-				<IconSizeHelper
-					className={`hidden h-full w-6 items-center justify-center ${
-						hideChevron ? "" : "group-data-[state=open]:flex"
-					}`}
-				>
-					<ChevronUpIcon size="12" />
-				</IconSizeHelper>
-				<IconSizeHelper
-					className={`hidden h-full w-6 items-center justify-center ${
-						hideChevron ? "" : "group-data-[state=closed]:flex"
-					}`}
-				>
-					<ChevronDownIcon size="12" />
-				</IconSizeHelper>
+				<ChevronUpIcon
+					size="16"
+					strokeWidth={3}
+					className={twMerge(
+						"hidden text-text-subtlest hover:text-text disabled:text-text-disabled",
+						hideChevron ? "" : "group-data-[state=open]:flex",
+						chevronClassName,
+					)}
+					style={chevronStyle}
+				/>
+
+				<ChevronDownIcon
+					size="16"
+					strokeWidth={3}
+					className={twMerge(
+						"hidden text-text-subtlest hover:text-text disabled:text-text-disabled",
+						hideChevron ? "" : "group-data-[state=closed]:flex",
+						chevronClassName,
+					)}
+					style={chevronStyle}
+				/>
 			</Button>
 		)
 	},

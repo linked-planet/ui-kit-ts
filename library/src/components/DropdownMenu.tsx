@@ -479,24 +479,24 @@ const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
 				{...rest}
 			>
 				{children}
-				<IconSizeHelper
-					className={`hidden h-4 w-4 items-center justify-center ${
+				<ChevronUpIcon
+					size="16"
+					strokeWidth="3"
+					className={`hidden text-text-subtlest hover:text-text disabled:text-text-disabled ${
 						hideChevron
 							? ""
 							: "group-data-[state=open]:flex group-data-[state=open]:visible"
 					}`}
-				>
-					<ChevronUpIcon size="12" strokeWidth="4" />
-				</IconSizeHelper>
-				<IconSizeHelper
-					className={`hidden h-4 w-4 items-center justify-center ${
+				/>
+				<ChevronDownIcon
+					size="16"
+					strokeWidth="3"
+					className={`hidden text-text-subtlest hover:text-text disabled:text-text-disabled ${
 						hideChevron
 							? ""
 							: "group-data-[state=closed]:flex group-data-[state=closed]:visible"
 					}`}
-				>
-					<ChevronDownIcon size="12" strokeWidth="4" />
-				</IconSizeHelper>
+				/>
 			</Button>
 		)
 	},

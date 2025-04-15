@@ -23,7 +23,7 @@ export type ButtonAppearance =
 
 type ButtonVariantProps = VariantProps<typeof buttonVariants>
 const buttonVariants = cva(
-	"focus-visible:outline-selected-bold relative box-border flex shrink-0 cursor-pointer items-center justify-center gap-1 rounded-sm border-2 border-transparent px-3 py-1 outline-none outline-2 outline-offset-4 focus-visible:outline-solid",
+	"focus-visible:outline-selected-bold relative box-border flex shrink-0 cursor-pointer items-center justify-center gap-1 rounded-sm border-2 border-transparent px-2 py-1 outline-none outline-2 outline-offset-4 focus-visible:outline-solid",
 	{
 		variants: {
 			appearance: {
