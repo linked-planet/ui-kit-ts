@@ -25,6 +25,17 @@ import {
 } from "react-select"
 import ReactSelectAsync from "react-select/async"
 
+import { getPortal } from "../../utils/getPortal"
+
+import ReactSelectCreatable, {
+	type CreatableProps,
+} from "react-select/creatable"
+import { twJoin, twMerge } from "tailwind-merge"
+import { SlidingErrorMessage } from "./ErrorHelpWrapper"
+import { IconSizeHelper } from "../IconSizeHelper"
+import { inputBaseStyles } from "../styleHelper"
+import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react"
+
 // usage aria stuff:
 // https://react-select.com/advanced
 
@@ -39,17 +50,6 @@ export type SelectAriaOnChange<V, isMulti extends boolean> = AriaOnChange<
 >
 export type SelectAriaOnFilter = AriaOnFilter
 export type SelectAriaOnFocus<V> = AriaOnFocus<OptionType<V>>
-
-import { getPortal } from "../../utils/getPortal"
-
-import ReactSelectCreatable, {
-	type CreatableProps,
-} from "react-select/creatable"
-import { twJoin, twMerge } from "tailwind-merge"
-import { SlidingErrorMessage } from "./ErrorHelpWrapper"
-import { IconSizeHelper } from "../IconSizeHelper"
-import { inputBaseStyles } from "../styleHelper"
-import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react"
 
 const menuStyles =
 	"bg-surface min-w-min shadow-overlay rounded-xs overflow-hidden" // some styles like zIndex are overwritten by react-select, use the custom-styles below for those
@@ -508,9 +508,9 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 					>
 						<IconSizeHelper>
 							{_props.selectProps.menuIsOpen ? (
-								<ChevronUpIcon size="12" />
+								<ChevronUpIcon size="16" strokeWidth={3} />
 							) : (
-								<ChevronDownIcon size="12" />
+								<ChevronDownIcon size="16" strokeWidth={3} />
 							)}
 						</IconSizeHelper>
 					</div>
