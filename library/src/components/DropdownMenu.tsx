@@ -435,6 +435,8 @@ export type DropdownMenuProps = {
 	triggerAsChild?: boolean
 	triggerClassName?: string
 	triggerStyle?: React.CSSProperties
+	chevronClassName?: string
+	chevronStyle?: React.CSSProperties
 } & ButtonProps &
 	Pick<
 		RDd.DropdownMenuContentProps,
@@ -455,6 +457,8 @@ type DropdownTriggerProps = RDd.DropdownMenuTriggerProps &
 	ButtonProps & {
 		"data-state"?: "open" | "closed" // coming from RDd, do not use, only for typechecking
 		hideChevron?: boolean
+		chevronClassName?: string
+		chevronStyle?: React.CSSProperties
 	}
 
 const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
@@ -463,6 +467,8 @@ const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
 			children,
 			style,
 			className,
+			chevronClassName,
+			chevronStyle,
 			hideChevron = false,
 			...rest
 		} = props
@@ -482,20 +488,28 @@ const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
 				<ChevronUpIcon
 					size="16"
 					strokeWidth="3"
-					className={`hidden text-text-subtlest hover:text-text disabled:text-text-disabled ${
-						hideChevron
-							? ""
-							: "group-data-[state=open]:flex group-data-[state=open]:visible"
-					}`}
+					className={twMerge(
+						`hidden text-text-subtlest hover:text-text disabled:text-text-disabled ${
+							hideChevron
+								? ""
+								: "group-data-[state=open]:flex group-data-[state=open]:visible"
+						}`,
+						chevronClassName,
+					)}
+					style={chevronStyle}
 				/>
 				<ChevronDownIcon
 					size="16"
 					strokeWidth="3"
-					className={`hidden text-text-subtlest hover:text-text disabled:text-text-disabled ${
-						hideChevron
-							? ""
-							: "group-data-[state=closed]:flex group-data-[state=closed]:visible"
-					}`}
+					className={twMerge(
+						`hidden text-text-subtlest hover:text-text disabled:text-text-disabled ${
+							hideChevron
+								? ""
+								: "group-data-[state=closed]:flex group-data-[state=closed]:visible"
+						}`,
+						chevronClassName,
+					)}
+					style={chevronStyle}
 				/>
 			</Button>
 		)
@@ -530,6 +544,8 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 			contentClassName,
 			contentStyle,
 			triggerAsChild = true,
+			chevronClassName,
+			chevronStyle,
 			...props
 		}: DropdownMenuProps,
 		ref: ForwardedRef<HTMLButtonElement>,
@@ -581,6 +597,8 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 				aria-disabled={disabled}
 				hideChevron={hideChevron}
 				className={triggerClassName}
+				chevronClassName={chevronClassName}
+				chevronStyle={chevronStyle}
 				style={triggerStyle}
 				{...props}
 				ref={ref}
