@@ -6,7 +6,7 @@ export const DnD = {
 	DragItem,
 }
 
-export namespace DnD {
+export namespace DnDTypes {
 	export type DnDListProps<T> = DnDListPropsType<T>
 	export type DragItemProps = DragItemPropsType
 }

@@ -170,12 +170,13 @@ type CalendarBaseRangeProps = Pick<
 		secondarySelected?: DateRange
 	}
 
+//TODO: move to CVA
 const buttonStyles =
-	"h-full w-full group-data-[disabled=true]:cursor-not-allowed focus-visible:ring-0 focus-visible:outline focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-offset-2"
+	"h-full w-full group-data-[disabled=true]:cursor-not-allowed focus-visible:ring-0 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-offset-2 bg-transparent border-none rounded-none"
 const captionStyles = "flex justify-center items-center relative w-full pb-2"
 const captionLabelStyles = "text-text text-sm font-bold flex justify-center"
 const daySelectedStyles =
-	"rounded-none bg-selected group-data-[disabled=false]:hover:bg-selected-hovered group-data-[disabled=false]:active:bg-selected-pressed text-selected-text-inverse font-bold w-full h-full"
+	"bg-selected group-data-[disabled=false]:hover:bg-selected-hovered group-data-[disabled=false]:active:bg-selected-pressed text-selected-text-inverse font-bold w-full h-full"
 const headStyles = "text-text-subtle text-sm border-b-0"
 const dayTodayStyles =
 	"font-bold relative text-brand-text aria-selected:text-text-inverse after:absolute after:block after:left-1 after:right-1 after:bg-brand-text aria-selected:after:bg-text-inverse after:h-[2px]"
