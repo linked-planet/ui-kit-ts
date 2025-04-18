@@ -1,5 +1,3 @@
-import "./styles.css"
-
 export * from "./components"
 export type { DynamicFormTypes } from "./components"
 export type { DnDTypes } from "./components"

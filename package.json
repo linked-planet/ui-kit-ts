@@ -12,14 +12,16 @@
 	"module": "dist/index.js",
 	"type": "module",
 	"files": [
-		"dist"
+		"dist",
+		"dist/bundler-plugins"
 	],
 	"types": "./dist/index.d.ts",
-	"style": [
-		"dist/styles.css",
-		"dist/tailwindcss.css",
-		"dist/tailwindcss-important.css"
-	],
+	"exports": {
+		".": "./dist/index.js",
+		"./*": "./dist/**/*.js",
+		"./bundler-plugins": "./dist/bundler-plugins/index.js",
+		"./bundler-plugins/*": "./dist/bundler-plugins/*.js"
+	},
 	"scripts": {
 		"build:lib": "tsc --noEmit -p tsconfig.lib.json && vitest run && vite build -c vite.config.lib.ts && npm run messages:compile && cp -r ./twThemes dist && npm run tsc:plugin",
 		"build:sc": "node ./showcase/copySources.js && tsc --noEmit && vite build -c vite.config.showcase.ts && node ./showcase/copyIndexTo404.js",
@@ -44,7 +46,7 @@
 		"bcheck:lib": "biome check --apply ./library/**/*",
 		"bformat:sc": "biome format ./showcase/**/*",
 		"blint:sc": "biome lint ./showcase/**/*",
-		"tsc:plugin": "tsc --moduleResolution bundler --module esnext --outDir dist/bundler-plugins --declaration bundler_plugins/rollup_class_prefixer-plugin.ts bundler_plugins/postcss_prefix_classname-plugin.ts"
+		"tsc:plugin": "tsc --moduleResolution bundler --module esnext --outDir dist/bundler-plugins --declaration bundler_plugins/rollup_class_prefixer-plugin.ts bundler_plugins/postcss_prefix_classname-plugin.ts bundler_plugins/vite-append-css-plugin.ts bundler_plugins/index.ts"
 	},
 	"sideEffects": false,
 	"author": "Markus Toepfer",
@@ -152,7 +154,7 @@
 		"tailwindcss": "^4.0.3",
 		"typescript": "^5.8.3",
 		"typescript-plugin-css-modules": "^5.1.0",
-		"vite": "^6.3.1",
+		"vite": "^6.3.2",
 		"vite-plugin-dts": "^4.5.3",
 		"vitest": "^3.1.1"
 	},
