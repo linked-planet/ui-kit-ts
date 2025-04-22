@@ -206,13 +206,14 @@ function ExampleShowFlags() {
 						})
 					}
 				>
-					Success Style
+					Inverted Style
 				</Button>
 				<Button
 					onClick={() =>
 						Toast.showFlag({
 							title: "Default Style",
 							type: "bold",
+							appearance: "success",
 							description:
 								"Using the default flag style (see flags).",
 						})
@@ -225,6 +226,7 @@ function ExampleShowFlags() {
 					onClick={() =>
 						Toast.showFlag({
 							title: "Pale Style",
+							appearance: "success",
 							type: "pale",
 							description:
 								"Using the pale flag style (see flags).",
@@ -238,6 +240,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Information",
 							type: "pale",
+							appearance: "information",
 							description: "Pale flag style (see flags).",
 						})
 					}
@@ -249,6 +252,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Discovery",
 							description: "This is a bold discovery toast.",
+							appearance: "discovery",
 						})
 					}
 				>
@@ -271,6 +275,7 @@ function ExampleShowFlags() {
 							title: "Discovery",
 							description: "This is a pale discovery toast.",
 							type: "pale",
+							appearance: "discovery",
 						})
 					}
 				>
@@ -292,6 +297,7 @@ function ExampleShowFlags() {
 							title: "error flag",
 							description: "This is a error toast flag.",
 							type: "bold",
+							appearance: "error",
 						})
 					}
 				>
@@ -303,6 +309,7 @@ function ExampleShowFlags() {
 							title: "error flag",
 							description: "This is a pale error toast flag.",
 							type: "pale",
+							appearance: "error",
 						})
 					}
 				>
@@ -313,6 +320,7 @@ function ExampleShowFlags() {
 						Toast.showFlag({
 							title: "Warning Flag",
 							description: "This is a warning toast flag.",
+							appearance: "warning",
 						})
 					}
 				>
@@ -324,6 +332,7 @@ function ExampleShowFlags() {
 							title: "Warning Flag",
 							description: "This is a bold warning toast flag.",
 							type: "bold",
+							appearance: "warning",
 						})
 					}
 				>
@@ -335,6 +344,9 @@ function ExampleShowFlags() {
 							title: "Warning Flag",
 							description: "This is a pale warning toast flag.",
 							type: "pale",
+							appearance: "warning",
+							autoClose: false,
+							className: "border-red-500 border-2 border-solid",
 						})
 					}
 				>
@@ -344,6 +356,7 @@ function ExampleShowFlags() {
 					onClick={() =>
 						Toast.showFlag({
 							title: "warning flag",
+							appearance: "warning",
 							description: (
 								<div>
 									<h2>This is a warning flag!</h2>
