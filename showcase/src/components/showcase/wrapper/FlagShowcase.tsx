@@ -36,14 +36,14 @@ function FlagShowcase(props: ShowcaseProps) {
 				/>
 				<Flag
 					title="Flag"
-					description="Action Flag"
+					description="Inverted Action Flag"
 					actions={[{ content: "Action", onClick: () => {} }]}
 					type="inverted"
 				/>
 
 				<Flag
 					title="Flag"
-					description="Action Flag"
+					description="Pale Action Flag"
 					actions={[{ content: "Action", onClick: () => {} }]}
 					type="pale"
 				/>
@@ -56,7 +56,7 @@ function FlagShowcase(props: ShowcaseProps) {
 
 				<Flag
 					title="Flag"
-					description="Success Flag"
+					description="Inverted Success Flag"
 					appearance="success"
 					type="inverted"
 					actions={[{ content: "Action", onClick: () => {} }]}
@@ -64,7 +64,7 @@ function FlagShowcase(props: ShowcaseProps) {
 
 				<Flag
 					title="Flag"
-					description="Success Flag"
+					description="Pale Success Flag"
 					appearance="success"
 					type="pale"
 					actions={[{ content: "Action", onClick: () => {} }]}
@@ -79,7 +79,7 @@ function FlagShowcase(props: ShowcaseProps) {
 
 				<Flag
 					title="Flag"
-					description="Warning Flag"
+					description="Inverted Warning Flag"
 					appearance="warning"
 					type="inverted"
 					actions={[{ content: "Action", onClick: () => {} }]}
@@ -87,7 +87,7 @@ function FlagShowcase(props: ShowcaseProps) {
 
 				<Flag
 					title="Flag"
-					description="Warning Flag"
+					description="Pale Warning Flag"
 					appearance="warning"
 					type="pale"
 					actions={[{ content: "Action", onClick: () => {} }]}
@@ -102,7 +102,7 @@ function FlagShowcase(props: ShowcaseProps) {
 
 				<Flag
 					title="Flag"
-					description="Error Flag"
+					description="Inverted Error Flag"
 					appearance="error"
 					type="inverted"
 					actions={[{ content: "Action", onClick: () => {} }]}
@@ -110,7 +110,7 @@ function FlagShowcase(props: ShowcaseProps) {
 
 				<Flag
 					title="Flag"
-					description="Error Flag"
+					description="Pale Error Flag"
 					appearance="error"
 					type="pale"
 					actions={[{ content: "Action", onClick: () => {} }]}
@@ -125,7 +125,7 @@ function FlagShowcase(props: ShowcaseProps) {
 
 				<Flag
 					title="Flag"
-					description="Information Flag"
+					description="Inverted Information Flag"
 					appearance="information"
 					type="inverted"
 					actions={[{ content: "Action", onClick: () => {} }]}
@@ -133,7 +133,7 @@ function FlagShowcase(props: ShowcaseProps) {
 
 				<Flag
 					title="Flag"
-					description="Information Flag"
+					description="Pale Information Flag"
 					appearance="information"
 					type="pale"
 					actions={[{ content: "Action", onClick: () => {} }]}
@@ -148,7 +148,7 @@ function FlagShowcase(props: ShowcaseProps) {
 
 				<Flag
 					title="Flag"
-					description="Discovery Flag"
+					description="Inverted Discovery Flag"
 					appearance="discovery"
 					type="inverted"
 					actions={[{ content: "Action", onClick: () => {} }]}
@@ -156,7 +156,7 @@ function FlagShowcase(props: ShowcaseProps) {
 
 				<Flag
 					title="Flag"
-					description="Discovery Flag"
+					description="Pale Discovery Flag"
 					appearance="discovery"
 					type="pale"
 					actions={[{ content: "Action", onClick: () => {} }]}

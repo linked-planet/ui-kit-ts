@@ -16,7 +16,7 @@ import {
 	ToastClose,
 } from "@radix-ui/react-toast"
 import { XIcon } from "lucide-react"
-import { twJoin } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { AnimatePresence, motion } from "motion/react"
 
 type ToastFlagProps = FlagProps & {
@@ -128,6 +128,7 @@ function ToastFlag({
 	icon,
 	id,
 	type = "inverted",
+	className,
 	...props
 }: ToastFlagProps) {
 	const [paused, setPaused] = useState(false)
@@ -169,10 +170,14 @@ function ToastFlag({
 					appearance={appearance}
 					type={type}
 					{...props}
-					className={`border-none shadow-none ${autoClose && "pb-6"}`}
+					className={twMerge(
+						"border-none shadow-none",
+						autoClose && "pb-6",
+						className,
+					)}
 				/>
 				<CloseButton
-					inverted={type === "inverted"}
+					inverted={type === "inverted" || type === "pale"}
 					className="absolute top-2 right-2"
 				/>
 				{autoClose && (
@@ -240,6 +245,8 @@ function showFlag({
 	...props
 }: ToastFlagProps) {
 	const id = _id ?? crypto.randomUUID()
+
+	console.log("showFlag", id, type, appearance, props)
 
 	toastProxyMap.proxy.set(id, {
 		appearance,
