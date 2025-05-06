@@ -1,6 +1,9 @@
 export const portalContainerID = "uikts-portal" as const
 
 export function getPortal(insidePortalContainerID: string) {
+	if (!portalContainerID) {
+		throw new Error("No portal container id provided")
+	}
 	let portalNode = document.getElementById(portalContainerID)
 	if (!portalNode) {
 		console.log("creating portal node with id:", portalContainerID)

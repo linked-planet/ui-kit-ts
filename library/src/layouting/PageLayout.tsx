@@ -72,7 +72,7 @@ const PageHeaderTitle = ({
 	return (
 		<div
 			className={twMerge("mb-2 flex items-center px-8", className)}
-			id={id}
+			id={id ?? "page-header-title"}
 			style={style}
 			data-testid={testId}
 		>
@@ -154,7 +154,7 @@ const PageBody = ({
 			className,
 		)}
 		style={style}
-		id={id}
+		id={id ?? "page-body"}
 		data-testid={testId}
 	>
 		{children}
@@ -179,7 +179,7 @@ const PageBodyContent = ({
 			"min-h-0 flex-1 overflow-y-auto px-6 py-3",
 			className,
 		)}
-		id={id}
+		id={id ?? "page-body-content"}
 		style={style}
 		data-testid={testId}
 	>
@@ -205,7 +205,7 @@ const PageBodyHeader = ({
 			"bg-surface-raised shadow-overflow z-0 px-8 py-1",
 			className,
 		)}
-		id={id}
+		id={id ?? "page-body-header"}
 		style={style}
 		data-testid={testId}
 	>
@@ -231,7 +231,7 @@ const PageBodyFooter = ({
 			"bg-surface-raised border-border shadow-strong z-0 flex justify-center border-t p-1.5",
 			className,
 		)}
-		id={id}
+		id={id ?? "page-body-footer"}
 		style={style}
 		data-testid={testId}
 	>
