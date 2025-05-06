@@ -8,6 +8,9 @@ import {
 } from "@linked-planet/ui-kit-ts"
 
 function scrollAndHighlightElement(id: string) {
+	if (!id) {
+		throw new Error("No id provided")
+	}
 	const element = document.getElementById(id)
 	if (element) {
 		element.scrollIntoView({

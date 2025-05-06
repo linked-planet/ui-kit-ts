@@ -12,6 +12,20 @@ export type DragItemProps = {
 	style?: React.CSSProperties
 }
 
+function findClosestScrollContainer(element: HTMLElement | null) {
+	if (!element) {
+		return null
+	}
+	let parent = element.parentElement
+	while (parent) {
+		if (parent.scrollHeight > parent.clientHeight) {
+			return parent
+		}
+		parent = parent.parentElement
+	}
+	return null
+}
+
 export function DragItem({
 	draggableId,
 	index,
@@ -20,16 +34,22 @@ export function DragItem({
 	style,
 	thin = false,
 }: DragItemProps) {
-	const draggableRef = React.useRef(null)
+	const draggableRef = React.useRef<HTMLDivElement>(null)
 	return (
 		<Draggable draggableId={draggableId} index={index}>
 			{({ innerRef, draggableProps, dragHandleProps }) => {
 				// offset bug workaround:  https://github.com/atlassian/react-beautiful-dnd/issues/1881
+
+				const draggableRect =
+					draggableRef.current?.getBoundingClientRect()
+				const draggableTop = draggableRect?.top ?? 0
+				const draggableLeft = draggableRect?.left ?? 0
+
 				const dragStyle = {
 					...style,
 					...draggableProps.style,
-					top: "auto",
-					left: "auto",
+					top: `${draggableTop}px`,
+					left: `${draggableLeft}px`,
 				}
 				//
 				return (

@@ -43,17 +43,19 @@ export function DnDList<T>({
 			} box-border border`}
 		>
 			<DragDropContext onDragEnd={onDragEnd}>
-				<Droppable droppableId="droppable">
-					{(provided) => (
-						<div
-							{...provided.droppableProps}
-							ref={provided.innerRef}
-							className="flex flex-col w-full"
-						>
-							{children}
-							{provided.placeholder}
-						</div>
-					)}
+				<Droppable droppableId={`droppable-${crypto.randomUUID()}`}>
+					{(provided) => {
+						return (
+							<div
+								{...provided.droppableProps}
+								ref={provided.innerRef}
+								className="flex flex-col w-full"
+							>
+								{children}
+								{provided.placeholder}
+							</div>
+						)
+					}}
 				</Droppable>
 			</DragDropContext>
 		</div>
