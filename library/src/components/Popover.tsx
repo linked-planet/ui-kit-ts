@@ -1,7 +1,7 @@
 import * as RPo from "@radix-ui/react-popover"
 import { forwardRef, useMemo, useRef } from "react"
 import { twMerge } from "tailwind-merge"
-import { getPortal } from "../utils"
+import { usePortalContainer } from "../utils"
 import { Button, type ButtonProps } from "./Button"
 import { overlayBaseStyle } from "./styleHelper"
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
@@ -70,7 +70,7 @@ const Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
 )
 
 export type PopoverProps = RPo.PopoverProps & {
-	usePortal?: boolean
+	usePortal?: boolean | ShadowRoot
 	/* trigger replaces the content of the trigger button */
 	trigger?: React.ReactNode
 	/* triggerComponent replaces the the trigger button component */
@@ -203,6 +203,13 @@ function Root({
 		</Trigger>
 	)
 
+	const triggerRef = useRef<HTMLButtonElement>(null)
+	const portalContainer = usePortalContainer(
+		usePortal,
+		"uikts-popover",
+		triggerRef.current,
+	)
+
 	return (
 		<RPo.Root
 			open={open}
@@ -211,11 +218,11 @@ function Root({
 			onOpenChange={onOpenChange}
 			data-testid={testId}
 		>
-			<RPo.Trigger asChild={triggerAsChild}>{_trigger}</RPo.Trigger>
+			<RPo.Trigger asChild ref={triggerRef}>
+				{_trigger}
+			</RPo.Trigger>
 			{usePortal ? (
-				<RPo.Portal container={getPortal(portalDivId)}>
-					{content}
-				</RPo.Portal>
+				<RPo.Portal container={portalContainer}>{content}</RPo.Portal>
 			) : (
 				content
 			)}

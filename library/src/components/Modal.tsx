@@ -8,11 +8,14 @@ import React, {
 	useEffect,
 	useState,
 	useCallback,
+	useImperativeHandle,
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
-import { getPortal } from "../utils/getPortal"
+
 import { overlayBaseStyle } from "./styleHelper"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
+import { Button } from "./Button"
+import usePortalContainer from "../utils/usePortalContainer"
 
 type ModalDialogProps = {
 	open?: boolean
@@ -25,7 +28,7 @@ type ModalDialogProps = {
 	style?: CSSProperties
 	shouldCloseOnEscapePress?: boolean
 	shouldCloseOnOverlayClick?: boolean
-	usePortal?: boolean
+	usePortal?: boolean | ShadowRoot
 	useModal?: boolean
 	id?: string
 	triggerId?: string
@@ -35,10 +38,13 @@ type ModalDialogProps = {
 	accessibleDialogDescription: string
 	role?: RDialog.DialogContentProps["role"]
 	tabIndex?: RDialog.DialogContentProps["tabIndex"]
+	ref?: React.Ref<HTMLButtonElement>
 }
 
 const blanketStyles =
 	"fixed inset-0 bg-blanket ease-out transition-opacity duration-200 animate-fade-in"
+
+const portalContainerId = "uikts-modal" as const
 
 function Container({
 	shouldCloseOnEscapePress = true,
@@ -60,7 +66,18 @@ function Container({
 	role = "dialog",
 	accessibleDialogDescription,
 	tabIndex = undefined,
+	ref,
 }: ModalDialogProps) {
+	const triggerRef = useRef<HTMLButtonElement>(null)
+	// biome-ignore lint/style/noNonNullAssertion: safe if the trigger is used
+	useImperativeHandle(ref, () => triggerRef.current!)
+
+	const portalContainer: HTMLElement | null = usePortalContainer(
+		usePortal,
+		portalContainerId,
+		triggerRef.current,
+	)
+
 	const content = useMemo(
 		() => (
 			<>
@@ -126,6 +143,8 @@ function Container({
 		],
 	)
 
+	console.log("portalContainer", portalContainer?.parentElement?.parentNode)
+
 	return (
 		<RDialog.Root
 			open={open}
@@ -134,13 +153,18 @@ function Container({
 			modal={useModal}
 		>
 			{trigger && (
-				<RDialog.Trigger id={triggerId} data-testid={triggerTestId}>
-					{trigger}
+				<RDialog.Trigger
+					id={triggerId}
+					data-testid={triggerTestId}
+					asChild
+					ref={triggerRef}
+				>
+					<Button>{"Open Modal"}</Button>
 				</RDialog.Trigger>
 			)}
 
 			{usePortal ? (
-				<RDialog.Portal container={getPortal("uikts-modal")}>
+				<RDialog.Portal container={portalContainer}>
 					{content}
 				</RDialog.Portal>
 			) : (

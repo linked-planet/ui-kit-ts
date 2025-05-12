@@ -46,7 +46,7 @@
 		"bcheck:lib": "biome check --apply ./library/**/*",
 		"bformat:sc": "biome format ./showcase/**/*",
 		"blint:sc": "biome lint ./showcase/**/*",
-		"tsc:plugin": "tsc --moduleResolution bundler --module esnext --outDir dist/bundler-plugins --declaration bundler_plugins/rollup_class_prefixer-plugin.ts bundler_plugins/postcss_prefix_classname-plugin.ts bundler_plugins/vite-append-css-plugin.ts bundler_plugins/index.ts"
+		"tsc:plugin": "tsc --moduleResolution bundler --module esnext --outDir dist/bundler-plugins --declaration bundler_plugins/rollup_class_prefixer-plugin.ts bundler_plugins/vite-append-css-plugin.ts bundler_plugins/index.ts"
 	},
 	"sideEffects": false,
 	"author": {
@@ -55,7 +55,8 @@
 	},
 	"contributors": [
 		{
-			"name": "Philipp Karlsson"
+			"name": "Philipp Karlsson",
+			"email": "philipp.karlsson@linked-planet.com"
 		}
 	],
 	"license": "Apache-2.0",
@@ -88,7 +89,9 @@
 		"@tailwindcss/vite"
 	],
 	"dependencies": {
+		"@emotion/cache": "^11.14.0",
 		"@emotion/css": "^11.13.5",
+		"@emotion/react": "^11.14.0",
 		"@radix-ui/react-accordion": "^1.2.10",
 		"@radix-ui/react-avatar": "^1.1.9",
 		"@radix-ui/react-collapsible": "^1.1.2",
@@ -109,9 +112,9 @@
 		"highlight.js": "^11.11.1",
 		"intl-messageformat": "^10.7.14",
 		"lowlight": "^3.3.0",
-		"lucide-react": "^0.507.0",
+		"lucide-react": "^0.509.0",
 		"mime-types": "^3.0.1",
-		"motion": "^12.9.7",
+		"motion": "^12.11.0",
 		"react-awesome-slider": "^4.1.0",
 		"react-day-picker": "^8.10.1",
 		"react-intl": "^7.1.11",
@@ -123,26 +126,30 @@
 		"use-resize-observer": "^9.1.0"
 	},
 	"devDependencies": {
-		"@atlaskit/atlassian-navigation": "^5.1.8",
+		"@atlaskit/atlassian-navigation": "^5.1.9",
 		"@atlaskit/css-reset": "^7.2.0",
-		"@atlaskit/table-tree": "^12.1.0",
+		"@atlaskit/table-tree": "^12.1.1",
 		"@atlaskit/theme": "^18.0.1",
 		"@babel/generator": "^7.27.1",
-		"@babel/parser": "^7.27.1",
+		"@babel/parser": "^7.27.2",
 		"@babel/traverse": "^7.27.1",
 		"@babel/types": "^7.27.1",
 		"@biomejs/biome": "^1.9.4",
 		"@formatjs/cli": "^6.7.1",
 		"@hello-pangea/dnd": "^18.0.1",
 		"@monaco-editor/react": "^4.7.0",
-		"@tailwindcss/vite": "^4.1.5",
-		"@tanstack/react-query": "^5.75.4",
+		"@tailwindcss/vite": "^4.1.6",
+		"@tanstack/react-query": "^5.76.0",
+		"@testing-library/jest-dom": "^6.6.3",
 		"@total-typescript/ts-reset": "^0.6.1",
-		"@types/node": "^22.15.12",
+		"@types/node": "^22.15.17",
 		"@types/react": "^18.3.21",
 		"@types/react-dom": "^18.3.7",
 		"@vitejs/plugin-react-swc": "^3.9.0",
+		"cypress": "^14.3.3",
+		"cypress-terminal-report": "^7.2.0",
 		"eslint-plugin-react-refresh": "^0.4.20",
+		"jsdom": "^26.1.0",
 		"prettier-plugin-tailwindcss": "^0.6.11",
 		"process": "^0.11.10",
 		"react": "^18.3.1",
@@ -153,7 +160,7 @@
 		"stylelint-config-standard": "^38.0.0",
 		"stylelint-config-tailwindcss": "^1.0.0",
 		"stylelint-order": "^7.0.0",
-		"tailwind-merge": "^3.2.0",
+		"tailwind-merge": "^3.3.0",
 		"tailwindcss": "^4.0.3",
 		"typescript": "^5.8.3",
 		"typescript-plugin-css-modules": "^5.1.0",
@@ -167,9 +174,9 @@
 		"axios": "^1.9.0",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
-		"react-hook-form": "^7.56.2",
+		"react-hook-form": "^7.56.3",
 		"tailwind-merge": "^3.0.1",
 		"tailwindcss": "^4.0.3",
-		"valtio": "^2.1.4"
+		"valtio": "^2.1.5"
 	}
 }

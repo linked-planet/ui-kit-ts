@@ -3,6 +3,9 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { XIcon } from "lucide-react"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
+import { useEffect, useRef } from "react"
+import React from "react-dom/client"
 
 //#region popover-example
 function PopoverExample() {
@@ -52,6 +55,28 @@ function PopoverExample() {
 }
 //#endregion popover-example
 
+//#region popover-shadow-root-example
+function PopoverShadowRootExample() {
+	const example = (
+		<Popover.Root trigger="Open Popover" side="top" usePortal>
+			Content
+		</Popover.Root>
+	)
+
+	const divRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if (divRef.current && !divRef.current.shadowRoot) {
+			const shadowRoot = createShowcaseShadowRoot(divRef.current)
+
+			// render the component
+			React.createRoot(shadowRoot).render(example)
+		}
+	}, [])
+
+	return <div className="w-96" ref={divRef} />
+}
+//#endregion popover-shadow-root-example
 export default function PopoverShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -69,6 +94,11 @@ export default function PopoverShowcase(props: ShowcaseProps) {
 					title: "Example",
 					example: <PopoverExample />,
 					sourceCodeExampleId: "popover-example",
+				},
+				{
+					title: "Popover with Shadow Root",
+					example: <PopoverShadowRootExample />,
+					sourceCodeExampleId: "popover-shadow-root-example",
 				},
 			]}
 		/>

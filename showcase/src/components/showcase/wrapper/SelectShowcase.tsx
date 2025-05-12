@@ -8,11 +8,13 @@ import {
 	type OptionGroupType,
 	selectComponents,
 } from "@linked-planet/ui-kit-ts"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import React from "react-dom/client"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 
 //#region select2form-uncontrolled
 
@@ -244,12 +246,36 @@ function CustomComponentExample() {
 }
 //#endregion select-custom-component
 
-
 //#region select-async
-function SelectAsyncExample() {
-	
-}
+function SelectAsyncExample() {}
 //#endregion select-async
+
+//#region select-shadow-dom
+function ShadowTestSelect() {
+	const options = [
+		{ label: "First option", value: { test: "first" } },
+		{ label: "Second option", value: { test: "second" } },
+		{ label: "Third option", value: { test: "third" } },
+	]
+
+	return <Select usePortal options={options} />
+}
+
+function SelectShadowDOMExample() {
+	const divRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if (divRef.current && !divRef.current.shadowRoot) {
+			const shadowRoot = createShowcaseShadowRoot(divRef.current)
+
+			// render the component
+			React.createRoot(shadowRoot).render(<ShadowTestSelect />)
+		}
+	}, [])
+
+	return <div className="w-full h-auto" ref={divRef} />
+}
+//#endregion select-shadow-dom
 
 function SelectShowcase(props: ShowcaseProps) {
 	//#region select
@@ -295,6 +321,7 @@ function SelectShowcase(props: ShowcaseProps) {
 					label: "Second option",
 					value: { test: "second" },
 				}}
+				menuIsOpen={true}
 			/>
 
 			<Select<{ test: string }, true>
@@ -463,6 +490,11 @@ function SelectShowcase(props: ShowcaseProps) {
 					title: "Custom Component",
 					example: <CustomComponentExample />,
 					sourceCodeExampleId: "select-custom-component",
+				},
+				{
+					title: "Shadow DOM",
+					example: <SelectShadowDOMExample />,
+					sourceCodeExampleId: "select-shadow-dom",
 				},
 			]}
 		/>

@@ -1,15 +1,15 @@
 import * as RTTp from "@radix-ui/react-tooltip"
 import type React from "react"
-import { type CSSProperties, useMemo } from "react"
+import { type CSSProperties, useMemo, useRef } from "react"
 import { twMerge } from "tailwind-merge"
-import { getPortal } from "../utils"
+import { usePortalContainer } from "../utils"
 
 const portalDivId = "uikts-tooltip" as const
 
 export type TooltipProps = {
 	tooltipContent?: React.ReactNode
 	tooltipHTMLContent?: string
-	usePortal?: boolean
+	usePortal?: boolean | ShadowRoot
 	className?: string
 	style?: CSSProperties
 	tooltipClassName?: string
@@ -79,6 +79,14 @@ export function Tooltip({
 		tooltipStyle,
 	])
 
+	const triggerRef = useRef<HTMLButtonElement>(null)
+
+	const portalContainer = usePortalContainer(
+		usePortal,
+		"uikts-tooltip",
+		triggerRef.current,
+	)
+
 	return (
 		<RTTp.Root
 			open={open}
@@ -92,13 +100,12 @@ export function Tooltip({
 				asChild
 				data-testid={triggerTestId}
 				id={triggerId}
+				ref={triggerRef}
 			>
 				{children}
 			</RTTp.Trigger>
 			{usePortal ? (
-				<RTTp.Portal container={getPortal(portalDivId)}>
-					{content}
-				</RTTp.Portal>
+				<RTTp.Portal container={portalContainer}>{content}</RTTp.Portal>
 			) : (
 				content
 			)}

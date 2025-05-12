@@ -2,7 +2,7 @@ import { debounceHelper, useDebounceHelper } from "./debounce"
 import { getPortal } from "./getPortal"
 import { rateLimitHelper, useRateLimitHelper } from "./rateLimit"
 import { idleRateLimitHelper, useIdleRateLimitHelper } from "./idleRateLimit"
-
+import usePortalContainer from "./usePortalContainer"
 export {
 	rateLimitHelper,
 	useRateLimitHelper,
@@ -11,6 +11,7 @@ export {
 	debounceHelper,
 	useDebounceHelper,
 	getPortal,
+	usePortalContainer,
 }
 
 import type { DateTimeType, DateType, TimeType } from "./DateUtils"

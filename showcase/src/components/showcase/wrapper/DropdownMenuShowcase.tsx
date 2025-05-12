@@ -6,12 +6,43 @@
 	DropdownItemRadio as AKDropdownItemRadio,
 	DropdownItemCheckboxGroup as AKDropdownItemCheckboxGroup,
 } from "@atlaskit/dropdown-menu"*/
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { Dropdown } from "@linked-planet/ui-kit-ts"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
+import ReactDOM from "react-dom"
+
+//#region dropdown-shadow-root
+const lpExampleShadow = (
+	<>
+		<Dropdown.Menu usePortal>
+			<Dropdown.Item selected>Test 1</Dropdown.Item>
+			<Dropdown.Item>Test 2</Dropdown.Item>
+			<Dropdown.ItemCheckbox>Checkbox</Dropdown.ItemCheckbox>
+			<Dropdown.ItemRadioGroup title="radio group">
+				<Dropdown.ItemRadio value="radio-1">Radio 1</Dropdown.ItemRadio>
+				<Dropdown.ItemRadio value="radio-2">Radio 2</Dropdown.ItemRadio>
+			</Dropdown.ItemRadioGroup>
+		</Dropdown.Menu>
+	</>
+)
+
+function DropdownShadowRootExample() {
+	const divRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if (divRef.current && !divRef.current.shadowRoot) {
+			const shadowRoot = createShowcaseShadowRoot(divRef.current)
+			ReactDOM.createPortal(lpExampleShadow, shadowRoot)
+		}
+	}, [])
+
+	return <div className="w-full h-auto" ref={divRef} />
+}
+//#endregion dropdown-shadow-root
 
 function DropDownMenuShowcase(props: ShowcaseProps) {
 	const [radioValue, setRadioValue] = useState("radio-1")
@@ -233,7 +264,6 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			</Dropdown.Menu>
 		</>
 	)
-
 	//#endregion dropdown-menu
 
 	const example = (
@@ -261,6 +291,11 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 					title: "Example",
 					example,
 					sourceCodeExampleId: "dropdown-menu",
+				},
+				{
+					title: "Dropdown shadow root",
+					example: <DropdownShadowRootExample />,
+					sourceCodeExampleId: "dropdown-shadow-root",
 				},
 			]}
 		/>

@@ -10,6 +10,8 @@ export interface SelectSingleFormFieldProps<
 	options: Array<{ label: string; value: A }>
 	onChange?: (value: A) => void
 	placeholder?: string
+	usePortal?: boolean
+	menuIsOpen?: boolean
 }
 
 export function SelectSingleFormField<
@@ -24,6 +26,8 @@ export function SelectSingleFormField<
 	required,
 	options,
 	placeholder,
+	usePortal,
+	menuIsOpen,
 }: SelectSingleFormFieldProps<T, A>) {
 	const fieldValue = formProps.watch(name)
 	const onChangeCB = useRef(onChange)
@@ -55,6 +59,8 @@ export function SelectSingleFormField<
 				required={required}
 				disabled={formProps.readonly}
 				placeholder={placeholder}
+				usePortal={usePortal}
+				menuIsOpen={menuIsOpen}
 			/>
 		</div>
 	)

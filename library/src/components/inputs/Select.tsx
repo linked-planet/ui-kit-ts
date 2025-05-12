@@ -24,8 +24,7 @@ import {
 	type AriaLiveMessages,
 } from "react-select"
 import ReactSelectAsync from "react-select/async"
-
-import { getPortal } from "../../utils/getPortal"
+import { default as emotionCreateCache } from "@emotion/cache"
 
 import ReactSelectCreatable, {
 	type CreatableProps,
@@ -35,6 +34,9 @@ import { SlidingErrorMessage } from "./ErrorHelpWrapper"
 import { IconSizeHelper } from "../IconSizeHelper"
 import { inputBaseStyles } from "../styleHelper"
 import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react"
+import { CacheProvider, type SerializedStyles } from "@emotion/react"
+import type { StyleSheet } from "@emotion/sheet"
+import usePortalContainer from "../../utils/usePortalContainer"
 
 // usage aria stuff:
 // https://react-select.com/advanced
@@ -564,6 +566,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 					...styles,
 				}}
 				components={components}
+				classNamePrefix={"uikts-select"}
 				{...props}
 			/>
 		)
@@ -589,6 +592,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 				data-invalid={invalid}
 				styles={customStyles}
 				components={components}
+				classNamePrefix={"uikts-select"}
 				{...props}
 			/>
 		)
@@ -609,6 +613,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 			data-invalid={invalid}
 			styles={customStyles}
 			components={components}
+			classNamePrefix={"uikts-select"}
 			{...props}
 		/>
 	)
@@ -629,10 +634,10 @@ type SelectPropsProto<ValueType, IsMulti extends boolean = boolean> = Omit<
 	InnerProps<ValueType, IsMulti>,
 	"innerRef"
 > & {
-	usePortal?: boolean
+	usePortal?: boolean | ShadowRoot
 	disabled?: boolean
 	inputId?: string
-	ref?: React.Ref<SelectInstance<
+	instanceRef?: React.Ref<SelectInstance<
 		OptionType<ValueType>,
 		IsMulti,
 		GroupBase<OptionType<ValueType>>
@@ -644,7 +649,7 @@ type SelectPropsProtoOld<
 	ValueType,
 	IsMulti extends boolean = boolean,
 > = PickedCreateableProps<ValueType, IsMulti> & {
-	usePortal?: boolean
+	usePortal?: boolean | ShadowRoot
 	disabled?: boolean
 	isCreateable?: boolean
 	isAsync?: boolean
@@ -703,7 +708,7 @@ function SelectInForm<
 	testId,
 	defaultValue,
 	required,
-	ref,
+	instanceRef,
 	...props
 }: SelectInFormProps<FormData, ValueType, IsMulti>) {
 	const { field, fieldState } = useController<FormData>({
@@ -801,11 +806,25 @@ function SelectInForm<
 		isCreateable: props.isCreateable,
 		isAsync: props.isAsync,
 		testId,
-		innerRef: ref,
 		invalid,
 	}
 
+	// remove the field ref from the field props as we cannot use refs on function components
 	const { ref: innerRef, ...fieldProps } = field
+
+	const localRef = useRef<SelectInstance<
+		OptionType<ValueType>,
+		IsMulti,
+		OptionGroupType<ValueType>
+	> | null>(null)
+
+	useImperativeHandle(instanceRef, () => localRef.current, [])
+
+	const portalContainer = usePortalContainer(
+		usePortal,
+		"uikts-select",
+		localRef.current?.controlRef,
+	)
 
 	return (
 		<>
@@ -813,15 +832,13 @@ function SelectInForm<
 				{...innerProps}
 				{...fieldProps}
 				{...fieldState}
-				innerRef={innerRef}
+				innerRef={localRef}
 				onChange={onChange}
 				value={valueUsed}
 				name={name}
 				options={options}
 				isMulti={isMulti}
-				menuPortalTarget={
-					usePortal ? getPortal(portalDivId) : undefined
-				}
+				menuPortalTarget={portalContainer}
 				isDisabled={disabled || isDisabled}
 				aria-invalid={ariaInvalid || fieldState.invalid || invalid}
 			/>
@@ -839,18 +856,32 @@ function SelectInForm<
 
 function SelectNotInForm<ValueType, IsMulti extends boolean>({
 	options,
-	usePortal = true,
+	usePortal,
 	disabled,
 	isDisabled,
-	ref,
+	instanceRef,
 	...props
 }: SelectProps<ValueType, IsMulti>) {
+	const localRef = useRef<SelectInstance<
+		OptionType<ValueType>,
+		IsMulti,
+		OptionGroupType<ValueType>
+	> | null>(null)
+
+	useImperativeHandle(instanceRef, () => localRef.current, [])
+
+	const portalContainer = usePortalContainer(
+		usePortal == null ? true : usePortal,
+		"uikts-select",
+		localRef.current?.controlRef,
+	)
+
 	return (
 		<SelectInner<ValueType, IsMulti>
 			{...props}
-			innerRef={ref}
+			innerRef={localRef}
 			options={options}
-			menuPortalTarget={usePortal ? getPortal(portalDivId) : undefined}
+			menuPortalTarget={portalContainer}
 			isDisabled={disabled || isDisabled}
 		/>
 	)
@@ -873,18 +904,135 @@ export function Select<
 >({
 	name,
 	control,
+	usePortal = true,
 	...props
 }:
 	| SelectProps<ValueType, IsMulti>
 	| SelectInFormProps<FormData, ValueType, IsMulti>) {
+	const localRef =
+		useRef<
+			SelectInstance<
+				OptionType<ValueType>,
+				IsMulti,
+				OptionGroupType<ValueType>
+			>
+		>(null)
+
+	useImperativeHandle(
+		props.instanceRef,
+		() => {
+			return localRef.current
+		},
+		[],
+	)
+
+	let portalContainerRoot = usePortalContainer(
+		usePortal,
+		"uikts-select",
+		localRef.current?.controlRef,
+	)?.getRootNode() as Document | ShadowRoot | null
+
+	if (!(portalContainerRoot instanceof ShadowRoot)) {
+		portalContainerRoot = null
+	}
+
+	const emotionContainers = useMemo(() => {
+		const ret: (HTMLElement | ShadowRoot)[] = [
+			(localRef.current?.controlRef?.getRootNode() as
+				| HTMLElement
+				| ShadowRoot) ?? document.head,
+		]
+		if (portalContainerRoot instanceof ShadowRoot) {
+			ret.push(portalContainerRoot)
+		}
+		return ret
+	}, [portalContainerRoot])
+
+	let ret: JSX.Element | null = null
 	if (control && name) {
 		const sprops: SelectInFormProps<FormData, ValueType, IsMulti> = {
 			name,
 			control,
 			...props,
 		}
-		return <SelectInForm<FormData, ValueType, IsMulti> {...sprops} />
+		ret = (
+			<SelectInForm<FormData, ValueType, IsMulti>
+				{...sprops}
+				usePortal={usePortal}
+				instanceRef={localRef}
+			/>
+		)
+	} else {
+		const sprops: SelectProps<ValueType, IsMulti> = props
+		ret = (
+			<SelectNotInForm<ValueType, IsMulti>
+				name={name}
+				usePortal={usePortal}
+				{...sprops}
+				instanceRef={localRef}
+			/>
+		)
 	}
-	const sprops: SelectProps<ValueType, IsMulti> = props
-	return <SelectNotInForm<ValueType, IsMulti> name={name} {...sprops} />
+
+	return (
+		<SelectNonceProvider
+			containers={emotionContainers}
+			cacheKey={"uikts-select"}
+		>
+			{ret}
+		</SelectNonceProvider>
+	)
+}
+
+const SelectNonceProvider = ({
+	children,
+	containers,
+	cacheKey,
+}: {
+	children: React.ReactNode
+	containers: (HTMLElement | ShadowRoot)[] | null | undefined
+	cacheKey: string
+}) => {
+	const cache = useMemo(() => {
+		const cache = emotionCreateCache({
+			key: cacheKey,
+			container: containers?.[0] ?? undefined,
+		})
+
+		const cacheWithInsert = {
+			...cache,
+			insert:
+				containers && containers?.length > 1
+					? (
+							selector: string,
+							serialized: SerializedStyles,
+							sheet: StyleSheet,
+							shouldCache: boolean,
+						) => {
+							// in the 0th container, we insert the styles directly
+							for (let i = 1; i < containers.length; i++) {
+								const inlineStyle =
+									document.createElement("style")
+								inlineStyle.textContent = `${selector} { ${serialized} }`
+								inlineStyle.setAttribute(
+									"data-emotion",
+									cacheKey,
+								)
+								containers[i].appendChild(inlineStyle)
+							}
+
+							cache.insert(
+								selector,
+								serialized,
+								sheet,
+								shouldCache,
+							)
+						}
+					: cache.insert,
+		}
+
+		return cacheWithInsert
+	}, [containers, cacheKey])
+
+	return <CacheProvider value={cache}>{children}</CacheProvider>
 }
