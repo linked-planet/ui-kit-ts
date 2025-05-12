@@ -327,7 +327,7 @@ const toastProxyMap = (() => {
 			const value = Reflect.get(target, prop, receiver)
 			// If the property is a method, bind it to the target Map
 			if (typeof value === "function") {
-				return (...args: any[]) => {
+				return (...args: unknown[]) => {
 					const result = value.apply(target, args)
 					mapSnapshot = new Map(target)
 					if (

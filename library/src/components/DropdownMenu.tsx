@@ -1,7 +1,13 @@
 import * as RDd from "@radix-ui/react-dropdown-menu"
-import { forwardRef, useMemo, useRef, type ForwardedRef } from "react"
+import {
+	forwardRef,
+	useImperativeHandle,
+	useMemo,
+	useRef,
+	type ForwardedRef,
+} from "react"
 import { twMerge } from "tailwind-merge"
-import { getPortal } from "../utils"
+import { usePortalContainer } from "../utils"
 import { Button, type ButtonProps } from "./Button"
 import { overlayBaseStyle } from "./styleHelper"
 import { IconSizeHelper } from "./IconSizeHelper"
@@ -425,7 +431,7 @@ export type DropdownMenuProps = {
 	trigger?: React.ReactNode
 	triggerComponent?: React.ReactElement<DropdownTriggerProps>
 	children: React.ReactNode
-	usePortal?: boolean
+	usePortal?: boolean | ShadowRoot
 	testId?: string
 	hideChevron?: boolean
 	modal?: boolean
@@ -590,6 +596,9 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 				contentStyle,
 			],
 		)
+		const triggerRef = useRef<HTMLButtonElement>(null)
+		// biome-ignore lint/style/noNonNullAssertion: save here
+		useImperativeHandle(ref, () => triggerRef.current!)
 
 		const _trigger = triggerComponent ?? (
 			<Trigger
@@ -601,10 +610,16 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 				chevronStyle={chevronStyle}
 				style={triggerStyle}
 				{...props}
-				ref={ref}
+				ref={triggerRef}
 			>
 				{trigger ?? "trigger"}
 			</Trigger>
+		)
+
+		const portalContainer = usePortalContainer(
+			usePortal,
+			"uikts-dropdown",
+			triggerRef.current,
 		)
 
 		return (
@@ -623,7 +638,7 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 					{_trigger}
 				</RDd.Trigger>
 				{usePortal ? (
-					<RDd.Portal container={getPortal(portalDivId)}>
+					<RDd.Portal container={portalContainer}>
 						{content}
 					</RDd.Portal>
 				) : (

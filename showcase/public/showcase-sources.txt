@@ -696,13 +696,69 @@ function BannerShowcase(props: ShowcaseProps) {
 
 export default BannerShowcase
 
-import React, { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Blanket, Button } from "@linked-planet/ui-kit-ts"
+import { Blanket, Button, usePortalContainer } from "@linked-planet/ui-kit-ts"
+import ReactDOM from "react-dom"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 
-function BannerShowcase(props: ShowcaseProps) {
+//#region blanket-shadow-root-example
+function BlanketShowcaseShadowRootExample() {
+	const [showBlanket, setShowBlanket] = useState(false)
+
+	const divRef = useRef<HTMLDivElement>(null)
+
+	const portalContainer = usePortalContainer(
+		true,
+		"uikts-blanket",
+		divRef.current,
+	)?.getRootNode() as ShadowRoot
+
+	return (
+		<div className="flex w-full flex-col gap-4" ref={divRef}>
+			<Button onClick={() => setShowBlanket(true)}>Show Blanket</Button>
+			{showBlanket && (
+				<Blanket
+					onClick={() => setShowBlanket(false)}
+					usePortal={portalContainer}
+				>
+					<div className="flex size-full items-center justify-center">
+						<div className="bg-surface rounded-md p-8">
+							<h1 className="text-base font-bold">
+								This is a blanket.
+							</h1>
+							<Button onClick={() => setShowBlanket(false)}>
+								Close
+							</Button>
+						</div>
+					</div>
+				</Blanket>
+			)}
+		</div>
+	)
+}
+//#endregion blanket-example
+
+//#region blanket-shadow-root-example
+function BlanketShadowRootExample() {
+	const divRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if (divRef.current && !divRef.current.shadowRoot) {
+			const shadowRoot = createShowcaseShadowRoot(divRef.current)
+			ReactDOM.createPortal(
+				<BlanketShowcaseShadowRootExample />,
+				shadowRoot,
+			)
+		}
+	}, [])
+	return <div ref={divRef} />
+}
+//#endregion blanket-shadow-root-example
+
+function BlanketShowcase(props: ShowcaseProps) {
 	//#region blanket-example
 	const [showBlanket, setShowBlanket] = useState(false)
 
@@ -710,7 +766,7 @@ function BannerShowcase(props: ShowcaseProps) {
 		<div className="flex w-full flex-col gap-4">
 			<Button onClick={() => setShowBlanket(true)}>Show Blanket</Button>
 			{showBlanket && (
-				<Blanket onClick={() => setShowBlanket(false)}>
+				<Blanket onClick={() => setShowBlanket(false)} usePortal>
 					<div className="flex size-full items-center justify-center">
 						<div className="bg-surface rounded-md p-8">
 							<h1 className="text-base font-bold">
@@ -743,12 +799,17 @@ function BannerShowcase(props: ShowcaseProps) {
 					example: blanketExample,
 					sourceCodeExampleId: "blanket-example",
 				},
+				{
+					title: "Shadow Root Example",
+					example: <BlanketShadowRootExample />,
+					sourceCodeExampleId: "blanket-shadow-root-example",
+				},
 			]}
 		/>
 	)
 }
 
-export default BannerShowcase
+export default BlanketShowcase
 
 import { type CSSProperties, useMemo, useRef, useState } from "react"
 import {
@@ -3381,12 +3442,43 @@ export default TagShowcase
 	DropdownItemRadio as AKDropdownItemRadio,
 	DropdownItemCheckboxGroup as AKDropdownItemCheckboxGroup,
 } from "@atlaskit/dropdown-menu"*/
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import { Dropdown } from "@linked-planet/ui-kit-ts"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
+import ReactDOM from "react-dom"
+
+//#region dropdown-shadow-root
+const lpExampleShadow = (
+	<>
+		<Dropdown.Menu usePortal>
+			<Dropdown.Item selected>Test 1</Dropdown.Item>
+			<Dropdown.Item>Test 2</Dropdown.Item>
+			<Dropdown.ItemCheckbox>Checkbox</Dropdown.ItemCheckbox>
+			<Dropdown.ItemRadioGroup title="radio group">
+				<Dropdown.ItemRadio value="radio-1">Radio 1</Dropdown.ItemRadio>
+				<Dropdown.ItemRadio value="radio-2">Radio 2</Dropdown.ItemRadio>
+			</Dropdown.ItemRadioGroup>
+		</Dropdown.Menu>
+	</>
+)
+
+function DropdownShadowRootExample() {
+	const divRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if (divRef.current && !divRef.current.shadowRoot) {
+			const shadowRoot = createShowcaseShadowRoot(divRef.current)
+			ReactDOM.createPortal(lpExampleShadow, shadowRoot)
+		}
+	}, [])
+
+	return <div className="w-full h-auto" ref={divRef} />
+}
+//#endregion dropdown-shadow-root
 
 function DropDownMenuShowcase(props: ShowcaseProps) {
 	const [radioValue, setRadioValue] = useState("radio-1")
@@ -3608,7 +3700,6 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			</Dropdown.Menu>
 		</>
 	)
-
 	//#endregion dropdown-menu
 
 	const example = (
@@ -3636,6 +3727,11 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 					title: "Example",
 					example,
 					sourceCodeExampleId: "dropdown-menu",
+				},
+				{
+					title: "Dropdown shadow root",
+					example: <DropdownShadowRootExample />,
+					sourceCodeExampleId: "dropdown-shadow-root",
 				},
 			]}
 		/>
@@ -5595,7 +5691,8 @@ function MenuShowcase(props: ShowcaseProps) {
 
 export default MenuShowcase
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import React from "react-dom/client"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -5617,6 +5714,7 @@ import {
 } from "@linked-planet/ui-kit-ts"
 //import { default as AKSelect } from "@atlaskit/select"
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 
 function AKExample() {
 	const [isAKModalActive, setIsAKModalActive] = useState(false)
@@ -5877,6 +5975,35 @@ function ControlledExample() {
 	//#endregion modal_controlled
 }
 
+//#region shadow_dom_uncontrolled
+function ModalTest() {
+	const divRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if (divRef.current && !divRef.current.shadowRoot) {
+			const shadowRoot = createShowcaseShadowRoot(divRef.current)
+			React.createRoot(shadowRoot).render(
+				<Modal.Container
+					accessibleDialogDescription="This is a modal dialog example"
+					shouldCloseOnEscapePress
+					trigger={"Show Modal"}
+				>
+					<Modal.Header>
+						<Modal.Title accessibleDialogTitle="Sample Modal">
+							Sample Modal
+						</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						<p>This is the body of the modal.</p>
+					</Modal.Body>
+				</Modal.Container>,
+			)
+		}
+	}, [])
+
+	return <div ref={divRef} />
+}
+
 function ModalShowcase(props: ShowcaseProps) {
 	const example = (
 		<>
@@ -5900,6 +6027,11 @@ function ModalShowcase(props: ShowcaseProps) {
 					title: "Example Controlled",
 					example,
 					sourceCodeExampleId: "modal_controlled",
+				},
+				{
+					title: "Shadow DOM Uncontrolled",
+					example: <ModalTest />,
+					sourceCodeExampleId: "shadow_dom_uncontrolled",
 				},
 			]}
 		/>
@@ -6220,6 +6352,9 @@ import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import { XIcon } from "lucide-react"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
+import { useEffect, useRef } from "react"
+import ReactDOM from "react-dom"
 
 //#region popover-example
 function PopoverExample() {
@@ -6269,6 +6404,28 @@ function PopoverExample() {
 }
 //#endregion popover-example
 
+//#region popover-shadow-root-example
+function PopoverShadowRootExample() {
+	const example = (
+		<Popover.Root trigger="Open Popover" side="top" usePortal>
+			Content
+		</Popover.Root>
+	)
+
+	const divRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if (divRef.current && !divRef.current.shadowRoot) {
+			const shadowRoot = createShowcaseShadowRoot(divRef.current)
+
+			// render the component
+			ReactDOM.createPortal(example, shadowRoot)
+		}
+	}, [])
+
+	return <div className="w-96" ref={divRef} />
+}
+//#endregion popover-shadow-root-example
 export default function PopoverShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -6286,6 +6443,11 @@ export default function PopoverShowcase(props: ShowcaseProps) {
 					title: "Example",
 					example: <PopoverExample />,
 					sourceCodeExampleId: "popover-example",
+				},
+				{
+					title: "Popover with Shadow Root",
+					example: <PopoverShadowRootExample />,
+					sourceCodeExampleId: "popover-shadow-root-example",
 				},
 			]}
 		/>
@@ -6369,11 +6531,13 @@ import {
 	type OptionGroupType,
 	selectComponents,
 } from "@linked-planet/ui-kit-ts"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import React from "react-dom/client"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 
 //#region select2form-uncontrolled
 
@@ -6605,12 +6769,36 @@ function CustomComponentExample() {
 }
 //#endregion select-custom-component
 
-
 //#region select-async
-function SelectAsyncExample() {
-	
-}
+function SelectAsyncExample() {}
 //#endregion select-async
+
+//#region select-shadow-dom
+function ShadowTestSelect() {
+	const options = [
+		{ label: "First option", value: { test: "first" } },
+		{ label: "Second option", value: { test: "second" } },
+		{ label: "Third option", value: { test: "third" } },
+	]
+
+	return <Select usePortal options={options} />
+}
+
+function SelectShadowDOMExample() {
+	const divRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if (divRef.current && !divRef.current.shadowRoot) {
+			const shadowRoot = createShowcaseShadowRoot(divRef.current)
+
+			// render the component
+			React.createRoot(shadowRoot).render(<ShadowTestSelect />)
+		}
+	}, [])
+
+	return <div className="w-full h-auto" ref={divRef} />
+}
+//#endregion select-shadow-dom
 
 function SelectShowcase(props: ShowcaseProps) {
 	//#region select
@@ -6656,6 +6844,7 @@ function SelectShowcase(props: ShowcaseProps) {
 					label: "Second option",
 					value: { test: "second" },
 				}}
+				menuIsOpen={true}
 			/>
 
 			<Select<{ test: string }, true>
@@ -6824,6 +7013,11 @@ function SelectShowcase(props: ShowcaseProps) {
 					title: "Custom Component",
 					example: <CustomComponentExample />,
 					sourceCodeExampleId: "select-custom-component",
+				},
+				{
+					title: "Shadow DOM",
+					example: <SelectShadowDOMExample />,
+					sourceCodeExampleId: "select-shadow-dom",
 				},
 			]}
 		/>

@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import React from "react-dom/client"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -20,6 +21,7 @@ import {
 } from "@linked-planet/ui-kit-ts"
 //import { default as AKSelect } from "@atlaskit/select"
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 
 function AKExample() {
 	const [isAKModalActive, setIsAKModalActive] = useState(false)
@@ -280,6 +282,35 @@ function ControlledExample() {
 	//#endregion modal_controlled
 }
 
+//#region shadow_dom_uncontrolled
+function ModalTest() {
+	const divRef = useRef<HTMLDivElement>(null)
+
+	useEffect(() => {
+		if (divRef.current && !divRef.current.shadowRoot) {
+			const shadowRoot = createShowcaseShadowRoot(divRef.current)
+			React.createRoot(shadowRoot).render(
+				<Modal.Container
+					accessibleDialogDescription="This is a modal dialog example"
+					shouldCloseOnEscapePress
+					trigger={"Show Modal"}
+				>
+					<Modal.Header>
+						<Modal.Title accessibleDialogTitle="Sample Modal">
+							Sample Modal
+						</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						<p>This is the body of the modal.</p>
+					</Modal.Body>
+				</Modal.Container>,
+			)
+		}
+	}, [])
+
+	return <div ref={divRef} />
+}
+
 function ModalShowcase(props: ShowcaseProps) {
 	const example = (
 		<>
@@ -303,6 +334,11 @@ function ModalShowcase(props: ShowcaseProps) {
 					title: "Example Controlled",
 					example,
 					sourceCodeExampleId: "modal_controlled",
+				},
+				{
+					title: "Shadow DOM Uncontrolled",
+					example: <ModalTest />,
+					sourceCodeExampleId: "shadow_dom_uncontrolled",
 				},
 			]}
 		/>
