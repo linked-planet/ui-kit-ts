@@ -1,5 +1,3 @@
-import React from "react"
-
 const releaseTag = import.meta.env.VITE_GH_RELEASE_TAG
 
 console.log("ui-kit-ts release:", releaseTag)

@@ -6354,7 +6354,7 @@ import ShowcaseWrapperItem, {
 import { XIcon } from "lucide-react"
 import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 import { useEffect, useRef } from "react"
-import ReactDOM from "react-dom"
+import React from "react-dom/client"
 
 //#region popover-example
 function PopoverExample() {
@@ -6419,7 +6419,7 @@ function PopoverShadowRootExample() {
 			const shadowRoot = createShowcaseShadowRoot(divRef.current)
 
 			// render the component
-			ReactDOM.createPortal(example, shadowRoot)
+			React.createRoot(shadowRoot).render(example)
 		}
 	}, [])
 
