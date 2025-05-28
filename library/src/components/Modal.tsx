@@ -143,8 +143,6 @@ function Container({
 		],
 	)
 
-	console.log("portalContainer", portalContainer?.parentElement?.parentNode)
-
 	return (
 		<RDialog.Root
 			open={open}
