@@ -32,7 +32,8 @@ export function initTopNavigationHeight() {
 		console.info("UIKitTs - Top navigation height set to:", topNavHeight)
 		document.documentElement.style.setProperty(
 			topNavigationHeightVar,
-			`${topNavHeight}px`,
+			//`${topNavHeight}px`, // this seems to be wrong and moving the page downwards
+			"0",
 		)
 	}
 
