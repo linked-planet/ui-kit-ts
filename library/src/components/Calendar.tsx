@@ -1,12 +1,5 @@
 import type React from "react"
-import {
-	type ButtonHTMLAttributes,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-	useRef,
-} from "react"
+import { useCallback, useMemo, useState } from "react"
 
 import {
 	type DateRange,
@@ -19,8 +12,6 @@ import {
 	type PropsSingle,
 	type PropsRange,
 	type PropsBase,
-	type Modifiers,
-	type CalendarDay,
 } from "react-day-picker"
 
 import dayjs, { type Dayjs } from "dayjs/esm"
@@ -31,8 +22,14 @@ import {
 	type FieldValues,
 } from "react-hook-form"
 import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
-import {} from "lucide-react"
-import { twMerge } from "tailwind-merge"
+import {
+	ChevronLeftIcon,
+	ChevronRightIcon,
+	ChevronsLeftIcon,
+	ChevronsRightIcon,
+} from "lucide-react"
+import { useDayPicker } from "react-day-picker"
+import { twJoin } from "tailwind-merge"
 
 //import "react-day-picker/dist/style.css" -> is imported in index.ts of the library that it is before TW
 
@@ -60,6 +57,10 @@ type CalendarExtraProps = {
 
 	className?: string
 	style?: React.CSSProperties
+
+	hideNextYearButton?: boolean
+	hidePreviousYearButton?: boolean
+	hideYearButtons?: boolean
 }
 
 type CalendarBaseExtraProps = CalendarExtraProps & {
@@ -89,40 +90,34 @@ type CalendarBaseRangeProps = PropsBase &
 	}
 
 const buttonStyles =
-	"group-data-[disabled=true]:cursor-not-allowed focus-visible:ring-0 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-offset-2 bg-transparent border-none rounded-none cursor-pointer"
-const captionStyles = "flex justify-center items-center relative w-full pb-2"
+	"focus-visible:ring-0 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-offset-2 border-none cursor-pointer disabled:cursor-not-allowed hover:bg-surface-hovered p-1 rounded-xs z-10 inline-flex place-content-center-safe disabled:text-text-disabled disabled:hover:bg-transparent"
+const captionStyles =
+	"flex justify-center items-center w-full pb-2 relative top-2"
 const captionLabelStyles = "text-text text-sm font-bold flex justify-center"
-const daySelectedStyles =
-	"bg-selected group-data-[disabled=false]:hover:bg-selected-hovered group-data-[disabled=false]:active:bg-selected-pressed text-selected-text-inverse font-bold"
-const dayTodayStyles =
-	"font-bold relative text-brand-text aria-selected:text-text-inverse after:absolute after:block after:left-1 after:right-1 after:bg-brand-text aria-selected:after:bg-text-inverse"
-const navStyles =
-	"whitespace-nowrap absolute w-full flex justify-between items-center"
+
+const dayTodayStyles = twJoin(
+	"font-bold relative text-brand-text",
+	"after:absolute after:content-[''] after:block after:left-1.5 after:right-1.5 after:border-b-[2.5px] after:rounded after:border-brand-text after:bottom-1",
+)
 
 const dayStyles =
 	"text-center w-11 h-8 p-0 hover:bg-surface-overlay-hovered group-data-[disabled=true]:hover:bg-transparent text-sm"
 
-const navButtonStyles =
-	"p-1 rounded-xs hover:bg-neutral-subtle-hovered flex items-center justify-center"
-
 const classNames: DayPickerProps["classNames"] = {
 	caption_label: captionLabelStyles,
 	month_caption: captionStyles,
-	selected: daySelectedStyles,
 	button_next: buttonStyles,
 	button_previous: buttonStyles,
-	//nav: navStyles,
-	//button_previous: twMerge(navButtonStyles, "h-max max-w-max"),
-	//button_next: twMerge(navButtonStyles, "h-max max-w-max"),
 	month_grid: "w-full",
 	day: dayStyles,
-	day_button: "size-full cursor-pointer",
+	day_button: "size-full cursor-pointer disabled:cursor-not-allowed",
 	disabled: "text-disabled-text cursor-not-allowed",
 	outside: "text-disabled-text",
 	hidden: "bg-red-500 text-purple-500",
 	today: dayTodayStyles,
-	root: "group pt-4 bg-surface p-3 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2",
+	root: "group pt-4 bg-surface p-3 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2 relative",
 	weeks: "border-b-0",
+	nav: "flex justify-between items-center absolute inset-x-0",
 }
 
 const labelFormat: {
@@ -159,6 +154,8 @@ export function CalendarBase(
 		selected: selectedProp,
 		"aria-label": ariaLabel,
 		lang,
+		minDate,
+		maxDate,
 		...propsWOEventHandler
 	} = props
 
@@ -282,26 +279,42 @@ export function CalendarBase(
 			modifiers={{
 				secondarySelected: secondarySelectedMatcher,
 			}}
+			endMonth={maxDate}
+			startMonth={minDate}
 			onMonthChange={onMonthChange}
 			components={{
-				/*NextMonthButton: (props) => (
-					<button className="appearance-none" {...props}>
-						<ChevronLeftIcon size={16} strokeWidth={3} />
-					</button>
-				),
-				PreviousMonthButton: (
-					props: React.ButtonHTMLAttributes<HTMLButtonElement>,
-				) => (
-					<button className="appearance-none" {...props}>
-						<ChevronRightIcon size={16} strokeWidth={3} />
-					</button>
-				),*/
-				DayButton,
+				NextMonthButton:
+					props.hideNextYearButton || props.hideYearButtons
+						? (e) => {
+								return (
+									<NextMonthButton
+										{...e}
+										hideYearButton={true}
+									/>
+								)
+							}
+						: NextMonthButton,
+				PreviousMonthButton:
+					props.hidePreviousYearButton || props.hideYearButtons
+						? (e) => {
+								return (
+									<PreviousMonthButton
+										{...e}
+										hideYearButton={true}
+									/>
+								)
+							}
+						: PreviousMonthButton,
 			}}
 			modifiersClassNames={{
 				hidden: "bg-neutral hover:bg-neutral-hovered active:bg-neutral-hovered text-text",
+				disabled:
+					"text-disabled-text cursor-not-allowed hover:bg-transparent bg-surface",
+				secondarySelected:
+					"bg-surface-overlay-hovered data-[disabled=true]:bg-surface",
+				selected: "bg-selected text-selected-text-inverse font-bold",
 			}}
-			disabled={disabledDates}
+			disabled={disabled || disabledDates}
 			onDayClick={!disabled && onDayClick ? onDayClick : undefined}
 			onNextClick={!disabled && onNextClick ? onNextClick : undefined}
 			onPrevClick={!disabled && onPrevClick ? onPrevClick : undefined}
@@ -313,11 +326,9 @@ export function CalendarBase(
 }
 
 // from https://github.com/gpbl/react-day-picker/blob/cd27f446cc30fa18f1c5ea35a1f90b000c8b1c2c/src/components/DayButton.tsx#L12
-export function DayButton(
+/*function DayButton(
 	props: {
-		/** The day to render. */
 		day: CalendarDay
-		/** The modifiers to apply to the day. */
 		modifiers: Modifiers
 	} & ButtonHTMLAttributes<HTMLButtonElement>,
 ) {
@@ -329,40 +340,113 @@ export function DayButton(
 		if (modifiers.focused) ref.current?.focus()
 	}, [modifiers.focused])
 
-	// added to support secondary selected
-	let className = buttonProps.className
-	if (modifiers.secondarySelected) {
-		className = twMerge(className, "bg-surface-overlay-hovered")
-	}
+	return <button ref={ref} {...buttonProps} />
+}*/
 
-	return <button ref={ref} {...buttonProps} className={className} />
+function NextMonthButton({
+	hideYearButton,
+	...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+	hideYearButton?: boolean
+}) {
+	const { nextMonth, goToMonth, dayPickerProps } = useDayPicker()
+	const endMonth = dayPickerProps.endMonth
+
+	const year = nextMonth ? nextMonth?.getFullYear() : undefined
+	const month = nextMonth ? nextMonth?.getMonth() : undefined
+	const nextYear = year && month ? new Date(year + 1, month - 1) : undefined
+
+	const {
+		onClick,
+		onKeyDown,
+		onKeyUp,
+		onMouseDown,
+		onMouseUp,
+		onDoubleClick,
+		...propsWOEventHandler
+	} = props
+
+	const disabledNextMonth =
+		!nextMonth || (nextMonth && endMonth && nextMonth > endMonth)
+
+	const disabledNextYear =
+		!nextYear || (nextYear && endMonth && nextYear > endMonth)
+
+	return (
+		<div className="flex place-content-center-safe z-10">
+			<button type="button" disabled={disabledNextMonth} {...props}>
+				<ChevronRightIcon strokeWidth={2} className="size-5" />
+			</button>
+			<button
+				type="button"
+				{...propsWOEventHandler}
+				disabled={disabledNextYear}
+				onClick={() => {
+					if (nextYear) {
+						goToMonth(nextYear)
+					}
+				}}
+				hidden={hideYearButton}
+			>
+				<ChevronsRightIcon strokeWidth={2} className="size-5" />
+			</button>
+		</div>
+	)
 }
 
-// from react-day-picker/src/components/Day/Day.tsx -> removed that hidden is not rendering
-/*function Day({day, modifiers}: ) {
-	const buttonRef = useRef<HTMLButtonElement>(null)
-	const dayRender = useDayRender(props.date, props.displayMonth, buttonRef)
+function PreviousMonthButton({
+	hideYearButton,
+	...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+	hideYearButton?: boolean
+}) {
+	const { previousMonth, goToMonth, dayPickerProps } = useDayPicker()
+	const startMonth = dayPickerProps.startMonth
 
-	const label = labelFormat.formatter.format(props.date)
+	const year = previousMonth ? previousMonth?.getFullYear() : undefined
+	const month = previousMonth ? previousMonth?.getMonth() : undefined
+	const previousYear =
+		year && month ? new Date(year - 1, month + 1) : undefined
 
-	// this is the original code, which I had to modify to remove the hidden rendering
-	//
-	if (!dayRender.isButton) {
-		return <div aria-label={label} {...dayRender.divProps} />
-	}
+	const {
+		onClick,
+		onKeyDown,
+		onKeyUp,
+		onMouseDown,
+		onMouseUp,
+		onDoubleClick,
+		...propsWOEventHandler
+	} = props
+
+	const disabledPreviousMonth =
+		!previousMonth ||
+		(previousMonth && startMonth && previousMonth < startMonth)
+
+	const disabledPreviousYear =
+		!previousYear ||
+		(previousYear && startMonth && previousYear < startMonth)
+
 	return (
-		<button
-			name="day"
-			title={label}
-			aria-label={label}
-			ref={buttonRef}
-			data-today={dayRender.activeModifiers.today}
-			data-selected={dayRender.activeModifiers.selected}
-			tabIndex={0}
-			{...dayRender.buttonProps}
-		/>
+		<div className="flex place-content-center-safe z-10">
+			<button
+				type="button"
+				{...propsWOEventHandler}
+				onClick={() => {
+					if (previousYear) {
+						goToMonth(previousYear)
+					}
+				}}
+				disabled={disabledPreviousYear}
+				hidden={hideYearButton}
+			>
+				<ChevronsLeftIcon strokeWidth={2} className="size-5" />
+			</button>
+			<button type="button" disabled={disabledPreviousMonth} {...props}>
+				<ChevronLeftIcon strokeWidth={2} className="size-5" />
+			</button>
+		</div>
 	)
-}*/
+}
 
 type BaseProps = {
 	id?: string
@@ -395,6 +479,10 @@ type BaseProps = {
 	onNextMonthClicked?: (month: number, year: number) => void
 	onPreviousMonthClicked?: (month: number, year: number) => void
 	onMonthChanged?: (month: number, year: number) => void
+
+	hideYearButtons?: boolean
+	hideNextYearButton?: boolean
+	hidePreviousYearButton?: boolean
 }
 
 export type CalendarSingleProps = BaseProps & {
