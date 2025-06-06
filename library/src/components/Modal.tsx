@@ -117,6 +117,7 @@ function Container({
 					}}
 					role={role}
 					tabIndex={tabIndex}
+					aria-describedby={accessibleDialogDescription}
 				>
 					<VisuallyHidden>
 						<RDialog.DialogDescription>
@@ -157,7 +158,11 @@ function Container({
 					asChild
 					ref={triggerRef}
 				>
-					<Button>{"Open Modal"}</Button>
+					{typeof trigger === "string" ? (
+						<Button>{trigger}</Button>
+					) : (
+						trigger
+					)}
 				</RDialog.Trigger>
 			)}
 

@@ -54,6 +54,8 @@ import FormShowcase from "./components/showcase/wrapper/FormShowcase"
 import EventListShowcase from "./components/showcase/wrapper/EventListShowcase"
 import HighlightedTextShowcase from "./components/showcase/wrapper/HighlightedTextShowcase"
 import SLideOpenShowcase from "./components/showcase/wrapper/SlideOpenShowcase"
+import QrReaderShowcase from "./components/showcase/wrapper/QrReaderShowcase"
+
 export default function useShowcases({
 	overallSourceCode,
 }: {
@@ -153,6 +155,9 @@ export default function useShowcases({
 			Popover: <PopoverShowcase overallSourceCode={overallSourceCode} />,
 			"Section Message": (
 				<SectionMessageShowcase overallSourceCode={overallSourceCode} />
+			),
+			QrReader: (
+				<QrReaderShowcase overallSourceCode={overallSourceCode} />
 			),
 			Select: <SelectShowcase overallSourceCode={overallSourceCode} />,
 			Sidebar: <SidebarShowcase overallSourceCode={overallSourceCode} />,
