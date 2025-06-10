@@ -153,6 +153,7 @@ function TourExample() {
 					//shouldCloseOnEscapePress={false}
 					shouldCloseOnOverlayClick={false} // this is required, the show "clicks" outside of the dialog closing the modal, which results in the failing of the next step because the element is not mounted anymore
 					accessibleDialogDescription="This is a modal dialog example"
+					accessibleDialogTitle="Sample Modal"
 				>
 					<Modal.Header>
 						<Modal.Title accessibleDialogTitle="Sample Modal">
