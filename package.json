@@ -143,10 +143,10 @@
 		"@tanstack/react-query": "^5.80.6",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@total-typescript/ts-reset": "^0.6.1",
-		"@types/node": "^22.15.30",
+		"@types/node": "^22.15.31",
 		"@types/react": "^18.3.23",
 		"@types/react-dom": "^18.3.7",
-		"@vitejs/plugin-react-swc": "^3.10.1",
+		"@vitejs/plugin-react-swc": "^3.10.2",
 		"cypress": "^14.4.1",
 		"cypress-terminal-report": "^7.2.0",
 		"eslint-plugin-react-refresh": "^0.4.20",
@@ -155,7 +155,6 @@
 		"process": "^0.11.10",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
-		"rolldown-vite": "^6.3.18",
 		"rollup": "~4.21.3",
 		"rollup-plugin-polyfill-node": "^0.13.0",
 		"stylelint": "^16.20.0",
@@ -166,8 +165,9 @@
 		"tailwindcss": "^4.0.3",
 		"typescript": "^5.8.3",
 		"typescript-plugin-css-modules": "^5.1.0",
+		"vite": "^6.3.5",
 		"vite-plugin-dts": "^4.5.4",
-		"vitest": "^3.2.2"
+		"vitest": "^3.2.3"
 	},
 	"peerDependencies": {
 		"@tailwindcss/vite": "^4.0.3",

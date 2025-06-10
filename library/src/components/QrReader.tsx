@@ -6,6 +6,18 @@ import { XIcon } from "lucide-react"
 
 // react-qr-scanner does not work in SSR, so we need to use a client component
 
+/**
+ * A simple QR code reader component using {@link @yudiel/react-qr-scanner}.
+ * Requires https to access the camera if not on localhost!
+ *
+ * @param className - The class name to apply to the component.
+ * @param style - The style to apply to the component.
+ * @param onScan - The function to call when a QR code is scanned.
+ * @param allowMultiple - Whether to allow multiple QR codes to be scanned.
+ * @param sound - Whether to play a sound when a QR code is scanned.
+ * @param onError - The function to call when an error occurs.
+ * @returns A QR code reader component.
+ */
 export function QrReader({
 	className,
 	style,
@@ -115,6 +127,7 @@ export function QrReaderDialog({
 				)
 			}
 			usePortal={usePortal}
+			accessibleDialogTitle={accessibleDialogTitle}
 			accessibleDialogDescription={accessibleDialogDescription}
 			open={open}
 			defaultOpen={defaultOpen}

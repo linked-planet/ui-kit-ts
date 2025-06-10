@@ -30,6 +30,7 @@ const CreateNewTimeTableItemDialog = function CreateNewTimeTableItemDialog({
 	return (
 		<Modal.Container
 			defaultOpen
+			accessibleDialogTitle="Create New Booking"
 			accessibleDialogDescription="A dialog to create a new time slot booking."
 		>
 			<form

@@ -69,7 +69,8 @@ export default function QrReaderShowcase(props: ShowcaseProps) {
 					A simple QR code reader component using{" "}
 					<code>@yudiel/react-qr-scanner</code>.<br />
 					<span className="text-xs">
-						Note: Only works in browsers with camera access.
+						Note: Only works in browsers with camera access, and
+						requires https if not on localhost.
 					</span>
 				</>
 			}
