@@ -172,6 +172,7 @@ function ControlledExample() {
 					}}
 					shouldCloseOnEscapePress={true}
 					accessibleDialogDescription="This is a modal dialog example"
+					accessibleDialogTitle="Sample Modal"
 					useModal={true}
 				>
 					<Modal.Header>
@@ -291,6 +292,7 @@ function ModalTest() {
 			const shadowRoot = createShowcaseShadowRoot(divRef.current)
 			React.createRoot(shadowRoot).render(
 				<Modal.Container
+					accessibleDialogTitle="Sample Modal"
 					accessibleDialogDescription="This is a modal dialog example"
 					shouldCloseOnEscapePress
 					trigger={"Show Modal"}
