@@ -1829,12 +1829,14 @@ function CalendarSingle() {
 					setSecondarySelected(selected)
 					setSelected(dt)
 				}}
-				fromDate={minDate}
-				toDate={maxDate}
+				minDate={minDate}
+				maxDate={maxDate}
 				defaultMonth={defaultMonthDate}
 				invalid
 				disabledDates={sundayMatcher}
 				disabled
+				hidePreviousYearButton
+				hideNextYearButton
 				weekStartsOn={1}
 				lang="en"
 			/>
@@ -1850,6 +1852,7 @@ function CalendarSingle() {
 				maxDate={maxDateDT}
 				defaultMonth={defaultMonth}
 				defaultYear={defaultYear}
+				//hidePreviousYearButton
 				disabledDateFilter={sundayMatcher2}
 				disabledDates={[disabledDate1, disabledDate2]}
 				weekStartsOn={1}
@@ -2010,6 +2013,8 @@ function CalendarRange() {
 						to: range?.to ? toDateType(range.to) : undefined,
 					})
 				}}
+				minDate={new Date("2022-01-01")}
+				maxDate={new Date("2028-12-31")}
 			/>
 		</div>
 	)
@@ -6448,6 +6453,71 @@ export default function PopoverShowcase(props: ShowcaseProps) {
 					title: "Popover with Shadow Root",
 					example: <PopoverShadowRootExample />,
 					sourceCodeExampleId: "popover-shadow-root-example",
+				},
+			]}
+		/>
+	)
+}
+
+import { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import { QrReader } from "@linked-planet/ui-kit-ts"
+
+//#region qrreader-example
+function QrReaderExample() {
+	const [results, setResults] = useState<string[]>([])
+	return (
+		<div className="flex flex-col gap-4 items-start">
+			<QrReader onScan={setResults} className="w-full max-w-xs" />
+			<div>
+				<strong>Scanned Results:</strong>
+				<ul className="list-disc pl-4">
+					{results.length === 0 && (
+						<li className="italic text-muted">
+							No QR code detected
+						</li>
+					)}
+					{results.map((r) => (
+						<li key={r}>{r}</li>
+					))}
+				</ul>
+			</div>
+		</div>
+	)
+}
+//#endregion qrreader-example
+
+export default function QrReaderShowcase(props: ShowcaseProps) {
+	return (
+		<ShowcaseWrapperItem
+			name="QrReader"
+			description={
+				<>
+					A simple QR code reader component using{" "}
+					<code>@yudiel/react-qr-scanner</code>.<br />
+					<span className="text-xs">
+						Note: Only works in browsers with camera access.
+					</span>
+				</>
+			}
+			{...props}
+			packages={[
+				{
+					name: "@linked-planet/ui-kit-ts",
+					url: "https://linked-planet.github.io/ui-kit-ts/single?component=QrReader",
+				},
+				{
+					name: "@yudiel/react-qr-scanner",
+					url: "https://github.com/yudiel/react-qr-scanner",
+				},
+			]}
+			examples={[
+				{
+					title: "QR Reader Example",
+					example: <QrReaderExample />,
+					sourceCodeExampleId: "qrreader-example",
 				},
 			]}
 		/>

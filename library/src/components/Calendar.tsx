@@ -1,22 +1,18 @@
 import type React from "react"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
 import {
-	type ActiveModifiers,
-	Button as DPButton,
-	type DateFormatter,
 	type DateRange,
 	DayPicker,
-	type DayPickerMultipleProps,
 	type DayPickerProps,
-	type DayPickerRangeProps,
-	type DayPickerSingleProps,
-	type DayProps,
 	type Labels,
 	type Matcher,
-	useDayRender,
+	type OnSelectHandler,
+	type PropsMulti,
+	type PropsSingle,
+	type PropsRange,
+	type PropsBase,
 } from "react-day-picker"
-//import { default as defaultStyles } from "react-day-picker/dist/style.module.css"; .. all styles are set in the classNames config below
 
 import dayjs, { type Dayjs } from "dayjs/esm"
 import {
@@ -26,8 +22,14 @@ import {
 	type FieldValues,
 } from "react-hook-form"
 import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
-import { IconSizeHelper } from "./IconSizeHelper"
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
+import {
+	ChevronLeftIcon,
+	ChevronRightIcon,
+	ChevronsLeftIcon,
+	ChevronsRightIcon,
+} from "lucide-react"
+import { useDayPicker } from "react-day-picker"
+import { twJoin } from "tailwind-merge"
 
 //import "react-day-picker/dist/style.css" -> is imported in index.ts of the library that it is before TW
 
@@ -55,6 +57,10 @@ type CalendarExtraProps = {
 
 	className?: string
 	style?: React.CSSProperties
+
+	hideNextYearButton?: boolean
+	hidePreviousYearButton?: boolean
+	hideYearButtons?: boolean
 }
 
 type CalendarBaseExtraProps = CalendarExtraProps & {
@@ -65,146 +71,53 @@ type CalendarBaseExtraProps = CalendarExtraProps & {
 	defaultMonth?: Date
 }
 
-type CalendarBaseSingleProps = Pick<
-	DayPickerSingleProps,
-	| "defaultMonth"
-	| "onMonthChange"
-	| "disableNavigation"
-	| "lang"
-	| "month"
-	| "onDayClick"
-	| "onNextClick"
-	| "onPrevClick"
-	| "selected"
-	| "onSelect"
-	| "onDayKeyUp"
-	| "onDayKeyDown"
-	| "onDayFocus"
-	| "today"
-	| "weekStartsOn"
-	| "id"
-	| "className"
-	| "style"
-	| "showOutsideDays"
-	| "fixedWeeks"
-	| "title"
-	| "labels"
-	| "hidden"
-	| "fromDate"
-	| "toDate"
-	| "required"
-	| "labels"
-> &
+type CalendarBaseSingleProps = PropsBase &
+	PropsSingle &
 	CalendarBaseExtraProps & {
-		mode: "single"
 		secondarySelected?: Date
 	}
 
-type CalendarBaseMultipleProps = Pick<
-	DayPickerMultipleProps,
-	| "defaultMonth"
-	| "onMonthChange"
-	| "disableNavigation"
-	| "lang"
-	| "month"
-	| "onDayClick"
-	| "onNextClick"
-	| "onPrevClick"
-	| "selected"
-	| "onSelect"
-	| "onDayKeyUp"
-	| "onDayKeyDown"
-	| "onDayFocus"
-	| "onSelect"
-	| "today"
-	| "weekStartsOn"
-	| "id"
-	| "className"
-	| "style"
-	| "title"
-	| "showOutsideDays"
-	| "fixedWeeks"
-	| "labels"
-	| "hidden"
-	| "fromDate"
-	| "toDate"
-	| "labels"
-> &
+type CalendarBaseMultipleProps = PropsBase &
+	PropsMulti &
 	CalendarBaseExtraProps & {
-		mode: "multiple"
 		secondarySelected?: Date[]
 	}
 
-type CalendarBaseRangeProps = Pick<
-	DayPickerRangeProps,
-	| "defaultMonth"
-	| "onMonthChange"
-	| "disableNavigation"
-	| "lang"
-	| "month"
-	| "defaultMonth"
-	| "onDayClick"
-	| "onNextClick"
-	| "onPrevClick"
-	| "selected"
-	| "onSelect"
-	| "onDayKeyUp"
-	| "onDayKeyDown"
-	| "onDayFocus"
-	| "today"
-	| "weekStartsOn"
-	| "id"
-	| "className"
-	| "style"
-	| "title"
-	| "showOutsideDays"
-	| "fixedWeeks"
-	| "labels"
-	| "hidden"
-	| "fromDate"
-	| "toDate"
-	| "labels"
-> &
+type CalendarBaseRangeProps = PropsBase &
+	PropsRange &
 	CalendarBaseExtraProps & {
-		mode: "range"
 		secondarySelected?: DateRange
 	}
 
-//TODO: move to CVA
 const buttonStyles =
-	"h-full w-full group-data-[disabled=true]:cursor-not-allowed focus-visible:ring-0 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-offset-2 bg-transparent border-none rounded-none"
-const captionStyles = "flex justify-center items-center relative w-full pb-2"
+	"focus-visible:ring-0 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-offset-2 border-none cursor-pointer disabled:cursor-not-allowed hover:bg-surface-hovered p-1 rounded-xs z-10 inline-flex place-content-center-safe disabled:text-text-disabled disabled:hover:bg-transparent"
+const captionStyles =
+	"flex justify-center items-center w-full pb-2 relative top-2"
 const captionLabelStyles = "text-text text-sm font-bold flex justify-center"
-const daySelectedStyles =
-	"bg-selected group-data-[disabled=false]:hover:bg-selected-hovered group-data-[disabled=false]:active:bg-selected-pressed text-selected-text-inverse font-bold w-full h-full"
-const headStyles = "text-text-subtle text-sm border-b-0"
-const dayTodayStyles =
-	"font-bold relative text-brand-text aria-selected:text-text-inverse after:absolute after:block after:left-1 after:right-1 after:bg-brand-text aria-selected:after:bg-text-inverse after:h-[2px]"
-const navStyles =
-	"whitespace-nowrap absolute w-full flex justify-between items-center"
 
-const cellStyles =
-	"p-0 text-center w-9 h-8 hover:bg-surface-overlay-hovered group-data-[disabled=true]:hover:bg-transparent"
+const dayTodayStyles = twJoin(
+	"font-bold relative text-brand-text",
+	"after:absolute after:content-[''] after:block after:left-1.5 after:right-1.5 after:border-b-[2.5px] after:rounded after:border-brand-text after:bottom-1",
+)
+
+const dayStyles =
+	"text-center w-11 h-8 p-0 hover:bg-surface-overlay-hovered group-data-[disabled=true]:hover:bg-transparent text-sm"
 
 const classNames: DayPickerProps["classNames"] = {
 	caption_label: captionLabelStyles,
-	caption: captionStyles,
-	day_selected: daySelectedStyles,
-	cell: cellStyles,
-	button: buttonStyles,
-	nav: navStyles,
-	nav_button:
-		"p-1 rounded-xs hover:bg-neutral-subtle-hovered flex items-center justify-center",
-	nav_button_previous: "h-max max-w-max",
-	nav_button_next: "h-max max-w-max",
-	table: "w-full",
-	head: headStyles,
-	day: "text-sm",
-	day_disabled: "text-disabled-text cursor-not-allowed",
-	//day_outside: "text-disabled-text",
-	day_today: dayTodayStyles,
-	root: "group pt-4 bg-surface p-3 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2",
-	tbody: "border-b-0",
+	month_caption: captionStyles,
+	button_next: buttonStyles,
+	button_previous: buttonStyles,
+	month_grid: "w-full",
+	day: dayStyles,
+	day_button: "size-full cursor-pointer disabled:cursor-not-allowed",
+	disabled: "text-disabled-text cursor-not-allowed",
+	outside: "text-disabled-text",
+	hidden: "bg-red-500 text-purple-500",
+	today: dayTodayStyles,
+	root: "group pt-4 bg-surface p-3 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2 relative",
+	weeks: "border-b-0",
+	nav: "flex justify-between items-center absolute inset-x-0",
 }
 
 const labelFormat: {
@@ -233,12 +146,16 @@ export function CalendarBase(
 		onDayClick,
 		onNextClick,
 		onPrevClick,
-		onSelect,
+		onMonthChange,
+		onSelect: onSelectProp,
 		disabled,
 		disabledDates,
 		className,
+		selected: selectedProp,
 		"aria-label": ariaLabel,
 		lang,
+		minDate,
+		maxDate,
 		...propsWOEventHandler
 	} = props
 
@@ -256,32 +173,28 @@ export function CalendarBase(
 		const dayFormatter = Intl.DateTimeFormat(lang, {
 			day: "numeric",
 		})
-		const formatDay: DateFormatter = (date: Date) =>
-			dayFormatter.format(date)
+		const formatDay = (date: Date) => dayFormatter.format(date)
 
 		const monthFormatter = Intl.DateTimeFormat(lang, {
 			month: "long",
 		})
-		const formatMonthCaption: DateFormatter = (date: Date) =>
-			monthFormatter.format(date)
+		const formatMonthCaption = (date: Date) => monthFormatter.format(date)
 
 		const captionFormatter = Intl.DateTimeFormat(lang, {
 			month: "long",
 			year: "numeric",
 		})
-		const formatCaption: DateFormatter = (date: Date) =>
-			captionFormatter.format(date)
+		const formatCaption = (date: Date) => captionFormatter.format(date)
 
 		const yearFormatter = Intl.DateTimeFormat(lang, {
 			year: "numeric",
 		})
-		const formatYearCaption: DateFormatter = (date: Date) =>
-			yearFormatter.format(date)
+		const formatYearCaption = (date: Date) => yearFormatter.format(date)
 
 		const weekdayFormatter = Intl.DateTimeFormat(lang, {
 			weekday: "short",
 		})
-		const formatWeekdayName: DateFormatter = (date: Date) =>
+		const formatWeekdayName = (date: Date) =>
 			weekdayFormatter.format(date).substring(0, 2)
 
 		return {
@@ -292,6 +205,65 @@ export function CalendarBase(
 			formatWeekdayName,
 		}
 	}, [lang])
+
+	const modeProps = useMemo(() => {
+		if (props.mode === "single") {
+			return {
+				mode: "single" as const,
+				onSelect: onSelectProp as OnSelectHandler<Date | undefined>,
+				selected: selectedProp as Date | undefined,
+			}
+		}
+		if (props.mode === "multiple") {
+			return {
+				mode: "multiple" as const,
+				onSelect: onSelectProp as OnSelectHandler<Date[] | undefined>,
+				selected: selectedProp as Date[] | undefined,
+			}
+		}
+		if (props.mode === "range") {
+			return {
+				mode: "range" as const,
+				onSelect: onSelectProp as OnSelectHandler<
+					DateRange | undefined
+				>,
+				selected: selectedProp as DateRange | undefined,
+			}
+		}
+		return {}
+	}, [props.mode, onSelectProp, selectedProp])
+
+	// secondary selected is implemented by a matcher
+	const secondarySelectedMatcher = useMemo(() => {
+		if (!props.secondarySelected) {
+			return undefined
+		}
+		return (date: Date) => {
+			const dt = dayjs(date)
+			if (Array.isArray(props.secondarySelected)) {
+				return props.secondarySelected.some((it: Date) => {
+					return dt.isSame(dayjs(it), "day")
+				})
+			}
+			if (
+				typeof props.secondarySelected === "object" &&
+				"from" in props.secondarySelected &&
+				"to" in props.secondarySelected
+			) {
+				const from = dayjs(props.secondarySelected.from)
+				const to = dayjs(props.secondarySelected.to)
+				if (
+					(dt.isAfter(from) || dt.isSame(from, "day")) &&
+					(dt.isBefore(to) || dt.isSame(to, "day"))
+				) {
+					return true
+				}
+				return false
+			}
+			const secondarySelected = dayjs(props.secondarySelected as Date)
+			return dt.isSame(secondarySelected, "day")
+		}
+	}, [props.secondarySelected])
 
 	return (
 		<DayPicker
@@ -304,62 +276,175 @@ export function CalendarBase(
 			fixedWeeks={props.fixedWeeks ?? true}
 			className={className}
 			lang={lang}
+			modifiers={{
+				secondarySelected: secondarySelectedMatcher,
+			}}
+			endMonth={maxDate}
+			startMonth={minDate}
+			onMonthChange={onMonthChange}
 			components={{
-				IconLeft: () => (
-					<IconSizeHelper>
-						<ChevronLeftIcon size={16} strokeWidth={3} />
-					</IconSizeHelper>
-				),
-				IconRight: () => (
-					<IconSizeHelper>
-						<ChevronRightIcon size={16} strokeWidth={3} />
-					</IconSizeHelper>
-				),
-				Day,
+				NextMonthButton:
+					props.hideNextYearButton || props.hideYearButtons
+						? (e) => {
+								return (
+									<NextMonthButton
+										{...e}
+										hideYearButton={true}
+									/>
+								)
+							}
+						: NextMonthButton,
+				PreviousMonthButton:
+					props.hidePreviousYearButton || props.hideYearButtons
+						? (e) => {
+								return (
+									<PreviousMonthButton
+										{...e}
+										hideYearButton={true}
+									/>
+								)
+							}
+						: PreviousMonthButton,
 			}}
 			modifiersClassNames={{
 				hidden: "bg-neutral hover:bg-neutral-hovered active:bg-neutral-hovered text-text",
+				disabled:
+					"text-disabled-text cursor-not-allowed hover:bg-transparent bg-surface",
+				secondarySelected:
+					"bg-surface-overlay-hovered data-[disabled=true]:bg-surface",
+				selected: "bg-selected text-selected-text-inverse font-bold",
 			}}
-			hidden={props.secondarySelected} // hidden is used to render the secondary selected in combination with the Day component
-			disabled={disabledDates}
-			onDayClick={!disabled ? onDayClick : undefined}
-			onNextClick={!disabled ? onNextClick : undefined}
-			onPrevClick={!disabled ? onPrevClick : undefined}
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			onSelect={!disabled ? (onSelect as any) : undefined}
+			disabled={disabled || disabledDates}
+			onDayClick={!disabled && onDayClick ? onDayClick : undefined}
+			onNextClick={!disabled && onNextClick ? onNextClick : undefined}
+			onPrevClick={!disabled && onPrevClick ? onPrevClick : undefined}
 			{...propsWOEventHandler}
+			{...modeProps}
 			formatters={formatters}
 		/>
 	)
 }
 
-// from react-day-picker/src/components/Day/Day.tsx -> removed that hidden is not rendering
-function Day(props: DayProps) {
-	const buttonRef = useRef<HTMLButtonElement>(null)
-	const dayRender = useDayRender(props.date, props.displayMonth, buttonRef)
+// from https://github.com/gpbl/react-day-picker/blob/cd27f446cc30fa18f1c5ea35a1f90b000c8b1c2c/src/components/DayButton.tsx#L12
+/*function DayButton(
+	props: {
+		day: CalendarDay
+		modifiers: Modifiers
+	} & ButtonHTMLAttributes<HTMLButtonElement>,
+) {
+	const { day, modifiers, ...buttonProps } = props
 
-	const label = labelFormat.formatter.format(props.date)
+	const ref = useRef<HTMLButtonElement>(null)
 
-	// this is the original code, which I had to modify to remove the hidden rendering
-	/*if (dayRender.isHidden) {
-		return <div role="gridcell"></div>;
-	}*/
-	//
-	if (!dayRender.isButton) {
-		return <div aria-label={label} {...dayRender.divProps} />
-	}
+	useEffect(() => {
+		if (modifiers.focused) ref.current?.focus()
+	}, [modifiers.focused])
+
+	return <button ref={ref} {...buttonProps} />
+}*/
+
+function NextMonthButton({
+	hideYearButton,
+	...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+	hideYearButton?: boolean
+}) {
+	const { nextMonth, goToMonth, dayPickerProps } = useDayPicker()
+	const endMonth = dayPickerProps.endMonth
+
+	const year = nextMonth ? nextMonth?.getFullYear() : undefined
+	const month = nextMonth ? nextMonth?.getMonth() : undefined
+	const nextYear = year && month ? new Date(year + 1, month - 1) : undefined
+
+	const {
+		onClick,
+		onKeyDown,
+		onKeyUp,
+		onMouseDown,
+		onMouseUp,
+		onDoubleClick,
+		...propsWOEventHandler
+	} = props
+
+	const disabledNextMonth =
+		!nextMonth || (nextMonth && endMonth && nextMonth > endMonth)
+
+	const disabledNextYear =
+		!nextYear || (nextYear && endMonth && nextYear > endMonth)
+
 	return (
-		<DPButton
-			name="day"
-			title={label}
-			aria-label={label}
-			ref={buttonRef}
-			data-today={dayRender.activeModifiers.today}
-			data-selected={dayRender.activeModifiers.selected}
-			tabIndex={0}
-			{...dayRender.buttonProps}
-		/>
+		<div className="flex place-content-center-safe z-10">
+			<button type="button" disabled={disabledNextMonth} {...props}>
+				<ChevronRightIcon strokeWidth={2} className="size-5" />
+			</button>
+			<button
+				type="button"
+				{...propsWOEventHandler}
+				disabled={disabledNextYear}
+				onClick={() => {
+					if (nextYear) {
+						goToMonth(nextYear)
+					}
+				}}
+				hidden={hideYearButton}
+			>
+				<ChevronsRightIcon strokeWidth={2} className="size-5" />
+			</button>
+		</div>
+	)
+}
+
+function PreviousMonthButton({
+	hideYearButton,
+	...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+	hideYearButton?: boolean
+}) {
+	const { previousMonth, goToMonth, dayPickerProps } = useDayPicker()
+	const startMonth = dayPickerProps.startMonth
+
+	const year = previousMonth ? previousMonth?.getFullYear() : undefined
+	const month = previousMonth ? previousMonth?.getMonth() : undefined
+	const previousYear =
+		year && month ? new Date(year - 1, month + 1) : undefined
+
+	const {
+		onClick,
+		onKeyDown,
+		onKeyUp,
+		onMouseDown,
+		onMouseUp,
+		onDoubleClick,
+		...propsWOEventHandler
+	} = props
+
+	const disabledPreviousMonth =
+		!previousMonth ||
+		(previousMonth && startMonth && previousMonth < startMonth)
+
+	const disabledPreviousYear =
+		!previousYear ||
+		(previousYear && startMonth && previousYear < startMonth)
+
+	return (
+		<div className="flex place-content-center-safe z-10">
+			<button
+				type="button"
+				{...propsWOEventHandler}
+				onClick={() => {
+					if (previousYear) {
+						goToMonth(previousYear)
+					}
+				}}
+				disabled={disabledPreviousYear}
+				hidden={hideYearButton}
+			>
+				<ChevronsLeftIcon strokeWidth={2} className="size-5" />
+			</button>
+			<button type="button" disabled={disabledPreviousMonth} {...props}>
+				<ChevronLeftIcon strokeWidth={2} className="size-5" />
+			</button>
+		</div>
 	)
 }
 
@@ -390,10 +475,14 @@ type BaseProps = {
 	lang?: string
 	labels?: Partial<Labels>
 
-	onDayClicked?: (date: DateType, activeModifiers: ActiveModifiers) => void
+	onDayClicked?: (date: DateType) => void
 	onNextMonthClicked?: (month: number, year: number) => void
 	onPreviousMonthClicked?: (month: number, year: number) => void
 	onMonthChanged?: (month: number, year: number) => void
+
+	hideYearButtons?: boolean
+	hideNextYearButton?: boolean
+	hidePreviousYearButton?: boolean
 }
 
 export type CalendarSingleProps = BaseProps & {
@@ -712,9 +801,9 @@ function CalendarSingle({
 	}
 
 	const _onDayClick = useCallback(
-		(_date: Date, activeModifiers: ActiveModifiers) => {
-			const date = toDateType(_date)
-			onDayClicked?.(date, activeModifiers)
+		(date: Date) => {
+			const dateType = toDateType(date)
+			onDayClicked?.(dateType)
 		},
 		[onDayClicked],
 	)
@@ -726,9 +815,9 @@ function CalendarSingle({
 				onSelectionChanged?.(undefined)
 				return
 			}
-			const val = toDateType(d)
-			onSelectionChanged?.(val)
-			setSelectedDate(val)
+			const dateType = toDateType(d)
+			onSelectionChanged?.(dateType)
+			setSelectedDate(dateType)
 		},
 		[onSelectionChanged],
 	)
@@ -758,8 +847,8 @@ function CalendarSingle({
 			onNextClick={onNextMonthClicked}
 			onPrevClick={onPreviousMonthClicked}
 			onMonthChange={onMonthChanged}
-			fromDate={minDate?.toDate()}
-			toDate={maxDate?.toDate()}
+			minDate={minDate?.toDate()}
+			maxDate={maxDate?.toDate()}
 		/>
 	)
 }
@@ -850,7 +939,7 @@ function CalendarRange({
 	}
 
 	const _onDayClick = useCallback(
-		(_date: Date, activeModifiers: ActiveModifiers) => {
+		(_date: Date) => {
 			const date = toDateType(_date)
 			/*setSelectedDates((selectedDate) => {
 				if (selectedDate.from && selectedDate.to) {
@@ -872,7 +961,7 @@ function CalendarRange({
 				onSelectionChanged?.(updated)
 				return updated
 			})*/
-			onDayClicked?.(date, activeModifiers)
+			onDayClicked?.(date)
 		},
 		[onDayClicked],
 	)
@@ -888,7 +977,7 @@ function CalendarRange({
 		}
 	}, [selectedDates])
 
-	const _onSelect = useCallback(
+	const _onSelect: OnSelectHandler<DateRange | undefined> = useCallback(
 		(dr: DateRange | undefined) => {
 			if (!dr) {
 				setSelectedDates({ from: undefined, to: undefined })
@@ -926,8 +1015,8 @@ function CalendarRange({
 			onNextClick={onNextMonthClicked}
 			onPrevClick={onPreviousMonthClicked}
 			onMonthChange={onMonthChanged}
-			fromDate={minDate?.toDate()}
-			toDate={maxDate?.toDate()}
+			minDate={minDate?.toDate()}
+			maxDate={maxDate?.toDate()}
 		/>
 	)
 }
@@ -1037,9 +1126,9 @@ function CalendarMulti({
 	}
 
 	const _onDayClick = useCallback(
-		(_date: Date, activeModifiers: ActiveModifiers) => {
-			const date = toDateType(_date)
-			onDayClicked?.(date, activeModifiers)
+		(date: Date) => {
+			const dateType = toDateType(date)
+			onDayClicked?.(dateType)
 		},
 		[onDayClicked],
 	)
@@ -1081,8 +1170,8 @@ function CalendarMulti({
 			onNextClick={onNextMonthClicked}
 			onPrevClick={onPreviousMonthClicked}
 			onMonthChange={onMonthChanged}
-			fromDate={minDate?.toDate()}
-			toDate={maxDate?.toDate()}
+			minDate={minDate?.toDate()}
+			maxDate={maxDate?.toDate()}
 		/>
 	)
 }

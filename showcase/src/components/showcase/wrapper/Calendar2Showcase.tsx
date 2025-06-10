@@ -86,12 +86,14 @@ function CalendarSingle() {
 					setSecondarySelected(selected)
 					setSelected(dt)
 				}}
-				fromDate={minDate}
-				toDate={maxDate}
+				minDate={minDate}
+				maxDate={maxDate}
 				defaultMonth={defaultMonthDate}
 				invalid
 				disabledDates={sundayMatcher}
 				disabled
+				hidePreviousYearButton
+				hideNextYearButton
 				weekStartsOn={1}
 				lang="en"
 			/>
@@ -107,6 +109,7 @@ function CalendarSingle() {
 				maxDate={maxDateDT}
 				defaultMonth={defaultMonth}
 				defaultYear={defaultYear}
+				//hidePreviousYearButton
 				disabledDateFilter={sundayMatcher2}
 				disabledDates={[disabledDate1, disabledDate2]}
 				weekStartsOn={1}
@@ -267,6 +270,8 @@ function CalendarRange() {
 						to: range?.to ? toDateType(range.to) : undefined,
 					})
 				}}
+				minDate={new Date("2022-01-01")}
+				maxDate={new Date("2028-12-31")}
 			/>
 		</div>
 	)

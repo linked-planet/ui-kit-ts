@@ -35,6 +35,7 @@ type ModalDialogProps = {
 	testId?: string
 	triggerTestId?: string
 	/** The accessible description for the dialog, is visually hidden but announced by screen readers */
+	accessibleDialogTitle: string
 	accessibleDialogDescription: string
 	role?: RDialog.DialogContentProps["role"]
 	tabIndex?: RDialog.DialogContentProps["tabIndex"]
@@ -65,6 +66,7 @@ function Container({
 	triggerTestId,
 	role = "dialog",
 	accessibleDialogDescription,
+	accessibleDialogTitle,
 	tabIndex = undefined,
 	ref,
 }: ModalDialogProps) {
@@ -117,8 +119,13 @@ function Container({
 					}}
 					role={role}
 					tabIndex={tabIndex}
+					aria-describedby={accessibleDialogDescription}
+					title={accessibleDialogDescription}
 				>
 					<VisuallyHidden>
+						<RDialog.DialogTitle>
+							{accessibleDialogTitle}
+						</RDialog.DialogTitle>
 						<RDialog.DialogDescription>
 							{accessibleDialogDescription}
 						</RDialog.DialogDescription>
@@ -140,6 +147,7 @@ function Container({
 			accessibleDialogDescription,
 			role,
 			tabIndex,
+			accessibleDialogTitle,
 		],
 	)
 
@@ -157,7 +165,11 @@ function Container({
 					asChild
 					ref={triggerRef}
 				>
-					<Button>{"Open Modal"}</Button>
+					{typeof trigger === "string" ? (
+						<Button>{trigger}</Button>
+					) : (
+						trigger
+					)}
 				</RDialog.Trigger>
 			)}
 
@@ -234,7 +246,6 @@ function Title({
 	style,
 	id,
 	testId,
-	accessibleDialogTitle,
 }: {
 	children: ReactNode
 	className?: string
@@ -251,11 +262,6 @@ function Title({
 			id={id}
 			data-testid={testId}
 		>
-			<VisuallyHidden>
-				<RDialog.DialogTitle>
-					{accessibleDialogTitle}
-				</RDialog.DialogTitle>
-			</VisuallyHidden>
 			{children}
 		</RDialog.Title>
 	)
