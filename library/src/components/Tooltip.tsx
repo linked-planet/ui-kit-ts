@@ -4,8 +4,6 @@ import { type CSSProperties, useMemo, useRef } from "react"
 import { twMerge } from "tailwind-merge"
 import { usePortalContainer } from "../utils"
 
-const portalDivId = "uikts-tooltip" as const
-
 export type TooltipProps = {
 	tooltipContent?: React.ReactNode
 	tooltipHTMLContent?: string
@@ -55,17 +53,15 @@ export function Tooltip({
 				data-testid={testId}
 				id={id}
 			>
-				<>
-					{tooltipHTMLContent && (
-						<div
-							// biome-ignore lint/security/noDangerouslySetInnerHtml: we get the content from jira
-							dangerouslySetInnerHTML={{
-								__html: tooltipHTMLContent,
-							}}
-						/>
-					)}
-					{tooltipContent}
-				</>
+				{tooltipHTMLContent && (
+					<div
+						// biome-ignore lint/security/noDangerouslySetInnerHtml: we get the content from jira
+						dangerouslySetInnerHTML={{
+							__html: tooltipHTMLContent,
+						}}
+					/>
+				)}
+				{tooltipContent}
 			</RTTp.Content>
 		)
 	}, [

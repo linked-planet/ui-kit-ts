@@ -1,4 +1,4 @@
-import { useMemo, useState, useSyncExternalStore } from "react"
+import { useMemo, useState, useSyncExternalStore, useId } from "react"
 import { getPortal } from "../utils"
 import {
 	Flag,
@@ -101,7 +101,10 @@ function ProgressBar({
 function CloseButton({
 	inverted,
 	className,
-}: { inverted: boolean; className: string }) {
+}: {
+	inverted: boolean
+	className: string
+}) {
 	return (
 		<ToastClose
 			type="button"
@@ -202,6 +205,8 @@ function ToastContainer() {
 		toastProxyMap.getSnapshot,
 	)
 
+	const id = useId()
+
 	const toasts = useMemo(
 		() =>
 			Array.from(toastsProps.values()).map((toast) => (
@@ -216,7 +221,7 @@ function ToastContainer() {
 				{createPortal(
 					<ToastViewport
 						className="fixed bottom-0 right-0 flex flex-col gap-3 list-none pr-4 py-4"
-						id="toastviewport"
+						id={`toastviewport-${id}`}
 					>
 						<AnimatePresence mode="sync">{toasts}</AnimatePresence>
 					</ToastViewport>,
@@ -224,7 +229,7 @@ function ToastContainer() {
 				)}
 			</>
 		),
-		[portalNode, toasts],
+		[portalNode, toasts, id],
 	)
 }
 

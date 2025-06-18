@@ -85,10 +85,10 @@ export const SectionMessage = forwardRef(
 					)}
 					{children}
 					<div>
-						{actions?.map((action, i) => (
+						{actions?.map((action) => (
 							<>
 								<a
-									key={`action${i}`}
+									key={`action${action.href}`}
 									className="inline-block cursor-pointer text-sm"
 									onClick={action.onClick}
 									href={action.href}
@@ -97,7 +97,7 @@ export const SectionMessage = forwardRef(
 									{action.content}
 								</a>
 								<span
-									key={`actionspacer${i}`}
+									key={`actionspacer${action.href}`}
 									className="bg-text-subtlest mx-1.5 inline-block h-0.5 w-0.5 rounded-full align-middle last:hidden"
 								/>
 							</>

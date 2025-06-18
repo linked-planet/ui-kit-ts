@@ -233,7 +233,6 @@ function Root({
 export type AnchorProps = RPo.PopoverAnchorProps
 const Anchor = RPo.Anchor
 
-type CloseProps = RPo.PopoverCloseProps
 const Close = RPo.Close
 
 export const Popover = {

@@ -12,7 +12,7 @@ export type DragItemProps = {
 	style?: React.CSSProperties
 }
 
-function findClosestScrollContainer(element: HTMLElement | null) {
+/*function findClosestScrollContainer(element: HTMLElement | null) {
 	if (!element) {
 		return null
 	}
@@ -24,7 +24,7 @@ function findClosestScrollContainer(element: HTMLElement | null) {
 		parent = parent.parentElement
 	}
 	return null
-}
+}*/
 
 export function DragItem({
 	draggableId,

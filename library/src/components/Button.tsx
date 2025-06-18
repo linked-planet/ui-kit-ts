@@ -20,15 +20,17 @@ export type ButtonAppearance =
 	| "danger"
 	| "success"
 	| "information"
+	| "discovery"
 
 type ButtonVariantProps = VariantProps<typeof buttonVariants>
 const buttonVariants = cva(
-	"focus-visible:outline-selected-bold relative box-border flex shrink-0 cursor-pointer items-center justify-center gap-1 rounded-sm border-2 border-transparent px-2 py-1 outline-none outline-2 outline-offset-4 focus-visible:outline-solid",
+	"focus-visible:outline-selected-bold relative box-border flex transition-colors duration-200 shrink-0 cursor-pointer items-center justify-center gap-1 rounded-sm border-2 border-transparent px-2 py-1 outline-none outline-2 outline-offset-4 focus-visible:outline-solid",
 	{
 		variants: {
 			appearance: {
 				// those entries are undefined, they just establish the variant for the compoundVariants
-				default: undefined,
+				default:
+					"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",
 				primary: undefined,
 
 				subtle: undefined,
@@ -41,12 +43,13 @@ const buttonVariants = cva(
 				success: undefined,
 
 				information: undefined,
+				discovery: undefined,
 			},
 			disabled: {
 				true: "disabled:bg-disabled disabled:text-disabled-text disabled:cursor-not-allowed",
 			},
 			selected: {
-				true: "bg-selected active:bg-selected hover:bg-selected text-selected-text-inverse cursor-pointer",
+				true: "bg-selected hover:bg-selected-bold active:bg-selected-pressed text-selected-text-inverse hover:text-selected-text active:text-selected-text-inverse  cursor-pointer",
 			},
 			inverted: {
 				true: undefined,
@@ -61,13 +64,21 @@ const buttonVariants = cva(
 				disabled: true,
 				className: "disabled:border-border disabled:bg-transparent",
 			},
-			{
+			/*{
 				inverted: false,
 				appearance: "default",
 				disabled: false,
 				className:
 					"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",
-			},
+			},*/
+			/*{
+				inverted: false,
+				appearance: "default",
+				disabled: false,
+				selected: true,
+				className:
+					"bg-selected active:bg-selected hover:bg-selected text-selected-text-inverse cursor-pointer",
+			},*/
 			{
 				inverted: false,
 				appearance: "primary",
@@ -125,6 +136,13 @@ const buttonVariants = cva(
 					"bg-information-bold hover:bg-information-bold-hovered active:bg-information-bold-pressed text-text-inverse",
 			},
 			{
+				inverted: false,
+				appearance: "discovery",
+				disabled: false,
+				className:
+					"bg-discovery-bold hover:bg-discovery-bold-hovered active:bg-discovery-bold-pressed text-text-inverse",
+			},
+			{
 				inverted: true,
 				appearance: "default",
 				className:
@@ -168,6 +186,14 @@ const buttonVariants = cva(
 				className: cx(
 					"bg-information hover:bg-information-hovered active:bg-information-pressed",
 					"border-information-bold text-information-text border-solid",
+				),
+			},
+			{
+				inverted: true,
+				appearance: "discovery",
+				className: cx(
+					"bg-discovery hover:bg-discovery-hovered active:bg-discovery-pressed",
+					"border-discovery-bold text-discovery-text border-solid",
 				),
 			},
 		],
@@ -317,6 +343,7 @@ const loadingSpinnerClassNames = cva(null, {
 			danger: "border-t-text-inverse border-2",
 			success: "border-t-text-inverse border-2",
 			information: "border-t-text-inverse border-2",
+			discovery: "border-t-text-inverse border-2",
 		},
 		loading: {
 			false: "opacity-0",

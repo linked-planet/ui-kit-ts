@@ -36,8 +36,6 @@ export function SlideOpen({
 			style={containerStyle}
 			data-open={open}
 			ref={ref}
-			aria-label={ariaLabel}
-			aria-expanded={ariaExpanded ?? open}
 			tabIndex={tabIndex}
 			{...props}
 		>

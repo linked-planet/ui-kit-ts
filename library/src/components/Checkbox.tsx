@@ -194,7 +194,6 @@ const CheckboxI = (
 				<label
 					htmlFor={id}
 					aria-disabled={disabled}
-					aria-required={required}
 					aria-invalid={invalid}
 					className={twMerge(labelStyles, labelClassName)}
 					style={labelStyle}

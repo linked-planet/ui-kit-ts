@@ -1666,6 +1666,25 @@ function ButtonShowcase(props: ShowcaseProps) {
 					Information Inverted Button
 				</Button>
 
+				<Button
+					appearance="discovery"
+					onClick={() => console.log("Button pressed")}
+					iconAfter={<SearchIcon aria-label="Search" size="12" />}
+					iconBefore={<SearchIcon aria-label="Search" size="12" />}
+				>
+					Discovery Button
+				</Button>
+
+				<Button
+					appearance="discovery"
+					onClick={() => console.log("Button pressed")}
+					iconAfter={<SearchIcon aria-label="Search" size="12" />}
+					iconBefore={<SearchIcon aria-label="Search" size="12" />}
+					inverted
+				>
+					Discovery Inverted Button
+				</Button>
+
 				<LoadingButton
 					onClick={() => {
 						setIsLoading(true)
@@ -5870,6 +5889,7 @@ function ControlledExample() {
 					}}
 					shouldCloseOnEscapePress={true}
 					accessibleDialogDescription="This is a modal dialog example"
+					accessibleDialogTitle="Sample Modal"
 					useModal={true}
 				>
 					<Modal.Header>
@@ -5989,6 +6009,7 @@ function ModalTest() {
 			const shadowRoot = createShowcaseShadowRoot(divRef.current)
 			React.createRoot(shadowRoot).render(
 				<Modal.Container
+					accessibleDialogTitle="Sample Modal"
 					accessibleDialogDescription="This is a modal dialog example"
 					shouldCloseOnEscapePress
 					trigger={"Show Modal"}
@@ -6463,7 +6484,7 @@ import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { QrReader } from "@linked-planet/ui-kit-ts"
+import { QrReader, QrReaderDialog } from "@linked-planet/ui-kit-ts"
 
 //#region qrreader-example
 function QrReaderExample() {
@@ -6489,6 +6510,38 @@ function QrReaderExample() {
 }
 //#endregion qrreader-example
 
+//#region qrreader-dialog-example
+function QrReaderDialogExample() {
+	const [results, setResults] = useState<string[]>([])
+	return (
+		<div className="flex flex-col gap-4 items-start">
+			<QrReaderDialog
+				trigger="Scan QR Code"
+				onScan={setResults}
+				shouldCloseOnScan={false}
+				accessibleDialogTitle="Scan QR Code"
+				accessibleDialogDescription="Scan a QR code to get the result"
+				title="Scan QR Code"
+				description="Scan a QR code to get the result"
+			/>
+			<div>
+				<strong>Scanned Results:</strong>
+				<ul className="list-disc pl-4">
+					{results.length === 0 && (
+						<li className="italic text-muted">
+							No QR code detected
+						</li>
+					)}
+					{results.map((r) => (
+						<li key={r}>{r}</li>
+					))}
+				</ul>
+			</div>
+		</div>
+	)
+}
+//#endregion qrreader-dialog-example
+
 export default function QrReaderShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -6498,7 +6551,8 @@ export default function QrReaderShowcase(props: ShowcaseProps) {
 					A simple QR code reader component using{" "}
 					<code>@yudiel/react-qr-scanner</code>.<br />
 					<span className="text-xs">
-						Note: Only works in browsers with camera access.
+						Note: Only works in browsers with camera access, and
+						requires https if not on localhost.
 					</span>
 				</>
 			}
@@ -6518,6 +6572,11 @@ export default function QrReaderShowcase(props: ShowcaseProps) {
 					title: "QR Reader Example",
 					example: <QrReaderExample />,
 					sourceCodeExampleId: "qrreader-example",
+				},
+				{
+					title: "QR Reader Dialog Example",
+					example: <QrReaderDialogExample />,
+					sourceCodeExampleId: "qrreader-dialog-example",
 				},
 			]}
 		/>
@@ -10421,6 +10480,7 @@ function TourExample() {
 					//shouldCloseOnEscapePress={false}
 					shouldCloseOnOverlayClick={false} // this is required, the show "clicks" outside of the dialog closing the modal, which results in the failing of the next step because the element is not mounted anymore
 					accessibleDialogDescription="This is a modal dialog example"
+					accessibleDialogTitle="Sample Modal"
 				>
 					<Modal.Header>
 						<Modal.Title accessibleDialogTitle="Sample Modal">

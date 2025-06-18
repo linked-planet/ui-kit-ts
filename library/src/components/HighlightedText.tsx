@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useMemo, useId } from "react"
 import { twMerge } from "tailwind-merge"
 export function HighlightedText({
 	text,
@@ -17,6 +17,7 @@ export function HighlightedText({
 	containerElement?: React.ElementType
 	caseSensitive?: boolean
 }) {
+	const id = useId()
 	const parts = useMemo(() => {
 		const highlights = Array.isArray(highlightedText)
 			? highlightedText.map((it) => it.trim()).filter(Boolean)
@@ -31,7 +32,7 @@ export function HighlightedText({
 			if (delimiterRegex.test(it)) {
 				acc.push(
 					<span
-						key={i}
+						key={`highlight-${id}-${i}`}
 						className={twMerge(
 							"bg-selected-bold text-text-inverse p-0 m-0",
 							highlightClassName,
@@ -45,7 +46,7 @@ export function HighlightedText({
 			acc.push(it)
 			return acc
 		}, [] as React.ReactNode[])
-	}, [text, highlightClassName, highlightedText, caseSensitive])
+	}, [text, highlightClassName, highlightedText, caseSensitive, id])
 
 	const ContainerElement = containerElement || "p"
 

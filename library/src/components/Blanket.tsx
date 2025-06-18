@@ -23,10 +23,10 @@ export function Blanket({
 				className,
 			)}
 			role={role ?? "presentation"}
-			aria-label={ariaLabel ?? "blanket"}
 			{...props}
 		>
-			{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+			{/** biome-ignore lint/a11y/noStaticElementInteractions: <explanation> */}
+			{/** biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 			<div
 				onClick={(e) => {
 					// this is necessary for the click to propagate to the blanket anywhere inside the children
