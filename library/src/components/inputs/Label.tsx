@@ -1,4 +1,4 @@
-import React, { type ComponentPropsWithoutRef } from "react"
+import type { ComponentPropsWithoutRef } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 
 const labelNormalStyles =
@@ -10,13 +10,18 @@ const labelStyles = twJoin(labelNormalStyles, requiredStyles)
 export function Label({
 	required = false,
 	className,
+	htmlFor,
+	children,
 	...props
 }: ComponentPropsWithoutRef<"label"> & { required?: boolean }) {
 	return (
 		<label
+			htmlFor={htmlFor}
 			data-required={required}
 			className={twMerge(labelStyles, className)}
 			{...props}
-		/>
+		>
+			{children}
+		</label>
 	)
 }

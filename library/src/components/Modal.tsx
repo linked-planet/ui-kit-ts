@@ -87,7 +87,7 @@ function Container({
 					<RDialog.Overlay
 						className={blanketStyles}
 						role="presentation"
-						id="blanket"
+						id={`blanket-${id}`}
 					/>
 				) : (
 					<div className={blanketStyles} />

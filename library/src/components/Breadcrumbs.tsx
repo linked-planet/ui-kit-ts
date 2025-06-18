@@ -98,7 +98,8 @@ function Ellipsis({
 }) {
 	return (
 		<span className="flex gap-1 pl-0 pr-1">
-			<span
+			<button
+				type="button"
 				onClick={onClick}
 				onKeyUp={(e) => {
 					if (e.key === "Enter") {
@@ -106,15 +107,14 @@ function Ellipsis({
 					}
 				}}
 				title={ellipsisLabel}
-				aria-label={ellipsisLabel}
 				className={twMerge(
-					"cursor-pointer pr-1 hover:underline",
+					"cursor-pointer pr-1 hover:underline appearance-none",
 					className,
 				)}
 				style={style}
 			>
 				...
-			</span>
+			</button>
 			/
 		</span>
 	)

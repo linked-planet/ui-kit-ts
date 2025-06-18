@@ -307,6 +307,25 @@ function ButtonShowcase(props: ShowcaseProps) {
 					Information Inverted Button
 				</Button>
 
+				<Button
+					appearance="discovery"
+					onClick={() => console.log("Button pressed")}
+					iconAfter={<SearchIcon aria-label="Search" size="12" />}
+					iconBefore={<SearchIcon aria-label="Search" size="12" />}
+				>
+					Discovery Button
+				</Button>
+
+				<Button
+					appearance="discovery"
+					onClick={() => console.log("Button pressed")}
+					iconAfter={<SearchIcon aria-label="Search" size="12" />}
+					iconBefore={<SearchIcon aria-label="Search" size="12" />}
+					inverted
+				>
+					Discovery Inverted Button
+				</Button>
+
 				<LoadingButton
 					onClick={() => {
 						setIsLoading(true)

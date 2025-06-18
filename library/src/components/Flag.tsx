@@ -152,24 +152,17 @@ export function FlagIcon({
 		}
 		case "warning": {
 			return (
-				<p aria-label="Warning" className={iconStyle}>
+				<p className={iconStyle}>
 					<span className="absolute -left-0.5 top-0.5">!</span>
 				</p>
 			)
 		}
 		case "information": {
-			return (
-				<span aria-label="Info" className={iconStyle}>
-					i
-				</span>
-			)
+			return <span className={iconStyle}>i</span>
 		}
 		case "error": {
 			return (
-				<div
-					aria-label="Error"
-					className="relative size-4 flex items-center justify-center z-0"
-				>
+				<div className="relative size-4 flex items-center justify-center z-0">
 					<span className={iconStyle} />
 					<span className="font-extrabold text-text-inverse z-1">
 						!
@@ -178,11 +171,7 @@ export function FlagIcon({
 			)
 		}
 		case "discovery": {
-			return (
-				<span aria-label="Discovery" className={iconStyle}>
-					?
-				</span>
-			)
+			return <span className={iconStyle}>?</span>
 		}
 		default:
 			assertUnreachable(appearance)
@@ -240,7 +229,7 @@ export function Flag({
 					{actions?.map((action, i) => (
 						<>
 							<a
-								key={`action${i}`}
+								key={`action${action.href}`}
 								className={`inline-block cursor-pointer text-sm ${type !== "bold" ? "text-link" : "text-blue-200"}`}
 								onClick={action.onClick}
 								href={action.href}
@@ -249,7 +238,7 @@ export function Flag({
 								{action.content}
 							</a>
 							<span
-								key={`actionspacer${i}`}
+								key={`actionspacer${action.href}`}
 								className={`${type === "inverted" ? "bg-text-subtlest" : "bg-blue-300"} mx-1.5 inline-block h-0.5 w-0.5 rounded-full align-middle last:hidden`}
 							/>
 						</>

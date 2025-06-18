@@ -89,8 +89,11 @@ type CalendarBaseRangeProps = PropsBase &
 		secondarySelected?: DateRange
 	}
 
-const buttonStyles =
-	"focus-visible:ring-0 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-offset-2 border-none cursor-pointer disabled:cursor-not-allowed hover:bg-surface-hovered p-1 rounded-xs z-10 inline-flex place-content-center-safe disabled:text-text-disabled disabled:hover:bg-transparent"
+const buttonStyles = twJoin(
+	"border-none cursor-pointer p-1 rounded-xs z-10 inline-flex place-content-center-safe",
+	"hover:bg-surface-hovered hover:text-text disabled:hover:bg-transparent disabled:hover:text-text-disabled disabled:cursor-not-allowed disabled:text-text-disabled",
+	"focus-visible:ring-0 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-offset-2",
+)
 const captionStyles =
 	"flex justify-center items-center w-full pb-2 relative top-2"
 const captionLabelStyles = "text-text text-sm font-bold flex justify-center"
@@ -309,10 +312,11 @@ export function CalendarBase(
 			modifiersClassNames={{
 				hidden: "bg-neutral hover:bg-neutral-hovered active:bg-neutral-hovered text-text",
 				disabled:
-					"text-disabled-text cursor-not-allowed hover:bg-transparent bg-surface",
+					"text-disabled-text cursor-not-allowed hover:bg-transparent bg-surface disabled:text-text-disabled disabled:hover:bg-transparent disabled:cursor-not-allowed",
 				secondarySelected:
-					"bg-surface-overlay-hovered data-[disabled=true]:bg-surface",
-				selected: "bg-selected text-selected-text-inverse font-bold",
+					"bg-surface-overlay-hovered data-[disabled=true]:bg-surface text-text after:border-text",
+				selected:
+					"bg-selected text-selected-text-inverse hover:text-selected-text font-bold after:border-selected-text-inverse hover:after:border-selected-text",
 			}}
 			disabled={disabled || disabledDates}
 			onDayClick={!disabled && onDayClick ? onDayClick : undefined}
@@ -672,7 +676,7 @@ export function Calendar<FormData extends FieldValues>(
 	)
 
 	const _month = useMemo(() => {
-		let ret = undefined
+		let ret
 		if (month) {
 			ret = dayjs()
 				.month(month - 1)
