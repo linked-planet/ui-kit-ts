@@ -49,7 +49,7 @@ const buttonVariants = cva(
 				true: "disabled:bg-disabled disabled:text-disabled-text disabled:cursor-not-allowed",
 			},
 			selected: {
-				true: "bg-selected hover:bg-selected-bold active:bg-selected-pressed text-selected-text-inverse hover:text-selected-text active:text-selected-text-inverse  cursor-pointer",
+				true: "bg-selected hover:bg-selected-hovered active:bg-selected-pressed hover:text-selected-text-inverse active:text-selected-text-inverse text-selected-text-inverse  cursor-pointer",
 			},
 			inverted: {
 				true: undefined,
