@@ -87,6 +87,7 @@ export default function ItemWrapper<
 					}
 				}}
 				role="button"
+				tabIndex={0}
 			>
 				<TimeSlotItemComponent
 					group={group}
