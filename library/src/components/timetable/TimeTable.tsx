@@ -203,6 +203,11 @@ export interface LPTimeTableProps<
 	 * @default false
 	 */
 	debugLogs?: boolean
+
+	/**
+	 * Callback for when rendered groups change, return the group indices that were rendered
+	 */
+	onRenderedGroupsChanged?: (groups: Set<number>) => void
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -242,6 +247,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	groupComponent = GroupComponent,
 	timeSlotItemComponent = ItemComponent,
 	placeHolderComponent = PlaceHolderItemPlaceHolder,
+	onRenderedGroupsChanged,
 	onTimeSlotItemClick,
 	onGroupClick,
 	onTimeRangeSelected,
@@ -330,14 +336,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		timeFrameDay,
 		viewType: currViewType,
 	} = useGroupRows(entries)
-
-	if (!slotsArray || slotsArray.length === 0) {
-		console.warn(
-			"TimeTable - no slots array, or slots array is empty",
-			slotsArray,
-		)
-		return <div>No slots array</div>
-	}
 
 	useEffect(() => {
 		if (!setMessage) return
@@ -571,6 +569,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								timeFrameDay={timeFrameDay}
 								viewType={currViewType}
 								timeStepMinutesHoursView={timeStepsMinutes}
+								onRenderedGroupsChanged={
+									onRenderedGroupsChanged
+								}
 							/>
 						</tbody>
 					</table>

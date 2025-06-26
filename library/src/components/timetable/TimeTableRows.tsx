@@ -67,6 +67,11 @@ interface TimeTableRowsProps<
 	timeFrameDay: TimeFrameDay
 	viewType: TimeTableViewType
 	timeStepMinutesHoursView: number
+
+	/**
+	 * Callback for when rendered groups change, return the group indices that were rendered (parameter is a set of group indices)
+	 */
+	onRenderedGroupsChanged: ((groups: Set<number>) => void) | undefined
 }
 
 const intersectionStackDelay = 1
@@ -91,6 +96,7 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 	timeFrameDay: TimeFrameDay,
 	viewType: TimeTableViewType,
 	timeStepMinutesHoursView: number,
+	onRenderedGroupsChanged: ((groups: Set<number>) => void) | undefined,
 ) {
 	if (g < 0) {
 		throw new Error("TimeTable - group number is negative")
@@ -159,6 +165,9 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 			//
 		/>
 	)
+	if (!changedGroupRowsRef.current.size) {
+		onRenderedGroupsChanged?.(renderedGroupsRef.current)
+	}
 }
 
 /**
@@ -178,6 +187,7 @@ export default function TimeTableRows<
 	timeFrameDay,
 	viewType,
 	timeStepMinutesHoursView,
+	onRenderedGroupsChanged,
 }: TimeTableRowsProps<G, I>): JSX.Element[] {
 	const storeIdent = useTimeTableIdent()
 	const { rowHeight, columnWidth, placeHolderHeight } =
@@ -358,10 +368,7 @@ export default function TimeTableRows<
 			setGroupRowsRendered([])
 			changedGroupRows.current.clear()
 			currentGroupRowsRef.current = groupRows
-			return []
-		}
-
-		if (groupRowsRendered.length > groupRows.size) {
+		} else if (groupRowsRendered.length > groupRows.size) {
 			// shorten and remove rendered elements array, if too long
 			setGroupRowsRendered(groupRowsRendered.slice(0, groupRows.size))
 			for (const changedG of changedGroupRows.current) {
@@ -496,6 +503,7 @@ export default function TimeTableRows<
 								timeFrameDay,
 								viewType,
 								timeStepMinutesHoursView,
+								onRenderedGroupsChanged,
 							)
 							counter++
 							if (counter > timeTableGroupRenderBatchSize) {
@@ -531,6 +539,7 @@ export default function TimeTableRows<
 						timeFrameDay,
 						viewType,
 						timeStepMinutesHoursView,
+						onRenderedGroupsChanged,
 					)
 					counter++
 					if (counter > timeTableGroupRenderBatchSize) {
@@ -562,6 +571,7 @@ export default function TimeTableRows<
 					timeFrameDay,
 					viewType,
 					timeStepMinutesHoursView,
+					onRenderedGroupsChanged,
 				)
 				++counter
 			}
@@ -584,6 +594,7 @@ export default function TimeTableRows<
 		handleIntersections,
 		rateLimiterIntersection,
 		timeStepMinutesHoursView,
+		onRenderedGroupsChanged,
 	])
 
 	if (
@@ -617,7 +628,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	timeSlotNumber,
 	group,
 	groupNumber,
-	isFirstRow,
 	isLastGroupRow,
 	bookingItemsBeginningInCell,
 	selectedTimeSlotItem,
@@ -630,7 +640,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	timeSlotNumber: number
 	group: G
 	groupNumber: number
-	isFirstRow: boolean
 	isLastGroupRow: boolean
 	bookingItemsBeginningInCell: readonly ItemRowEntry<I>[] | undefined
 	selectedTimeSlotItem: I | undefined
@@ -650,14 +659,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const isCellDisabled = useTTCIsCellDisabled(storeIdent)
 
 	const timeSlot = slotsArray[timeSlotNumber]
-	if (!timeSlot) {
-		console.warn(
-			"TimeLineTable - time slot not found",
-			slotsArray,
-			timeSlotNumber,
-		)
-		return <></>
-	}
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 	const timeSlotAfter =
 		timeSlotNumber < slotsArray.length - 1
@@ -696,6 +697,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const resizeCallback = useCallback((observedSize: ObservedSize) => {
 		setTableCellWidth(observedSize.width ?? 70)
 	}, [])
+
 	useResizeObserver({
 		ref: tableCellRef,
 		onResize: resizeCallback,
@@ -899,7 +901,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 		? timeSlotAfter.day() !== timeSlot.day()
 		: true
 
-	let placeHolderItem: JSX.Element | undefined = undefined
+	let placeHolderItem: JSX.Element | undefined
 	if (isFirstOfSelection && selectedTimeSlots) {
 		placeHolderItem = (
 			<PlaceHolderItemWrapper
@@ -1188,7 +1190,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						key={`${group.id}-${groupNumber}-${timeSlotNumber}-${viewType}`}
 						timeSlotNumber={timeSlotNumber}
 						isLastGroupRow={r === rowCount - 1}
-						isFirstRow={r === 0}
 						group={group}
 						groupNumber={groupNumber}
 						bookingItemsBeginningInCell={itemsOfTimeSlot}

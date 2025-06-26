@@ -1,28 +1,24 @@
-import { useCallback, useEffect, useMemo } from "react"
-import { useState } from "react"
-import dayjs, { type Dayjs } from "dayjs/esm"
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
 import { Button, TimeTable, timeTableUtils } from "@linked-planet/ui-kit-ts"
-
-import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
-
-import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
-import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
+import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
+import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import { allGroupsRenderedEvent } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableRows"
+import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
+import dayjs, { type Dayjs } from "dayjs/esm"
 import {
 	ChevronDownIcon,
 	ChevronLeftIcon,
 	ChevronRightIcon,
 } from "lucide-react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
 const debounceTimeout = 500
-let debounceTimeoutCurrent: number | undefined = undefined
+let debounceTimeoutCurrent: number | undefined
 function debounceHelper(callback: () => void) {
 	if (debounceTimeoutCurrent) {
 		clearTimeout(debounceTimeoutCurrent)
@@ -1118,9 +1114,12 @@ function Example() {
 					isCellDisabled={isCellDisabled}
 					viewType={viewType}
 					locale={locale}
-					customHeaderRow={{
+					/*customHeaderRow={{
 						timeSlot: TestCustomHeaderRowTimeSlot,
 						header: CustomHeaderRowHeader,
+					}}*/
+					onRenderedGroupsChanged={(groups) => {
+						console.log("rendered groups changed", groups)
 					}}
 				/>
 			</div>
