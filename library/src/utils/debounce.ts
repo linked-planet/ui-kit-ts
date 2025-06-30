@@ -10,9 +10,7 @@ import { useRef } from "react"
 export function debounceHelper(delayMS = 300) {
 	let timer: number | null = null
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	return (cb: (...args: any[]) => void, ...args: any[]) => {
+	return (cb: (...args: unknown[]) => unknown, ...args: unknown[]) => {
 		if (timer) {
 			clearTimeout(timer)
 		}

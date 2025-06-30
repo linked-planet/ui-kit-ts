@@ -32,9 +32,7 @@ function BookCardComponentsExample() {
 						</BookCardComponents.CardHeaderSubtitle>
 					</BookCardComponents.CardHeaderMeta>
 					<BookCardComponents.CardHeaderActions>
-						<BookCardComponents.CardHeaderActionsInfo>
-							<Badge appearance="default">action</Badge>
-						</BookCardComponents.CardHeaderActionsInfo>
+						<Badge appearance="default">action</Badge>
 					</BookCardComponents.CardHeaderActions>
 				</BookCardComponents.CardHeader>
 			}
@@ -169,9 +167,9 @@ function BookCardExample() {
 				bodyLayout={bodyLayout}
 				bodyStyle={bodyStyle}
 				closed={isClosed}
-				actionsInfo={"Action:"}
 				actions={
 					<div className="flex items-center">
+						Actions:&nbsp;
 						<TagGroup>
 							<Tag key="action" appearance="danger">
 								DAUERAUSLEIHE

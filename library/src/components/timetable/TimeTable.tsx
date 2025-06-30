@@ -1,42 +1,42 @@
 import dayjs, { type Dayjs } from "dayjs/esm"
 import type React from "react"
 import { type MutableRefObject, useCallback, useEffect, useRef } from "react"
+import { twMerge } from "tailwind-merge"
+import useResizeObserver from "use-resize-observer"
+import { useRateLimitHelper } from "../../utils/rateLimit"
 import { InlineMessage } from "../InlineMessage"
+import { Group as GroupComponent, type TimeTableGroupProps } from "./Group"
+import { Item as ItemComponent } from "./Item"
 import type { TimeTableItemProps } from "./ItemWrapper"
-import {
-	type CustomHeaderRowHeaderProps,
-	type CustomHeaderRowTimeSlotProps,
-	LPTimeTableHeader,
-	headerText,
-} from "./TimeTableHeader"
 import {
 	PlaceHolderItemPlaceHolder,
 	type TimeTablePlaceholderItemProps,
 } from "./PlaceholderItem"
-import TimeTableRows from "./TimeTableRows"
+import { initAndUpdateTimeTableComponentStore } from "./TimeTableComponentStore"
+import {
+	initAndUpdateTimeTableConfigStore,
+	type TimeFrameDay,
+} from "./TimeTableConfigStore"
+import {
+	type CustomHeaderRowHeaderProps,
+	type CustomHeaderRowTimeSlotProps,
+	headerText,
+	LPTimeTableHeader,
+} from "./TimeTableHeader"
+import { TimeTableIdentProvider } from "./TimeTableIdentContext"
 import {
 	type TimeTableMessage,
 	TimeTableMessageProvider,
 	type TranslatedTimeTableMessages,
 	useTimeTableMessage,
 } from "./TimeTableMessageContext"
-import {
-	initAndUpdateTimeTableConfigStore,
-	type TimeFrameDay,
-} from "./TimeTableConfigStore"
-import { TimeTableIdentProvider } from "./TimeTableIdentContext"
-import { initAndUpdateTimeTableComponentStore } from "./TimeTableComponentStore"
-import { Group as GroupComponent, type TimeTableGroupProps } from "./Group"
-import { Item as ItemComponent } from "./Item"
+import TimeTableRows from "./TimeTableRows"
 import {
 	initAndUpdateTimeTableSelectionStore,
 	type onTimeRangeSelectedType,
 } from "./TimeTableSelectionStore"
-import { useGroupRows } from "./useGoupRows"
-import { twMerge } from "tailwind-merge"
 import { getStartAndEndSlot, getTimeSlotMinutes } from "./timeTableUtils"
-import { useRateLimitHelper } from "../../utils/rateLimit"
-import useResizeObserver from "use-resize-observer"
+import { useGroupRows } from "./useGoupRows"
 
 export interface TimeSlotBooking {
 	key: React.Key
@@ -328,8 +328,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 	const {
 		groupRows,
-		rowCount,
-		maxRowCountOfSingleGroup,
+		//rowCount,
+		//maxRowCountOfSingleGroup,
 		itemsOutsideOfDayRange,
 		itemsWithSameStartAndEnd,
 		slotsArray,

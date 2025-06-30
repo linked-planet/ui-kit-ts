@@ -72,7 +72,7 @@ export type SelectClassNamesConfig<
 	IsMulti extends boolean,
 > = ClassNamesConfig<OptionType<ValueType>, IsMulti, OptionGroupType<ValueType>>
 
-const portalDivId = "uikts-select" as const
+const _portalDivId = "uikts-select" as const
 
 function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 	classNamesConfig:
@@ -376,10 +376,11 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 		> = {
 			ClearIndicator: (_props) => {
 				return (
+					// biome-ignore lint/a11y/useSemanticElements: the react-select component is not a button, but a div
 					<div
 						{..._props.innerProps}
-						// biome-ignore lint/a11y/useSemanticElements: <explanation>
 						role="button"
+						tabIndex={0}
 						className={_props.getClassNames(
 							"clearIndicator",
 							_props,
@@ -394,7 +395,6 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 							clearValuesButtonLabel ?? "clear all selected"
 						}
 						aria-hidden="false"
-						tabIndex={0}
 						onKeyUp={(e) => {
 							if (e.key === "Enter") {
 								_props.clearValue()
@@ -426,8 +426,8 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 					_props.data.label
 				}`
 				return (
+					// biome-ignore lint/a11y/useSemanticElements: the react-select component is not a button, but a div
 					<div
-						// biome-ignore lint/a11y/useSemanticElements: <explanation>
 						role="button"
 						{..._props.innerProps}
 						title={title}
@@ -450,9 +450,13 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 				)
 				// add the className to the removeProps... else it is undefined
 				_props.removeProps.className = className
+
 				return (
+					// biome-ignore lint/a11y/useSemanticElements: the react-select component is not a button, but a div
 					<div
 						{..._props.innerProps}
+						role="button"
+						tabIndex={0}
 						className={_props.getClassNames("multiValue", _props)}
 						style={
 							_props.getStyles("multiValue", _props) as
@@ -487,10 +491,9 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 						_props.selectProps.menuIsOpen ? "close" : "open"
 					} the menu`
 				return (
-					// biome-ignore lint/a11y/useFocusableInteractive: <explanation>
+					// biome-ignore lint/a11y/useSemanticElements: the react-select component is not a button, but a div
 					<div
 						{..._props.innerProps}
-						// biome-ignore lint/a11y/useSemanticElements: <explanation>
 						role="button"
 						data-action="open_select"
 						//aria-disabled={_props.isDisabled}
@@ -506,6 +509,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 						title={title}
 						aria-label={title}
 						aria-hidden="false"
+						tabIndex={0}
 					>
 						<IconSizeHelper>
 							{_props.selectProps.menuIsOpen ? (
@@ -676,6 +680,8 @@ export type SelectInFormProps<
 	control: Control<FormData>
 	name: Path<FormData>
 	errorMessage?: ReactNode
+	errorMessageClassName?: string
+	errorMessageStyle?: CSSProperties
 	invalid?: boolean
 }
 
@@ -703,6 +709,8 @@ function SelectInForm<
 	"aria-invalid": ariaInvalid = false,
 	invalid,
 	errorMessage,
+	errorMessageClassName,
+	errorMessageStyle,
 	usePortal = true,
 	testId,
 	defaultValue,
@@ -808,9 +816,6 @@ function SelectInForm<
 		invalid,
 	}
 
-	// remove the field ref from the field props as we cannot use refs on function components
-	const { ref: innerRef, ...fieldProps } = field
-
 	const localRef = useRef<SelectInstance<
 		OptionType<ValueType>,
 		IsMulti,
@@ -829,7 +834,7 @@ function SelectInForm<
 		<>
 			<SelectInner
 				{...innerProps}
-				{...fieldProps}
+				{...field}
 				{...fieldState}
 				innerRef={localRef}
 				onChange={onChange}
@@ -845,6 +850,8 @@ function SelectInForm<
 				<SlidingErrorMessage
 					invalid={invalid || fieldState.invalid}
 					aria-invalid={ariaInvalid || fieldState.invalid}
+					className={errorMessageClassName}
+					style={errorMessageStyle}
 				>
 					{errorMessage}
 				</SlidingErrorMessage>

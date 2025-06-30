@@ -1,3 +1,4 @@
+import dayjs from "dayjs/esm"
 import {
 	type Dispatch,
 	type ReactNode,
@@ -5,12 +6,11 @@ import {
 	useCallback,
 	useMemo,
 } from "react"
-import type { TimeType } from "../../../utils/DateUtils"
-import { DateUtils } from "../../../utils"
-import dayjs from "dayjs/esm"
 import type { FieldValues } from "react-hook-form"
-import { Select, type SelectInFormProps, type SelectProps } from "../Select"
 import { twMerge } from "tailwind-merge"
+import { DateUtils } from "../../../utils"
+import type { TimeType } from "../../../utils/DateUtils"
+import { Select, type SelectInFormProps, type SelectProps } from "../Select"
 
 type TimePickerBaseProps = {
 	value?: TimeType | null
@@ -180,6 +180,8 @@ export function TimePicker<FormData extends FieldValues>({
 	className,
 	styles,
 	errorMessage,
+	errorMessageClassName,
+	errorMessageStyle,
 	isClearable,
 	clearButtonLabel,
 	name,
@@ -241,6 +243,9 @@ export function TimePicker<FormData extends FieldValues>({
 		disabled,
 		styles,
 		isClearable,
+		errorMessage,
+		errorMessageClassName,
+		errorMessageStyle,
 		name,
 		clearValuesButtonLabel: clearButtonLabel,
 		isMulti: false,

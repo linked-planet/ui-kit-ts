@@ -486,12 +486,8 @@ function NestingItem({
 	_isOpen,
 	id,
 }: _NestingItemProps & { _isOpen?: boolean }) {
-	const {
-		getCurrentPathElement,
-		pushPathElement,
-		transitioning,
-		setTransitioning,
-	} = useSideNavigationStore(sideNavStoreIdent)
+	const { pushPathElement, setTransitioning } =
+		useSideNavigationStore(sideNavStoreIdent)
 
 	//const isOpen = getCurrentPathElement() === title && transitioning === null*/
 	if (_isOpen) {
@@ -593,7 +589,7 @@ function NestableNavigationContent({
 	onAnimationComplete,
 	onGoBackClick,
 }: _NestableNavigationContentProps) {
-	const { popPathElement, getCurrentPathElement, setTransitioning, path } =
+	const { popPathElement, getCurrentPathElement, setTransitioning } =
 		useSideNavigationStore(sideNavStoreIdent)
 
 	const currentOpenedId = getCurrentPathElement()

@@ -1,28 +1,27 @@
-import { DateUtils, isDateType, type DateType } from "../../../utils"
-import { Popover, type PopoverProps } from "../../Popover"
+import { CalendarIcon, XIcon } from "lucide-react"
 import {
-	useMemo,
-	useState,
-	useEffect,
+	type ForwardedRef,
+	forwardRef,
 	type ReactNode,
 	useCallback,
-	forwardRef,
-	type ForwardedRef,
+	useEffect,
+	useMemo,
+	useState,
 } from "react"
-import { Calendar, type CalendarSingleProps } from "../../Calendar"
 import type { Labels } from "react-day-picker"
-
-import { Input } from "../Inputs"
-import { IconSizeHelper } from "../../IconSizeHelper"
-import { twJoin, twMerge } from "tailwind-merge"
 import {
-	type FieldValues,
 	type Control,
+	type FieldValues,
 	type Path,
 	useController,
 } from "react-hook-form"
+import { twJoin, twMerge } from "tailwind-merge"
+import { type DateType, DateUtils, isDateType } from "../../../utils"
 import { Button } from "../../Button"
-import { CalendarIcon, XIcon } from "lucide-react"
+import { Calendar, type CalendarSingleProps } from "../../Calendar"
+import { IconSizeHelper } from "../../IconSizeHelper"
+import { Popover, type PopoverProps } from "../../Popover"
+import { Input } from "../Inputs"
 
 export type DatePickerProps = Pick<
 	CalendarSingleProps,
@@ -129,6 +128,7 @@ const DatePickerBase = forwardRef(
 			onChange,
 			disabled,
 			hideIcon = false,
+			readOnly,
 			...props
 		}: DatePickerProps,
 		ref: ForwardedRef<HTMLInputElement>,
@@ -171,7 +171,7 @@ const DatePickerBase = forwardRef(
 				onChange?.(date || null)
 				setOpen(false)
 			},
-			[onChange],
+			[onChange, readOnly],
 		)
 
 		const calendar = useMemo(() => {
@@ -229,7 +229,6 @@ const DatePickerBase = forwardRef(
 			inputStyle,
 			formatDisplayLabel,
 			required,
-			readOnly,
 			clearButtonLabel = "clear date",
 			"aria-label": ariaLabel,
 			className,

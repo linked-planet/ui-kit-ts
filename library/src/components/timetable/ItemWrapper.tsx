@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react"
-import type { TimeSlotBooking, TimeTableGroup } from "./TimeTable"
-
 import utilStyles from "../../utils.module.css"
+import type { TimeSlotBooking, TimeTableGroup } from "./TimeTable"
 import { useTimeSlotItemComponent } from "./TimeTableComponentStore"
 import { useTimeTableIdent } from "./TimeTableIdentContext"
 import { useMultiSelectionMode } from "./TimeTableSelectionStore"
@@ -75,6 +74,7 @@ export default function ItemWrapper<
 			}}
 			{...mouseHandler}
 		>
+			{/** biome-ignore lint/a11y/useSemanticElements: should be div to be able to have buttons inside */}
 			<div
 				ref={ref}
 				className="animate-fade-in relative z-1 size-full"

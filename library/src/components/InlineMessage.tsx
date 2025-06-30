@@ -1,9 +1,8 @@
+import { XIcon } from "lucide-react"
 import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import type { Appearance } from "../utils/appearanceTypes"
-import { Button } from "./Button"
-import { XIcon } from "lucide-react"
 
 export type OpeningDirection = "topdown" | "bottomup"
 
@@ -24,7 +23,21 @@ const InlineMessageAppearanceColors: { [style in Appearance]: string } = {
 	warning: "bg-warning text-warning-text border-warning-border",
 } as const
 
-const InlineMessageInteractiveColors: { [style in Appearance]: string } = {
+const _RemoveButtonAppearanceColors: { [style in Appearance]: string } = {
+	brand: "text-brand-bold hover:text-brand-bold-hovered active:text-brand-bold-pressed",
+	default: "text-text-subtle hover:text-text active:text-text",
+	success:
+		"text-success-bold hover:text-success-bold-hovered active:text-success-bold-pressed",
+	information:
+		"text-information-bold hover:text-information-bold-hovered active:text-information-bold-pressed",
+	discovery:
+		"text-information-bold hover:text-information-bold-hovered active:text-information-bold-pressed",
+	danger: "text-danger-bold hover:text-danger-bold-hovered active:text-danger-bold-pressed",
+	warning:
+		"text-warning-bold hover:text-warning-bold-hovered active:text-warning-bold-pressed",
+} as const
+
+const _InlineMessageInteractiveColors: { [style in Appearance]: string } = {
 	brand: "hover:bg-brand-bold-hovered active:bg-brand-bold-pressed",
 	default: "hover:bg-neutral-hovered active:bg-neutral-pressed",
 	success: "hover:bg-success-hovered active:bg-success-pressed",
@@ -83,6 +96,7 @@ export function InlineMessage({
 	return (
 		<div
 			className="box-border w-full"
+			role="alert"
 			onMouseEnter={() => {
 				if (!message.text) return
 				setOpen(true)
@@ -99,6 +113,7 @@ export function InlineMessage({
 			}}
 			id={id}
 			data-testid={testId}
+			aria-live="polite"
 		>
 			<div
 				style={{
@@ -117,15 +132,21 @@ export function InlineMessage({
 				<div className="flex items-center justify-between">
 					{msg?.text ?? ""}
 					{removable && (
-						<Button
-							appearance={"subtle"}
+						<button
+							type="button"
 							className={twMerge(
-								"ml-2 flex items-center justify-center",
+								"appearance-none ml-2 p-2 group flex items-center justify-center cursor-pointer",
+								_RemoveButtonAppearanceColors[
+									message.appearance ?? "default"
+								],
 							)}
 							onClick={() => setOpen(false)}
 						>
-							<XIcon aria-label="close" size="6" />
-						</Button>
+							<XIcon
+								aria-label="close"
+								className="size-3 stroke-5 group-hover:stroke-6 group-active:stroke-7"
+							/>
+						</button>
 					)}
 				</div>
 			</div>

@@ -1,9 +1,5 @@
 //import { setGlobalTheme } from "@atlaskit/tokens" //-> when we import this, the whole theming is exported as bundles, we do not want that.
 
-type ThemeType = {
-	css?: string
-}
-
 const themeDefinitions = {
 	dark: { css: undefined }, // AK-theming theme (--ds-* variables)
 	auto: { css: undefined }, // AK-theming theme auto theme selection ( --ds-* variables)

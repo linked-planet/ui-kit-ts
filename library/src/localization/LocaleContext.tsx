@@ -24,7 +24,7 @@ const localizationContext = createContext<
 >(undefined)
 
 const localeStorageKey = "locale"
-const translationsPath = "./translations-compiled"
+const _translationsPath = "./translations-compiled"
 
 /**
  * this is created using the formatJS CLI tool on Messages.tsx. This creates a json file with all the messages in the correct format in ../../localization/translations/en.json
@@ -182,7 +182,7 @@ export const useTranslation = () => {
 	return mod.default
 }*/
 
-async function fetchTranslation(locale: string) {
+/*async function fetchTranslation(locale: string) {
 	console.info(
 		"loading translation for locale",
 		locale,
@@ -190,4 +190,4 @@ async function fetchTranslation(locale: string) {
 	)
 	const res = await fetch(`${translationsPath}/${locale}.json`)
 	return res.json()
-}
+}*/

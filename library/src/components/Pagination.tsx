@@ -1,8 +1,8 @@
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Dropdown, type DropdownMenuProps } from "./DropdownMenu"
 import { IconSizeHelper } from "./IconSizeHelper"
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
 const triggerClassName =
 	"h-8 hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded-xs bg-transparent p-1.5"
@@ -166,14 +166,10 @@ function PaginationPageHandler<P extends string | number>({
 	}, [_currentPage, maxPageButtons, pages, currentPageIndex])
 
 	const pageButtons = useMemo(() => {
-		let ellipsisCountUsed = 0
-		return visiblePages.map((page, i) => {
-			if (page === "...") {
-				ellipsisCountUsed++
-			}
+		return visiblePages.map((page) => {
 			return (
 				<li
-					key={page.toString() + i}
+					key={page.toString()}
 					aria-hidden={page === "..."}
 					className="m-0"
 				>

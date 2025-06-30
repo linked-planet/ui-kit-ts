@@ -1,13 +1,13 @@
-import ReactJoyride, {
-	type Locale,
-	type Styles,
-	type Step,
-	type FloaterProps,
-	type CallBackProps,
-} from "react-joyride"
 import { useCallback, useMemo, useRef, useState } from "react"
-import { Toast } from "../ToastFlag"
 import { flushSync } from "react-dom"
+import ReactJoyride, {
+	type CallBackProps,
+	type FloaterProps,
+	type Locale,
+	type Step,
+	type Styles,
+} from "react-joyride"
+import { Toast } from "../ToastFlag"
 
 export type TourStepProps = Step
 
@@ -143,7 +143,7 @@ export function Tour({
 
 	const callback = useCallback(
 		(joyrideState: CallBackProps) => {
-			const { action, index, lifecycle, type, step } = joyrideState
+			const { action, index, type, step } = joyrideState
 			switch (type) {
 				case "tour:start":
 					beforeAll()
