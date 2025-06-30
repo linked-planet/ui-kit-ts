@@ -1,5 +1,6 @@
 import * as RSelect from "@radix-ui/react-select"
-import React, {
+import { ChevronDownIcon } from "lucide-react"
+import {
 	type CSSProperties,
 	type ForwardedRef,
 	forwardRef,
@@ -7,8 +8,6 @@ import React, {
 	useMemo,
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
-
-import { ChevronDownIcon } from "lucide-react"
 import { getPortal } from "../../utils/getPortal"
 
 type SelectOption = {
@@ -196,7 +195,7 @@ const selectedStyles =
 
 const selectItemStyle = twJoin(normalStyles, hoverStyles, selectedStyles)
 
-const SelectItem = React.forwardRef(
+const SelectItem = forwardRef(
 	(
 		{ children, className, ...props }: RSelect.SelectItemProps,
 		forwardedRef: ForwardedRef<HTMLDivElement>,

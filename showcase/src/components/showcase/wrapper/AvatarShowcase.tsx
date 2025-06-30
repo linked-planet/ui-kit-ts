@@ -1,11 +1,12 @@
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 //import Avatar, { AvatarItem } from "@atlaskit/avatar"
 import {
 	Avatar as LPAvatar,
 	AvatarItem as LPAvatarItem,
 } from "@linked-planet/ui-kit-ts"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
 //import Avatar, { AvatarItem } from "@atlaskit/avatar"
 
 function AvatarShowcase(props: ShowcaseProps) {

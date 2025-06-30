@@ -1,14 +1,15 @@
+import { token } from "@atlaskit/tokens"
+import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
 import { useState } from "react"
+import ReactJoyride from "react-joyride"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import ReactJoyride from "react-joyride"
-import { token } from "@atlaskit/tokens"
-import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
 
 function JoyrideShowcase(props: ShowcaseProps) {
 	//#region joyride
 	// fix missing global
+	// biome-ignore lint/suspicious/noExplicitAny: fix for joyride
 	if (!(window as any).global) (window as any).global = window
 
 	const [isJoyrideActive, setIsJoyrideActive] = useState(false)

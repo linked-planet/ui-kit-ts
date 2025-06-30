@@ -1,9 +1,9 @@
-import React from "react"
+import { useState } from "react"
 import { getCurrentTheme, switchTheme } from "../theming"
 import { Button } from "./Button"
 
 export function ThemeSwitch() {
-	const [theme, setTheme] = React.useState(getCurrentTheme())
+	const [theme, setTheme] = useState(getCurrentTheme())
 	return (
 		<Button
 			className="flex w-36 items-center justify-center capitalize"

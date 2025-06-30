@@ -1,8 +1,7 @@
-import type React from "react"
+import { AppLayout } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { AppLayout } from "@linked-planet/ui-kit-ts"
 export function SidebarShowcase(props: ShowcaseProps) {
 	//#region sidebar
 	const example = (

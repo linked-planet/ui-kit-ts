@@ -1,6 +1,3 @@
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import TableTree, {
 	Cell,
 	Header,
@@ -8,6 +5,9 @@ import TableTree, {
 	Row,
 	Rows,
 } from "@atlaskit/table-tree"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function TableTreeShowcase(props: ShowcaseProps) {
 	//#region tabletree
@@ -122,7 +122,9 @@ function TableTreeShowcase(props: ShowcaseProps) {
 						isDefaultExpanded={false}
 					>
 						<Cell singleLine={true}>
-							<div
+							<button
+								type="button"
+								className="appearance-none"
 								onClick={() =>
 									window.alert(`onClick: ${data.title}`)
 								}
@@ -133,10 +135,12 @@ function TableTreeShowcase(props: ShowcaseProps) {
 								}}
 							>
 								{data.title}
-							</div>
+							</button>
 						</Cell>
 						<Cell singleLine={true}>
-							<div
+							<button
+								type="button"
+								className="appearance-none"
 								onClick={() =>
 									window.alert(`onClick: ${data.description}`)
 								}
@@ -149,7 +153,7 @@ function TableTreeShowcase(props: ShowcaseProps) {
 								}}
 							>
 								{data.description}
-							</div>
+							</button>
 						</Cell>
 					</Row>
 				)}

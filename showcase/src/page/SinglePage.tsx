@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react"
-import useShowCases from "../useShowcases"
-import { useSearchParams } from "react-router-dom"
 import { Select } from "@linked-planet/ui-kit-ts"
+import { cloneElement, useEffect, useMemo, useState } from "react"
+import { useSearchParams } from "react-router-dom"
+import useShowCases from "../useShowcases"
 
 export default function SinglePage() {
 	const [overallSourceCode, setOverallSourceCode] = useState("")
@@ -54,7 +54,7 @@ export default function SinglePage() {
 				value={sc}
 				autoFocus
 			/>
-			{sc && React.cloneElement(sc.value, { id: sc.label })}
+			{sc && cloneElement(sc.value, { id: sc.label })}
 		</div>
 	)
 }

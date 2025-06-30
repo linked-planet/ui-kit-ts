@@ -1,12 +1,12 @@
-import React, { useState } from "react"
 import {
 	debounceHelper,
 	rateLimitHelper,
 	useDebounceHelper,
 	useRateLimitHelper,
 } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //#region debounceHelper

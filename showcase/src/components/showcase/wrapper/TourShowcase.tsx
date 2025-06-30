@@ -4,13 +4,14 @@ import {
 	Modal,
 	Select,
 	ToastFlagProvider,
+	Tour,
+	TourStep,
 } from "@linked-planet/ui-kit-ts"
-import { Tour, TourStep } from "@linked-planet/ui-kit-ts"
+import { CrossIcon } from "lucide-react"
 import { useMemo, useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { CrossIcon } from "lucide-react"
 
 //#region tour
 const defaultLocale = {

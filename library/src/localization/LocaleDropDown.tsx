@@ -1,5 +1,3 @@
-import React from "react"
-
 import { Dropdown } from "../components/DropdownMenu"
 import { availableLocales, useLocale } from "./LocaleContext"
 

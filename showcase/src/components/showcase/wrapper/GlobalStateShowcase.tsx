@@ -1,8 +1,7 @@
+import { Input, Label, useGlobalState } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { useGlobalState } from "@linked-planet/ui-kit-ts"
-import { Input, Label } from "@linked-planet/ui-kit-ts"
 
 //#region global-state
 function GlobalStateExample() {
@@ -23,32 +22,31 @@ function GlobalStateExample() {
 
 	return (
 		<>
-			<>
-				<Label htmlFor="myDataKey">Key</Label>
-				<Input
-					type="text"
-					id="myDataKey"
-					value={myData.key}
-					onChange={(e) => {
-						setMyData((prev) => ({
-							key: e.target.value,
-							name: prev.name,
-						}))
-					}}
-				/>
-				<Label htmlFor="myDataName">Name</Label>
-				<Input
-					type="text"
-					id="myDataName"
-					value={myData.name}
-					onChange={(e) => {
-						setMyData((prev) => ({
-							key: prev.key,
-							name: e.target.value,
-						}))
-					}}
-				/>
-			</>
+			<Label htmlFor="myDataKey">Key</Label>
+			<Input
+				type="text"
+				id="myDataKey"
+				value={myData.key}
+				onChange={(e) => {
+					setMyData((prev) => ({
+						key: e.target.value,
+						name: prev.name,
+					}))
+				}}
+			/>
+			<Label htmlFor="myDataName">Name</Label>
+			<Input
+				type="text"
+				id="myDataName"
+				value={myData.name}
+				onChange={(e) => {
+					setMyData((prev) => ({
+						key: prev.key,
+						name: e.target.value,
+					}))
+				}}
+			/>
+
 			<div className="bg-surface mt-8">{myData.key}</div>
 			<div className="bg-surface">{myData.name}</div>
 		</>
@@ -69,27 +67,26 @@ function ArrayString() {
 
 function GlobalArrayStateExample() {
 	// create global state hook
-	const [arrayData, setArrayData] = useGlobalState<string[]>("myArrayData", [
+	const [_, setArrayData] = useGlobalState<string[]>("myArrayData", [
 		"Apple",
 		"Banana",
 	])
 
 	return (
 		<>
-			<>
-				<Label htmlFor="myDataKey">Array Data Input</Label>
-				<Input
-					type="text"
-					id="myDataKey"
-					onKeyUp={(e) => {
-						if (e.key !== "Enter") return
-						setArrayData((prev) => [
-							...prev,
-							(e.target as HTMLInputElement).value,
-						])
-					}}
-				/>
-			</>
+			<Label htmlFor="myDataKey">Array Data Input</Label>
+			<Input
+				type="text"
+				id="myDataKey"
+				onKeyUp={(e) => {
+					if (e.key !== "Enter") return
+					setArrayData((prev) => [
+						...prev,
+						(e.target as HTMLInputElement).value,
+					])
+				}}
+			/>
+
 			<ArrayString />
 		</>
 	)

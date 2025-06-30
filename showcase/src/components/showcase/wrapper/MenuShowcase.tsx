@@ -1,12 +1,12 @@
-import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function MenuShowcase(props: ShowcaseProps) {
 	//#region menu
-	const [items] = useState(["Menu A", "Menu B", "Menu C"])
+	/*const [items] = useState(["Menu A", "Menu B", "Menu C"])
 	const [selectedItems, setSelectedItems] = useState(["Menu A"])
+	*/
 	const example = (
 		<div>
 			Todo: pull menu components out of dropdown menu and maybe also

@@ -1,15 +1,15 @@
-import React, { type ReactNode, useMemo } from "react"
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
+	Button,
+	Checkbox,
 	DataTable,
 	type DataTableTypes,
 	Input,
 	Label,
-	Checkbox,
-	Button,
 } from "@linked-planet/ui-kit-ts"
+import { type ReactNode, useMemo, useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //#region datatable-example
 type RowData = {
@@ -101,10 +101,9 @@ function DataTableExample() {
 	}, [])
 
 	const [fullNameFilter, setFullNameFilter] =
-		React.useState<DataTableTypes.ColumnFilter>()
-	const [cityFilter, setCityFilter] =
-		React.useState<DataTableTypes.ColumnFilter>()
-	const [hideState, setHideState] = React.useState<boolean>(false)
+		useState<DataTableTypes.ColumnFilter>()
+	const [cityFilter, setCityFilter] = useState<DataTableTypes.ColumnFilter>()
+	const [hideState, setHideState] = useState<boolean>(false)
 
 	const filters = []
 	if (fullNameFilter) filters.push(fullNameFilter)
@@ -242,10 +241,9 @@ function DataTableColumnDefHelperExample() {
 	}, [columnHelper])
 
 	const [fullNameFilter, setFullNameFilter] =
-		React.useState<DataTableTypes.ColumnFilter>()
-	const [cityFilter, setCityFilter] =
-		React.useState<DataTableTypes.ColumnFilter>()
-	const [hideState, setHideState] = React.useState<boolean>(false)
+		useState<DataTableTypes.ColumnFilter>()
+	const [cityFilter, setCityFilter] = useState<DataTableTypes.ColumnFilter>()
+	const [hideState, setHideState] = useState<boolean>(false)
 
 	const filters: DataTableTypes.ColumnFilter[] = []
 	if (fullNameFilter) filters.push(fullNameFilter)

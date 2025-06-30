@@ -1,11 +1,11 @@
 import React, {
-	forwardRef,
 	type ComponentPropsWithoutRef,
-	type ForwardedRef,
 	type CSSProperties,
+	type ForwardedRef,
+	forwardRef,
+	type ReactNode,
 	useImperativeHandle,
 	useRef,
-	type ReactNode,
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { inputBaseStyles } from "../styleHelper"
@@ -60,7 +60,6 @@ const Input = forwardRef(
 			testId,
 			disabled,
 			appearance = "default",
-			onClick,
 			iconAfter,
 			iconBefore,
 			...props

@@ -1,8 +1,7 @@
+import { Button, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
-import { Button, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 
 //#region toastflagShowExtendedFlag
 // add the ToastFlagContainer to the root of your app

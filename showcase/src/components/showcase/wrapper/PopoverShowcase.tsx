@@ -1,11 +1,11 @@
 import { Calendar, Popover, Select } from "@linked-planet/ui-kit-ts"
+import { XIcon } from "lucide-react"
+import { useEffect, useRef } from "react"
+import React from "react-dom/client"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { XIcon } from "lucide-react"
-import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
-import { useEffect, useRef } from "react"
-import React from "react-dom/client"
 
 //#region popover-example
 function PopoverExample() {

@@ -1,7 +1,7 @@
+import { Lozenge } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Lozenge } from "@linked-planet/ui-kit-ts"
 
 function LozengeShowcase(props: ShowcaseProps) {
 	//#region lozenge

@@ -6,14 +6,14 @@
 	DropdownItemRadio as AKDropdownItemRadio,
 	DropdownItemCheckboxGroup as AKDropdownItemCheckboxGroup,
 } from "@atlaskit/dropdown-menu"*/
+
+import { Dropdown } from "@linked-planet/ui-kit-ts"
 import { useEffect, useRef, useState } from "react"
+import ReactDOM from "react-dom"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
-import { Dropdown } from "@linked-planet/ui-kit-ts"
-import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
-import ReactDOM from "react-dom"
 
 //#region dropdown-shadow-root
 const lpExampleShadow = (
@@ -55,94 +55,6 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			setCheckBoxes([...checkBoxes, value])
 		}
 	}
-
-	const akExample = (
-		<>
-			{/*<AKDropdownMenu trigger={"Trigger"}>
-				<AKDropdownItemCheckbox
-					id="item-1"
-					description={"test description"}
-					isSelected={checkBoxes.includes("item-1")}
-					onClick={() => handleCheckboxChange("item-1")}
-				>
-					Dropdown Checkbox Item 1
-				</AKDropdownItemCheckbox>
-				<AKDropdownItemCheckbox
-					id="item-2"
-					isSelected={checkBoxes.includes("item-2")}
-					onClick={() => handleCheckboxChange("item-2")}
-				>
-					Dropdown Checkbox Item 2
-				</AKDropdownItemCheckbox>
-				<AKDropdownItemCheckbox
-					id="item-3"
-					isDisabled={true}
-					isSelected={checkBoxes.includes("item-3")}
-					onClick={() => handleCheckboxChange("item-3")}
-				>
-					Dropdown Checkbox Item 3
-				</AKDropdownItemCheckbox>
-				<AKDropdownItemGroup title="test group" hasSeparator>
-					<AKDropdownItem
-						description={"group item test description"}
-						elemAfter={<div>A</div>}
-						elemBefore={<div>B</div>}
-					>
-						First dropdown item
-					</AKDropdownItem>
-					<AKDropdownItem isSelected>
-						Second dropdown item
-					</AKDropdownItem>
-					<AKDropdownItem isDisabled>
-						Disabled dropdown item
-					</AKDropdownItem>
-				</AKDropdownItemGroup>
-				<AKDropdownItem>After group dropdown item</AKDropdownItem>
-				<AKDropdownItemRadioGroup
-					id="dropdown-item-radio-it"
-					hasSeparator
-					title="test title"
-				>
-					<AKDropdownItemRadio
-						id="radio-1"
-						description={"another description"}
-						isSelected={radioValue === "testval1"}
-						onClick={() => handleRadioChange("testval1")}
-					>
-						Radio 1
-					</AKDropdownItemRadio>
-					<AKDropdownItemRadio
-						id="radio-2"
-						isSelected={radioValue === "radio-2"}
-						onClick={() => handleRadioChange("radio-2")}
-					>
-						Radio 2
-					</AKDropdownItemRadio>
-					<AKDropdownItemRadio
-						id="radio-3"
-						isSelected={radioValue === "radio-3"}
-						onClick={() => handleRadioChange("radio-3")}
-					>
-						Radio 3
-					</AKDropdownItemRadio>
-					<AKDropdownItemRadio id="radio-4" isDisabled>
-						Radio Disabled
-					</AKDropdownItemRadio>
-				</AKDropdownItemRadioGroup>
-				<AKDropdownItemCheckboxGroup id="some-id">
-					<AKDropdownItemCheckbox id="checkbox-1">
-						Checkbox 1
-					</AKDropdownItemCheckbox>
-					<AKDropdownItemCheckbox id="checkbox-2">
-						Checkbox 2
-					</AKDropdownItemCheckbox>
-				</AKDropdownItemCheckboxGroup>
-				{Array.from(Array(100).keys()).map((i) => (
-					<AKDropdownItem key={i}>long test item {i}</AKDropdownItem>
-				))}
-			</AKDropdownMenu>*/}
-		</>
-	)
 
 	//#region dropdown-menu
 	const lpExample = (

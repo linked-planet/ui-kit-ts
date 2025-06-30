@@ -1,14 +1,14 @@
+import { Button, Tooltip, TooltipProvider } from "@linked-planet/ui-kit-ts"
 import {
 	ActivityIcon,
 	CameraIcon,
-	SearchIcon,
 	EyeIcon,
+	SearchIcon,
 	SquareCheckIcon,
 } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Tooltip, TooltipProvider, Button } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
 

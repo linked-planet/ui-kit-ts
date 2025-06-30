@@ -1,6 +1,12 @@
+import dayjs, { type Dayjs } from "dayjs/esm"
+import {
+	ChevronLeftIcon,
+	ChevronRightIcon,
+	ChevronsLeftIcon,
+	ChevronsRightIcon,
+} from "lucide-react"
 import type React from "react"
 import { useCallback, useMemo, useState } from "react"
-
 import {
 	type DateRange,
 	DayPicker,
@@ -8,28 +14,20 @@ import {
 	type Labels,
 	type Matcher,
 	type OnSelectHandler,
-	type PropsMulti,
-	type PropsSingle,
-	type PropsRange,
 	type PropsBase,
+	type PropsMulti,
+	type PropsRange,
+	type PropsSingle,
+	useDayPicker,
 } from "react-day-picker"
-
-import dayjs, { type Dayjs } from "dayjs/esm"
 import {
 	type Control,
 	Controller,
 	type FieldPath,
 	type FieldValues,
 } from "react-hook-form"
-import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
-import {
-	ChevronLeftIcon,
-	ChevronRightIcon,
-	ChevronsLeftIcon,
-	ChevronsRightIcon,
-} from "lucide-react"
-import { useDayPicker } from "react-day-picker"
 import { twJoin } from "tailwind-merge"
+import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
 
 //import "react-day-picker/dist/style.css" -> is imported in index.ts of the library that it is before TW
 
@@ -90,7 +88,7 @@ type CalendarBaseRangeProps = PropsBase &
 	}
 
 const buttonStyles = twJoin(
-	"border-none cursor-pointer p-1 rounded-xs z-10 inline-flex place-content-center-safe",
+	"border-none font-normal bg-surface cursor-pointer p-1 z-10 inline-flex place-content-center-safe",
 	"hover:bg-surface-hovered hover:text-text disabled:hover:bg-transparent disabled:hover:text-text-disabled disabled:cursor-not-allowed disabled:text-text-disabled",
 	"focus-visible:ring-0 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-offset-2",
 )
@@ -99,8 +97,8 @@ const captionStyles =
 const captionLabelStyles = "text-text text-sm font-bold flex justify-center"
 
 const dayTodayStyles = twJoin(
-	"font-bold relative text-brand-text",
-	"after:absolute after:content-[''] after:block after:left-1.5 after:right-1.5 after:border-b-[2.5px] after:rounded after:border-brand-text after:bottom-1",
+	"group/today font-extrabold relative hover:bg-selected-hovered active:bg-selected-pressed",
+	"after:absolute after:content-[''] after: after:block after:left-1.5 after:right-1.5 after:border-b-[2.5px] after:border-text hover:after:border-selected-text active:after:border-selected-pressed after:bottom-1 after:pointer-events-none",
 )
 
 const dayStyles =
@@ -113,10 +111,13 @@ const classNames: DayPickerProps["classNames"] = {
 	button_previous: buttonStyles,
 	month_grid: "w-full",
 	day: dayStyles,
-	day_button: "size-full cursor-pointer disabled:cursor-not-allowed",
+	day_button: twJoin(
+		"size-full cursor-pointer disabled:cursor-not-allowed bg-transparent border-none group-hover/today:text-selected-text",
+		"group-[.today]/today:text-text group-[.selected]/today:text-text-inverse group-[.selected]/today:hover:text-selected-text group-hover/today:bg-selected-subtle",
+	),
 	disabled: "text-disabled-text cursor-not-allowed",
 	outside: "text-disabled-text",
-	hidden: "bg-red-500 text-purple-500",
+	hidden: "text-transparent bg-transparent",
 	today: dayTodayStyles,
 	root: "group pt-4 bg-surface p-3 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2 relative",
 	weeks: "border-b-0",
@@ -312,11 +313,11 @@ export function CalendarBase(
 			modifiersClassNames={{
 				hidden: "bg-neutral hover:bg-neutral-hovered active:bg-neutral-hovered text-text",
 				disabled:
-					"text-disabled-text cursor-not-allowed hover:bg-transparent bg-surface disabled:text-text-disabled disabled:hover:bg-transparent disabled:cursor-not-allowed",
+					"text-disabled-text cursor-not-allowed hover:bg-transparent bg-surface disabled:text-text-disabled disabled:hover:bg-transparent disabled:cursor-not-allowed border-none",
 				secondarySelected:
-					"bg-surface-overlay-hovered data-[disabled=true]:bg-surface text-text after:border-text",
+					"bg-surface-overlay-hovered data-[disabled=true]:bg-surface text-text after:border-text border-none",
 				selected:
-					"bg-selected text-selected-text-inverse hover:text-selected-text font-bold after:border-selected-text-inverse hover:after:border-selected-text",
+					"selected bg-selected after:border-text-inverse text-selected-text-inverse hover:text-selected-text hover:bg-selected-hovered font-bold after:border-selected-text-inverse hover:after:border-selected-text border-none after:border-black",
 			}}
 			disabled={disabled || disabledDates}
 			onDayClick={!disabled && onDayClick ? onDayClick : undefined}

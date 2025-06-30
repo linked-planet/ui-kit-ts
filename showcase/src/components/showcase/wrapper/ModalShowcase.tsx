@@ -1,9 +1,3 @@
-import { useEffect, useRef, useState } from "react"
-import React from "react-dom/client"
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { XIcon } from "lucide-react"
 /*import {
 	default as AKModal,
 	ModalBody as AKModalBody,
@@ -13,15 +7,21 @@ import { XIcon } from "lucide-react"
 	ModalTransition as AKModalTransition,
 } from "@atlaskit/modal-dialog"*/
 import {
+	Button,
+	Collapsible,
+	Dropdown,
 	Modal,
 	Select,
-	Button,
-	Dropdown,
-	Collapsible,
 } from "@linked-planet/ui-kit-ts"
 //import { default as AKSelect } from "@atlaskit/select"
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
+import { XIcon } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import React from "react-dom/client"
 import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function AKExample() {
 	const [isAKModalActive, setIsAKModalActive] = useState(false)

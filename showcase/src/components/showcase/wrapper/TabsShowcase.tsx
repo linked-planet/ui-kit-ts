@@ -8,7 +8,7 @@ import ShowcaseWrapperItem, {
 	TabPanel as AKTabPanel,
 } from "@atlaskit/tabs"*/
 
-import { Tabs, Button } from "@linked-planet/ui-kit-ts"
+import { Button, Tabs } from "@linked-planet/ui-kit-ts"
 
 function AutomaticTabsValue() {
 	//#region tabs_automatic_value

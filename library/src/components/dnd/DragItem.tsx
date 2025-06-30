@@ -1,7 +1,7 @@
-import React from "react"
-import { twMerge } from "tailwind-merge"
 import { Draggable } from "@hello-pangea/dnd"
 import { MoreVerticalIcon } from "lucide-react"
+import { useRef } from "react"
+import { twMerge } from "tailwind-merge"
 
 export type DragItemProps = {
 	draggableId: string
@@ -34,7 +34,7 @@ export function DragItem({
 	style,
 	thin = false,
 }: DragItemProps) {
-	const draggableRef = React.useRef<HTMLDivElement>(null)
+	const draggableRef = useRef<HTMLDivElement>(null)
 	return (
 		<Draggable draggableId={draggableId} index={index}>
 			{({ innerRef, draggableProps, dragHandleProps }) => {

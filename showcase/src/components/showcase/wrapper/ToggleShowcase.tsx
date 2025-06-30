@@ -1,9 +1,9 @@
-import React, { useState } from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 //import AKToggle from "@atlaskit/toggle"
 import { Toggle } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function ToggleShowcase(props: ShowcaseProps) {
 	const [isToggleActive, setIsToggleActive] = useState(false)

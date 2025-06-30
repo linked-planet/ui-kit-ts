@@ -1,42 +1,41 @@
+import { default as emotionCreateCache } from "@emotion/cache"
+import { CacheProvider, type SerializedStyles } from "@emotion/react"
+import type { StyleSheet } from "@emotion/sheet"
+import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react"
 import type React from "react"
 import {
 	type CSSProperties,
+	type ReactNode,
 	useImperativeHandle,
 	useMemo,
 	useRef,
-	type ReactNode,
 } from "react"
-import { useController } from "react-hook-form"
 import type { Control, FieldValues, Path } from "react-hook-form"
+import { useController } from "react-hook-form"
 import {
 	type ActionMeta,
-	type CSSObjectWithLabel,
+	type AriaGuidance,
+	type AriaLiveMessages,
+	type AriaOnChange,
+	type AriaOnFilter,
+	type AriaOnFocus,
 	type ClassNamesConfig,
+	type CSSObjectWithLabel,
 	type GroupBase,
 	type OnChangeValue,
 	default as RSelect,
 	type SelectComponentsConfig,
 	type SelectInstance,
-	type AriaOnFocus,
-	type AriaGuidance,
-	type AriaOnChange,
-	type AriaOnFilter,
-	type AriaLiveMessages,
 } from "react-select"
 import ReactSelectAsync from "react-select/async"
-import { default as emotionCreateCache } from "@emotion/cache"
-
 import ReactSelectCreatable, {
 	type CreatableProps,
 } from "react-select/creatable"
 import { twJoin, twMerge } from "tailwind-merge"
-import { SlidingErrorMessage } from "./ErrorHelpWrapper"
+import usePortalContainer from "../../utils/usePortalContainer"
 import { IconSizeHelper } from "../IconSizeHelper"
 import { inputBaseStyles } from "../styleHelper"
-import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react"
-import { CacheProvider, type SerializedStyles } from "@emotion/react"
-import type { StyleSheet } from "@emotion/sheet"
-import usePortalContainer from "../../utils/usePortalContainer"
+import { SlidingErrorMessage } from "./ErrorHelpWrapper"
 
 // usage aria stuff:
 // https://react-select.com/advanced
@@ -918,13 +917,9 @@ export function Select<
 			>
 		>(null)
 
-	useImperativeHandle(
-		props.instanceRef,
-		() => {
-			return localRef.current
-		},
-		[],
-	)
+	useImperativeHandle(props.instanceRef, () => {
+		return localRef.current
+	}, [])
 
 	let portalContainerRoot = usePortalContainer(
 		usePortal,

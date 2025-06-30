@@ -3,18 +3,18 @@ import {
 	Button,
 	ButtonGroup,
 	Label,
+	type OptionGroupType,
 	Select,
 	type SelectComponentProps,
-	type OptionGroupType,
 	selectComponents,
 } from "@linked-planet/ui-kit-ts"
 import { useEffect, useMemo, useRef, useState } from "react"
+import React from "react-dom/client"
 import { useForm } from "react-hook-form"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import React from "react-dom/client"
-import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 
 //#region select2form-uncontrolled
 
@@ -49,7 +49,7 @@ function FormExample() {
 		},
 	]
 
-	const { handleSubmit, control, reset, setValue } = useForm<FormData>({
+	const { handleSubmit, control, reset } = useForm<FormData>({
 		defaultValues: {
 			singleValue: availableOptions[0].value,
 			multiValues: [availableOptions[0].value, availableOptions[1].value],
@@ -247,7 +247,7 @@ function CustomComponentExample() {
 //#endregion select-custom-component
 
 //#region select-async
-function SelectAsyncExample() {}
+//! TODO: add async example and finish async select
 //#endregion select-async
 
 //#region select-shadow-dom

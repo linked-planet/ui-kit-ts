@@ -1,7 +1,4 @@
-import React, { useState } from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import type { FilterType } from "@linked-planet/ui-kit-ts"
 //import Avatar, { AvatarItem } from "@atlaskit/avatar"
 import {
 	FilterCard,
@@ -10,7 +7,11 @@ import {
 	FilterDropdowns,
 	PageLayout,
 } from "@linked-planet/ui-kit-ts"
-import type { FilterType } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
 //import Avatar, { AvatarItem } from "@atlaskit/avatar"
 
 function FiltersShowcase(props: ShowcaseProps) {
@@ -76,7 +77,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 	const filterCardExample = (
 		<FilterCard
 			filter={filter}
-			onAttributeClick={(cat, attr) => {
+			onAttributeClick={(_cat, attr) => {
 				setSelectedValues((old) => {
 					const newSelected = [...old]
 					const index = newSelected.indexOf(attr)
@@ -88,7 +89,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 					return newSelected
 				})
 			}}
-			onSelectedChanged={(cat, attrs) => {
+			onSelectedChanged={(_cat, attrs) => {
 				setSelectedValues(attrs)
 			}}
 			className="max-h-[20rem]"
@@ -204,7 +205,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 			onAttributeClick={(cat, attr) => {
 				console.log("on attribute click", cat, attr)
 			}}
-			onSelectedChanged={(cat, attrs) => {
+			onSelectedChanged={(_cat, attrs) => {
 				console.log("on selected changed", attrs)
 				setSelectedValues(attrs)
 			}}

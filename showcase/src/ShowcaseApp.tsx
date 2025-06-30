@@ -1,11 +1,10 @@
+import { AppLayout, LocaleProvider, PageLayout } from "@linked-planet/ui-kit-ts"
 import { useState } from "react"
-import ShowcaseTopNavigation from "./components/showcase/ShowcaseTopNavigation"
-import ShowcaseLeftSidebar from "./components/showcase/ShowcaseLeftSidebar"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
+import ShowcaseLeftSidebar from "./components/showcase/ShowcaseLeftSidebar"
+import ShowcaseTopNavigation from "./components/showcase/ShowcaseTopNavigation"
 import IntroPage from "./page/IntroPage"
 import NotFoundPage from "./page/NotFoundPage"
-
-import { AppLayout, LocaleProvider, PageLayout } from "@linked-planet/ui-kit-ts"
 import SinglePage from "./page/SinglePage"
 import WrappersPage from "./page/WrappersPage"
 

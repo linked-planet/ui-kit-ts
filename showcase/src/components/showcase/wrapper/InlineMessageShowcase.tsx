@@ -1,9 +1,8 @@
-import React from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
 import { InlineMessage } from "@linked-planet/ui-kit-ts"
+
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 export default function InlineMessageShowcase(props: ShowcaseProps) {
 	//#region inlinemessage

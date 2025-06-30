@@ -565,7 +565,6 @@ function TestCustomHeaderRowTimeSlot<
 >({
 	timeSlot,
 	timeSlotMinutes,
-	isLastOfDay,
 	timeFrameOfDay,
 	viewType,
 	slotsArray,
@@ -643,12 +642,7 @@ function TestCustomHeaderRowTimeSlot<
 function CustomHeaderRowHeader<
 	G extends TimeTableTypes.TimeTableGroup,
 	I extends TimeTableTypes.TimeSlotBooking,
->({
-	slotsArray,
-	timeFrameOfDay,
-	viewType,
-	entries,
-}: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
+>({ entries }: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
 	if (!entries || !entries[1]) {
 		return <></>
 	}
@@ -690,7 +684,7 @@ function Example() {
 	const [entries, setEntries] = useState(exampleEntries)
 
 	const onTimeSlotItemClickCB = useCallback(
-		(group: ExampleGroup, item: ExampleItem) => {
+		(_group: ExampleGroup, item: ExampleItem) => {
 			setSelectedTimeSlotItem((prev) => {
 				if (prev === item) {
 					return undefined
@@ -799,7 +793,7 @@ function Example() {
 	)
 
 	useEffect(() => {
-		//requestMoreEntriesCB()
+		requestMoreEntriesCB()
 		/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
@@ -1114,10 +1108,10 @@ function Example() {
 					isCellDisabled={isCellDisabled}
 					viewType={viewType}
 					locale={locale}
-					/*customHeaderRow={{
+					customHeaderRow={{
 						timeSlot: TestCustomHeaderRowTimeSlot,
 						header: CustomHeaderRowHeader,
-					}}*/
+					}}
 					onRenderedGroupsChanged={(groups) => {
 						console.log("rendered groups changed", groups)
 					}}

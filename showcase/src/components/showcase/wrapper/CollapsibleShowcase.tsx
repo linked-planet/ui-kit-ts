@@ -1,8 +1,8 @@
+import { Button } from "@linked-planet/ui-kit-ts"
 import { Collapsible } from "@linked-planet/ui-kit-ts/components/Collapsible"
+import { useState } from "react"
 import type { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import ShowcaseWrapperItem from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { useState } from "react"
-import { Button } from "@linked-planet/ui-kit-ts"
 
 //#region collapsible-controlled
 function CollapsibleControlled() {

@@ -1,21 +1,20 @@
-import { type CSSProperties, useMemo, useRef, useState } from "react"
 import {
+	Badge,
 	BookCard,
 	BookCardComponents,
-	Tag,
-	TagGroup,
-	Badge,
-	Fieldset,
 	Button,
 	ButtonGroup,
+	Fieldset,
+	Tag,
+	TagGroup,
 } from "@linked-planet/ui-kit-ts"
+import { TruncatedText } from "@linked-planet/ui-kit-ts/components/TruncatedText"
+import { type CSSProperties, useMemo, useRef, useState } from "react"
 
+import { CSSTransition } from "react-transition-group"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
-import { CSSTransition } from "react-transition-group"
-import { TruncatedText } from "@linked-planet/ui-kit-ts/components/TruncatedText"
 
 //#region bookcardcomponents
 function BookCardComponentsExample() {
@@ -184,44 +183,42 @@ function BookCardExample() {
 					</div>
 				}
 			>
-				<>
-					<BookCardComponents.CardBodyEntry>
-						<BookCardComponents.CardBodyEntryTitle>
-							Book Entry Title
-						</BookCardComponents.CardBodyEntryTitle>
-						<TruncatedText>
-							truncated - Lorem ipsum dolor sit amet consectetur
-							adipisicing elit. Beatae aperiam tenetur est in
-							quidem? Tempore, cumque perspiciatis optio aperiam
-							dolorem saepe harum, sequi eaque nisi quas,
-							assumenda praesentium! Labore, incidunt.
-						</TruncatedText>
-					</BookCardComponents.CardBodyEntry>
-					<BookCardComponents.CardBodyEntry>
-						<BookCardComponents.CardBodyEntryTitle>
-							Book Entry Title
-						</BookCardComponents.CardBodyEntryTitle>
-						<TruncatedText>untruncated</TruncatedText>
-					</BookCardComponents.CardBodyEntry>
-					<BookCardComponents.CardBodyEntry>
-						<BookCardComponents.CardBodyEntryTitle>
-							Book Entry Title
-						</BookCardComponents.CardBodyEntryTitle>
-						<Tag>
-							Lorem ipsum, dolor sit amet consectetur adipisicing
-							elit. Illo cumque eum laborum voluptate ipsa sed
-							consectetur tempore vel quia est quas itaque
-							voluptatem neque odio, maiores ut cum at distinctio?
-						</Tag>
-						<Tag>
-							Lorem ipsum, dolor sit amet consectetur adipisicing
-							elit. Illo cumque eum laborum voluptate ipsa sed
-							consectetur tempore vel quia est quas itaque
-							voluptatem neque odio, maiores ut cum at distinctio?
-						</Tag>
-					</BookCardComponents.CardBodyEntry>
-					{children}
-				</>
+				<BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntryTitle>
+						Book Entry Title
+					</BookCardComponents.CardBodyEntryTitle>
+					<TruncatedText>
+						truncated - Lorem ipsum dolor sit amet consectetur
+						adipisicing elit. Beatae aperiam tenetur est in quidem?
+						Tempore, cumque perspiciatis optio aperiam dolorem saepe
+						harum, sequi eaque nisi quas, assumenda praesentium!
+						Labore, incidunt.
+					</TruncatedText>
+				</BookCardComponents.CardBodyEntry>
+				<BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntryTitle>
+						Book Entry Title
+					</BookCardComponents.CardBodyEntryTitle>
+					<TruncatedText>untruncated</TruncatedText>
+				</BookCardComponents.CardBodyEntry>
+				<BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntryTitle>
+						Book Entry Title
+					</BookCardComponents.CardBodyEntryTitle>
+					<Tag>
+						Lorem ipsum, dolor sit amet consectetur adipisicing
+						elit. Illo cumque eum laborum voluptate ipsa sed
+						consectetur tempore vel quia est quas itaque voluptatem
+						neque odio, maiores ut cum at distinctio?
+					</Tag>
+					<Tag>
+						Lorem ipsum, dolor sit amet consectetur adipisicing
+						elit. Illo cumque eum laborum voluptate ipsa sed
+						consectetur tempore vel quia est quas itaque voluptatem
+						neque odio, maiores ut cum at distinctio?
+					</Tag>
+				</BookCardComponents.CardBodyEntry>
+				{children}
 			</BookCard>
 		</>
 	)

@@ -1,11 +1,11 @@
-import { useCallback } from "react"
-import useShowcases from "../../useShowcases"
-import { useLocation, useNavigate } from "react-router-dom"
 import {
 	LeftSidebar,
 	RightSidebar,
 	SideNavigation,
 } from "@linked-planet/ui-kit-ts"
+import { useCallback } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
+import useShowcases from "../../useShowcases"
 
 function scrollAndHighlightElement(id: string) {
 	if (!id) {
@@ -68,7 +68,7 @@ function ShowcaseLeftSidebar({
 									)
 								}
 							}}
-							onClick={(e) => clickCB(showcaseName)}
+							onClick={() => clickCB(showcaseName)}
 						>
 							{showcaseName}
 						</SideNavigation.ButtonItem>

@@ -1,5 +1,11 @@
-import React, { useState, type Dispatch, useEffect, useContext } from "react"
 import type { SetStateAction } from "react"
+import {
+	createContext,
+	type Dispatch,
+	useContext,
+	useEffect,
+	useState,
+} from "react"
 export const availableLocales = [
 	{ locale: "en", label: "English" },
 	{ locale: "de", label: "German" },
@@ -8,7 +14,7 @@ export const availableLocales = [
 
 export type Locale = (typeof availableLocales)[number]["locale"]
 
-const localizationContext = React.createContext<
+const localizationContext = createContext<
 	| {
 			locale: Locale
 			setLocale: Dispatch<SetStateAction<Locale>>

@@ -1,8 +1,8 @@
+import { Button, HighlightedText, Input } from "@linked-planet/ui-kit-ts"
 import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Button, HighlightedText, Input } from "@linked-planet/ui-kit-ts"
 
 function Example() {
 	const [caseSensitive, setCaseSensitive] = useState(false)

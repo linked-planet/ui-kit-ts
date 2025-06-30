@@ -1,6 +1,3 @@
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
 	Button,
 	ButtonGroup,
@@ -9,8 +6,12 @@ import {
 	Label,
 	TextArea,
 } from "@linked-planet/ui-kit-ts"
-import { useForm } from "react-hook-form"
 import { CalendarIcon } from "lucide-react"
+import { useForm } from "react-hook-form"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
 //#region input-form-example
 type FormData = {
 	testInput: string
@@ -67,19 +68,6 @@ function FormExample() {
 //#endregion input-form-example
 
 export default function InputShowcase(props: ShowcaseProps) {
-	const exampleAK = {
-		/*<Fieldset legend="Input Example">
-			<AKTextField />
-			<AKTextField isDisabled />
-			<AKTextField placeholder="Placeholder" />
-			<AKTextField isInvalid value={"invalid"} />
-			<AKTextField isReadOnly value={"readonly"} />
-			<AKTextField type="number" defaultValue={1} />
-			<AKTextField type="number" defaultValue={1} appearance="subtle" />
-			<AKTextArea placeholder="Text Area">It wants children</AKTextArea>
-		</Fieldset>*/
-	}
-
 	//#region text-input
 	const exampleLP = (
 		<Fieldset legend="Input Example">

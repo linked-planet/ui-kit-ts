@@ -1,8 +1,7 @@
-import React from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AwesomeSlider from "react-awesome-slider"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import "react-awesome-slider/dist/styles.css"
 
@@ -25,6 +24,7 @@ function AwesomeSliderShowcase(props: ShowcaseProps) {
 						src="images/logo.png"
 						width={100}
 						height={100}
+						alt="logo"
 					/>
 				</div>
 				<div>
@@ -33,6 +33,7 @@ function AwesomeSliderShowcase(props: ShowcaseProps) {
 						src="images/github-logo.png"
 						width={100}
 						height={100}
+						alt="github logo"
 					/>
 				</div>
 			</AwesomeSlider>

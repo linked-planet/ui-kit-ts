@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { cloneElement, useEffect, useState } from "react"
 import useShowCases from "../useShowcases"
 
 function WrappersPage() {
@@ -19,7 +19,7 @@ function WrappersPage() {
 	return (
 		<>
 			{Object.entries(scs).map(([id, component]) =>
-				React.cloneElement(component, { id }),
+				cloneElement(component, { id }),
 			)}
 		</>
 	)
