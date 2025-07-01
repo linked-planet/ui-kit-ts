@@ -1,12 +1,12 @@
 import * as RPo from "@radix-ui/react-popover"
+import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 import { forwardRef, useMemo, useRef } from "react"
 import { twMerge } from "tailwind-merge"
 import { usePortalContainer } from "../utils"
 import { Button, type ButtonProps } from "./Button"
 import { overlayBaseStyle } from "./styleHelper"
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
-const portalDivId = "uikts-popover" as const
+const _portalDivId = "uikts-popover" as const
 
 type TriggerProps = RPo.PopoverTriggerProps &
 	ButtonProps & {
@@ -206,7 +206,7 @@ function Root({
 	const triggerRef = useRef<HTMLButtonElement>(null)
 	const portalContainer = usePortalContainer(
 		usePortal,
-		"uikts-popover",
+		_portalDivId,
 		triggerRef.current,
 	)
 

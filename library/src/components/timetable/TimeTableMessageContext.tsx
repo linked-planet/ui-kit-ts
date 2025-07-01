@@ -1,8 +1,8 @@
 import IntlMessageFormat from "intl-messageformat"
 import type React from "react"
 import {
-	type Dispatch,
 	createContext,
+	type Dispatch,
 	useContext,
 	useEffect,
 	useMemo,
@@ -85,7 +85,7 @@ export function useTimeTableMessage(messagesEnabled = true) {
 			"useTimeTableMessage must be used within a TimeTableMessageProvider",
 		)
 
-	let messageTranslation: string | undefined = undefined
+	let messageTranslation: string | undefined
 	ret.message
 		? `no translation found for key [${ret.message?.messageKey}]`
 		: undefined

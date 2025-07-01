@@ -350,6 +350,12 @@ export function CalendarBase(
 
 function NextMonthButton({
 	hideYearButton,
+	onClick,
+	onKeyDown,
+	onKeyUp,
+	onMouseDown,
+	onMouseUp,
+	onDoubleClick,
 	...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
 	hideYearButton?: boolean
@@ -361,16 +367,6 @@ function NextMonthButton({
 	const month = nextMonth ? nextMonth?.getMonth() : undefined
 	const nextYear = year && month ? new Date(year + 1, month - 1) : undefined
 
-	const {
-		onClick,
-		onKeyDown,
-		onKeyUp,
-		onMouseDown,
-		onMouseUp,
-		onDoubleClick,
-		...propsWOEventHandler
-	} = props
-
 	const disabledNextMonth =
 		!nextMonth || (nextMonth && endMonth && nextMonth > endMonth)
 
@@ -379,12 +375,22 @@ function NextMonthButton({
 
 	return (
 		<div className="flex place-content-center-safe z-10">
-			<button type="button" disabled={disabledNextMonth} {...props}>
+			<button
+				type="button"
+				disabled={disabledNextMonth}
+				onClick={onClick}
+				onKeyDown={onKeyDown}
+				onKeyUp={onKeyUp}
+				onMouseDown={onMouseDown}
+				onMouseUp={onMouseUp}
+				onDoubleClick={onDoubleClick}
+				{...props}
+			>
 				<ChevronRightIcon strokeWidth={2} className="size-5" />
 			</button>
 			<button
 				type="button"
-				{...propsWOEventHandler}
+				{...props}
 				disabled={disabledNextYear}
 				onClick={() => {
 					if (nextYear) {
@@ -401,6 +407,12 @@ function NextMonthButton({
 
 function PreviousMonthButton({
 	hideYearButton,
+	onClick,
+	onKeyDown,
+	onKeyUp,
+	onMouseDown,
+	onMouseUp,
+	onDoubleClick,
 	...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
 	hideYearButton?: boolean
@@ -412,16 +424,6 @@ function PreviousMonthButton({
 	const month = previousMonth ? previousMonth?.getMonth() : undefined
 	const previousYear =
 		year && month ? new Date(year - 1, month + 1) : undefined
-
-	const {
-		onClick,
-		onKeyDown,
-		onKeyUp,
-		onMouseDown,
-		onMouseUp,
-		onDoubleClick,
-		...propsWOEventHandler
-	} = props
 
 	const disabledPreviousMonth =
 		!previousMonth ||
@@ -435,7 +437,7 @@ function PreviousMonthButton({
 		<div className="flex place-content-center-safe z-10">
 			<button
 				type="button"
-				{...propsWOEventHandler}
+				{...props}
 				onClick={() => {
 					if (previousYear) {
 						goToMonth(previousYear)
@@ -446,7 +448,17 @@ function PreviousMonthButton({
 			>
 				<ChevronsLeftIcon strokeWidth={2} className="size-5" />
 			</button>
-			<button type="button" disabled={disabledPreviousMonth} {...props}>
+			<button
+				type="button"
+				disabled={disabledPreviousMonth}
+				onClick={onClick}
+				onKeyDown={onKeyDown}
+				onKeyUp={onKeyUp}
+				onMouseDown={onMouseDown}
+				onMouseUp={onMouseUp}
+				onDoubleClick={onDoubleClick}
+				{...props}
+			>
 				<ChevronLeftIcon strokeWidth={2} className="size-5" />
 			</button>
 		</div>

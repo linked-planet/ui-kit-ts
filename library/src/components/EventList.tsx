@@ -1,8 +1,8 @@
-import { type ComponentType, useMemo } from "react"
 import type { Dayjs } from "dayjs/esm"
-import type { DateType, TimeType } from "../utils/DateUtils"
-import { DateUtils } from "../utils"
 import dayjs from "dayjs/esm"
+import { type ComponentType, useMemo } from "react"
+import { DateUtils } from "../utils"
+import type { DateType, TimeType } from "../utils/DateUtils"
 
 export type EventListItem = {
 	key: string
@@ -74,7 +74,7 @@ function useOrderByDate<T extends EventListItem>(
 			}[]
 		} = {}
 		for (const it of sortedItems) {
-			const minBegin = it.startDate??minStartTime
+			const minBegin = it.startDate ?? minStartTime
 			let startDate = minBegin >= minStartTime ? minBegin : minStartTime
 			const endDate = it.endDate ?? maxEndTime
 			while (startDate.isBefore(endDate)) {
@@ -198,7 +198,7 @@ export function EventList<T extends EventListItem>({
 					<div key={date}>
 						{header}
 						<div className="flex flex-1 flex-col gap-1">
-							{bookings.map((it, index) => {
+							{bookings.map((it) => {
 								return (
 									<ItemComponent
 										event={it.event}

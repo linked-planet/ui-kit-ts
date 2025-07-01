@@ -1,8 +1,8 @@
+import { XIcon } from "lucide-react"
 import type React from "react"
 import { type CSSProperties, useCallback, useMemo, useState } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import type { Appearance } from "../utils/appearanceTypes"
-import { XIcon } from "lucide-react"
 
 export const TagColorOptions = [
 	"blue",
@@ -177,7 +177,7 @@ function SimpleTag({
 			{truncate ? (
 				<div className={"truncate w-full"}>{children}</div>
 			) : (
-				<>{children}</>
+				children
 			)}
 		</output>
 	)

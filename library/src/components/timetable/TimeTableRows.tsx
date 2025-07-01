@@ -10,18 +10,18 @@ import {
 	useRef,
 	useState,
 } from "react"
+import useResizeObserver, { type ObservedSize } from "use-resize-observer"
+import { useDebounceHelper, useIdleRateLimitHelper } from "../../utils"
+import ItemWrapper from "./ItemWrapper"
+import { PlaceHolderItemWrapper } from "./PlaceholderItem"
 import {
-	timeTableDebugLogs,
-	timeTableGroupRenderBatchSize,
 	type TimeSlotBooking,
 	type TimeTableGroup,
 	type TimeTableViewType,
+	timeTableDebugLogs,
+	timeTableGroupRenderBatchSize,
 } from "./TimeTable"
-
-import ItemWrapper from "./ItemWrapper"
-
-import useResizeObserver, { type ObservedSize } from "use-resize-observer"
-import { PlaceHolderItemWrapper } from "./PlaceholderItem"
+import { useGroupComponent } from "./TimeTableComponentStore"
 import {
 	type TimeFrameDay,
 	useTTCCellDimentions,
@@ -31,7 +31,6 @@ import {
 	useTTCTimeSlotSelectionDisabled,
 } from "./TimeTableConfigStore"
 import { useTimeTableIdent } from "./TimeTableIdentContext"
-import { useGroupComponent } from "./TimeTableComponentStore"
 import {
 	getMultiSelectionMode,
 	setLastHandledTimeSlot,
@@ -39,9 +38,8 @@ import {
 	toggleTimeSlotSelected,
 	useTimeSlotSelection,
 } from "./TimeTableSelectionStore"
-import type { ItemRowEntry } from "./useGoupRows"
 import { getLeftAndWidth, getTimeSlotMinutes } from "./timeTableUtils"
-import { useDebounceHelper, useIdleRateLimitHelper } from "../../utils"
+import type { ItemRowEntry } from "./useGoupRows"
 
 export const allGroupsRenderedEvent = "timetable-allgroupsrendered" as const
 
@@ -1010,7 +1008,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	selectedTimeSlotItem,
 	onTimeSlotItemClick,
 	renderCells,
-	columnWidth,
+	//columnWidth,
 	rowHeight,
 	placeHolderHeight,
 	slotsArray,
@@ -1273,8 +1271,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	return trs
 }
 
-let mouseLeftTS: number | null = null // this is used to detect if the mouse left the table
-
 /**
  * Creates a function which creates the mouse event handler for the table cells (the interaction cell, the first row of each group)
  * @param timeSlotNumber  the time slot number of the table cell
@@ -1319,7 +1315,6 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				if (!getMultiSelectionMode(storeIdent)) {
 					return
 				}
-				mouseLeftTS = timeSlotNumber
 				toggleTimeSlotSelected(
 					storeIdent,
 					group,

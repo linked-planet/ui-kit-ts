@@ -1,16 +1,5 @@
 import * as RDd from "@radix-ui/react-dropdown-menu"
-import {
-	forwardRef,
-	useImperativeHandle,
-	useMemo,
-	useRef,
-	type ForwardedRef,
-} from "react"
-import { twMerge } from "tailwind-merge"
-import { usePortalContainer } from "../utils"
-import { Button, type ButtonProps } from "./Button"
-import { overlayBaseStyle } from "./styleHelper"
-import { IconSizeHelper } from "./IconSizeHelper"
+import { cx } from "class-variance-authority"
 import {
 	CheckIcon,
 	ChevronDownIcon,
@@ -18,7 +7,18 @@ import {
 	ChevronRightIcon,
 	ChevronUpIcon,
 } from "lucide-react"
-import { cx } from "class-variance-authority"
+import {
+	type ForwardedRef,
+	forwardRef,
+	useImperativeHandle,
+	useMemo,
+	useRef,
+} from "react"
+import { twMerge } from "tailwind-merge"
+import { usePortalContainer } from "../utils"
+import { Button, type ButtonProps } from "./Button"
+import { IconSizeHelper } from "./IconSizeHelper"
+import { overlayBaseStyle } from "./styleHelper"
 
 const commonStyles =
 	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-hidden border-l-2 border-y-0 border-r-0 focus-visible:border-l-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-hidden focus-visible:border-selected-border" as const
@@ -31,7 +31,7 @@ const normalStyles =
 
 const descriptionStyle = "text-text-subtlest text-[12px] leading-4 h-4" as const
 
-const portalDivId = "uikts-dropdown" as const
+const _portalDivId = "uikts-dropdown" as const
 
 type ItemProps = Pick<
 	RDd.DropdownMenuItemProps,
@@ -618,7 +618,7 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 
 		const portalContainer = usePortalContainer(
 			usePortal,
-			"uikts-dropdown",
+			_portalDivId,
 			triggerRef.current,
 		)
 

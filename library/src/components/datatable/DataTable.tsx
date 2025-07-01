@@ -66,6 +66,7 @@ interface DataTableProps<TData, TValue> {
 	testId?: string
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: any is required to avoid the need to specify all the row types as union, rows should handle the type safety
 export function DataTable<TData, TValue = any>({
 	columns,
 	data,

@@ -1,7 +1,8 @@
-import ReactDOM from "react-dom"
 import type { ComponentPropsWithoutRef } from "react"
+import ReactDOM from "react-dom"
 import { twMerge } from "tailwind-merge"
 import { usePortalContainer } from "../utils"
+
 type BlanketProps = ComponentPropsWithoutRef<"div"> & {
 	usePortal?: boolean | ShadowRoot
 }
@@ -25,8 +26,8 @@ export function Blanket({
 			role={role ?? "presentation"}
 			{...props}
 		>
-			{/** biome-ignore lint/a11y/noStaticElementInteractions: <explanation> */}
-			{/** biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+			{/** biome-ignore lint/a11y/noStaticElementInteractions: background blanke diff interaction handling */}
+			{/** biome-ignore lint/a11y/useKeyWithClickEvents: No key handling needed */}
 			<div
 				onClick={(e) => {
 					// this is necessary for the click to propagate to the blanket anywhere inside the children
