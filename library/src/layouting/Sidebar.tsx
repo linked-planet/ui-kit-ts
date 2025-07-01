@@ -1,15 +1,11 @@
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import type React from "react"
 import { type CSSProperties, type ElementRef, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
-
+import { rateLimitHelper } from "../utils"
 import { bannerHeightVar, topNavigationHeightVar } from "./AppLayout"
 
-import { rateLimitHelper } from "../utils"
-
-import { ChevronRightIcon } from "lucide-react"
-import { ChevronLeftIcon } from "lucide-react"
-
-const rateLimited = rateLimitHelper(15) //59fps
+const _rateLimited = rateLimitHelper(15) //59fps
 
 type CollapsedState = "collapsed" | "expanded"
 type SidebarPosition = "left" | "right"
@@ -339,7 +335,9 @@ function Sidebar({
 			}}
 		>
 			{/* resize button and grab handle area */}
+			{/** biome-ignore lint/a11y/useSemanticElements: is a div and has a button within */}
 			<div
+				role="button"
 				className={`absolute inset-y-0 z-3 h-full border-y-0 ${position === "left" ? "-right-3 border-l-2 border-r-0" : "-left-3 border-r-2 border-l-0"} ${collapsed === "expanded" ? "hover:border-brand-bold group cursor-col-resize" : ""} border-border w-3 select-none border-solid bg-transparent`}
 				onMouseDown={onResizeCB}
 				onMouseEnter={() => {
@@ -352,10 +350,11 @@ function Sidebar({
 						setIsHovered(false)
 					}
 				}}
+				aria-label={resizeGrabAreaLabel ?? "resize grab area"}
+				tabIndex={0}
 			>
 				<div
 					className={`${sticky ? "sticky" : "static"} duration-150`}
-					aria-label={resizeGrabAreaLabel ?? "resize grab area"}
 					style={{
 						top: sticky
 							? `calc(var(${bannerHeightVar}, 0px) + var(${topNavigationHeightVar}, 0px))`
@@ -363,7 +362,7 @@ function Sidebar({
 					}}
 				>
 					{closeButton ? (
-						<>{closeButton}</>
+						closeButton
 					) : (
 						<button
 							onClick={onCollapsedCB}
@@ -387,33 +386,27 @@ function Sidebar({
 							title={closeButtonTitle}
 						>
 							{collapsed === "collapsed" ? (
-								<>
-									{position === "right" ? (
-										<ChevronLeftIcon
-											aria-label="expand"
-											className="stroke-3"
-										/>
-									) : (
-										<ChevronRightIcon
-											aria-label="expand"
-											className="stroke-3"
-										/>
-									)}
-								</>
+								position === "right" ? (
+									<ChevronLeftIcon
+										aria-label="expand"
+										className="stroke-3"
+									/>
+								) : (
+									<ChevronRightIcon
+										aria-label="expand"
+										className="stroke-3"
+									/>
+								)
+							) : position === "right" ? (
+								<ChevronRightIcon
+									aria-label="collapse"
+									className="stroke-3"
+								/>
 							) : (
-								<>
-									{position === "right" ? (
-										<ChevronRightIcon
-											aria-label="collapse"
-											className="stroke-3"
-										/>
-									) : (
-										<ChevronLeftIcon
-											aria-label="collapse"
-											className="stroke-3"
-										/>
-									)}
-								</>
+								<ChevronLeftIcon
+									aria-label="collapse"
+									className="stroke-3"
+								/>
 							)}
 						</button>
 					)}

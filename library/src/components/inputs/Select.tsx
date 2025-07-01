@@ -647,30 +647,6 @@ type SelectPropsProto<ValueType, IsMulti extends boolean = boolean> = Omit<
 	> | null>
 }
 
-// base react-select props + extensions
-type SelectPropsProtoOld<
-	ValueType,
-	IsMulti extends boolean = boolean,
-> = PickedCreateableProps<ValueType, IsMulti> & {
-	usePortal?: boolean | ShadowRoot
-	disabled?: boolean
-	isCreateable?: boolean
-	isAsync?: boolean
-	dropdownLabel?: (isOpen: boolean) => string
-	clearValuesButtonLabel?: string
-	removeValueButtonLabel?: string
-	placeholder?: string
-	inputId?: string
-	testId?: string
-	readOnly?: boolean
-	onClearButtonClick?: () => void
-	ref?: React.Ref<SelectInstance<
-		OptionType<ValueType>,
-		IsMulti,
-		GroupBase<OptionType<ValueType>>
-	> | null>
-}
-
 // extends with the control and fieldName props for react-hook-form.. the fieldName is the normal name prop of react-hook-form
 export type SelectInFormProps<
 	FormData extends FieldValues,

@@ -46,7 +46,6 @@ type TimePickerPropsPart = Pick<
 	| "readOnly"
 	| "lang"
 	| "clearButtonLabel"
-	| "errorMessage"
 	| "onOpenChange"
 	| "id"
 	| "lang"

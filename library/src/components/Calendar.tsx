@@ -677,7 +677,7 @@ export function Calendar<FormData extends FieldValues>(
 	)
 
 	const _month = useMemo(() => {
-		let ret
+		let ret: Dayjs | undefined
 		if (month) {
 			ret = dayjs()
 				.month(month - 1)
