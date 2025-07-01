@@ -95,11 +95,19 @@ export interface LPTimeTableProps<
 	onTimeSlotItemClick?: (group: G, item: I) => void
 
 	/* this function gets called when a selection was made, i.g. to create a booking. the return value states if the selection should be cleared or not */
-	onTimeRangeSelected?: onTimeRangeSelectedType<G>
+	onTimeRangeSelected?: onTimeRangeSelectedType
 
 	/* the time range selected in case this is a controlled component, is null if the selection should be cleared */
-	selectedTimeRange?: { group: G; startDate: Dayjs; endDate: Dayjs } | null
-	defaultSelectedTimeRange?: { group: G; startDate: Dayjs; endDate: Dayjs }
+	selectedTimeRange?: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	} | null
+	defaultSelectedTimeRange?: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	}
 
 	onGroupClick?: (group: G) => void
 

@@ -929,7 +929,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	)
 
 	if (timeSlotSelectedIndex > 0) {
-		return <></> // the cell is not rendered since the placeholder item spans over multiple selected cells
+		return null // the cell is not rendered since the placeholder item spans over multiple selected cells
 	}
 
 	const cursorStyle =
@@ -1300,7 +1300,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				setMultiSelectionMode(storeIdent, true)
 				toggleTimeSlotSelected(
 					storeIdent,
-					group,
+					group.id,
 					timeSlotNumber,
 					"drag",
 				)
@@ -1317,7 +1317,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				}
 				toggleTimeSlotSelected(
 					storeIdent,
-					group,
+					group.id,
 					timeSlotNumber,
 					"drag",
 				)
@@ -1333,7 +1333,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				}
 				toggleTimeSlotSelected(
 					storeIdent,
-					group,
+					group.id,
 					timeSlotNumber,
 					"drag",
 				)
@@ -1342,7 +1342,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				const multiSelectionMode = getMultiSelectionMode(storeIdent)
 				toggleTimeSlotSelected(
 					storeIdent,
-					group,
+					group.id,
 					timeSlotNumber,
 					multiSelectionMode ? "drag-end" : "click",
 				)
