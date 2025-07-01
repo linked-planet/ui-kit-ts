@@ -15,7 +15,7 @@ import {
 	type Path,
 	useController,
 } from "react-hook-form"
-import { twJoin, twMerge } from "tailwind-merge"
+import { twMerge } from "tailwind-merge"
 import { type DateType, DateUtils, isDateType } from "../../../utils"
 import { Button } from "../../Button"
 import { Calendar, type CalendarSingleProps } from "../../Calendar"
@@ -248,7 +248,10 @@ const DatePickerBase = forwardRef(
 		}
 
 		const trigger = (
-			<div className={twJoin("group", className)} style={style}>
+			<div
+				className={twMerge("box-border group", className)}
+				style={style}
+			>
 				<Input
 					type="text"
 					key={key}
@@ -265,7 +268,7 @@ const DatePickerBase = forwardRef(
 					disabled={disabled}
 					invalid={invalid}
 					inputClassName={twMerge(
-						"cursor-pointer group-data-[state=open]:border-input-border-focused group-data-[state=open]:shadow-input-border-focused",
+						"cursor-pointer group-data-[state=open]:ring-input-border-focused group-data-[state=open]:ring group-data-[state=open]:border-input-border-focused group-data-[state=open]:border-r-1.5",
 						inputClassName,
 					)}
 					required={required}
