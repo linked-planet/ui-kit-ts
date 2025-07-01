@@ -746,7 +746,7 @@ function Example() {
 	const [selectedTimeRange, setSelectedTimeRange] = useState<{
 		startDate: Dayjs
 		endDate: Dayjs
-		group: TimeTableTypes.TimeTableGroup
+		groupId: string
 	} | null>(null)
 	const [disableTimeRangeSelection, setDisableTimeRangeSelection] =
 		useState(false)
@@ -826,6 +826,10 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()*/
 	}, [requestMoreEntriesCB])
+
+	const selectedGroup = selectedTimeRange?.groupId
+		? entries.find((e) => e.group.id === selectedTimeRange.groupId)?.group
+		: undefined
 
 	return (
 		<>
@@ -1120,9 +1124,9 @@ function Example() {
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
 				<ChevronDownIcon aria-label="entryloader" />
 			</Button>
-			{showCreateNewItemModal && selectedTimeRange && (
+			{showCreateNewItemModal && selectedTimeRange && selectedGroup && (
 				<CreateNewTimeTableItemDialog
-					group={selectedTimeRange.group}
+					group={selectedGroup}
 					startDate={selectedTimeRange.startDate}
 					endDate={selectedTimeRange.endDate}
 					onCancel={() => setShowCreateNewItemModal(false)}
@@ -1148,29 +1152,27 @@ function ExampleCalendar() {
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	return (
-		<>
-			<div
-				style={{
-					height: "600px",
+		<div
+			style={{
+				height: "600px",
+			}}
+		>
+			<TimeTable
+				groupHeaderColumnWidth={150}
+				columnWidth={70}
+				rowHeight={30}
+				startDate={timeFrame.startDate}
+				endDate={timeFrame.endDate}
+				entries={exampleEntries}
+				timeTableMessages={translation}
+				disableWeekendInteractions={true}
+				showTimeSlotHeader={false}
+				viewType={"days"}
+				itemsOutsideOfDayRangeFound={(items) => {
+					console.info("items outside of day range found", items)
 				}}
-			>
-				<TimeTable
-					groupHeaderColumnWidth={150}
-					columnWidth={70}
-					rowHeight={30}
-					startDate={timeFrame.startDate}
-					endDate={timeFrame.endDate}
-					entries={exampleEntries}
-					timeTableMessages={translation}
-					disableWeekendInteractions={true}
-					showTimeSlotHeader={false}
-					viewType={"days"}
-					itemsOutsideOfDayRangeFound={(items) => {
-						console.info("items outside of day range found", items)
-					}}
-				/>
-			</div>
-		</>
+			/>
+		</div>
 	)
 
 	//#endregion timetabledays
@@ -1189,26 +1191,24 @@ function ExampleMonthCalendar() {
 	const translation = useTranslation() as TranslatedTimeTableMessages
 
 	return (
-		<>
-			<div
-				style={{
-					height: "600px",
-				}}
-			>
-				<TimeTable
-					groupHeaderColumnWidth={150}
-					columnWidth={70}
-					rowHeight={30}
-					startDate={timeFrame.startDate}
-					endDate={timeFrame.endDate}
-					entries={exampleEntries}
-					timeTableMessages={translation}
-					disableWeekendInteractions={true}
-					viewType={"months"}
-					showTimeSlotHeader={false}
-				/>
-			</div>
-		</>
+		<div
+			style={{
+				height: "600px",
+			}}
+		>
+			<TimeTable
+				groupHeaderColumnWidth={150}
+				columnWidth={70}
+				rowHeight={30}
+				startDate={timeFrame.startDate}
+				endDate={timeFrame.endDate}
+				entries={exampleEntries}
+				timeTableMessages={translation}
+				disableWeekendInteractions={true}
+				viewType={"months"}
+				showTimeSlotHeader={false}
+			/>
+		</div>
 	)
 
 	//#endregion timetablemonths
