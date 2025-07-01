@@ -3,18 +3,18 @@ import {
 	type ColumnDef,
 	type ColumnFiltersState,
 	type DisplayColumnDef,
-	type GroupColumnDef,
-	type OnChangeFn,
-	type RowSelectionState,
-	type SortingState,
-	type VisibilityState,
 	flexRender,
+	type GroupColumnDef,
 	getCoreRowModel,
 	getFilteredRowModel,
 	getSortedRowModel,
+	type OnChangeFn,
+	type RowSelectionState,
+	type SortingState,
 	useReactTable,
+	type VisibilityState,
 } from "@tanstack/react-table"
-import { type CSSProperties, useState, useCallback } from "react"
+import { type CSSProperties, useCallback, useState } from "react"
 import {
 	Table,
 	TableBody,
@@ -66,9 +66,6 @@ interface DataTableProps<TData, TValue> {
 	testId?: string
 }
 
-// I need to use the default any because the cell values can have an arbitrary type and not all the same
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function DataTable<TData, TValue = any>({
 	columns,
 	data,
