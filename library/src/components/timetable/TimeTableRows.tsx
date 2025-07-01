@@ -1326,6 +1326,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				if (e.buttons !== 1) {
 					// we only want to react to left mouse button
 					setMultiSelectionMode(storeIdent, false)
+					setLastHandledTimeSlot(storeIdent, null)
 					return
 				}
 				if (!getMultiSelectionMode(storeIdent)) {

@@ -250,7 +250,7 @@ function add(storeIdent: string, timeSlotNumber: number) {
 		store.lastTimeSlotNumber === null
 	) {
 		store.selection.selectedTimeSlots = [timeSlotNumber]
-		store.lastTimeSlotNumber = timeSlotNumber
+		setLastHandledTimeSlot(storeIdent, timeSlotNumber)
 		return
 	}
 
@@ -290,7 +290,7 @@ function add(storeIdent: string, timeSlotNumber: number) {
 		}
 	} else {
 		if (store.lastTimeSlotNumber === null) {
-			store.lastTimeSlotNumber = timeSlotNumber
+			setLastHandledTimeSlot(storeIdent, timeSlotNumber)
 			return
 		}
 		if (timeSlotNumber > store.lastTimeSlotNumber) {
@@ -302,12 +302,12 @@ function add(storeIdent: string, timeSlotNumber: number) {
 				newSlots.push(i)
 			}
 		} else {
-			store.lastTimeSlotNumber = timeSlotNumber
+			setLastHandledTimeSlot(storeIdent, timeSlotNumber)
 			return
 		}
 	}
 
-	store.lastTimeSlotNumber = timeSlotNumber
+	setLastHandledTimeSlot(storeIdent, timeSlotNumber)
 	console.log("add", "newSlots", newSlots, store.selection)
 	if (newSlots.length !== store.selection.selectedTimeSlots.length) {
 		store.selection.selectedTimeSlots.splice(
@@ -402,15 +402,17 @@ export function toggleTimeSlotSelected(
 	}
 
 	// the code below sets the selection to null when the group changes, but we currently do not want to do that
-	if (
-		store.selection.groupId == null ||
-		store.selection.selectedTimeSlots === null
-	) {
+	//if (
+	///	store.selection.groupId == null ||
+	//	store.selection.selectedTimeSlots === null
+	//) {
+	if (store.lastTimeSlotNumber == null) {
 		store.selection.groupId = groupId
 		store.selection.selectedTimeSlots = [timeSlot]
+		setLastHandledTimeSlot(ident, timeSlot)
 		if (interaction === "drag-end") {
 			notifyOnTimeRangeSelected(ident)
-			store.selection.groupId = null
+			setLastHandledTimeSlot(ident, null)
 		}
 		return
 	}
@@ -418,7 +420,7 @@ export function toggleTimeSlotSelected(
 	add(ident, timeSlot)
 	if (interaction === "drag-end") {
 		notifyOnTimeRangeSelected(ident)
-		store.selection.groupId = null
+		setLastHandledTimeSlot(ident, null)
 	}
 }
 
@@ -453,20 +455,17 @@ export function setMultiSelectionMode(
 		)
 	}
 	if (!multiSelectionMode) {
-		store.lastTimeSlotNumber = null
+		setLastHandledTimeSlot(ident, null)
 	}
 	store.multiSelectionMode = multiSelectionMode
 }
 
-export function setLastHandledTimeSlot(
-	ident: string,
-	_timeSlot: number | null,
-) {
+export function setLastHandledTimeSlot(ident: string, timeSlot: number | null) {
 	const store = timeTableSelectionStore[ident]
 	if (!store) {
 		throw new Error(
 			`setLastHandledTimeSlot - no time table selection store found for ident: ${ident}`,
 		)
 	}
-	store.lastTimeSlotNumber = null
+	store.lastTimeSlotNumber = timeSlot
 }
