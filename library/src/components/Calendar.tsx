@@ -26,7 +26,7 @@ import {
 	type FieldPath,
 	type FieldValues,
 } from "react-hook-form"
-import { twJoin } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
 
 //import "react-day-picker/dist/style.css" -> is imported in index.ts of the library that it is before TW
@@ -67,6 +67,10 @@ type CalendarBaseExtraProps = CalendarExtraProps & {
 	disabledDates?: Matcher | Matcher[]
 	month?: Date
 	defaultMonth?: Date
+	selectedClassName?: string
+	secondarySelectedClassName?: string
+	disabledClassName?: string
+	hiddenClassName?: string
 }
 
 type CalendarBaseSingleProps = PropsBase &
@@ -97,8 +101,8 @@ const captionStyles =
 const captionLabelStyles = "text-text text-sm font-bold flex justify-center"
 
 const dayTodayStyles = twJoin(
-	"group/today font-extrabold relative hover:bg-selected-hovered active:bg-selected-pressed",
-	"after:absolute after:content-[''] after: after:block after:left-1.5 after:right-1.5 after:border-b-[2.5px] after:border-text hover:after:border-selected-text active:after:border-selected-pressed after:bottom-1 after:pointer-events-none",
+	"group/today font-extrabold relative not-[.selected]:text-selected-text",
+	"after:absolute after:content-[''] after: after:block after:left-1.5 after:right-1.5 after:border-b-[2.5px] after:border-selected-text active:after:border-selected-pressed after:bottom-1 after:pointer-events-none",
 )
 
 const dayStyles =
@@ -111,9 +115,13 @@ const classNames: DayPickerProps["classNames"] = {
 	button_previous: buttonStyles,
 	month_grid: "w-full",
 	day: dayStyles,
-	day_button: twJoin(
+	/*day_button: twJoin(
 		"size-full cursor-pointer disabled:cursor-not-allowed bg-transparent border-none group-hover/today:text-selected-text",
 		"group-[.today]/today:text-text group-[.selected]/today:text-text-inverse group-[.selected]/today:hover:text-selected-text group-hover/today:bg-selected-subtle",
+	),*/
+	day_button: twJoin(
+		"size-full cursor-pointer disabled:cursor-not-allowed bg-transparent border-none group-hover/today:text-selected-text",
+		"group-[.selected]/today:hover:text-selected-text",
 	),
 	disabled: "text-disabled-text cursor-not-allowed",
 	outside: "text-disabled-text",
@@ -155,11 +163,15 @@ export function CalendarBase(
 		disabled,
 		disabledDates,
 		className,
+		selectedClassName,
+		secondarySelectedClassName,
+		disabledClassName,
 		selected: selectedProp,
 		"aria-label": ariaLabel,
 		lang,
 		minDate,
 		maxDate,
+		hiddenClassName,
 		...propsWOEventHandler
 	} = props
 
@@ -311,13 +323,22 @@ export function CalendarBase(
 						: PreviousMonthButton,
 			}}
 			modifiersClassNames={{
-				hidden: "bg-neutral hover:bg-neutral-hovered active:bg-neutral-hovered text-text",
-				disabled:
+				hidden: twMerge(
+					"bg-neutral hover:bg-neutral-hovered active:bg-neutral-hovered text-text",
+					hiddenClassName,
+				),
+				disabled: twMerge(
 					"text-disabled-text cursor-not-allowed hover:bg-transparent bg-surface disabled:text-text-disabled disabled:hover:bg-transparent disabled:cursor-not-allowed border-none",
-				secondarySelected:
-					"bg-surface-overlay-hovered data-[disabled=true]:bg-surface text-text after:border-text border-none",
-				selected:
-					"selected bg-selected after:border-text-inverse text-selected-text-inverse hover:text-selected-text hover:bg-selected-hovered font-bold after:border-selected-text-inverse hover:after:border-selected-text border-none after:border-black",
+					disabledClassName,
+				),
+				secondarySelected: twMerge(
+					"not-[.selected]:bg-surface-overlay-hovered data-[disabled=true]:bg-surface not-[.selected]:after:border-selected-border border-none",
+					secondarySelectedClassName,
+				),
+				selected: twMerge(
+					"selected bg-selected text-selected-text-inverse hover:text-selected-text hover:bg-selected-hovered font-bold after:border-text-inverse hover:after:border-selected-text border-none",
+					selectedClassName,
+				),
 			}}
 			disabled={disabled || disabledDates}
 			onDayClick={!disabled && onDayClick ? onDayClick : undefined}

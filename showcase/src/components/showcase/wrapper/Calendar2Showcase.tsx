@@ -272,6 +272,7 @@ function CalendarRange() {
 				}}
 				minDate={new Date("2022-01-01")}
 				maxDate={new Date("2028-12-31")}
+				selectedClassName="text-red-500 [.selected]:after:border-red-300"
 			/>
 		</div>
 	)
