@@ -5,8 +5,8 @@ export const overlayBaseStyle =
 
 const shadowStyles = twJoin(
 	"disabled:shadow-none outline-hidden disabled:ring-0",
-	"aria-invalid:shadow-danger-border aria-invalid:border-danger-border aria-invalid:focus-within:ring-danger-border-focused aria-invalid:ring",
-	"focus:ring focus:ring-input-border-focused focus-within:ring-input-border-focused focus-within:ring",
+	"aria-invalid:border-danger-border aria-invalid:focus-within:ring-danger-border-focused",
+	"focus:ring focus-within:ring focus:ring-input-border-focused focus-within:ring-input-border-focused aria-invalid:focus:ring-danger-border aria-invalid:focus-within:ring-danger-border",
 )
 export const inputBaseStyles = twJoin(
 	"min-h-9 rounded-sm box-border w-full relative bg-input focus-within:bg-input-active ease-in-out transition duration-200 p-0",
