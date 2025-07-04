@@ -40,7 +40,11 @@ function FormExample() {
 			}}
 		>
 			<div className="flex flex-col gap-2">
-				<DateTimePicker control={control} name="dateTime" />
+				<DateTimePicker
+					control={control}
+					name="dateTime"
+					calendarSecondarySelectedClassName="text-red-500"
+				/>
 				<hr />
 				<TimePicker control={control} name="time" />
 				<hr />

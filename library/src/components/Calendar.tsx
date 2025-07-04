@@ -166,12 +166,12 @@ export function CalendarBase(
 		selectedClassName,
 		secondarySelectedClassName,
 		disabledClassName,
+		hiddenClassName,
 		selected: selectedProp,
 		"aria-label": ariaLabel,
 		lang,
 		minDate,
 		maxDate,
-		hiddenClassName,
 		...propsWOEventHandler
 	} = props
 
@@ -521,6 +521,11 @@ type BaseProps = {
 	hideYearButtons?: boolean
 	hideNextYearButton?: boolean
 	hidePreviousYearButton?: boolean
+
+	selectedClassName?: string
+	secondarySelectedClassName?: string
+	disabledClassName?: string
+	hiddenClassName?: string
 }
 
 export type CalendarSingleProps = BaseProps & {

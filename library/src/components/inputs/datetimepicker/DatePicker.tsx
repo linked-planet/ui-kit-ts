@@ -81,6 +81,10 @@ export type DatePickerProps = Pick<
 		readOnly?: boolean
 		clearButtonLabel?: string
 		hideIcon?: boolean
+		calendarSelectedClassName?: string
+		calendarSecondarySelectedClassName?: string
+		calendarDisabledClassName?: string
+		calendarHiddenClassName?: string
 	}
 
 //TODO optimize, it renders too often (the input)
@@ -162,6 +166,10 @@ const DatePickerBase = forwardRef(
 			weekStartsOn,
 			calendarLabels,
 			calendarTestId,
+			calendarSelectedClassName,
+			calendarSecondarySelectedClassName,
+			calendarDisabledClassName,
+			calendarHiddenClassName,
 		} = props
 
 		const changeCB = useCallback(
@@ -193,6 +201,10 @@ const DatePickerBase = forwardRef(
 				testId: calendarTestId,
 				onSelectionChanged: changeCB,
 				selected: value || undefined,
+				secondarySelectedClassName: calendarSecondarySelectedClassName,
+				selectedClassName: calendarSelectedClassName,
+				disabledClassName: calendarDisabledClassName,
+				hiddenClassName: calendarHiddenClassName,
 			} satisfies CalendarSingleProps
 
 			return <Calendar {...calProps} />
@@ -213,6 +225,10 @@ const DatePickerBase = forwardRef(
 			calendarTestId,
 			value,
 			changeCB,
+			calendarSelectedClassName,
+			calendarSecondarySelectedClassName,
+			calendarDisabledClassName,
+			calendarHiddenClassName,
 		])
 
 		// input props:

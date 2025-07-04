@@ -305,6 +305,7 @@ function CalendarRangeForm() {
 				invalid={!isValid}
 				defaultMonth={12}
 				defaultYear={2023}
+				selectedClassName="text-pink-500 [.selected]:after:border-pink-300"
 			/>
 			<ButtonGroup className="mt-4 flex justify-end">
 				<Button type="reset">Reset</Button>
