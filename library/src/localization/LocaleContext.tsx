@@ -1,5 +1,11 @@
-import React, { useState, type Dispatch, useEffect, useContext } from "react"
 import type { SetStateAction } from "react"
+import {
+	createContext,
+	type Dispatch,
+	useContext,
+	useEffect,
+	useState,
+} from "react"
 export const availableLocales = [
 	{ locale: "en", label: "English" },
 	{ locale: "de", label: "German" },
@@ -8,7 +14,7 @@ export const availableLocales = [
 
 export type Locale = (typeof availableLocales)[number]["locale"]
 
-const localizationContext = React.createContext<
+const localizationContext = createContext<
 	| {
 			locale: Locale
 			setLocale: Dispatch<SetStateAction<Locale>>
@@ -18,7 +24,7 @@ const localizationContext = React.createContext<
 >(undefined)
 
 const localeStorageKey = "locale"
-const translationsPath = "./translations-compiled"
+const _translationsPath = "./translations-compiled"
 
 /**
  * this is created using the formatJS CLI tool on Messages.tsx. This creates a json file with all the messages in the correct format in ../../localization/translations/en.json
@@ -176,7 +182,7 @@ export const useTranslation = () => {
 	return mod.default
 }*/
 
-async function fetchTranslation(locale: string) {
+/*async function fetchTranslation(locale: string) {
 	console.info(
 		"loading translation for locale",
 		locale,
@@ -184,4 +190,4 @@ async function fetchTranslation(locale: string) {
 	)
 	const res = await fetch(`${translationsPath}/${locale}.json`)
 	return res.json()
-}
+}*/

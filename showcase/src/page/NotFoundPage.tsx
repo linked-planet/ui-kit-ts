@@ -1,8 +1,4 @@
-import { useNavigate } from "react-router"
-
 function NotFoundPage() {
-	const navigation = useNavigate()
-
 	return (
 		<section>
 			<h1>404 - Not found</h1>

@@ -1,5 +1,6 @@
 import { setGlobalTheme, type ThemeColorModes } from "@atlaskit/tokens"
-import React from "react"
+import { StrictMode } from "react"
+
 import ReactDOM from "react-dom/client"
 import ShowcaseApp from "./ShowcaseApp"
 
@@ -7,6 +8,7 @@ import "./tailwind.css"
 
 // get the saved theme entry from the local storage (in case there is one)
 import { applyTheme, LocalStorageThemeVar } from "@linked-planet/ui-kit-ts"
+
 const savedTheme = localStorage.getItem(LocalStorageThemeVar) as ThemeColorModes //ThemeColorModes does not have "original", but "original" is a valid entry for the old theme
 
 setGlobalTheme({
@@ -26,7 +28,7 @@ if (!container) {
 }
 
 ReactDOM.createRoot(container).render(
-	<React.StrictMode>
+	<StrictMode>
 		<ShowcaseApp />
-	</React.StrictMode>,
+	</StrictMode>,
 )

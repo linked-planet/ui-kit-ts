@@ -1,9 +1,9 @@
+/*import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
+import AKTagGroup from "@atlaskit/tag-group"*/
+import { Tag, TagGroup } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-/*import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
-import AKTagGroup from "@atlaskit/tag-group"*/
-import { TagGroup, Tag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (

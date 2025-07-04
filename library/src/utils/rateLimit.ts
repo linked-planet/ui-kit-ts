@@ -14,9 +14,7 @@ export function rateLimitHelper(minDistanceMS: number, executeAfter = true) {
 		throw new Error("minDistanceMS must be positive and above 0")
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	return (cb: (...args: any[]) => any, ...args: any[]) => {
+	return (cb: (...args: unknown[]) => unknown, ...args: unknown[]) => {
 		const now = Date.now()
 
 		if (now - lastTime > minDistanceMS) {

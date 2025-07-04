@@ -1,28 +1,24 @@
-import { useCallback, useEffect, useMemo } from "react"
-import { useState } from "react"
-import dayjs, { type Dayjs } from "dayjs/esm"
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
 import { Button, TimeTable, timeTableUtils } from "@linked-planet/ui-kit-ts"
-
-import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
-
-import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
-import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
+import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
+import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import { allGroupsRenderedEvent } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableRows"
+import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
+import dayjs, { type Dayjs } from "dayjs/esm"
 import {
 	ChevronDownIcon,
 	ChevronLeftIcon,
 	ChevronRightIcon,
 } from "lucide-react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
 const debounceTimeout = 500
-let debounceTimeoutCurrent: number | undefined = undefined
+let debounceTimeoutCurrent: number | undefined
 function debounceHelper(callback: () => void) {
 	if (debounceTimeoutCurrent) {
 		clearTimeout(debounceTimeoutCurrent)
@@ -569,7 +565,6 @@ function TestCustomHeaderRowTimeSlot<
 >({
 	timeSlot,
 	timeSlotMinutes,
-	isLastOfDay,
 	timeFrameOfDay,
 	viewType,
 	slotsArray,
@@ -647,12 +642,7 @@ function TestCustomHeaderRowTimeSlot<
 function CustomHeaderRowHeader<
 	G extends TimeTableTypes.TimeTableGroup,
 	I extends TimeTableTypes.TimeSlotBooking,
->({
-	slotsArray,
-	timeFrameOfDay,
-	viewType,
-	entries,
-}: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
+>({ entries }: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
 	if (!entries || !entries[1]) {
 		return <></>
 	}
@@ -694,7 +684,7 @@ function Example() {
 	const [entries, setEntries] = useState(exampleEntries)
 
 	const onTimeSlotItemClickCB = useCallback(
-		(group: ExampleGroup, item: ExampleItem) => {
+		(_group: ExampleGroup, item: ExampleItem) => {
 			setSelectedTimeSlotItem((prev) => {
 				if (prev === item) {
 					return undefined
@@ -756,7 +746,7 @@ function Example() {
 	const [selectedTimeRange, setSelectedTimeRange] = useState<{
 		startDate: Dayjs
 		endDate: Dayjs
-		group: TimeTableTypes.TimeTableGroup
+		groupId: string
 	} | null>(null)
 	const [disableTimeRangeSelection, setDisableTimeRangeSelection] =
 		useState(false)
@@ -803,7 +793,7 @@ function Example() {
 	)
 
 	useEffect(() => {
-		//requestMoreEntriesCB()
+		requestMoreEntriesCB()
 		/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
@@ -836,6 +826,10 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()*/
 	}, [requestMoreEntriesCB])
+
+	const selectedGroup = selectedTimeRange?.groupId
+		? entries.find((e) => e.group.id === selectedTimeRange.groupId)?.group
+		: undefined
 
 	return (
 		<>
@@ -1122,14 +1116,17 @@ function Example() {
 						timeSlot: TestCustomHeaderRowTimeSlot,
 						header: CustomHeaderRowHeader,
 					}}
+					onRenderedGroupsChanged={(groups) => {
+						console.log("rendered groups changed", groups)
+					}}
 				/>
 			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
 				<ChevronDownIcon aria-label="entryloader" />
 			</Button>
-			{showCreateNewItemModal && selectedTimeRange && (
+			{showCreateNewItemModal && selectedTimeRange && selectedGroup && (
 				<CreateNewTimeTableItemDialog
-					group={selectedTimeRange.group}
+					group={selectedGroup}
 					startDate={selectedTimeRange.startDate}
 					endDate={selectedTimeRange.endDate}
 					onCancel={() => setShowCreateNewItemModal(false)}
@@ -1155,29 +1152,27 @@ function ExampleCalendar() {
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	return (
-		<>
-			<div
-				style={{
-					height: "600px",
+		<div
+			style={{
+				height: "600px",
+			}}
+		>
+			<TimeTable
+				groupHeaderColumnWidth={150}
+				columnWidth={70}
+				rowHeight={30}
+				startDate={timeFrame.startDate}
+				endDate={timeFrame.endDate}
+				entries={exampleEntries}
+				timeTableMessages={translation}
+				disableWeekendInteractions={true}
+				showTimeSlotHeader={false}
+				viewType={"days"}
+				itemsOutsideOfDayRangeFound={(items) => {
+					console.info("items outside of day range found", items)
 				}}
-			>
-				<TimeTable
-					groupHeaderColumnWidth={150}
-					columnWidth={70}
-					rowHeight={30}
-					startDate={timeFrame.startDate}
-					endDate={timeFrame.endDate}
-					entries={exampleEntries}
-					timeTableMessages={translation}
-					disableWeekendInteractions={true}
-					showTimeSlotHeader={false}
-					viewType={"days"}
-					itemsOutsideOfDayRangeFound={(items) => {
-						console.info("items outside of day range found", items)
-					}}
-				/>
-			</div>
-		</>
+			/>
+		</div>
 	)
 
 	//#endregion timetabledays
@@ -1196,26 +1191,24 @@ function ExampleMonthCalendar() {
 	const translation = useTranslation() as TranslatedTimeTableMessages
 
 	return (
-		<>
-			<div
-				style={{
-					height: "600px",
-				}}
-			>
-				<TimeTable
-					groupHeaderColumnWidth={150}
-					columnWidth={70}
-					rowHeight={30}
-					startDate={timeFrame.startDate}
-					endDate={timeFrame.endDate}
-					entries={exampleEntries}
-					timeTableMessages={translation}
-					disableWeekendInteractions={true}
-					viewType={"months"}
-					showTimeSlotHeader={false}
-				/>
-			</div>
-		</>
+		<div
+			style={{
+				height: "600px",
+			}}
+		>
+			<TimeTable
+				groupHeaderColumnWidth={150}
+				columnWidth={70}
+				rowHeight={30}
+				startDate={timeFrame.startDate}
+				endDate={timeFrame.endDate}
+				entries={exampleEntries}
+				timeTableMessages={translation}
+				disableWeekendInteractions={true}
+				viewType={"months"}
+				showTimeSlotHeader={false}
+			/>
+		</div>
 	)
 
 	//#endregion timetablemonths

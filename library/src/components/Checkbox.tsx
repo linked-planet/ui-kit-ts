@@ -1,9 +1,11 @@
+import { cx } from "class-variance-authority"
+import { CheckIcon, MinusIcon } from "lucide-react"
 import type React from "react"
 import {
 	type ForwardedRef,
+	forwardRef,
 	type InputHTMLAttributes,
 	type ReactNode,
-	forwardRef,
 	useEffect,
 	useImperativeHandle,
 	useRef,
@@ -11,8 +13,6 @@ import {
 } from "react"
 import { twMerge } from "tailwind-merge"
 import { SlidingErrorMessage } from "./inputs/ErrorHelpWrapper"
-import { CheckIcon, MinusIcon } from "lucide-react"
-import { cx } from "class-variance-authority"
 
 type AdditionalCheckboxPropsWithIndeterminate = {
 	checked?: boolean
@@ -91,7 +91,7 @@ const CheckboxI = (
 	const inputRef = useRef<HTMLInputElement>(null)
 	const errorRef = useRef<HTMLDivElement>(null)
 	// forward the local ref to the forwarded ref
-	// biome-ignore lint/style/noNonNullAssertion: <explanation>
+	// biome-ignore lint/style/noNonNullAssertion: is defined at this place
 	useImperativeHandle(ref, () => inputRef.current!)
 
 	// update from outside
@@ -128,8 +128,9 @@ const CheckboxI = (
 			}
 		})
 
-		// biome-ignore lint/style/noNonNullAssertion: <explanation>
-		observer.observe(inputRef.current!, { attributes: true })
+		if (inputRef.current) {
+			observer.observe(inputRef.current, { attributes: true })
+		}
 
 		return () => {
 			observer.disconnect()

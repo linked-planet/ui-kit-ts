@@ -1,10 +1,10 @@
-import React from "react"
 import {
 	Button,
 	ButtonGroup,
 	Dropdown,
 	PageLayout,
 } from "@linked-planet/ui-kit-ts"
+
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -95,6 +95,7 @@ function PageLayoutExample() {
 						{Array(100)
 							.fill(null)
 							.map((_, i) => (
+								// biome-ignore lint/suspicious/noArrayIndexKey: just an example
 								<div key={i}>Page Body Content {i}</div>
 							))}
 					</PageLayout.PageBodyContent>

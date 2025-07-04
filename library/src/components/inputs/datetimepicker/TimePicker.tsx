@@ -1,16 +1,10 @@
-import {
-	type Dispatch,
-	type ReactNode,
-	type SetStateAction,
-	useCallback,
-	useMemo,
-} from "react"
-import type { TimeType } from "../../../utils/DateUtils"
-import { DateUtils } from "../../../utils"
 import dayjs from "dayjs/esm"
+import { type Dispatch, type SetStateAction, useCallback, useMemo } from "react"
 import type { FieldValues } from "react-hook-form"
-import { Select, type SelectInFormProps, type SelectProps } from "../Select"
 import { twMerge } from "tailwind-merge"
+import { DateUtils } from "../../../utils"
+import type { TimeType } from "../../../utils/DateUtils"
+import { Select, type SelectInFormProps, type SelectProps } from "../Select"
 
 type TimePickerBaseProps = {
 	value?: TimeType | null
@@ -22,7 +16,6 @@ type TimePickerBaseProps = {
 	onChange?:
 		| ((value: TimeType | null) => void)
 		| Dispatch<SetStateAction<TimeType | null>> // null because else i could not remove the value from react-hook-form handling
-	errorMessage?: ReactNode
 	lang?: string
 	clearButtonLabel?: string
 	invalid?: boolean
@@ -166,8 +159,6 @@ export function TimePicker<FormData extends FieldValues>(
 
 /**
  * The timepicker is a select that opens a list of times.
- * @param param0
- * @returns
  */
 export function TimePicker<FormData extends FieldValues>({
 	invalid,
@@ -179,7 +170,6 @@ export function TimePicker<FormData extends FieldValues>({
 	label,
 	className,
 	styles,
-	errorMessage,
 	isClearable,
 	clearButtonLabel,
 	name,
@@ -197,6 +187,7 @@ export function TimePicker<FormData extends FieldValues>({
 	value: _value,
 	defaultValue: _defaultValue,
 	id,
+	...props
 }: TimePickerProps | TimePickerInFormProps<FormData>) {
 	const optionsProps = times ? { times } : { startTime, endTime, interval }
 
@@ -257,11 +248,16 @@ export function TimePicker<FormData extends FieldValues>({
 		return <TimePickerNotInForm {...selectProps} />
 	}
 
-	const selectInFormProps = {
+	const selectInFormProps: SelectInFormProps<FormData, TimeType, false> = {
 		...selectProps,
 		control,
 		name,
-	} satisfies SelectInFormProps<FormData, TimeType, false>
+		errorMessage: (props as TimePickerInFormProps<FormData>).errorMessage,
+		errorMessageClassName: (props as TimePickerInFormProps<FormData>)
+			.errorMessageClassName,
+		errorMessageStyle: (props as TimePickerInFormProps<FormData>)
+			.errorMessageStyle,
+	}
 	return <TimePickerInForm<FormData> {...selectInFormProps} />
 }
 

@@ -1,7 +1,3 @@
-import React from "react"
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
 	Button,
 	Checkbox,
@@ -10,6 +6,10 @@ import {
 	Label,
 	Select,
 } from "@linked-planet/ui-kit-ts"
+
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //#region layeringexample
 function Example() {

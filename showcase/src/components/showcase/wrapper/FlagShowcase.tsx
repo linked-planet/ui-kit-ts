@@ -1,8 +1,8 @@
+import { Flag, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 import { TriangleAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Flag, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 
 function FlagShowcase(props: ShowcaseProps) {
 	//#region flag

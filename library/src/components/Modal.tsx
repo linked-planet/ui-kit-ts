@@ -1,21 +1,20 @@
 import * as RDialog from "@radix-ui/react-dialog"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import React, {
 	type CSSProperties,
+	type ElementRef,
 	type ReactNode,
+	useCallback,
+	useEffect,
+	useImperativeHandle,
 	useMemo,
 	useRef,
-	type ElementRef,
-	useEffect,
 	useState,
-	useCallback,
-	useImperativeHandle,
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
-
-import { overlayBaseStyle } from "./styleHelper"
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
-import { Button } from "./Button"
 import usePortalContainer from "../utils/usePortalContainer"
+import { Button } from "./Button"
+import { overlayBaseStyle } from "./styleHelper"
 
 type ModalDialogProps = {
 	open?: boolean

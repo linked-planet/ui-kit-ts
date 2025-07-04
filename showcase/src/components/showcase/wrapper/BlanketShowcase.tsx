@@ -1,10 +1,10 @@
+import { Blanket, Button, usePortalContainer } from "@linked-planet/ui-kit-ts"
 import { useEffect, useRef, useState } from "react"
+import ReactDOM from "react-dom"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Blanket, Button, usePortalContainer } from "@linked-planet/ui-kit-ts"
-import ReactDOM from "react-dom"
-import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 
 //#region blanket-shadow-root-example
 function BlanketShowcaseShadowRootExample() {

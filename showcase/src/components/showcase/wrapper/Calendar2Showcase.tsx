@@ -3,8 +3,8 @@ import {
 	ButtonGroup,
 	Calendar,
 	CalendarBase,
-	DateUtils,
 	type DateType,
+	DateUtils,
 } from "@linked-planet/ui-kit-ts"
 import {
 	dateFromString,
@@ -272,6 +272,7 @@ function CalendarRange() {
 				}}
 				minDate={new Date("2022-01-01")}
 				maxDate={new Date("2028-12-31")}
+				selectedClassName="text-red-500 [.selected]:after:border-red-300"
 			/>
 		</div>
 	)
@@ -304,6 +305,7 @@ function CalendarRangeForm() {
 				invalid={!isValid}
 				defaultMonth={12}
 				defaultYear={2023}
+				selectedClassName="text-pink-500 [.selected]:after:border-pink-300"
 			/>
 			<ButtonGroup className="mt-4 flex justify-end">
 				<Button type="reset">Reset</Button>

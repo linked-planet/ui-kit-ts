@@ -1,6 +1,6 @@
 import * as RAccordion from "@radix-ui/react-accordion"
 import { ChevronDownIcon } from "lucide-react"
-import React, { type Ref } from "react"
+import { forwardRef, type Ref } from "react"
 import { twMerge } from "tailwind-merge"
 
 type AccordionSingleProps = Pick<
@@ -48,7 +48,7 @@ type AccordionItemProps = Pick<
 	"value" | "id" | "className" | "style" | "children"
 >
 
-const AccordionItem = React.forwardRef(
+const AccordionItem = forwardRef(
 	(
 		{ children, className, ...props }: AccordionItemProps,
 		forwardedRef: Ref<HTMLDivElement>,
@@ -72,7 +72,7 @@ type AccordionTriggerProps = Pick<
 	"id" | "onClick" | "onKeyDown" | "className" | "style" | "children"
 > & { testId?: string }
 
-const AccordionTrigger = React.forwardRef(
+const AccordionTrigger = forwardRef(
 	(
 		{ children, className, ...props }: AccordionTriggerProps,
 		forwardedRef: Ref<HTMLButtonElement>,
@@ -104,7 +104,7 @@ type AccordionContentProps = Pick<
 	"id" | "className" | "style" | "children"
 > & { testId?: string }
 
-const AccordionContent = React.forwardRef(
+const AccordionContent = forwardRef(
 	(
 		{ children, className, ...props }: AccordionContentProps,
 		forwardedRef: Ref<HTMLDivElement>,

@@ -50,7 +50,7 @@ export function useGroupRows<
 	const currentTimeFrameDay = useRef(timeFrameDay)
 	const currentViewType = useRef(viewType)
 
-	const [calcBatch, setCalcBatch] = useState<number>(-1)
+	const [_, setCalcBatch] = useState<number>(-1)
 
 	const requireNewGroupRows =
 		currentTimeSlots.current !== slotsArray ||

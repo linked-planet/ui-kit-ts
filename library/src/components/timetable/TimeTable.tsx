@@ -1,42 +1,42 @@
 import dayjs, { type Dayjs } from "dayjs/esm"
 import type React from "react"
 import { type MutableRefObject, useCallback, useEffect, useRef } from "react"
+import { twMerge } from "tailwind-merge"
+import useResizeObserver from "use-resize-observer"
+import { useRateLimitHelper } from "../../utils/rateLimit"
 import { InlineMessage } from "../InlineMessage"
+import { Group as GroupComponent, type TimeTableGroupProps } from "./Group"
+import { Item as ItemComponent } from "./Item"
 import type { TimeTableItemProps } from "./ItemWrapper"
-import {
-	type CustomHeaderRowHeaderProps,
-	type CustomHeaderRowTimeSlotProps,
-	LPTimeTableHeader,
-	headerText,
-} from "./TimeTableHeader"
 import {
 	PlaceHolderItemPlaceHolder,
 	type TimeTablePlaceholderItemProps,
 } from "./PlaceholderItem"
-import TimeTableRows from "./TimeTableRows"
+import { initAndUpdateTimeTableComponentStore } from "./TimeTableComponentStore"
+import {
+	initAndUpdateTimeTableConfigStore,
+	type TimeFrameDay,
+} from "./TimeTableConfigStore"
+import {
+	type CustomHeaderRowHeaderProps,
+	type CustomHeaderRowTimeSlotProps,
+	headerText,
+	LPTimeTableHeader,
+} from "./TimeTableHeader"
+import { TimeTableIdentProvider } from "./TimeTableIdentContext"
 import {
 	type TimeTableMessage,
 	TimeTableMessageProvider,
 	type TranslatedTimeTableMessages,
 	useTimeTableMessage,
 } from "./TimeTableMessageContext"
-import {
-	initAndUpdateTimeTableConfigStore,
-	type TimeFrameDay,
-} from "./TimeTableConfigStore"
-import { TimeTableIdentProvider } from "./TimeTableIdentContext"
-import { initAndUpdateTimeTableComponentStore } from "./TimeTableComponentStore"
-import { Group as GroupComponent, type TimeTableGroupProps } from "./Group"
-import { Item as ItemComponent } from "./Item"
+import TimeTableRows from "./TimeTableRows"
 import {
 	initAndUpdateTimeTableSelectionStore,
 	type onTimeRangeSelectedType,
 } from "./TimeTableSelectionStore"
-import { useGroupRows } from "./useGoupRows"
-import { twMerge } from "tailwind-merge"
 import { getStartAndEndSlot, getTimeSlotMinutes } from "./timeTableUtils"
-import { useRateLimitHelper } from "../../utils/rateLimit"
-import useResizeObserver from "use-resize-observer"
+import { useGroupRows } from "./useGoupRows"
 
 export interface TimeSlotBooking {
 	key: React.Key
@@ -95,11 +95,19 @@ export interface LPTimeTableProps<
 	onTimeSlotItemClick?: (group: G, item: I) => void
 
 	/* this function gets called when a selection was made, i.g. to create a booking. the return value states if the selection should be cleared or not */
-	onTimeRangeSelected?: onTimeRangeSelectedType<G>
+	onTimeRangeSelected?: onTimeRangeSelectedType
 
 	/* the time range selected in case this is a controlled component, is null if the selection should be cleared */
-	selectedTimeRange?: { group: G; startDate: Dayjs; endDate: Dayjs } | null
-	defaultSelectedTimeRange?: { group: G; startDate: Dayjs; endDate: Dayjs }
+	selectedTimeRange?: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	} | null
+	defaultSelectedTimeRange?: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	}
 
 	onGroupClick?: (group: G) => void
 
@@ -203,6 +211,11 @@ export interface LPTimeTableProps<
 	 * @default false
 	 */
 	debugLogs?: boolean
+
+	/**
+	 * Callback for when rendered groups change, return the group indices that were rendered
+	 */
+	onRenderedGroupsChanged?: (groups: Set<number>) => void
 }
 
 const nowbarUpdateIntervall = 1000 * 60 // 1 minute
@@ -242,6 +255,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	groupComponent = GroupComponent,
 	timeSlotItemComponent = ItemComponent,
 	placeHolderComponent = PlaceHolderItemPlaceHolder,
+	onRenderedGroupsChanged,
 	onTimeSlotItemClick,
 	onGroupClick,
 	onTimeRangeSelected,
@@ -322,22 +336,14 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 	const {
 		groupRows,
-		rowCount,
-		maxRowCountOfSingleGroup,
+		//rowCount,
+		//maxRowCountOfSingleGroup,
 		itemsOutsideOfDayRange,
 		itemsWithSameStartAndEnd,
 		slotsArray,
 		timeFrameDay,
 		viewType: currViewType,
 	} = useGroupRows(entries)
-
-	if (!slotsArray || slotsArray.length === 0) {
-		console.warn(
-			"TimeTable - no slots array, or slots array is empty",
-			slotsArray,
-		)
-		return <div>No slots array</div>
-	}
 
 	useEffect(() => {
 		if (!setMessage) return
@@ -571,6 +577,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								timeFrameDay={timeFrameDay}
 								viewType={currViewType}
 								timeStepMinutesHoursView={timeStepsMinutes}
+								onRenderedGroupsChanged={
+									onRenderedGroupsChanged
+								}
 							/>
 						</tbody>
 					</table>

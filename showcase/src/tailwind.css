@@ -6,7 +6,6 @@
 /* stylelint-disable-next-line at-rule-no-unknown */
 @source "../../library/src";
 
-
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still

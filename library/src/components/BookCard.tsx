@@ -1,8 +1,7 @@
-import type React from "react"
-import { forwardRef } from "react"
-import type { CSSProperties } from "react"
-
 import { css } from "@emotion/css"
+import type React from "react"
+import type { CSSProperties } from "react"
+import { forwardRef } from "react"
 
 import { twMerge } from "tailwind-merge"
 import { Collapsible } from "./Collapsible"
@@ -281,24 +280,27 @@ const CardHeaderUpperTitle = ({
 	)
 }
 
+/**
+ * Styling element containing the actions of the card header
+ */
 const CardHeaderActions = ({
 	children,
 	id,
 	testId,
 	className,
 	style,
-	onClick,
-	onKeyDown,
-	onKeyUp,
+	//onClick,
+	//onKeyDown,
+	//onKeyUp,
 }: {
 	children: React.ReactNode
 	id?: string
 	testId?: string
 	className?: string
 	style?: CSSProperties
-	onClick?: (event: React.MouseEvent<HTMLDivElement>) => void
-	onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void
-	onKeyUp?: (event: React.KeyboardEvent<HTMLDivElement>) => void
+	//onClick?: (event: React.MouseEvent<HTMLDivElement>) => void
+	//onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void
+	//onKeyUp?: (event: React.KeyboardEvent<HTMLDivElement>) => void
 }) => (
 	<div
 		className={twMerge(
@@ -308,32 +310,9 @@ const CardHeaderActions = ({
 		id={id}
 		data-testid={testId}
 		style={style}
-		onClick={onClick}
-		onKeyDown={onKeyDown}
-		onKeyUp={onKeyUp}
-	>
-		{children}
-	</div>
-)
-
-const CardHeaderActionsInfo = ({
-	children,
-	id,
-	testId,
-	className,
-	style,
-}: {
-	children: React.ReactNode
-	id?: string
-	testId?: string
-	className?: string
-	style?: CSSProperties
-}) => (
-	<div
-		className={twMerge("mr-2 box-border items-center text-sm", className)}
-		id={id}
-		data-testid={testId}
-		style={style}
+		//onClick={onClick}
+		//onKeyDown={onKeyDown}
+		//onKeyUp={onKeyUp}
 	>
 		{children}
 	</div>
@@ -464,7 +443,6 @@ const BookCardComponents = {
 	CardHeaderSubtitle,
 	CardHeaderUpperTitle,
 	CardHeaderActions,
-	CardHeaderActionsInfo,
 	CardGridBody,
 	CardRowBody,
 	CardColumnBody,
@@ -485,7 +463,6 @@ type BookCardProps = {
 	bodyStyle?: CSSProperties
 	bodyClassName?: string
 	actions?: React.ReactNode
-	actionsInfo?: React.ReactNode
 	children?: React.ReactNode
 	onOpenChanged?: (opened: boolean) => void
 	id?: string
@@ -502,7 +479,6 @@ export const BookCard = forwardRef(
 			closed,
 			defaultOpen,
 			actions,
-			actionsInfo,
 			bodyStyle,
 			bodyClassName,
 			bodyLayout,
@@ -549,14 +525,7 @@ export const BookCard = forwardRef(
 								</CardHeaderSubtitle>
 							)}
 						</CardHeaderMeta>
-						<CardHeaderActions>
-							{actionsInfo && (
-								<CardHeaderActionsInfo>
-									{actionsInfo}
-								</CardHeaderActionsInfo>
-							)}
-							{actions}
-						</CardHeaderActions>
+						<CardHeaderActions>{actions}</CardHeaderActions>
 					</CardHeader>
 				}
 			>

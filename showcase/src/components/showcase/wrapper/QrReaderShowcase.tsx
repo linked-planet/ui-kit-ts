@@ -1,8 +1,8 @@
+import { QrReader, QrReaderDialog } from "@linked-planet/ui-kit-ts"
 import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { QrReader, QrReaderDialog } from "@linked-planet/ui-kit-ts"
 
 //#region qrreader-example
 function QrReaderExample() {

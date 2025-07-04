@@ -1,10 +1,8 @@
-import type React from "react"
 import {
 	AtlassianNavigation,
 	CustomProductHome,
 	PrimaryButton,
 } from "@atlaskit/atlassian-navigation"
-import { useNavigate } from "react-router"
 import {
 	AppLayout,
 	Label,
@@ -13,6 +11,8 @@ import {
 	Toggle,
 } from "@linked-planet/ui-kit-ts"
 import { Avatar } from "@linked-planet/ui-kit-ts/components/Avatar"
+import type React from "react"
+import { useNavigate } from "react-router"
 export const ProfileIcon = () => {
 	return (
 		<img

@@ -1,5 +1,9 @@
-import React, { useImperativeHandle, useRef } from "react"
-import type { ComponentPropsWithRef } from "react"
+import {
+	type ComponentPropsWithRef,
+	forwardRef,
+	useImperativeHandle,
+	useRef,
+} from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { inputBaseStyles } from "../styleHelper"
 import {
@@ -56,9 +60,9 @@ export type TextAreaProps = Pick<
 		testId?: string
 	}
 
-const additionalClassName = "m-0 py-1.5 px-2"
+const additionalClassName = "m-0 py-1.5 px-2 resize-none"
 
-const TextArea = React.forwardRef(
+const TextArea = forwardRef(
 	(
 		{
 			className,

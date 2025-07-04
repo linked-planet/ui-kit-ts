@@ -1,9 +1,8 @@
+import { IconSizeHelper } from "@linked-planet/ui-kit-ts"
 import { PlusCircleIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
-import { IconSizeHelper } from "@linked-planet/ui-kit-ts"
 
 export default function IconSizeHelperShowcase(props: ShowcaseProps) {
 	//#region iconsizehelper

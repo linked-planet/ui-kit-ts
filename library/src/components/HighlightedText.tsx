@@ -1,4 +1,4 @@
-import { useMemo, useId } from "react"
+import { useId, useMemo } from "react"
 import { twMerge } from "tailwind-merge"
 export function HighlightedText({
 	text,
@@ -32,6 +32,7 @@ export function HighlightedText({
 			if (delimiterRegex.test(it)) {
 				acc.push(
 					<span
+						// biome-ignore lint/suspicious/noArrayIndexKey: the ith instance of the highlighted text
 						key={`highlight-${id}-${i}`}
 						className={twMerge(
 							"bg-selected-bold text-text-inverse p-0 m-0",

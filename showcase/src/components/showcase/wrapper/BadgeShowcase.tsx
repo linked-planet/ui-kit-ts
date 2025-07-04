@@ -1,9 +1,9 @@
-import React from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 //import AKBadge from "@atlaskit/badge"
 import { Badge } from "@linked-planet/ui-kit-ts"
+
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function BadgeShowcase(props: ShowcaseProps) {
 	const akExample = (

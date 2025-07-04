@@ -1,48 +1,44 @@
-import { proxy, snapshot, useSnapshot } from "valtio"
-import type { TimeTableGroup } from "./TimeTable"
-import { getTTCBasicProperties } from "./TimeTableConfigStore"
 import type { Dayjs } from "dayjs/esm"
+import { proxy, snapshot, useSnapshot } from "valtio"
+import { getTTCBasicProperties } from "./TimeTableConfigStore"
 import { getTimeSlotMinutes } from "./timeTableUtils"
 
-export type onTimeRangeSelectedType<G extends TimeTableGroup> =
+export type onTimeRangeSelectedType =
 	| React.Dispatch<
 			React.SetStateAction<{
 				startDate: Dayjs
 				endDate: Dayjs
-				group: G
+				groupId: string
 			} | null>
 	  >
-	| ((s: { group: G; startDate: Dayjs; endDate: Dayjs } | null) => void)
+	| ((
+			s: { groupId: string; startDate: Dayjs; endDate: Dayjs } | null,
+	  ) => void)
 
-type TimeTableSelectionStore<G extends TimeTableGroup> = {
+type TimeTableSelectionStore = {
 	selection: {
 		groupId: string | null
 		selectedTimeSlots: number[] | null
 	}
 	multiSelectionMode: boolean
 	lastTimeSlotNumber: number | null
-	onTimeRangeSelected: onTimeRangeSelectedType<G> | undefined
+	onTimeRangeSelected: onTimeRangeSelectedType | undefined
 }
 
-const timeTableSelectionStore: Record<
-	string,
-	TimeTableSelectionStore<TimeTableGroup>
-> = {}
+const timeTableSelectionStore: Record<string, TimeTableSelectionStore> = {}
 
-function getStore<G extends TimeTableGroup>(ident: string) {
-	return timeTableSelectionStore[ident] as
-		| TimeTableSelectionStore<G>
-		| undefined
+function getStore(ident: string) {
+	return timeTableSelectionStore[ident] as TimeTableSelectionStore | undefined
 }
 
-function initStore<G extends TimeTableGroup>(ident: string) {
+function initStore(ident: string) {
 	if (timeTableSelectionStore[ident]) {
 		throw new Error(
 			`TimeTable - initSelectionStore - store already exists ${ident}`,
 		)
 	}
 
-	timeTableSelectionStore[ident] = proxy<TimeTableSelectionStore<G>>({
+	timeTableSelectionStore[ident] = proxy<TimeTableSelectionStore>({
 		selection: {
 			groupId: null,
 			selectedTimeSlots: null,
@@ -50,24 +46,24 @@ function initStore<G extends TimeTableGroup>(ident: string) {
 		multiSelectionMode: false,
 		lastTimeSlotNumber: null,
 		onTimeRangeSelected: undefined,
-	}) as TimeTableSelectionStore<TimeTableGroup>
-	return timeTableSelectionStore[ident] as TimeTableSelectionStore<G>
+	}) as TimeTableSelectionStore
+	return timeTableSelectionStore[ident] as TimeTableSelectionStore
 }
 
-export function initAndUpdateTimeTableSelectionStore<G extends TimeTableGroup>(
+export function initAndUpdateTimeTableSelectionStore(
 	ident: string,
 	defaultTimeRangeSelected:
-		| { group: G; startDate: Dayjs; endDate: Dayjs }
+		| { groupId: string; startDate: Dayjs; endDate: Dayjs }
 		| undefined,
 	timeRangeSelected:
-		| { group: G; startDate: Dayjs; endDate: Dayjs }
+		| { groupId: string; startDate: Dayjs; endDate: Dayjs }
 		| null
 		| undefined,
-	onTimeRangeSelected: onTimeRangeSelectedType<G> | undefined,
+	onTimeRangeSelected: onTimeRangeSelectedType | undefined,
 ) {
-	const store = getStore<G>(ident)
+	const store = getStore(ident)
 	if (!store) {
-		const timeTableSelectionStore = initStore<G>(ident)
+		const timeTableSelectionStore = initStore(ident)
 		if (onTimeRangeSelected) {
 			timeTableSelectionStore.onTimeRangeSelected = onTimeRangeSelected
 		}
@@ -75,7 +71,7 @@ export function initAndUpdateTimeTableSelectionStore<G extends TimeTableGroup>(
 		if (selected) {
 			setTimeSlotSelectionByDateRange(
 				ident,
-				selected.group,
+				selected.groupId,
 				selected.startDate,
 				selected.endDate,
 			)
@@ -87,7 +83,7 @@ export function initAndUpdateTimeTableSelectionStore<G extends TimeTableGroup>(
 	} else if (timeRangeSelected) {
 		setTimeSlotSelectionByDateRange(
 			ident,
-			timeRangeSelected.group,
+			timeRangeSelected.groupId,
 			timeRangeSelected.startDate,
 			timeRangeSelected.endDate,
 		)
@@ -103,8 +99,8 @@ export function initAndUpdateTimeTableSelectionStore<G extends TimeTableGroup>(
 /**
  * returns the selected time slots, but only if the group matches and the time slot is within the selection
  */
-export function useTimeSlotSelection<G extends TimeTableGroup>(ident: string) {
-	const store = getStore<G>(ident)
+export function useTimeSlotSelection(ident: string) {
+	const store = getStore(ident)
 	if (!store) {
 		throw new Error(
 			`useSelectedTimeSlots - no time table selection store found for ident: ${ident}`,
@@ -113,9 +109,9 @@ export function useTimeSlotSelection<G extends TimeTableGroup>(ident: string) {
 	return useSnapshot(store.selection)
 }
 
-export function setTimeSlotSelection<G extends TimeTableGroup>(
+export function setTimeSlotSelection(
 	ident: string,
-	group: G,
+	groupId: string,
 	timeSlot: number[],
 	needsNotify: boolean,
 ) {
@@ -127,25 +123,25 @@ export function setTimeSlotSelection<G extends TimeTableGroup>(
 	}
 	if (
 		store.selection.selectedTimeSlots?.length === timeSlot.length &&
-		store.selection.groupId === group.id
+		store.selection.groupId === groupId
 	) {
 		return
 	}
-	store.selection.groupId = group.id
+	store.selection.groupId = groupId
 	store.selection.selectedTimeSlots = timeSlot
 	if (needsNotify) {
-		notifyOnTimeRangeSelected(ident, group)
+		notifyOnTimeRangeSelected(ident)
 	}
 }
 
 /** Sets the selection to the given date range. Does NOT call the notifyOnTimeRangeSelected function! */
-function setTimeSlotSelectionByDateRange<G extends TimeTableGroup>(
+function setTimeSlotSelectionByDateRange(
 	ident: string,
-	group: G,
+	groupId: string,
 	startDate: Dayjs,
 	endDate: Dayjs,
 ) {
-	const store = getStore<G>(ident)
+	const store = getStore(ident)
 	if (!store) {
 		throw new Error(
 			`setTimeSlotSelectionByDateRange - no time table selection store found for ident: ${ident}`,
@@ -189,8 +185,8 @@ function setTimeSlotSelectionByDateRange<G extends TimeTableGroup>(
 		console.warn("TimeTable - unable to find time range in slots array")
 		return
 	}
-	if (store.selection.groupId !== group.id) {
-		store.selection.groupId = group.id
+	if (store.selection.groupId !== groupId) {
+		store.selection.groupId = groupId
 		store.selection.selectedTimeSlots?.splice(
 			0,
 			Number.POSITIVE_INFINITY,
@@ -199,7 +195,7 @@ function setTimeSlotSelectionByDateRange<G extends TimeTableGroup>(
 		return
 	}
 	if (store.selection.selectedTimeSlots?.length !== newSlots.length) {
-		store.selection.groupId = group.id
+		store.selection.groupId = groupId
 		store.selection.selectedTimeSlots?.splice(
 			0,
 			Number.POSITIVE_INFINITY,
@@ -210,7 +206,7 @@ function setTimeSlotSelectionByDateRange<G extends TimeTableGroup>(
 	// compare the elements and replace if they are different
 	for (let i = 0; i < newSlots.length; i++) {
 		if (store.selection.selectedTimeSlots?.[i] !== newSlots[i]) {
-			store.selection.groupId = group.id
+			store.selection.groupId = groupId
 			store.selection.selectedTimeSlots?.splice(
 				0,
 				Number.POSITIVE_INFINITY,
@@ -241,11 +237,7 @@ export function clearTimeSlotSelection(
 }
 
 /** Conditionally adds or remove time slots from the section (does not call the notifyOnTimeRangeSelected function!) */
-function add<G extends TimeTableGroup>(
-	storeIdent: string,
-	timeSlotNumber: number,
-	group: G,
-) {
+function add(storeIdent: string, timeSlotNumber: number) {
 	const store = timeTableSelectionStore[storeIdent]
 	if (!store) {
 		throw new Error(
@@ -258,7 +250,7 @@ function add<G extends TimeTableGroup>(
 		store.lastTimeSlotNumber === null
 	) {
 		store.selection.selectedTimeSlots = [timeSlotNumber]
-		store.lastTimeSlotNumber = timeSlotNumber
+		setLastHandledTimeSlot(storeIdent, timeSlotNumber)
 		return
 	}
 
@@ -298,7 +290,7 @@ function add<G extends TimeTableGroup>(
 		}
 	} else {
 		if (store.lastTimeSlotNumber === null) {
-			store.lastTimeSlotNumber = timeSlotNumber
+			setLastHandledTimeSlot(storeIdent, timeSlotNumber)
 			return
 		}
 		if (timeSlotNumber > store.lastTimeSlotNumber) {
@@ -310,12 +302,13 @@ function add<G extends TimeTableGroup>(
 				newSlots.push(i)
 			}
 		} else {
-			store.lastTimeSlotNumber = timeSlotNumber
+			setLastHandledTimeSlot(storeIdent, timeSlotNumber)
 			return
 		}
 	}
 
-	store.lastTimeSlotNumber = timeSlotNumber
+	setLastHandledTimeSlot(storeIdent, timeSlotNumber)
+	console.log("add", "newSlots", newSlots, store.selection)
 	if (newSlots.length !== store.selection.selectedTimeSlots.length) {
 		store.selection.selectedTimeSlots.splice(
 			0,
@@ -337,26 +330,18 @@ function add<G extends TimeTableGroup>(
 	}
 }
 
-function notifyOnTimeRangeSelected<G extends TimeTableGroup>(
-	ident: string,
-	group?: G | undefined,
-) {
-	const store = getStore<G>(ident)
+function notifyOnTimeRangeSelected(ident: string) {
+	const store = getStore(ident)
 	if (!store) {
 		throw new Error(
 			`TimeTable - selectionStore - notifyOnTimeRangeSelected - no time table selection store found for ident: ${ident}`,
 		)
 	}
 	if (store.onTimeRangeSelected) {
-		if (!group) {
+		if (store.selection.groupId == null) {
+			console.log("notifyOnTimeRangeSelected", "no group selected")
 			store.onTimeRangeSelected(null)
 			return
-		}
-		// test if the selection is correct by checking the groupID
-		if (store.selection.groupId !== group.id) {
-			throw new Error(
-				`TimeTable - selectionStore ${ident} - notifyOnTimeRangeSelected - group id does not match`,
-			)
 		}
 		const firstSlot = store.selection.selectedTimeSlots?.[0]
 		const lastSlot =
@@ -381,17 +366,21 @@ function notifyOnTimeRangeSelected<G extends TimeTableGroup>(
 			timeSlotMinutes,
 			"minutes",
 		)
-		store.onTimeRangeSelected({ group, startDate, endDate })
+		store.onTimeRangeSelected({
+			groupId: store.selection.groupId,
+			startDate,
+			endDate,
+		})
 	}
 }
 
-export function toggleTimeSlotSelected<G extends TimeTableGroup>(
+export function toggleTimeSlotSelected(
 	ident: string,
-	group: G,
+	groupId: string,
 	timeSlot: number,
 	interaction: "drag" | "drag-end" | "click",
 ) {
-	const store = getStore<G>(ident)
+	const store = getStore(ident)
 	if (!store) {
 		throw new Error(
 			`TimeTable - no time table selection store to toggle time slot found for ident: ${ident}`,
@@ -399,33 +388,39 @@ export function toggleTimeSlotSelected<G extends TimeTableGroup>(
 	}
 
 	if (interaction === "click") {
+		console.log("toggleTimeSlotSelected", "click", groupId, timeSlot)
 		if (store.selection.selectedTimeSlots?.includes(timeSlot)) {
 			store.selection.selectedTimeSlots = null
 			store.selection.groupId = null
 			notifyOnTimeRangeSelected(ident)
 			return
 		}
-		store.selection.groupId = group.id
+		store.selection.groupId = groupId
 		store.selection.selectedTimeSlots = [timeSlot]
-		notifyOnTimeRangeSelected(ident, group)
+		notifyOnTimeRangeSelected(ident)
 		return
 	}
 
-	if (
-		store.selection.groupId !== group.id ||
-		store.selection.selectedTimeSlots === null
-	) {
-		store.selection.groupId = group.id
+	// the code below sets the selection to null when the group changes, but we currently do not want to do that
+	//if (
+	///	store.selection.groupId == null ||
+	//	store.selection.selectedTimeSlots === null
+	//) {
+	if (store.lastTimeSlotNumber == null) {
+		store.selection.groupId = groupId
 		store.selection.selectedTimeSlots = [timeSlot]
+		setLastHandledTimeSlot(ident, timeSlot)
 		if (interaction === "drag-end") {
-			notifyOnTimeRangeSelected(ident, group)
+			notifyOnTimeRangeSelected(ident)
+			setLastHandledTimeSlot(ident, null)
 		}
 		return
 	}
 
-	add(ident, timeSlot, group)
+	add(ident, timeSlot)
 	if (interaction === "drag-end") {
-		notifyOnTimeRangeSelected(ident, group)
+		notifyOnTimeRangeSelected(ident)
+		setLastHandledTimeSlot(ident, null)
 	}
 }
 
@@ -460,7 +455,7 @@ export function setMultiSelectionMode(
 		)
 	}
 	if (!multiSelectionMode) {
-		store.lastTimeSlotNumber = null
+		setLastHandledTimeSlot(ident, null)
 	}
 	store.multiSelectionMode = multiSelectionMode
 }
@@ -472,5 +467,5 @@ export function setLastHandledTimeSlot(ident: string, timeSlot: number | null) {
 			`setLastHandledTimeSlot - no time table selection store found for ident: ${ident}`,
 		)
 	}
-	store.lastTimeSlotNumber = null
+	store.lastTimeSlotNumber = timeSlot
 }

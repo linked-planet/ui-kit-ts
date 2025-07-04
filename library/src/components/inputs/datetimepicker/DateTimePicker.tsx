@@ -1,15 +1,15 @@
 import type React from "react"
-import { DatePicker, type DatePickerProps } from "./DatePicker"
-import { TimePicker, type TimePickerProps } from "./TimePicker"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
-	useController,
 	type Control,
 	type FieldValues,
 	type Path,
+	useController,
 } from "react-hook-form"
-import { type DateType, DateUtils, type TimeType } from "../../../utils"
-import { useCallback, useEffect, useRef, useState } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
+import { type DateType, DateUtils, type TimeType } from "../../../utils"
+import { DatePicker, type DatePickerProps } from "./DatePicker"
+import { TimePicker, type TimePickerProps } from "./TimePicker"
 
 type DatePickerPropsPart = Omit<
 	DatePickerProps,
@@ -46,7 +46,6 @@ type TimePickerPropsPart = Pick<
 	| "readOnly"
 	| "lang"
 	| "clearButtonLabel"
-	| "errorMessage"
 	| "onOpenChange"
 	| "id"
 	| "lang"
@@ -326,6 +325,7 @@ function DateTimeNotInFormPicker({
 		>
 			<DatePicker
 				className={datePickerClassName}
+				style={datePickerStyle}
 				inputClassName="rounded-r-none"
 				hideIcon
 				value={dateVal}
@@ -337,6 +337,12 @@ function DateTimeNotInFormPicker({
 					"before:rounded-l-none rounded-l-none",
 					timePickerClassName,
 				)}
+				styles={{
+					control: (p) => ({
+						...p,
+						...timePickerStyle,
+					}),
+				}}
 				value={timeVal}
 				{...timePickerProps}
 			/>

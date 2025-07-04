@@ -1,22 +1,26 @@
 import dayjs, { type Dayjs } from "dayjs/esm"
-import weekOfYear from "dayjs/esm/plugin/weekOfYear"
-import weekYear from "dayjs/esm/plugin/weekYear"
 import localeData from "dayjs/esm/plugin/localeData"
 import utc from "dayjs/esm/plugin/utc"
+import weekOfYear from "dayjs/esm/plugin/weekOfYear"
+import weekYear from "dayjs/esm/plugin/weekYear"
+
 dayjs.extend(weekOfYear)
 dayjs.extend(weekYear)
 dayjs.extend(localeData)
 dayjs.extend(utc)
+
 import type React from "react"
 import { Fragment, type RefObject, useCallback, useRef, useState } from "react"
 
 // if more locales then english and germans are needed, we need to enable them first here
 import "dayjs/esm/locale/de"
+
 //import "dayjs/esm/locale/es"
 //import "dayjs/esm/locale/fr"
 //import "dayjs/esm/locale/it"
 //import "dayjs/esm/locale/nl"
 
+import useResizeObserver, { type ObservedSize } from "use-resize-observer"
 import type {
 	TimeSlotBooking,
 	TimeTableEntry,
@@ -24,7 +28,6 @@ import type {
 	TimeTableViewType,
 } from "./TimeTable"
 import type { TimeFrameDay } from "./TimeTableConfigStore"
-import useResizeObserver, { type ObservedSize } from "use-resize-observer"
 import { getTimeSlotMinutes } from "./timeTableUtils"
 
 const headerTimeSlotFormat: { [viewType in TimeTableViewType]: string } = {
@@ -186,7 +189,7 @@ export const LPTimeTableHeader = function TimeTableHeader<
 								: `${groupHeaderColumnWidth}px`,
 					}}
 				/>
-				{slotsArray.map((d, i) => {
+				{slotsArray.map((d) => {
 					return (
 						<Fragment key={`colgroup${d.unix()}`}>
 							<col
@@ -352,8 +355,8 @@ function CustomHeaderRowCell<
 	timeFrameOfDay,
 	entries,
 	slotsArray,
-	showTimeSlotHeader,
 	customHeaderRow,
+	showTimeSlotHeader,
 }: {
 	timeSlot: Dayjs
 	timeSlotMinutes: number
@@ -362,11 +365,11 @@ function CustomHeaderRowCell<
 	timeFrameOfDay: TimeFrameDay
 	entries: TimeTableEntry<G, I>[]
 	slotsArray: readonly Dayjs[]
-	showTimeSlotHeader: boolean
 	customHeaderRow: {
 		timeSlot: (props: CustomHeaderRowTimeSlotProps<G, I>) => React.ReactNode
 		header: (props: CustomHeaderRowHeaderProps<G, I>) => React.ReactNode
 	}
+	showTimeSlotHeader: boolean
 }) {
 	// this is the same as in the TableCell component
 	const tableCellRef = useRef<HTMLTableCellElement>(null)
@@ -384,6 +387,10 @@ function CustomHeaderRowCell<
 		round: (n: number) => n, // we don't need rounding here
 	})
 	//
+
+	if (!showTimeSlotHeader) {
+		return null
+	}
 
 	return (
 		<th

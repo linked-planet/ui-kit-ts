@@ -1,3 +1,4 @@
+import { Button, ButtonGroup, CodeBlock, Tabs } from "@linked-planet/ui-kit-ts"
 import type React from "react"
 import {
 	type ElementRef,
@@ -7,10 +8,8 @@ import {
 	useRef,
 	useState,
 } from "react"
-import { Tabs, Button, ButtonGroup, CodeBlock } from "@linked-planet/ui-kit-ts"
-
-import styles from "./ShowCaseWrapperItem.module.css"
 import { useLocation, useSearchParams } from "react-router-dom"
+import styles from "./ShowCaseWrapperItem.module.css"
 
 export interface Package {
 	name: string

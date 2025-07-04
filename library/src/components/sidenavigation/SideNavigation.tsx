@@ -1,10 +1,9 @@
-import React, { useRef, useState } from "react"
-import type { ComponentPropsWithoutRef } from "react"
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
+import { AnimatePresence, motion } from "motion/react"
+import React, { type ComponentPropsWithoutRef, useRef, useState } from "react"
+import { flushSync } from "react-dom"
 import { twJoin, twMerge } from "tailwind-merge"
 import { useSideNavigationStore } from "./SideNavigationStore"
-import { AnimatePresence, motion } from "motion/react"
-import { flushSync } from "react-dom"
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
 
 const itemBaseStyles = twJoin(
 	"px-1.5 data-[selected=true]:bg-neutral-subtle-hovered group flex w-full cursor-pointer select-none items-center overflow-hidden rounded-xs",
@@ -487,12 +486,8 @@ function NestingItem({
 	_isOpen,
 	id,
 }: _NestingItemProps & { _isOpen?: boolean }) {
-	const {
-		getCurrentPathElement,
-		pushPathElement,
-		transitioning,
-		setTransitioning,
-	} = useSideNavigationStore(sideNavStoreIdent)
+	const { pushPathElement, setTransitioning } =
+		useSideNavigationStore(sideNavStoreIdent)
 
 	//const isOpen = getCurrentPathElement() === title && transitioning === null*/
 	if (_isOpen) {
@@ -594,7 +589,7 @@ function NestableNavigationContent({
 	onAnimationComplete,
 	onGoBackClick,
 }: _NestableNavigationContentProps) {
-	const { popPathElement, getCurrentPathElement, setTransitioning, path } =
+	const { popPathElement, getCurrentPathElement, setTransitioning } =
 		useSideNavigationStore(sideNavStoreIdent)
 
 	const currentOpenedId = getCurrentPathElement()

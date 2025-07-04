@@ -1,9 +1,8 @@
+import { CheckIcon } from "lucide-react"
 import type React from "react"
 import type { CSSProperties } from "react"
-
 import { twMerge } from "tailwind-merge"
 import { assertUnreachable } from "../utils/assertUnreachable"
-import { CheckIcon } from "lucide-react"
 
 export type FlagAppearance =
 	| "default"
@@ -127,7 +126,7 @@ const IconInvertedStyles: { [style in FlagAppearance]: string } = {
 
 export function FlagIcon({
 	appearance = "default",
-	type,
+	//type,
 }: {
 	appearance?: FlagAppearance
 	type: FlagProps["type"]
@@ -139,7 +138,7 @@ export function FlagIcon({
 
 	switch (appearance) {
 		case "default": {
-			return <></>
+			return null
 		}
 		case "success": {
 			return (
@@ -226,7 +225,7 @@ export function Flag({
 				<div className="mb-2 font-bold">{title}</div>
 				<div>{description}</div>
 				<div>
-					{actions?.map((action, i) => (
+					{actions?.map((action) => (
 						<>
 							<a
 								key={`action${action.href}`}

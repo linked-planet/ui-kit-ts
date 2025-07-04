@@ -1,42 +1,41 @@
+import { default as emotionCreateCache } from "@emotion/cache"
+import { CacheProvider, type SerializedStyles } from "@emotion/react"
+import type { StyleSheet } from "@emotion/sheet"
+import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react"
 import type React from "react"
 import {
 	type CSSProperties,
+	type ReactNode,
 	useImperativeHandle,
 	useMemo,
 	useRef,
-	type ReactNode,
 } from "react"
-import { useController } from "react-hook-form"
 import type { Control, FieldValues, Path } from "react-hook-form"
+import { useController } from "react-hook-form"
 import {
 	type ActionMeta,
-	type CSSObjectWithLabel,
+	type AriaGuidance,
+	type AriaLiveMessages,
+	type AriaOnChange,
+	type AriaOnFilter,
+	type AriaOnFocus,
 	type ClassNamesConfig,
+	type CSSObjectWithLabel,
 	type GroupBase,
 	type OnChangeValue,
 	default as RSelect,
 	type SelectComponentsConfig,
 	type SelectInstance,
-	type AriaOnFocus,
-	type AriaGuidance,
-	type AriaOnChange,
-	type AriaOnFilter,
-	type AriaLiveMessages,
 } from "react-select"
 import ReactSelectAsync from "react-select/async"
-import { default as emotionCreateCache } from "@emotion/cache"
-
 import ReactSelectCreatable, {
 	type CreatableProps,
 } from "react-select/creatable"
 import { twJoin, twMerge } from "tailwind-merge"
-import { SlidingErrorMessage } from "./ErrorHelpWrapper"
+import usePortalContainer from "../../utils/usePortalContainer"
 import { IconSizeHelper } from "../IconSizeHelper"
 import { inputBaseStyles } from "../styleHelper"
-import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react"
-import { CacheProvider, type SerializedStyles } from "@emotion/react"
-import type { StyleSheet } from "@emotion/sheet"
-import usePortalContainer from "../../utils/usePortalContainer"
+import { SlidingErrorMessage } from "./ErrorHelpWrapper"
 
 // usage aria stuff:
 // https://react-select.com/advanced
@@ -73,7 +72,7 @@ export type SelectClassNamesConfig<
 	IsMulti extends boolean,
 > = ClassNamesConfig<OptionType<ValueType>, IsMulti, OptionGroupType<ValueType>>
 
-const portalDivId = "uikts-select" as const
+const _portalDivId = "uikts-select" as const
 
 function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 	classNamesConfig:
@@ -106,7 +105,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 								? "border-danger-border before:border-danger-border focus-within:before:border-danger-border"
 								: undefined,
 							provided.isFocused && !provided.isDisabled
-								? "bg-input-active hover:bg-input-active focus-within:shadow-borderstyle border-input-border-focused shadow-input-border-focused"
+								? "bg-input-active hover:bg-input-active focus-within:ring border-input-border-focused ring-input-border-focused outline-none"
 								: undefined,
 							!provided.isFocused && !provided.isDisabled
 								? "bg-input hover:bg-input-hovered"
@@ -377,10 +376,11 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 		> = {
 			ClearIndicator: (_props) => {
 				return (
+					// biome-ignore lint/a11y/useSemanticElements: the react-select component is not a button, but a div
 					<div
 						{..._props.innerProps}
-						// biome-ignore lint/a11y/useSemanticElements: <explanation>
 						role="button"
+						tabIndex={0}
 						className={_props.getClassNames(
 							"clearIndicator",
 							_props,
@@ -395,7 +395,6 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 							clearValuesButtonLabel ?? "clear all selected"
 						}
 						aria-hidden="false"
-						tabIndex={0}
 						onKeyUp={(e) => {
 							if (e.key === "Enter") {
 								_props.clearValue()
@@ -427,8 +426,8 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 					_props.data.label
 				}`
 				return (
+					// biome-ignore lint/a11y/useSemanticElements: the react-select component is not a button, but a div
 					<div
-						// biome-ignore lint/a11y/useSemanticElements: <explanation>
 						role="button"
 						{..._props.innerProps}
 						title={title}
@@ -451,9 +450,13 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 				)
 				// add the className to the removeProps... else it is undefined
 				_props.removeProps.className = className
+
 				return (
+					// biome-ignore lint/a11y/useSemanticElements: the react-select component is not a button, but a div
 					<div
 						{..._props.innerProps}
+						role="button"
+						tabIndex={0}
 						className={_props.getClassNames("multiValue", _props)}
 						style={
 							_props.getStyles("multiValue", _props) as
@@ -488,10 +491,9 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 						_props.selectProps.menuIsOpen ? "close" : "open"
 					} the menu`
 				return (
-					// biome-ignore lint/a11y/useFocusableInteractive: <explanation>
+					// biome-ignore lint/a11y/useSemanticElements: the react-select component is not a button, but a div
 					<div
 						{..._props.innerProps}
-						// biome-ignore lint/a11y/useSemanticElements: <explanation>
 						role="button"
 						data-action="open_select"
 						//aria-disabled={_props.isDisabled}
@@ -507,6 +509,7 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 						title={title}
 						aria-label={title}
 						aria-hidden="false"
+						tabIndex={0}
 					>
 						<IconSizeHelper>
 							{_props.selectProps.menuIsOpen ? (
@@ -644,30 +647,6 @@ type SelectPropsProto<ValueType, IsMulti extends boolean = boolean> = Omit<
 	> | null>
 }
 
-// base react-select props + extensions
-type SelectPropsProtoOld<
-	ValueType,
-	IsMulti extends boolean = boolean,
-> = PickedCreateableProps<ValueType, IsMulti> & {
-	usePortal?: boolean | ShadowRoot
-	disabled?: boolean
-	isCreateable?: boolean
-	isAsync?: boolean
-	dropdownLabel?: (isOpen: boolean) => string
-	clearValuesButtonLabel?: string
-	removeValueButtonLabel?: string
-	placeholder?: string
-	inputId?: string
-	testId?: string
-	readOnly?: boolean
-	onClearButtonClick?: () => void
-	ref?: React.Ref<SelectInstance<
-		OptionType<ValueType>,
-		IsMulti,
-		GroupBase<OptionType<ValueType>>
-	> | null>
-}
-
 // extends with the control and fieldName props for react-hook-form.. the fieldName is the normal name prop of react-hook-form
 export type SelectInFormProps<
 	FormData extends FieldValues,
@@ -677,6 +656,8 @@ export type SelectInFormProps<
 	control: Control<FormData>
 	name: Path<FormData>
 	errorMessage?: ReactNode
+	errorMessageClassName?: string
+	errorMessageStyle?: CSSProperties
 	invalid?: boolean
 }
 
@@ -704,6 +685,8 @@ function SelectInForm<
 	"aria-invalid": ariaInvalid = false,
 	invalid,
 	errorMessage,
+	errorMessageClassName,
+	errorMessageStyle,
 	usePortal = true,
 	testId,
 	defaultValue,
@@ -809,9 +792,6 @@ function SelectInForm<
 		invalid,
 	}
 
-	// remove the field ref from the field props as we cannot use refs on function components
-	const { ref: innerRef, ...fieldProps } = field
-
 	const localRef = useRef<SelectInstance<
 		OptionType<ValueType>,
 		IsMulti,
@@ -830,7 +810,7 @@ function SelectInForm<
 		<>
 			<SelectInner
 				{...innerProps}
-				{...fieldProps}
+				{...field}
 				{...fieldState}
 				innerRef={localRef}
 				onChange={onChange}
@@ -846,6 +826,8 @@ function SelectInForm<
 				<SlidingErrorMessage
 					invalid={invalid || fieldState.invalid}
 					aria-invalid={ariaInvalid || fieldState.invalid}
+					className={errorMessageClassName}
+					style={errorMessageStyle}
 				>
 					{errorMessage}
 				</SlidingErrorMessage>
@@ -918,13 +900,9 @@ export function Select<
 			>
 		>(null)
 
-	useImperativeHandle(
-		props.instanceRef,
-		() => {
-			return localRef.current
-		},
-		[],
-	)
+	useImperativeHandle(props.instanceRef, () => {
+		return localRef.current
+	}, [])
 
 	let portalContainerRoot = usePortalContainer(
 		usePortal,

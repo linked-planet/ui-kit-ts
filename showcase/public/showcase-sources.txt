@@ -1,5 +1,5 @@
 import { Accordion } from "@linked-planet/ui-kit-ts"
-import React from "react"
+
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -8,7 +8,11 @@ import ShowcaseWrapperItem, {
 function AccordionExample() {
 	return (
 		<div className="bg-surface">
-			<Accordion.Container type="single" defaultValue="item-1" data-id="test-data-id">
+			<Accordion.Container
+				type="single"
+				defaultValue="item-1"
+				data-id="test-data-id"
+			>
 				<Accordion.Item value="item-1">
 					<Accordion.Trigger>Is it accessible?</Accordion.Trigger>
 					<Accordion.Content>
@@ -97,13 +101,11 @@ export default function AnimatedListShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React, { useState } from "react"
-
+import { AnimatedList, Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
-import { AnimatedList, Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
 
 //#region animated-list
 function AnimatedListExample() {
@@ -233,14 +235,15 @@ export default function AppLayoutShowcase(props: ShowcaseProps) {
 	)
 }
 
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 //import Avatar, { AvatarItem } from "@atlaskit/avatar"
 import {
 	Avatar as LPAvatar,
 	AvatarItem as LPAvatarItem,
 } from "@linked-planet/ui-kit-ts"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
 //import Avatar, { AvatarItem } from "@atlaskit/avatar"
 
 function AvatarShowcase(props: ShowcaseProps) {
@@ -490,11 +493,10 @@ function AvatarShowcase(props: ShowcaseProps) {
 
 export default AvatarShowcase
 
-import React from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import AwesomeSlider from "react-awesome-slider"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 import "react-awesome-slider/dist/styles.css"
 
@@ -517,6 +519,7 @@ function AwesomeSliderShowcase(props: ShowcaseProps) {
 						src="images/logo.png"
 						width={100}
 						height={100}
+						alt="logo"
 					/>
 				</div>
 				<div>
@@ -525,6 +528,7 @@ function AwesomeSliderShowcase(props: ShowcaseProps) {
 						src="images/github-logo.png"
 						width={100}
 						height={100}
+						alt="github logo"
 					/>
 				</div>
 			</AwesomeSlider>
@@ -555,12 +559,12 @@ function AwesomeSliderShowcase(props: ShowcaseProps) {
 
 export default AwesomeSliderShowcase
 
-import React from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 //import AKBadge from "@atlaskit/badge"
 import { Badge } from "@linked-planet/ui-kit-ts"
+
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function BadgeShowcase(props: ShowcaseProps) {
 	const akExample = (
@@ -629,11 +633,11 @@ function BadgeShowcase(props: ShowcaseProps) {
 
 export default BadgeShowcase
 
+import { Banner, IconSizeHelper } from "@linked-planet/ui-kit-ts"
 import { CircleCheckIcon, OctagonAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Banner, IconSizeHelper } from "@linked-planet/ui-kit-ts"
 
 function BannerShowcase(props: ShowcaseProps) {
 	//#region banner-example
@@ -696,13 +700,13 @@ function BannerShowcase(props: ShowcaseProps) {
 
 export default BannerShowcase
 
+import { Blanket, Button, usePortalContainer } from "@linked-planet/ui-kit-ts"
 import { useEffect, useRef, useState } from "react"
+import ReactDOM from "react-dom"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Blanket, Button, usePortalContainer } from "@linked-planet/ui-kit-ts"
-import ReactDOM from "react-dom"
-import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 
 //#region blanket-shadow-root-example
 function BlanketShowcaseShadowRootExample() {
@@ -811,24 +815,23 @@ function BlanketShowcase(props: ShowcaseProps) {
 
 export default BlanketShowcase
 
-import { type CSSProperties, useMemo, useRef, useState } from "react"
 import {
+	Badge,
 	BookCard,
 	BookCardComponents,
-	Tag,
-	TagGroup,
-	Badge,
-	Fieldset,
 	Button,
 	ButtonGroup,
+	Fieldset,
+	Tag,
+	TagGroup,
 } from "@linked-planet/ui-kit-ts"
+import { TruncatedText } from "@linked-planet/ui-kit-ts/components/TruncatedText"
+import { type CSSProperties, useMemo, useRef, useState } from "react"
 
+import { CSSTransition } from "react-transition-group"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
-import { CSSTransition } from "react-transition-group"
-import { TruncatedText } from "@linked-planet/ui-kit-ts/components/TruncatedText"
 
 //#region bookcardcomponents
 function BookCardComponentsExample() {
@@ -846,9 +849,7 @@ function BookCardComponentsExample() {
 						</BookCardComponents.CardHeaderSubtitle>
 					</BookCardComponents.CardHeaderMeta>
 					<BookCardComponents.CardHeaderActions>
-						<BookCardComponents.CardHeaderActionsInfo>
-							<Badge appearance="default">action</Badge>
-						</BookCardComponents.CardHeaderActionsInfo>
+						<Badge appearance="default">action</Badge>
 					</BookCardComponents.CardHeaderActions>
 				</BookCardComponents.CardHeader>
 			}
@@ -983,9 +984,9 @@ function BookCardExample() {
 				bodyLayout={bodyLayout}
 				bodyStyle={bodyStyle}
 				closed={isClosed}
-				actionsInfo={"Action:"}
 				actions={
 					<div className="flex items-center">
+						Actions:&nbsp;
 						<TagGroup>
 							<Tag key="action" appearance="danger">
 								DAUERAUSLEIHE
@@ -997,44 +998,42 @@ function BookCardExample() {
 					</div>
 				}
 			>
-				<>
-					<BookCardComponents.CardBodyEntry>
-						<BookCardComponents.CardBodyEntryTitle>
-							Book Entry Title
-						</BookCardComponents.CardBodyEntryTitle>
-						<TruncatedText>
-							truncated - Lorem ipsum dolor sit amet consectetur
-							adipisicing elit. Beatae aperiam tenetur est in
-							quidem? Tempore, cumque perspiciatis optio aperiam
-							dolorem saepe harum, sequi eaque nisi quas,
-							assumenda praesentium! Labore, incidunt.
-						</TruncatedText>
-					</BookCardComponents.CardBodyEntry>
-					<BookCardComponents.CardBodyEntry>
-						<BookCardComponents.CardBodyEntryTitle>
-							Book Entry Title
-						</BookCardComponents.CardBodyEntryTitle>
-						<TruncatedText>untruncated</TruncatedText>
-					</BookCardComponents.CardBodyEntry>
-					<BookCardComponents.CardBodyEntry>
-						<BookCardComponents.CardBodyEntryTitle>
-							Book Entry Title
-						</BookCardComponents.CardBodyEntryTitle>
-						<Tag>
-							Lorem ipsum, dolor sit amet consectetur adipisicing
-							elit. Illo cumque eum laborum voluptate ipsa sed
-							consectetur tempore vel quia est quas itaque
-							voluptatem neque odio, maiores ut cum at distinctio?
-						</Tag>
-						<Tag>
-							Lorem ipsum, dolor sit amet consectetur adipisicing
-							elit. Illo cumque eum laborum voluptate ipsa sed
-							consectetur tempore vel quia est quas itaque
-							voluptatem neque odio, maiores ut cum at distinctio?
-						</Tag>
-					</BookCardComponents.CardBodyEntry>
-					{children}
-				</>
+				<BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntryTitle>
+						Book Entry Title
+					</BookCardComponents.CardBodyEntryTitle>
+					<TruncatedText>
+						truncated - Lorem ipsum dolor sit amet consectetur
+						adipisicing elit. Beatae aperiam tenetur est in quidem?
+						Tempore, cumque perspiciatis optio aperiam dolorem saepe
+						harum, sequi eaque nisi quas, assumenda praesentium!
+						Labore, incidunt.
+					</TruncatedText>
+				</BookCardComponents.CardBodyEntry>
+				<BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntryTitle>
+						Book Entry Title
+					</BookCardComponents.CardBodyEntryTitle>
+					<TruncatedText>untruncated</TruncatedText>
+				</BookCardComponents.CardBodyEntry>
+				<BookCardComponents.CardBodyEntry>
+					<BookCardComponents.CardBodyEntryTitle>
+						Book Entry Title
+					</BookCardComponents.CardBodyEntryTitle>
+					<Tag>
+						Lorem ipsum, dolor sit amet consectetur adipisicing
+						elit. Illo cumque eum laborum voluptate ipsa sed
+						consectetur tempore vel quia est quas itaque voluptatem
+						neque odio, maiores ut cum at distinctio?
+					</Tag>
+					<Tag>
+						Lorem ipsum, dolor sit amet consectetur adipisicing
+						elit. Illo cumque eum laborum voluptate ipsa sed
+						consectetur tempore vel quia est quas itaque voluptatem
+						neque odio, maiores ut cum at distinctio?
+					</Tag>
+				</BookCardComponents.CardBodyEntry>
+				{children}
 			</BookCard>
 		</>
 	)
@@ -1148,13 +1147,12 @@ export default function BookCardShowcase(props: ShowcaseProps) {
 	)
 }
 
+import { Breadcrumbs, Checkbox, Input, Label } from "@linked-planet/ui-kit-ts"
+import { PlusIcon } from "lucide-react"
 import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Breadcrumbs, Checkbox, Input, Label } from "@linked-planet/ui-kit-ts"
-
-import { PlusIcon } from "lucide-react"
 
 //#region bread-crumbs-max-items-example
 function MaxItemsExample() {
@@ -1357,17 +1355,16 @@ function BannerShowcase(props: ShowcaseProps) {
 
 export default BannerShowcase
 
-import { useState } from "react"
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 /*import AKButton, {
 	ButtonGroup as AKButtonGroup,
 	LoadingButton as AKLoadingButton,
 } from "@atlaskit/button"*/
-import { Button, LoadingButton, ButtonGroup } from "@linked-planet/ui-kit-ts"
-
+import { Button, ButtonGroup, LoadingButton } from "@linked-planet/ui-kit-ts"
 import { SearchIcon } from "lucide-react"
+import { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function ButtonShowcase(props: ShowcaseProps) {
 	const [isLoading, setIsLoading] = useState(false)
@@ -1765,8 +1762,8 @@ import {
 	ButtonGroup,
 	Calendar,
 	CalendarBase,
-	DateUtils,
 	type DateType,
+	DateUtils,
 } from "@linked-planet/ui-kit-ts"
 import {
 	dateFromString,
@@ -2034,6 +2031,7 @@ function CalendarRange() {
 				}}
 				minDate={new Date("2022-01-01")}
 				maxDate={new Date("2028-12-31")}
+				selectedClassName="text-red-500 [.selected]:after:border-red-300"
 			/>
 		</div>
 	)
@@ -2066,6 +2064,7 @@ function CalendarRangeForm() {
 				invalid={!isValid}
 				defaultMonth={12}
 				defaultYear={2023}
+				selectedClassName="text-pink-500 [.selected]:after:border-pink-300"
 			/>
 			<ButtonGroup className="mt-4 flex justify-end">
 				<Button type="reset">Reset</Button>
@@ -2157,13 +2156,13 @@ export default function Calendar2Showcase(props: ShowcaseProps) {
 	)
 }
 
+//import AKCheckbox from "@atlaskit/checkbox"
+import { Button, ButtonGroup, Checkbox } from "@linked-planet/ui-kit-ts"
 import { useState } from "react"
+import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-//import AKCheckbox from "@atlaskit/checkbox"
-import { Button, ButtonGroup, Checkbox } from "@linked-planet/ui-kit-ts"
-import { useForm } from "react-hook-form"
 
 //#region checkbox-form
 type FormData = {
@@ -2293,6 +2292,7 @@ import { CodeBlock } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
 //import { CodeBlock as AKCodeBlock } from "@atlaskit/code"
 
 function CodeBlockShowcase(props: ShowcaseProps) {
@@ -2337,11 +2337,11 @@ function CodeBlockShowcase(props: ShowcaseProps) {
 
 export default CodeBlockShowcase
 
+import { Button } from "@linked-planet/ui-kit-ts"
 import { Collapsible } from "@linked-planet/ui-kit-ts/components/Collapsible"
+import { useState } from "react"
 import type { ShowcaseProps } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import ShowcaseWrapperItem from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { useState } from "react"
-import { Button } from "@linked-planet/ui-kit-ts"
 
 //#region collapsible-controlled
 function CollapsibleControlled() {
@@ -2837,18 +2837,18 @@ export default function LayeringShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React, { type ReactNode, useMemo } from "react"
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
+	Button,
+	Checkbox,
 	DataTable,
 	type DataTableTypes,
 	Input,
 	Label,
-	Checkbox,
-	Button,
 } from "@linked-planet/ui-kit-ts"
+import { type ReactNode, useMemo, useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //#region datatable-example
 type RowData = {
@@ -2940,10 +2940,9 @@ function DataTableExample() {
 	}, [])
 
 	const [fullNameFilter, setFullNameFilter] =
-		React.useState<DataTableTypes.ColumnFilter>()
-	const [cityFilter, setCityFilter] =
-		React.useState<DataTableTypes.ColumnFilter>()
-	const [hideState, setHideState] = React.useState<boolean>(false)
+		useState<DataTableTypes.ColumnFilter>()
+	const [cityFilter, setCityFilter] = useState<DataTableTypes.ColumnFilter>()
+	const [hideState, setHideState] = useState<boolean>(false)
 
 	const filters = []
 	if (fullNameFilter) filters.push(fullNameFilter)
@@ -3081,10 +3080,9 @@ function DataTableColumnDefHelperExample() {
 	}, [columnHelper])
 
 	const [fullNameFilter, setFullNameFilter] =
-		React.useState<DataTableTypes.ColumnFilter>()
-	const [cityFilter, setCityFilter] =
-		React.useState<DataTableTypes.ColumnFilter>()
-	const [hideState, setHideState] = React.useState<boolean>(false)
+		useState<DataTableTypes.ColumnFilter>()
+	const [cityFilter, setCityFilter] = useState<DataTableTypes.ColumnFilter>()
+	const [hideState, setHideState] = useState<boolean>(false)
 
 	const filters: DataTableTypes.ColumnFilter[] = []
 	if (fullNameFilter) filters.push(fullNameFilter)
@@ -3164,22 +3162,22 @@ function DynamicTableShowcase(props: ShowcaseProps) {
 
 export default DynamicTableShowcase
 
-import { useState } from "react"
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
 	Button,
 	ButtonGroup,
-	DateTimePicker,
 	DatePicker,
-	TimePicker,
+	DateTimePicker,
 	type DateType,
-	type TimeType,
 	DateUtils,
 	Fieldset,
+	TimePicker,
+	type TimeType,
 } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 type FormData = {
 	dateTime: string
@@ -3206,7 +3204,11 @@ function FormExample() {
 			}}
 		>
 			<div className="flex flex-col gap-2">
-				<DateTimePicker control={control} name="dateTime" />
+				<DateTimePicker
+					control={control}
+					name="dateTime"
+					calendarSecondarySelectedClassName="text-red-500"
+				/>
 				<hr />
 				<TimePicker control={control} name="time" />
 				<hr />
@@ -3388,10 +3390,10 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 export default DateTimePickerShowcase
 
 import { DnD } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { useState } from "react"
 
 function TagShowcase(props: ShowcaseProps) {
 	//#region dnd-list-example
@@ -3466,14 +3468,14 @@ export default TagShowcase
 	DropdownItemRadio as AKDropdownItemRadio,
 	DropdownItemCheckboxGroup as AKDropdownItemCheckboxGroup,
 } from "@atlaskit/dropdown-menu"*/
+
+import { Dropdown } from "@linked-planet/ui-kit-ts"
 import { useEffect, useRef, useState } from "react"
+import ReactDOM from "react-dom"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
-import { Dropdown } from "@linked-planet/ui-kit-ts"
-import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
-import ReactDOM from "react-dom"
 
 //#region dropdown-shadow-root
 const lpExampleShadow = (
@@ -3515,94 +3517,6 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 			setCheckBoxes([...checkBoxes, value])
 		}
 	}
-
-	const akExample = (
-		<>
-			{/*<AKDropdownMenu trigger={"Trigger"}>
-				<AKDropdownItemCheckbox
-					id="item-1"
-					description={"test description"}
-					isSelected={checkBoxes.includes("item-1")}
-					onClick={() => handleCheckboxChange("item-1")}
-				>
-					Dropdown Checkbox Item 1
-				</AKDropdownItemCheckbox>
-				<AKDropdownItemCheckbox
-					id="item-2"
-					isSelected={checkBoxes.includes("item-2")}
-					onClick={() => handleCheckboxChange("item-2")}
-				>
-					Dropdown Checkbox Item 2
-				</AKDropdownItemCheckbox>
-				<AKDropdownItemCheckbox
-					id="item-3"
-					isDisabled={true}
-					isSelected={checkBoxes.includes("item-3")}
-					onClick={() => handleCheckboxChange("item-3")}
-				>
-					Dropdown Checkbox Item 3
-				</AKDropdownItemCheckbox>
-				<AKDropdownItemGroup title="test group" hasSeparator>
-					<AKDropdownItem
-						description={"group item test description"}
-						elemAfter={<div>A</div>}
-						elemBefore={<div>B</div>}
-					>
-						First dropdown item
-					</AKDropdownItem>
-					<AKDropdownItem isSelected>
-						Second dropdown item
-					</AKDropdownItem>
-					<AKDropdownItem isDisabled>
-						Disabled dropdown item
-					</AKDropdownItem>
-				</AKDropdownItemGroup>
-				<AKDropdownItem>After group dropdown item</AKDropdownItem>
-				<AKDropdownItemRadioGroup
-					id="dropdown-item-radio-it"
-					hasSeparator
-					title="test title"
-				>
-					<AKDropdownItemRadio
-						id="radio-1"
-						description={"another description"}
-						isSelected={radioValue === "testval1"}
-						onClick={() => handleRadioChange("testval1")}
-					>
-						Radio 1
-					</AKDropdownItemRadio>
-					<AKDropdownItemRadio
-						id="radio-2"
-						isSelected={radioValue === "radio-2"}
-						onClick={() => handleRadioChange("radio-2")}
-					>
-						Radio 2
-					</AKDropdownItemRadio>
-					<AKDropdownItemRadio
-						id="radio-3"
-						isSelected={radioValue === "radio-3"}
-						onClick={() => handleRadioChange("radio-3")}
-					>
-						Radio 3
-					</AKDropdownItemRadio>
-					<AKDropdownItemRadio id="radio-4" isDisabled>
-						Radio Disabled
-					</AKDropdownItemRadio>
-				</AKDropdownItemRadioGroup>
-				<AKDropdownItemCheckboxGroup id="some-id">
-					<AKDropdownItemCheckbox id="checkbox-1">
-						Checkbox 1
-					</AKDropdownItemCheckbox>
-					<AKDropdownItemCheckbox id="checkbox-2">
-						Checkbox 2
-					</AKDropdownItemCheckbox>
-				</AKDropdownItemCheckboxGroup>
-				{Array.from(Array(100).keys()).map((i) => (
-					<AKDropdownItem key={i}>long test item {i}</AKDropdownItem>
-				))}
-			</AKDropdownMenu>*/}
-		</>
-	)
 
 	//#region dropdown-menu
 	const lpExample = (
@@ -3764,13 +3678,12 @@ function DropDownMenuShowcase(props: ShowcaseProps) {
 
 export default DropDownMenuShowcase
 
-import { DateUtils, Label } from "@linked-planet/ui-kit-ts"
+import { DateUtils, EventList, Label } from "@linked-planet/ui-kit-ts"
+import dayjs from "dayjs/esm"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { EventList } from "@linked-planet/ui-kit-ts"
-import dayjs from "dayjs/esm"
-import { useState } from "react"
 
 //#region event-list
 function EventListExample() {
@@ -3984,10 +3897,7 @@ export default function EventListShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React, { useState } from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+import type { FilterType } from "@linked-planet/ui-kit-ts"
 //import Avatar, { AvatarItem } from "@atlaskit/avatar"
 import {
 	FilterCard,
@@ -3996,7 +3906,11 @@ import {
 	FilterDropdowns,
 	PageLayout,
 } from "@linked-planet/ui-kit-ts"
-import type { FilterType } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
 //import Avatar, { AvatarItem } from "@atlaskit/avatar"
 
 function FiltersShowcase(props: ShowcaseProps) {
@@ -4062,7 +3976,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 	const filterCardExample = (
 		<FilterCard
 			filter={filter}
-			onAttributeClick={(cat, attr) => {
+			onAttributeClick={(_cat, attr) => {
 				setSelectedValues((old) => {
 					const newSelected = [...old]
 					const index = newSelected.indexOf(attr)
@@ -4074,7 +3988,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 					return newSelected
 				})
 			}}
-			onSelectedChanged={(cat, attrs) => {
+			onSelectedChanged={(_cat, attrs) => {
 				setSelectedValues(attrs)
 			}}
 			className="max-h-[20rem]"
@@ -4190,7 +4104,7 @@ function FiltersShowcase(props: ShowcaseProps) {
 			onAttributeClick={(cat, attr) => {
 				console.log("on attribute click", cat, attr)
 			}}
-			onSelectedChanged={(cat, attrs) => {
+			onSelectedChanged={(_cat, attrs) => {
 				console.log("on selected changed", attrs)
 				setSelectedValues(attrs)
 			}}
@@ -4277,11 +4191,11 @@ function FiltersShowcase(props: ShowcaseProps) {
 
 export default FiltersShowcase
 
+import { Flag, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 import { TriangleAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Flag, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 
 function FlagShowcase(props: ShowcaseProps) {
 	//#region flag
@@ -4465,9 +4379,6 @@ function FlagShowcase(props: ShowcaseProps) {
 
 export default FlagShowcase
 
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
 	Button,
 	ButtonGroup,
@@ -4475,6 +4386,9 @@ import {
 	DynamicForm,
 } from "@linked-planet/ui-kit-ts"
 import { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 interface TestObject {
 	firstname: string
@@ -4747,11 +4661,10 @@ export default function FormShowcase(props: ShowcaseProps) {
 	)
 }
 
+import { Input, Label, useGlobalState } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { useGlobalState } from "@linked-planet/ui-kit-ts"
-import { Input, Label } from "@linked-planet/ui-kit-ts"
 
 //#region global-state
 function GlobalStateExample() {
@@ -4772,32 +4685,31 @@ function GlobalStateExample() {
 
 	return (
 		<>
-			<>
-				<Label htmlFor="myDataKey">Key</Label>
-				<Input
-					type="text"
-					id="myDataKey"
-					value={myData.key}
-					onChange={(e) => {
-						setMyData((prev) => ({
-							key: e.target.value,
-							name: prev.name,
-						}))
-					}}
-				/>
-				<Label htmlFor="myDataName">Name</Label>
-				<Input
-					type="text"
-					id="myDataName"
-					value={myData.name}
-					onChange={(e) => {
-						setMyData((prev) => ({
-							key: prev.key,
-							name: e.target.value,
-						}))
-					}}
-				/>
-			</>
+			<Label htmlFor="myDataKey">Key</Label>
+			<Input
+				type="text"
+				id="myDataKey"
+				value={myData.key}
+				onChange={(e) => {
+					setMyData((prev) => ({
+						key: e.target.value,
+						name: prev.name,
+					}))
+				}}
+			/>
+			<Label htmlFor="myDataName">Name</Label>
+			<Input
+				type="text"
+				id="myDataName"
+				value={myData.name}
+				onChange={(e) => {
+					setMyData((prev) => ({
+						key: prev.key,
+						name: e.target.value,
+					}))
+				}}
+			/>
+
 			<div className="bg-surface mt-8">{myData.key}</div>
 			<div className="bg-surface">{myData.name}</div>
 		</>
@@ -4818,27 +4730,26 @@ function ArrayString() {
 
 function GlobalArrayStateExample() {
 	// create global state hook
-	const [arrayData, setArrayData] = useGlobalState<string[]>("myArrayData", [
+	const [_, setArrayData] = useGlobalState<string[]>("myArrayData", [
 		"Apple",
 		"Banana",
 	])
 
 	return (
 		<>
-			<>
-				<Label htmlFor="myDataKey">Array Data Input</Label>
-				<Input
-					type="text"
-					id="myDataKey"
-					onKeyUp={(e) => {
-						if (e.key !== "Enter") return
-						setArrayData((prev) => [
-							...prev,
-							(e.target as HTMLInputElement).value,
-						])
-					}}
-				/>
-			</>
+			<Label htmlFor="myDataKey">Array Data Input</Label>
+			<Input
+				type="text"
+				id="myDataKey"
+				onKeyUp={(e) => {
+					if (e.key !== "Enter") return
+					setArrayData((prev) => [
+						...prev,
+						(e.target as HTMLInputElement).value,
+					])
+				}}
+			/>
+
 			<ArrayString />
 		</>
 	)
@@ -4873,11 +4784,11 @@ export default function GlobalStateShowcase(props: ShowcaseProps) {
 	)
 }
 
+import { Button, HighlightedText, Input } from "@linked-planet/ui-kit-ts"
 import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Button, HighlightedText, Input } from "@linked-planet/ui-kit-ts"
 
 function Example() {
 	const [caseSensitive, setCaseSensitive] = useState(false)
@@ -4960,12 +4871,11 @@ function HighlightedTextShowcase(props: ShowcaseProps) {
 
 export default HighlightedTextShowcase
 
+import { IconSizeHelper } from "@linked-planet/ui-kit-ts"
 import { PlusCircleIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
-import { IconSizeHelper } from "@linked-planet/ui-kit-ts"
 
 export default function IconSizeHelperShowcase(props: ShowcaseProps) {
 	//#region iconsizehelper
@@ -5008,12 +4918,11 @@ export default function IconSizeHelperShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
 import { InlineMessage } from "@linked-planet/ui-kit-ts"
+
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 export default function InlineMessageShowcase(props: ShowcaseProps) {
 	//#region inlinemessage
@@ -5100,9 +5009,6 @@ export default function InlineMessageShowcase(props: ShowcaseProps) {
 	)
 }
 
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
 	Button,
 	ButtonGroup,
@@ -5111,8 +5017,12 @@ import {
 	Label,
 	TextArea,
 } from "@linked-planet/ui-kit-ts"
-import { useForm } from "react-hook-form"
 import { CalendarIcon } from "lucide-react"
+import { useForm } from "react-hook-form"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
+
 //#region input-form-example
 type FormData = {
 	testInput: string
@@ -5169,19 +5079,6 @@ function FormExample() {
 //#endregion input-form-example
 
 export default function InputShowcase(props: ShowcaseProps) {
-	const exampleAK = {
-		/*<Fieldset legend="Input Example">
-			<AKTextField />
-			<AKTextField isDisabled />
-			<AKTextField placeholder="Placeholder" />
-			<AKTextField isInvalid value={"invalid"} />
-			<AKTextField isReadOnly value={"readonly"} />
-			<AKTextField type="number" defaultValue={1} />
-			<AKTextField type="number" defaultValue={1} appearance="subtle" />
-			<AKTextArea placeholder="Text Area">It wants children</AKTextArea>
-		</Fieldset>*/
-	}
-
 	//#region text-input
 	const exampleLP = (
 		<Fieldset legend="Input Example">
@@ -5256,17 +5153,18 @@ export default function InputShowcase(props: ShowcaseProps) {
 	)
 }
 
+import { token } from "@atlaskit/tokens"
+import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
 import { useState } from "react"
+import ReactJoyride from "react-joyride"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import ReactJoyride from "react-joyride"
-import { token } from "@atlaskit/tokens"
-import { Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
 
 function JoyrideShowcase(props: ShowcaseProps) {
 	//#region joyride
 	// fix missing global
+	// biome-ignore lint/suspicious/noExplicitAny: fix for joyride
 	if (!(window as any).global) (window as any).global = window
 
 	const [isJoyrideActive, setIsJoyrideActive] = useState(false)
@@ -5372,10 +5270,6 @@ function JoyrideShowcase(props: ShowcaseProps) {
 
 export default JoyrideShowcase
 
-import React from "react"
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
 	Button,
 	Checkbox,
@@ -5384,6 +5278,10 @@ import {
 	Label,
 	Select,
 } from "@linked-planet/ui-kit-ts"
+
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //#region layeringexample
 function Example() {
@@ -5520,12 +5418,11 @@ export default function LayeringShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
 import { LoadingSpinner } from "@linked-planet/ui-kit-ts"
+
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 export default function LoadingSpinnerShowcase(props: ShowcaseProps) {
 	//#region loadingspinner
@@ -5562,10 +5459,10 @@ export default function LoadingSpinnerShowcase(props: ShowcaseProps) {
 	)
 }
 
+import { Lozenge } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Lozenge } from "@linked-planet/ui-kit-ts"
 
 function LozengeShowcase(props: ShowcaseProps) {
 	//#region lozenge
@@ -5644,15 +5541,15 @@ function LozengeShowcase(props: ShowcaseProps) {
 
 export default LozengeShowcase
 
-import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function MenuShowcase(props: ShowcaseProps) {
 	//#region menu
-	const [items] = useState(["Menu A", "Menu B", "Menu C"])
+	/*const [items] = useState(["Menu A", "Menu B", "Menu C"])
 	const [selectedItems, setSelectedItems] = useState(["Menu A"])
+	*/
 	const example = (
 		<div>
 			Todo: pull menu components out of dropdown menu and maybe also
@@ -5715,12 +5612,6 @@ function MenuShowcase(props: ShowcaseProps) {
 
 export default MenuShowcase
 
-import { useEffect, useRef, useState } from "react"
-import React from "react-dom/client"
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { XIcon } from "lucide-react"
 /*import {
 	default as AKModal,
 	ModalBody as AKModalBody,
@@ -5730,15 +5621,21 @@ import { XIcon } from "lucide-react"
 	ModalTransition as AKModalTransition,
 } from "@atlaskit/modal-dialog"*/
 import {
+	Button,
+	Collapsible,
+	Dropdown,
 	Modal,
 	Select,
-	Button,
-	Dropdown,
-	Collapsible,
 } from "@linked-planet/ui-kit-ts"
 //import { default as AKSelect } from "@atlaskit/select"
 import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
+import { XIcon } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
+import React from "react-dom/client"
 import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function AKExample() {
 	const [isAKModalActive, setIsAKModalActive] = useState(false)
@@ -6066,13 +5963,13 @@ function ModalShowcase(props: ShowcaseProps) {
 
 export default ModalShowcase
 
-import React from "react"
 import {
 	Button,
 	ButtonGroup,
 	Dropdown,
 	PageLayout,
 } from "@linked-planet/ui-kit-ts"
+
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -6163,6 +6060,7 @@ function PageLayoutExample() {
 						{Array(100)
 							.fill(null)
 							.map((_, i) => (
+								// biome-ignore lint/suspicious/noArrayIndexKey: just an example
 								<div key={i}>Page Body Content {i}</div>
 							))}
 					</PageLayout.PageBodyContent>
@@ -6278,11 +6176,12 @@ export default function PageLayoutShowcase(props: ShowcaseProps) {
 	)
 }
 
+import { Pagination } from "@linked-planet/ui-kit-ts"
 import { useMemo, useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Pagination } from "@linked-planet/ui-kit-ts"
+
 //import { default as AKPagination } from "@atlaskit/pagination"
 
 function PageExample() {
@@ -6291,7 +6190,7 @@ function PageExample() {
 	const [pageSize, setPageSize] = useState(10)
 
 	const pages = useMemo(
-		() => [...Array(100)].map((item, index) => index + 1),
+		() => [...Array(100)].map((_, index) => index + 1),
 		[],
 	)
 
@@ -6319,10 +6218,7 @@ function IndexExample() {
 	const [selectedIndex, setSelectedIndex] = useState(0)
 	const [pageSize, setPageSize] = useState(10)
 
-	const pages = useMemo(
-		() => [...Array(10)].map((item, index) => index + 1),
-		[],
-	)
+	const pages = useMemo(() => [...Array(10)].map((_, index) => index + 1), [])
 
 	return (
 		<>
@@ -6374,13 +6270,13 @@ function PaginationShowcase(props: ShowcaseProps) {
 export default PaginationShowcase
 
 import { Calendar, Popover, Select } from "@linked-planet/ui-kit-ts"
+import { XIcon } from "lucide-react"
+import { useEffect, useRef } from "react"
+import React from "react-dom/client"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { XIcon } from "lucide-react"
-import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
-import { useEffect, useRef } from "react"
-import React from "react-dom/client"
 
 //#region popover-example
 function PopoverExample() {
@@ -6480,11 +6376,11 @@ export default function PopoverShowcase(props: ShowcaseProps) {
 	)
 }
 
+import { QrReader, QrReaderDialog } from "@linked-planet/ui-kit-ts"
 import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { QrReader, QrReaderDialog } from "@linked-planet/ui-kit-ts"
 
 //#region qrreader-example
 function QrReaderExample() {
@@ -6583,10 +6479,10 @@ export default function QrReaderShowcase(props: ShowcaseProps) {
 	)
 }
 
+import { SectionMessage } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { SectionMessage } from "@linked-planet/ui-kit-ts"
 
 function SectionMessageShowcase(props: ShowcaseProps) {
 	//#region section-message
@@ -6655,18 +6551,18 @@ import {
 	Button,
 	ButtonGroup,
 	Label,
+	type OptionGroupType,
 	Select,
 	type SelectComponentProps,
-	type OptionGroupType,
 	selectComponents,
 } from "@linked-planet/ui-kit-ts"
 import { useEffect, useMemo, useRef, useState } from "react"
+import React from "react-dom/client"
 import { useForm } from "react-hook-form"
+import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import React from "react-dom/client"
-import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 
 //#region select2form-uncontrolled
 
@@ -6701,7 +6597,7 @@ function FormExample() {
 		},
 	]
 
-	const { handleSubmit, control, reset, setValue } = useForm<FormData>({
+	const { handleSubmit, control, reset } = useForm<FormData>({
 		defaultValues: {
 			singleValue: availableOptions[0].value,
 			multiValues: [availableOptions[0].value, availableOptions[1].value],
@@ -6899,7 +6795,7 @@ function CustomComponentExample() {
 //#endregion select-custom-component
 
 //#region select-async
-function SelectAsyncExample() {}
+//! TODO: add async example and finish async select
 //#endregion select-async
 
 //#region select-shadow-dom
@@ -7155,10 +7051,10 @@ function SelectShowcase(props: ShowcaseProps) {
 
 export default SelectShowcase
 
+import { IconSizeHelper, SideNavigation } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { IconSizeHelper, SideNavigation } from "@linked-planet/ui-kit-ts"
 /*import {
 	SideNavigation as AKSideNavigation,
 	NavigationHeader as AKNavigationHeader,
@@ -7515,11 +7411,10 @@ function SideNavigationShowcase(props: ShowcaseProps) {
 
 export default SideNavigationShowcase
 
-import type React from "react"
+import { AppLayout } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { AppLayout } from "@linked-planet/ui-kit-ts"
 export function SidebarShowcase(props: ShowcaseProps) {
 	//#region sidebar
 	const example = (
@@ -7555,10 +7450,10 @@ export function SidebarShowcase(props: ShowcaseProps) {
 }
 
 import { Button, SlideOpen } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { useState } from "react"
 
 //#region slideopen
 function SlideOpenExample() {
@@ -7663,9 +7558,6 @@ export default function SLideOpenShowcase(props: ShowcaseProps) {
 	)
 }
 
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import TableTree, {
 	Cell,
 	Header,
@@ -7673,6 +7565,9 @@ import TableTree, {
 	Row,
 	Rows,
 } from "@atlaskit/table-tree"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function TableTreeShowcase(props: ShowcaseProps) {
 	//#region tabletree
@@ -7787,7 +7682,9 @@ function TableTreeShowcase(props: ShowcaseProps) {
 						isDefaultExpanded={false}
 					>
 						<Cell singleLine={true}>
-							<div
+							<button
+								type="button"
+								className="appearance-none"
 								onClick={() =>
 									window.alert(`onClick: ${data.title}`)
 								}
@@ -7798,10 +7695,12 @@ function TableTreeShowcase(props: ShowcaseProps) {
 								}}
 							>
 								{data.title}
-							</div>
+							</button>
 						</Cell>
 						<Cell singleLine={true}>
-							<div
+							<button
+								type="button"
+								className="appearance-none"
 								onClick={() =>
 									window.alert(`onClick: ${data.description}`)
 								}
@@ -7814,7 +7713,7 @@ function TableTreeShowcase(props: ShowcaseProps) {
 								}}
 							>
 								{data.description}
-							</div>
+							</button>
 						</Cell>
 					</Row>
 				)}
@@ -7861,7 +7760,7 @@ import ShowcaseWrapperItem, {
 	TabPanel as AKTabPanel,
 } from "@atlaskit/tabs"*/
 
-import { Tabs, Button } from "@linked-planet/ui-kit-ts"
+import { Button, Tabs } from "@linked-planet/ui-kit-ts"
 
 function AutomaticTabsValue() {
 	//#region tabs_automatic_value
@@ -8106,12 +8005,12 @@ function TabsShowcase(props: ShowcaseProps) {
 
 export default TabsShowcase
 
+/*import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
+import AKTagGroup from "@atlaskit/tag-group"*/
+import { Tag, TagGroup } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-/*import { SimpleTag as AKSimpleTag, default as AKTag } from "@atlaskit/tag"
-import AKTagGroup from "@atlaskit/tag-group"*/
-import { TagGroup, Tag } from "@linked-planet/ui-kit-ts"
 
 function TagShowcase(props: ShowcaseProps) {
 	const akExample = (
@@ -8326,12 +8225,12 @@ function TagShowcase(props: ShowcaseProps) {
 
 export default TagShowcase
 
-import React from "react"
+import { Button, ButtonGroup, TextArea } from "@linked-planet/ui-kit-ts"
+
+import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Button, ButtonGroup, TextArea } from "@linked-planet/ui-kit-ts"
-import { useForm } from "react-hook-form"
 
 //#region textarea-form-example
 function FormExample() {
@@ -8422,7 +8321,6 @@ function TextAreaShowcase(props: ShowcaseProps) {
 
 export default TextAreaShowcase
 
-import React from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -8457,31 +8355,27 @@ function TextFieldShowcase(props: ShowcaseProps) {
 
 export default TextFieldShowcase
 
-import { useCallback, useEffect, useMemo } from "react"
-import { useState } from "react"
-import dayjs, { type Dayjs } from "dayjs/esm"
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
 import { Button, TimeTable, timeTableUtils } from "@linked-planet/ui-kit-ts"
-
-import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
-
-import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
-import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
+import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
+import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import { allGroupsRenderedEvent } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableRows"
+import { useTranslation } from "@linked-planet/ui-kit-ts/localization/LocaleContext"
+import dayjs, { type Dayjs } from "dayjs/esm"
 import {
 	ChevronDownIcon,
 	ChevronLeftIcon,
 	ChevronRightIcon,
 } from "lucide-react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //import "@linked-planet/ui-kit-ts/dist/style.css" //-> this is not necessary in this setup, but in the real library usage
 
 const debounceTimeout = 500
-let debounceTimeoutCurrent: number | undefined = undefined
+let debounceTimeoutCurrent: number | undefined
 function debounceHelper(callback: () => void) {
 	if (debounceTimeoutCurrent) {
 		clearTimeout(debounceTimeoutCurrent)
@@ -9028,7 +8922,6 @@ function TestCustomHeaderRowTimeSlot<
 >({
 	timeSlot,
 	timeSlotMinutes,
-	isLastOfDay,
 	timeFrameOfDay,
 	viewType,
 	slotsArray,
@@ -9106,12 +8999,7 @@ function TestCustomHeaderRowTimeSlot<
 function CustomHeaderRowHeader<
 	G extends TimeTableTypes.TimeTableGroup,
 	I extends TimeTableTypes.TimeSlotBooking,
->({
-	slotsArray,
-	timeFrameOfDay,
-	viewType,
-	entries,
-}: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
+>({ entries }: TimeTableTypes.CustomHeaderRowHeaderProps<G, I>) {
 	if (!entries || !entries[1]) {
 		return <></>
 	}
@@ -9153,7 +9041,7 @@ function Example() {
 	const [entries, setEntries] = useState(exampleEntries)
 
 	const onTimeSlotItemClickCB = useCallback(
-		(group: ExampleGroup, item: ExampleItem) => {
+		(_group: ExampleGroup, item: ExampleItem) => {
 			setSelectedTimeSlotItem((prev) => {
 				if (prev === item) {
 					return undefined
@@ -9215,7 +9103,7 @@ function Example() {
 	const [selectedTimeRange, setSelectedTimeRange] = useState<{
 		startDate: Dayjs
 		endDate: Dayjs
-		group: TimeTableTypes.TimeTableGroup
+		groupId: string
 	} | null>(null)
 	const [disableTimeRangeSelection, setDisableTimeRangeSelection] =
 		useState(false)
@@ -9262,7 +9150,7 @@ function Example() {
 	)
 
 	useEffect(() => {
-		//requestMoreEntriesCB()
+		requestMoreEntriesCB()
 		/*requestMoreEntriesCB()
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()
@@ -9295,6 +9183,10 @@ function Example() {
 		requestMoreEntriesCB()
 		requestMoreEntriesCB()*/
 	}, [requestMoreEntriesCB])
+
+	const selectedGroup = selectedTimeRange?.groupId
+		? entries.find((e) => e.group.id === selectedTimeRange.groupId)?.group
+		: undefined
 
 	return (
 		<>
@@ -9581,14 +9473,17 @@ function Example() {
 						timeSlot: TestCustomHeaderRowTimeSlot,
 						header: CustomHeaderRowHeader,
 					}}
+					onRenderedGroupsChanged={(groups) => {
+						console.log("rendered groups changed", groups)
+					}}
 				/>
 			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
 				<ChevronDownIcon aria-label="entryloader" />
 			</Button>
-			{showCreateNewItemModal && selectedTimeRange && (
+			{showCreateNewItemModal && selectedTimeRange && selectedGroup && (
 				<CreateNewTimeTableItemDialog
-					group={selectedTimeRange.group}
+					group={selectedGroup}
 					startDate={selectedTimeRange.startDate}
 					endDate={selectedTimeRange.endDate}
 					onCancel={() => setShowCreateNewItemModal(false)}
@@ -9614,29 +9509,27 @@ function ExampleCalendar() {
 
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	return (
-		<>
-			<div
-				style={{
-					height: "600px",
+		<div
+			style={{
+				height: "600px",
+			}}
+		>
+			<TimeTable
+				groupHeaderColumnWidth={150}
+				columnWidth={70}
+				rowHeight={30}
+				startDate={timeFrame.startDate}
+				endDate={timeFrame.endDate}
+				entries={exampleEntries}
+				timeTableMessages={translation}
+				disableWeekendInteractions={true}
+				showTimeSlotHeader={false}
+				viewType={"days"}
+				itemsOutsideOfDayRangeFound={(items) => {
+					console.info("items outside of day range found", items)
 				}}
-			>
-				<TimeTable
-					groupHeaderColumnWidth={150}
-					columnWidth={70}
-					rowHeight={30}
-					startDate={timeFrame.startDate}
-					endDate={timeFrame.endDate}
-					entries={exampleEntries}
-					timeTableMessages={translation}
-					disableWeekendInteractions={true}
-					showTimeSlotHeader={false}
-					viewType={"days"}
-					itemsOutsideOfDayRangeFound={(items) => {
-						console.info("items outside of day range found", items)
-					}}
-				/>
-			</div>
-		</>
+			/>
+		</div>
 	)
 
 	//#endregion timetabledays
@@ -9655,26 +9548,24 @@ function ExampleMonthCalendar() {
 	const translation = useTranslation() as TranslatedTimeTableMessages
 
 	return (
-		<>
-			<div
-				style={{
-					height: "600px",
-				}}
-			>
-				<TimeTable
-					groupHeaderColumnWidth={150}
-					columnWidth={70}
-					rowHeight={30}
-					startDate={timeFrame.startDate}
-					endDate={timeFrame.endDate}
-					entries={exampleEntries}
-					timeTableMessages={translation}
-					disableWeekendInteractions={true}
-					viewType={"months"}
-					showTimeSlotHeader={false}
-				/>
-			</div>
-		</>
+		<div
+			style={{
+				height: "600px",
+			}}
+		>
+			<TimeTable
+				groupHeaderColumnWidth={150}
+				columnWidth={70}
+				rowHeight={30}
+				startDate={timeFrame.startDate}
+				endDate={timeFrame.endDate}
+				entries={exampleEntries}
+				timeTableMessages={translation}
+				disableWeekendInteractions={true}
+				viewType={"months"}
+				showTimeSlotHeader={false}
+			/>
+		</div>
 	)
 
 	//#endregion timetablemonths
@@ -9712,11 +9603,10 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 	)
 }
 
+import { Button, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
-import { Button, Toast, ToastFlagProvider } from "@linked-planet/ui-kit-ts"
 
 //#region toastflagShowExtendedFlag
 // add the ToastFlagContainer to the root of your app
@@ -10124,12 +10014,12 @@ export default function ToastFlagShowcase(props: ShowcaseProps) {
 	)
 }
 
-import React, { useState } from "react"
-import ShowcaseWrapperItem, {
-	ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 //import AKToggle from "@atlaskit/toggle"
 import { Toggle } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 function ToggleShowcase(props: ShowcaseProps) {
 	const [isToggleActive, setIsToggleActive] = useState(false)
@@ -10184,17 +10074,17 @@ function ToggleShowcase(props: ShowcaseProps) {
 
 export default ToggleShowcase
 
+import { Button, Tooltip, TooltipProvider } from "@linked-planet/ui-kit-ts"
 import {
 	ActivityIcon,
 	CameraIcon,
-	SearchIcon,
 	EyeIcon,
+	SearchIcon,
 	SquareCheckIcon,
 } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Tooltip, TooltipProvider, Button } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
 
@@ -10331,13 +10221,14 @@ import {
 	Modal,
 	Select,
 	ToastFlagProvider,
+	Tour,
+	TourStep,
 } from "@linked-planet/ui-kit-ts"
-import { Tour, TourStep } from "@linked-planet/ui-kit-ts"
+import { CrossIcon } from "lucide-react"
 import { useMemo, useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { CrossIcon } from "lucide-react"
 
 //#region tour
 const defaultLocale = {
@@ -10647,10 +10538,10 @@ export default function TourShowcase(props: ShowcaseProps) {
 	)
 }
 
+import { TruncatedText } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { TruncatedText } from "@linked-planet/ui-kit-ts"
 
 //import "react-tooltip/dist/react-tooltip.css" -> imported into the libraries css
 
@@ -10705,15 +10596,15 @@ function TruncatedTextShowcase(props: ShowcaseProps) {
 
 export default TruncatedTextShowcase
 
-import React, { useState } from "react"
 import {
 	debounceHelper,
 	rateLimitHelper,
 	useDebounceHelper,
 	useRateLimitHelper,
 } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
-	ShowcaseProps,
+	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 //#region debounceHelper
@@ -10854,8 +10745,8 @@ export default function UtilsShowCase(props: ShowcaseProps) {
 	)
 }
 
-import { useState } from "react"
 import { AppLayout, Checkbox, PageLayout } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
 
 import Fillers from "./Fillers"
 

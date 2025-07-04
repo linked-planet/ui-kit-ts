@@ -1,7 +1,7 @@
+import { SectionMessage } from "@linked-planet/ui-kit-ts"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { SectionMessage } from "@linked-planet/ui-kit-ts"
 
 function SectionMessageShowcase(props: ShowcaseProps) {
 	//#region section-message

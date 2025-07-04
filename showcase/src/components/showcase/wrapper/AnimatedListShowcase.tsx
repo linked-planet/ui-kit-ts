@@ -1,10 +1,8 @@
-import React, { useState } from "react"
-
+import { AnimatedList, Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-
-import { AnimatedList, Button, ButtonGroup } from "@linked-planet/ui-kit-ts"
 
 //#region animated-list
 function AnimatedListExample() {

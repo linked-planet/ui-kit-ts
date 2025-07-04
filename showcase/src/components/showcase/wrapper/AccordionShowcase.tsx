@@ -1,5 +1,5 @@
 import { Accordion } from "@linked-planet/ui-kit-ts"
-import React from "react"
+
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
@@ -8,7 +8,11 @@ import ShowcaseWrapperItem, {
 function AccordionExample() {
 	return (
 		<div className="bg-surface">
-			<Accordion.Container type="single" defaultValue="item-1" data-id="test-data-id">
+			<Accordion.Container
+				type="single"
+				defaultValue="item-1"
+				data-id="test-data-id"
+			>
 				<Accordion.Item value="item-1">
 					<Accordion.Trigger>Is it accessible?</Accordion.Trigger>
 					<Accordion.Content>

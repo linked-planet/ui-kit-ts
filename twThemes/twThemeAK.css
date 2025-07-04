@@ -740,5 +740,4 @@
 	--shadow-overlay: var(--ds-shadow-overlay, 0px 8px 12px oklch(24.22% 0.0735 260.41deg / 14.9%), 0px 0px 1px oklch(24.22% 0.0735 260.41deg / 30.98%));
 	--shadow-raised: var(--ds-shadow-raised, 0px 1px 1px oklch(24.22% 0.0735 260.41deg / 25.1%), 0px 0px 1px oklch(24.22% 0.0735 260.41deg / 30.98%));
 	--shadow-strong: var(--ds-shadow-strong, 0px 0px 15px oklch(24.22% 0.0735 260.41deg / 14.9%));
-	--shadow-borderstyle: var(--ds-shadow-border, 0 0 0 0.0675rem var(--tw-shadow-color, black));
 }

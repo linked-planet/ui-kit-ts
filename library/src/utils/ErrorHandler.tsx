@@ -1,6 +1,6 @@
+import type { QueryClient } from "@tanstack/react-query"
 import { type AxiosError, isAxiosError } from "axios"
 import { Button, Toast } from "../components/index"
-import type { QueryClient } from "@tanstack/react-query"
 
 // in the handler function the returned boolean states if after the handler the error handling is done
 
@@ -206,7 +206,7 @@ export class ErrorHandler {
 					<div className="max-h-96 overflow-auto flex flex-col gap-6">
 						{!extractedJSON && errorObject.message && (
 							<div
-								// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+								// biome-ignore lint/security/noDangerouslySetInnerHtml: in case it is a html string
 								dangerouslySetInnerHTML={{
 									__html: errorObject.message,
 								}}
@@ -264,7 +264,7 @@ export class ErrorHandler {
 						)}
 						{errorObject.message && (
 							<div
-								// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+								// biome-ignore lint/security/noDangerouslySetInnerHtml: in case it is a html string
 								dangerouslySetInnerHTML={{
 									__html:
 										errorObject.information ??
@@ -328,7 +328,11 @@ function extractJSONObjectFromString(str: string | undefined) {
 			const afterJSON = matches[3] ?? ""
 			return { beforeJSON, extractedJSON, afterJSON }
 		}
-	} catch (error) {
+	} catch (err: unknown) {
+		console.error(
+			"ErrorHandler - Error parsing extracted JSON: ",
+			(err as Error).message,
+		)
 		return { beforeJSON: str }
 	}
 	return { beforeJSON: str }

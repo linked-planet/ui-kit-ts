@@ -1,8 +1,8 @@
 import { Button, SlideOpen } from "@linked-planet/ui-kit-ts"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { useState } from "react"
 
 //#region slideopen
 function SlideOpenExample() {

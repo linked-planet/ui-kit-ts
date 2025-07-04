@@ -1,6 +1,3 @@
-import ShowcaseWrapperItem, {
-	type ShowcaseProps,
-} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 import {
 	Button,
 	ButtonGroup,
@@ -8,6 +5,9 @@ import {
 	DynamicForm,
 } from "@linked-planet/ui-kit-ts"
 import { useState } from "react"
+import ShowcaseWrapperItem, {
+	type ShowcaseProps,
+} from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
 
 interface TestObject {
 	firstname: string

@@ -17,9 +17,7 @@ export function idleRateLimitHelper(
 		throw new Error("timeoutMS must be a positive number")
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	return (cb: (...args: any[]) => any, ...args: any[]) => {
+	return (cb: (...args: unknown[]) => unknown, ...args: unknown[]) => {
 		const now = Date.now()
 
 		if (timeoutMS !== undefined && now - lastTime > timeoutMS) {

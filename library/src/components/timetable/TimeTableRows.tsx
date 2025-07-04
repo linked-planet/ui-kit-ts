@@ -10,18 +10,18 @@ import {
 	useRef,
 	useState,
 } from "react"
+import useResizeObserver, { type ObservedSize } from "use-resize-observer"
+import { useDebounceHelper, useIdleRateLimitHelper } from "../../utils"
+import ItemWrapper from "./ItemWrapper"
+import { PlaceHolderItemWrapper } from "./PlaceholderItem"
 import {
-	timeTableDebugLogs,
-	timeTableGroupRenderBatchSize,
 	type TimeSlotBooking,
 	type TimeTableGroup,
 	type TimeTableViewType,
+	timeTableDebugLogs,
+	timeTableGroupRenderBatchSize,
 } from "./TimeTable"
-
-import ItemWrapper from "./ItemWrapper"
-
-import useResizeObserver, { type ObservedSize } from "use-resize-observer"
-import { PlaceHolderItemWrapper } from "./PlaceholderItem"
+import { useGroupComponent } from "./TimeTableComponentStore"
 import {
 	type TimeFrameDay,
 	useTTCCellDimentions,
@@ -31,7 +31,6 @@ import {
 	useTTCTimeSlotSelectionDisabled,
 } from "./TimeTableConfigStore"
 import { useTimeTableIdent } from "./TimeTableIdentContext"
-import { useGroupComponent } from "./TimeTableComponentStore"
 import {
 	getMultiSelectionMode,
 	setLastHandledTimeSlot,
@@ -39,9 +38,8 @@ import {
 	toggleTimeSlotSelected,
 	useTimeSlotSelection,
 } from "./TimeTableSelectionStore"
-import type { ItemRowEntry } from "./useGoupRows"
 import { getLeftAndWidth, getTimeSlotMinutes } from "./timeTableUtils"
-import { useDebounceHelper, useIdleRateLimitHelper } from "../../utils"
+import type { ItemRowEntry } from "./useGoupRows"
 
 export const allGroupsRenderedEvent = "timetable-allgroupsrendered" as const
 
@@ -67,6 +65,11 @@ interface TimeTableRowsProps<
 	timeFrameDay: TimeFrameDay
 	viewType: TimeTableViewType
 	timeStepMinutesHoursView: number
+
+	/**
+	 * Callback for when rendered groups change, return the group indices that were rendered (parameter is a set of group indices)
+	 */
+	onRenderedGroupsChanged: ((groups: Set<number>) => void) | undefined
 }
 
 const intersectionStackDelay = 1
@@ -91,6 +94,7 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 	timeFrameDay: TimeFrameDay,
 	viewType: TimeTableViewType,
 	timeStepMinutesHoursView: number,
+	onRenderedGroupsChanged: ((groups: Set<number>) => void) | undefined,
 ) {
 	if (g < 0) {
 		throw new Error("TimeTable - group number is negative")
@@ -159,6 +163,9 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 			//
 		/>
 	)
+	if (!changedGroupRowsRef.current.size) {
+		onRenderedGroupsChanged?.(renderedGroupsRef.current)
+	}
 }
 
 /**
@@ -178,6 +185,7 @@ export default function TimeTableRows<
 	timeFrameDay,
 	viewType,
 	timeStepMinutesHoursView,
+	onRenderedGroupsChanged,
 }: TimeTableRowsProps<G, I>): JSX.Element[] {
 	const storeIdent = useTimeTableIdent()
 	const { rowHeight, columnWidth, placeHolderHeight } =
@@ -358,10 +366,7 @@ export default function TimeTableRows<
 			setGroupRowsRendered([])
 			changedGroupRows.current.clear()
 			currentGroupRowsRef.current = groupRows
-			return []
-		}
-
-		if (groupRowsRendered.length > groupRows.size) {
+		} else if (groupRowsRendered.length > groupRows.size) {
 			// shorten and remove rendered elements array, if too long
 			setGroupRowsRendered(groupRowsRendered.slice(0, groupRows.size))
 			for (const changedG of changedGroupRows.current) {
@@ -496,6 +501,7 @@ export default function TimeTableRows<
 								timeFrameDay,
 								viewType,
 								timeStepMinutesHoursView,
+								onRenderedGroupsChanged,
 							)
 							counter++
 							if (counter > timeTableGroupRenderBatchSize) {
@@ -531,6 +537,7 @@ export default function TimeTableRows<
 						timeFrameDay,
 						viewType,
 						timeStepMinutesHoursView,
+						onRenderedGroupsChanged,
 					)
 					counter++
 					if (counter > timeTableGroupRenderBatchSize) {
@@ -562,6 +569,7 @@ export default function TimeTableRows<
 					timeFrameDay,
 					viewType,
 					timeStepMinutesHoursView,
+					onRenderedGroupsChanged,
 				)
 				++counter
 			}
@@ -584,6 +592,7 @@ export default function TimeTableRows<
 		handleIntersections,
 		rateLimiterIntersection,
 		timeStepMinutesHoursView,
+		onRenderedGroupsChanged,
 	])
 
 	if (
@@ -617,7 +626,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	timeSlotNumber,
 	group,
 	groupNumber,
-	isFirstRow,
 	isLastGroupRow,
 	bookingItemsBeginningInCell,
 	selectedTimeSlotItem,
@@ -630,7 +638,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	timeSlotNumber: number
 	group: G
 	groupNumber: number
-	isFirstRow: boolean
 	isLastGroupRow: boolean
 	bookingItemsBeginningInCell: readonly ItemRowEntry<I>[] | undefined
 	selectedTimeSlotItem: I | undefined
@@ -650,14 +657,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const isCellDisabled = useTTCIsCellDisabled(storeIdent)
 
 	const timeSlot = slotsArray[timeSlotNumber]
-	if (!timeSlot) {
-		console.warn(
-			"TimeLineTable - time slot not found",
-			slotsArray,
-			timeSlotNumber,
-		)
-		return <></>
-	}
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 	const timeSlotAfter =
 		timeSlotNumber < slotsArray.length - 1
@@ -696,6 +695,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const resizeCallback = useCallback((observedSize: ObservedSize) => {
 		setTableCellWidth(observedSize.width ?? 70)
 	}, [])
+
 	useResizeObserver({
 		ref: tableCellRef,
 		onResize: resizeCallback,
@@ -899,7 +899,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 		? timeSlotAfter.day() !== timeSlot.day()
 		: true
 
-	let placeHolderItem: JSX.Element | undefined = undefined
+	let placeHolderItem: JSX.Element | undefined
 	if (isFirstOfSelection && selectedTimeSlots) {
 		placeHolderItem = (
 			<PlaceHolderItemWrapper
@@ -929,7 +929,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	)
 
 	if (timeSlotSelectedIndex > 0) {
-		return <></> // the cell is not rendered since the placeholder item spans over multiple selected cells
+		return null // the cell is not rendered since the placeholder item spans over multiple selected cells
 	}
 
 	const cursorStyle =
@@ -1008,7 +1008,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	selectedTimeSlotItem,
 	onTimeSlotItemClick,
 	renderCells,
-	columnWidth,
+	//columnWidth,
 	rowHeight,
 	placeHolderHeight,
 	slotsArray,
@@ -1188,7 +1188,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						key={`${group.id}-${groupNumber}-${timeSlotNumber}-${viewType}`}
 						timeSlotNumber={timeSlotNumber}
 						isLastGroupRow={r === rowCount - 1}
-						isFirstRow={r === 0}
 						group={group}
 						groupNumber={groupNumber}
 						bookingItemsBeginningInCell={itemsOfTimeSlot}
@@ -1272,8 +1271,6 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	return trs
 }
 
-let mouseLeftTS: number | null = null // this is used to detect if the mouse left the table
-
 /**
  * Creates a function which creates the mouse event handler for the table cells (the interaction cell, the first row of each group)
  * @param timeSlotNumber  the time slot number of the table cell
@@ -1303,7 +1300,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				setMultiSelectionMode(storeIdent, true)
 				toggleTimeSlotSelected(
 					storeIdent,
-					group,
+					group.id,
 					timeSlotNumber,
 					"drag",
 				)
@@ -1318,10 +1315,9 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				if (!getMultiSelectionMode(storeIdent)) {
 					return
 				}
-				mouseLeftTS = timeSlotNumber
 				toggleTimeSlotSelected(
 					storeIdent,
-					group,
+					group.id,
 					timeSlotNumber,
 					"drag",
 				)
@@ -1330,6 +1326,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				if (e.buttons !== 1) {
 					// we only want to react to left mouse button
 					setMultiSelectionMode(storeIdent, false)
+					setLastHandledTimeSlot(storeIdent, null)
 					return
 				}
 				if (!getMultiSelectionMode(storeIdent)) {
@@ -1337,7 +1334,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				}
 				toggleTimeSlotSelected(
 					storeIdent,
-					group,
+					group.id,
 					timeSlotNumber,
 					"drag",
 				)
@@ -1346,7 +1343,7 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				const multiSelectionMode = getMultiSelectionMode(storeIdent)
 				toggleTimeSlotSelected(
 					storeIdent,
-					group,
+					group.id,
 					timeSlotNumber,
 					multiSelectionMode ? "drag-end" : "click",
 				)

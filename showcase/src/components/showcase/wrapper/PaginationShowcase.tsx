@@ -1,8 +1,9 @@
+import { Pagination } from "@linked-planet/ui-kit-ts"
 import { useMemo, useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Pagination } from "@linked-planet/ui-kit-ts"
+
 //import { default as AKPagination } from "@atlaskit/pagination"
 
 function PageExample() {
@@ -11,7 +12,7 @@ function PageExample() {
 	const [pageSize, setPageSize] = useState(10)
 
 	const pages = useMemo(
-		() => [...Array(100)].map((item, index) => index + 1),
+		() => [...Array(100)].map((_, index) => index + 1),
 		[],
 	)
 
@@ -39,10 +40,7 @@ function IndexExample() {
 	const [selectedIndex, setSelectedIndex] = useState(0)
 	const [pageSize, setPageSize] = useState(10)
 
-	const pages = useMemo(
-		() => [...Array(10)].map((item, index) => index + 1),
-		[],
-	)
+	const pages = useMemo(() => [...Array(10)].map((_, index) => index + 1), [])
 
 	return (
 		<>

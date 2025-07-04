@@ -1,10 +1,9 @@
-import { DateUtils, Label } from "@linked-planet/ui-kit-ts"
+import { DateUtils, EventList, Label } from "@linked-planet/ui-kit-ts"
+import dayjs from "dayjs/esm"
+import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { EventList } from "@linked-planet/ui-kit-ts"
-import dayjs from "dayjs/esm"
-import { useState } from "react"
 
 //#region event-list
 function EventListExample() {

@@ -1,8 +1,8 @@
+import { Banner, IconSizeHelper } from "@linked-planet/ui-kit-ts"
 import { CircleCheckIcon, OctagonAlertIcon } from "lucide-react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Banner, IconSizeHelper } from "@linked-planet/ui-kit-ts"
 
 function BannerShowcase(props: ShowcaseProps) {
 	//#region banner-example

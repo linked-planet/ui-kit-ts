@@ -1,28 +1,27 @@
-import { DateUtils, isDateType, type DateType } from "../../../utils"
-import { Popover, type PopoverProps } from "../../Popover"
+import { CalendarIcon, XIcon } from "lucide-react"
 import {
-	useMemo,
-	useState,
-	useEffect,
+	type ForwardedRef,
+	forwardRef,
 	type ReactNode,
 	useCallback,
-	forwardRef,
-	type ForwardedRef,
+	useEffect,
+	useMemo,
+	useState,
 } from "react"
-import { Calendar, type CalendarSingleProps } from "../../Calendar"
 import type { Labels } from "react-day-picker"
-
-import { Input } from "../Inputs"
-import { IconSizeHelper } from "../../IconSizeHelper"
-import { twJoin, twMerge } from "tailwind-merge"
 import {
-	type FieldValues,
 	type Control,
+	type FieldValues,
 	type Path,
 	useController,
 } from "react-hook-form"
+import { twMerge } from "tailwind-merge"
+import { type DateType, DateUtils, isDateType } from "../../../utils"
 import { Button } from "../../Button"
-import { CalendarIcon, XIcon } from "lucide-react"
+import { Calendar, type CalendarSingleProps } from "../../Calendar"
+import { IconSizeHelper } from "../../IconSizeHelper"
+import { Popover, type PopoverProps } from "../../Popover"
+import { Input } from "../Inputs"
 
 export type DatePickerProps = Pick<
 	CalendarSingleProps,
@@ -82,6 +81,10 @@ export type DatePickerProps = Pick<
 		readOnly?: boolean
 		clearButtonLabel?: string
 		hideIcon?: boolean
+		calendarSelectedClassName?: string
+		calendarSecondarySelectedClassName?: string
+		calendarDisabledClassName?: string
+		calendarHiddenClassName?: string
 	}
 
 //TODO optimize, it renders too often (the input)
@@ -129,6 +132,7 @@ const DatePickerBase = forwardRef(
 			onChange,
 			disabled,
 			hideIcon = false,
+			readOnly,
 			...props
 		}: DatePickerProps,
 		ref: ForwardedRef<HTMLInputElement>,
@@ -162,6 +166,10 @@ const DatePickerBase = forwardRef(
 			weekStartsOn,
 			calendarLabels,
 			calendarTestId,
+			calendarSelectedClassName,
+			calendarSecondarySelectedClassName,
+			calendarDisabledClassName,
+			calendarHiddenClassName,
 		} = props
 
 		const changeCB = useCallback(
@@ -171,7 +179,7 @@ const DatePickerBase = forwardRef(
 				onChange?.(date || null)
 				setOpen(false)
 			},
-			[onChange],
+			[onChange, readOnly],
 		)
 
 		const calendar = useMemo(() => {
@@ -193,6 +201,10 @@ const DatePickerBase = forwardRef(
 				testId: calendarTestId,
 				onSelectionChanged: changeCB,
 				selected: value || undefined,
+				secondarySelectedClassName: calendarSecondarySelectedClassName,
+				selectedClassName: calendarSelectedClassName,
+				disabledClassName: calendarDisabledClassName,
+				hiddenClassName: calendarHiddenClassName,
 			} satisfies CalendarSingleProps
 
 			return <Calendar {...calProps} />
@@ -213,6 +225,10 @@ const DatePickerBase = forwardRef(
 			calendarTestId,
 			value,
 			changeCB,
+			calendarSelectedClassName,
+			calendarSecondarySelectedClassName,
+			calendarDisabledClassName,
+			calendarHiddenClassName,
 		])
 
 		// input props:
@@ -229,7 +245,6 @@ const DatePickerBase = forwardRef(
 			inputStyle,
 			formatDisplayLabel,
 			required,
-			readOnly,
 			clearButtonLabel = "clear date",
 			"aria-label": ariaLabel,
 			className,
@@ -249,7 +264,10 @@ const DatePickerBase = forwardRef(
 		}
 
 		const trigger = (
-			<div className={twJoin("group", className)} style={style}>
+			<div
+				className={twMerge("box-border group", className)}
+				style={style}
+			>
 				<Input
 					type="text"
 					key={key}
@@ -266,7 +284,7 @@ const DatePickerBase = forwardRef(
 					disabled={disabled}
 					invalid={invalid}
 					inputClassName={twMerge(
-						"cursor-pointer group-data-[state=open]:border-input-border-focused group-data-[state=open]:shadow-input-border-focused",
+						"cursor-pointer group-data-[state=open]:ring-input-border-focused group-data-[state=open]:ring group-data-[state=open]:border-input-border-focused group-data-[state=open]:border-r-1.5",
 						inputClassName,
 					)}
 					required={required}

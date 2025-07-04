@@ -1,10 +1,9 @@
+import { Breadcrumbs, Checkbox, Input, Label } from "@linked-planet/ui-kit-ts"
+import { PlusIcon } from "lucide-react"
 import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
 } from "../../ShowCaseWrapperItem/ShowcaseWrapperItem"
-import { Breadcrumbs, Checkbox, Input, Label } from "@linked-planet/ui-kit-ts"
-
-import { PlusIcon } from "lucide-react"
 
 //#region bread-crumbs-max-items-example
 function MaxItemsExample() {
