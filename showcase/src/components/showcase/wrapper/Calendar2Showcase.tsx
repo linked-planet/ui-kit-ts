@@ -119,6 +119,7 @@ function CalendarSingle() {
 					labelPrevious: (date) => dayjs(date).format("MMMM YYYY"),
 					labelWeekday: (date) => dayjs(date).format("dd"),
 				}}
+				showWeekNumber={true}
 			/>
 			{/*<AKCalendar
 				selected={selected ? [selected] : []}

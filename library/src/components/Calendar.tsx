@@ -108,6 +108,9 @@ const dayTodayStyles = twJoin(
 const dayStyles =
 	"text-center w-11 h-8 p-0 hover:bg-surface-overlay-hovered group-data-[disabled=true]:hover:bg-transparent text-sm"
 
+const weekNumberStyles =
+	"text-text font-extrabold border-r-2 border-border border-solid border-0"
+
 const classNames: DayPickerProps["classNames"] = {
 	caption_label: captionLabelStyles,
 	month_caption: captionStyles,
@@ -128,8 +131,10 @@ const classNames: DayPickerProps["classNames"] = {
 	hidden: "text-transparent bg-transparent",
 	today: dayTodayStyles,
 	root: "group pt-4 bg-surface p-3 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2 relative",
-	weeks: "border-b-0",
+	weeks: "border-none",
 	nav: "flex justify-between items-center absolute inset-x-0",
+	week_number: weekNumberStyles,
+	week_number_header: "border-r-2 border-r-border border-solid border-0",
 }
 
 const labelFormat: {
@@ -168,6 +173,7 @@ export function CalendarBase(
 		disabledClassName,
 		hiddenClassName,
 		selected: selectedProp,
+		showWeekNumber,
 		"aria-label": ariaLabel,
 		lang,
 		minDate,
@@ -291,6 +297,7 @@ export function CalendarBase(
 			showOutsideDays={props.showOutsideDays ?? true}
 			fixedWeeks={props.fixedWeeks ?? true}
 			className={className}
+			showWeekNumber={showWeekNumber ?? false}
 			lang={lang}
 			modifiers={{
 				secondarySelected: secondarySelectedMatcher,
@@ -497,6 +504,8 @@ type BaseProps = {
 	defaultYear?: number
 	disabledDates?: DateType[]
 	disabledDateFilter?: (date: DateType) => boolean
+
+	showWeekNumber?: boolean
 
 	minDate?: DateType
 	maxDate?: DateType

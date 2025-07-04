@@ -15,11 +15,10 @@ import {
 	type Path,
 	useController,
 } from "react-hook-form"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { type DateType, DateUtils, isDateType } from "../../../utils"
 import { Button } from "../../Button"
 import { Calendar, type CalendarSingleProps } from "../../Calendar"
-import { IconSizeHelper } from "../../IconSizeHelper"
 import { Popover, type PopoverProps } from "../../Popover"
 import { Input } from "../Inputs"
 
@@ -85,6 +84,7 @@ export type DatePickerProps = Pick<
 		calendarSecondarySelectedClassName?: string
 		calendarDisabledClassName?: string
 		calendarHiddenClassName?: string
+		calendarShowWeekNumber?: boolean
 	}
 
 //TODO optimize, it renders too often (the input)
@@ -170,6 +170,7 @@ const DatePickerBase = forwardRef(
 			calendarSecondarySelectedClassName,
 			calendarDisabledClassName,
 			calendarHiddenClassName,
+			calendarShowWeekNumber,
 		} = props
 
 		const changeCB = useCallback(
@@ -205,6 +206,7 @@ const DatePickerBase = forwardRef(
 				selectedClassName: calendarSelectedClassName,
 				disabledClassName: calendarDisabledClassName,
 				hiddenClassName: calendarHiddenClassName,
+				showWeekNumber: calendarShowWeekNumber,
 			} satisfies CalendarSingleProps
 
 			return <Calendar {...calProps} />
@@ -229,6 +231,7 @@ const DatePickerBase = forwardRef(
 			calendarSecondarySelectedClassName,
 			calendarDisabledClassName,
 			calendarHiddenClassName,
+			calendarShowWeekNumber,
 		])
 
 		// input props:
@@ -278,13 +281,22 @@ const DatePickerBase = forwardRef(
 					aria-label={label ?? ariaLabel ?? "date picker"}
 					placeholder={placeholder}
 					name={name}
-					className="min-w-20 cursor-pointer"
 					style={inputStyle}
 					value={valStr}
 					disabled={disabled}
 					invalid={invalid}
+					className={twMerge(
+						twJoin(
+							//"cursor-pointer rounded-lg",
+							//"group-data-[state=open]:ring-input-border-focused group-data-[state=open]:ring group-data-[state=open]:border-input-border-focused group-data-[state=open]:border-r-1.5",
+						),
+						//inputClassName,
+					)}
 					inputClassName={twMerge(
-						"cursor-pointer group-data-[state=open]:ring-input-border-focused group-data-[state=open]:ring group-data-[state=open]:border-input-border-focused group-data-[state=open]:border-r-1.5",
+						twJoin(
+							"cursor-pointer disabled:cursor-not-allowed",
+							"group-data-[state=open]:ring group-data-[state=open]:ring-input-border-focused group-data-[state=open]:border-input-border-focused",
+						),
 						inputClassName,
 					)}
 					required={required}
@@ -306,25 +318,15 @@ const DatePickerBase = forwardRef(
 											}}
 											label={clearButtonLabel}
 										>
-											<IconSizeHelper
-												size="medium"
-												className=""
-											>
-												<XIcon size="12" />
-											</IconSizeHelper>
+											<XIcon size="12" />
 										</Button>
 									</div>
 								)}
 								{!value && !readOnly && (
-									<IconSizeHelper
-										size="medium"
-										className="w-8"
-									>
-										<CalendarIcon
-											aria-label="calendar"
-											size="12"
-										/>
-									</IconSizeHelper>
+									<CalendarIcon
+										aria-label="calendar"
+										size="12"
+									/>
 								)}
 							</>
 						)
@@ -342,7 +344,7 @@ const DatePickerBase = forwardRef(
 					setOpen(open)
 					onOpenChange?.(open)
 				}}
-				open={open}
+				open={disabled ? false : open}
 				side={side}
 				sideOffset={sideOffset}
 				align={align}
@@ -351,7 +353,6 @@ const DatePickerBase = forwardRef(
 				modal={modal}
 				triggerAsChild={true}
 				contentStyle={{ minWidth: "unset" }}
-				className="bg-warning-bold flex"
 			>
 				{calendar}
 			</Popover.Root>

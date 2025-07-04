@@ -82,7 +82,7 @@ const Input = forwardRef(
 					ref={inputRef}
 					className={twMerge(
 						"m-0 px-[0.4rem] outline-hidden w-full",
-						inputClassName,
+						//inputClassName,
 					)}
 					style={{
 						backgroundColor: "inherit",
