@@ -48,7 +48,11 @@ function FormExample() {
 				<hr />
 				<TimePicker control={control} name="time" />
 				<hr />
-				<DatePicker control={control} name="date" />
+				<DatePicker
+					control={control}
+					name="date"
+					calendarShowWeekNumber={true}
+				/>
 			</div>
 			<ButtonGroup className="mt-4 flex justify-end">
 				<Button appearance="subtle" type="reset">
@@ -149,7 +153,11 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 	const example = (
 		<div className="flex gap-4">
 			<Fieldset legend="Date Picker">
-				<DatePicker onChange={setDate} value={date} />
+				<DatePicker
+					onChange={setDate}
+					value={date}
+					calendarShowWeekNumber={true}
+				/>
 			</Fieldset>
 			<Fieldset legend="Time Picker">
 				<TimePicker
@@ -168,6 +176,7 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					}}
 					value={dateTime}
 					className="border-warning-bold border-2"
+					calendarShowWeekNumber={true}
 				/>
 			</Fieldset>
 		</div>
