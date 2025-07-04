@@ -6,7 +6,7 @@ import {
 	ChevronsRightIcon,
 } from "lucide-react"
 import type React from "react"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useId, useMemo, useState } from "react"
 import {
 	type DateRange,
 	DayPicker,
@@ -59,6 +59,7 @@ type CalendarExtraProps = {
 	hideNextYearButton?: boolean
 	hidePreviousYearButton?: boolean
 	hideYearButtons?: boolean
+	weekNumberCaption?: string
 }
 
 type CalendarBaseExtraProps = CalendarExtraProps & {
@@ -111,30 +112,44 @@ const dayStyles =
 const weekNumberStyles =
 	"text-text font-extrabold border-r-2 border-border border-solid border-0"
 
-const classNames: DayPickerProps["classNames"] = {
-	caption_label: captionLabelStyles,
-	month_caption: captionStyles,
-	button_next: buttonStyles,
-	button_previous: buttonStyles,
-	month_grid: "w-full",
-	day: dayStyles,
-	/*day_button: twJoin(
+function getDayPickerClassNames({
+	weekNumberCaption,
+}: {
+	weekNumberCaption?: string
+}) {
+	const weekNumberHeaderStyles =
+		weekNumberCaption &&
+		"before:content-[var(--week-number-before-content)] before:block before:absolute before:inset-0 before:-left-0.5 before:size-full before:flex before:justify-center before:items-center before:text-text before:text-xs before:font-bold"
+
+	const dayPickerClassNames: DayPickerProps["classNames"] = {
+		caption_label: captionLabelStyles,
+		month_caption: captionStyles,
+		button_next: buttonStyles,
+		button_previous: buttonStyles,
+		month_grid: "w-full",
+		day: dayStyles,
+		/*day_button: twJoin(
 		"size-full cursor-pointer disabled:cursor-not-allowed bg-transparent border-none group-hover/today:text-selected-text",
 		"group-[.today]/today:text-text group-[.selected]/today:text-text-inverse group-[.selected]/today:hover:text-selected-text group-hover/today:bg-selected-subtle",
 	),*/
-	day_button: twJoin(
-		"size-full cursor-pointer disabled:cursor-not-allowed bg-transparent border-none group-hover/today:text-selected-text",
-		"group-[.selected]/today:hover:text-selected-text",
-	),
-	disabled: "text-disabled-text cursor-not-allowed",
-	outside: "text-disabled-text",
-	hidden: "text-transparent bg-transparent",
-	today: dayTodayStyles,
-	root: "group pt-4 bg-surface p-3 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2 relative",
-	weeks: "border-none",
-	nav: "flex justify-between items-center absolute inset-x-0",
-	week_number: weekNumberStyles,
-	week_number_header: "border-r-2 border-r-border border-solid border-0",
+		day_button: twJoin(
+			"size-full cursor-pointer disabled:cursor-not-allowed bg-transparent border-none group-hover/today:text-selected-text",
+			"group-[.selected]/today:hover:text-selected-text",
+		),
+		disabled: "text-disabled-text cursor-not-allowed",
+		outside: "text-disabled-text",
+		hidden: "text-transparent bg-transparent",
+		today: dayTodayStyles,
+		root: "group pt-4 bg-surface p-3 w-max h-max border-transparent data-[invalid=true]:border-danger-border border-2 relative",
+		weeks: "border-none",
+		nav: "flex justify-between items-center absolute inset-x-0",
+		week_number: weekNumberStyles,
+		week_number_header: twJoin(
+			"border-r-2 border-r-border border-solid border-0 relative",
+			weekNumberHeaderStyles,
+		),
+	}
+	return dayPickerClassNames
 }
 
 const labelFormat: {
@@ -178,6 +193,8 @@ export function CalendarBase(
 		lang,
 		minDate,
 		maxDate,
+		weekNumberCaption,
+		id,
 		...propsWOEventHandler
 	} = props
 
@@ -287,6 +304,35 @@ export function CalendarBase(
 		}
 	}, [props.secondarySelected])
 
+	const classNames = useMemo(() => {
+		const classNames: DayPickerProps["classNames"] = getDayPickerClassNames(
+			{
+				weekNumberCaption,
+			},
+		)
+		return classNames
+	}, [weekNumberCaption])
+
+	const rid = useId()
+
+	useEffect(() => {
+		if (!showWeekNumber || !weekNumberCaption) {
+			return
+		}
+		const cal = document.getElementById(id ?? rid)
+		// find child with aria-label="Week number"
+		const weekNumber = cal?.querySelector("th")
+		if (!weekNumber) {
+			console.error("Week number header not found")
+			return
+		}
+		// set the :before content to "KW"
+		weekNumber.style.setProperty(
+			"--week-number-before-content",
+			`"${weekNumberCaption}"`,
+		)
+	}, [id, showWeekNumber, rid, weekNumberCaption])
+
 	return (
 		<DayPicker
 			aria-label={ariaLabel}
@@ -299,6 +345,7 @@ export function CalendarBase(
 			className={className}
 			showWeekNumber={showWeekNumber ?? false}
 			lang={lang}
+			id={id ?? rid}
 			modifiers={{
 				secondarySelected: secondarySelectedMatcher,
 			}}
@@ -506,6 +553,7 @@ type BaseProps = {
 	disabledDateFilter?: (date: DateType) => boolean
 
 	showWeekNumber?: boolean
+	weekNumberCaption?: string
 
 	minDate?: DateType
 	maxDate?: DateType

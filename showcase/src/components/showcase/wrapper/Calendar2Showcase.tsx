@@ -96,6 +96,8 @@ function CalendarSingle() {
 				hideNextYearButton
 				weekStartsOn={1}
 				lang="en"
+				showWeekNumber={true}
+				weekNumberCaption="CW"
 			/>
 			<Calendar
 				mode="single"
@@ -120,6 +122,7 @@ function CalendarSingle() {
 					labelWeekday: (date) => dayjs(date).format("dd"),
 				}}
 				showWeekNumber={true}
+				weekNumberCaption="KW"
 			/>
 			{/*<AKCalendar
 				selected={selected ? [selected] : []}

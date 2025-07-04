@@ -157,6 +157,7 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					onChange={setDate}
 					value={date}
 					calendarShowWeekNumber={true}
+					calendarWeekNumberCaption="CW"
 				/>
 			</Fieldset>
 			<Fieldset legend="Time Picker">
