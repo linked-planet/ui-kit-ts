@@ -39,6 +39,11 @@ type ModalDialogProps = {
 	role?: RDialog.DialogContentProps["role"]
 	tabIndex?: RDialog.DialogContentProps["tabIndex"]
 	ref?: React.Ref<HTMLButtonElement>
+	/** If true, the content will be mounted even when the modal is closed.
+	 * This is useful if you want to keep the content in the DOM even when it is not visible.
+	 * This is useful for animations.
+	 */
+	forceMountContent?: true
 }
 
 const blanketStyles =
@@ -67,6 +72,7 @@ function Container({
 	accessibleDialogDescription,
 	accessibleDialogTitle,
 	tabIndex = undefined,
+	forceMountContent = undefined,
 	ref,
 }: ModalDialogProps) {
 	const triggerRef = useRef<HTMLButtonElement>(null)
@@ -120,6 +126,7 @@ function Container({
 					tabIndex={tabIndex}
 					aria-describedby={accessibleDialogDescription}
 					title={accessibleDialogDescription}
+					forceMount={forceMountContent}
 				>
 					<VisuallyHidden>
 						<RDialog.DialogTitle>
@@ -147,6 +154,7 @@ function Container({
 			role,
 			tabIndex,
 			accessibleDialogTitle,
+			forceMountContent,
 		],
 	)
 
