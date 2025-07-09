@@ -1,6 +1,6 @@
 import * as CollapsibleRUI from "@radix-ui/react-collapsible"
 
-import { ChevronRightIcon, ChevronLeftIcon } from "lucide-react"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
 import { forwardRef, type HTMLProps } from "react"
 import { twMerge } from "tailwind-merge"
@@ -26,13 +26,18 @@ type CollapsibleProps = {
 	openButtonPosition?: "left" | "right" | "hidden"
 	id?: string
 	testId?: string
+	/**
+	 * If true, the content will be mounted even when the collapsible is closed.
+	 * This is useful if you want to keep the content in the DOM even when it is not visible.
+	 */
+	forceMountContent?: true
 } & HTMLProps<HTMLDivElement>
 
 export const Collapsible = forwardRef(
 	(
 		{
 			open: opened,
-			defaultOpen = true,
+			defaultOpen = false,
 			onChanged,
 			openButtonPosition = "left",
 			triggerTitle = "Collapsible Toggle",
@@ -51,6 +56,7 @@ export const Collapsible = forwardRef(
 			children,
 			id,
 			testId,
+			forceMountContent = undefined,
 			...props
 		}: CollapsibleProps,
 		ref: React.ForwardedRef<HTMLDivElement>,
@@ -130,10 +136,11 @@ export const Collapsible = forwardRef(
 
 				<CollapsibleRUI.Content
 					className={twMerge(
-						"overflow-hidden data-[state=closed]:animate-slide-up-collapsible data-[state=open]:animate-slide-down-collapsible",
+						"overflow-hidden data-[state=closed]:animate-slide-up-collapsible data-[state=open]:animate-slide-down-collapsible data-[state=closed]:h-0",
 						contentClassName,
 					)}
 					style={contentStyle}
+					forceMount={forceMountContent}
 				>
 					{children}
 				</CollapsibleRUI.Content>
