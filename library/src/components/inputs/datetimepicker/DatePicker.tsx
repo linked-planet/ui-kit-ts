@@ -40,19 +40,14 @@ export type DatePickerProps = Pick<
 > &
 	Pick<
 		PopoverProps,
-		| "usePortal"
-		| "modal"
-		| "testId"
-		| "align"
-		| "alignOffset"
-		| "aria-label"
-		| "defaultOpen"
+		| "positionerProps"
+		| "triggerProps"
 		| "disabled"
 		| "open"
+		| "defaultOpen"
 		| "onOpenChange"
-		| "side"
-		| "sideOffset"
-		| "id"
+		| "onOpenChangeComplete"
+		| "hideCloser"
 	> & {
 		placeholder?: string
 		id?: string
@@ -119,21 +114,18 @@ const onInputChange = () => {}
 const DatePickerBase = forwardRef(
 	(
 		{
-			usePortal,
 			value: _value,
 			defaultValue,
 			open: _open,
 			defaultOpen,
-			align,
-			alignOffset,
-			sideOffset,
-			side,
-			modal,
+			positionerProps,
 			onOpenChange,
+			onOpenChangeComplete,
 			onChange,
 			disabled,
 			hideIcon = false,
 			readOnly,
+			hideCloser = true,
 			...props
 		}: DatePickerProps,
 		ref: ForwardedRef<HTMLInputElement>,
@@ -253,7 +245,6 @@ const DatePickerBase = forwardRef(
 			formatDisplayLabel,
 			required,
 			clearButtonLabel = "clear date",
-			"aria-label": ariaLabel,
 			className,
 			style,
 		} = props
@@ -282,7 +273,7 @@ const DatePickerBase = forwardRef(
 					testId={testId}
 					onFocus={onFocus}
 					onBlur={onBlur}
-					aria-label={label ?? ariaLabel ?? "date picker"}
+					aria-label={label ?? "date picker"}
 					placeholder={placeholder}
 					name={name}
 					style={inputStyle}
@@ -342,21 +333,21 @@ const DatePickerBase = forwardRef(
 
 		return (
 			<Popover.Root
-				triggerComponent={trigger}
-				usePortal={usePortal}
-				onOpenChange={(open) => {
-					setOpen(open)
-					onOpenChange?.(open)
+				triggerProps={{
+					render: trigger,
 				}}
+				onOpenChange={(open, event, reason) => {
+					setOpen(open)
+					onOpenChange?.(open, event, reason)
+				}}
+				onOpenChangeComplete={onOpenChangeComplete}
 				open={disabled ? false : open}
-				side={side}
-				sideOffset={sideOffset}
-				align={align}
-				alignOffset={alignOffset}
+				positionerProps={positionerProps}
 				disabled={disabled}
-				modal={modal}
-				triggerAsChild={true}
-				contentStyle={{ minWidth: "unset" }}
+				popupProps={{
+					style: { minWidth: "unset" },
+				}}
+				hideCloser={hideCloser}
 			>
 				{calendar}
 			</Popover.Root>

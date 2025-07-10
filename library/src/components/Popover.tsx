@@ -76,7 +76,7 @@ export type PopoverProps = RPo.Root.Props & {
 	portalRoot?: ShadowRoot
 	triggerProps?: RPo.Trigger.Props & ButtonProps
 	closerProps?: RPo.Close.Props
-	testId?: string
+
 	disabled?: boolean
 	positionerProps?: PositionerProps
 	popupProps?: RPo.Popup.Props
@@ -93,8 +93,9 @@ function Root({
 	children,
 	triggerProps,
 	closerProps,
-	testId,
 	onOpenChange,
+	onOpenChangeComplete,
+	openOnHover,
 	positionerProps,
 	hideCloser,
 	popupProps,
@@ -146,7 +147,7 @@ function Root({
 	const popupClassName = useCallback(
 		(state: RPo.Popup.State) => {
 			const basicClassName =
-				"p-2 border-border rounded border-solid border bg-surface-overlay"
+				"border-border rounded border-solid border bg-surface-overlay"
 			if (typeof popupProps?.className === "function") {
 				return twMerge(basicClassName, popupProps.className(state))
 			}
@@ -161,7 +162,8 @@ function Root({
 			defaultOpen={defaultOpen}
 			modal={modal}
 			onOpenChange={onOpenChange}
-			data-testid={testId}
+			onOpenChangeComplete={onOpenChangeComplete}
+			openOnHover={openOnHover}
 		>
 			<RPo.Trigger {...triggerProps} ref={triggerRef} />
 			<RPo.Portal container={portalContainer}>

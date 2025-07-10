@@ -6314,7 +6314,6 @@ function PopoverExample() {
 				positionerProps={{
 					side: "top",
 					align: "start",
-					className: "bg-violet p-4",
 				}}
 				popupProps={{
 					className: "bg-amber p-5",
@@ -6322,8 +6321,7 @@ function PopoverExample() {
 			>
 				<Calendar mode="single" />
 				<Select
-					menuPlacement="top"
-					menuIsOpen
+					menuPlacement="bottom"
 					usePortal
 					options={[
 						{ label: "Option 1", value: "1" },
@@ -6332,33 +6330,24 @@ function PopoverExample() {
 					]}
 				/>
 			</Popover.Root>
+
 			<Popover.Root
 				triggerProps={{
-					render: (props) => <div {...props}>Other Trigger</div>,
-				}}
-				positionerProps={{
-					side: "bottom",
-					align: "end",
-					className: "p-8 bg-amber",
-				}}
-				closerProps={{
 					render: (props) => (
-						<XIcon
-							aria-label="Close Popover"
-							size="12"
-							{...props}
-						/>
+						<Button {...props}>Other Trigger</Button>
 					),
+					appearance: "subtle",
 				}}
 			>
-				Content
+				<div className="bg-blue-800 p-5">Content</div>
 			</Popover.Root>
+
 			<Popover.Root
 				triggerProps={{
 					render: (props) => (
-						<div className="text-warning-bold" {...props}>
+						<Button className="text-warning-bold" {...props}>
 							disabled
-						</div>
+						</Button>
 					),
 					disabled: true,
 				}}
@@ -6403,7 +6392,11 @@ function PopoverShadowRootExample() {
 		}
 	}, [example])
 
-	return <div className="w-96" ref={divRef} />
+	return (
+		<div className="w-96 bg-blue-600" ref={divRef}>
+			Shadow Root
+		</div>
+	)
 }
 //#endregion popover-shadow-root-example
 export default function PopoverShowcase(props: ShowcaseProps) {
