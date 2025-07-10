@@ -11,7 +11,7 @@ import ShowcaseWrapperItem, {
 function PopoverExample() {
 	return (
 		<>
-			<Popover.Root
+			<Popover
 				triggerProps={{
 					render: (props) => <Button {...props}>trigger</Button>,
 					appearance: "primary",
@@ -44,9 +44,9 @@ function PopoverExample() {
 						{ label: "Option 3", value: "3" },
 					]}
 				/>
-			</Popover.Root>
+			</Popover>
 
-			<Popover.Root
+			<Popover
 				triggerProps={{
 					render: (props) => (
 						<Button {...props}>Other Trigger</Button>
@@ -55,9 +55,9 @@ function PopoverExample() {
 				}}
 			>
 				<div className="bg-blue-800 p-5">Content</div>
-			</Popover.Root>
+			</Popover>
 
-			<Popover.Root
+			<Popover
 				triggerProps={{
 					render: (props) => (
 						<Button className="text-warning-bold" {...props}>
@@ -72,7 +72,7 @@ function PopoverExample() {
 				}}
 			>
 				Content
-			</Popover.Root>
+			</Popover>
 		</>
 	)
 }
@@ -82,7 +82,7 @@ function PopoverExample() {
 function PopoverShadowRootExample() {
 	const example = useMemo(
 		() => (
-			<Popover.Root
+			<Popover
 				triggerProps={{
 					render: (props) => <p {...props}>Open Popover</p>,
 				}}
@@ -91,7 +91,7 @@ function PopoverShadowRootExample() {
 				}}
 			>
 				Content
-			</Popover.Root>
+			</Popover>
 		),
 		[],
 	)

@@ -15,7 +15,7 @@ type TriggerProps = RPo.Trigger.Props &
 	}
 
 // this is basically a copy of the dropdown trigger
-const _Trigger = forwardRef<HTMLButtonElement, TriggerProps>(
+const PopoverTrigger = forwardRef<HTMLButtonElement, TriggerProps>(
 	(props: TriggerProps, ref) => {
 		const {
 			children,
@@ -85,7 +85,7 @@ export type PopoverProps = RPo.Root.Props & {
 }
 
 // this is a copy of the dropdown menu root
-function Root({
+function Popover({
 	portalRoot,
 	open,
 	defaultOpen,
@@ -177,10 +177,4 @@ function Root({
 	)
 }
 
-const Close = RPo.Close
-
-export const Popover = {
-	Root,
-	Close,
-	Trigger: _Trigger,
-}
+export { Popover, PopoverTrigger }

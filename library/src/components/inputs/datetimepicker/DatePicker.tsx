@@ -332,7 +332,7 @@ const DatePickerBase = forwardRef(
 		)
 
 		return (
-			<Popover.Root
+			<Popover
 				triggerProps={{
 					render: trigger,
 				}}
@@ -350,7 +350,7 @@ const DatePickerBase = forwardRef(
 				hideCloser={hideCloser}
 			>
 				{calendar}
-			</Popover.Root>
+			</Popover>
 		)
 	},
 )
