@@ -182,4 +182,5 @@ const Close = RPo.Close
 export const Popover = {
 	Root,
 	Close,
+	Trigger: _Trigger,
 }
