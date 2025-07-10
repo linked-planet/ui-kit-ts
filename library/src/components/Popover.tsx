@@ -146,7 +146,7 @@ function Root({
 	const popupClassName = useCallback(
 		(state: RPo.Popup.State) => {
 			const basicClassName =
-				"p-2 border-border rounded border-solid border"
+				"p-2 border-border rounded border-solid border bg-surface-overlay"
 			if (typeof popupProps?.className === "function") {
 				return twMerge(basicClassName, popupProps.className(state))
 			}
