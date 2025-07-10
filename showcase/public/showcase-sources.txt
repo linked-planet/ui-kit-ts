@@ -1856,7 +1856,7 @@ function CalendarSingle() {
 				weekStartsOn={1}
 				lang="en"
 				showWeekNumber={true}
-				weekNumberCaption="OW"
+				weekNumberCaption="CW"
 			/>
 			<Calendar
 				mode="single"
@@ -1881,6 +1881,7 @@ function CalendarSingle() {
 					labelWeekday: (date) => dayjs(date).format("dd"),
 				}}
 				showWeekNumber={true}
+				weekNumberCaption="KW"
 			/>
 			{/*<AKCalendar
 				selected={selected ? [selected] : []}
@@ -3324,6 +3325,7 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					onChange={setDate}
 					value={date}
 					calendarShowWeekNumber={true}
+					calendarWeekNumberCaption="CW"
 				/>
 			</Fieldset>
 			<Fieldset legend="Time Picker">
@@ -6281,9 +6283,9 @@ function PaginationShowcase(props: ShowcaseProps) {
 
 export default PaginationShowcase
 
-import { Calendar, Popover, Select } from "@linked-planet/ui-kit-ts"
+import { Button, Calendar, Popover, Select } from "@linked-planet/ui-kit-ts"
 import { XIcon } from "lucide-react"
-import { useEffect, useRef } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import React from "react-dom/client"
 import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 import ShowcaseWrapperItem, {
@@ -6295,13 +6297,28 @@ function PopoverExample() {
 	return (
 		<>
 			<Popover.Root
-				appearance="primary"
-				side="top"
-				trigger="open popover"
-				closer={<XIcon aria-label="Close Popover" size="12" />}
-				className="w-96"
-				contentClassName="w-96"
-				usePortal
+				triggerProps={{
+					render: (props) => <Button {...props}>trigger</Button>,
+					appearance: "primary",
+					className: "w-96",
+				}}
+				closerProps={{
+					render: (props) => (
+						<XIcon
+							aria-label="Close Popover"
+							size="12"
+							{...props}
+						/>
+					),
+				}}
+				positionerProps={{
+					side: "top",
+					align: "start",
+					className: "bg-violet p-4",
+				}}
+				popupProps={{
+					className: "bg-amber p-5",
+				}}
 			>
 				<Calendar mode="single" />
 				<Select
@@ -6316,20 +6333,39 @@ function PopoverExample() {
 				/>
 			</Popover.Root>
 			<Popover.Root
-				trigger={<div className="text-warning-bold">Other Trigger</div>}
-				contentClassName="p-4"
-				closer="Close"
-				side="bottom"
-				align="end"
+				triggerProps={{
+					render: (props) => <div {...props}>Other Trigger</div>,
+				}}
+				positionerProps={{
+					side: "bottom",
+					align: "end",
+					className: "p-8 bg-amber",
+				}}
+				closerProps={{
+					render: (props) => (
+						<XIcon
+							aria-label="Close Popover"
+							size="12"
+							{...props}
+						/>
+					),
+				}}
 			>
 				Content
 			</Popover.Root>
 			<Popover.Root
-				trigger="disabled"
-				contentClassName="p-4"
-				side="bottom"
-				align="end"
-				disabled
+				triggerProps={{
+					render: (props) => (
+						<div className="text-warning-bold" {...props}>
+							disabled
+						</div>
+					),
+					disabled: true,
+				}}
+				positionerProps={{
+					side: "bottom",
+					align: "end",
+				}}
 			>
 				Content
 			</Popover.Root>
@@ -6340,10 +6376,20 @@ function PopoverExample() {
 
 //#region popover-shadow-root-example
 function PopoverShadowRootExample() {
-	const example = (
-		<Popover.Root trigger="Open Popover" side="top" usePortal>
-			Content
-		</Popover.Root>
+	const example = useMemo(
+		() => (
+			<Popover.Root
+				triggerProps={{
+					render: (props) => <p {...props}>Open Popover</p>,
+				}}
+				positionerProps={{
+					side: "top",
+				}}
+			>
+				Content
+			</Popover.Root>
+		),
+		[],
 	)
 
 	const divRef = useRef<HTMLDivElement>(null)
@@ -6355,7 +6401,7 @@ function PopoverShadowRootExample() {
 			// render the component
 			React.createRoot(shadowRoot).render(example)
 		}
-	}, [])
+	}, [example])
 
 	return <div className="w-96" ref={divRef} />
 }
@@ -6370,6 +6416,10 @@ export default function PopoverShowcase(props: ShowcaseProps) {
 				{
 					name: "@linked-planet/ui-kit-ts",
 					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Popover",
+				},
+				{
+					name: "@base-ui-components/react/popover",
+					url: "https://base-ui.com/react/components/popover#popup",
 				},
 			]}
 			examples={[

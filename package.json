@@ -90,6 +90,7 @@
 		"@tailwindcss/vite"
 	],
 	"dependencies": {
+		"@base-ui-components/react": "^1.0.0-beta.1",
 		"@emotion/cache": "^11.14.0",
 		"@emotion/css": "^11.13.5",
 		"@emotion/react": "^11.14.0",
@@ -116,7 +117,7 @@
 		"lowlight": "^3.3.0",
 		"lucide-react": "^0.525.0",
 		"mime-types": "^3.0.1",
-		"motion": "^12.23.0",
+		"motion": "^12.23.1",
 		"react-awesome-slider": "^4.1.0",
 		"react-day-picker": "^9.8.0",
 		"react-intl": "^7.1.11",
@@ -141,7 +142,7 @@
 		"@hello-pangea/dnd": "^18.0.1",
 		"@monaco-editor/react": "^4.7.0",
 		"@tailwindcss/vite": "^4.1.11",
-		"@tanstack/react-query": "^5.81.5",
+		"@tanstack/react-query": "^5.82.0",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@total-typescript/ts-reset": "^0.6.1",
 		"@types/node": "^24.0.12",
@@ -152,7 +153,6 @@
 		"cypress-terminal-report": "^7.2.0",
 		"eslint-plugin-react-refresh": "^0.4.20",
 		"jsdom": "^26.1.0",
-		"prettier-plugin-tailwindcss": "^0.6.13",
 		"process": "^0.11.10",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
