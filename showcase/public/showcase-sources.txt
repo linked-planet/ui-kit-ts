@@ -2359,13 +2359,11 @@ function CollapsibleControlled() {
 			>
 				{open ? "Close" : "Open"}
 			</Button>
-			<Collapsible
-				header={<h4>Collapsible Title</h4>}
-				open={open}
-				onChanged={setOpen}
-			>
-				<div className="p-4">collapsible content</div>
-			</Collapsible>
+			<Collapsible.Root open={open} onOpenChange={setOpen}>
+				<Collapsible.Panel>
+					<div className="p-4">collapsible content</div>
+				</Collapsible.Panel>
+			</Collapsible.Root>
 		</>
 	)
 }
@@ -2374,28 +2372,31 @@ function CollapsibleControlled() {
 export default function CollapsibleShowcase(props: ShowcaseProps) {
 	//#region collapsible
 	const example = (
-		<Collapsible
-			header={<h4>Collapsible Title</h4>}
-			openButtonPosition="left"
-			data-id="test-data-id"
-		>
-			<div className="p-4">collapsible content</div>
-		</Collapsible>
+		<Collapsible.Root data-id="test-data-id">
+			<Collapsible.Trigger>
+				<div className="p-2">
+					<h2>Collapsible Title</h2>
+				</div>
+			</Collapsible.Trigger>
+			<Collapsible.Panel>
+				<div className="p-4">collapsible content</div>
+			</Collapsible.Panel>
+		</Collapsible.Root>
 	)
 	//#endregion collapsible
 
 	//#region collapsible1
 	const example1 = (
-		<Collapsible
-			header={
+		<Collapsible.Root>
+			<Collapsible.Trigger openButtonPosition="right">
 				<div className="p-2">
 					<h2>Collapsible Title</h2>
 				</div>
-			}
-			openButtonPosition="right"
-		>
-			<div className="p-4">collapsible content</div>
-		</Collapsible>
+			</Collapsible.Trigger>
+			<Collapsible.Panel>
+				<div className="p-4">collapsible content</div>
+			</Collapsible.Panel>
+		</Collapsible.Root>
 	)
 	//#endregion collapsible1
 
