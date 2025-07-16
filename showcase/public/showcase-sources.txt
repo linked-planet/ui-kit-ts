@@ -6307,16 +6307,13 @@ import ShowcaseWrapperItem, {
 function PopoverExample() {
 	return (
 		<>
-			<Popover.Root
-				popupProps={{
-					className: "bg-amber p-5",
-				}}
-			>
+			<Popover.Root>
 				<Popover.Trigger appearance="primary" className="w-96">
 					Trigger
 				</Popover.Trigger>
 
 				<Popover.Popup
+					className="bg-amber p-5"
 					closerProps={{
 						render: (props) => (
 							<XIcon
@@ -6372,18 +6369,17 @@ function PopoverExample() {
 
 //#region popover-shadow-root-example
 function PopoverShadowRootExample() {
+	const divRef = useRef<HTMLDivElement>(null)
+
 	const example = useMemo(
 		() => (
-			<Popover.Root
-				triggerProps={{
-					render: (props) => <p {...props}>Open Popover</p>,
-				}}
-			>
-				<Popover.Trigger render={() => <p>Open Popover</p>} />
+			<Popover.Root>
+				<Popover.Trigger>Open Popover</Popover.Trigger>
 				<Popover.Popup
 					positionerProps={{
 						side: "top",
 					}}
+					portalRoot={divRef.current?.shadowRoot || undefined}
 				>
 					Content
 				</Popover.Popup>
@@ -6391,8 +6387,6 @@ function PopoverShadowRootExample() {
 		),
 		[],
 	)
-
-	const divRef = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {
 		if (divRef.current && !divRef.current.shadowRoot) {

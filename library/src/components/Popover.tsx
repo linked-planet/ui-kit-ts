@@ -1,73 +1,20 @@
 import { Popover as RPo } from "@base-ui-components/react/popover"
 import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react"
-import { forwardRef, useCallback, useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import { twMerge } from "tailwind-merge"
 import { usePortalContainer } from "../utils"
 import { Button, type ButtonProps } from "./Button"
 
 const _portalDivId = "uikts-popover" as const
 
-type TriggerProps = RPo.Trigger.Props &
+export type PopoverTriggerProps = RPo.Trigger.Props &
 	ButtonProps & {
 		hideChevron?: boolean
 		chevronClassName?: string
 		chevronStyle?: React.CSSProperties
 	}
 
-// this is basically a copy of the dropdown trigger
-const _PopoverTrigger = forwardRef<HTMLButtonElement, TriggerProps>(
-	(props: TriggerProps, ref) => {
-		const {
-			children,
-			style,
-			className,
-			chevronClassName,
-			chevronStyle,
-			hideChevron = false,
-			disabled,
-			...rest
-		} = props
-		return (
-			<Button
-				ref={ref}
-				className={twMerge(
-					"group flex items-center justify-between",
-					className,
-				)}
-				style={{
-					...style,
-				}}
-				{...rest}
-				disabled={disabled}
-			>
-				{children}
-				<ChevronUpIcon
-					size="16"
-					strokeWidth={3}
-					className={twMerge(
-						"hidden text-text-subtlest hover:text-text disabled:text-text-disabled",
-						hideChevron ? "" : "group-data-[state=open]:flex",
-						chevronClassName,
-					)}
-					style={chevronStyle}
-				/>
-
-				<ChevronDownIcon
-					size="16"
-					strokeWidth={3}
-					className={twMerge(
-						"hidden text-text-subtlest hover:text-text disabled:text-text-disabled",
-						hideChevron ? "" : "group-data-[state=closed]:flex",
-						chevronClassName,
-					)}
-					style={chevronStyle}
-				/>
-			</Button>
-		)
-	},
-)
-
-type PositionerProps = Pick<
+export type PopoverPositionerProps = Pick<
 	RPo.Positioner.Props,
 	"side" | "align" | "alignOffset" | "anchor"
 >
@@ -87,7 +34,7 @@ function Trigger({
 	render,
 	nativeButton = true,
 	...rest
-}: TriggerProps) {
+}: PopoverTriggerProps) {
 	const classNameResolved = useCallback(
 		(state: RPo.Trigger.State) => {
 			const basicClassName = "group flex items-center justify-between"
@@ -152,12 +99,12 @@ function Trigger({
 	)
 }
 
-export type PopupProps = RPo.Popup.Props & {
+export type PopoverPopupProps = RPo.Popup.Props & {
 	portalRoot?: ShadowRoot
 	closerProps?: RPo.Close.Props
 	hideCloser?: true
 
-	positionerProps?: PositionerProps
+	positionerProps?: PopoverPositionerProps
 }
 
 function Popup({
@@ -168,7 +115,7 @@ function Popup({
 	closerProps,
 	hideCloser,
 	...props
-}: PopupProps) {
+}: PopoverPopupProps) {
 	const classNameResolved = useCallback(
 		(state: RPo.Popup.State) => {
 			const basicClassName =

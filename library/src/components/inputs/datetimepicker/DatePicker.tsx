@@ -19,7 +19,12 @@ import { twJoin, twMerge } from "tailwind-merge"
 import { type DateType, DateUtils, isDateType } from "../../../utils"
 import { Button } from "../../Button"
 import { Calendar, type CalendarSingleProps } from "../../Calendar"
-import { Popover, type PopoverProps } from "../../Popover"
+import {
+	Popover,
+	type PopoverPopupProps,
+	type PopoverPositionerProps,
+	type PopoverProps,
+} from "../../Popover"
 import { Input } from "../Inputs"
 
 export type DatePickerProps = Pick<
@@ -40,14 +45,7 @@ export type DatePickerProps = Pick<
 > &
 	Pick<
 		PopoverProps,
-		| "positionerProps"
-		| "triggerProps"
-		| "disabled"
-		| "open"
-		| "defaultOpen"
-		| "onOpenChange"
-		| "onOpenChangeComplete"
-		| "hideCloser"
+		"open" | "defaultOpen" | "onOpenChange" | "onOpenChangeComplete"
 	> & {
 		placeholder?: string
 		id?: string
@@ -81,6 +79,10 @@ export type DatePickerProps = Pick<
 		calendarHiddenClassName?: string
 		calendarShowWeekNumber?: boolean
 		calendarWeekNumberCaption?: string
+		portalRoot?: ShadowRoot
+		hideCloser?: boolean
+		positionerProps?: PopoverPositionerProps
+		popupProps?: PopoverPopupProps
 	}
 
 //TODO optimize, it renders too often (the input)
@@ -126,6 +128,7 @@ const DatePickerBase = forwardRef(
 			hideIcon = false,
 			readOnly,
 			hideCloser = true,
+			popupProps,
 			...props
 		}: DatePickerProps,
 		ref: ForwardedRef<HTMLInputElement>,
@@ -247,6 +250,7 @@ const DatePickerBase = forwardRef(
 			clearButtonLabel = "clear date",
 			className,
 			style,
+			portalRoot,
 		} = props
 
 		let valStr: string = value
@@ -339,13 +343,18 @@ const DatePickerBase = forwardRef(
 					onOpenChange?.(open, event, reason)
 				}}
 				onOpenChangeComplete={onOpenChangeComplete}
-				disabled={disabled}
 			>
-				<Popover.Trigger render={trigger} nativeButton={false} />
+				<Popover.Trigger
+					render={trigger}
+					nativeButton={false}
+					disabled={disabled}
+				/>
 				<Popover.Popup
 					style={{ minWidth: "unset" }}
 					positionerProps={positionerProps}
-					hideCloser={hideCloser}
+					hideCloser={hideCloser || undefined}
+					portalRoot={portalRoot}
+					{...popupProps}
 				>
 					{calendar}
 				</Popover.Popup>
