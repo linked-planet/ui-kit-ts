@@ -2,7 +2,7 @@ import { Collapsible as CollapsibleRUI } from "@base-ui-components/react/collaps
 
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
-import { forwardRef, useCallback } from "react"
+import { forwardRef, useCallback, useMemo } from "react"
 import { twMerge } from "tailwind-merge"
 
 type TriggerProps = CollapsibleRUI.Trigger.Props & {
@@ -27,11 +27,13 @@ function Trigger({
 	headerContainerClassName,
 	title,
 	children,
+	render,
+	nativeButton = true,
 	...props
 }: TriggerProps) {
 	const classNameResolved = useCallback(
 		(state: CollapsibleRUI.Root.State) => {
-			const basicClassName = `flex w-full flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border border-border border-solid group-data-[closed]:rounded-xs group-data-[open]:rounded-t-xs ${
+			const basicClassName = `TRIGGER flex w-full flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border border-border border-solid group-data-[closed]:rounded-xs group-data-[open]:rounded-t-xs ${
 				openButtonPosition === "hidden"
 					? "cursor-default"
 					: "cursor-pointer disabled:cursor-default"
@@ -43,12 +45,12 @@ function Trigger({
 		},
 		[className, openButtonPosition],
 	)
-	return (
-		<CollapsibleRUI.Trigger className={classNameResolved} {...props}>
-			<div className="flex items-center w-full justify-between">
+
+	const triggerContent = useMemo(() => {
+		return (
+			<>
 				{openButtonPosition === "left" && (
-					<button
-						type="button"
+					<div
 						className={twMerge(
 							"flex h-full flex-none items-center justify-center size-6 pr-1",
 							chevronClassName,
@@ -59,7 +61,7 @@ function Trigger({
 							strokeWidth={3}
 							className="group-data-[closed]:rotate-0 group-data-[open]:rotate-90 transform transition-transform"
 						/>
-					</button>
+					</div>
 				)}
 				<div
 					className={twMerge(
@@ -71,8 +73,7 @@ function Trigger({
 					{children}
 				</div>
 				{openButtonPosition === "right" && (
-					<button
-						type="button"
+					<div
 						className={twMerge(
 							"flex h-full flex-none items-center justify-center size-6",
 							chevronClassName,
@@ -84,10 +85,43 @@ function Trigger({
 							strokeWidth={3}
 							className="group-data-[closed]:rotate-0 group-data-[open]:-rotate-90 transform transition-transform"
 						/>
-					</button>
+					</div>
 				)}
-			</div>
-		</CollapsibleRUI.Trigger>
+			</>
+		)
+	}, [
+		openButtonPosition,
+		chevronClassName,
+		chevronStyle,
+		title,
+		children,
+		headerContainerClassName,
+		headerContainerStyle,
+	])
+
+	return (
+		<CollapsibleRUI.Trigger
+			className={classNameResolved}
+			nativeButton={nativeButton}
+			{...props}
+			render={
+				render ??
+				((g) => {
+					if (nativeButton) {
+						return <button {...g}>{triggerContent}</button>
+					}
+
+					return (
+						<div
+							className="flex items-center w-full justify-between"
+							{...g}
+						>
+							{triggerContent}
+						</div>
+					)
+				})
+			}
+		/>
 	)
 }
 
