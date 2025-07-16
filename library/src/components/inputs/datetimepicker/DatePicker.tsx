@@ -332,6 +332,27 @@ const DatePickerBase = forwardRef(
 		)
 
 		return (
+			<Popover.Root
+				open={disabled ? false : open}
+				onOpenChange={(open, event, reason) => {
+					setOpen(open)
+					onOpenChange?.(open, event, reason)
+				}}
+				onOpenChangeComplete={onOpenChangeComplete}
+				disabled={disabled}
+			>
+				<Popover.Trigger render={trigger} nativeButton={false} />
+				<Popover.Popup
+					style={{ minWidth: "unset" }}
+					positionerProps={positionerProps}
+					hideCloser={hideCloser}
+				>
+					{calendar}
+				</Popover.Popup>
+			</Popover.Root>
+		)
+
+		/*return (
 			<Popover
 				triggerProps={{
 					render: trigger,
@@ -351,7 +372,7 @@ const DatePickerBase = forwardRef(
 			>
 				{calendar}
 			</Popover>
-		)
+		)*/
 	},
 )
 

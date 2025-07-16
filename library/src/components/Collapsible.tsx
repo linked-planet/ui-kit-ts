@@ -33,7 +33,7 @@ function Trigger({
 }: TriggerProps) {
 	const classNameResolved = useCallback(
 		(state: CollapsibleRUI.Root.State) => {
-			const basicClassName = `TRIGGER flex w-full flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border border-border border-solid group-data-[closed]:rounded-xs group-data-[open]:rounded-t-xs ${
+			const basicClassName = `flex w-full flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border border-border border-solid group-data-[closed]:rounded-xs group-data-[open]:rounded-t-xs ${
 				openButtonPosition === "hidden"
 					? "cursor-default"
 					: "cursor-pointer disabled:cursor-default"
