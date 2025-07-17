@@ -7,6 +7,17 @@ import { IconSizeHelper } from "./IconSizeHelper"
 const triggerClassName =
 	"h-8 hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded-xs bg-transparent p-1.5"
 
+export type PageSizeSelectorProps = {
+	pageSizes?: number[]
+	pageSize?: number
+	defaultPageSize?: number
+	onPageSizeChange?: (pageSize: number) => void
+	pageSizeMenuSide?: DropdownMenuProps["side"]
+	pageSizeMenuAlign?: DropdownMenuProps["align"]
+	pageSizeTitle?: React.ReactNode
+	pageSizeTriggerClassName?: string
+}
+
 function PageSizeSelector({
 	pageSize,
 	defaultPageSize = 20,
@@ -15,15 +26,8 @@ function PageSizeSelector({
 	pageSizeMenuSide = "bottom",
 	pageSizeMenuAlign = "start",
 	pageSizeTitle = "Items:",
-}: {
-	pageSizes?: number[]
-	pageSize?: number
-	defaultPageSize?: number
-	onPageSizeChange?: (pageSize: number) => void
-	pageSizeMenuSide?: DropdownMenuProps["side"]
-	pageSizeMenuAlign?: DropdownMenuProps["align"]
-	pageSizeTitle?: React.ReactNode
-}) {
+	pageSizeTriggerClassName,
+}: PageSizeSelectorProps) {
 	const [_pageSize, setPageSizeUsed] = useState(pageSize ?? defaultPageSize)
 
 	if (pageSize && _pageSize !== pageSize) {
@@ -50,10 +54,13 @@ function PageSizeSelector({
 
 	return (
 		<div className="flex items-center gap-2">
-			<span>{pageSizeTitle}</span>
+			{pageSizeTitle}
 			<Dropdown.Menu
 				trigger={pageSize}
-				triggerClassName={triggerClassName}
+				triggerClassName={twMerge(
+					triggerClassName,
+					pageSizeTriggerClassName,
+				)}
 				side={pageSizeMenuSide}
 				align={pageSizeMenuAlign}
 			>
@@ -71,6 +78,10 @@ function PaginationPageHandler<P extends string | number>({
 	defaultPageIndex,
 	onPageIndexChange,
 	onPageChange,
+	onNextPage,
+	onPreviousPage,
+	disableNextPageButton,
+	disablePreviousPageButton,
 	maxPageButtons,
 	previousLabel,
 	nextLabel,
@@ -81,13 +92,17 @@ function PaginationPageHandler<P extends string | number>({
 	pageButtonClassName,
 	pageButtonStyle,
 }: {
-	pages: P[]
+	pages: P[] | undefined
 	currentPage?: P
 	defaultPage?: P
 	currentPageIndex?: number
 	defaultPageIndex?: number
 	onPageIndexChange?: (pageIndex: number) => void
 	onPageChange?: (page: P) => void
+	onNextPage?: () => void
+	onPreviousPage?: () => void
+	disableNextPageButton?: boolean
+	disablePreviousPageButton?: boolean
 	maxPageButtons: number
 	previousLabel?: string
 	nextLabel?: string
@@ -99,7 +114,7 @@ function PaginationPageHandler<P extends string | number>({
 	pageButtonStyle?: React.CSSProperties
 }) {
 	const [_currentPage, setCurrentPage] = useState(
-		currentPage ?? defaultPage ?? pages[0],
+		currentPage ?? defaultPage ?? pages?.[0],
 	)
 
 	useEffect(() => {
@@ -121,13 +136,23 @@ function PaginationPageHandler<P extends string | number>({
 	if (
 		currentPage == null &&
 		currentPageIndex != null &&
+		pages &&
 		_currentPage !== pages[currentPageIndex]
 	) {
 		setCurrentPage(pages[currentPageIndex])
 	}
 
 	const { visiblePages, currentIndex } = useMemo(() => {
-		const currentIndex = currentPageIndex ?? pages.indexOf(_currentPage)
+		if (!pages && !_currentPage)
+			return { visiblePages: [], currentIndex: 0 }
+		if (!pages && _currentPage) {
+			return { visiblePages: [_currentPage], currentIndex: 0 }
+		}
+		if (!pages) {
+			return { visiblePages: [], currentIndex: 0 }
+		}
+		const currentIndex =
+			currentPageIndex ?? pages.indexOf(_currentPage as P) ?? 0
 		const halfMaxPageButtons = Math.ceil(maxPageButtons / 2)
 		if (pages.length <= maxPageButtons)
 			return { visiblePages: pages, currentIndex }
@@ -169,7 +194,9 @@ function PaginationPageHandler<P extends string | number>({
 		return visiblePages.map((page) => {
 			return (
 				<li
-					key={page.toString()}
+					key={
+						page !== "..." ? page.toString() : `...${Math.random()}`
+					}
 					aria-hidden={page === "..."}
 					className="m-0"
 				>
@@ -182,12 +209,14 @@ function PaginationPageHandler<P extends string | number>({
 								pageButtonClassName,
 							)}
 							onClick={() => {
+								if (!pages) return
 								const currentIndex = pages.indexOf(page as P)
 								setCurrentPage(page as P)
 								onPageIndexChange?.(currentIndex)
 								onPageChange?.(page as P)
 							}}
 							onKeyUp={(e) => {
+								if (!pages) return
 								if (e.key === "Enter") {
 									const currentIndex = pages.indexOf(
 										page as P,
@@ -197,6 +226,7 @@ function PaginationPageHandler<P extends string | number>({
 									onPageChange?.(page as P)
 								}
 							}}
+							disabled={!pages}
 							aria-label={`${pageLabel} ${page}`}
 							type="button"
 							aria-current={
@@ -229,29 +259,40 @@ function PaginationPageHandler<P extends string | number>({
 		onPageChange,
 	])
 
+	const disablePreviousPage =
+		(pages && currentIndex <= 0) ||
+		currentPage == null ||
+		disablePreviousPageButton === true
+
+	const disableNextPage =
+		(pages && currentIndex >= pages.length - 1) ||
+		currentPage == null ||
+		disableNextPageButton === true
+
 	return (
 		<nav className={className} style={style} aria-label={label}>
-			<ul className="flex list-none items-center">
+			<ul className="flex list-none items-center p-0 m-0">
 				<li className="m-0">
 					<button
-						disabled={currentIndex <= 0}
+						disabled={disablePreviousPage}
 						className={twMerge(
 							`flex cursor-pointer disabled:cursor-default h-8 w-8 select-none items-center justify-center rounded p-1.5 border-0 border-none border-transparent bg-transparent ${
-								currentIndex > 0
+								!disablePreviousPage
 									? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
 									: "text-disabled-text"
 							}`,
 							pageButtonClassName,
 						)}
 						onClick={() => {
+							if (disablePreviousPage) return
+							onPreviousPage?.()
+							if (!pages || !_currentPage) return
 							const currentIndex = pages.indexOf(_currentPage)
 							setCurrentPage(pages[currentIndex - 1])
 							onPageIndexChange?.(currentIndex - 1)
 							onPageChange?.(pages[currentIndex - 1])
 						}}
 						title={previousLabel}
-						aria-label={previousLabel}
-						aria-disabled={currentIndex >= pages.length - 1}
 						type="button"
 					>
 						<IconSizeHelper>
@@ -264,22 +305,22 @@ function PaginationPageHandler<P extends string | number>({
 					<button
 						className={twMerge(
 							`flex cursor-pointer disabled:cursor-default h-8 w-8 select-none items-center justify-center rounded p-1.5 bg-transparent border-none border-0 border-transparent ${
-								currentIndex < pages.length - 1
+								!disableNextPage
 									? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
 									: "text-disabled-text"
 							}`,
 							pageButtonClassName,
 						)}
 						onClick={() => {
+							onNextPage?.()
+							if (!pages || !_currentPage) return
 							const _currentIndex = pages.indexOf(_currentPage)
 							setCurrentPage(pages[_currentIndex + 1])
 							onPageIndexChange?.(_currentIndex + 1)
 							onPageChange?.(pages[_currentIndex + 1])
 						}}
-						disabled={currentIndex >= pages.length - 1}
+						disabled={disableNextPage}
 						title={nextLabel}
-						aria-label={nextLabel}
-						aria-disabled={currentIndex >= pages.length - 1}
 						type="button"
 						style={pageButtonStyle}
 					>
@@ -309,17 +350,22 @@ export function Pagination<P extends string | number>({
 	pages,
 	onPageChange,
 	onPageIndexChange,
+	onNextPage,
+	onPreviousPage,
+	disableNextPageButton,
+	disablePreviousPageButton,
 	hidePageSize = false,
 	className,
 	style,
-	onPageSizeChange,
 	label = "Pagination",
 	previousLabel = "Previous Page",
 	nextLabel = "Next Page",
 	pageLabel = "",
 	pageButtonClassName,
 	pageButtonStyle,
-	...pageSizeSelectorProps
+	pageSelectorClassName,
+	pageSelectorStyle,
+	pageSizeSelectorProps,
 }: {
 	totalPages?: number
 	currentPage?: P
@@ -330,14 +376,11 @@ export function Pagination<P extends string | number>({
 	maxPageButtons?: number
 	onPageChange?: (page: P) => void
 	onPageIndexChange?: (pageIndex: number) => void
+	onNextPage?: () => void
+	onPreviousPage?: () => void
+	disableNextPageButton?: boolean
+	disablePreviousPageButton?: boolean
 	hidePageSize?: boolean
-	pageSizes?: number[]
-	pageSize?: number
-	defaultPageSize?: number
-	onPageSizeChange?: (pageSize: number) => void
-	pageSizeMenuSide?: DropdownMenuProps["side"]
-	pageSizeMenuAlign?: DropdownMenuProps["align"]
-	pageSizeTitle?: string
 	label?: string
 	previousLabel?: string
 	nextLabel?: string
@@ -346,15 +389,19 @@ export function Pagination<P extends string | number>({
 	style?: React.CSSProperties
 	pageButtonClassName?: string
 	pageButtonStyle?: React.CSSProperties
+	pageSelectorClassName?: string
+	pageSelectorStyle?: React.CSSProperties
+	pageSizeSelectorProps?: PageSizeSelectorProps
 }) {
 	const _pages = useMemo(() => {
 		if (pages) return pages
-		if (totalPages)
+		if (totalPages) {
 			return Array.from(
 				{ length: Math.ceil(totalPages) },
 				(_, i) => i + 1,
 			) as P[]
-		return [1] as P[]
+		}
+		return undefined
 	}, [pages, totalPages])
 
 	return (
@@ -374,6 +421,8 @@ export function Pagination<P extends string | number>({
 					defaultPageIndex={defaultPageIndex}
 					onPageChange={onPageChange}
 					onPageIndexChange={onPageIndexChange}
+					onNextPage={onNextPage}
+					onPreviousPage={onPreviousPage}
 					maxPageButtons={maxPageButtons}
 					previousLabel={previousLabel}
 					nextLabel={nextLabel}
@@ -381,17 +430,23 @@ export function Pagination<P extends string | number>({
 					pageLabel={pageLabel}
 					pageButtonClassName={pageButtonClassName}
 					pageButtonStyle={pageButtonStyle}
+					disableNextPageButton={disableNextPageButton}
+					disablePreviousPageButton={disablePreviousPageButton}
+					className={pageSelectorClassName}
+					style={pageSelectorStyle}
 				/>
 			</div>
 			{!hidePageSize && (
 				<div className="flex-none">
 					<PageSizeSelector
+						{...pageSizeSelectorProps}
 						onPageSizeChange={(ps) => {
-							onPageSizeChange?.(ps)
-							onPageChange?.(_pages[0])
+							pageSizeSelectorProps?.onPageSizeChange?.(ps)
+							if (_pages) {
+								onPageChange?.(_pages[0])
+							}
 							onPageIndexChange?.(0)
 						}}
-						{...pageSizeSelectorProps}
 					/>
 				</div>
 			)}

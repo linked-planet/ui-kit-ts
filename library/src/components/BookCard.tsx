@@ -12,7 +12,7 @@ export const CardBase = forwardRef(
 			header,
 			closed,
 			defaultOpen,
-			onOpenChanged,
+			onOpenChange,
 			children,
 			id,
 			testId,
@@ -26,7 +26,7 @@ export const CardBase = forwardRef(
 			header: React.ReactNode
 			closed?: boolean
 			defaultOpen?: boolean
-			onOpenChanged?: (opened: boolean) => void
+			onOpenChange?: (opened: boolean) => void
 			children?: React.ReactNode
 			id?: string
 			testId?: string
@@ -46,32 +46,32 @@ export const CardBase = forwardRef(
 			closed == null && defaultOpen == null ? "hidden" : "right"
 
 		return (
-			<Collapsible
-				openButtonPosition={openButtonPos}
-				header={header}
+			<Collapsible.Root
 				open={openVal}
 				defaultOpen={defaultOpen}
-				onChanged={onOpenChanged}
+				onOpenChange={onOpenChange}
 				className={twMerge(
 					"border-border box-border border-2 border-solid",
 					className,
 				)}
-				triggerClassName={twMerge(
-					"rounded-t data-[state=closed]:border-b-0 data-[state=open]:border-b box-border border-solid border-x-0 border-t-0 border-border overflow-hidden",
-					triggerClassName,
-				)}
-				triggerStyle={triggerStyle}
 				id={id}
-				testId={testId}
 				ref={ref}
 				style={style}
-				chevronClassName={chevronClassName}
-				chevronStyle={chevronStyle}
 			>
-				<div className="bg-surface box-border flex w-full rounded-b">
-					{children}
-				</div>
-			</Collapsible>
+				<Collapsible.Trigger
+					className={twMerge(
+						"rounded-t data-[state=closed]:border-b-0 data-[state=open]:border-b box-border border-solid border-x-0 border-t-0 border-border overflow-hidden",
+						triggerClassName,
+					)}
+					style={triggerStyle}
+					openButtonPosition={openButtonPos}
+					chevronClassName={chevronClassName}
+					chevronStyle={chevronStyle}
+				>
+					{header}
+				</Collapsible.Trigger>
+				<Collapsible.Content>{children}</Collapsible.Content>
+			</Collapsible.Root>
 		)
 	},
 )
@@ -464,7 +464,7 @@ type BookCardProps = {
 	bodyClassName?: string
 	actions?: React.ReactNode
 	children?: React.ReactNode
-	onOpenChanged?: (opened: boolean) => void
+	onOpenChange?: (opened: boolean) => void
 	id?: string
 	testId?: string
 }
@@ -483,7 +483,7 @@ export const BookCard = forwardRef(
 			bodyClassName,
 			bodyLayout,
 			children,
-			onOpenChanged,
+			onOpenChange,
 			id,
 			testId,
 		}: BookCardProps,
@@ -505,7 +505,7 @@ export const BookCard = forwardRef(
 		return (
 			<CardBase
 				closed={closed}
-				onOpenChanged={onOpenChanged}
+				onOpenChange={onOpenChange}
 				defaultOpen={defaultOpen}
 				id={id}
 				testId={testId}

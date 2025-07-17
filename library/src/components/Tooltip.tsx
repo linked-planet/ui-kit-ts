@@ -18,6 +18,11 @@ export type TooltipProps = {
 	triggerTestId?: string
 	id?: string
 	triggerId?: string
+	/** If true, the content will be mounted even when the tooltip is closed.
+	 * This is useful if you want to keep the content in the DOM even when it is not visible.
+	 * This is useful for animations.
+	 */
+	forceMountContent?: true
 } & RTTp.TooltipProps
 
 export function Tooltip({
@@ -38,6 +43,7 @@ export function Tooltip({
 	defaultOpen,
 	open,
 	onOpenChange,
+	forceMountContent = undefined,
 	...rest
 }: TooltipProps) {
 	const content = useMemo(() => {
@@ -52,6 +58,7 @@ export function Tooltip({
 				align={align}
 				data-testid={testId}
 				id={id}
+				forceMount={forceMountContent}
 			>
 				{tooltipHTMLContent && (
 					<div
@@ -73,6 +80,7 @@ export function Tooltip({
 		tooltipContent,
 		tooltipHTMLContent,
 		tooltipStyle,
+		forceMountContent,
 	])
 
 	const triggerRef = useRef<HTMLButtonElement>(null)

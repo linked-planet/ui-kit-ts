@@ -1,13 +1,12 @@
 import type React from "react"
+import { useEffect, useRef } from "react"
+import { twMerge } from "tailwind-merge"
 import {
 	LeftSidebar as LeftSidebarImpl,
 	leftSidebarWidthVar,
 	RightSidebar as RightSidebarImpl,
 	rightSidebarWidthVar,
 } from "./Sidebar"
-import { twMerge } from "tailwind-merge"
-
-import { useEffect, useRef } from "react"
 
 export const bannerHeightVar = "--bannerHeight" as const
 export const topNavigationHeightVar = "--topNavigationHeight" as const
@@ -41,16 +40,16 @@ export function initTopNavigationHeight() {
 		const header = headers.item(i)
 		if (header?.getAttribute("role") === "banner") {
 			const bannerHeight = header.clientHeight || 0
-			console.info("UIKitTs - Banner height set to:", bannerHeight)
+			//console.info("UIKitTs - Banner height set to:", bannerHeight)
 			document.documentElement.style.setProperty(
 				bannerHeightVar,
 				`${bannerHeight}px`,
 			)
-			console.log(
-				"UIKitTs - Banner height set to:",
-				bannerHeight,
-				header.clientHeight,
-			)
+			//console.log(
+			//	"UIKitTs - Banner height set to:",
+			//	bannerHeight,
+			//	header.clientHeight,
+			//)
 		}
 	}
 

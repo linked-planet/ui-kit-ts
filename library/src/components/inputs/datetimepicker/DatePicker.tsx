@@ -19,7 +19,12 @@ import { twJoin, twMerge } from "tailwind-merge"
 import { type DateType, DateUtils, isDateType } from "../../../utils"
 import { Button } from "../../Button"
 import { Calendar, type CalendarSingleProps } from "../../Calendar"
-import { Popover, type PopoverProps } from "../../Popover"
+import {
+	Popover,
+	type PopoverPopupProps,
+	type PopoverPositionerProps,
+	type PopoverProps,
+} from "../../Popover"
 import { Input } from "../Inputs"
 
 export type DatePickerProps = Pick<
@@ -40,19 +45,7 @@ export type DatePickerProps = Pick<
 > &
 	Pick<
 		PopoverProps,
-		| "usePortal"
-		| "modal"
-		| "testId"
-		| "align"
-		| "alignOffset"
-		| "aria-label"
-		| "defaultOpen"
-		| "disabled"
-		| "open"
-		| "onOpenChange"
-		| "side"
-		| "sideOffset"
-		| "id"
+		"open" | "defaultOpen" | "onOpenChange" | "onOpenChangeComplete"
 	> & {
 		placeholder?: string
 		id?: string
@@ -86,6 +79,10 @@ export type DatePickerProps = Pick<
 		calendarHiddenClassName?: string
 		calendarShowWeekNumber?: boolean
 		calendarWeekNumberCaption?: string
+		portalRoot?: ShadowRoot
+		hideCloser?: boolean
+		positionerProps?: PopoverPositionerProps
+		popupProps?: PopoverPopupProps
 	}
 
 //TODO optimize, it renders too often (the input)
@@ -119,21 +116,19 @@ const onInputChange = () => {}
 const DatePickerBase = forwardRef(
 	(
 		{
-			usePortal,
 			value: _value,
 			defaultValue,
 			open: _open,
 			defaultOpen,
-			align,
-			alignOffset,
-			sideOffset,
-			side,
-			modal,
+			positionerProps,
 			onOpenChange,
+			onOpenChangeComplete,
 			onChange,
 			disabled,
 			hideIcon = false,
 			readOnly,
+			hideCloser = true,
+			popupProps,
 			...props
 		}: DatePickerProps,
 		ref: ForwardedRef<HTMLInputElement>,
@@ -253,9 +248,9 @@ const DatePickerBase = forwardRef(
 			formatDisplayLabel,
 			required,
 			clearButtonLabel = "clear date",
-			"aria-label": ariaLabel,
 			className,
 			style,
+			portalRoot,
 		} = props
 
 		let valStr: string = value
@@ -282,7 +277,7 @@ const DatePickerBase = forwardRef(
 					testId={testId}
 					onFocus={onFocus}
 					onBlur={onBlur}
-					aria-label={label ?? ariaLabel ?? "date picker"}
+					aria-label={label ?? "date picker"}
 					placeholder={placeholder}
 					name={name}
 					style={inputStyle}
@@ -342,25 +337,51 @@ const DatePickerBase = forwardRef(
 
 		return (
 			<Popover.Root
-				triggerComponent={trigger}
-				usePortal={usePortal}
-				onOpenChange={(open) => {
-					setOpen(open)
-					onOpenChange?.(open)
-				}}
 				open={disabled ? false : open}
-				side={side}
-				sideOffset={sideOffset}
-				align={align}
-				alignOffset={alignOffset}
-				disabled={disabled}
-				modal={modal}
-				triggerAsChild={true}
-				contentStyle={{ minWidth: "unset" }}
+				onOpenChange={(open, event, reason) => {
+					setOpen(open)
+					onOpenChange?.(open, event, reason)
+				}}
+				onOpenChangeComplete={onOpenChangeComplete}
 			>
-				{calendar}
+				<Popover.Trigger
+					render={trigger}
+					nativeButton={false}
+					disabled={disabled}
+				/>
+				<Popover.Popup
+					style={{ minWidth: "unset" }}
+					positionerProps={positionerProps}
+					hideCloser={hideCloser || undefined}
+					portalRoot={portalRoot}
+					{...popupProps}
+				>
+					{calendar}
+				</Popover.Popup>
 			</Popover.Root>
 		)
+
+		/*return (
+			<Popover
+				triggerProps={{
+					render: trigger,
+				}}
+				onOpenChange={(open, event, reason) => {
+					setOpen(open)
+					onOpenChange?.(open, event, reason)
+				}}
+				onOpenChangeComplete={onOpenChangeComplete}
+				open={disabled ? false : open}
+				positionerProps={positionerProps}
+				disabled={disabled}
+				popupProps={{
+					style: { minWidth: "unset" },
+				}}
+				hideCloser={hideCloser}
+			>
+				{calendar}
+			</Popover>
+		)*/
 	},
 )
 

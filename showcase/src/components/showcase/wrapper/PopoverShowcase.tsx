@@ -1,6 +1,6 @@
 import { Calendar, Popover, Select } from "@linked-planet/ui-kit-ts"
 import { XIcon } from "lucide-react"
-import { useEffect, useRef } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import React from "react-dom/client"
 import { createShowcaseShadowRoot } from "../../ShowCaseWrapperItem/createShadowRoot"
 import ShowcaseWrapperItem, {
@@ -11,44 +11,60 @@ import ShowcaseWrapperItem, {
 function PopoverExample() {
 	return (
 		<>
-			<Popover.Root
-				appearance="primary"
-				side="top"
-				trigger="open popover"
-				closer={<XIcon aria-label="Close Popover" size="12" />}
-				className="w-96"
-				contentClassName="w-96"
-				usePortal
-			>
-				<Calendar mode="single" />
-				<Select
-					menuPlacement="top"
-					menuIsOpen
-					usePortal
-					options={[
-						{ label: "Option 1", value: "1" },
-						{ label: "Option 2", value: "2" },
-						{ label: "Option 3", value: "3" },
-					]}
-				/>
+			<Popover.Root>
+				<Popover.Trigger appearance="primary" className="w-96">
+					Trigger
+				</Popover.Trigger>
+
+				<Popover.Popup
+					className="bg-amber p-5"
+					closerProps={{
+						render: (props) => (
+							<XIcon
+								aria-label="Close Popover"
+								size="12"
+								{...props}
+							/>
+						),
+					}}
+					positionerProps={{
+						side: "top",
+						align: "start",
+					}}
+				>
+					<Calendar mode="single" />
+
+					<Select
+						menuPlacement="bottom"
+						usePortal
+						options={[
+							{ label: "Option 1", value: "1" },
+							{ label: "Option 2", value: "2" },
+							{ label: "Option 3", value: "3" },
+						]}
+					/>
+				</Popover.Popup>
 			</Popover.Root>
-			<Popover.Root
-				trigger={<div className="text-warning-bold">Other Trigger</div>}
-				contentClassName="p-4"
-				closer="Close"
-				side="bottom"
-				align="end"
-			>
-				Content
+
+			<Popover.Root>
+				<Popover.Trigger appearance="subtle">
+					Open Popover
+				</Popover.Trigger>
+				<Popover.Popup>
+					<div className="bg-blue-800 p-5">Content</div>
+				</Popover.Popup>
 			</Popover.Root>
-			<Popover.Root
-				trigger="disabled"
-				contentClassName="p-4"
-				side="bottom"
-				align="end"
-				disabled
-			>
-				Content
+
+			<Popover.Root>
+				<Popover.Trigger>Open Popover</Popover.Trigger>
+				<Popover.Popup
+					positionerProps={{
+						side: "bottom",
+						align: "end",
+					}}
+				>
+					Content
+				</Popover.Popup>
 			</Popover.Root>
 		</>
 	)
@@ -57,13 +73,24 @@ function PopoverExample() {
 
 //#region popover-shadow-root-example
 function PopoverShadowRootExample() {
-	const example = (
-		<Popover.Root trigger="Open Popover" side="top" usePortal>
-			Content
-		</Popover.Root>
-	)
-
 	const divRef = useRef<HTMLDivElement>(null)
+
+	const example = useMemo(
+		() => (
+			<Popover.Root>
+				<Popover.Trigger>Open Popover</Popover.Trigger>
+				<Popover.Popup
+					positionerProps={{
+						side: "top",
+					}}
+					portalRoot={divRef.current?.shadowRoot || undefined}
+				>
+					Content
+				</Popover.Popup>
+			</Popover.Root>
+		),
+		[],
+	)
 
 	useEffect(() => {
 		if (divRef.current && !divRef.current.shadowRoot) {
@@ -72,9 +99,13 @@ function PopoverShadowRootExample() {
 			// render the component
 			React.createRoot(shadowRoot).render(example)
 		}
-	}, [])
+	}, [example])
 
-	return <div className="w-96" ref={divRef} />
+	return (
+		<div className="w-96 bg-blue-600" ref={divRef}>
+			Shadow Root
+		</div>
+	)
 }
 //#endregion popover-shadow-root-example
 export default function PopoverShowcase(props: ShowcaseProps) {
@@ -87,6 +118,10 @@ export default function PopoverShowcase(props: ShowcaseProps) {
 				{
 					name: "@linked-planet/ui-kit-ts",
 					url: "https://linked-planet.github.io/ui-kit-ts/single?component=Popover",
+				},
+				{
+					name: "@base-ui-components/react/popover",
+					url: "https://base-ui.com/react/components/popover#popup",
 				},
 			]}
 			examples={[

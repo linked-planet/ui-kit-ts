@@ -485,9 +485,7 @@ const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
 					`group flex items-center justify-between py-0 ${!hideChevron ? "pr-2" : ""}`,
 					className,
 				)}
-				style={{
-					...style,
-				}}
+				style={style}
 				{...rest}
 			>
 				{children}
@@ -603,7 +601,6 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 		const _trigger = triggerComponent ?? (
 			<Trigger
 				disabled={disabled}
-				aria-disabled={disabled}
 				hideChevron={hideChevron}
 				className={triggerClassName}
 				chevronClassName={chevronClassName}
