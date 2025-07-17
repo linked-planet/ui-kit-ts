@@ -7,6 +7,17 @@ import { IconSizeHelper } from "./IconSizeHelper"
 const triggerClassName =
 	"h-8 hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded-xs bg-transparent p-1.5"
 
+export type PageSizeSelectorProps = {
+	pageSizes?: number[]
+	pageSize?: number
+	defaultPageSize?: number
+	onPageSizeChange?: (pageSize: number) => void
+	pageSizeMenuSide?: DropdownMenuProps["side"]
+	pageSizeMenuAlign?: DropdownMenuProps["align"]
+	pageSizeTitle?: React.ReactNode
+	pageSizeTriggerClassName?: string
+}
+
 function PageSizeSelector({
 	pageSize,
 	defaultPageSize = 20,
@@ -15,15 +26,8 @@ function PageSizeSelector({
 	pageSizeMenuSide = "bottom",
 	pageSizeMenuAlign = "start",
 	pageSizeTitle = "Items:",
-}: {
-	pageSizes?: number[]
-	pageSize?: number
-	defaultPageSize?: number
-	onPageSizeChange?: (pageSize: number) => void
-	pageSizeMenuSide?: DropdownMenuProps["side"]
-	pageSizeMenuAlign?: DropdownMenuProps["align"]
-	pageSizeTitle?: React.ReactNode
-}) {
+	pageSizeTriggerClassName,
+}: PageSizeSelectorProps) {
 	const [_pageSize, setPageSizeUsed] = useState(pageSize ?? defaultPageSize)
 
 	if (pageSize && _pageSize !== pageSize) {
@@ -50,10 +54,13 @@ function PageSizeSelector({
 
 	return (
 		<div className="flex items-center gap-2">
-			<span>{pageSizeTitle}</span>
+			{pageSizeTitle}
 			<Dropdown.Menu
 				trigger={pageSize}
-				triggerClassName={triggerClassName}
+				triggerClassName={twMerge(
+					triggerClassName,
+					pageSizeTriggerClassName,
+				)}
 				side={pageSizeMenuSide}
 				align={pageSizeMenuAlign}
 			>
@@ -264,7 +271,7 @@ function PaginationPageHandler<P extends string | number>({
 
 	return (
 		<nav className={className} style={style} aria-label={label}>
-			<ul className="flex list-none items-center">
+			<ul className="flex list-none items-center p-0 m-0">
 				<li className="m-0">
 					<button
 						disabled={disablePreviousPage}
@@ -350,14 +357,15 @@ export function Pagination<P extends string | number>({
 	hidePageSize = false,
 	className,
 	style,
-	onPageSizeChange,
 	label = "Pagination",
 	previousLabel = "Previous Page",
 	nextLabel = "Next Page",
 	pageLabel = "",
 	pageButtonClassName,
 	pageButtonStyle,
-	...pageSizeSelectorProps
+	pageSelectorClassName,
+	pageSelectorStyle,
+	pageSizeSelectorProps,
 }: {
 	totalPages?: number
 	currentPage?: P
@@ -373,13 +381,6 @@ export function Pagination<P extends string | number>({
 	disableNextPageButton?: boolean
 	disablePreviousPageButton?: boolean
 	hidePageSize?: boolean
-	pageSizes?: number[]
-	pageSize?: number
-	defaultPageSize?: number
-	onPageSizeChange?: (pageSize: number) => void
-	pageSizeMenuSide?: DropdownMenuProps["side"]
-	pageSizeMenuAlign?: DropdownMenuProps["align"]
-	pageSizeTitle?: string
 	label?: string
 	previousLabel?: string
 	nextLabel?: string
@@ -388,6 +389,9 @@ export function Pagination<P extends string | number>({
 	style?: React.CSSProperties
 	pageButtonClassName?: string
 	pageButtonStyle?: React.CSSProperties
+	pageSelectorClassName?: string
+	pageSelectorStyle?: React.CSSProperties
+	pageSizeSelectorProps?: PageSizeSelectorProps
 }) {
 	const _pages = useMemo(() => {
 		if (pages) return pages
@@ -428,19 +432,21 @@ export function Pagination<P extends string | number>({
 					pageButtonStyle={pageButtonStyle}
 					disableNextPageButton={disableNextPageButton}
 					disablePreviousPageButton={disablePreviousPageButton}
+					className={pageSelectorClassName}
+					style={pageSelectorStyle}
 				/>
 			</div>
 			{!hidePageSize && (
 				<div className="flex-none">
 					<PageSizeSelector
+						{...pageSizeSelectorProps}
 						onPageSizeChange={(ps) => {
-							onPageSizeChange?.(ps)
+							pageSizeSelectorProps?.onPageSizeChange?.(ps)
 							if (_pages) {
 								onPageChange?.(_pages[0])
 							}
 							onPageIndexChange?.(0)
 						}}
-						{...pageSizeSelectorProps}
 					/>
 				</div>
 			)}

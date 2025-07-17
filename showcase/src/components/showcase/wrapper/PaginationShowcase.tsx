@@ -23,11 +23,16 @@ function PageExample() {
 			onPageChange={(page) => setSelectedPage(page)}
 			totalPages={10}
 			//maxPageButtons={10}
-			pageSize={pageSize}
-			pageSizes={[10, 20, 50, 100]}
-			onPageSizeChange={setPageSize}
-			pageSizeMenuSide="top"
-			pageSizeMenuAlign="end"
+			pageSizeSelectorProps={{
+				pageSize: pageSize,
+				pageSizes: [10, 20, 50, 100],
+				onPageSizeChange: setPageSize,
+				pageSizeMenuSide: "top",
+				pageSizeMenuAlign: "end",
+				pageSizeTitle: (
+					<span className="text-red-500">Books per page:</span>
+				),
+			}}
 		/>
 	)
 	//#endregion pagination
@@ -48,11 +53,13 @@ function IndexExample() {
 				onPageIndexChange={(i) => setSelectedIndex(i)}
 				totalPages={10}
 				maxPageButtons={7}
-				pageSize={pageSize}
-				pageSizes={[10, 20, 50, 100]}
-				onPageSizeChange={setPageSize}
-				pageSizeMenuSide="top"
-				pageSizeMenuAlign="end"
+				pageSizeSelectorProps={{
+					pageSize: pageSize,
+					pageSizes: [10, 20, 50, 100],
+					onPageSizeChange: setPageSize,
+					pageSizeMenuSide: "top",
+					pageSizeMenuAlign: "end",
+				}}
 			/>
 			{/*<AKPagination pages={pages} max={6} selectedIndex={selectedIndex} />*/}
 		</>
@@ -77,12 +84,14 @@ function SimpleExample() {
 			}}
 			disableNextPageButton={currentPage >= 10}
 			disablePreviousPageButton={currentPage <= 1}
-			pageSize={pageSize}
 			currentPage={currentPage}
-			pageSizes={[10, 20, 50, 100]}
-			onPageSizeChange={setPageSize}
-			pageSizeMenuSide="top"
-			pageSizeMenuAlign="end"
+			pageSizeSelectorProps={{
+				pageSize: pageSize,
+				pageSizes: [10, 20, 50, 100],
+				onPageSizeChange: setPageSize,
+				pageSizeMenuSide: "top",
+				pageSizeMenuAlign: "end",
+			}}
 		/>
 	)
 	//#endregion pagination-simple

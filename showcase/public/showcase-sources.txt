@@ -6220,20 +6220,23 @@ function PageExample() {
 	)
 
 	return (
-		<>
-			<Pagination
-				pages={pages}
-				currentPage={selectedPage}
-				onPageChange={(page) => setSelectedPage(page)}
-				totalPages={10}
-				//maxPageButtons={10}
-				pageSize={pageSize}
-				pageSizes={[10, 20, 50, 100]}
-				onPageSizeChange={setPageSize}
-				pageSizeMenuSide="top"
-				pageSizeMenuAlign="end"
-			/>
-		</>
+		<Pagination
+			pages={pages}
+			currentPage={selectedPage}
+			onPageChange={(page) => setSelectedPage(page)}
+			totalPages={10}
+			//maxPageButtons={10}
+			pageSizeSelectorProps={{
+				pageSize: pageSize,
+				pageSizes: [10, 20, 50, 100],
+				onPageSizeChange: setPageSize,
+				pageSizeMenuSide: "top",
+				pageSizeMenuAlign: "end",
+				pageSizeTitle: (
+					<span className="text-red-500">Books per page:</span>
+				),
+			}}
+		/>
 	)
 	//#endregion pagination
 }
@@ -6253,16 +6256,48 @@ function IndexExample() {
 				onPageIndexChange={(i) => setSelectedIndex(i)}
 				totalPages={10}
 				maxPageButtons={7}
-				pageSize={pageSize}
-				pageSizes={[10, 20, 50, 100]}
-				onPageSizeChange={setPageSize}
-				pageSizeMenuSide="top"
-				pageSizeMenuAlign="end"
+				pageSizeSelectorProps={{
+					pageSize: pageSize,
+					pageSizes: [10, 20, 50, 100],
+					onPageSizeChange: setPageSize,
+					pageSizeMenuSide: "top",
+					pageSizeMenuAlign: "end",
+				}}
 			/>
 			{/*<AKPagination pages={pages} max={6} selectedIndex={selectedIndex} />*/}
 		</>
 	)
 	//#endregion pagination-index
+}
+
+function SimpleExample() {
+	//#region pagination-simple
+	const [pageSize, setPageSize] = useState(10)
+	const [currentPage, setCurrentPage] = useState(1)
+
+	return (
+		<Pagination
+			onNextPage={() => {
+				console.log("next")
+				setCurrentPage(currentPage + 1)
+			}}
+			onPreviousPage={() => {
+				console.log("previous")
+				setCurrentPage(currentPage - 1)
+			}}
+			disableNextPageButton={currentPage >= 10}
+			disablePreviousPageButton={currentPage <= 1}
+			currentPage={currentPage}
+			pageSizeSelectorProps={{
+				pageSize: pageSize,
+				pageSizes: [10, 20, 50, 100],
+				onPageSizeChange: setPageSize,
+				pageSizeMenuSide: "top",
+				pageSizeMenuAlign: "end",
+			}}
+		/>
+	)
+	//#endregion pagination-simple
 }
 
 function PaginationShowcase(props: ShowcaseProps) {
@@ -6286,6 +6321,11 @@ function PaginationShowcase(props: ShowcaseProps) {
 					title: "Example Index",
 					example: <IndexExample />,
 					sourceCodeExampleId: "pagination-index",
+				},
+				{
+					title: "Minimal",
+					example: <SimpleExample />,
+					sourceCodeExampleId: "pagination-simple",
 				},
 			]}
 		/>
