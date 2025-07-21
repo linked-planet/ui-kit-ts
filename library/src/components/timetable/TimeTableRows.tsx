@@ -10,6 +10,7 @@ import {
 	useRef,
 	useState,
 } from "react"
+import { twJoin } from "tailwind-merge"
 import useResizeObserver, { type ObservedSize } from "use-resize-observer"
 import { useDebounceHelper, useIdleRateLimitHelper } from "../../utils"
 import ItemWrapper from "./ItemWrapper"
@@ -30,6 +31,11 @@ import {
 	useTTCIsCellDisabled,
 	useTTCTimeSlotSelectionDisabled,
 } from "./TimeTableConfigStore"
+import {
+	clearTimeTableFocusStore,
+	setFocusedCell,
+	useFocusedCell,
+} from "./TimeTableFocusStore"
 import { useTimeTableIdent } from "./TimeTableIdentContext"
 import {
 	getMultiSelectionMode,
@@ -188,6 +194,7 @@ export default function TimeTableRows<
 	onRenderedGroupsChanged,
 }: TimeTableRowsProps<G, I>): JSX.Element[] {
 	const storeIdent = useTimeTableIdent()
+	const focusedCell = useFocusedCell(storeIdent)
 	const { rowHeight, columnWidth, placeHolderHeight } =
 		useTTCCellDimentions(storeIdent)
 
@@ -616,6 +623,28 @@ export default function TimeTableRows<
 		}
 	}
 
+	// Focus management effect
+	useLayoutEffect(() => {
+		if (
+			focusedCell.groupIndex !== null &&
+			focusedCell.timeSlotNumber !== null
+		) {
+			// Find the DOM element and focus it
+			const selector = `[data-group-index="${focusedCell.groupIndex}"][data-time-slot="${focusedCell.timeSlotNumber}"]`
+			const element = document.querySelector(selector) as HTMLElement
+			if (element) {
+				element.focus()
+			}
+		}
+	}, [focusedCell.groupIndex, focusedCell.timeSlotNumber])
+
+	// Initialize focus on first render
+	useLayoutEffect(() => {
+		if (groupRows.size > 0 && slotsArray.length > 0) {
+			setFocusedCell(storeIdent, 0, 0)
+		}
+	}, [groupRows.size, slotsArray.length, storeIdent])
+
 	return groupRowsRendered
 }
 
@@ -882,6 +911,7 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	placeHolderHeight: number
 }) {
 	const storeIdent = useTimeTableIdent()
+	const focusedCell = useFocusedCell(storeIdent)
 	const isCellDisabled = useTTCIsCellDisabled(storeIdent)
 	const disableWeekendInteractions =
 		useTTCDisableWeekendInteractions(storeIdent)
@@ -928,6 +958,81 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 		disableWeekendInteractions,
 	)
 
+	const handleKeyDown = useCallback(
+		(e: React.KeyboardEvent) => {
+			switch (e.key) {
+				case "ArrowRight":
+					e.preventDefault()
+					if (timeSlotNumber < slotsArray.length - 1) {
+						console.log(
+							"ArrowRight",
+							storeIdent,
+							groupNumber,
+							timeSlotNumber + 1,
+						)
+						setFocusedCell(
+							storeIdent,
+							groupNumber,
+							timeSlotNumber + 1,
+						)
+						return
+					}
+					console.log("NOPE")
+					break
+				case "ArrowLeft":
+					e.preventDefault()
+					if (timeSlotNumber > 0) {
+						setFocusedCell(
+							storeIdent,
+							groupNumber,
+							timeSlotNumber - 1,
+						)
+					}
+					break
+				case "ArrowDown":
+					e.preventDefault()
+					// Move to next group (implementation depends on your group structure)
+					setFocusedCell(storeIdent, groupNumber + 1, timeSlotNumber)
+					break
+				case "ArrowUp":
+					e.preventDefault()
+					// Move to previous group
+					if (groupNumber > 0) {
+						setFocusedCell(
+							storeIdent,
+							groupNumber - 1,
+							timeSlotNumber,
+						)
+					}
+					break
+				case "Tab":
+					e.preventDefault()
+					if (timeSlotNumber < slotsArray.length - 1) {
+						clearTimeTableFocusStore(storeIdent)
+					}
+					break
+				case "Shift+Tab":
+					e.preventDefault()
+					clearTimeTableFocusStore(storeIdent)
+					break
+				case "Enter":
+					e.preventDefault()
+					toggleTimeSlotSelected(
+						storeIdent,
+						group.id,
+						timeSlotNumber,
+						"drag",
+					)
+					break
+			}
+		},
+		[storeIdent, groupNumber, timeSlotNumber, slotsArray.length, group.id],
+	)
+
+	const isFocused =
+		focusedCell.groupIndex === groupNumber &&
+		focusedCell.timeSlotNumber === timeSlotNumber
+
 	if (timeSlotSelectedIndex > 0) {
 		return null // the cell is not rendered since the placeholder item spans over multiple selected cells
 	}
@@ -957,17 +1062,41 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	return (
 		<td
 			key={timeSlotNumber}
+			data-group-index={groupNumber}
+			data-time-slot={timeSlotNumber}
+			data-focused={isFocused}
 			colSpan={
 				selectedTimeSlots && isFirstOfSelection
 					? 2 * selectedTimeSlots.length
 					: 2
 			} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			{...(timeSlotSelectedIndex === -1 ? mouseHandlers : undefined)}
-			className={`border-border relative box-border ${cursorStyle} m-0 p-0 border-b-0 border-l-0 border-t-0 border-solid ${brStyle} ${bgStyle} p-0 align-top`}
+			className={twJoin(
+				`border-border relative group/td box-border ${cursorStyle} m-0 p-0 border-b-0 border-l-0 border-t-0 border-solid ${brStyle} ${bgStyle} align-top`,
+				"",
+			)}
 			style={{
 				height: placeHolderHeight,
 			}}
+			tabIndex={
+				isFocused || (groupNumber === 0 && timeSlotNumber === 0)
+					? 0
+					: -1
+			}
+			onKeyDown={handleKeyDown}
+			onFocus={() => {
+				console.log(
+					"handleFocus",
+					storeIdent,
+					groupNumber,
+					timeSlotNumber,
+				)
+				setFocusedCell(storeIdent, groupNumber, timeSlotNumber)
+			}}
 		>
+			{isFocused && (
+				<div className="absolute FOCUS inset-0 group-data-[focused=true]/td:border-3 group-data-[focused=true]/td:border-violet group-data-[focused=true]/td:border-solid z-10" />
+			)}
 			{placeHolderItem}
 		</td>
 	)

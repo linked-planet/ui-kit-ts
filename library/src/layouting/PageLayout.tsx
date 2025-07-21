@@ -38,9 +38,9 @@ const PageHeader = ({
 	style?: React.CSSProperties
 	testId?: string
 }) => (
-	<div
+	<header
 		className={twMerge(
-			`border-border bg-surface-raised z-1 flex flex-col border-b pb-4 pt-6 ${
+			`border-border bg-surface-raised z-1 flex flex-col border-b pb-4 pt-6 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-solid ${
 				shadow ? "shadow-strong" : ""
 			}`,
 			className,
@@ -51,7 +51,7 @@ const PageHeader = ({
 		{...props}
 	>
 		{children}
-	</div>
+	</header>
 )
 
 const PageHeaderTitle = ({
@@ -166,25 +166,25 @@ const PageBodyContent = ({
 	id,
 	className,
 	style,
-	testId,
+	ariaLabel,
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
 	style?: React.CSSProperties
-	testId?: string
+	ariaLabel: string
 }) => (
-	<div
+	<section
 		className={twMerge(
-			"min-h-0 flex-1 overflow-y-auto px-6 py-3",
+			"min-h-0 flex-1 overflow-y-auto px-6 py-3 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-solid",
 			className,
 		)}
 		id={id ?? "page-body-content"}
 		style={style}
-		data-testid={testId}
+		aria-label={ariaLabel}
 	>
 		{children}
-	</div>
+	</section>
 )
 
 const PageBodyHeader = ({
@@ -193,24 +193,27 @@ const PageBodyHeader = ({
 	className,
 	style,
 	testId,
+	ariaLabel,
 }: {
 	children: React.ReactNode
 	id?: string
 	className?: string
 	style?: React.CSSProperties
 	testId?: string
+	ariaLabel: string
 }) => (
-	<div
+	<section
 		className={twMerge(
-			"bg-surface-raised shadow-overflow z-0 px-8 py-1",
+			"bg-surface-raised shadow-overflow z-0 px-8 py-1 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-solid",
 			className,
 		)}
 		id={id ?? "page-body-header"}
 		style={style}
 		data-testid={testId}
+		aria-label={ariaLabel}
 	>
 		{children}
-	</div>
+	</section>
 )
 
 const PageBodyFooter = ({
@@ -226,9 +229,9 @@ const PageBodyFooter = ({
 	style?: React.CSSProperties
 	testId?: string
 }) => (
-	<div
+	<footer
 		className={twMerge(
-			"bg-surface-raised border-border shadow-strong z-0 flex justify-center border-t p-1.5",
+			"bg-surface-raised border-border shadow-strong z-0 flex justify-center border-t p-1.5 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-solid",
 			className,
 		)}
 		id={id ?? "page-body-footer"}
@@ -236,7 +239,7 @@ const PageBodyFooter = ({
 		data-testid={testId}
 	>
 		{children}
-	</div>
+	</footer>
 )
 
 export const PageLayout = {

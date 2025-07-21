@@ -1,12 +1,13 @@
+import type { Dayjs } from "dayjs/esm"
 import { proxy, snapshot, useSnapshot } from "valtio"
 import {
-	timeTableDebugLogs,
 	type TimeTableGroup,
 	type TimeTableViewType,
+	timeTableDebugLogs,
 } from "./TimeTable"
-import { calculateTimeSlotPropertiesForView } from "./timeTableUtils"
-import type { Dayjs } from "dayjs/esm"
+import { clearTimeTableFocusStore } from "./TimeTableFocusStore"
 import { clearTimeSlotSelection } from "./TimeTableSelectionStore"
+import { calculateTimeSlotPropertiesForView } from "./timeTableUtils"
 
 export type TimeTableConfig<G extends TimeTableGroup> = {
 	basicProperties: {
@@ -139,6 +140,7 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 			)
 		}
 
+		clearTimeTableFocusStore(ident)
 		clearTimeSlotSelection(ident, true)
 
 		timeTableConfigStore[ident].basicProperties = basicProperties
@@ -182,6 +184,7 @@ export function initAndUpdateTimeTableConfigStore<G extends TimeTableGroup>(
 			timeSlotSelectionDisabled
 		if (timeSlotSelectionDisabled) {
 			clearTimeSlotSelection(ident, true)
+			clearTimeTableFocusStore(ident)
 		}
 	}
 

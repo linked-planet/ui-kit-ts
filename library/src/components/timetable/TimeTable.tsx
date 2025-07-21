@@ -17,6 +17,7 @@ import {
 	initAndUpdateTimeTableConfigStore,
 	type TimeFrameDay,
 } from "./TimeTableConfigStore"
+import { initTimeTableFocusStore } from "./TimeTableFocusStore"
 import {
 	type CustomHeaderRowHeaderProps,
 	type CustomHeaderRowTimeSlotProps,
@@ -333,6 +334,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		selectedTimeRange,
 		onTimeRangeSelected,
 	)
+
+	initTimeTableFocusStore(storeIdent)
 
 	const {
 		groupRows,

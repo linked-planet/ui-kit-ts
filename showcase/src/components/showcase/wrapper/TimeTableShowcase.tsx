@@ -1165,16 +1165,24 @@ function ExampleCalendar() {
 				endDate={timeFrame.endDate}
 				entries={exampleEntries}
 				timeTableMessages={translation}
-				disableWeekendInteractions={true}
+				disableWeekendInteractions={false}
 				showTimeSlotHeader={false}
 				viewType={"days"}
 				itemsOutsideOfDayRangeFound={(items) => {
 					console.info("items outside of day range found", items)
 				}}
+				onTimeRangeSelected={(
+					range: {
+						startDate: Dayjs
+						endDate: Dayjs
+						groupId: string
+					} | null,
+				) => {
+					console.log("onTimeRangeSelected", range)
+				}}
 			/>
 		</div>
 	)
-
 	//#endregion timetabledays
 }
 
