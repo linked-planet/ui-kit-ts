@@ -8,6 +8,7 @@ export type TimeTablePlaceholderItemProps<G extends TimeTableGroup> = {
 	start: Dayjs
 	end: Dayjs
 	height: number
+	colSpan: number
 }
 
 /**
@@ -32,12 +33,14 @@ export function PlaceHolderItemWrapper<G extends TimeTableGroup>(
  */
 export function PlaceHolderItemPlaceHolder<G extends TimeTableGroup>({
 	height,
+	colSpan,
 }: TimeTablePlaceholderItemProps<G>) {
 	return (
 		<div
 			className="flex justify-end w-full rounded-xs bg-brand-bold shadow-overlay"
 			style={{
 				height,
+				width: `${colSpan * 100}%`,
 			}}
 		/>
 	)

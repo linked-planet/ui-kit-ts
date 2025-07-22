@@ -1,3 +1,4 @@
+import { group } from "console"
 import type { Dayjs } from "dayjs/esm"
 import type React from "react"
 import {
@@ -126,6 +127,8 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 		)
 		throw new Error("TimeTable - group entry not found")
 	}
+	const nextGroupId = groupEntriesArray[g + 1]?.id ?? null
+	const previousGroupId = groupEntriesArray[g - 1]?.id ?? null
 	const rows = groupRows.get(groupEntry)
 	if (!rows) {
 		// rows not yet calculated
@@ -150,6 +153,8 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 			key={`${g}-${groupEntry.id}-${rendering}`}
 			group={groupEntry}
 			groupNumber={g}
+			nextGroupId={nextGroupId}
+			previousGroupId={previousGroupId}
 			itemRows={rows}
 			onGroupHeaderClick={onGroupClick}
 			onTimeSlotItemClick={onTimeSlotItemClick}
@@ -403,6 +408,9 @@ export default function TimeTableRows<
 
 		for (let i = 0; i < keys.length; i++) {
 			const group = keys[i]
+			if (!group) {
+				throw new Error(`TimeTable - group ${i} not found`)
+			}
 			const rows = groupRows.get(group)
 			const currentRows = currentGroupRowsRef.current.get(group)
 			if (
@@ -623,28 +631,6 @@ export default function TimeTableRows<
 		}
 	}
 
-	// Focus management effect
-	useLayoutEffect(() => {
-		if (
-			focusedCell.groupIndex !== null &&
-			focusedCell.timeSlotNumber !== null
-		) {
-			// Find the DOM element and focus it
-			const selector = `[data-group-index="${focusedCell.groupIndex}"][data-time-slot="${focusedCell.timeSlotNumber}"]`
-			const element = document.querySelector(selector) as HTMLElement
-			if (element) {
-				element.focus()
-			}
-		}
-	}, [focusedCell.groupIndex, focusedCell.timeSlotNumber])
-
-	// Initialize focus on first render
-	useLayoutEffect(() => {
-		if (groupRows.size > 0 && slotsArray.length > 0) {
-			setFocusedCell(storeIdent, 0, 0)
-		}
-	}, [groupRows.size, slotsArray.length, storeIdent])
-
 	return groupRowsRendered
 }
 
@@ -655,6 +641,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	timeSlotNumber,
 	group,
 	groupNumber,
+	nextGroupId,
+	previousGroupId,
 	isLastGroupRow,
 	bookingItemsBeginningInCell,
 	selectedTimeSlotItem,
@@ -667,6 +655,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	timeSlotNumber: number
 	group: G
 	groupNumber: number
+	nextGroupId: string | null
+	previousGroupId: string | null
 	isLastGroupRow: boolean
 	bookingItemsBeginningInCell: readonly ItemRowEntry<I>[] | undefined
 	selectedTimeSlotItem: I | undefined
@@ -686,6 +676,9 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const isCellDisabled = useTTCIsCellDisabled(storeIdent)
 
 	const timeSlot = slotsArray[timeSlotNumber]
+	if (!timeSlot) {
+		throw new Error(`TimeTable - timeSlot ${timeSlotNumber} not found`)
+	}
 	const isWeekendDay = timeSlot.day() === 0 || timeSlot.day() === 6
 	const timeSlotAfter =
 		timeSlotNumber < slotsArray.length - 1
@@ -711,7 +704,19 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 
 	const mouseHandlers = useMouseHandlers(
 		timeSlotNumber,
-		group,
+		group.id,
+		cellDisabled,
+		isWeekendDay,
+		disableWeekendInteractions,
+	)
+
+	const handleKeyDown = useKeyboardHandlers(
+		timeSlotNumber,
+		group.id,
+		nextGroupId,
+		previousGroupId,
+		slotsArray,
+		storeIdent,
 		cellDisabled,
 		isWeekendDay,
 		disableWeekendInteractions,
@@ -854,6 +859,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		<td
 			key={timeSlotNumber}
 			{...mouseHandlersUsed}
+			onKeyDown={handleKeyDown}
 			style={{
 				maxWidth: dimensions.columnWidth,
 				height: dimensions.rowHeight,
@@ -895,6 +901,8 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 	group,
 	groupNumber,
 	timeSlotNumber,
+	nextGroupId,
+	previousGroupId,
 	viewType,
 	timeSlotMinutes,
 	slotsArray,
@@ -903,6 +911,8 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 }: {
 	group: G
 	groupNumber: number
+	nextGroupId: string | null
+	previousGroupId: string | null
 	timeSlotNumber: number
 	viewType: TimeTableViewType
 	timeSlotMinutes: number
@@ -917,28 +927,46 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 		useTTCDisableWeekendInteractions(storeIdent)
 
 	const timeSlot = slotsArray[timeSlotNumber]
+	if (!timeSlot) {
+		throw new Error(`TimeTable - timeSlot ${timeSlotNumber} not found`)
+	}
+
 	const timeSlotSelectedIndex = selectedTimeSlots
 		? selectedTimeSlots?.findIndex((it) => it === timeSlotNumber)
 		: -1
-	const isFirstOfSelection = timeSlotSelectedIndex === 0
+
+	const isFirstOfSelection =
+		!!selectedTimeSlots && timeSlotSelectedIndex === 0
+
 	const timeSlotAfter =
 		timeSlotNumber < slotsArray.length - 1
 			? slotsArray[timeSlotNumber + 1]
 			: undefined
+
 	const isLastSlotOfTheDay = timeSlotAfter
 		? timeSlotAfter.day() !== timeSlot.day()
 		: true
 
 	let placeHolderItem: JSX.Element | undefined
-	if (isFirstOfSelection && selectedTimeSlots) {
+	if (isFirstOfSelection && selectedTimeSlots?.length) {
+		const lastSelectedTimeSlotIndex =
+			selectedTimeSlots[selectedTimeSlots.length - 1]
+		if (lastSelectedTimeSlotIndex === undefined) {
+			throw new Error(
+				"TimeTable - lastSelectedTimeSlotIndex is undefined",
+			)
+		}
+		const lastSelectedTimeSlot = slotsArray[lastSelectedTimeSlotIndex]
+		if (!lastSelectedTimeSlot) {
+			throw new Error("TimeTable - lastSelectedTimeSlot is undefined")
+		}
 		placeHolderItem = (
 			<PlaceHolderItemWrapper
 				group={group}
 				start={timeSlot}
-				end={slotsArray[
-					selectedTimeSlots[selectedTimeSlots.length - 1]
-				].add(timeSlotMinutes, "minutes")}
+				end={lastSelectedTimeSlot.add(timeSlotMinutes, "minutes")}
 				height={placeHolderHeight}
+				colSpan={selectedTimeSlots.length}
 			/>
 		)
 	}
@@ -952,90 +980,31 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 		) ?? false
 	const mouseHandlers = useMouseHandlers(
 		timeSlotNumber,
-		group,
+		group.id,
 		isDisabledByDisabledMatcher,
 		isWeekendDay,
 		disableWeekendInteractions,
 	)
 
-	const handleKeyDown = useCallback(
-		(e: React.KeyboardEvent) => {
-			switch (e.key) {
-				case "ArrowRight":
-					e.preventDefault()
-					if (timeSlotNumber < slotsArray.length - 1) {
-						console.log(
-							"ArrowRight",
-							storeIdent,
-							groupNumber,
-							timeSlotNumber + 1,
-						)
-						setFocusedCell(
-							storeIdent,
-							groupNumber,
-							timeSlotNumber + 1,
-						)
-						return
-					}
-					console.log("NOPE")
-					break
-				case "ArrowLeft":
-					e.preventDefault()
-					if (timeSlotNumber > 0) {
-						setFocusedCell(
-							storeIdent,
-							groupNumber,
-							timeSlotNumber - 1,
-						)
-					}
-					break
-				case "ArrowDown":
-					e.preventDefault()
-					// Move to next group (implementation depends on your group structure)
-					setFocusedCell(storeIdent, groupNumber + 1, timeSlotNumber)
-					break
-				case "ArrowUp":
-					e.preventDefault()
-					// Move to previous group
-					if (groupNumber > 0) {
-						setFocusedCell(
-							storeIdent,
-							groupNumber - 1,
-							timeSlotNumber,
-						)
-					}
-					break
-				case "Tab":
-					e.preventDefault()
-					if (timeSlotNumber < slotsArray.length - 1) {
-						clearTimeTableFocusStore(storeIdent)
-					}
-					break
-				case "Shift+Tab":
-					e.preventDefault()
-					clearTimeTableFocusStore(storeIdent)
-					break
-				case "Enter":
-					e.preventDefault()
-					toggleTimeSlotSelected(
-						storeIdent,
-						group.id,
-						timeSlotNumber,
-						"drag",
-					)
-					break
-			}
-		},
-		[storeIdent, groupNumber, timeSlotNumber, slotsArray.length, group.id],
+	const handleKeyDown = useKeyboardHandlers(
+		timeSlotNumber,
+		group.id,
+		nextGroupId,
+		previousGroupId,
+		slotsArray,
+		storeIdent,
+		isDisabledByDisabledMatcher,
+		isWeekendDay,
+		disableWeekendInteractions,
 	)
 
 	const isFocused =
-		focusedCell.groupIndex === groupNumber &&
+		focusedCell.groupId === group.id &&
 		focusedCell.timeSlotNumber === timeSlotNumber
 
-	if (timeSlotSelectedIndex > 0) {
+	/*if (timeSlotSelectedIndex > 0) {
 		return null // the cell is not rendered since the placeholder item spans over multiple selected cells
-	}
+	}*/
 
 	const cursorStyle =
 		isDisabledByDisabledMatcher ||
@@ -1059,22 +1028,30 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 				: groupNumber % 2 !== 0
 					? "bg-surface-hovered"
 					: ""
+
+	const tableCellRef = useRef<HTMLTableCellElement>(null)
+	if (tableCellRef.current && isFocused) {
+		tableCellRef.current.focus()
+	}
+
 	return (
 		<td
 			key={timeSlotNumber}
 			data-group-index={groupNumber}
 			data-time-slot={timeSlotNumber}
 			data-focused={isFocused}
-			colSpan={
+			colSpan={2}
+			/*colSpan={
 				selectedTimeSlots && isFirstOfSelection
 					? 2 * selectedTimeSlots.length
 					: 2
-			} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
+			}*/ // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			{...(timeSlotSelectedIndex === -1 ? mouseHandlers : undefined)}
 			className={twJoin(
-				`border-border relative group/td box-border ${cursorStyle} m-0 p-0 border-b-0 border-l-0 border-t-0 border-solid ${brStyle} ${bgStyle} align-top`,
+				`border-border relative box-border ${cursorStyle} m-0 p-0 border-b-0 border-l-0 border-t-0 border-solid ${brStyle} ${bgStyle} align-top focus:bg-pink`,
 				"",
 			)}
+			ref={tableCellRef}
 			style={{
 				height: placeHolderHeight,
 			}}
@@ -1085,17 +1062,15 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 			}
 			onKeyDown={handleKeyDown}
 			onFocus={() => {
-				console.log(
-					"handleFocus",
-					storeIdent,
-					groupNumber,
-					timeSlotNumber,
-				)
-				setFocusedCell(storeIdent, groupNumber, timeSlotNumber)
+				setFocusedCell(storeIdent, group.id, timeSlotNumber)
 			}}
 		>
 			{isFocused && (
-				<div className="absolute FOCUS inset-0 group-data-[focused=true]/td:border-3 group-data-[focused=true]/td:border-violet group-data-[focused=true]/td:border-solid z-10" />
+				<div
+					className={`absolute inset-0 z-10 ${
+						isFocused ? "border-3 border-violet border-solid" : ""
+					}`}
+				/>
 			)}
 			{placeHolderItem}
 		</td>
@@ -1110,6 +1085,8 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
  */
 type GroupRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	group: G
+	nextGroupId: string | null
+	previousGroupId: string | null
 	groupNumber: number
 	itemRows: ItemRowEntry<I>[][]
 	onGroupHeaderClick: ((group: G) => void) | undefined
@@ -1131,6 +1108,8 @@ type GroupRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 
 function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	group,
+	nextGroupId,
+	previousGroupId,
 	groupNumber,
 	itemRows,
 	onGroupHeaderClick,
@@ -1257,8 +1236,14 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			timeSlotNumber < slotsArray.length;
 			timeSlotNumber++
 		) {
+			const timeSlot = slotsArray[timeSlotNumber]
+			if (!timeSlot) {
+				throw new Error(
+					`TimeTable - timeSlot ${timeSlotNumber} not found`,
+				)
+			}
 			const timeSlotMinutes = getTimeSlotMinutes(
-				slotsArray[timeSlotNumber],
+				timeSlot,
 				timeFrameDay,
 				viewType,
 				timeStepMinutesHoursView,
@@ -1268,6 +1253,8 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					key={timeSlotNumber}
 					group={group}
 					groupNumber={groupNumber}
+					nextGroupId={nextGroupId}
+					previousGroupId={previousGroupId}
 					timeSlotNumber={timeSlotNumber}
 					viewType={viewType}
 					slotsArray={slotsArray}
@@ -1289,6 +1276,8 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		placeHolderHeight,
 		timeFrameDay,
 		timeStepMinutesHoursView,
+		nextGroupId,
+		previousGroupId,
 	])
 
 	const normalRows = useMemo(() => {
@@ -1316,6 +1305,8 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					<TableCell<G, I>
 						key={`${group.id}-${groupNumber}-${timeSlotNumber}-${viewType}`}
 						timeSlotNumber={timeSlotNumber}
+						nextGroupId={nextGroupId}
+						previousGroupId={previousGroupId}
 						isLastGroupRow={r === rowCount - 1}
 						group={group}
 						groupNumber={groupNumber}
@@ -1345,6 +1336,8 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		onTimeSlotItemClick,
 		renderCells,
 		timeStepMinutesHoursView,
+		nextGroupId,
+		previousGroupId,
 	])
 
 	if (!renderCells) {
@@ -1405,9 +1398,9 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
  * @param timeSlotNumber  the time slot number of the table cell
  * @param group  the group of the table cell
  */
-function useMouseHandlers<G extends TimeTableGroup>(
+function useMouseHandlers(
 	timeSlotNumber: number,
-	group: G,
+	groupId: string,
 	isDisabled: boolean,
 	isWeekendDay: boolean,
 	isWeekendDisabled: boolean,
@@ -1429,10 +1422,11 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				setMultiSelectionMode(storeIdent, true)
 				toggleTimeSlotSelected(
 					storeIdent,
-					group.id,
+					groupId,
 					timeSlotNumber,
 					"drag",
 				)
+				setFocusedCell(storeIdent, groupId, timeSlotNumber)
 			},
 			onMouseLeave: (e: MouseEvent) => {
 				if (e.buttons !== 1) {
@@ -1446,10 +1440,11 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				}
 				toggleTimeSlotSelected(
 					storeIdent,
-					group.id,
+					groupId,
 					timeSlotNumber,
 					"drag",
 				)
+				clearTimeTableFocusStore(storeIdent)
 			},
 			onMouseEnter: (e: MouseEvent) => {
 				if (e.buttons !== 1) {
@@ -1463,21 +1458,23 @@ function useMouseHandlers<G extends TimeTableGroup>(
 				}
 				toggleTimeSlotSelected(
 					storeIdent,
-					group.id,
+					groupId,
 					timeSlotNumber,
 					"drag",
 				)
+				setFocusedCell(storeIdent, groupId, timeSlotNumber)
 			},
 			onMouseUp: () => {
 				const multiSelectionMode = getMultiSelectionMode(storeIdent)
 				toggleTimeSlotSelected(
 					storeIdent,
-					group.id,
+					groupId,
 					timeSlotNumber,
 					multiSelectionMode ? "drag-end" : "click",
 				)
 				setMultiSelectionMode(storeIdent, false)
 				setLastHandledTimeSlot(storeIdent, null)
+				setFocusedCell(storeIdent, groupId, timeSlotNumber)
 			},
 			/*onMouseClick: (e: MouseEvent) => {
 				if (e.buttons !== 1) {
@@ -1493,11 +1490,82 @@ function useMouseHandlers<G extends TimeTableGroup>(
 			},*/
 		}
 	}, [
-		group,
+		groupId,
 		isDisabled,
 		isWeekendDay,
 		isWeekendDisabled,
 		timeSlotNumber,
 		storeIdent,
 	])
+}
+
+function useKeyboardHandlers(
+	timeSlotNumber: number,
+	groupId: string,
+	nextGroupId: string | null,
+	previousGroupId: string | null,
+	slotsArray: readonly Dayjs[],
+	storeIdent: string,
+	isDisabled: boolean,
+	isWeekendDay: boolean,
+	isWeekendDisabled: boolean,
+) {
+	return useCallback(
+		(e: React.KeyboardEvent) => {
+			switch (e.key) {
+				case "ArrowRight":
+					e.preventDefault()
+					if (timeSlotNumber < slotsArray.length - 1) {
+						setFocusedCell(storeIdent, groupId, timeSlotNumber + 1)
+						return
+					}
+					break
+				case "ArrowLeft":
+					e.preventDefault()
+					if (timeSlotNumber > 0) {
+						setFocusedCell(storeIdent, groupId, timeSlotNumber - 1)
+					}
+					break
+				case "ArrowDown":
+					e.preventDefault()
+					if (nextGroupId) {
+						setFocusedCell(storeIdent, nextGroupId, timeSlotNumber)
+					}
+					break
+				case "ArrowUp":
+					e.preventDefault()
+					if (previousGroupId) {
+						setFocusedCell(
+							storeIdent,
+							previousGroupId,
+							timeSlotNumber,
+						)
+					}
+					break
+				case "Tab":
+					e.preventDefault()
+					clearTimeTableFocusStore(storeIdent)
+					break
+				case "Enter": {
+					e.preventDefault()
+					const interactionMode = e.shiftKey ? "drag" : "click"
+					toggleTimeSlotSelected(
+						storeIdent,
+						groupId,
+						timeSlotNumber,
+						interactionMode,
+					)
+					break
+				}
+			}
+		},
+		[
+			storeIdent,
+			timeSlotNumber,
+			slotsArray.length,
+			groupId,
+			nextGroupId,
+			previousGroupId,
+		],
+	)
 }

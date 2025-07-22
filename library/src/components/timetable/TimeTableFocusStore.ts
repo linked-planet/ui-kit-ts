@@ -2,7 +2,7 @@ import { proxy, useSnapshot } from "valtio"
 
 type TimeTableFocusStore = {
 	focusedCell: {
-		groupIndex: number | null
+		groupId: string | null
 		timeSlotNumber: number | null
 	}
 }
@@ -20,39 +20,59 @@ export function initTimeTableFocusStore(ident: string) {
 
 	timeTableFocusStore[ident] = proxy<TimeTableFocusStore>({
 		focusedCell: {
-			groupIndex: null,
+			groupId: null,
 			timeSlotNumber: null,
 		},
 	}) as TimeTableFocusStore
 }
 
-export function clearTimeTableFocusStore(ident: string) {
+export function deleteTimeTableFocusStore(ident: string) {
 	delete timeTableFocusStore[ident]
+}
+
+export function clearTimeTableFocusStore(ident: string) {
+	const store = getStore(ident)
+	if (!store) {
+		throw new Error(
+			`TimeTable - focus store not found or initialized: ${ident}`,
+		)
+	}
+	store.focusedCell.groupId = null
+	store.focusedCell.timeSlotNumber = null
 }
 
 export function setFocusedCell(
 	ident: string,
-	groupIndex: number | null,
+	groupId: string | null,
 	timeSlotNumber: number | null,
 ) {
 	const store = getStore(ident)
 	if (!store) {
-		throw new Error(`TimeTable - focus store not found ${ident}`)
+		throw new Error(
+			`TimeTable - focus store not found or initialized: ${ident}`,
+		)
 	}
-	console.log("setFocusedCell", ident, groupIndex, timeSlotNumber)
-	store.focusedCell.groupIndex = groupIndex
+	store.focusedCell.groupId = groupId
 	store.focusedCell.timeSlotNumber = timeSlotNumber
 }
 
 export function useFocusedCell(ident: string) {
 	const store = getStore(ident)
-	const snap = useSnapshot(
-		store || { focusedCell: { groupIndex: null, timeSlotNumber: null } },
-	)
+	if (!store) {
+		throw new Error(
+			`TimeTable - focus store not found or initialized: ${ident}`,
+		)
+	}
+	const snap = useSnapshot(store)
 	return snap.focusedCell
 }
 
 export function getFocusedCell(ident: string) {
 	const store = getStore(ident)
-	return store?.focusedCell || { groupIndex: null, timeSlotNumber: null }
+	if (!store) {
+		throw new Error(
+			`TimeTable - focus store not found or initialized: ${ident}`,
+		)
+	}
+	return store.focusedCell
 }
