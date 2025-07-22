@@ -18,7 +18,7 @@ export type onTimeRangeSelectedType =
 type TimeTableSelectionStore = {
 	selection: {
 		groupId: string | null
-		selectedTimeSlots: number[] | null
+		selectedTimeSlots: number[]
 	}
 	multiSelectionMode: boolean
 	lastTimeSlotNumber: number | null
@@ -41,7 +41,7 @@ function initStore(ident: string) {
 	timeTableSelectionStore[ident] = proxy<TimeTableSelectionStore>({
 		selection: {
 			groupId: null,
-			selectedTimeSlots: null,
+			selectedTimeSlots: [],
 		},
 		multiSelectionMode: false,
 		lastTimeSlotNumber: null,
@@ -156,6 +156,9 @@ function setTimeSlotSelectionByDateRange(
 	const newSlots: number[] = []
 	for (let i = 0; i < slotsArray.length; i++) {
 		const slot = slotsArray[i]
+		if (!slot) {
+			throw new Error(`TimeTable - slot ${i} is undefined`)
+		}
 		if (!newSlots.length && slot.isSame(startDate)) {
 			newSlots.push(i)
 		}
@@ -228,7 +231,7 @@ export function clearTimeSlotSelection(
 			`TimeTable - no time table selection store to clear found for ident: ${ident}`,
 		)*/
 	}
-	store.selection.selectedTimeSlots = null
+	store.selection.selectedTimeSlots.splice(0, Number.POSITIVE_INFINITY)
 	store.selection.groupId = null
 	store.multiSelectionMode = false
 	if (needsNotification) {
@@ -245,11 +248,8 @@ function add(storeIdent: string, timeSlotNumber: number) {
 		)
 	}
 
-	if (
-		store.selection.selectedTimeSlots === null ||
-		store.lastTimeSlotNumber === null
-	) {
-		store.selection.selectedTimeSlots = [timeSlotNumber]
+	if (store.selection.selectedTimeSlots.length === 0) {
+		store.selection.selectedTimeSlots.push(timeSlotNumber)
 		setLastHandledTimeSlot(storeIdent, timeSlotNumber)
 		return
 	}
@@ -258,25 +258,18 @@ function add(storeIdent: string, timeSlotNumber: number) {
 		return
 	}
 
-	if (store.selection.selectedTimeSlots.length === 0) {
-		store.selection.selectedTimeSlots.push(timeSlotNumber)
-		return
-	}
-	if (
-		store.selection.selectedTimeSlots.length === 1 &&
-		store.selection.selectedTimeSlots[
-			store.selection.selectedTimeSlots.length - 1
-		] === timeSlotNumber
-	) {
-		return
-	}
-
 	const last =
 		store.selection.selectedTimeSlots[
 			store.selection.selectedTimeSlots.length - 1
 		]
+	if (last === undefined) {
+		throw new Error("TimeTableSelectionStore - last is undefined")
+	}
 
 	const first = store.selection.selectedTimeSlots[0]
+	if (first === undefined) {
+		throw new Error("TimeTableSelectionStore - first is undefined")
+	}
 
 	const newSlots: number[] = []
 
@@ -308,7 +301,7 @@ function add(storeIdent: string, timeSlotNumber: number) {
 	}
 
 	setLastHandledTimeSlot(storeIdent, timeSlotNumber)
-	console.log("add", "newSlots", newSlots, store.selection)
+
 	if (newSlots.length !== store.selection.selectedTimeSlots.length) {
 		store.selection.selectedTimeSlots.splice(
 			0,
@@ -339,7 +332,6 @@ function notifyOnTimeRangeSelected(ident: string) {
 	}
 	if (store.onTimeRangeSelected) {
 		if (store.selection.groupId == null) {
-			console.log("notifyOnTimeRangeSelected", "no group selected")
 			store.onTimeRangeSelected(null)
 			return
 		}
@@ -356,16 +348,22 @@ function notifyOnTimeRangeSelected(ident: string) {
 
 		const basicProps = getTTCBasicProperties(ident)
 		const startDate = basicProps.slotsArray[firstSlot]
+		if (!startDate) {
+			throw new Error("TimeTableSelectionStore - startDate is undefined")
+		}
+		const lastSlotTimeSlot = basicProps.slotsArray[lastSlot]
+		if (!lastSlotTimeSlot) {
+			throw new Error(
+				"TimeTableSelectionStore - lastSlotTimeSlot is undefined",
+			)
+		}
 		const timeSlotMinutes = getTimeSlotMinutes(
-			basicProps.slotsArray[lastSlot],
+			lastSlotTimeSlot,
 			basicProps.timeFrameDay,
 			basicProps.viewType,
 			basicProps.timeStepMinutesHoursView,
 		)
-		const endDate = basicProps.slotsArray[lastSlot].add(
-			timeSlotMinutes,
-			"minutes",
-		)
+		const endDate = lastSlotTimeSlot.add(timeSlotMinutes, "minutes")
 		store.onTimeRangeSelected({
 			groupId: store.selection.groupId,
 			startDate,
@@ -388,15 +386,18 @@ export function toggleTimeSlotSelected(
 	}
 
 	if (interaction === "click") {
-		console.log("toggleTimeSlotSelected", "click", groupId, timeSlot)
 		if (store.selection.selectedTimeSlots?.includes(timeSlot)) {
-			store.selection.selectedTimeSlots = null
+			store.selection.selectedTimeSlots.splice(
+				0,
+				Number.POSITIVE_INFINITY,
+			)
 			store.selection.groupId = null
 			notifyOnTimeRangeSelected(ident)
 			return
 		}
 		store.selection.groupId = groupId
 		store.selection.selectedTimeSlots = [timeSlot]
+		//setLastHandledTimeSlot(ident, timeSlot)
 		notifyOnTimeRangeSelected(ident)
 		return
 	}
@@ -417,6 +418,9 @@ export function toggleTimeSlotSelected(
 		return
 	}
 
+	if (store.selection.groupId !== groupId) {
+		store.selection.groupId = groupId
+	}
 	add(ident, timeSlot)
 	if (interaction === "drag-end") {
 		notifyOnTimeRangeSelected(ident)

@@ -378,6 +378,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			let itemCount = 0
 			for (const groupId in itemsWithSameStartAndEnd) {
 				const group = itemsWithSameStartAndEnd[groupId]
+				if (!group) {
+					throw new Error(`TimeTable - group ${groupId} not found`)
+				}
 				itemCount += group.length
 			}
 			if (itemCount > 0) {
@@ -719,6 +722,9 @@ function moveNowBar(
 	}
 
 	let currentTimeSlot = slotsArray[startSlot]
+	if (!currentTimeSlot) {
+		throw new Error("TimeTable - currentTimeSlot is undefined")
+	}
 	const timeSlotMinutes = getTimeSlotMinutes(
 		currentTimeSlot,
 		timeFrameDay,
