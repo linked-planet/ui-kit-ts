@@ -1,8 +1,8 @@
 import dayjs, { type Dayjs } from "dayjs/esm"
 import { useState } from "react"
-import type { TimeSlotBooking, TimeTableGroup } from "./TimeTable"
-import { Modal } from "../Modal"
 import { Button } from "../Button"
+import { Modal } from "../Modal"
+import type { TimeSlotBooking, TimeTableGroup } from "./TimeTable"
 
 const datetimeLocalFormat = "YYYY-MM-DDTHH:mm"
 
@@ -93,7 +93,6 @@ const CreateNewTimeTableItemDialog = function CreateNewTimeTableItemDialog({
 							}}
 							minLength={1}
 						/>
-						<label htmlFor="startDate">Start</label>
 						<label htmlFor="title">Title</label>
 						<input
 							id="title"
