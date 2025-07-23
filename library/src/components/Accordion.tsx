@@ -80,7 +80,7 @@ const AccordionTrigger = forwardRef(
 		<RAccordion.Header className="flex">
 			<RAccordion.Trigger
 				className={twMerge(
-					"text-text bg-surface hover:bg-surface-hovered active:bg-surface-pressed group flex min-h-12 flex-1 cursor-pointer disabled:cursor-default items-center justify-between px-4 text-base font-bold outline-hidden",
+					"text-text bg-surface hover:bg-surface-hovered active:bg-surface-pressed group/accordion flex min-h-12 flex-1 cursor-pointer disabled:cursor-default items-center justify-between px-4 text-base font-bold outline-hidden",
 					className,
 				)}
 				{...props}
@@ -88,7 +88,7 @@ const AccordionTrigger = forwardRef(
 			>
 				{children}
 				<ChevronDownIcon
-					className="transition-transform duration-300 ease-in-out group-data-[state=open]:rotate-180"
+					className="transition-transform duration-300 ease-in-out group-data-[state=open]/accordion:rotate-180"
 					aria-hidden
 					size={12}
 					strokeWidth={3}

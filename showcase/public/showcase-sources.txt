@@ -3178,6 +3178,7 @@ import {
 	TimePicker,
 	type TimeType,
 } from "@linked-planet/ui-kit-ts"
+import { ZapIcon } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
@@ -3327,6 +3328,7 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					value={date}
 					calendarShowWeekNumber={true}
 					calendarWeekNumberCaption="CW"
+					hideIcon={<ZapIcon />}
 				/>
 			</Fieldset>
 			<Fieldset legend="Time Picker">

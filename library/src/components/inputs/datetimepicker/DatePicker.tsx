@@ -267,7 +267,7 @@ const DatePickerBase = forwardRef(
 
 		const trigger = (
 			<div
-				className={twMerge("box-border group", className)}
+				className={twMerge("box-border group/dp-trigger", className)}
 				style={style}
 			>
 				<Input
@@ -284,17 +284,10 @@ const DatePickerBase = forwardRef(
 					value={valStr}
 					disabled={disabled}
 					invalid={invalid}
-					className={twMerge(
-						twJoin(
-							//"cursor-pointer rounded-lg",
-							//"group-data-[state=open]:ring-input-border-focused group-data-[state=open]:ring group-data-[state=open]:border-input-border-focused group-data-[state=open]:border-r-1.5",
-						),
-						//inputClassName,
-					)}
 					inputClassName={twMerge(
 						twJoin(
 							"cursor-pointer disabled:cursor-not-allowed",
-							"group-data-[state=open]:ring group-data-[state=open]:ring-input-border-focused group-data-[state=open]:border-input-border-focused",
+							"group-data-[state=open]/dp-trigger:ring group-data-[state=open]/dp-trigger:ring-input-border-focused group-data-[state=open]/dp-trigger:border-input-border-focused",
 						),
 						inputClassName,
 					)}

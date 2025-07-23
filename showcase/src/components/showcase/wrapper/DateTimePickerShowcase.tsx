@@ -158,6 +158,8 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					value={date}
 					calendarShowWeekNumber={true}
 					calendarWeekNumberCaption="CW"
+					invalid={true}
+					//hideIcon={true}
 				/>
 			</Fieldset>
 			<Fieldset legend="Time Picker">

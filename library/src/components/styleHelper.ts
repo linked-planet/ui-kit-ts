@@ -12,7 +12,7 @@ export const inputBaseStyles = twJoin(
 	"min-h-9 rounded-sm box-border w-full relative bg-input focus-within:bg-input-active ease-in-out transition duration-200 p-0",
 	"border border-input-border border-solid focus-within:border-input-border-focused",
 	"placeholder:text-text-subtlest placeholder:opacity-100",
-	"aria-invalid:border-danger-border",
+	"aria-invalid:border-danger-border invalid:border-danger-border",
 	"hover:bg-input-hovered hover:focus-within:bg-input-active focus-within:bg-input-active",
 	"disabled:bg-disabled disabled:cursor-not-allowed disabled:border-transparent",
 	shadowStyles,
