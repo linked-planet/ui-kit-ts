@@ -338,7 +338,7 @@ function Sidebar({
 			{/** biome-ignore lint/a11y/useSemanticElements: is a div and has a button within */}
 			<div
 				role="button"
-				className={`absolute inset-y-0 z-3 h-full border-y-0 ${position === "left" ? "-right-3 border-l-2 border-r-0" : "-left-3 border-r-2 border-l-0"} ${collapsed === "expanded" ? "hover:border-brand-bold group cursor-col-resize" : ""} border-border w-3 select-none border-solid bg-transparent`}
+				className={`absolute inset-y-0 z-3 h-full border-y-0 ${position === "left" ? "-right-3 border-l-2 border-r-0" : "-left-3 border-r-2 border-l-0"} ${collapsed === "expanded" ? "hover:border-brand-bold group/sidebar-resize cursor-col-resize" : ""} border-border w-3 select-none border-solid bg-transparent`}
 				onMouseDown={onResizeCB}
 				onMouseEnter={() => {
 					if (!isResizing && !isHovered) {
@@ -378,7 +378,7 @@ function Sidebar({
 									: "collapse sidebar"
 							}
 							className={twMerge(
-								`bg-surface-raised border-border shadow-raised rounded-full cursor-pointer border border-solid ${collapsed === "expanded" ? "group-hover:bg-selected-bold group-hover:text-text-inverse" : "hover:bg-selected-bold hover:text-text-inverse"} active:bg-selected-bold-hovered text-text absolute ${position === "left" ? "-left-[0.875rem]" : "-right-[0.875rem]"} top-8 box-border flex h-7 w-7 items-center justify-center rounded-full duration-150`,
+								`bg-surface-raised border-border shadow-raised rounded-full cursor-pointer border border-solid ${collapsed === "expanded" ? "group-hover/sidebar-resize:bg-selected-bold group-hover/sidebar-resize:text-text-inverse" : "hover:bg-selected-bold hover:text-text-inverse"} active:bg-selected-bold-hovered text-text absolute ${position === "left" ? "-left-[0.875rem]" : "-right-[0.875rem]"} top-8 box-border flex h-7 w-7 items-center justify-center rounded-full duration-150`,
 								closeButtonClassName,
 							)}
 							style={closeButtonStyle}
