@@ -135,7 +135,7 @@ export function InlineMessage({
 						<button
 							type="button"
 							className={twMerge(
-								"appearance-none ml-2 p-2 group flex items-center justify-center cursor-pointer",
+								"appearance-none ml-2 p-2 group/imsg flex items-center justify-center cursor-pointer",
 								_RemoveButtonAppearanceColors[
 									message.appearance ?? "default"
 								],
@@ -144,7 +144,7 @@ export function InlineMessage({
 						>
 							<XIcon
 								aria-label="close"
-								className="size-3 stroke-5 group-hover:stroke-6 group-active:stroke-7"
+								className="size-3 stroke-5 group-hover/imsg:stroke-6 group-active/imsg:stroke-7"
 							/>
 						</button>
 					)}
