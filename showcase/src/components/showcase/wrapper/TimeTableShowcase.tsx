@@ -58,7 +58,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			},
 		],
 	},
-	{
+	/*{
 		group: {
 			id: "week-test",
 			title: "Week Test",
@@ -95,8 +95,8 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item Weektest 1",
 			},
 		],
-	},
-	{
+	},*/
+	/*{
 		group: {
 			id: "month-test",
 			title: "Month Test",
@@ -479,7 +479,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 7-1",
 			},
 		],
-	},
+	},*/
 ]
 
 function createTestItems(

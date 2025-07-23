@@ -4,6 +4,7 @@ type TimeTableFocusStore = {
 	focusedCell: {
 		groupId: string | null
 		timeSlotNumber: number | null
+		itemKey: React.Key | null
 	}
 }
 
@@ -22,6 +23,7 @@ export function initTimeTableFocusStore(ident: string) {
 		focusedCell: {
 			groupId: null,
 			timeSlotNumber: null,
+			itemKey: null,
 		},
 	}) as TimeTableFocusStore
 }
@@ -31,6 +33,7 @@ export function deleteTimeTableFocusStore(ident: string) {
 }
 
 export function clearTimeTableFocusStore(ident: string) {
+	console.log("CLEAR FOCUSED CELL", ident)
 	const store = getStore(ident)
 	if (!store) {
 		throw new Error(
@@ -39,21 +42,26 @@ export function clearTimeTableFocusStore(ident: string) {
 	}
 	store.focusedCell.groupId = null
 	store.focusedCell.timeSlotNumber = null
+	store.focusedCell.itemKey = null
 }
 
 export function setFocusedCell(
 	ident: string,
 	groupId: string | null,
 	timeSlotNumber: number | null,
+	itemKey: React.Key | null,
 ) {
+	console.log("SET FOCUSED CELL", groupId, timeSlotNumber, itemKey)
 	const store = getStore(ident)
 	if (!store) {
 		throw new Error(
 			`TimeTable - focus store not found or initialized: ${ident}`,
 		)
 	}
+	console.log("SET FOCUSED CELL", groupId, timeSlotNumber, itemKey)
 	store.focusedCell.groupId = groupId
 	store.focusedCell.timeSlotNumber = timeSlotNumber
+	store.focusedCell.itemKey = itemKey
 }
 
 export function useFocusedCell(ident: string) {

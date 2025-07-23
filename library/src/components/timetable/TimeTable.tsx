@@ -527,7 +527,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	const firstGroupKey =
 		groupRows.size > 0 ? groupRows.keys().next().value : undefined
 	const activeDescendant = firstGroupKey?.id
-		? `time-table-cell-${firstGroupKey.id}-0`
+		? `time-table-cell-${firstGroupKey.id}-0-0`
 		: undefined
 
 	return (
@@ -562,14 +562,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 						aria-rowcount={groupRows.size}
 						aria-colcount={slotsArray.length}
 						aria-activedescendant={activeDescendant}
-						onBlur={() => {
-							console.log("BLUR")
-							//clearTimeTableFocusStore(storeIdent)
-						}}
-						onBlurCapture={() => {
-							console.log("BLUR CAPTURE")
-							clearTimeTableFocusStore(storeIdent)
-						}}
 					>
 						<LPTimeTableHeader<G, I>
 							slotsArray={slotsArray}

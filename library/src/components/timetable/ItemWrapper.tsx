@@ -1,9 +1,12 @@
+import type { Dayjs } from "dayjs"
 import { useEffect, useRef } from "react"
 import utilStyles from "../../utils.module.css"
 import type { TimeSlotBooking, TimeTableGroup } from "./TimeTable"
 import { useTimeSlotItemComponent } from "./TimeTableComponentStore"
 import { useTimeTableIdent } from "./TimeTableIdentContext"
 import { useMultiSelectionMode } from "./TimeTableSelectionStore"
+import type { ItemRowEntry } from "./useGoupRows"
+import { useKeyboardHandlers } from "./useKeyboardHandler"
 
 export type TimeTableItemProps<
 	G extends TimeTableGroup,
@@ -26,6 +29,13 @@ export default function ItemWrapper<
 	left,
 	width,
 	height,
+	id,
+	isFocused,
+	timeSlotNumber,
+	nextGroupId,
+	previousGroupId,
+	slotsArray,
+	groupItemRows,
 }: {
 	group: G
 	item: I
@@ -34,6 +44,13 @@ export default function ItemWrapper<
 	left: string
 	width: string
 	height: number
+	id: string
+	isFocused: boolean
+	timeSlotNumber: number
+	nextGroupId: string | null
+	previousGroupId: string | null
+	slotsArray: readonly Dayjs[]
+	groupItemRows: ItemRowEntry<I>[][] | null
 }) {
 	//#region fade out animation
 	const ref = useRef<HTMLDivElement>(null)
@@ -43,6 +60,23 @@ export default function ItemWrapper<
 		}
 	}, [])
 	//#endregion
+
+	console.log("IS FOCUSED", isFocused)
+	if (isFocused) {
+		ref.current?.focus()
+	}
+
+	const storeIdent = useTimeTableIdent()
+
+	const keyboardHandler = useKeyboardHandlers(
+		timeSlotNumber,
+		group.id,
+		nextGroupId,
+		previousGroupId,
+		slotsArray,
+		storeIdent,
+		groupItemRows,
+	)
 
 	//#region this is required because we do not want that the table cells behind the items react to it
 	const mouseHandler = {
@@ -58,10 +92,10 @@ export default function ItemWrapper<
 	}
 	//#endregion
 
-	const storeIdent = useTimeTableIdent()
 	const TimeSlotItemComponent = useTimeSlotItemComponent<G, I>(storeIdent)
 
 	const multiSelectionMode = useMultiSelectionMode(storeIdent)
+
 	return (
 		<div
 			className="relative top-0 box-border overflow-hidden"
@@ -77,7 +111,11 @@ export default function ItemWrapper<
 			{/** biome-ignore lint/a11y/useSemanticElements: should be div to be able to have buttons inside */}
 			<div
 				ref={ref}
-				className="animate-fade-in relative z-1 size-full"
+				className={`animate-fade-in relative z-1 size-full ${
+					isFocused
+						? "ring-violet ring-2 border-pink border-4 border-solid"
+						: ""
+				}`}
 				onClick={() => {
 					if (onTimeSlotItemClick) onTimeSlotItemClick(group, item)
 				}}
@@ -86,8 +124,13 @@ export default function ItemWrapper<
 						onTimeSlotItemClick(group, item)
 					}
 				}}
+				onKeyDown={(e) => {
+					console.log("ITEM WRAPPER KEY DOWN", e.key)
+					keyboardHandler(e)
+				}}
 				role="button"
 				tabIndex={0}
+				id={id}
 			>
 				<TimeSlotItemComponent
 					group={group}

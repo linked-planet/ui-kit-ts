@@ -3178,7 +3178,6 @@ import {
 	TimePicker,
 	type TimeType,
 } from "@linked-planet/ui-kit-ts"
-import { ZapIcon } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
@@ -3328,7 +3327,8 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					value={date}
 					calendarShowWeekNumber={true}
 					calendarWeekNumberCaption="CW"
-					hideIcon={<ZapIcon />}
+					invalid={true}
+					//hideIcon={true}
 				/>
 			</Fieldset>
 			<Fieldset legend="Time Picker">
@@ -5034,7 +5034,7 @@ import {
 	Label,
 	TextArea,
 } from "@linked-planet/ui-kit-ts"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, ZapIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
@@ -5106,6 +5106,8 @@ export default function InputShowcase(props: ShowcaseProps) {
 				minLength={3}
 				id="testInput"
 				helpMessage="This is a help message."
+				invalid
+				iconAfter={<ZapIcon />}
 			/>
 			<Input disabled />
 			<Label htmlFor="testInput2">This is a label.</Label>
@@ -8517,7 +8519,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			},
 		],
 	},
-	{
+	/*{
 		group: {
 			id: "week-test",
 			title: "Week Test",
@@ -8554,8 +8556,8 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item Weektest 1",
 			},
 		],
-	},
-	{
+	},*/
+	/*{
 		group: {
 			id: "month-test",
 			title: "Month Test",
@@ -8938,7 +8940,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 7-1",
 			},
 		],
-	},
+	},*/
 ]
 
 function createTestItems(
