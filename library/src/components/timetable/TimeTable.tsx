@@ -17,7 +17,10 @@ import {
 	initAndUpdateTimeTableConfigStore,
 	type TimeFrameDay,
 } from "./TimeTableConfigStore"
-import { initTimeTableFocusStore } from "./TimeTableFocusStore"
+import {
+	clearTimeTableFocusStore,
+	initTimeTableFocusStore,
+} from "./TimeTableFocusStore"
 import {
 	type CustomHeaderRowHeaderProps,
 	type CustomHeaderRowTimeSlotProps,
@@ -521,6 +524,12 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		)
 	}
 
+	const firstGroupKey =
+		groupRows.size > 0 ? groupRows.keys().next().value : undefined
+	const activeDescendant = firstGroupKey?.id
+		? `time-table-cell-${firstGroupKey.id}-0`
+		: undefined
+
 	return (
 		<>
 			<div ref={inlineMessageRef}>
@@ -541,11 +550,26 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					}}
 					ref={intersectionContainerRef}
 				>
+					{/** biome-ignore lint/a11y/useSemanticElements: it is already a table, I dont know why it complains */}
+					{/** biome-ignore lint/a11y/useAriaActivedescendantWithTabindex: set tabindex to 0 for the first cell or first group */}
 					<table
 						className={
 							"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
 						}
 						ref={tableRef}
+						// biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: grid makes it "interactive" from screen readers while a table is not interactive
+						role="grid"
+						aria-rowcount={groupRows.size}
+						aria-colcount={slotsArray.length}
+						aria-activedescendant={activeDescendant}
+						onBlur={() => {
+							console.log("BLUR")
+							//clearTimeTableFocusStore(storeIdent)
+						}}
+						onBlurCapture={() => {
+							console.log("BLUR CAPTURE")
+							clearTimeTableFocusStore(storeIdent)
+						}}
 					>
 						<LPTimeTableHeader<G, I>
 							slotsArray={slotsArray}

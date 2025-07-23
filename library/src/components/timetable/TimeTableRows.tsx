@@ -50,6 +50,22 @@ import type { ItemRowEntry } from "./useGoupRows"
 
 export const allGroupsRenderedEvent = "timetable-allgroupsrendered" as const
 
+/**
+ * About focus management:
+ * the table has role="grid" and the cells have role="gridcell"
+ * the table has aria-rowcount={groupRows.size}
+ * the table has aria-colcount={slotsArray.length}
+ * the table has aria-activedescendant={activeDescendant} to set the first focused cell
+ *
+ * the cells have tabindex=-1, except the first cell of the first group, which has tabindex=0
+ * the cells have aria-roledescription="Time slot {timeSlotNumber} of group {groupId}"
+ * the cells have aria-selected={isFocused}
+ * the cells have aria-disabled={cellDisabled}
+ *
+ * Only the first cell should be tabbable, and from there the arrow keys should navigate through the cells.
+ * Cell in that sense means the group cells, not the placeholder cells on top for the selection.
+ */
+
 interface TimeTableRowsProps<
 	G extends TimeTableGroup,
 	I extends TimeSlotBooking,
@@ -199,7 +215,6 @@ export default function TimeTableRows<
 	onRenderedGroupsChanged,
 }: TimeTableRowsProps<G, I>): JSX.Element[] {
 	const storeIdent = useTimeTableIdent()
-	const focusedCell = useFocusedCell(storeIdent)
 	const { rowHeight, columnWidth, placeHolderHeight } =
 		useTTCCellDimentions(storeIdent)
 
@@ -855,11 +870,33 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					? "bg-surface-hovered"
 					: ""
 
+	const focusedCell = useFocusedCell(storeIdent)
+	const isFocused =
+		focusedCell.groupId === group.id &&
+		focusedCell.timeSlotNumber === timeSlotNumber
+
+	if (isFocused && tableCellRef.current) {
+		tableCellRef.current.focus()
+	}
+
 	return (
+		// biome-ignore lint/a11y/useSemanticElements: is already a TD, I dont know why it complains
 		<td
 			key={timeSlotNumber}
 			{...mouseHandlersUsed}
 			onKeyDown={handleKeyDown}
+			// biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: we use it as a grid cell which is interactive
+			role="gridcell"
+			aria-colindex={timeSlotNumber}
+			aria-rowindex={groupNumber}
+			aria-selected={isFocused}
+			aria-disabled={cellDisabled}
+			aria-current={isFocused}
+			aria-roledescription={`Time slot ${timeSlotNumber} of group ${group.id}`}
+			data-group-id={group.id}
+			data-time-slot={timeSlotNumber}
+			data-focused={isFocused}
+			id={`time-table-cell-${group.id}-${timeSlotNumber}`}
 			style={{
 				maxWidth: dimensions.columnWidth,
 				height: dimensions.rowHeight,
@@ -867,6 +904,30 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			colSpan={2} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			ref={tableCellRef}
 			className={`border-border relative box-border border-l-0 border-t-0 border-solid m-0 p-0 ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
+			tabIndex={timeSlotNumber === 0 && groupNumber === 0 ? 0 : -1}
+			onFocus={() => {
+				console.log("FOCUS", group.id, timeSlotNumber)
+				setFocusedCell(storeIdent, group.id, timeSlotNumber)
+			}}
+			onBlur={() => {
+				console.log(
+					"BLUR",
+					group.id,
+					timeSlotNumber,
+					isFocused ?? "CLEAR",
+					{
+						groupId: focusedCell.groupId,
+						timeSlotNumber: focusedCell.timeSlotNumber,
+					},
+					{
+						groupId: group.id,
+						timeSlotNumber: timeSlotNumber,
+					},
+				)
+				if (isFocused) {
+					clearTimeTableFocusStore(storeIdent)
+				}
+			}}
 		>
 			{beforeCount > 0 && !hideOutOfRangeMarkers && (
 				<div
@@ -1029,17 +1090,13 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 					? "bg-surface-hovered"
 					: ""
 
-	const tableCellRef = useRef<HTMLTableCellElement>(null)
-	if (tableCellRef.current && isFocused) {
-		tableCellRef.current.focus()
-	}
-
 	return (
 		<td
 			key={timeSlotNumber}
-			data-group-index={groupNumber}
+			data-group-id={group.id}
 			data-time-slot={timeSlotNumber}
 			data-focused={isFocused}
+			id={`time-table-cell-${group.id}-${timeSlotNumber}-placeholder`}
 			colSpan={2}
 			/*colSpan={
 				selectedTimeSlots && isFirstOfSelection
@@ -1051,19 +1108,16 @@ function PlaceholderTableCell<G extends TimeTableGroup>({
 				`border-border relative box-border ${cursorStyle} m-0 p-0 border-b-0 border-l-0 border-t-0 border-solid ${brStyle} ${bgStyle} align-top focus:bg-pink`,
 				"",
 			)}
-			ref={tableCellRef}
 			style={{
 				height: placeHolderHeight,
 			}}
-			tabIndex={
+			/*tabIndex={
 				isFocused || (groupNumber === 0 && timeSlotNumber === 0)
 					? 0
 					: -1
-			}
+			}*/
+			tabIndex={-1}
 			onKeyDown={handleKeyDown}
-			onFocus={() => {
-				setFocusedCell(storeIdent, group.id, timeSlotNumber)
-			}}
 		>
 			{isFocused && (
 				<div
@@ -1543,7 +1597,7 @@ function useKeyboardHandlers(
 					}
 					break
 				case "Tab":
-					e.preventDefault()
+					// Don't prevent default - let the browser handle tab navigation
 					clearTimeTableFocusStore(storeIdent)
 					break
 				case "Enter": {
