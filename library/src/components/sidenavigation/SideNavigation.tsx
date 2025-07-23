@@ -6,19 +6,19 @@ import { twJoin, twMerge } from "tailwind-merge"
 import { useSideNavigationStore } from "./SideNavigationStore"
 
 const itemBaseStyles = twJoin(
-	"px-1.5 data-[selected=true]:bg-neutral-subtle-hovered group flex w-full cursor-pointer select-none items-center overflow-hidden rounded-xs",
+	"px-1.5 data-[selected=true]:bg-neutral-subtle-hovered group/sn-item flex w-full cursor-pointer select-none items-center overflow-hidden rounded-xs",
 	"hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed border-transparent bg-transparent",
 	"disabled:bg-neutral-subtle disabled:cursor-not-allowed data-[selected=true]:disabled:bg-neutral-subtle",
 	"data-[selected=true]:bg-selected-subtle data-[selected=true]:hover:bg-selected-subtle-hovered data-[selected=true]:active:bg-selected-subtle-pressed",
 )
 
 const iconAndTextBaseStyles = twJoin(
-	"group-active:text-text group-disabled:text-text-disabled text-text-subtle flex items-center",
-	"group-data-[selected=true]:text-selected-text group-data-[selected=true]:group-hover:text-selected-text group-data-[selected=true]:group-disabled:text-text-subtlest truncate text-base",
+	"group-active/sn-item:text-text group-disabled/sn-item:text-text-disabled text-text-subtle flex items-center",
+	"group-data-[selected=true]/sn-item:text-selected-text group-data-[selected=true]/sn-item:group-hover/sn-item:text-selected-text group-data-[selected=true]/sn-item:group-disabled/sn-item:text-text-subtlest truncate text-base",
 )
 
 const descriptionBaseStyles =
-	"text-text-subtle group-disabled:text-text-disabled truncate text-sm" as const
+	"text-text-subtle group-disabled/sn-item:text-text-disabled truncate text-sm" as const
 
 type _ContainerProps = Pick<
 	ComponentPropsWithoutRef<"nav">,
