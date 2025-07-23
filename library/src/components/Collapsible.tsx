@@ -33,7 +33,7 @@ function Trigger({
 }: TriggerProps) {
 	const classNameResolved = useCallback(
 		(state: CollapsibleRUI.Root.State) => {
-			const basicClassName = `flex w-full flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border border-border border-solid group-data-[closed]:rounded-xs group-data-[open]:rounded-t-xs ${
+			const basicClassName = `flex w-full flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border border-border border-solid group-data-[closed]/collapsible:rounded-xs group-data-[open]/collapsible:rounded-t-xs ${
 				openButtonPosition === "hidden"
 					? "cursor-default"
 					: "cursor-pointer disabled:cursor-default"
@@ -59,7 +59,7 @@ function Trigger({
 					>
 						<ChevronRightIcon
 							strokeWidth={3}
-							className="group-data-[closed]:rotate-0 group-data-[open]:rotate-90 transform transition-transform"
+							className="group-data-[closed]/collapsible:rotate-0 group-data-[open]/collapsible:rotate-90 transform transition-transform"
 						/>
 					</div>
 				)}
@@ -83,7 +83,7 @@ function Trigger({
 					>
 						<ChevronLeftIcon
 							strokeWidth={3}
-							className="group-data-[closed]:rotate-0 group-data-[open]:-rotate-90 transform transition-transform"
+							className="group-data-[closed]/collapsible:rotate-0 group-data-[open]/collapsible:-rotate-90 transform transition-transform"
 						/>
 					</div>
 				)}
@@ -155,7 +155,8 @@ export const Root = forwardRef(
 	) => {
 		const classNameResolved = useCallback(
 			(state: CollapsibleRUI.Root.State) => {
-				const basicClassName = "bg-surface-raised rounded-xs group"
+				const basicClassName =
+					"bg-surface-raised rounded-xs group/collapsible"
 				if (typeof className === "function") {
 					return twMerge(basicClassName, className(state))
 				}
