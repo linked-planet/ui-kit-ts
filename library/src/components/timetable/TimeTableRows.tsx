@@ -892,10 +892,10 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					? "bg-surface-hovered"
 					: ""
 
-	const onFocusCB = useCallback(() => {
+	/*const onFocusCB = useCallback(() => {
 		console.log("FOCUS", group.id, 0)
 		setFocusedCell(storeIdent, group.id, 0, null)
-	}, [group.id, storeIdent])
+	}, [group.id, storeIdent])*/
 
 	return (
 		// biome-ignore lint/a11y/useSemanticElements: is already a TD, I dont know why it complains
@@ -923,11 +923,11 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			ref={tableCellRef}
 			className={`border-border relative box-border border-l-0 border-t-0 border-solid m-0 p-0 ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
 			tabIndex={timeSlotNumber === 0 && groupNumber === 0 ? 0 : -1}
-			onFocus={
+			/*onFocus={
 				timeSlotNumber === 0 && groupNumber === 0
 					? onFocusCB
 					: undefined
-			}
+			}*/
 		>
 			{beforeCount > 0 && !hideOutOfRangeMarkers && (
 				<div

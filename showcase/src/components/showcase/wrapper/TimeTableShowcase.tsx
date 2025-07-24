@@ -130,7 +130,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			},
 		],
 	},
-	/*{
+	{
 		group: {
 			id: "year-test",
 			title: "Year Test",
@@ -479,7 +479,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item 7-1",
 			},
 		],
-	},*/
+	},
 ]
 
 function createTestItems(

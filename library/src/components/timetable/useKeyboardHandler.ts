@@ -24,13 +24,7 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 	const nextItemFunc = useCallback(() => {
 		// find the current item row
 		if (!currentItemKey) {
-			// no item selected, so we use the first item of the first row
-			//const firstRow = groupItemRows?.[0]
-			//const firstItem = firstRow?.[0]
-			//if (firstItem?.startSlot === timeSlotNumber) {
-			//	return firstItem.item.key
-			//}
-			// find the first item of the current time slot
+			// no item selected, so we find the first item of the current time slot
 			let nextItem: ItemRowEntry<I> | null = null
 			groupRowsLoop: for (const row of groupItemRows ?? []) {
 				if (!row) {
@@ -46,25 +40,25 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 			return nextItem?.item.key ?? null
 		}
 		// item selected, find the row and the index of the item
-		const currentItemRow = groupItemRows?.find((row) =>
-			row.some((item) => item.item.key === currentItemKey),
-		)
-		if (!currentItemRow) {
-			return null
-		}
-		if (currentItemRow) {
-			const currentItemIndex = currentItemRow.findIndex(
-				(item) => item.item.key === currentItemKey,
-			)
-			if (currentItemIndex > 0) {
-				const nextItem = currentItemRow[currentItemIndex + 1]
-				if (nextItem?.startSlot === timeSlotNumber) {
-					return nextItem.item.key
+		let foundCurrentItem = false
+		let nextItem: ItemRowEntry<I> | null = null
+		groupRowsLoop: for (const row of groupItemRows ?? []) {
+			if (!row) {
+				continue
+			}
+			for (const item of row) {
+				if (item.item.key === currentItemKey) {
+					foundCurrentItem = true
+					continue
+				}
+				if (foundCurrentItem && item.startSlot === timeSlotNumber) {
+					nextItem = item
+					break groupRowsLoop
 				}
 			}
 		}
 
-		return null
+		return nextItem?.item.key ?? null
 	}, [currentItemKey, groupItemRows, timeSlotNumber])
 
 	/* find the previous item, which is
@@ -128,18 +122,16 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 
 		// 2. find the previous item of the same time slot, if none we select the slot itself
 		let previousItem: ItemRowEntry<I> | null = null
-		for (let i = 0; i < groupItemRows.length; i++) {
-			const row = groupItemRows[i]
+		groupRowsLoop: for (const row of groupItemRows ?? []) {
 			if (!row) {
 				continue
 			}
-			for (let j = 0; j < row.length; j++) {
-				const item = row[j]
+			for (const item of row) {
 				if (!item) {
 					continue
 				}
 				if (item.item.key === currentItemKey) {
-					break
+					break groupRowsLoop
 				}
 				if (item.startSlot === timeSlotNumber) {
 					previousItem = item
@@ -178,26 +170,25 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 						return
 					}
 					break
-				case "ArrowLeft":
+				case "ArrowLeft": {
 					e.preventDefault()
-					if (timeSlotNumber > 0) {
-						const {
-							previousItemKey,
-							timeSlotNumber: prevTimeSlotNumber,
-						} = prevItemFunc()
-						console.log(
-							"PREV ITEM KEY",
-							previousItemKey,
-							prevTimeSlotNumber,
-						)
-						setFocusedCell(
-							storeIdent,
-							groupId,
-							prevTimeSlotNumber,
-							previousItemKey,
-						)
-					}
+					const {
+						previousItemKey,
+						timeSlotNumber: prevTimeSlotNumber,
+					} = prevItemFunc()
+					console.log(
+						"PREV ITEM KEY",
+						previousItemKey,
+						prevTimeSlotNumber,
+					)
+					setFocusedCell(
+						storeIdent,
+						groupId,
+						prevTimeSlotNumber,
+						previousItemKey,
+					)
 					break
+				}
 				case "ArrowDown":
 					e.preventDefault()
 					if (nextGroupId) {
