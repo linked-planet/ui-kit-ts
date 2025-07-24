@@ -176,11 +176,6 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 						previousItemKey,
 						timeSlotNumber: prevTimeSlotNumber,
 					} = prevItemFunc()
-					console.log(
-						"PREV ITEM KEY",
-						previousItemKey,
-						prevTimeSlotNumber,
-					)
 					setFocusedCell(
 						storeIdent,
 						groupId,

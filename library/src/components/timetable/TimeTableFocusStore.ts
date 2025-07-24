@@ -135,6 +135,7 @@ function scrollToFocusedCell(
 			if (renderedCellElement) {
 				console.log("Cell rendered after scroll, focusing now")
 				scrollElementIntoView(
+					// biome-ignore lint/style/noNonNullAssertion: must exist
 					scrollContainerRef.current!,
 					renderedCellElement,
 					ident,
@@ -179,7 +180,7 @@ function scrollElementIntoView(
 	const effectivePlaceholderHeight =
 		isActualCell && !timeSlotSelectionDisabled ? placeHolderHeight : 0
 
-	console.log("Container rect:", containerRect)
+	/*console.log("Container rect:", containerRect)
 	console.log("Element rect:", elementRect)
 	console.log("Header height:", headerHeight)
 	console.log("Placeholder height:", effectivePlaceholderHeight)
@@ -188,7 +189,7 @@ function scrollElementIntoView(
 	console.log("Current scroll:", {
 		scrollLeft: container.scrollLeft,
 		scrollTop: container.scrollTop,
-	})
+	})*/
 
 	// Adjust the container's effective viewport to account for the sticky header
 	const effectiveContainerTop = containerRect.top + headerHeight
@@ -203,12 +204,12 @@ function scrollElementIntoView(
 		elementRect.bottom < effectiveContainerTop ||
 		elementRect.top > effectiveContainerTop + effectiveContainerHeight
 
-	console.log("Effective container top:", effectiveContainerTop)
+	/*console.log("Effective container top:", effectiveContainerTop)
 	console.log("Effective container height:", effectiveContainerHeight)
 	console.log("Out of view:", {
 		horizontal: isOutOfViewHorizontally,
 		vertical: isOutOfViewVertically,
-	})
+	})*/
 
 	if (isOutOfViewHorizontally || isOutOfViewVertically) {
 		let scrollLeft = container.scrollLeft
@@ -252,7 +253,7 @@ function scrollElementIntoView(
 			scrollTop = elementAbsoluteBottom - containerRect.height
 		}
 
-		console.log("Scrolling to:", { scrollLeft, scrollTop })
+		//console.log("Scrolling to:", { scrollLeft, scrollTop })
 		container.scrollTo({
 			left: scrollLeft,
 			top: scrollTop,
@@ -267,7 +268,6 @@ export function setFocusedCell(
 	timeSlotNumber: number | null,
 	itemKey: React.Key | null,
 ) {
-	console.log("SET FOCUSED CELL", groupId, timeSlotNumber, itemKey)
 	const store = getStore(ident)
 	if (!store) {
 		throw new Error(

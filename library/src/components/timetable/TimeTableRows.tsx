@@ -766,7 +766,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		focusedCell.timeSlotNumber === timeSlotNumber &&
 		focusedCell.itemKey === null
 
-	if (isFocused && tableCellRef.current) {
+	// only focus the first row of a group
+	if (isFocused && tableCellRef.current && rowNumber === 0) {
 		tableCellRef.current.focus()
 	}
 
@@ -923,7 +924,10 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			}}
 			colSpan={2} // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			ref={tableCellRef}
-			className={`border-border relative box-border border-l-0 border-t-0 border-solid m-0 p-0 ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`}
+			className={twJoin(
+				`border-border relative box-border border-l-0 border-t-0 border-solid m-0 p-0 ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`,
+				"focus:outline-none",
+			)}
 			tabIndex={timeSlotNumber === 0 && groupNumber === 0 ? 0 : -1}
 			/*onFocus={
 				timeSlotNumber === 0 && groupNumber === 0
@@ -935,6 +939,20 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				<div
 					className="bg-lime-bold absolute left-0 top-0 z-2 h-full w-1 rounded-r-full opacity-50"
 					title={`${beforeCount} more items`}
+				/>
+			)}
+			{isFocused && (
+				<div
+					className={twJoin(
+						"absolute inset-0 z-1",
+						isFocused &&
+							"border-l-3 border-r-3 border-brand-bold border-solid",
+						rowNumber === 0 &&
+							timeSlotSelectionDisabled &&
+							"border-t-3",
+						rowNumber === (groupItemRows?.length ?? 0) - 1 &&
+							"border-b-3",
+					)}
 				/>
 			)}
 			{itemsToRender && itemsToRender.length > 0 && (
@@ -1111,7 +1129,7 @@ function PlaceholderTableCell<
 			}*/ // 2 because always 1 column with fixed size and 1 column with variable size, which is 0 if the time time overflows anyway, else it is the size needed for the table to fill the parent
 			{...(timeSlotSelectedIndex === -1 ? mouseHandlers : undefined)}
 			className={twJoin(
-				`border-border relative box-border ${cursorStyle} m-0 p-0 border-b-0 border-l-0 border-t-0 border-solid ${brStyle} ${bgStyle} align-top focus:bg-pink`,
+				`border-border relative box-border ${cursorStyle} m-0 p-0 border-b-0 border-l-0 border-t-0 border-solid ${brStyle} ${bgStyle} align-top`,
 				"",
 			)}
 			style={{
@@ -1127,9 +1145,10 @@ function PlaceholderTableCell<
 		>
 			{isFocused && (
 				<div
-					className={`absolute inset-0 z-10 ${
-						isFocused ? "border-3 border-violet border-solid" : ""
-					}`}
+					className={twJoin(
+						"absolute inset-0 z-1",
+						isFocused && "border-3 border-brand-bold border-solid",
+					)}
 				/>
 			)}
 			{placeHolderItem}

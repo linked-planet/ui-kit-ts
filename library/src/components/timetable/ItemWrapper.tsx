@@ -16,6 +16,7 @@ export type TimeTableItemProps<
 	item: I
 	selectedItem: I | undefined
 	height: number
+	isFocused: boolean
 }
 
 export default function ItemWrapper<
@@ -110,11 +111,8 @@ export default function ItemWrapper<
 			{/** biome-ignore lint/a11y/useSemanticElements: should be div to be able to have buttons inside */}
 			<div
 				ref={ref}
-				className={`animate-fade-in relative z-1 size-full ${
-					isFocused
-						? "ring-violet ring-2 border-pink border-4 border-solid"
-						: ""
-				}`}
+				data-item="wrapper-item"
+				className={"animate-fade-in relative z-1 size-full"}
 				onClick={() => {
 					if (onTimeSlotItemClick) onTimeSlotItemClick(group, item)
 				}}
@@ -124,7 +122,6 @@ export default function ItemWrapper<
 					}
 				}}
 				onKeyDown={(e) => {
-					console.log("ITEM WRAPPER KEY DOWN", e.key)
 					e.preventDefault()
 					e.stopPropagation()
 					if (e.key === "Enter") {
@@ -144,6 +141,7 @@ export default function ItemWrapper<
 					item={item}
 					selectedItem={selectedTimeSlotItem}
 					height={height}
+					isFocused={isFocused}
 				/>
 			</div>
 		</div>
