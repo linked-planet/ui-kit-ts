@@ -61,7 +61,6 @@ export default function ItemWrapper<
 	}, [])
 	//#endregion
 
-	console.log("IS FOCUSED", isFocused)
 	if (isFocused) {
 		ref.current?.focus()
 	}
@@ -126,7 +125,15 @@ export default function ItemWrapper<
 				}}
 				onKeyDown={(e) => {
 					console.log("ITEM WRAPPER KEY DOWN", e.key)
-					keyboardHandler(e)
+					e.preventDefault()
+					e.stopPropagation()
+					if (e.key === "Enter") {
+						if (onTimeSlotItemClick) {
+							onTimeSlotItemClick(group, item)
+						}
+					} else {
+						keyboardHandler(e)
+					}
 				}}
 				role="button"
 				tabIndex={0}

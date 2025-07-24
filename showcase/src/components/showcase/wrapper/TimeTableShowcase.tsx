@@ -36,7 +36,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	ExampleGroup,
 	ExampleItem
 >[] = [
-	{
+	/*{
 		group: {
 			id: "group-empty",
 			title: "Empty Group",
@@ -58,7 +58,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			},
 		],
 	},
-	/*{
+	{
 		group: {
 			id: "week-test",
 			title: "Week Test",
@@ -96,7 +96,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			},
 		],
 	},*/
-	/*{
+	{
 		group: {
 			id: "month-test",
 			title: "Month Test",
@@ -130,7 +130,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 			},
 		],
 	},
-	{
+	/*{
 		group: {
 			id: "year-test",
 			title: "Year Test",

@@ -25,39 +25,54 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 		// find the current item row
 		if (!currentItemKey) {
 			// no item selected, so we use the first item of the first row
-			const firstRow = groupItemRows?.[0]
-			const firstItem = firstRow?.[0]
-			if (firstItem?.startSlot === timeSlotNumber) {
-				return firstItem.item.key
-			}
-		} else {
-			// item selected, find the row and the index of the item
-			const currentItemRow = groupItemRows?.find((row) =>
-				row.some((item) => item.item.key === currentItemKey),
-			)
-			if (!currentItemRow) {
-				return null
-			}
-			if (currentItemRow) {
-				const currentItemIndex = currentItemRow.findIndex(
-					(item) => item.item.key === currentItemKey,
-				)
-				if (currentItemIndex > 0) {
-					const nextItem = currentItemRow[currentItemIndex + 1]
-					if (nextItem?.startSlot === timeSlotNumber) {
-						return nextItem.item.key
+			//const firstRow = groupItemRows?.[0]
+			//const firstItem = firstRow?.[0]
+			//if (firstItem?.startSlot === timeSlotNumber) {
+			//	return firstItem.item.key
+			//}
+			// find the first item of the current time slot
+			let nextItem: ItemRowEntry<I> | null = null
+			groupRowsLoop: for (const row of groupItemRows ?? []) {
+				if (!row) {
+					continue
+				}
+				for (const item of row) {
+					if (item.startSlot === timeSlotNumber) {
+						nextItem = item
+						break groupRowsLoop
 					}
 				}
 			}
+			return nextItem?.item.key ?? null
 		}
+		// item selected, find the row and the index of the item
+		const currentItemRow = groupItemRows?.find((row) =>
+			row.some((item) => item.item.key === currentItemKey),
+		)
+		if (!currentItemRow) {
+			return null
+		}
+		if (currentItemRow) {
+			const currentItemIndex = currentItemRow.findIndex(
+				(item) => item.item.key === currentItemKey,
+			)
+			if (currentItemIndex > 0) {
+				const nextItem = currentItemRow[currentItemIndex + 1]
+				if (nextItem?.startSlot === timeSlotNumber) {
+					return nextItem.item.key
+				}
+			}
+		}
+
 		return null
 	}, [currentItemKey, groupItemRows, timeSlotNumber])
 
 	/* find the previous item, which is
 	1. the item before the current item of the same row
-	2. if not 1, then the last item of the previous row (timeSlotNumber - 1)
-	3. if there is no last item of the previous row, then the item is null (timeSlotNumber - 1)
-	4. if there is no previous row, no change
+	2. if there is none, then the timeslot column itself (item is null)
+	3. if it is the timeslow column, select the last item of the previous row (timeSlotNumber - 1)
+	4. if there is no last item of the previous row, then the item is null (timeSlotNumber - 1)
+	5. if there is no previous row, no change
 	*/
 	const prevItemFunc = useCallback(() => {
 		console.log("PREV ITEM FUNC", currentItemKey, timeSlotNumber)
@@ -210,7 +225,11 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 					clearTimeTableFocusStore(storeIdent)
 					break
 				case "Enter": {
+					if (currentItemKey) {
+						return // then the item should take the enter key and handle it
+					}
 					e.preventDefault()
+					e.stopPropagation()
 					const interactionMode = e.shiftKey ? "drag" : "click"
 					toggleTimeSlotSelected(
 						storeIdent,
@@ -225,12 +244,13 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 		[
 			storeIdent,
 			timeSlotNumber,
-			slotsArray?.length,
 			groupId,
+			slotsArray,
 			nextGroupId,
 			previousGroupId,
 			nextItemFunc,
 			prevItemFunc,
+			currentItemKey,
 		],
 	)
 }
