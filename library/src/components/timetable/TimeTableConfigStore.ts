@@ -233,6 +233,10 @@ export function useTTCTimeSlotSelectionDisabled(ident: string) {
 	return timeSlotSelectionDisabled
 }
 
+export function getTTCTimeSlotSelectionDisabled(ident: string) {
+	return timeTableConfigStore[ident].timeSlotSelectionDisabled
+}
+
 //#endregion
 
 //#region utilities
@@ -260,6 +264,10 @@ export function useTTCPlaceHolderHeight(ident: string) {
 		timeTableConfigStore[ident].dimensions,
 	).placeHolderHeight
 	return placeHolderHeight
+}
+
+export function getTTCPlaceHolderHeight(ident: string) {
+	return timeTableConfigStore[ident].dimensions.placeHolderHeight
 }
 
 export function useTTCIsCellDisabled(ident: string) {

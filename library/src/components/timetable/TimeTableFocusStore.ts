@@ -1,4 +1,8 @@
 import { proxy, useSnapshot } from "valtio"
+import {
+	getTTCPlaceHolderHeight,
+	getTTCTimeSlotSelectionDisabled,
+} from "./TimeTableConfigStore"
 
 type TimeTableFocusStore = {
 	focusedCell: {
@@ -104,7 +108,12 @@ function scrollToFocusedCell(
 
 	// If we have the actual cell, scroll to it directly
 	if (cellElement) {
-		scrollElementIntoView(scrollContainerRef.current, cellElement, ident)
+		scrollElementIntoView(
+			scrollContainerRef.current,
+			cellElement,
+			ident,
+			true,
+		) // true = is actual cell
 		return
 	}
 
@@ -115,6 +124,7 @@ function scrollToFocusedCell(
 			scrollContainerRef.current,
 			unrenderedRowElement,
 			ident,
+			false, // false = is unrendered row, not actual cell
 		)
 
 		// After scrolling the unrendered row into view, we need to wait for it to be rendered
@@ -126,6 +136,7 @@ function scrollToFocusedCell(
 					scrollContainerRef.current!,
 					renderedCellElement,
 					ident,
+					true, // true = is actual cell
 				)
 			} else {
 				console.log("Cell still not rendered after scroll timeout")
@@ -147,6 +158,7 @@ function scrollElementIntoView(
 	container: HTMLDivElement,
 	element: HTMLElement,
 	ident: string,
+	isActualCell = false, // New parameter to distinguish between cells and unrendered rows
 ) {
 	const containerRect = container.getBoundingClientRect()
 	const elementRect = element.getBoundingClientRect()
@@ -156,9 +168,21 @@ function scrollElementIntoView(
 	const headerHeight =
 		tableHeaderRef?.current?.getBoundingClientRect().height || 0
 
+	// Get placeholder height and selection disabled state from config store
+	const placeHolderHeight = getTTCPlaceHolderHeight(ident)
+	const timeSlotSelectionDisabled = getTTCTimeSlotSelectionDisabled(ident)
+
+	// Only add placeholder height if we're scrolling to an actual cell (not unrendered row)
+	// and if time slot selection is enabled (placeholder row exists)
+	const effectivePlaceholderHeight =
+		isActualCell && !timeSlotSelectionDisabled ? placeHolderHeight : 0
+
 	console.log("Container rect:", containerRect)
 	console.log("Element rect:", elementRect)
 	console.log("Header height:", headerHeight)
+	console.log("Placeholder height:", effectivePlaceholderHeight)
+	console.log("Is actual cell:", isActualCell)
+	console.log("Time slot selection disabled:", timeSlotSelectionDisabled)
 	console.log("Current scroll:", {
 		scrollLeft: container.scrollLeft,
 		scrollTop: container.scrollTop,
@@ -211,11 +235,12 @@ function scrollElementIntoView(
 			scrollLeft = elementAbsoluteRight - containerRect.width
 		}
 
-		// Vertical scrolling (considering header height)
+		// Vertical scrolling (considering header height and placeholder height)
 		if (elementRect.top < effectiveContainerTop) {
 			// Element is above the effective viewport (hidden behind header) - scroll up
-			// Position the element just below the header
-			scrollTop = elementAbsoluteTop - headerHeight
+			// Position the element just below the header, accounting for placeholder row
+			scrollTop =
+				elementAbsoluteTop - headerHeight - effectivePlaceholderHeight
 		} else if (
 			elementRect.bottom >
 			effectiveContainerTop + effectiveContainerHeight
