@@ -1409,7 +1409,9 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				style={{
 					height: groupHeaderHeight,
 				}}
+				id={`time-table-row-${group.id}-unrendered`}
 				data-group-id={group.id}
+				data-rendered={false}
 				data-test={`unrendered-table-row_${group.id}`}
 				key={`unrendered-table-row_${group.id}`}
 				ref={mref as React.Ref<HTMLTableRowElement>}
@@ -1423,7 +1425,9 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	if (placerHolderRow) {
 		trs.push(
 			<tr
+				id={`time-table-row-${group.id}-placeholder`}
 				data-group-id={group.id}
+				data-rendered={true}
 				key={-1}
 				className="bg-surface box-border m-0"
 				style={{
@@ -1439,7 +1443,9 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		for (let r = 0; r < normalRows.length; r++) {
 			trs.push(
 				<tr
+					id={`time-table-row-${group.id}-${r}`}
 					data-group-id={group.id}
+					data-rendered={true}
 					key={`group-row-${group.id}-${r}`}
 					className="bg-surface box-border m-0"
 					style={{

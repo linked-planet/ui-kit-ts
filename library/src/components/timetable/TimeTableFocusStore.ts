@@ -70,14 +70,6 @@ function scrollToFocusedCell(
 	timeSlotNumber: number,
 	itemKey: React.Key | null,
 ) {
-	console.log(
-		"SCROLL TO FOCUSED CELL",
-		ident,
-		groupId,
-		timeSlotNumber,
-		itemKey,
-	)
-
 	const scrollContainerRef = scrollContainerRefs.get(ident)
 	if (!scrollContainerRef?.current) {
 		console.log("No scroll container ref found")
@@ -88,53 +80,157 @@ function scrollToFocusedCell(
 		? `time-table-cell-${groupId}-${timeSlotNumber}-item-${itemKey}`
 		: `time-table-cell-${groupId}-${timeSlotNumber}`
 
+	const unrenderedRowId = `time-table-row-${groupId}-unrendered`
+
 	const cellElement = document.getElementById(cellId)
-	if (!cellElement) {
-		console.log("Cell element not found:", cellId)
-		return
+	const unrenderedRowElement = document.getElementById(unrenderedRowId)
+
+	if (!cellElement && !unrenderedRowElement) {
+		console.log(
+			"TimeTable - focus store: cell and row element not found for scroll position: ",
+			cellId,
+			unrenderedRowId,
+		)
+		throw new Error(
+			"TimeTable - focus store: cell and row element not found for scroll position: " +
+				cellId +
+				" " +
+				unrenderedRowId,
+		)
 	}
 
 	const container = scrollContainerRef.current
 	const containerRect = container.getBoundingClientRect()
-	const cellRect = cellElement.getBoundingClientRect()
+	const cellRect = cellElement?.getBoundingClientRect()
+	const unrenderedRowRect = unrenderedRowElement?.getBoundingClientRect()
+	if (!cellRect && !unrenderedRowRect) {
+		console.log(
+			"TimeTable - focus store: cell and row element not found for scroll position: ",
+			cellId,
+			unrenderedRowId,
+		)
+		throw new Error(
+			"TimeTable - focus store: cell and row element not found for scroll position: " +
+				cellId +
+				" " +
+				unrenderedRowId,
+		)
+	}
+
+	console.log("Container rect:", containerRect)
+	console.log("Cell rect:", cellRect, cellId)
+	console.log("Unrendered row rect:", unrenderedRowRect, unrenderedRowId)
+	console.log("Current scroll:", {
+		scrollLeft: container.scrollLeft,
+		scrollTop: container.scrollTop,
+	})
 
 	// Check if cell is completely out of view
-	const isOutOfViewHorizontally =
-		cellRect.right < containerRect.left ||
-		cellRect.left > containerRect.right
+	const isOutOfViewHorizontally = cellRect
+		? cellRect.right < containerRect.left ||
+			cellRect.left > containerRect.right
+		: unrenderedRowRect
+			? unrenderedRowRect.right < containerRect.left ||
+				unrenderedRowRect.left > containerRect.right
+			: false
 
-	const isOutOfViewVertically =
-		cellRect.bottom < containerRect.top ||
-		cellRect.top > containerRect.bottom
+	const isOutOfViewVertically = cellRect
+		? cellRect.bottom < containerRect.top ||
+			cellRect.top > containerRect.bottom
+		: unrenderedRowRect
+			? unrenderedRowRect.bottom < containerRect.top ||
+				unrenderedRowRect.top > containerRect.bottom
+			: false
+
+	console.log("Out of view:", {
+		horizontal: isOutOfViewHorizontally,
+		vertical: isOutOfViewVertically,
+	})
 
 	if (isOutOfViewHorizontally || isOutOfViewVertically) {
-		// Calculate minimal scroll needed
+		// Calculate minimal scroll needed using absolute positions
 		let scrollLeft = container.scrollLeft
 		let scrollTop = container.scrollTop
 
+		// Get the relative positions within the scrollable content
+		const containerScrollLeft = container.scrollLeft
+		const containerScrollTop = container.scrollTop
+
+		// Calculate the absolute position of the cell relative to the container's content
+		const cellAbsoluteLeft = cellRect
+			? cellRect.left - containerRect.left + containerScrollLeft
+			: unrenderedRowRect
+				? unrenderedRowRect.left -
+					containerRect.left +
+					containerScrollLeft
+				: 0
+		const cellAbsoluteTop = cellRect
+			? cellRect.top - containerRect.top + containerScrollTop
+			: unrenderedRowRect
+				? unrenderedRowRect.top - containerRect.top + containerScrollTop
+				: 0
+		const cellAbsoluteRight = cellRect
+			? cellRect.right - containerRect.left + containerScrollLeft
+			: unrenderedRowRect
+				? unrenderedRowRect.right -
+					containerRect.left +
+					containerScrollLeft
+				: 0
+		const cellAbsoluteBottom = cellRect
+			? cellRect.bottom - containerRect.top + containerScrollTop
+			: unrenderedRowRect
+				? unrenderedRowRect.bottom -
+					containerRect.top +
+					containerScrollTop
+				: 0
+
 		// Horizontal scrolling
-		if (cellRect.left < containerRect.left) {
-			// Cell is to the left of viewport
-			scrollLeft += cellRect.left - containerRect.left
-		} else if (cellRect.right > containerRect.right) {
-			// Cell is to the right of viewport
-			scrollLeft += cellRect.right - containerRect.right
+		if (
+			cellRect
+				? cellRect.left < containerRect.left
+				: unrenderedRowRect
+					? unrenderedRowRect.left < containerRect.left
+					: false
+		) {
+			// Cell is to the left of viewport - scroll left to show the cell
+			scrollLeft = cellAbsoluteLeft
+		} else if (
+			cellRect
+				? cellRect.right > containerRect.right
+				: unrenderedRowRect
+					? unrenderedRowRect.right > containerRect.right
+					: false
+		) {
+			// Cell is to the right of viewport - scroll right to show the cell
+			scrollLeft = cellAbsoluteRight - containerRect.width
 		}
 
 		// Vertical scrolling
-		if (cellRect.top < containerRect.top) {
-			// Cell is above viewport
-			scrollTop += cellRect.top - containerRect.top
-		} else if (cellRect.bottom > containerRect.bottom) {
-			// Cell is below viewport
-			scrollTop += cellRect.bottom - containerRect.bottom
+		if (
+			cellRect
+				? cellRect.top < containerRect.top
+				: unrenderedRowRect
+					? unrenderedRowRect.top < containerRect.top
+					: false
+		) {
+			// Cell is above viewport - scroll up to show the cell
+			scrollTop = cellAbsoluteTop
+		} else if (
+			cellRect
+				? cellRect.bottom > containerRect.bottom
+				: unrenderedRowRect
+					? unrenderedRowRect.bottom > containerRect.bottom
+					: false
+		) {
+			// Cell is below viewport - scroll down to show the cell
+			scrollTop = cellAbsoluteBottom - containerRect.height
 		}
 
 		console.log("Scrolling to:", { scrollLeft, scrollTop })
 		container.scrollTo({
 			left: scrollLeft,
 			top: scrollTop,
-			behavior: "auto",
+			behavior: "smooth",
 		})
 	}
 }
