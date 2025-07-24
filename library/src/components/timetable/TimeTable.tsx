@@ -18,8 +18,9 @@ import {
 	type TimeFrameDay,
 } from "./TimeTableConfigStore"
 import {
-	clearTimeTableFocusStore,
+	deleteScrollContainerRef,
 	initTimeTableFocusStore,
+	setScrollContainerRef,
 } from "./TimeTableFocusStore"
 import {
 	type CustomHeaderRowHeaderProps,
@@ -435,6 +436,18 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			}
 		}
 	}, [nowbarScrollHandling])
+
+	// focus store scroll container ref handling
+	useEffect(() => {
+		if (intersectionContainerRef.current) {
+			// Set the scroll container ref in the focus store
+			setScrollContainerRef(storeIdent, intersectionContainerRef)
+		}
+		return () => {
+			// delete the scroll container ref in the focus store
+			deleteScrollContainerRef(storeIdent)
+		}
+	}, [storeIdent])
 	//
 
 	// adjust the now bar moves the now bar to the current time slot, if it exists
