@@ -19,8 +19,10 @@ import {
 } from "./TimeTableConfigStore"
 import {
 	deleteScrollContainerRef,
+	deleteTableHeaderRef,
 	initTimeTableFocusStore,
 	setScrollContainerRef,
+	setTableHeaderRef,
 } from "./TimeTableFocusStore"
 import {
 	type CustomHeaderRowHeaderProps,
@@ -448,7 +450,16 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			deleteScrollContainerRef(storeIdent)
 		}
 	}, [storeIdent])
-	//
+
+	// table header ref handling
+	useEffect(() => {
+		if (tableHeaderRef.current) {
+			setTableHeaderRef(storeIdent, tableHeaderRef)
+		}
+		return () => {
+			deleteTableHeaderRef(storeIdent)
+		}
+	}, [storeIdent])
 
 	// adjust the now bar moves the now bar to the current time slot, if it exists
 	// and also adjusts the orange border of the time slot header

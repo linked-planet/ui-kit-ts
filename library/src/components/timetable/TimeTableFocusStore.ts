@@ -16,6 +16,12 @@ const scrollContainerRefs: Map<
 	React.RefObject<HTMLDivElement>
 > = new Map()
 
+// and for the table header refs whose height must be subtracted during the intersection calculation
+const tableHeaderRefs: Map<
+	string,
+	React.RefObject<HTMLTableSectionElement>
+> = new Map()
+
 function getStore(ident: string) {
 	return timeTableFocusStore[ident] as TimeTableFocusStore | undefined
 }
@@ -60,8 +66,19 @@ export function setScrollContainerRef(
 	scrollContainerRefs.set(ident, scrollContainerRef)
 }
 
+export function setTableHeaderRef(
+	ident: string,
+	tableHeaderRef: React.RefObject<HTMLTableSectionElement>,
+) {
+	tableHeaderRefs.set(ident, tableHeaderRef)
+}
+
 export function deleteScrollContainerRef(ident: string) {
 	scrollContainerRefs.delete(ident)
+}
+
+export function deleteTableHeaderRef(ident: string) {
+	tableHeaderRefs.delete(ident)
 }
 
 function scrollToFocusedCell(
@@ -85,152 +102,134 @@ function scrollToFocusedCell(
 	const cellElement = document.getElementById(cellId)
 	const unrenderedRowElement = document.getElementById(unrenderedRowId)
 
-	if (!cellElement && !unrenderedRowElement) {
-		console.log(
-			"TimeTable - focus store: cell and row element not found for scroll position: ",
-			cellId,
-			unrenderedRowId,
-		)
-		throw new Error(
-			"TimeTable - focus store: cell and row element not found for scroll position: " +
-				cellId +
-				" " +
-				unrenderedRowId,
-		)
+	// If we have the actual cell, scroll to it directly
+	if (cellElement) {
+		scrollElementIntoView(scrollContainerRef.current, cellElement, ident)
+		return
 	}
 
-	const container = scrollContainerRef.current
-	const containerRect = container.getBoundingClientRect()
-	const cellRect = cellElement?.getBoundingClientRect()
-	const unrenderedRowRect = unrenderedRowElement?.getBoundingClientRect()
-	if (!cellRect && !unrenderedRowRect) {
-		console.log(
-			"TimeTable - focus store: cell and row element not found for scroll position: ",
-			cellId,
-			unrenderedRowId,
+	// If we don't have the cell but have the unrendered row, scroll to that first
+	if (unrenderedRowElement) {
+		console.log("Scrolling unrendered group into view:", groupId)
+		scrollElementIntoView(
+			scrollContainerRef.current,
+			unrenderedRowElement,
+			ident,
 		)
-		throw new Error(
-			"TimeTable - focus store: cell and row element not found for scroll position: " +
-				cellId +
-				" " +
-				unrenderedRowId,
-		)
+
+		// After scrolling the unrendered row into view, we need to wait for it to be rendered
+		setTimeout(() => {
+			const renderedCellElement = document.getElementById(cellId)
+			if (renderedCellElement) {
+				console.log("Cell rendered after scroll, focusing now")
+				scrollElementIntoView(
+					scrollContainerRef.current!,
+					renderedCellElement,
+					ident,
+				)
+			} else {
+				console.log("Cell still not rendered after scroll timeout")
+			}
+		}, 100)
+
+		return
 	}
+
+	console.log(
+		"TimeTable - focus store: Neither cell nor unrendered row found:",
+		cellId,
+		unrenderedRowId,
+	)
+}
+
+// Helper function to scroll an element into view with minimal scrolling
+function scrollElementIntoView(
+	container: HTMLDivElement,
+	element: HTMLElement,
+	ident: string,
+) {
+	const containerRect = container.getBoundingClientRect()
+	const elementRect = element.getBoundingClientRect()
+
+	// Get the table header ref and calculate its height
+	const tableHeaderRef = tableHeaderRefs.get(ident)
+	const headerHeight =
+		tableHeaderRef?.current?.getBoundingClientRect().height || 0
 
 	console.log("Container rect:", containerRect)
-	console.log("Cell rect:", cellRect, cellId)
-	console.log("Unrendered row rect:", unrenderedRowRect, unrenderedRowId)
+	console.log("Element rect:", elementRect)
+	console.log("Header height:", headerHeight)
 	console.log("Current scroll:", {
 		scrollLeft: container.scrollLeft,
 		scrollTop: container.scrollTop,
 	})
 
-	// Check if cell is completely out of view
-	const isOutOfViewHorizontally = cellRect
-		? cellRect.right < containerRect.left ||
-			cellRect.left > containerRect.right
-		: unrenderedRowRect
-			? unrenderedRowRect.right < containerRect.left ||
-				unrenderedRowRect.left > containerRect.right
-			: false
+	// Adjust the container's effective viewport to account for the sticky header
+	const effectiveContainerTop = containerRect.top + headerHeight
+	const effectiveContainerHeight = containerRect.height - headerHeight
 
-	const isOutOfViewVertically = cellRect
-		? cellRect.bottom < containerRect.top ||
-			cellRect.top > containerRect.bottom
-		: unrenderedRowRect
-			? unrenderedRowRect.bottom < containerRect.top ||
-				unrenderedRowRect.top > containerRect.bottom
-			: false
+	// Check if element is completely out of view (considering header)
+	const isOutOfViewHorizontally =
+		elementRect.right < containerRect.left ||
+		elementRect.left > containerRect.right
 
+	const isOutOfViewVertically =
+		elementRect.bottom < effectiveContainerTop ||
+		elementRect.top > effectiveContainerTop + effectiveContainerHeight
+
+	console.log("Effective container top:", effectiveContainerTop)
+	console.log("Effective container height:", effectiveContainerHeight)
 	console.log("Out of view:", {
 		horizontal: isOutOfViewHorizontally,
 		vertical: isOutOfViewVertically,
 	})
 
 	if (isOutOfViewHorizontally || isOutOfViewVertically) {
-		// Calculate minimal scroll needed using absolute positions
 		let scrollLeft = container.scrollLeft
 		let scrollTop = container.scrollTop
 
-		// Get the relative positions within the scrollable content
+		// Get current scroll positions
 		const containerScrollLeft = container.scrollLeft
 		const containerScrollTop = container.scrollTop
 
-		// Calculate the absolute position of the cell relative to the container's content
-		const cellAbsoluteLeft = cellRect
-			? cellRect.left - containerRect.left + containerScrollLeft
-			: unrenderedRowRect
-				? unrenderedRowRect.left -
-					containerRect.left +
-					containerScrollLeft
-				: 0
-		const cellAbsoluteTop = cellRect
-			? cellRect.top - containerRect.top + containerScrollTop
-			: unrenderedRowRect
-				? unrenderedRowRect.top - containerRect.top + containerScrollTop
-				: 0
-		const cellAbsoluteRight = cellRect
-			? cellRect.right - containerRect.left + containerScrollLeft
-			: unrenderedRowRect
-				? unrenderedRowRect.right -
-					containerRect.left +
-					containerScrollLeft
-				: 0
-		const cellAbsoluteBottom = cellRect
-			? cellRect.bottom - containerRect.top + containerScrollTop
-			: unrenderedRowRect
-				? unrenderedRowRect.bottom -
-					containerRect.top +
-					containerScrollTop
-				: 0
+		// Calculate absolute positions relative to container content
+		const elementAbsoluteLeft =
+			elementRect.left - containerRect.left + containerScrollLeft
+		const elementAbsoluteTop =
+			elementRect.top - containerRect.top + containerScrollTop
+		const elementAbsoluteRight =
+			elementRect.right - containerRect.left + containerScrollLeft
+		const elementAbsoluteBottom =
+			elementRect.bottom - containerRect.top + containerScrollTop
 
 		// Horizontal scrolling
-		if (
-			cellRect
-				? cellRect.left < containerRect.left
-				: unrenderedRowRect
-					? unrenderedRowRect.left < containerRect.left
-					: false
-		) {
-			// Cell is to the left of viewport - scroll left to show the cell
-			scrollLeft = cellAbsoluteLeft
-		} else if (
-			cellRect
-				? cellRect.right > containerRect.right
-				: unrenderedRowRect
-					? unrenderedRowRect.right > containerRect.right
-					: false
-		) {
-			// Cell is to the right of viewport - scroll right to show the cell
-			scrollLeft = cellAbsoluteRight - containerRect.width
+		if (elementRect.left < containerRect.left) {
+			// Element is to the left of viewport - scroll left to show the element
+			scrollLeft = elementAbsoluteLeft
+		} else if (elementRect.right > containerRect.right) {
+			// Element is to the right of viewport - scroll right to show the element
+			scrollLeft = elementAbsoluteRight - containerRect.width
 		}
 
-		// Vertical scrolling
-		if (
-			cellRect
-				? cellRect.top < containerRect.top
-				: unrenderedRowRect
-					? unrenderedRowRect.top < containerRect.top
-					: false
-		) {
-			// Cell is above viewport - scroll up to show the cell
-			scrollTop = cellAbsoluteTop
+		// Vertical scrolling (considering header height)
+		if (elementRect.top < effectiveContainerTop) {
+			// Element is above the effective viewport (hidden behind header) - scroll up
+			// Position the element just below the header
+			scrollTop = elementAbsoluteTop - headerHeight
 		} else if (
-			cellRect
-				? cellRect.bottom > containerRect.bottom
-				: unrenderedRowRect
-					? unrenderedRowRect.bottom > containerRect.bottom
-					: false
+			elementRect.bottom >
+			effectiveContainerTop + effectiveContainerHeight
 		) {
-			// Cell is below viewport - scroll down to show the cell
-			scrollTop = cellAbsoluteBottom - containerRect.height
+			// Element is below the effective viewport - scroll down
+			// Position the element at the bottom of the effective viewport
+			scrollTop = elementAbsoluteBottom - containerRect.height
 		}
 
 		console.log("Scrolling to:", { scrollLeft, scrollTop })
 		container.scrollTo({
 			left: scrollLeft,
 			top: scrollTop,
-			behavior: "smooth",
+			behavior: "auto",
 		})
 	}
 }

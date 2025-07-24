@@ -1169,6 +1169,25 @@ function ExampleCalendar() {
 		[],
 	)
 
+	const [entries, setEntries] = useState(exampleEntries)
+
+	const requestMoreEntriesCB = useCallback(() => {
+		setEntries((prev) => {
+			const missing = 10
+			const missingGroups = createMoreTestGroups(
+				timeFrame.startDate,
+				timeFrame.endDate,
+				missing,
+				prev.length,
+			)
+			return [...prev, ...missingGroups]
+		})
+	}, [timeFrame.endDate, timeFrame.startDate])
+
+	useEffect(() => {
+		requestMoreEntriesCB()
+	}, [requestMoreEntriesCB])
+
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	return (
 		<div
@@ -1182,7 +1201,7 @@ function ExampleCalendar() {
 				rowHeight={30}
 				startDate={timeFrame.startDate}
 				endDate={timeFrame.endDate}
-				entries={exampleEntries}
+				entries={entries}
 				timeTableMessages={translation}
 				disableWeekendInteractions={false}
 				showTimeSlotHeader={false}
