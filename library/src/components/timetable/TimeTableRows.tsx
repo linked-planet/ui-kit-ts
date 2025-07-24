@@ -656,6 +656,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	timeSlotNumber,
 	group,
 	groupNumber,
+	rowNumber,
 	nextGroupId,
 	previousGroupId,
 	isLastGroupRow,
@@ -671,6 +672,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	timeSlotNumber: number
 	group: G
 	groupNumber: number
+	rowNumber: number
 	nextGroupId: string | null
 	previousGroupId: string | null
 	isLastGroupRow: boolean
@@ -914,7 +916,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			data-group-id={group.id}
 			data-time-slot={timeSlotNumber}
 			data-focused={isFocused}
-			id={`time-table-cell-${group.id}-${timeSlotNumber}`}
+			id={`time-table-cell-${group.id}-${timeSlotNumber}-${rowNumber}`}
 			style={{
 				maxWidth: dimensions.columnWidth,
 				height: dimensions.rowHeight,
@@ -1371,6 +1373,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						isLastGroupRow={r === rowCount - 1}
 						group={group}
 						groupNumber={groupNumber}
+						rowNumber={r}
 						bookingItemsBeginningInCell={itemsOfTimeSlot}
 						groupItemRows={groupItemRows}
 						selectedTimeSlotItem={selectedTimeSlotItem}

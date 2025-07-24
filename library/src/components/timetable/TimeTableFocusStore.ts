@@ -97,9 +97,11 @@ function scrollToFocusedCell(
 		return
 	}
 
+	const selectionDisabled = getTTCTimeSlotSelectionDisabled(ident)
+
 	const cellId = itemKey
 		? `time-table-cell-${groupId}-${timeSlotNumber}-item-${itemKey}`
-		: `time-table-cell-${groupId}-${timeSlotNumber}`
+		: `time-table-cell-${groupId}-${timeSlotNumber}-${selectionDisabled ? 0 : "placeholder"}` // always the first row of a group should be considered when calculating the scroll position
 
 	const unrenderedRowId = `time-table-row-${groupId}-unrendered`
 
