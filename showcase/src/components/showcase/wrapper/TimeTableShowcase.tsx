@@ -1192,7 +1192,7 @@ function ExampleCalendar() {
 	return (
 		<div
 			style={{
-				height: "600px",
+				height: "650px",
 			}}
 		>
 			<TimeTable
@@ -1219,6 +1219,12 @@ function ExampleCalendar() {
 					console.log("onTimeRangeSelected", range)
 				}}
 			/>
+			<Button
+				onFocus={() => console.log("Request more button focussed")}
+				onClick={requestMoreEntriesCB}
+			>
+				Load more entries
+			</Button>
 		</div>
 	)
 	//#endregion timetabledays
