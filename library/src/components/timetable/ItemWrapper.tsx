@@ -117,15 +117,10 @@ export default function ItemWrapper<
 					if (onTimeSlotItemClick) onTimeSlotItemClick(group, item)
 				}}
 				onKeyUp={(e) => {
-					if (e.key === "Enter" && onTimeSlotItemClick) {
-						onTimeSlotItemClick(group, item)
-					}
-				}}
-				onKeyDown={(e) => {
-					e.preventDefault()
-					e.stopPropagation()
 					if (e.key === "Enter") {
 						if (onTimeSlotItemClick) {
+							e.preventDefault()
+							e.stopPropagation()
 							onTimeSlotItemClick(group, item)
 						}
 					} else {
