@@ -51,7 +51,6 @@ export function deleteTimeTableFocusStore(ident: string) {
 }
 
 export function clearTimeTableFocusStore(ident: string) {
-	console.log("CLEAR FOCUSED CELL", ident)
 	const store = getStore(ident)
 	if (!store) {
 		throw new Error(
@@ -93,7 +92,7 @@ function scrollToFocusedCell(
 ) {
 	const scrollContainerRef = scrollContainerRefs.get(ident)
 	if (!scrollContainerRef?.current) {
-		console.log("No scroll container ref found")
+		console.log("TimeTable - focus store: No scroll container ref found")
 		return
 	}
 
@@ -121,7 +120,6 @@ function scrollToFocusedCell(
 
 	// If we don't have the cell but have the unrendered row, scroll to that first
 	if (unrenderedRowElement) {
-		console.log("Scrolling unrendered group into view:", groupId)
 		scrollElementIntoView(
 			scrollContainerRef.current,
 			unrenderedRowElement,
@@ -133,7 +131,6 @@ function scrollToFocusedCell(
 		setTimeout(() => {
 			const renderedCellElement = document.getElementById(cellId)
 			if (renderedCellElement) {
-				console.log("Cell rendered after scroll, focusing now")
 				scrollElementIntoView(
 					// biome-ignore lint/style/noNonNullAssertion: must exist
 					scrollContainerRef.current!,
@@ -142,7 +139,9 @@ function scrollToFocusedCell(
 					true, // true = is actual cell
 				)
 			} else {
-				console.log("Cell still not rendered after scroll timeout")
+				console.log(
+					"TimeTable - focus store: Cell still not rendered after scroll timeout",
+				)
 			}
 		}, 100)
 

@@ -69,7 +69,6 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 	5. if there is no previous row, no change
 	*/
 	const prevItemFunc = useCallback(() => {
-		console.log("PREV ITEM FUNC", currentItemKey, timeSlotNumber)
 		if (!groupItemRows) {
 			return {
 				previousItemKey: null,
@@ -139,13 +138,6 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 			}
 		}
 
-		console.log(
-			"PREVIOUS ITEM",
-			previousItem,
-			timeSlotNumber,
-			currentItemKey,
-		)
-
 		return {
 			previousItemKey: previousItem?.item.key ?? null,
 			timeSlotNumber: timeSlotNumber,
@@ -207,7 +199,7 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 					}
 					break
 				case "Tab":
-					// Don't prevent default - let the browser handle tab navigation
+					// Just clear focus and let browser handle Tab
 					clearTimeTableFocusStore(storeIdent)
 					break
 				case "Enter": {
