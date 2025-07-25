@@ -729,7 +729,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		disableWeekendInteractions,
 	)
 
-	const handleKeyDown = useKeyboardHandlers(
+	const handleKeyUp = useKeyboardHandlers(
 		timeSlotNumber,
 		group.id,
 		nextGroupId,
@@ -766,9 +766,9 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		focusedCell.timeSlotNumber === timeSlotNumber &&
 		focusedCell.itemKey === null
 
-	// only focus the first row of a group
-	if (isFocused && tableCellRef.current && rowNumber === 0) {
-		tableCellRef.current.focus()
+	// focus is set in the focus store
+	if (isFocused) {
+		tableCellRef.current?.focus()
 	}
 
 	// TIME SLOT ITEMS
@@ -895,17 +895,12 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					? "bg-surface-hovered"
 					: ""
 
-	/*const onFocusCB = useCallback(() => {
-		console.log("FOCUS", group.id, 0)
-		setFocusedCell(storeIdent, group.id, 0, null)
-	}, [group.id, storeIdent])*/
-
 	return (
 		// biome-ignore lint/a11y/useSemanticElements: is already a TD, I dont know why it complains
 		<td
 			key={timeSlotNumber}
 			{...mouseHandlersUsed}
-			onKeyDown={handleKeyDown}
+			onKeyUp={handleKeyUp}
 			// biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: we use it as a grid cell which is interactive
 			role="gridcell"
 			aria-colindex={timeSlotNumber}
@@ -929,11 +924,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 				"focus:outline-none",
 			)}
 			tabIndex={timeSlotNumber === 0 && groupNumber === 0 ? 0 : -1}
-			/*onFocus={
-				timeSlotNumber === 0 && groupNumber === 0
-					? onFocusCB
-					: undefined
-			}*/
 		>
 			{beforeCount > 0 && !hideOutOfRangeMarkers && (
 				<div
