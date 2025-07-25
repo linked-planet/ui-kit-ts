@@ -149,8 +149,15 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 			switch (e.key) {
 				case "ArrowRight":
 					e.preventDefault()
+					e.stopPropagation()
 					if (slotsArray && timeSlotNumber < slotsArray.length - 1) {
 						const nextItemKey = nextItemFunc()
+						console.log(
+							"NEXT ITEM KEY",
+							nextItemKey,
+							e.target,
+							timeSlotNumber,
+						)
 						setFocusedCell(
 							storeIdent,
 							groupId,
@@ -164,6 +171,7 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 					break
 				case "ArrowLeft": {
 					e.preventDefault()
+					e.stopPropagation()
 					const {
 						previousItemKey,
 						timeSlotNumber: prevTimeSlotNumber,
@@ -189,6 +197,7 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 					break
 				case "ArrowUp":
 					e.preventDefault()
+
 					if (previousGroupId) {
 						setFocusedCell(
 							storeIdent,
@@ -197,10 +206,6 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 							null,
 						)
 					}
-					break
-				case "Tab":
-					// Just clear focus and let browser handle Tab
-					clearTimeTableFocusStore(storeIdent)
 					break
 				case "Enter": {
 					if (currentItemKey) {

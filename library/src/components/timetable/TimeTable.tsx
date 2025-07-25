@@ -18,9 +18,11 @@ import {
 	type TimeFrameDay,
 } from "./TimeTableConfigStore"
 import {
+	clearTimeTableFocusStore,
 	deleteScrollContainerRef,
 	deleteTableHeaderRef,
 	initTimeTableFocusStore,
+	setFocusedCell,
 	setScrollContainerRef,
 	setTableHeaderRef,
 } from "./TimeTableFocusStore"
@@ -539,6 +541,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		}
 	}, [] )*/
 
+	// to go back to the previously focused element, I need to store the element in the focus store
+	const previouslyFocusedElementRef = useRef<HTMLElement | null>(null)
+
 	if (!slotsArray || slotsArray.length === 0) {
 		return (
 			<div>
@@ -547,12 +552,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			</div>
 		)
 	}
-
-	const firstGroupKey =
-		groupRows.size > 0 ? groupRows.keys().next().value : undefined
-	const activeDescendant = firstGroupKey?.id
-		? `time-table-cell-${firstGroupKey.id}-0-0`
-		: undefined
 
 	return (
 		<>
@@ -575,17 +574,71 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					ref={intersectionContainerRef}
 				>
 					{/** biome-ignore lint/a11y/useSemanticElements: it is already a table, I dont know why it complains */}
-					{/** biome-ignore lint/a11y/useAriaActivedescendantWithTabindex: set tabindex to 0 for the first cell or first group */}
 					<table
 						className={
-							"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
+							"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto focus:outline-2 focus:outline-brand-bold focus:outline-solid"
 						}
 						ref={tableRef}
 						// biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: grid makes it "interactive" from screen readers while a table is not interactive
 						role="grid"
 						aria-rowcount={groupRows.size}
 						aria-colcount={slotsArray.length}
-						aria-activedescendant={activeDescendant}
+						onKeyUp={(e) => {
+							// focus management
+							if (e.key === "Tab") {
+								if (!e.shiftKey) {
+									const firstGroupKey =
+										groupRows.size > 0
+											? groupRows.keys().next().value
+											: undefined
+									if (!firstGroupKey) {
+										return
+									}
+									setFocusedCell(
+										storeIdent,
+										firstGroupKey.id,
+										0,
+										null,
+									)
+								} else {
+									// manually focus the previously focused element
+									clearTimeTableFocusStore(storeIdent)
+									if (previouslyFocusedElementRef.current) {
+										previouslyFocusedElementRef.current.focus()
+									}
+								}
+							}
+						}}
+						onBlur={(e) => {
+							if (
+								!e.currentTarget.contains(
+									e.relatedTarget as Node,
+								)
+							) {
+								console.log(
+									"TimeTable - clearing focus store (leaving table)",
+								)
+								clearTimeTableFocusStore(storeIdent)
+							}
+						}}
+						onFocus={(e) => {
+							// store the element that was focused before the table, but only if it is not the table itself or in the table
+							if (
+								e.relatedTarget &&
+								e.relatedTarget !== e.currentTarget &&
+								!e.currentTarget.contains(
+									e.relatedTarget as Node,
+								)
+							) {
+								console.log(
+									"TimeTable - storing previously focused element",
+									e.relatedTarget,
+								)
+								previouslyFocusedElementRef.current =
+									e.relatedTarget as HTMLElement
+							}
+						}}
+						tabIndex={0}
 					>
 						<LPTimeTableHeader<G, I>
 							slotsArray={slotsArray}

@@ -5,6 +5,7 @@ import {
 	type MouseEvent,
 	type MutableRefObject,
 	useCallback,
+	useEffect,
 	useLayoutEffect,
 	useMemo,
 	useRef,
@@ -767,7 +768,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		focusedCell.itemKey === null
 
 	// focus is set in the focus store
-	if (isFocused) {
+	// only focus the first row of a group
+	if (isFocused && rowNumber === 0) {
 		tableCellRef.current?.focus()
 	}
 
@@ -921,9 +923,13 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			ref={tableCellRef}
 			className={twJoin(
 				`border-border relative box-border border-l-0 border-t-0 border-solid m-0 p-0 ${cursorStyle} ${bgStyle} ${brStyle} ${bbStyle}`,
-				"focus:outline-none",
+				"focus:outline-none", // enable to debug focus
 			)}
-			tabIndex={timeSlotNumber === 0 && groupNumber === 0 ? 0 : -1}
+			tabIndex={
+				timeSlotNumber === 0 && groupNumber === 0 && rowNumber === 0
+					? 0
+					: -1
+			}
 		>
 			{beforeCount > 0 && !hideOutOfRangeMarkers && (
 				<div
@@ -1062,7 +1068,7 @@ function PlaceholderTableCell<
 		disableWeekendInteractions,
 	)
 
-	const handleKeyDown = useKeyboardHandlers(
+	const handleKeyUp = useKeyboardHandlers(
 		timeSlotNumber,
 		group.id,
 		nextGroupId,
@@ -1125,13 +1131,8 @@ function PlaceholderTableCell<
 			style={{
 				height: placeHolderHeight,
 			}}
-			/*tabIndex={
-				isFocused || (groupNumber === 0 && timeSlotNumber === 0)
-					? 0
-					: -1
-			}*/
 			tabIndex={-1}
-			onKeyDown={handleKeyDown}
+			onKeyUp={handleKeyUp}
 		>
 			{isFocused && (
 				<div
