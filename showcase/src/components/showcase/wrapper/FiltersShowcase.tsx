@@ -242,10 +242,10 @@ function FiltersShowcase(props: ShowcaseProps) {
 					</PageLayout.PageHeaderLine>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
-					<PageLayout.PageBodyHeader>
+					<PageLayout.PageBodyHeader ariaLabel="Body Header">
 						Body Header
 					</PageLayout.PageBodyHeader>
-					<PageLayout.PageBodyContent>
+					<PageLayout.PageBodyContent ariaLabel="Body Content">
 						Body Content
 					</PageLayout.PageBodyContent>
 				</PageLayout.PageBody>
