@@ -158,6 +158,8 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					value={date}
 					calendarShowWeekNumber={true}
 					calendarWeekNumberCaption="CW"
+					invalid={true}
+					//hideIcon={true}
 				/>
 			</Fieldset>
 			<Fieldset legend="Time Picker">
@@ -191,6 +193,19 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 		</Fieldset>
 	)
 	//#endregion datetime-picker-timesettings
+
+	//#region datetime-picker-time-is-editable
+	const example3 = (
+		<Fieldset legend="Date Time Picker">
+			<TimePicker
+				timeIsEditable={true}
+				onCreateTimeOption={(option) => {
+					console.log("onCreateTimeOption", option)
+				}}
+			/>
+		</Fieldset>
+	)
+	//#endregion datetime-picker-time-is-editable
 
 	return (
 		<ShowcaseWrapperItem
@@ -227,6 +242,11 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					title: "Disable Parts",
 					example: <DisablePartsExample />,
 					sourceCodeExampleId: "datetime-picker-disable-parts",
+				},
+				{
+					title: "Time Is Editable",
+					example: example3,
+					sourceCodeExampleId: "datetime-picker-time-is-editable",
 				},
 			]}
 		/>

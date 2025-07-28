@@ -53,6 +53,8 @@ type TimePickerPropsPart = Pick<
 	| "startTime"
 	| "endTime"
 	| "interval"
+	| "timeIsEditable"
+	| "onCreateTimeOption"
 >
 
 type DateTimePickerAdditionalProps = {
@@ -157,6 +159,8 @@ function DateTimeNotInFormPicker({
 	onClearButtonClick,
 	defaultDate: _defaultDate,
 	defaultTime: _defaultTime,
+	timeIsEditable,
+	onCreateTimeOption,
 	...props
 }: DateTimePickerProps) {
 	const defaultDate = defaultValue
@@ -285,6 +289,8 @@ function DateTimeNotInFormPicker({
 		onChange: onTimeChangedCB,
 		onClearButtonClick: onClearButtonClickCB,
 		disabled: timeDisabled || disabled,
+		timeIsEditable: timeIsEditable,
+		onCreateTimeOption: onCreateTimeOption,
 		...props,
 		...timePickerOptionProps,
 	}

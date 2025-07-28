@@ -146,7 +146,7 @@ function ItemCheckbox({
 			checked={checked}
 			defaultChecked={defaultChecked}
 			className={cx(
-				"group",
+				"group/dd-checkbox",
 				commonStyles,
 				normalStyles,
 				selectedStyles,
@@ -160,7 +160,7 @@ function ItemCheckbox({
 				className={`${
 					disabled
 						? "border-border"
-						: "border-border-bold group-data-[state=checked]:border-selected-bold"
+						: "border-border-bold group-data-[state=checked]/dd-checkbox:border-selected-bold"
 				} relative ml-2 mr-4 flex h-4 w-4 flex-none items-center justify-center rounded border-2`}
 			>
 				<RDd.ItemIndicator asChild>
@@ -315,7 +315,7 @@ function ItemRadio({
 			disabled={disabled}
 			value={value}
 			className={cx(
-				"group",
+				"group/dd-radio",
 				commonStyles,
 				normalStyles,
 				selectedStyles,
@@ -327,10 +327,10 @@ function ItemRadio({
 		>
 			<div
 				className={cx(
-					"group-data-[selected=true]:border-selected-bold",
+					"group-data-[selected=true]/dd-radio:border-selected-bold",
 					disabled
 						? "border-border"
-						: "border-border-bold group-hover:border-selected-bold",
+						: "border-border-bold group-hover/dd-radio:border-selected-bold",
 					"relative ml-2 mr-4 flex size-3.5 flex-none items-center justify-center rounded-full border-2",
 				)}
 			>
@@ -482,7 +482,7 @@ const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
 			<Button
 				ref={ref}
 				className={twMerge(
-					`group flex items-center justify-between py-0 ${!hideChevron ? "pr-2" : ""}`,
+					`group/dd-trigger flex items-center justify-between py-0 ${!hideChevron ? "pr-2" : ""}`,
 					className,
 				)}
 				style={style}
@@ -496,7 +496,7 @@ const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
 						`hidden text-text-subtlest hover:text-text disabled:text-text-disabled ${
 							hideChevron
 								? ""
-								: "group-data-[state=open]:flex group-data-[state=open]:visible"
+								: "group-data-[state=open]/dd-trigger:flex group-data-[state=open]/dd-trigger:visible"
 						}`,
 						chevronClassName,
 					)}
@@ -509,7 +509,7 @@ const Trigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
 						`hidden text-text-subtlest hover:text-text disabled:text-text-disabled ${
 							hideChevron
 								? ""
-								: "group-data-[state=closed]:flex group-data-[state=closed]:visible"
+								: "group-data-[state=closed]/dd-trigger:flex group-data-[state=closed]/dd-trigger:visible"
 						}`,
 						chevronClassName,
 					)}

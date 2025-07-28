@@ -1,13 +1,12 @@
-import type React from "react"
+import { cva, cx, type VariantProps } from "class-variance-authority"
 import {
+	type CSSProperties,
 	forwardRef,
 	type HTMLProps,
 	useMemo,
 	useRef,
-	type CSSProperties,
 } from "react"
 import { twMerge } from "tailwind-merge"
-import { cva, cx, type VariantProps } from "class-variance-authority"
 import { LoadingSpinner } from "./LoadingSpinner"
 
 export type ButtonAppearance =

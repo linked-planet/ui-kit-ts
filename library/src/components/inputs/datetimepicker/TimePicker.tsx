@@ -31,6 +31,8 @@ type TimePickerBaseProps = {
 	styles?: SelectProps<TimeType, false>["styles"]
 	open?: boolean
 	defaultOpen?: boolean
+	timeIsEditable?: boolean
+	onCreateTimeOption?: (option: string) => void
 }
 
 export type TimePickerProps = TimePickerBaseProps &
@@ -187,6 +189,8 @@ export function TimePicker<FormData extends FieldValues>({
 	value: _value,
 	defaultValue: _defaultValue,
 	id,
+	timeIsEditable,
+	onCreateTimeOption,
 	...props
 }: TimePickerProps | TimePickerInFormProps<FormData>) {
 	const optionsProps = times ? { times } : { startTime, endTime, interval }
@@ -241,6 +245,8 @@ export function TimePicker<FormData extends FieldValues>({
 			DropdownIndicator: null, // hide the chevron
 		},
 		onChange: onSelectChange,
+		isCreateable: timeIsEditable,
+		onCreateOption: onCreateTimeOption,
 	}
 
 	if (!control) {

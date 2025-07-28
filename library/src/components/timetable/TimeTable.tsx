@@ -1,7 +1,7 @@
 import dayjs, { type Dayjs } from "dayjs/esm"
 import type React from "react"
 import { type MutableRefObject, useCallback, useEffect, useRef } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import useResizeObserver from "use-resize-observer"
 import { useRateLimitHelper } from "../../utils/rateLimit"
 import { InlineMessage } from "../InlineMessage"
@@ -17,6 +17,15 @@ import {
 	initAndUpdateTimeTableConfigStore,
 	type TimeFrameDay,
 } from "./TimeTableConfigStore"
+import {
+	clearTimeTableFocusStore,
+	deleteScrollContainerRef,
+	deleteTableHeaderRef,
+	initTimeTableFocusStore,
+	setFocusedCell,
+	setScrollContainerRef,
+	setTableHeaderRef,
+} from "./TimeTableFocusStore"
 import {
 	type CustomHeaderRowHeaderProps,
 	type CustomHeaderRowTimeSlotProps,
@@ -35,6 +44,7 @@ import {
 	initAndUpdateTimeTableSelectionStore,
 	type onTimeRangeSelectedType,
 } from "./TimeTableSelectionStore"
+import { getNextTabbableElement, getPreviousTabbableElement } from "./tabUtils"
 import { getStartAndEndSlot, getTimeSlotMinutes } from "./timeTableUtils"
 import { useGroupRows } from "./useGoupRows"
 
@@ -334,6 +344,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		onTimeRangeSelected,
 	)
 
+	initTimeTableFocusStore(storeIdent)
+
 	const {
 		groupRows,
 		//rowCount,
@@ -375,6 +387,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			let itemCount = 0
 			for (const groupId in itemsWithSameStartAndEnd) {
 				const group = itemsWithSameStartAndEnd[groupId]
+				if (!group) {
+					throw new Error(`TimeTable - group ${groupId} not found`)
+				}
 				itemCount += group.length
 			}
 			if (itemCount > 0) {
@@ -426,7 +441,28 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 			}
 		}
 	}, [nowbarScrollHandling])
-	//
+
+	// focus store scroll container ref handling
+	useEffect(() => {
+		if (intersectionContainerRef.current) {
+			// Set the scroll container ref in the focus store
+			setScrollContainerRef(storeIdent, intersectionContainerRef)
+		}
+		return () => {
+			// delete the scroll container ref in the focus store
+			deleteScrollContainerRef(storeIdent)
+		}
+	}, [storeIdent])
+
+	// table header ref handling
+	useEffect(() => {
+		if (tableHeaderRef.current) {
+			setTableHeaderRef(storeIdent, tableHeaderRef)
+		}
+		return () => {
+			deleteTableHeaderRef(storeIdent)
+		}
+	}, [storeIdent])
 
 	// adjust the now bar moves the now bar to the current time slot, if it exists
 	// and also adjusts the orange border of the time slot header
@@ -534,12 +570,53 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 						...style,
 					}}
 					ref={intersectionContainerRef}
+					tabIndex={-1}
 				>
+					{/** biome-ignore lint/a11y/useSemanticElements: it is already a table, I dont know why it complains */}
 					<table
-						className={
-							"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto"
-						}
+						className={twJoin(
+							"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto",
+							"focus:outline-2 focus:outline-brand-bold focus:outline-solid",
+							"focus-visible:outline-2 focus-visible:outline-brand-bold focus-visible:outline-solid",
+							"ring-2 ring-brand-bold",
+							"focus:border-2 focus:border-brand-bold focus:border-solid",
+						)}
 						ref={tableRef}
+						// biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: grid makes it "interactive" from screen readers while a table is not interactive
+						role="grid"
+						aria-rowcount={groupRows.size}
+						aria-colcount={slotsArray.length}
+						onBlur={(e) => {
+							if (
+								!e.currentTarget.contains(
+									e.relatedTarget as Node,
+								)
+							) {
+								console.log(
+									"TimeTable - clearing focus store (leaving table)",
+								)
+								clearTimeTableFocusStore(storeIdent)
+								return
+							}
+						}}
+						onFocus={(e) => {
+							if (
+								!e.currentTarget.contains(
+									e.relatedTarget as Node,
+								)
+							) {
+								console.log(
+									"TimeTable - resetting scroll position",
+								)
+
+								intersectionContainerRef.current?.scrollTo({
+									top: 0,
+									left: 0,
+									behavior: "smooth",
+								})
+							}
+						}}
+						tabIndex={0}
 					>
 						<LPTimeTableHeader<G, I>
 							slotsArray={slotsArray}
@@ -716,6 +793,9 @@ function moveNowBar(
 	}
 
 	let currentTimeSlot = slotsArray[startSlot]
+	if (!currentTimeSlot) {
+		throw new Error("TimeTable - currentTimeSlot is undefined")
+	}
 	const timeSlotMinutes = getTimeSlotMinutes(
 		currentTimeSlot,
 		timeFrameDay,

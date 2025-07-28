@@ -3,6 +3,7 @@ import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import type { Appearance } from "../utils/appearanceTypes"
+import { getNextTabbableElement } from "./timetable/tabUtils"
 
 export type OpeningDirection = "topdown" | "bottomup"
 
@@ -114,6 +115,7 @@ export function InlineMessage({
 			id={id}
 			data-testid={testId}
 			aria-live="polite"
+			tabIndex={-1}
 		>
 			<div
 				style={{
@@ -135,16 +137,24 @@ export function InlineMessage({
 						<button
 							type="button"
 							className={twMerge(
-								"appearance-none ml-2 p-2 group flex items-center justify-center cursor-pointer",
+								"appearance-none ml-2 p-2 group/imsg flex items-center justify-center cursor-pointer",
 								_RemoveButtonAppearanceColors[
 									message.appearance ?? "default"
 								],
 							)}
-							onClick={() => setOpen(false)}
+							onClick={(e) => {
+								setOpen(false)
+								const nextTabbableElement =
+									getNextTabbableElement(e.currentTarget)
+								if (nextTabbableElement) {
+									nextTabbableElement.focus()
+								}
+							}}
+							tabIndex={open ? 0 : -1}
 						>
 							<XIcon
 								aria-label="close"
-								className="size-3 stroke-5 group-hover:stroke-6 group-active:stroke-7"
+								className="size-3 stroke-5 group-hover/imsg:stroke-6 group-active/imsg:stroke-7"
 							/>
 						</button>
 					)}

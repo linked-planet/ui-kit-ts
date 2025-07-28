@@ -36,7 +36,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 	ExampleGroup,
 	ExampleItem
 >[] = [
-	{
+	/*{
 		group: {
 			id: "group-empty",
 			title: "Empty Group",
@@ -95,7 +95,7 @@ const exampleEntries: TimeTableTypes.TimeTableEntry<
 				title: "Item Weektest 1",
 			},
 		],
-	},
+	},*/
 	{
 		group: {
 			id: "month-test",
@@ -587,6 +587,9 @@ function TestCustomHeaderRowTimeSlot<
 	}[] = []
 	for (let i = 0; i < groupItems.length; i++) {
 		const item = groupItems[i]
+		if (!item) {
+			throw new Error(`TimeTableShowcase - item ${i} is undefined`)
+		}
 		const startAndEnd = timeTableUtils.getStartAndEndSlot(
 			item,
 			slotsArray,
@@ -604,6 +607,9 @@ function TestCustomHeaderRowTimeSlot<
 
 	const leftAndWidths = groupItemsOfCell.map((it, i) => {
 		const startAndEnd = startAndEndInSlot[i]
+		if (!startAndEnd) {
+			return null
+		}
 		if (startAndEnd.status === "before" || startAndEnd.status === "after") {
 			return null
 		}
@@ -620,8 +626,16 @@ function TestCustomHeaderRowTimeSlot<
 
 	const cellWidth = tableCellRef.current?.offsetWidth ?? 70
 
-	const ret = leftAndWidths.map((it, i) =>
-		it ? (
+	const ret = leftAndWidths.map((it, i) => {
+		if (!it) {
+			return null
+		}
+		if (!groupItemsOfCell[i]) {
+			throw new Error(
+				`TimeTableShowcase - groupItemsOfCell[${i}] is undefined`,
+			)
+		}
+		return (
 			<div
 				key={groupItemsOfCell[i].title}
 				className="absolute top-0 bottom-0 bg-discovery-bold whitespace-nowrap overflow-visible z-10 opacity-50"
@@ -633,8 +647,8 @@ function TestCustomHeaderRowTimeSlot<
 			>
 				<div className="truncate">{groupItemsOfCell[i].title}</div>
 			</div>
-		) : null,
-	)
+		)
+	})
 
 	return <div className="bg-surface-pressed absolute inset-0">{ret}</div>
 }
@@ -764,8 +778,13 @@ function Example() {
 					return prev
 				}
 				const newEntries = [...prev]
+				if (!newEntries[groupIndex]) {
+					throw new Error(
+						`TimeTableShowcase - newEntries[${groupIndex}] is undefined`,
+					)
+				}
 				const newGroup = { ...newEntries[groupIndex] }
-				const newGroupItems = [...newGroup.items]
+				const newGroupItems = [...(newGroup.items ?? [])]
 				newGroupItems.push(item)
 				newGroup.items = newGroupItems
 				newEntries[groupIndex] = newGroup
@@ -1140,6 +1159,10 @@ function Example() {
 	//endregion timetable
 }
 
+document.addEventListener("focusin", (event) => {
+	console.log("Newly focused element:", document.activeElement)
+})
+
 function ExampleCalendar() {
 	//#region timetabledays
 	const timeFrame = useMemo(
@@ -1150,11 +1173,30 @@ function ExampleCalendar() {
 		[],
 	)
 
+	const [entries, setEntries] = useState(exampleEntries)
+
+	const requestMoreEntriesCB = useCallback(() => {
+		setEntries((prev) => {
+			const missing = 10
+			const missingGroups = createMoreTestGroups(
+				timeFrame.startDate,
+				timeFrame.endDate,
+				missing,
+				prev.length,
+			)
+			return [...prev, ...missingGroups]
+		})
+	}, [timeFrame.endDate, timeFrame.startDate])
+
+	useEffect(() => {
+		requestMoreEntriesCB()
+	}, [requestMoreEntriesCB])
+
 	const translation = useTranslation() as TranslatedTimeTableMessages
 	return (
 		<div
 			style={{
-				height: "600px",
+				height: "650px",
 			}}
 		>
 			<TimeTable
@@ -1163,18 +1205,32 @@ function ExampleCalendar() {
 				rowHeight={30}
 				startDate={timeFrame.startDate}
 				endDate={timeFrame.endDate}
-				entries={exampleEntries}
+				entries={entries}
 				timeTableMessages={translation}
-				disableWeekendInteractions={true}
+				disableWeekendInteractions={false}
 				showTimeSlotHeader={false}
 				viewType={"days"}
 				itemsOutsideOfDayRangeFound={(items) => {
 					console.info("items outside of day range found", items)
 				}}
+				onTimeRangeSelected={(
+					range: {
+						startDate: Dayjs
+						endDate: Dayjs
+						groupId: string
+					} | null,
+				) => {
+					console.log("onTimeRangeSelected", range)
+				}}
 			/>
+			<Button
+				onFocus={() => console.log("Request more button focussed")}
+				onClick={requestMoreEntriesCB}
+			>
+				Load more entries
+			</Button>
 		</div>
 	)
-
 	//#endregion timetabledays
 }
 

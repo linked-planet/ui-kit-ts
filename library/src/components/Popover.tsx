@@ -37,7 +37,8 @@ function Trigger({
 }: PopoverTriggerProps) {
 	const classNameResolved = useCallback(
 		(state: RPo.Trigger.State) => {
-			const basicClassName = "group flex items-center justify-between"
+			const basicClassName =
+				"group/po-trigger flex items-center justify-between"
 			if (typeof className === "function") {
 				// there seems to be a bug in the type of className ((() => string & string) - 16.07.2025, Markus)
 				const cn = (className as (state: RPo.Trigger.State) => string)(
@@ -59,7 +60,9 @@ function Trigger({
 					strokeWidth={3}
 					className={twMerge(
 						"hidden text-text-subtlest hover:text-text disabled:text-text-disabled",
-						hideChevron ? "" : "group-data-[state=open]:flex",
+						hideChevron
+							? ""
+							: "group-data-[state=open]/po-trigger:flex",
 						chevronClassName,
 					)}
 					style={chevronStyle}
@@ -70,7 +73,9 @@ function Trigger({
 					strokeWidth={3}
 					className={twMerge(
 						"hidden text-text-subtlest hover:text-text disabled:text-text-disabled",
-						hideChevron ? "" : "group-data-[state=closed]:flex",
+						hideChevron
+							? ""
+							: "group-data-[state=closed]/po-trigger:flex",
 						chevronClassName,
 					)}
 					style={chevronStyle}

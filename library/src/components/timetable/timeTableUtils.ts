@@ -1,18 +1,20 @@
 import dayjs, { type Dayjs } from "dayjs/esm"
-import isoWeek from "dayjs/esm/plugin/isoWeek"
 import isLeapYear from "dayjs/esm/plugin/isLeapYear"
+import isoWeek from "dayjs/esm/plugin/isoWeek"
 import localeData from "dayjs/esm/plugin/localeData"
-import utc from "dayjs/esm/plugin/utc"
 import timezone from "dayjs/esm/plugin/timezone"
+import utc from "dayjs/esm/plugin/utc"
+
 dayjs.extend(isoWeek)
 dayjs.extend(isLeapYear)
 dayjs.extend(localeData)
 dayjs.extend(utc)
 dayjs.extend(timezone)
-import type { TimeSlotBooking, TimeTableViewType } from "./TimeTable"
-import type { TimeTableMessage } from "./TimeTableMessageContext"
-import type { TimeFrameDay } from "./TimeTableConfigStore"
+
 import { assertUnreachable } from "../../utils/assertUnreachable"
+import type { TimeSlotBooking, TimeTableViewType } from "./TimeTable"
+import type { TimeFrameDay } from "./TimeTableConfigStore"
+import type { TimeTableMessage } from "./TimeTableMessageContext"
 
 export function isOverlapping(
 	item: TimeSlotBooking,
@@ -401,6 +403,10 @@ export function getLeftAndWidth(
 ) {
 	let itemModStart = item.startDate
 	let slotStart = slotsArray[startSlot]
+	if (!slotStart) {
+		console.error("slotStart is undefined", startSlot, slotsArray)
+		throw new Error("slotStart is undefined")
+	}
 	if (viewType !== "hours") {
 		slotStart = slotStart
 			.add(timeFrameDay.startHour, "hours")
@@ -413,6 +419,10 @@ export function getLeftAndWidth(
 
 	let itemModEnd = item.endDate
 	let slotEnd = slotsArray[endSlot]
+	if (!slotEnd) {
+		console.error("slotEnd is undefined", endSlot, slotsArray)
+		throw new Error("slotEnd is undefined")
+	}
 	if (viewType !== "hours") {
 		slotEnd = slotEnd
 			.add(timeFrameDay.endHour, "hours")
@@ -463,6 +473,10 @@ export function getLeftAndWidth(
 	}
 
 	let endSlotStart = slotsArray[endSlot]
+	if (!endSlotStart) {
+		console.error("endSlotStart is undefined", endSlot, slotsArray)
+		throw new Error("endSlotStart is undefined")
+	}
 	if (viewType !== "hours") {
 		endSlotStart = endSlotStart
 			.add(timeFrameDay.startHour, "hours")
@@ -533,12 +547,18 @@ export function getStartAndEndSlot(
 	status: "before" | "after" | "in"
 } {
 	let timeFrameStart = slotsArray[0]
+	if (!timeFrameStart) {
+		throw new Error("timeFrameStart is undefined")
+	}
 	if (viewType !== "hours") {
 		timeFrameStart = timeFrameStart
 			.add(timeFrameDay.startHour, "hours")
 			.add(timeFrameDay.startMinute, "minutes")
 	}
 	let timeFrameEnd = slotsArray[slotsArray.length - 1]
+	if (!timeFrameEnd) {
+		throw new Error("timeFrameEnd is undefined")
+	}
 	switch (viewType) {
 		case "hours":
 			timeFrameEnd = timeFrameEnd.add(1, "hour")
@@ -587,7 +607,12 @@ export function getStartAndEndSlot(
 
 	let startSlot = -1
 	for (let i = 0; i < slotsArray.length; i++) {
-		if (slotsArray[i].isAfter(item.startDate)) {
+		const slot = slotsArray[i]
+		if (!slot) {
+			console.error("slotsArray[i] is undefined", i, slotsArray)
+			throw new Error("slotsArray entry is undefined")
+		}
+		if (slot.isAfter(item.startDate)) {
 			startSlot = i
 			break
 		}
@@ -597,16 +622,36 @@ export function getStartAndEndSlot(
 		// but only if the time slot before is on the same day, else it means that the booking starts before the time frame range of the day
 		if (viewType === "hours") {
 			// if the previous timeslot is on a different day, we know item starts before the first time slot of a day
-			if (
-				slotsArray[startSlot - 1].day() === slotsArray[startSlot].day()
-			) {
+			const previousSlot = slotsArray[startSlot - 1]
+			if (!previousSlot) {
+				console.error(
+					"previousSlot is undefined",
+					startSlot,
+					slotsArray,
+				)
+				throw new Error("previousSlot is undefined")
+			}
+			const currentSlot = slotsArray[startSlot]
+			if (!currentSlot) {
+				console.error("currentSlot is undefined", startSlot, slotsArray)
+				throw new Error("currentSlot is undefined")
+			}
+			if (previousSlot.day() === currentSlot.day()) {
 				startSlot--
 			}
 		} else {
 			let startSlotEnd = slotsArray[startSlot - 1]
-				.startOf(viewType)
+				?.startOf(viewType)
 				.add(timeFrameDay.endHour, "hours")
 				.add(timeFrameDay.endMinute, "minutes")
+			if (!startSlotEnd) {
+				console.error(
+					"startSlotEnd is undefined",
+					startSlot,
+					slotsArray,
+				)
+				throw new Error("startSlotEnd is undefined")
+			}
 			if (viewType !== "days") {
 				startSlotEnd = startSlotEnd.add(1, viewType)
 			}
@@ -625,7 +670,12 @@ export function getStartAndEndSlot(
 
 	let endSlot = -1
 	for (let i = startSlot; i < slotsArray.length; i++) {
-		if (slotsArray[i].isAfter(item.endDate)) {
+		const slot = slotsArray[i]
+		if (!slot) {
+			console.error("slotsArray[i] is undefined", i, slotsArray)
+			throw new Error("slotsArray entry is undefined")
+		}
+		if (slot.isAfter(item.endDate)) {
 			endSlot = i - 1
 			break
 		}
@@ -635,8 +685,12 @@ export function getStartAndEndSlot(
 	}
 	if (viewType !== "hours") {
 		const endSlotSlot = slotsArray[endSlot]
-			.add(timeFrameDay.startHour, "hours")
+			?.add(timeFrameDay.startHour, "hours")
 			.add(timeFrameDay.startMinute, "minutes")
+		if (!endSlotSlot) {
+			console.error("endSlotSlot is undefined", endSlot, slotsArray)
+			throw new Error("endSlotSlot is undefined")
+		}
 		if (item.endDate.isBefore(endSlotSlot)) {
 			endSlot--
 		}
@@ -656,6 +710,10 @@ export function getStartAndEndSlot(
 	}
 
 	let startSlotStart = slotsArray[startSlot]
+	if (!startSlotStart) {
+		console.error("startSlotStart is undefined", startSlot, slotsArray)
+		throw new Error("startSlotStart is undefined")
+	}
 	if (viewType !== "hours") {
 		startSlotStart = startSlotStart
 			.add(timeFrameDay.startHour, "hours")
@@ -670,6 +728,10 @@ export function getStartAndEndSlot(
 	}
 
 	let endSlotEnd = slotsArray[endSlot]
+	if (!endSlotEnd) {
+		console.error("endSlotEnd is undefined", endSlot, slotsArray)
+		throw new Error("endSlotEnd is undefined")
+	}
 	if (viewType === "hours") {
 		endSlotEnd = endSlotEnd.add(60, "minutes")
 	} else {

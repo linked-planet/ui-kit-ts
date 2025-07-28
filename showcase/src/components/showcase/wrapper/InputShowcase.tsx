@@ -6,7 +6,7 @@ import {
 	Label,
 	TextArea,
 } from "@linked-planet/ui-kit-ts"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, ZapIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
@@ -78,6 +78,8 @@ export default function InputShowcase(props: ShowcaseProps) {
 				minLength={3}
 				id="testInput"
 				helpMessage="This is a help message."
+				invalid
+				iconAfter={<ZapIcon />}
 			/>
 			<Input disabled />
 			<Label htmlFor="testInput2">This is a label.</Label>

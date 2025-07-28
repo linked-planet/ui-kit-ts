@@ -73,9 +73,12 @@ const Input = forwardRef(
 			<div
 				className={twJoin(
 					"flex items-center",
+					iconBefore && "pl-2",
+					iconAfter && "pr-2",
 					inputBaseStyles,
 					inputClassName,
 				)}
+				aria-invalid={ariaInvalid || invalid}
 			>
 				{iconBefore}
 				<input
