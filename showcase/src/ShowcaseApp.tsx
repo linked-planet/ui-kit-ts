@@ -31,7 +31,7 @@ export default function ShowcaseApp() {
 						<AppLayout.Main className="overflow-hidden">
 							<PageLayout.Page>
 								<PageLayout.PageBody>
-									<PageLayout.PageBodyContent>
+									<PageLayout.PageBodyContent ariaLabel="Showcase Content">
 										<Routes>
 											<Route
 												path="/"

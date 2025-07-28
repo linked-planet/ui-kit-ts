@@ -65,7 +65,7 @@ function PageLayoutExample() {
 					</PageLayout.PageHeaderLine>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
-					<PageLayout.PageBodyContent>
+					<PageLayout.PageBodyContent ariaLabel="Body Content">
 						<h1>Text H1</h1>
 						<h2>Text H2</h2>
 						<h3>Text H3</h3>
@@ -135,10 +135,10 @@ function PageLayoutExampleWithBodyHeader() {
 					</PageLayout.PageHeaderLine>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
-					<PageLayout.PageBodyHeader>
+					<PageLayout.PageBodyHeader ariaLabel="Body Header">
 						Body Header
 					</PageLayout.PageBodyHeader>
-					<PageLayout.PageBodyContent>
+					<PageLayout.PageBodyContent ariaLabel="Body Content">
 						Body Content
 					</PageLayout.PageBodyContent>
 					<PageLayout.PageBodyFooter>
@@ -166,7 +166,7 @@ function PageLayouOnlyTitle() {
 					</PageLayout.PageHeaderTitle>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
-					<PageLayout.PageBodyContent>
+					<PageLayout.PageBodyContent ariaLabel="Page Body Content">
 						Body Content
 					</PageLayout.PageBodyContent>
 					<PageLayout.PageBodyFooter>
