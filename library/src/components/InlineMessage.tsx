@@ -3,6 +3,7 @@ import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import type { Appearance } from "../utils/appearanceTypes"
+import { getNextTabbableElement } from "./timetable/tabUtils"
 
 export type OpeningDirection = "topdown" | "bottomup"
 
@@ -114,6 +115,7 @@ export function InlineMessage({
 			id={id}
 			data-testid={testId}
 			aria-live="polite"
+			tabIndex={-1}
 		>
 			<div
 				style={{
@@ -140,7 +142,15 @@ export function InlineMessage({
 									message.appearance ?? "default"
 								],
 							)}
-							onClick={() => setOpen(false)}
+							onClick={(e) => {
+								setOpen(false)
+								const nextTabbableElement =
+									getNextTabbableElement(e.currentTarget)
+								if (nextTabbableElement) {
+									nextTabbableElement.focus()
+								}
+							}}
+							tabIndex={open ? 0 : -1}
 						>
 							<XIcon
 								aria-label="close"
