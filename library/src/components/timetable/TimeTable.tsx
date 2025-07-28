@@ -570,6 +570,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 						...style,
 					}}
 					ref={intersectionContainerRef}
+					tabIndex={-1}
 				>
 					{/** biome-ignore lint/a11y/useSemanticElements: it is already a table, I dont know why it complains */}
 					<table
@@ -585,35 +586,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 						role="grid"
 						aria-rowcount={groupRows.size}
 						aria-colcount={slotsArray.length}
-						/*onKeyUp={(e) => {
-							// focus management
-							if (
-								e.key === "Tab" &&
-								e.currentTarget === tableRef.current
-							) {
-								console.log("TIME TABLE KEY UP")
-								e.preventDefault()
-								e.stopPropagation()
-								if (!e.shiftKey) {
-									const firstGroupKey =
-										groupRows.size > 0
-											? groupRows.keys().next().value
-											: undefined
-									if (!firstGroupKey) {
-										console.log(
-											"TimeTable - there is no first group cell to tab into",
-										)
-										return
-									}
-									setFocusedCell(
-										storeIdent,
-										firstGroupKey.id,
-										0,
-										null,
-									)
-								}
-							}
-						}}*/
 						onBlur={(e) => {
 							if (
 								!e.currentTarget.contains(
@@ -628,48 +600,21 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 							}
 						}}
 						onFocus={(e) => {
-							// store the element that was focused before the table, but only if it is not the table itself or in the table
-							console.log(
-								"FOCUS TIME TABLE",
-								e.currentTarget,
-								e.target,
-								e.relatedTarget,
-							)
-							if (e.currentTarget.contains(e.target as Node)) {
-								console.log(
-									"TimeTable - related target is in the table",
-								)
-								/*const firstGroupKey =
-									groupRows.size > 0
-										? groupRows.keys().next().value
-										: undefined
-								if (!firstGroupKey) {
-									console.log(
-										"TimeTable - there is no first group cell to tab into",
-									)
-									return
-								}
-								setFocusedCell(
-									storeIdent,
-									firstGroupKey.id,
-									0,
-									null,
-								)*/
-							}
-							/*if (
-								e.relatedTarget &&
-								e.relatedTarget !== e.currentTarget &&
+							if (
 								!e.currentTarget.contains(
 									e.relatedTarget as Node,
 								)
 							) {
 								console.log(
-									"TimeTable - storing previously focused element",
-									e.relatedTarget,
+									"TimeTable - resetting scroll position",
 								)
-								previouslyFocusedElementRef.current =
-									e.relatedTarget as HTMLElement
-							}*/
+
+								intersectionContainerRef.current?.scrollTo({
+									top: 0,
+									left: 0,
+									behavior: "smooth",
+								})
+							}
 						}}
 						tabIndex={0}
 					>

@@ -57,7 +57,6 @@ export function clearTimeTableFocusStore(ident: string) {
 			`TimeTable - focus store not found or initialized: ${ident}`,
 		)
 	}
-	console.log("CLEAR FOCUS STORE", ident)
 	store.focusedCell.groupId = null
 	store.focusedCell.timeSlotNumber = null
 	store.focusedCell.itemKey = null
