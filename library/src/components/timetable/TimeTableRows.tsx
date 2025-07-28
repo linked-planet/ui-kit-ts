@@ -768,7 +768,6 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		focusedCell.timeSlotNumber === timeSlotNumber &&
 		focusedCell.itemKey === null
 
-	// Remove the focus logic from the render and put it in useEffect
 	useEffect(() => {
 		if (isFocused && rowNumber === 0 && tableCellRef.current) {
 			// Only focus if this element doesn't already have focus
@@ -914,6 +913,29 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			key={timeSlotNumber}
 			{...mouseHandlersUsed}
 			onKeyUp={handleKeyUp}
+			onBlur={(e) => {
+				// Only handle blur for the first cell
+				if (
+					rowNumber === 0 &&
+					groupNumber === 0 &&
+					timeSlotNumber === 0
+				) {
+					console.log(
+						"BLUR FIRST CELL",
+						e.currentTarget,
+						e.target,
+						e.relatedTarget,
+					)
+
+					// If focus is going to the table, clear the focus store
+					if (e.relatedTarget?.tagName === "TABLE") {
+						console.log(
+							"BLUR FIRST CELL - focus going to table, clearing focus store",
+						)
+						clearTimeTableFocusStore(storeIdent)
+					}
+				}
+			}}
 			// biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: we use it as a grid cell which is interactive
 			role="gridcell"
 			aria-colindex={timeSlotNumber}
