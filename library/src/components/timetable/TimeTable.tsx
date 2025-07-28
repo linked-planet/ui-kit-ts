@@ -1,7 +1,7 @@
 import dayjs, { type Dayjs } from "dayjs/esm"
 import type React from "react"
 import { type MutableRefObject, useCallback, useEffect, useRef } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import useResizeObserver from "use-resize-observer"
 import { useRateLimitHelper } from "../../utils/rateLimit"
 import { InlineMessage } from "../InlineMessage"
@@ -44,6 +44,7 @@ import {
 	initAndUpdateTimeTableSelectionStore,
 	type onTimeRangeSelectedType,
 } from "./TimeTableSelectionStore"
+import { getNextTabbableElement, getPreviousTabbableElement } from "./tabUtils"
 import { getStartAndEndSlot, getTimeSlotMinutes } from "./timeTableUtils"
 import { useGroupRows } from "./useGoupRows"
 
@@ -541,9 +542,6 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 		}
 	}, [] )*/
 
-	// to go back to the previously focused element, I need to store the element in the focus store
-	const previouslyFocusedElementRef = useRef<HTMLElement | null>(null)
-
 	if (!slotsArray || slotsArray.length === 0) {
 		return (
 			<div>
@@ -575,23 +573,36 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 				>
 					{/** biome-ignore lint/a11y/useSemanticElements: it is already a table, I dont know why it complains */}
 					<table
-						className={
-							"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto focus:outline-2 focus:outline-brand-bold focus:outline-solid"
-						}
+						className={twJoin(
+							"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto",
+							"focus:outline-2 focus:outline-brand-bold focus:outline-solid",
+							"focus-visible:outline-2 focus-visible:outline-brand-bold focus-visible:outline-solid",
+							"ring-2 ring-brand-bold",
+							"focus:border-2 focus:border-brand-bold focus:border-solid",
+						)}
 						ref={tableRef}
 						// biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: grid makes it "interactive" from screen readers while a table is not interactive
 						role="grid"
 						aria-rowcount={groupRows.size}
 						aria-colcount={slotsArray.length}
-						onKeyUp={(e) => {
+						/*onKeyUp={(e) => {
 							// focus management
-							if (e.key === "Tab") {
+							if (
+								e.key === "Tab" &&
+								e.currentTarget === tableRef.current
+							) {
+								console.log("TIME TABLE KEY UP")
+								e.preventDefault()
+								e.stopPropagation()
 								if (!e.shiftKey) {
 									const firstGroupKey =
 										groupRows.size > 0
 											? groupRows.keys().next().value
 											: undefined
 									if (!firstGroupKey) {
+										console.log(
+											"TimeTable - there is no first group cell to tab into",
+										)
 										return
 									}
 									setFocusedCell(
@@ -600,15 +611,9 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 										0,
 										null,
 									)
-								} else {
-									// manually focus the previously focused element
-									clearTimeTableFocusStore(storeIdent)
-									if (previouslyFocusedElementRef.current) {
-										previouslyFocusedElementRef.current.focus()
-									}
 								}
 							}
-						}}
+						}}*/
 						onBlur={(e) => {
 							if (
 								!e.currentTarget.contains(
@@ -619,11 +624,39 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 									"TimeTable - clearing focus store (leaving table)",
 								)
 								clearTimeTableFocusStore(storeIdent)
+								return
 							}
 						}}
 						onFocus={(e) => {
 							// store the element that was focused before the table, but only if it is not the table itself or in the table
-							if (
+							console.log(
+								"FOCUS TIME TABLE",
+								e.currentTarget,
+								e.target,
+								e.relatedTarget,
+							)
+							if (e.currentTarget.contains(e.target as Node)) {
+								console.log(
+									"TimeTable - related target is in the table",
+								)
+								/*const firstGroupKey =
+									groupRows.size > 0
+										? groupRows.keys().next().value
+										: undefined
+								if (!firstGroupKey) {
+									console.log(
+										"TimeTable - there is no first group cell to tab into",
+									)
+									return
+								}
+								setFocusedCell(
+									storeIdent,
+									firstGroupKey.id,
+									0,
+									null,
+								)*/
+							}
+							/*if (
 								e.relatedTarget &&
 								e.relatedTarget !== e.currentTarget &&
 								!e.currentTarget.contains(
@@ -636,7 +669,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								)
 								previouslyFocusedElementRef.current =
 									e.relatedTarget as HTMLElement
-							}
+							}*/
 						}}
 						tabIndex={0}
 					>

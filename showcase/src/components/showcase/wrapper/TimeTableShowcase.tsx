@@ -1159,6 +1159,10 @@ function Example() {
 	//endregion timetable
 }
 
+document.addEventListener("focusin", (event) => {
+	console.log("Newly focused element:", document.activeElement)
+})
+
 function ExampleCalendar() {
 	//#region timetabledays
 	const timeFrame = useMemo(

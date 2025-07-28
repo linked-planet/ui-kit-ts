@@ -45,6 +45,7 @@ import {
 	toggleTimeSlotSelected,
 	useTimeSlotSelection,
 } from "./TimeTableSelectionStore"
+import { getNextTabbableElement } from "./tabUtils"
 import { getLeftAndWidth, getTimeSlotMinutes } from "./timeTableUtils"
 import type { ItemRowEntry } from "./useGoupRows"
 import { useKeyboardHandlers } from "./useKeyboardHandler"
@@ -767,11 +768,21 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		focusedCell.timeSlotNumber === timeSlotNumber &&
 		focusedCell.itemKey === null
 
-	// focus is set in the focus store
-	// only focus the first row of a group
-	if (isFocused && rowNumber === 0) {
-		tableCellRef.current?.focus()
-	}
+	// Remove the focus logic from the render and put it in useEffect
+	useEffect(() => {
+		if (isFocused && rowNumber === 0 && tableCellRef.current) {
+			// Only focus if this element doesn't already have focus
+			if (document.activeElement !== tableCellRef.current) {
+				console.log(
+					"FOCUS CELL EFFECT",
+					group.id,
+					timeSlotNumber,
+					rowNumber,
+				)
+				tableCellRef.current.focus()
+			}
+		}
+	}, [isFocused, rowNumber, group.id, timeSlotNumber])
 
 	// TIME SLOT ITEMS
 	let gridTemplateColumns = ""
@@ -930,6 +941,64 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					? 0
 					: -1
 			}
+			onFocus={(e) => {
+				//e.preventDefault()
+				//e.stopPropagation()
+				const nextTabbableElement = getNextTabbableElement(
+					e.currentTarget,
+				)
+				console.log(
+					"FOCUS CELL EVALUATE",
+					e.currentTarget,
+					e.target,
+					e.relatedTarget,
+					nextTabbableElement,
+				)
+
+				if (
+					rowNumber === 0 &&
+					groupNumber === 0 &&
+					timeSlotNumber === 0 &&
+					focusedCell.groupId === null &&
+					focusedCell.timeSlotNumber === null &&
+					focusedCell.itemKey === null //&&
+					//e.relatedTarget?.tagName === "TABLE" /*||
+					//(nextTabbableElement &&
+					//	e.relatedTarget === nextTabbableElement)*/
+				) {
+					console.log(
+						"FOCUS CELL",
+						e.currentTarget,
+						e.target,
+						e.relatedTarget,
+					)
+					//e.preventDefault()
+					//e.stopPropagation()
+					setFocusedCell(storeIdent, group.id, 0, null)
+				} else {
+					console.log(
+						"FOCUS CELL NOT FOCUSING",
+						e.currentTarget,
+						e.target,
+						e.relatedTarget,
+					)
+				}
+			}}
+			/*onBlur={(e) => {
+				if (
+					rowNumber === 0 &&
+					groupNumber === 0 &&
+					timeSlotNumber === 0
+				) {
+					console.log(
+						"BLUR CELL",
+						e.currentTarget,
+						e.target,
+						e.relatedTarget,
+					)
+					clearTimeTableFocusStore(storeIdent)
+				}
+			}}*/
 		>
 			{beforeCount > 0 && !hideOutOfRangeMarkers && (
 				<div
@@ -1082,6 +1151,16 @@ function PlaceholderTableCell<
 		focusedCell.groupId === group.id &&
 		focusedCell.timeSlotNumber === timeSlotNumber &&
 		focusedCell.itemKey === null
+
+	if (timeSlotNumber === 0 && groupNumber === 0) {
+		console.log(
+			"FOCUS PLACEHOLDER",
+			group.id,
+			timeSlotNumber,
+			isFocused,
+			focusedCell,
+		)
+	}
 
 	/*if (timeSlotSelectedIndex > 0) {
 		return null // the cell is not rendered since the placeholder item spans over multiple selected cells
