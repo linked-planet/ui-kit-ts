@@ -1,6 +1,6 @@
 import { css } from "@emotion/css"
 import type React from "react"
-import type { CSSProperties } from "react"
+import type { ComponentProps, CSSProperties } from "react"
 import { forwardRef } from "react"
 
 import { twMerge } from "tailwind-merge"
@@ -15,7 +15,6 @@ export const CardBase = forwardRef(
 			onOpenChange,
 			children,
 			id,
-			testId,
 			className,
 			style,
 			triggerClassName,
@@ -29,7 +28,6 @@ export const CardBase = forwardRef(
 			onOpenChange?: (opened: boolean) => void
 			children?: React.ReactNode
 			id?: string
-			testId?: string
 			className?: string
 			style?: CSSProperties
 			triggerClassName?: string
@@ -50,19 +48,13 @@ export const CardBase = forwardRef(
 				open={openVal}
 				defaultOpen={defaultOpen}
 				onOpenChange={onOpenChange}
-				className={twMerge(
-					"border-border box-border border-2 border-solid",
-					className,
-				)}
+				className={className}
 				id={id}
 				ref={ref}
 				style={style}
 			>
 				<Collapsible.Trigger
-					className={twMerge(
-						"rounded-t data-[state=closed]:border-b-0 data-[state=open]:border-b box-border border-solid border-x-0 border-t-0 border-border overflow-hidden",
-						triggerClassName,
-					)}
+					className={triggerClassName}
 					style={triggerStyle}
 					openButtonPosition={openButtonPos}
 					chevronClassName={chevronClassName}
@@ -80,85 +72,69 @@ CardBase.displayName = "CardBase"
 const CardHeaderPrefix = ({
 	children,
 	className,
-	style,
-	id,
-	testId,
-}: {
-	children: React.ReactNode
-	className?: string
-	style?: CSSProperties
-	id?: string
-	testId?: string
-}) => {
+	...props
+}: ComponentProps<"div">) => {
 	const _className = twMerge(
 		"text-text-subtlest pr-2 mr-4 box-border text-xs border-border border-r w-[100px] flex-none font-semibold grid items-center justify-start",
 		className,
 	)
 	return (
-		<div className={_className} id={id} data-testid={testId} style={style}>
+		<div
+			className={_className}
+			{...props}
+			data-component="CardHeaderPrefix"
+		>
 			<div className="truncate">{children}</div>
 		</div>
 	)
 }
 
+type CardHeaderPrefixProps = {
+	children: React.ReactNode
+	className?: string
+	style?: CSSProperties
+}
+
 const CardHeader = ({
 	className,
 	children,
-	prefix,
-	prefixClassName,
-	prefixStyle,
-	style,
-	id,
-	testId,
-}: {
-	className?: string
-	children: React.ReactNode
-	style?: CSSProperties
-	id?: string
-	testId?: string
-	prefix?: React.ReactNode
-	prefixClassName?: string
-	prefixStyle?: CSSProperties
+	headerPrefix,
+	...props
+}: ComponentProps<"div"> & {
+	headerPrefix?: CardHeaderPrefixProps
 }) => (
 	<div
 		className={twMerge(
 			"bg-surface-overlay box-border flex flex-1 justify-between px-4 py-3",
 			className,
 		)}
-		style={style}
-		id={id}
-		data-testid={testId}
+		{...props}
+		data-component="CardHeader"
 	>
-		{prefix && (
-			<CardHeaderPrefix className={prefixClassName} style={prefixStyle}>
-				{prefix}
+		{headerPrefix ? (
+			<CardHeaderPrefix
+				className={headerPrefix.className}
+				style={headerPrefix.style}
+			>
+				{headerPrefix.children}
 			</CardHeaderPrefix>
-		)}
+		) : null}
 		{children}
 	</div>
 )
 
 const CardHeaderMeta = ({
 	children,
-	id,
-	testId,
 	className,
-	style,
-}: {
-	children: React.ReactNode
-	id?: string
-	testId?: string
-	className?: string
-	style?: CSSProperties
-}) => (
+	...props
+}: ComponentProps<"div">) => (
 	<div
 		className={twMerge(
 			"w-full items-baseline box-border overflow-hidden",
 			className,
 		)}
-		style={style}
-		id={id}
-		data-testid={testId}
+		{...props}
+		data-component="CardHeaderMeta"
 	>
 		{children}
 	</div>
@@ -167,18 +143,8 @@ const CardHeaderMeta = ({
 const CardHeaderTitle = ({
 	children,
 	className,
-	style,
-	id,
-	testId,
-}: {
-	children: React.ReactNode
-	className?: string
-	style?: CSSProperties
-	id?: string
-	testId?: string
-	prefixClassName?: string
-	prefixStyle?: CSSProperties
-}) => {
+	...props
+}: ComponentProps<"div">) => {
 	const _className = twMerge(
 		"mt-0 truncate box-border text-start text-xl font-medium",
 		className,
@@ -188,18 +154,16 @@ const CardHeaderTitle = ({
 		typeof children === "string" ? (
 			<h3
 				className={_className}
-				id={id}
-				data-testid={testId}
-				style={style}
+				{...props}
+				data-component="CardHeaderTitle"
 			>
 				{children}
 			</h3>
 		) : (
 			<div
 				className={_className}
-				id={id}
-				data-testid={testId}
-				style={style}
+				{...props}
+				data-component="CardHeaderTitle"
 			>
 				{children}
 			</div>
@@ -211,16 +175,8 @@ const CardHeaderTitle = ({
 const CardHeaderSubtitle = ({
 	children,
 	className,
-	style,
-	testId,
-	id,
-}: {
-	children: React.ReactNode
-	className?: string
-	style?: CSSProperties
-	testId?: string
-	id?: string
-}) => {
+	...props
+}: ComponentProps<"div">) => {
 	const _className = twMerge(
 		"text-text-subtlest box-border mt-1 flex-1 justify-start truncate text-start text-sm font-semibold",
 		className,
@@ -229,16 +185,19 @@ const CardHeaderSubtitle = ({
 		return (
 			<div
 				className={_className}
-				id={id}
-				data-testid={testId}
-				style={style}
+				{...props}
+				data-component="CardHeaderSubtitle"
 			>
 				{children}
 			</div>
 		)
 	}
 	return (
-		<div className={_className} id={id} data-testid={testId} style={style}>
+		<div
+			className={_className}
+			{...props}
+			data-component="CardHeaderSubtitle"
+		>
 			{children}
 		</div>
 	)
@@ -247,16 +206,8 @@ const CardHeaderSubtitle = ({
 const CardHeaderUpperTitle = ({
 	children,
 	className,
-	style,
-	testId,
-	id,
-}: {
-	children: React.ReactNode
-	className?: string
-	style?: CSSProperties
-	testId?: string
-	id?: string
-}) => {
+	...props
+}: ComponentProps<"div">) => {
 	const _className = twMerge(
 		"text-text-subtlest box-border my-1 w-full flex-1 justify-start truncate text-start text-xs font-light italic",
 		className,
@@ -265,16 +216,19 @@ const CardHeaderUpperTitle = ({
 		return (
 			<div
 				className={_className}
-				id={id}
-				data-testid={testId}
-				style={style}
+				{...props}
+				data-component="CardHeaderUpperTitle"
 			>
 				{children}
 			</div>
 		)
 	}
 	return (
-		<div className={_className} id={id} data-testid={testId} style={style}>
+		<div
+			className={_className}
+			{...props}
+			data-component="CardHeaderUpperTitle"
+		>
 			{children}
 		</div>
 	)
@@ -285,34 +239,16 @@ const CardHeaderUpperTitle = ({
  */
 const CardHeaderActions = ({
 	children,
-	id,
-	testId,
 	className,
-	style,
-	//onClick,
-	//onKeyDown,
-	//onKeyUp,
-}: {
-	children: React.ReactNode
-	id?: string
-	testId?: string
-	className?: string
-	style?: CSSProperties
-	//onClick?: (event: React.MouseEvent<HTMLDivElement>) => void
-	//onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void
-	//onKeyUp?: (event: React.KeyboardEvent<HTMLDivElement>) => void
-}) => (
+	...props
+}: ComponentProps<"div">) => (
 	<div
 		className={twMerge(
 			"flex flex-none box-border items-center justify-end pl-2",
 			className,
 		)}
-		id={id}
-		data-testid={testId}
-		style={style}
-		//onClick={onClick}
-		//onKeyDown={onKeyDown}
-		//onKeyUp={onKeyUp}
+		{...props}
+		data-component="CardHeaderActions"
 	>
 		{children}
 	</div>
@@ -329,47 +265,33 @@ const CardGridBody = ({
 	children,
 	className,
 	style,
-	id,
-	testId,
-}: {
-	children: React.ReactNode
-	id?: string
-	testId?: string
-	className?: string
-	style?: CSSProperties
-}) => (
+	...props
+}: ComponentProps<"div">) => (
 	<div
 		className="w-full overflow-hidden box-border rounded-b"
-		is={id}
-		data-testid={testId}
+		{...props}
+		data-component="CardGridBody"
 	>
 		<div
 			className={twMerge(
-				`grid border-collapse box-border overflow-hidden ${cardBodyEntryBaseStyle} ${css`
-					grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-				`}`,
+				`grid border-collapse box-border overflow-hidden ${cardBodyEntryBaseStyle} border-border border-solid border-t border-l border-b-0 border-r-0 -m-1`,
 				className,
 			)}
-			style={style}
+			style={{
+				gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+				...style,
+			}}
 		>
 			{children}
 		</div>
 	</div>
 )
 
-const CardRowBody = ({
-	children,
-	id,
-	testId,
-}: {
-	children: React.ReactNode
-	id?: string
-	testId?: string
-}) => (
+const CardRowBody = ({ children, ...props }: ComponentProps<"div">) => (
 	<div
 		className="overflow-hidden rounded-b box-border"
-		id={id}
-		data-testid={testId}
+		data-component="CardRowBody"
+		{...props}
 	>
 		<div
 			className={`grid border-collapse grid-flow-col box-border overflow-x-auto overflow-y-hidden ${cardBodyEntryBaseStyle} ${css`
@@ -381,19 +303,11 @@ const CardRowBody = ({
 	</div>
 )
 
-const CardColumnBody = ({
-	children,
-	id,
-	testId,
-}: {
-	children: React.ReactNode
-	id?: string
-	testId?: string
-}) => (
+const CardColumnBody = ({ children, ...props }: ComponentProps<"div">) => (
 	<div
 		className="overflow-hidden rounded-b box-border"
-		id={id}
-		data-testid={testId}
+		data-component="CardColumnBody"
+		{...props}
 	>
 		<div
 			className={`grid border-collapse box-border grid-flow-row overflow-auto ${cardBodyEntryBaseStyle} ${css`
@@ -409,30 +323,27 @@ const CardBodyEntry = ({
 	children,
 	className,
 	style,
-	id,
-	testId,
-}: {
-	children: React.ReactNode
-	id?: string
-	testId?: string
-	className?: string
-	style?: CSSProperties
-}) => (
+	...props
+}: ComponentProps<"div">) => (
 	<div
 		className={twMerge(
 			"flex w-full box-border flex-1 flex-col items-baseline overflow-hidden text-sm",
 			className,
 		)}
-		id={id}
-		data-testid={testId}
-		style={style}
+		data-component="CardBodyEntry"
+		{...props}
 	>
 		<div className="w-full">{children}</div>
 	</div>
 )
 
 const CardBodyEntryTitle = ({ children }: { children: React.ReactNode }) => (
-	<p className="pb-1 text-[13px] font-semibold">{children}</p>
+	<p
+		className="CardBodyEntryTitle pb-1 text-[13px] font-semibold"
+		data-component="CardBodyEntryTitle"
+	>
+		{children}
+	</p>
 )
 
 const BookCardComponents = {
@@ -456,7 +367,7 @@ type BookCardProps = {
 	title: React.ReactNode
 	subtitle?: React.ReactNode
 	upperTitle?: React.ReactNode
-	headerPrefix?: React.ReactNode
+	headerPrefix?: CardHeaderPrefixProps
 	closed?: boolean
 	defaultOpen?: boolean
 	bodyLayout: "row" | "grid" | "column"
@@ -466,7 +377,6 @@ type BookCardProps = {
 	children?: React.ReactNode
 	onOpenChange?: (opened: boolean) => void
 	id?: string
-	testId?: string
 }
 
 export const BookCard = forwardRef(
@@ -485,7 +395,6 @@ export const BookCard = forwardRef(
 			children,
 			onOpenChange,
 			id,
-			testId,
 		}: BookCardProps,
 		ref: React.ForwardedRef<HTMLDivElement>,
 	) => {
@@ -508,10 +417,9 @@ export const BookCard = forwardRef(
 				onOpenChange={onOpenChange}
 				defaultOpen={defaultOpen}
 				id={id}
-				testId={testId}
 				ref={ref}
 				header={
-					<CardHeader prefix={headerPrefix}>
+					<CardHeader headerPrefix={headerPrefix}>
 						<CardHeaderMeta>
 							{upperTitle && (
 								<CardHeaderUpperTitle>
