@@ -129,7 +129,7 @@ function Panel({ className, ...props }: PanelProps) {
 	const classNameResolved = useCallback(
 		(state: CollapsibleRUI.Root.State) => {
 			const basicClassName =
-				"overflow-hidden h-[var(--collapsible-panel-height)] data-[starting-style]:h-0 data-[ending-style]:h-0 origin-top data-[open]:border-x data-[open]:border-b bg-surface data-[open]:border-border border-solid transition-all ease-linear motion-reduce:transition-none"
+				"overflow-hidden h-[var(--collapsible-panel-height)] data-[starting-style]:h-0 border-border data-[ending-style]:h-0 origin-top border-0 data-[open]:border-x data-[open]:border-b data-[open]:border-t-0 bg-surface data-[open]:border-border border-solid transition-all ease-linear motion-reduce:transition-none"
 			if (typeof className === "function") {
 				return twMerge(basicClassName, className(state))
 			}
