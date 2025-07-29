@@ -980,7 +980,13 @@ function BookCardExample() {
 						very very very very very very long"
 				subtitle="Book Subtitle also very very very very very very long"
 				upperTitle="Book Upper Title also looooooooooooooooooooooooooooong"
-				headerPrefix="looooooooooooooooooooooooooooong prefix"
+				headerPrefix={{
+					children: "looooooooooooooooooooooooooooong prefix",
+					className: "text-red-500",
+					style: {
+						color: "red",
+					},
+				}}
 				bodyLayout={bodyLayout}
 				bodyStyle={bodyStyle}
 				closed={isClosed}
@@ -3363,6 +3369,19 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 	)
 	//#endregion datetime-picker-timesettings
 
+	//#region datetime-picker-time-is-editable
+	const example3 = (
+		<Fieldset legend="Date Time Picker">
+			<TimePicker
+				timeIsEditable={true}
+				onCreateTimeOption={(option) => {
+					console.log("onCreateTimeOption", option)
+				}}
+			/>
+		</Fieldset>
+	)
+	//#endregion datetime-picker-time-is-editable
+
 	return (
 		<ShowcaseWrapperItem
 			name="Date Time Picker"
@@ -3398,6 +3417,11 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 					title: "Disable Parts",
 					example: <DisablePartsExample />,
 					sourceCodeExampleId: "datetime-picker-disable-parts",
+				},
+				{
+					title: "Time Is Editable",
+					example: example3,
+					sourceCodeExampleId: "datetime-picker-time-is-editable",
 				},
 			]}
 		/>
@@ -4158,10 +4182,10 @@ function FiltersShowcase(props: ShowcaseProps) {
 					</PageLayout.PageHeaderLine>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
-					<PageLayout.PageBodyHeader>
+					<PageLayout.PageBodyHeader ariaLabel="Body Header">
 						Body Header
 					</PageLayout.PageBodyHeader>
-					<PageLayout.PageBodyContent>
+					<PageLayout.PageBodyContent ariaLabel="Body Content">
 						Body Content
 					</PageLayout.PageBodyContent>
 				</PageLayout.PageBody>
@@ -6059,7 +6083,7 @@ function PageLayoutExample() {
 					</PageLayout.PageHeaderLine>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
-					<PageLayout.PageBodyContent>
+					<PageLayout.PageBodyContent ariaLabel="Body Content">
 						<h1>Text H1</h1>
 						<h2>Text H2</h2>
 						<h3>Text H3</h3>
@@ -6129,10 +6153,10 @@ function PageLayoutExampleWithBodyHeader() {
 					</PageLayout.PageHeaderLine>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
-					<PageLayout.PageBodyHeader>
+					<PageLayout.PageBodyHeader ariaLabel="Body Header">
 						Body Header
 					</PageLayout.PageBodyHeader>
-					<PageLayout.PageBodyContent>
+					<PageLayout.PageBodyContent ariaLabel="Body Content">
 						Body Content
 					</PageLayout.PageBodyContent>
 					<PageLayout.PageBodyFooter>
@@ -6160,7 +6184,7 @@ function PageLayouOnlyTitle() {
 					</PageLayout.PageHeaderTitle>
 				</PageLayout.PageHeader>
 				<PageLayout.PageBody>
-					<PageLayout.PageBodyContent>
+					<PageLayout.PageBodyContent ariaLabel="Page Body Content">
 						Body Content
 					</PageLayout.PageBodyContent>
 					<PageLayout.PageBodyFooter>
@@ -9619,6 +9643,10 @@ function Example() {
 
 	//endregion timetable
 }
+
+document.addEventListener("focusin", (event) => {
+	console.log("Newly focused element:", document.activeElement)
+})
 
 function ExampleCalendar() {
 	//#region timetabledays
