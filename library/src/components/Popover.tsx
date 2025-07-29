@@ -148,7 +148,11 @@ function Popup({
 		const rndr =
 			closerProps?.render ||
 			((closerProps) => (
-				<Button appearance="subtle" {...closerProps}>
+				<Button
+					appearance="subtle"
+					data-component="PopupCloser"
+					{...closerProps}
+				>
 					<XIcon size="12" />
 				</Button>
 			))
@@ -174,8 +178,12 @@ function Popup({
 
 	return (
 		<RPo.Portal container={portalContainer}>
-			<RPo.Positioner {...positionerProps}>
-				<RPo.Popup {...props} className={classNameResolved}>
+			<RPo.Positioner data-component="Positioner" {...positionerProps}>
+				<RPo.Popup
+					data-component="Popup"
+					{...props}
+					className={classNameResolved}
+				>
 					{popupContent}
 				</RPo.Popup>
 			</RPo.Positioner>
