@@ -163,7 +163,13 @@ function BookCardExample() {
 						very very very very very very long"
 				subtitle="Book Subtitle also very very very very very very long"
 				upperTitle="Book Upper Title also looooooooooooooooooooooooooooong"
-				headerPrefix="looooooooooooooooooooooooooooong prefix"
+				headerPrefix={{
+					children: "looooooooooooooooooooooooooooong prefix",
+					className: "text-red-500",
+					style: {
+						color: "red",
+					},
+				}}
 				bodyLayout={bodyLayout}
 				bodyStyle={bodyStyle}
 				closed={isClosed}
