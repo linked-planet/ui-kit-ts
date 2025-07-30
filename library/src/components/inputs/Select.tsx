@@ -692,6 +692,8 @@ function SelectInForm<
 	defaultValue,
 	required,
 	instanceRef,
+	isCreateable,
+	isAsync,
 	...props
 }: SelectInFormProps<FormData, ValueType, IsMulti>) {
 	const { field, fieldState } = useController<FormData>({
@@ -786,8 +788,8 @@ function SelectInForm<
 
 	const innerProps: InnerProps<ValueType, IsMulti> = {
 		...props,
-		isCreateable: props.isCreateable,
-		isAsync: props.isAsync,
+		isCreateable,
+		isAsync,
 		testId,
 		invalid,
 	}
