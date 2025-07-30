@@ -32,6 +32,7 @@ type TimePickerBaseProps = {
 	open?: boolean
 	defaultOpen?: boolean
 	timeIsEditable?: boolean
+	formatCreateTimeLabel?: (label: string) => string
 	onCreateTimeOption?: (option: string) => void
 }
 
@@ -44,6 +45,7 @@ export type TimePickerProps = TimePickerBaseProps &
 		| "options"
 		| "menuIsOpen"
 		| "defaultMenuIsOpen"
+		| "formatCreateLabel"
 	>
 
 export type TimePickerInFormProps<FormData extends FieldValues> =
@@ -56,6 +58,7 @@ export type TimePickerInFormProps<FormData extends FieldValues> =
 			| "options"
 			| "menuIsOpen"
 			| "defaultMenuIsOpen"
+			| "formatCreateLabel"
 		>
 
 type UseOptionsProps = {
@@ -190,6 +193,7 @@ export function TimePicker<FormData extends FieldValues>({
 	defaultValue: _defaultValue,
 	id,
 	timeIsEditable,
+	formatCreateTimeLabel,
 	onCreateTimeOption,
 	...props
 }: TimePickerProps | TimePickerInFormProps<FormData>) {
@@ -246,6 +250,7 @@ export function TimePicker<FormData extends FieldValues>({
 		},
 		onChange: onSelectChange,
 		isCreateable: timeIsEditable,
+		formatCreateLabel: formatCreateTimeLabel,
 		onCreateOption: onCreateTimeOption,
 	}
 
