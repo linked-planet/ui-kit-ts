@@ -29,7 +29,7 @@ export function getPortal(
 		console.log("creating portal node with id:", portalContainerID)
 		portalNode = document.createElement("div")
 		portalNode.setAttribute("id", portalContainerID)
-		portalNode.style.setProperty("z-index", "511") // the atlaskit portal has 510
+		portalNode.style.setProperty("z-index", "512") // the atlaskit portal has 510, the hamburger menu has 511
 		portalNode.style.setProperty("position", "absolute") // cannot set this to fixed or things like dropdowns menus will be positioned wrongly on scroll
 		portalNode.style.setProperty("inset", "0")
 		portalNode.style.setProperty("pointer-events", "none")
