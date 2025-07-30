@@ -43,6 +43,8 @@ export const CardBase = forwardRef(
 		const openButtonPos =
 			closed == null && defaultOpen == null ? "hidden" : "right"
 
+		const forwardedRef = ref
+
 		return (
 			<Collapsible.Root
 				open={openVal}
@@ -50,7 +52,7 @@ export const CardBase = forwardRef(
 				onOpenChange={onOpenChange}
 				className={className}
 				id={id}
-				ref={ref}
+				ref={forwardedRef}
 				style={style}
 			>
 				<Collapsible.Trigger
@@ -411,13 +413,15 @@ export const BookCard = forwardRef(
 			}
 		})()
 
+		const forwardedRef = ref
+
 		return (
 			<CardBase
 				closed={closed}
 				onOpenChange={onOpenChange}
 				defaultOpen={defaultOpen}
 				id={id}
-				ref={ref}
+				ref={forwardedRef}
 				header={
 					<CardHeader headerPrefix={headerPrefix}>
 						<CardHeaderMeta>
