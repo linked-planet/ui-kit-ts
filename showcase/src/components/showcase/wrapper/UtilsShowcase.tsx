@@ -1,5 +1,8 @@
 import {
 	debounceHelper,
+	isMobileDevice,
+	isMobilePhone,
+	isTablet,
 	rateLimitHelper,
 	useDebounceHelper,
 	useRateLimitHelper,
@@ -110,6 +113,22 @@ function UseRateLimitHelperExample() {
 }
 //#endregion useRateLimitHelper
 
+//#region isMobile
+function IsMobileExample() {
+	const mobileDevice = isMobileDevice()
+	const mobilePhone = isMobilePhone()
+	const tablet = isTablet()
+
+	return (
+		<div>
+			<p>Is mobile device: {mobileDevice ? "true" : "false"}</p>
+			<p>Is mobile phone: {mobilePhone ? "true" : "false"}</p>
+			<p>Is tablet: {tablet ? "true" : "false"}</p>
+		</div>
+	)
+}
+//#endregion isMobile
+
 export default function UtilsShowCase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -141,6 +160,11 @@ export default function UtilsShowCase(props: ShowcaseProps) {
 					title: "useRateLimit",
 					example: <UseRateLimitHelperExample />,
 					sourceCodeExampleId: "useRateLimitHelper",
+				},
+				{
+					title: "isMobile",
+					example: <IsMobileExample />,
+					sourceCodeExampleId: "isMobile",
 				},
 			]}
 		/>

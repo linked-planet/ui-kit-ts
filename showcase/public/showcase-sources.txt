@@ -4828,8 +4828,8 @@ export default function GlobalStateShowcase(props: ShowcaseProps) {
 	)
 }
 
-import { HamburgerMenu } from "@linked-planet/ui-kit-ts"
-import { Home, Info, Mail, Phone, Settings, User } from "lucide-react"
+import { HamburgerMenu, SideNavigation } from "@linked-planet/ui-kit-ts"
+import { ActivityIcon, Home, Info, Mail, Settings, User } from "lucide-react"
 import { useState } from "react"
 import ShowcaseWrapperItem, {
 	type ShowcaseProps,
@@ -5061,6 +5061,107 @@ function HamburgerMenuShowcase(props: ShowcaseProps) {
 	)
 	//#endregion accessibility
 
+	//#region sidenav-components
+	const sidenavComponentExample = (
+		<div className="flex items-center justify-center p-4">
+			<HamburgerMenu closeOnOutsideClick={true} closeOnEscape={true}>
+				<SideNavigation.Container
+					className="max-w-sm"
+					aria-label="Side navigation"
+				>
+					<SideNavigation.NavigationHeader>
+						<span>test header</span>
+					</SideNavigation.NavigationHeader>
+					<SideNavigation.Content>
+						<SideNavigation.NestableNavigationContent sideNavStoreIdent="side-nav-store-showcase">
+							<SideNavigation.NestingItem
+								title="test nesting"
+								sideNavStoreIdent="side-nav-store-showcase"
+								id="test-nesting"
+							>
+								<SideNavigation.ButtonItem>
+									Test Nested Button
+								</SideNavigation.ButtonItem>
+								<SideNavigation.NestableNavigationContent>
+									<SideNavigation.NestingItem
+										title="inner nesting"
+										sideNavStoreIdent="side-nav-store-showcase"
+										id="inner-nesting"
+									>
+										<SideNavigation.ButtonItem>
+											Inner Test Nested Button
+										</SideNavigation.ButtonItem>
+									</SideNavigation.NestingItem>
+								</SideNavigation.NestableNavigationContent>
+							</SideNavigation.NestingItem>
+						</SideNavigation.NestableNavigationContent>
+
+						<SideNavigation.ButtonItem
+							description="This is a description which is also waaaaaaaaaaaaaaaaaaaaaay tooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"
+							iconBefore={
+								<ActivityIcon aria-label="Activity" size="12" />
+							}
+						>
+							Button Item 1 with a tooooooooooooooooooooooo long
+							title
+						</SideNavigation.ButtonItem>
+						<SideNavigation.ButtonItem>
+							Button Item 1
+						</SideNavigation.ButtonItem>
+						<SideNavigation.ButtonItem
+							selected
+							description="This is a description"
+							iconBefore={
+								<ActivityIcon aria-label="Activity" size="16" />
+							}
+						>
+							Selected Button Item
+						</SideNavigation.ButtonItem>
+						<SideNavigation.ButtonItem
+							disabled
+							description="This is a description"
+							iconBefore={
+								<ActivityIcon aria-label="Activity" size="16" />
+							}
+						>
+							Disabled Button Item
+						</SideNavigation.ButtonItem>
+
+						<SideNavigation.Section
+							title="Section"
+							hasSeparator
+							isList
+						>
+							<SideNavigation.ButtonItem description="This is a description">
+								Button Item 1
+							</SideNavigation.ButtonItem>
+							<SideNavigation.GoBackItem description="This is a description">
+								Go Back Item
+							</SideNavigation.GoBackItem>
+							<SideNavigation.LinkItem
+								href="https://www.google.com"
+								description={"test link description"}
+							>
+								Link Item
+							</SideNavigation.LinkItem>
+						</SideNavigation.Section>
+						<SideNavigation.SkeletonItem />
+						<SideNavigation.SkeletonItem shimmering={false} />
+						<SideNavigation.SkeletonItem hasIconBefore shimmering />
+						<SideNavigation.SkeletonItem
+							hasAvatarBefore
+							shimmering
+						/>
+					</SideNavigation.Content>
+					<SideNavigation.NavigationFooter>
+						<div>test footer</div>
+					</SideNavigation.NavigationFooter>
+				</SideNavigation.Container>
+			</HamburgerMenu>
+		</div>
+	)
+	//#endregion sidenav-components
+
 	return (
 		<ShowcaseWrapperItem
 			name="Hamburger Menu"
@@ -5091,6 +5192,11 @@ function HamburgerMenuShowcase(props: ShowcaseProps) {
 					title: "Accessibility Features",
 					example: accessibilityExample,
 					sourceCodeExampleId: "accessibility",
+				},
+				{
+					title: "Side Navigation Components",
+					example: sidenavComponentExample,
+					sourceCodeExampleId: "sidenav-components",
 				},
 			]}
 		/>
@@ -11204,7 +11310,7 @@ export default function UtilsShowCase(props: ShowcaseProps) {
 }
 
 import { AppLayout, Checkbox, PageLayout } from "@linked-planet/ui-kit-ts"
-import { useState } from "react"
+import React, { useState } from "react"
 
 import Fillers from "./Fillers"
 
@@ -11311,10 +11417,10 @@ export default function AppLayoutExample() {
 							</PageLayout.PageHeaderSubTitle>
 						</PageLayout.PageHeader>
 						<PageLayout.PageBody>
-							<PageLayout.PageBodyHeader>
+							<PageLayout.PageBodyHeader ariaLabel="Page Body Header">
 								Page Body Header
 							</PageLayout.PageBodyHeader>
-							<PageLayout.PageBodyContent>
+							<PageLayout.PageBodyContent ariaLabel="Page Body Content">
 								<Fillers />
 							</PageLayout.PageBodyContent>
 							<PageLayout.PageBodyFooter>
