@@ -24,6 +24,7 @@ import FiltersShowcase from "./components/showcase/wrapper/FiltersShowcase"
 import FlagShowcase from "./components/showcase/wrapper/FlagShowcase"
 import FormShowcase from "./components/showcase/wrapper/FormShowcase"
 import GlobalStateShowcase from "./components/showcase/wrapper/GlobalStateShowcase"
+import HamburgerMenuShowcase from "./components/showcase/wrapper/HamburgerMenuShowcase"
 import HighlightedTextShowcase from "./components/showcase/wrapper/HighlightedTextShowcase"
 import IconSizeHelperShowcase from "./components/showcase/wrapper/IconSizeHelperShowcase"
 import InlineMessageShowcase from "./components/showcase/wrapper/InlineMessageShowcase"
@@ -119,6 +120,9 @@ export default function useShowcases({
 			Form: <FormShowcase overallSourceCode={overallSourceCode} />,
 			"Global State": (
 				<GlobalStateShowcase overallSourceCode={overallSourceCode} />
+			),
+			"Hamburger Menu": (
+				<HamburgerMenuShowcase overallSourceCode={overallSourceCode} />
 			),
 			"Highlighted Text": (
 				<HighlightedTextShowcase
