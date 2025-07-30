@@ -1,5 +1,5 @@
 import { AppLayout, Checkbox, PageLayout } from "@linked-planet/ui-kit-ts"
-import { useState } from "react"
+import React, { useState } from "react"
 
 import Fillers from "./Fillers"
 
@@ -106,10 +106,10 @@ export default function AppLayoutExample() {
 							</PageLayout.PageHeaderSubTitle>
 						</PageLayout.PageHeader>
 						<PageLayout.PageBody>
-							<PageLayout.PageBodyHeader>
+							<PageLayout.PageBodyHeader ariaLabel="Page Body Header">
 								Page Body Header
 							</PageLayout.PageBodyHeader>
-							<PageLayout.PageBodyContent>
+							<PageLayout.PageBodyContent ariaLabel="Page Body Content">
 								<Fillers />
 							</PageLayout.PageBodyContent>
 							<PageLayout.PageBodyFooter>
