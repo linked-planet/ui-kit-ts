@@ -58,6 +58,7 @@ export type DatePickerProps = Pick<
 		style?: React.CSSProperties
 		className?: string
 		inputClassName?: string
+		datePickerInputIconContainerClassName?: string
 		inputStyle?: React.CSSProperties
 		appearance?: "subtle" | "default" | "none"
 		/* formats the displayed value in the input */
@@ -91,6 +92,11 @@ export type DatePickerInFormProps<FormData extends FieldValues> =
 		control: Control<FormData>
 		name: Path<FormData>
 	}
+
+const datePickerInputClassNameBase = twJoin(
+	"cursor-pointer disabled:cursor-not-allowed",
+	"group-data-[state=open]/dp-trigger:ring group-data-[state=open]/dp-trigger:ring-input-border-focused group-data-[state=open]/dp-trigger:border-input-border-focused",
+)
 
 /**
  * The datepicker is a popover that uses an Input as trigger and opens a calendar to pick a date.
@@ -244,6 +250,7 @@ const DatePickerBase = forwardRef(
 			placeholder = "Select a date",
 			name,
 			inputClassName,
+			datePickerInputIconContainerClassName,
 			inputStyle,
 			formatDisplayLabel,
 			required,
@@ -265,6 +272,8 @@ const DatePickerBase = forwardRef(
 			valStr = formatter.format(date)
 		}
 
+		const forwardedRef = ref
+
 		const trigger = (
 			<div
 				className={twMerge("box-border group/dp-trigger", className)}
@@ -284,13 +293,18 @@ const DatePickerBase = forwardRef(
 					value={valStr}
 					disabled={disabled}
 					invalid={invalid}
-					inputClassName={twMerge(
-						twJoin(
-							"cursor-pointer disabled:cursor-not-allowed",
-							"group-data-[state=open]/dp-trigger:ring group-data-[state=open]/dp-trigger:ring-input-border-focused group-data-[state=open]/dp-trigger:border-input-border-focused",
-						),
-						inputClassName,
+					inputIconContainerClassName={twMerge(
+						datePickerInputClassNameBase,
+						datePickerInputIconContainerClassName,
 					)}
+					inputClassName={
+						hideIcon
+							? twMerge(
+									datePickerInputClassNameBase,
+									inputClassName,
+								)
+							: inputClassName
+					}
 					required={required}
 					readOnly={readOnly}
 					onChange={onInputChange}
@@ -301,7 +315,7 @@ const DatePickerBase = forwardRef(
 									<div className="pointer-events-none">
 										<Button
 											appearance="link"
-											className="text-disabled-text hover:text-text pointer-events-auto m-0 h-full w-8 px-1 py-0"
+											className="text-disabled-text hover:text-text pointer-events-auto m-0 h-full w-[12px] p-0"
 											onClick={(e) => {
 												e.stopPropagation()
 												setOpen(false)
@@ -323,7 +337,7 @@ const DatePickerBase = forwardRef(
 							</>
 						)
 					}
-					ref={ref}
+					ref={forwardedRef}
 				/>
 			</div>
 		)
