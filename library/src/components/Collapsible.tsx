@@ -165,11 +165,13 @@ export const Root = forwardRef(
 			[className],
 		)
 
+		const forwardedRef = ref
+
 		return (
 			<CollapsibleRUI.Root
 				{...props}
 				className={classNameResolved}
-				ref={ref}
+				ref={forwardedRef}
 			>
 				{children}
 			</CollapsibleRUI.Root>
