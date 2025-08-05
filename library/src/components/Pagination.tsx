@@ -271,7 +271,7 @@ function PaginationPageHandler<P extends string | number>({
 
 	const disableNextPage =
 		(pages && currentIndex >= pages.length - 1) ||
-		currentPage == null ||
+		(currentPage == null && !pages) || // only disable if no pages AND no currentPage
 		disableNextPageButton === true
 
 	return (
