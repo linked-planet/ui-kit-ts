@@ -5,6 +5,9 @@ import {
 	isTablet,
 	rateLimitHelper,
 	useDebounceHelper,
+	useIsMobileDevice,
+	useIsMobilePhone,
+	useIsTablet,
 	useRateLimitHelper,
 } from "@linked-planet/ui-kit-ts"
 import { useState } from "react"
@@ -119,11 +122,18 @@ function IsMobileExample() {
 	const mobilePhone = isMobilePhone()
 	const tablet = isTablet()
 
+	const mobileDeviceHook = useIsMobileDevice()
+	const mobilePhoneHook = useIsMobilePhone()
+	const tabletHook = useIsTablet()
+
 	return (
 		<div>
 			<p>Is mobile device: {mobileDevice ? "true" : "false"}</p>
 			<p>Is mobile phone: {mobilePhone ? "true" : "false"}</p>
 			<p>Is tablet: {tablet ? "true" : "false"}</p>
+			<p>Is mobile device hook: {mobileDeviceHook ? "true" : "false"}</p>
+			<p>Is mobile phone hook: {mobilePhoneHook ? "true" : "false"}</p>
+			<p>Is tablet hook: {tabletHook ? "true" : "false"}</p>
 		</div>
 	)
 }
