@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react"
+
 /**
  * Device type detection with proper categorization
  */
@@ -52,12 +54,50 @@ export function getDeviceType(): DeviceType {
 }
 
 /**
+ * Hook to get the device type, uses a resize handler to update the state
+ * @returns mobile, tablet or desktop
+ */
+export function useDeviceType(): DeviceType {
+	const [deviceType, setDeviceType] = useState(getDeviceType())
+
+	useEffect(() => {
+		const handleResize = () => {
+			setDeviceType(getDeviceType())
+		}
+		window.addEventListener("resize", handleResize)
+		return () => window.removeEventListener("resize", handleResize)
+	}, [])
+
+	return deviceType
+}
+
+/**
  * Simplified mobile detection (phones + tablets)
  * @returns true if mobile device (phone or tablet), false otherwise
  */
 export function isMobileDevice(): boolean {
 	const deviceType = getDeviceType()
 	return deviceType === "mobile" || deviceType === "tablet"
+}
+
+/**
+ * Hook to get if the device is a mobile device, uses a resize handler to update the state
+ * @returns true if mobile device (phone or tablet), false otherwise
+ */
+export function useIsMobileDevice(): boolean {
+	const [deviceIsMobileDevice, setDeviceIsMobileDevice] = useState(
+		isMobileDevice(),
+	)
+
+	useEffect(() => {
+		const handleResize = () => {
+			setDeviceIsMobileDevice(isMobileDevice())
+		}
+		window.addEventListener("resize", handleResize)
+		return () => window.removeEventListener("resize", handleResize)
+	}, [])
+
+	return deviceIsMobileDevice
 }
 
 /**
@@ -69,9 +109,47 @@ export function isMobilePhone(): boolean {
 }
 
 /**
+ * Hook to get if the device is a mobile phone, uses a resize handler to update the state
+ * @returns true if mobile phone, false otherwise
+ */
+export function useIsMobilePhone(): boolean {
+	const [deviceIsMobilePhone, setDeviceIsMobilePhone] = useState(
+		isMobilePhone(),
+	)
+
+	useEffect(() => {
+		const handleResize = () => {
+			setDeviceIsMobilePhone(isMobilePhone())
+		}
+		window.addEventListener("resize", handleResize)
+		return () => window.removeEventListener("resize", handleResize)
+	}, [])
+
+	return deviceIsMobilePhone
+}
+
+/**
  * Detects tablets specifically
  * @returns true if tablet, false otherwise
  */
 export function isTablet(): boolean {
 	return getDeviceType() === "tablet"
+}
+
+/**
+ * Hook to get if the device is a tablet, uses a resize handler to update the state
+ * @returns true if tablet, false otherwise
+ */
+export function useIsTablet(): boolean {
+	const [deviceIsTablet, setDeviceIsTablet] = useState(isTablet())
+
+	useEffect(() => {
+		const handleResize = () => {
+			setDeviceIsTablet(isTablet())
+		}
+		window.addEventListener("resize", handleResize)
+		return () => window.removeEventListener("resize", handleResize)
+	}, [])
+
+	return deviceIsTablet
 }
