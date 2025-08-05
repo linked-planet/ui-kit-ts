@@ -27,7 +27,7 @@ type ModalDialogProps = {
 	style?: CSSProperties
 	shouldCloseOnEscapePress?: boolean
 	shouldCloseOnOverlayClick?: boolean
-	usePortal?: boolean | ShadowRoot
+	usePortal?: boolean | ShadowRoot | HTMLElement
 	useModal?: boolean
 	id?: string
 	triggerId?: string
