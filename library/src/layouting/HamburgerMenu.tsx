@@ -4,6 +4,7 @@ import { type ReactNode, useCallback, useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { twMerge } from "tailwind-merge"
 import { Button, type ButtonProps } from "../components"
+import { getHamburgerMenuPortal } from "../utils"
 
 export interface HamburgerMenuProps {
 	/** The content to display inside the hamburger menu */
@@ -38,6 +39,28 @@ export interface HamburgerMenuProps {
 	ariaLabelClose?: string
 	/** The aria-label for the open button */
 	ariaLabelOpen?: string
+
+	portal?: {
+		/** Additional CSS classes for the menu portal */
+		portalClassName?: string
+		/** Callback when the menu portal is created */
+		portalCreatedCb?: (portal: HTMLElement) => void
+		/** The root element to append the menu portal to
+		 * @default document.body
+		 */
+		portalRoot?: ShadowRoot | null | HTMLElement
+		/**
+		 * The id of the menu portal
+		 * @default "uikts-menu-portal-container"
+		 */
+		portalId?: string
+
+		/**
+		 * The z-index of the menu portal
+		 * @default 511
+		 */
+		zIndex?: number
+	}
 }
 
 /**
@@ -71,9 +94,10 @@ export function HamburgerMenu({
 	ariaLabel = "Navigation menu",
 	ariaLabelClose = "Close menu",
 	ariaLabelOpen = "Open menu",
+	portal,
 }: HamburgerMenuProps) {
 	const [isOpen, setIsOpen] = useState(defaultOpen)
-	const menuPortal = getMenuPortal()
+	const menuPortal = getHamburgerMenuPortal(portal)
 
 	const handleToggle = useCallback(() => {
 		const newOpen = !isOpen
@@ -136,7 +160,7 @@ export function HamburgerMenu({
 			? createPortal(
 					<section
 						className={twMerge(
-							"absolute pointer-events-auto inset-0 z-100 bg-surface-overlay transition-opacity duration-300 p-12",
+							"absolute pointer-events-auto inset-0 z-100 transition-opacity duration-300 backdrop-blur-sm bg-surface-overlay p-8",
 							menuClassName,
 						)}
 						onClick={handleOverlayClick}
@@ -146,29 +170,21 @@ export function HamburgerMenu({
 						aria-label={ariaLabel}
 						tabIndex={-1}
 					>
-						{/* Menu Content */}
-						<div
+						{/* Close Button */}
+						<Button
+							type="button"
+							onClick={handleClose}
+							aria-label={ariaLabelClose}
+							appearance={closeButtonAppearance}
 							className={twMerge(
-								"relative w-full h-full bg-white shadow-xl transform transition-transform duration-300 ease-in-out",
-								contentClassName,
+								"absolute top-4 right-4 p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 z-10",
+								closeButtonClassName,
 							)}
 						>
-							{/* Close Button */}
-							<Button
-								type="button"
-								onClick={handleClose}
-								aria-label={ariaLabelClose}
-								appearance={closeButtonAppearance}
-								className={twMerge(
-									"absolute top-4 right-4 p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 z-10",
-									closeButtonClassName,
-								)}
-							>
-								{CloseIcon}
-							</Button>
+							{CloseIcon}
+						</Button>
 
-							{children}
-						</div>
+						{children}
 					</section>,
 					menuPortal,
 				)
@@ -199,30 +215,4 @@ export function HamburgerMenu({
 			{menuPortalContent}
 		</>
 	)
-}
-
-const menuPortalContainerID = "uikts-menu-portal-container"
-
-function getMenuPortal(shadowRoot?: ShadowRoot | null) {
-	const root = shadowRoot ?? document.body
-
-	const portalNode = root.querySelector(`#${menuPortalContainerID}`)
-
-	if (!portalNode) {
-		// Create element in the correct context
-		const portalNode = shadowRoot
-			? shadowRoot.ownerDocument.createElement("div")
-			: document.createElement("div")
-
-		portalNode.setAttribute("id", menuPortalContainerID)
-		portalNode.style.setProperty("z-index", "511")
-		portalNode.style.setProperty("position", "absolute")
-		portalNode.style.setProperty("inset", "0")
-		portalNode.style.setProperty("pointer-events", "none")
-
-		// Append to the correct root
-		root.appendChild(portalNode)
-	}
-
-	return portalNode
 }

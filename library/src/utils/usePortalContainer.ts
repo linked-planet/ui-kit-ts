@@ -1,8 +1,15 @@
 import { useLayoutEffect, useState } from "react"
-import { getPortal } from "./getPortal"
+import { getPortal, getPortalRootNode } from "./getPortal"
 
+/**
+ * Hook to get a portal container
+ * @param usePortal - Whether to use the portal, if false, the portal will not be used, if true, the portal will be used, if a ShadowRoot, the portal will be used in the shadow root
+ * @param containerID - The id of the container to get the portal node for
+ * @param parentElement - The parent element to get the portal node for
+ * @returns The portal container
+ */
 export default function usePortalContainer(
-	usePortal: boolean | ShadowRoot,
+	usePortal: boolean | ShadowRoot | HTMLElement,
 	containerID: string,
 	parentElement?: HTMLElement | HTMLDivElement | HTMLButtonElement | null,
 ) {
@@ -12,11 +19,14 @@ export default function usePortalContainer(
 
 	useLayoutEffect(() => {
 		if (!usePortal) {
-			console.log("usePortal is false", usePortal)
+			console.log("[UIKTS] - usePortal is false", usePortal)
 			return
 		}
-		if (usePortal instanceof ShadowRoot) {
-			console.log("usePortal is a ShadowRoot", usePortal)
+		if (
+			usePortal instanceof ShadowRoot ||
+			usePortal instanceof HTMLElement
+		) {
+			console.log("[UIKTS] - usePortal is a ShadowRoot", usePortal)
 			setPortalContainer(getPortal(containerID, usePortal))
 			return
 		}
@@ -42,6 +52,10 @@ export default function usePortalContainer(
 		}
 
 		// else we use the normal portal
+		console.log(
+			"[UIKTS] - usePortal is a normal portal on",
+			getPortalRootNode(),
+		)
 		setPortalContainer(getPortal(containerID))
 	}, [usePortal, containerID, parentElement])
 

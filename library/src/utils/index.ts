@@ -1,5 +1,15 @@
 import { debounceHelper, useDebounceHelper } from "./debounce"
-import { getPortal } from "./getPortal"
+import {
+	getHamburgerMenuPortal,
+	hamburgerMenuPortalContainerID,
+} from "./getHamburgerPortal"
+import {
+	createPortalRootNode,
+	getPortal,
+	getPortalRootNode,
+	portalContainerID,
+	setPortalRootNode,
+} from "./getPortal"
 import { idleRateLimitHelper, useIdleRateLimitHelper } from "./idleRateLimit"
 import { rateLimitHelper, useRateLimitHelper } from "./rateLimit"
 import usePortalContainer from "./usePortalContainer"
@@ -11,7 +21,13 @@ export {
 	debounceHelper,
 	useDebounceHelper,
 	getPortal,
+	setPortalRootNode,
 	usePortalContainer,
+	portalContainerID,
+	getPortalRootNode,
+	createPortalRootNode,
+	getHamburgerMenuPortal,
+	hamburgerMenuPortalContainerID,
 }
 
 import type { DateTimeType, DateType, TimeType } from "./DateUtils"
