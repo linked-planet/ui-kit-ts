@@ -15,8 +15,6 @@ export interface HamburgerMenuProps {
 	closeButtonClassName?: string
 	/** Additional CSS classes for the menu overlay */
 	menuClassName?: string
-	/** Additional CSS classes for the menu content */
-	contentClassName?: string
 	/** Whether the menu is initially open */
 	defaultOpen?: boolean
 	/** Callback when the menu open state changes */
@@ -82,7 +80,6 @@ export function HamburgerMenu({
 	buttonClassName,
 	closeButtonClassName,
 	menuClassName,
-	contentClassName,
 	defaultOpen = false,
 	onOpenChange,
 	closeOnOutsideClick = true,
