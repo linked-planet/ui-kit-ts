@@ -114,7 +114,11 @@ function PaginationPageHandler<P extends string | number>({
 	pageButtonStyle?: React.CSSProperties
 }) {
 	const [_currentPage, setCurrentPage] = useState(
-		currentPage ?? defaultPage ?? pages?.[0],
+		currentPage ??
+			defaultPage ??
+			pages?.[0] ??
+			pages?.[defaultPageIndex ?? 0] ??
+			(1 as P), // fallback for totalPages case
 	)
 
 	useEffect(() => {
@@ -152,7 +156,8 @@ function PaginationPageHandler<P extends string | number>({
 			return { visiblePages: [], currentIndex: 0 }
 		}
 		const currentIndex =
-			currentPageIndex ?? pages.indexOf(_currentPage as P) ?? 0
+			currentPageIndex ??
+			(pages ? Math.max(0, pages.indexOf(_currentPage as P)) : 0)
 		const halfMaxPageButtons = Math.ceil(maxPageButtons / 2)
 		if (pages.length <= maxPageButtons)
 			return { visiblePages: pages, currentIndex }
@@ -261,7 +266,7 @@ function PaginationPageHandler<P extends string | number>({
 
 	const disablePreviousPage =
 		(pages && currentIndex <= 0) ||
-		currentPage == null ||
+		(currentPage == null && !pages) || // only disable if no pages AND no currentPage
 		disablePreviousPageButton === true
 
 	const disableNextPage =
