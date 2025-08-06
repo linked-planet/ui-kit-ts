@@ -92,12 +92,14 @@ function Container({
 					<RDialog.Overlay
 						className={blanketStyles}
 						role="presentation"
-						id={`blanket-${id}`}
+						id={`blanket-${id ?? "modal"}`}
+						data-component="modal-blanket"
 					/>
 				) : (
 					<div className={blanketStyles} />
 				)}
 				<RDialog.Content
+					data-component="modal-content"
 					className={twMerge(
 						twJoin(
 							overlayBaseStyle,
@@ -129,10 +131,10 @@ function Container({
 					forceMount={forceMountContent}
 				>
 					<VisuallyHidden>
-						<RDialog.DialogTitle>
+						<RDialog.DialogTitle data-component="modal-title">
 							{accessibleDialogTitle}
 						</RDialog.DialogTitle>
-						<RDialog.DialogDescription>
+						<RDialog.DialogDescription data-component="modal-description">
 							{accessibleDialogDescription}
 						</RDialog.DialogDescription>
 					</VisuallyHidden>
@@ -167,6 +169,7 @@ function Container({
 		>
 			{trigger && (
 				<RDialog.Trigger
+					data-component="modal-trigger"
 					id={triggerId}
 					data-testid={triggerTestId}
 					asChild
@@ -181,7 +184,10 @@ function Container({
 			)}
 
 			{usePortal ? (
-				<RDialog.Portal container={portalContainer}>
+				<RDialog.Portal
+					container={portalContainer}
+					data-component="modal-portal"
+				>
 					{content}
 				</RDialog.Portal>
 			) : (
@@ -213,6 +219,7 @@ function Header({
 			style={style}
 			id={id}
 			data-testid={testId}
+			data-component="modal-header"
 		>
 			{children}
 		</header>
@@ -241,6 +248,7 @@ function Footer({
 			style={style}
 			id={id}
 			data-testid={testId}
+			data-component="modal-footer"
 		>
 			{children}
 		</footer>
@@ -268,6 +276,7 @@ function Title({
 			style={style}
 			id={id}
 			data-testid={testId}
+			data-component="modal-title"
 		>
 			{children}
 		</RDialog.Title>
@@ -327,6 +336,7 @@ function Body({
 			ref={ref}
 			id={id}
 			data-testid={testId}
+			data-component="modal-body"
 		>
 			{children}
 		</section>
