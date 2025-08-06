@@ -333,6 +333,7 @@ function Sidebar({
 					position === "left" ? "left-sidebar" : "right-sidebar",
 				...style,
 			}}
+			data-component="sidebar"
 		>
 			{/* resize button and grab handle area */}
 			{/** biome-ignore lint/a11y/useSemanticElements: is a div and has a button within */}
@@ -352,6 +353,7 @@ function Sidebar({
 				}}
 				aria-label={resizeGrabAreaLabel ?? "resize grab area"}
 				tabIndex={0}
+				data-component="sidebar-resize-grab-area"
 			>
 				<div
 					className={`${sticky ? "sticky" : "static"} duration-150`}
@@ -424,6 +426,7 @@ function Sidebar({
 						? `calc(100dvh - var(${bannerHeightVar}, 0px) - var(${topNavigationHeightVar}, 0px))`
 						: undefined,
 				}}
+				data-component="sidebar-content"
 			>
 				{children}
 			</section>

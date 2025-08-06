@@ -83,6 +83,7 @@ function Container({
 				className,
 			)}
 			data-layout-container="true"
+			data-component="app-layout-container"
 			style={{
 				gridTemplateAreas: useBanner
 					? `
@@ -149,6 +150,7 @@ function Banner({
 				className,
 			)}
 			data-layout-banner="true"
+			data-component="app-layout-banner"
 			style={{
 				height: `var(${bannerHeightVar}, min-content)`,
 				gridArea: "banner",
@@ -210,6 +212,7 @@ function TopNavigation({
 				className,
 			)}
 			data-layout-top-navigation="true"
+			data-component="app-layout-top-navigation"
 			style={{
 				height: `var(${topNavigationHeightVar}, min-content)`,
 				gridArea: "top-navigation",
@@ -252,6 +255,7 @@ function LeftPanel({
 				className,
 			)}
 			data-layout-left-panel="true"
+			data-component="app-layout-left-panel"
 			style={{
 				width: `var(${leftPanelWidthVar}, 0px)`,
 				gridArea: "left-panel",
@@ -290,6 +294,7 @@ function RightPanel({
 				className,
 			)}
 			data-layout-right-panel="true"
+			data-component="app-layout-right-panel"
 			style={{
 				width: `var(${rightPanelWidthVar}, 0px)`,
 				gridArea: "right-panel",
@@ -315,6 +320,7 @@ function Content({
 				className,
 			)}
 			data-layout-content="true"
+			data-component="app-layout-content"
 			style={{
 				gridArea: "content",
 				gridTemplateAreas: '"left-sidebar main right-sidebar"',
@@ -344,6 +350,7 @@ function Main({
 				className,
 			)}
 			data-layout-main="true"
+			data-component="app-layout-main"
 			style={{
 				gridArea: "main",
 				height: fixedHeight

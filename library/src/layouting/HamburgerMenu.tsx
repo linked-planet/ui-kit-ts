@@ -166,6 +166,7 @@ export function HamburgerMenu({
 						aria-modal="true"
 						aria-label={ariaLabel}
 						tabIndex={-1}
+						data-component="hamburger-menu"
 					>
 						{/* Close Button */}
 						<Button
@@ -200,6 +201,7 @@ export function HamburgerMenu({
 				)}
 				aria-label={isOpen ? ariaLabelClose : ariaLabelOpen}
 				aria-expanded={isOpen}
+				data-component="hamburger-menu-button"
 			>
 				{typeof HamburgerIcon === "string" ? (
 					<span className="text-2xl">{HamburgerIcon}</span>
