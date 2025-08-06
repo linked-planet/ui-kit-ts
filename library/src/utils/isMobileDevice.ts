@@ -1,6 +1,33 @@
 import { useEffect, useState } from "react"
 
 /**
+ * Sets up device detection event listeners and returns cleanup function
+ * @param callback Function to call when device properties might have changed
+ * @returns Cleanup function to remove all event listeners
+ */
+function setupDeviceDetectionListeners(callback: () => void): () => void {
+	// Media queries for breakpoint detection
+	const mobileQuery = window.matchMedia("(max-width: 768px)")
+	const tabletQuery = window.matchMedia("(max-width: 1024px)")
+
+	// Listen to resize and orientation changes
+	window.addEventListener("resize", callback)
+	window.addEventListener("orientationchange", callback)
+
+	// Listen to media query changes for more responsive breakpoint detection
+	mobileQuery.addEventListener("change", callback)
+	tabletQuery.addEventListener("change", callback)
+
+	// Return cleanup function
+	return () => {
+		window.removeEventListener("resize", callback)
+		window.removeEventListener("orientationchange", callback)
+		mobileQuery.removeEventListener("change", callback)
+		tabletQuery.removeEventListener("change", callback)
+	}
+}
+
+/**
  * Device type detection with proper categorization
  */
 export type DeviceType = "mobile" | "tablet" | "desktop"
@@ -29,7 +56,14 @@ export function getDeviceType(): DeviceType {
 	const MOBILE_MAX_WIDTH = 768
 	const TABLET_MAX_WIDTH = 1024
 
-	// Device detection logic - prioritize user agent over screen size
+	// Enhanced detection for dev tools simulation:
+	// If screen dimensions suggest mobile/tablet but user agent doesn't match,
+	// prioritize screen size (common in browser dev tools)
+	const isNarrowScreen = screenWidth <= MOBILE_MAX_WIDTH
+	const isMediumScreen =
+		screenWidth > MOBILE_MAX_WIDTH && screenWidth <= TABLET_MAX_WIDTH
+
+	// Device detection logic - balance user agent with screen size
 	if (isMobileUA) {
 		return "mobile"
 	}
@@ -38,18 +72,35 @@ export function getDeviceType(): DeviceType {
 		return "tablet"
 	}
 
-	// Fallback to screen size + touch detection when user agent is inconclusive
-	if (hasTouch) {
-		if (screenWidth <= MOBILE_MAX_WIDTH) {
+	// For browser environments (likely dev tools simulation),
+	// give more weight to screen size when user agent is generic
+	const isGenericUA =
+		/chrome|firefox|safari|edge/.test(userAgent) &&
+		!isMobileUA &&
+		!isTabletUA
+
+	if (isGenericUA || hasTouch) {
+		if (isNarrowScreen) {
 			return "mobile"
 		}
-		if (screenWidth <= TABLET_MAX_WIDTH) {
+		if (isMediumScreen) {
+			return "tablet"
+		}
+		// Wide screen with touch could still be tablet (Surface Pro, etc.)
+		if (hasTouch && screenWidth <= 1366) {
 			return "tablet"
 		}
 		return "desktop"
 	}
 
-	// No touch capability = desktop/laptop
+	// Legacy fallback for non-touch devices
+	if (isNarrowScreen) {
+		return "mobile"
+	}
+	if (isMediumScreen) {
+		return "tablet"
+	}
+
 	return "desktop"
 }
 
@@ -61,11 +112,13 @@ export function useDeviceType(): DeviceType {
 	const [deviceType, setDeviceType] = useState(getDeviceType())
 
 	useEffect(() => {
-		const handleResize = () => {
+		const updateDeviceType = () => {
 			setDeviceType(getDeviceType())
 		}
-		window.addEventListener("resize", handleResize)
-		return () => window.removeEventListener("resize", handleResize)
+
+		const cleanup = setupDeviceDetectionListeners(updateDeviceType)
+
+		return cleanup
 	}, [])
 
 	return deviceType
@@ -90,11 +143,13 @@ export function useIsMobileDevice(): boolean {
 	)
 
 	useEffect(() => {
-		const handleResize = () => {
+		const updateMobileDevice = () => {
 			setDeviceIsMobileDevice(isMobileDevice())
 		}
-		window.addEventListener("resize", handleResize)
-		return () => window.removeEventListener("resize", handleResize)
+
+		const cleanup = setupDeviceDetectionListeners(updateMobileDevice)
+
+		return cleanup
 	}, [])
 
 	return deviceIsMobileDevice
@@ -118,11 +173,13 @@ export function useIsMobilePhone(): boolean {
 	)
 
 	useEffect(() => {
-		const handleResize = () => {
+		const updateMobilePhone = () => {
 			setDeviceIsMobilePhone(isMobilePhone())
 		}
-		window.addEventListener("resize", handleResize)
-		return () => window.removeEventListener("resize", handleResize)
+
+		const cleanup = setupDeviceDetectionListeners(updateMobilePhone)
+
+		return cleanup
 	}, [])
 
 	return deviceIsMobilePhone
@@ -144,11 +201,13 @@ export function useIsTablet(): boolean {
 	const [deviceIsTablet, setDeviceIsTablet] = useState(isTablet())
 
 	useEffect(() => {
-		const handleResize = () => {
+		const updateTablet = () => {
 			setDeviceIsTablet(isTablet())
 		}
-		window.addEventListener("resize", handleResize)
-		return () => window.removeEventListener("resize", handleResize)
+
+		const cleanup = setupDeviceDetectionListeners(updateTablet)
+
+		return cleanup
 	}, [])
 
 	return deviceIsTablet
