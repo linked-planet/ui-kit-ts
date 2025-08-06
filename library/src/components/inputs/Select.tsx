@@ -56,7 +56,7 @@ const menuStyles =
 	"bg-surface min-w-min shadow-overlay rounded-xs overflow-hidden" // some styles like zIndex are overwritten by react-select, use the custom-styles below for those
 
 const optionStyles =
-	"py-2 px-3 border-l-2 border-l-transparent border-transparent border-solid"
+	"py-2 px-3 border-l-2 border-l-transparent border-transparent border-solid cursor-pointer"
 
 export type OptionType<ValueType> = {
 	label: string
@@ -185,7 +185,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 							? "border-l-selected-border focus-visible:border-l-selected-border bg-surface-overlay-hovered"
 							: undefined,
 						provided.isDisabled
-							? "text-disabled-text"
+							? "text-disabled-text cursor-not-allowed"
 							: "hover:border-l-selected-border focus-visible:border-l-selected-border hover:bg-surface-overlay-hovered active:bg-surface-overlay-pressed",
 						classNamesConfig?.option?.(provided),
 					),
@@ -215,6 +215,10 @@ const customStyles = {
 	menuPortal: (provided: CSSObjectWithLabel) => ({
 		...provided,
 		zIndex: 51,
+	}),
+	option: (provided: CSSObjectWithLabel) => ({
+		...provided,
+		cursor: undefined,
 	}),
 }
 
