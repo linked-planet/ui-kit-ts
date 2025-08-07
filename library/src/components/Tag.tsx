@@ -71,6 +71,17 @@ export type SimpleTagProps = {
 	id?: string
 	testId?: string
 	truncate?: boolean
+	onClick?: (e: React.MouseEvent<HTMLOutputElement>) => void
+	onKeyDown?: (e: React.KeyboardEvent<HTMLOutputElement>) => void
+	onKeyUp?: (e: React.KeyboardEvent<HTMLOutputElement>) => void
+	onMouseDown?: (e: React.MouseEvent<HTMLOutputElement>) => void
+	onMouseUp?: (e: React.MouseEvent<HTMLOutputElement>) => void
+	onMouseEnter?: (e: React.MouseEvent<HTMLOutputElement>) => void
+	onMouseLeave?: (e: React.MouseEvent<HTMLOutputElement>) => void
+	onMouseOver?: (e: React.MouseEvent<HTMLOutputElement>) => void
+	onMouseOut?: (e: React.MouseEvent<HTMLOutputElement>) => void
+	onFocus?: (e: React.FocusEvent<HTMLOutputElement>) => void
+	onBlur?: (e: React.FocusEvent<HTMLOutputElement>) => void
 }
 
 const TagAppearanceColors: { [style in Appearance]: string } = {
@@ -152,6 +163,17 @@ function SimpleTag({
 	id,
 	truncate,
 	testId,
+	onClick,
+	onKeyDown,
+	onKeyUp,
+	onMouseDown,
+	onMouseUp,
+	onMouseEnter,
+	onMouseLeave,
+	onMouseOver,
+	onMouseOut,
+	onFocus,
+	onBlur,
 }: SimpleTagProps) {
 	const colors = isColorOption(appearance)
 		? TagColors[appearance]
@@ -173,6 +195,17 @@ function SimpleTag({
 			title={title}
 			id={id}
 			data-testid={testId}
+			onClick={onClick}
+			onKeyDown={onKeyDown}
+			onKeyUp={onKeyUp}
+			onMouseDown={onMouseDown}
+			onMouseUp={onMouseUp}
+			onMouseEnter={onMouseEnter}
+			onMouseLeave={onMouseLeave}
+			onMouseOver={onMouseOver}
+			onMouseOut={onMouseOut}
+			onFocus={onFocus}
+			onBlur={onBlur}
 		>
 			{truncate ? (
 				<div className={"truncate w-full"}>{children}</div>

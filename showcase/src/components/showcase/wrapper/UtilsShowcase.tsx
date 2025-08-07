@@ -1,7 +1,13 @@
 import {
 	debounceHelper,
+	isMobileDevice,
+	isMobilePhone,
+	isTablet,
 	rateLimitHelper,
 	useDebounceHelper,
+	useIsMobileDevice,
+	useIsMobilePhone,
+	useIsTablet,
 	useRateLimitHelper,
 } from "@linked-planet/ui-kit-ts"
 import { useState } from "react"
@@ -110,6 +116,29 @@ function UseRateLimitHelperExample() {
 }
 //#endregion useRateLimitHelper
 
+//#region isMobile
+function IsMobileExample() {
+	const mobileDevice = isMobileDevice()
+	const mobilePhone = isMobilePhone()
+	const tablet = isTablet()
+
+	const mobileDeviceHook = useIsMobileDevice()
+	const mobilePhoneHook = useIsMobilePhone()
+	const tabletHook = useIsTablet()
+
+	return (
+		<div>
+			<p>Is mobile device: {mobileDevice ? "true" : "false"}</p>
+			<p>Is mobile phone: {mobilePhone ? "true" : "false"}</p>
+			<p>Is tablet: {tablet ? "true" : "false"}</p>
+			<p>Is mobile device hook: {mobileDeviceHook ? "true" : "false"}</p>
+			<p>Is mobile phone hook: {mobilePhoneHook ? "true" : "false"}</p>
+			<p>Is tablet hook: {tabletHook ? "true" : "false"}</p>
+		</div>
+	)
+}
+//#endregion isMobile
+
 export default function UtilsShowCase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -141,6 +170,11 @@ export default function UtilsShowCase(props: ShowcaseProps) {
 					title: "useRateLimit",
 					example: <UseRateLimitHelperExample />,
 					sourceCodeExampleId: "useRateLimitHelper",
+				},
+				{
+					title: "isMobile",
+					example: <IsMobileExample />,
+					sourceCodeExampleId: "isMobile",
 				},
 			]}
 		/>

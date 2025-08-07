@@ -25,6 +25,8 @@ export type InputProps = ComponentPropsWithoutRef<"input"> & {
 	errorMessage?: ReactNode
 	/* inputClassName targets the input element */
 	inputClassName?: string
+	/* inputIconContainerClassName targets the div around the input with the icons */
+	inputIconContainerClassName?: string
 	inputStyle?: CSSProperties
 	/* className targets the div around the input and the help/error messages */
 	className?: string
@@ -47,6 +49,7 @@ const Input = forwardRef(
 		{
 			className,
 			style,
+			inputIconContainerClassName,
 			inputClassName,
 			inputStyle,
 			helpMessageClassName,
@@ -76,7 +79,7 @@ const Input = forwardRef(
 					iconBefore && "pl-2",
 					iconAfter && "pr-2",
 					inputBaseStyles,
-					inputClassName,
+					inputIconContainerClassName,
 				)}
 				aria-invalid={ariaInvalid || invalid}
 			>
@@ -85,7 +88,7 @@ const Input = forwardRef(
 					ref={inputRef}
 					className={twMerge(
 						"m-0 px-[0.4rem] outline-hidden w-full",
-						//inputClassName,
+						inputClassName,
 					)}
 					style={{
 						backgroundColor: "inherit",

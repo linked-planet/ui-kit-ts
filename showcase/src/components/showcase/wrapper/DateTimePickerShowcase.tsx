@@ -202,6 +202,9 @@ function DateTimePickerShowcase(props: ShowcaseProps) {
 				onCreateTimeOption={(option) => {
 					console.log("onCreateTimeOption", option)
 				}}
+				formatCreateTimeLabel={(label) => {
+					return `New Time: "${label}"`
+				}}
 			/>
 		</Fieldset>
 	)

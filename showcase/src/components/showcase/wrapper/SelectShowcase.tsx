@@ -127,36 +127,34 @@ function ControlledFormExample() {
 	>([availableOptions[1], availableOptions[2]])
 
 	return (
-		<>
-			<form onSubmit={handleSubmit((data) => console.log(data))}>
-				<Label htmlFor="controlled">Controlled Single</Label>
-				<Select<FormDataControlled, string, false>
-					id="controlled"
-					control={control}
-					name="singleValue"
-					options={availableOptions}
-					value={selectedControlled}
-					onChange={(value) => setSelectedControlled(value)}
-				/>
+		<form onSubmit={handleSubmit((data) => console.log(data))}>
+			<Label htmlFor="controlled">Controlled Single</Label>
+			<Select<FormDataControlled, string, false>
+				id="controlled"
+				control={control}
+				name="singleValue"
+				options={availableOptions}
+				value={selectedControlled}
+				onChange={(value) => setSelectedControlled(value)}
+			/>
 
-				<Label htmlFor="controlledmulti">Controlled Multi</Label>
-				<Select<FormDataControlled, string, true>
-					id="controlledmulti"
-					isMulti
-					control={control}
-					name="multiValues"
-					options={availableOptions}
-					value={selectedControlledMulti}
-					onChange={(value) => setSelectedControlledMulti(value)}
-				/>
+			<Label htmlFor="controlledmulti">Controlled Multi</Label>
+			<Select<FormDataControlled, string, true>
+				id="controlledmulti"
+				isMulti
+				control={control}
+				name="multiValues"
+				options={availableOptions}
+				value={selectedControlledMulti}
+				onChange={(value) => setSelectedControlledMulti(value)}
+			/>
 
-				<ButtonGroup className="mt-2 w-full justify-end">
-					<Button type="submit" appearance="primary">
-						Submit
-					</Button>
-				</ButtonGroup>
-			</form>
-		</>
+			<ButtonGroup className="mt-2 w-full justify-end">
+				<Button type="submit" appearance="primary">
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
 	)
 }
 //#endregion select2form-controlled
@@ -315,7 +313,11 @@ function SelectShowcase(props: ShowcaseProps) {
 				options={[
 					{ label: "First option", value: { test: "first" } },
 					{ label: "Second option", value: { test: "second" } },
-					{ label: "Third option", value: { test: "third" } },
+					{
+						label: "Third option",
+						value: { test: "third" },
+						isDisabled: true,
+					},
 				]}
 				defaultValue={{
 					label: "Second option",

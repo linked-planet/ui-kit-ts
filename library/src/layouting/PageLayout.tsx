@@ -17,6 +17,7 @@ const Page = ({
 			className,
 		)}
 		id={id}
+		data-component="page"
 	>
 		{children}
 	</div>
@@ -48,6 +49,7 @@ const PageHeader = ({
 		id={id}
 		style={style}
 		data-testid={testId}
+		data-component="page-header"
 		{...props}
 	>
 		{children}
@@ -75,6 +77,7 @@ const PageHeaderTitle = ({
 			id={id ?? "page-header-title"}
 			style={style}
 			data-testid={testId}
+			data-component="page-header-title"
 		>
 			{typeof children === "string" ? <h1>{children}</h1> : children}
 			{titleMenu && <div className="ml-auto flex-none">{titleMenu}</div>}
@@ -100,6 +103,7 @@ const PageHeaderSubTitle = ({
 		id={id}
 		style={style}
 		data-testid={testId}
+		data-component="page-header-sub-title"
 	>
 		{typeof children === "string" ? (
 			<p className="pt-0">{children}</p>
@@ -130,6 +134,7 @@ const PageHeaderLine = ({
 		style={style}
 		id={id}
 		data-testid={testId}
+		data-component="page-header-line"
 	>
 		{children}
 	</div>
@@ -156,6 +161,7 @@ const PageBody = ({
 		style={style}
 		id={id ?? "page-body"}
 		data-testid={testId}
+		data-component="page-body"
 	>
 		{children}
 	</div>
@@ -182,6 +188,7 @@ const PageBodyContent = ({
 		id={id ?? "page-body-content"}
 		style={style}
 		aria-label={ariaLabel}
+		data-component="page-body-content"
 	>
 		{children}
 	</section>
@@ -211,6 +218,7 @@ const PageBodyHeader = ({
 		style={style}
 		data-testid={testId}
 		aria-label={ariaLabel}
+		data-component="page-body-header"
 	>
 		{children}
 	</section>
@@ -237,6 +245,7 @@ const PageBodyFooter = ({
 		id={id ?? "page-body-footer"}
 		style={style}
 		data-testid={testId}
+		data-component="page-body-footer"
 	>
 		{children}
 	</footer>

@@ -27,7 +27,6 @@ export function HighlightedText({
 			`(${highlights.map((it) => it.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`,
 			caseSensitive ? "g" : "gi",
 		)
-		console.log("Case sensitive:", delimiterRegex, highlightedText)
 		return text.split(delimiterRegex).reduce((acc, it, i) => {
 			if (delimiterRegex.test(it)) {
 				acc.push(

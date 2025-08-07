@@ -1,8 +1,8 @@
 import { type IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner"
-import { useCallback, useRef } from "react"
-import { Modal } from "./Modal"
-import { Button } from "./Button"
 import { XIcon } from "lucide-react"
+import { useCallback, useRef } from "react"
+import { Button } from "./Button"
+import { Modal } from "./Modal"
 
 // react-qr-scanner does not work in SSR, so we need to use a client component
 
