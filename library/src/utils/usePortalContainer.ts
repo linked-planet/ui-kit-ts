@@ -52,10 +52,6 @@ export default function usePortalContainer(
 		}
 
 		// else we use the normal portal
-		console.log(
-			"[UIKTS] - usePortal is a normal portal on",
-			getPortalRootNode(),
-		)
 		setPortalContainer(getPortal(containerID))
 	}, [usePortal, containerID, parentElement])
 
