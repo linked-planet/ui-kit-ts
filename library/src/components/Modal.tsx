@@ -20,7 +20,14 @@ type ModalDialogProps = {
 	open?: boolean
 	defaultOpen?: boolean
 	onOpenChange?: (open: boolean) => void
-	onEscapeKeyDown?: (event: KeyboardEvent) => void
+	onEscapeKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void
+	onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void
+	onKeyUp?: (event: React.KeyboardEvent<HTMLDivElement>) => void
+	onWheel?: (event: React.WheelEvent<HTMLDivElement>) => void
+	onTouchStart?: (event: React.TouchEvent<HTMLDivElement>) => void
+	onTouchMove?: (event: React.TouchEvent<HTMLDivElement>) => void
+	onTouchEnd?: (event: React.TouchEvent<HTMLDivElement>) => void
+	onTouchCancel?: (event: React.TouchEvent<HTMLDivElement>) => void
 	trigger?: ReactNode
 	children: ReactNode
 	className?: string
@@ -56,7 +63,6 @@ function Container({
 	shouldCloseOnOverlayClick = true,
 	open,
 	onOpenChange,
-	onEscapeKeyDown,
 	defaultOpen,
 	trigger,
 	className,
@@ -74,6 +80,14 @@ function Container({
 	tabIndex = undefined,
 	forceMountContent = undefined,
 	ref,
+	onKeyDown,
+	onEscapeKeyDown,
+	onKeyUp,
+	onWheel,
+	onTouchStart,
+	onTouchMove,
+	onTouchEnd,
+	onTouchCancel,
 }: ModalDialogProps) {
 	const triggerRef = useRef<HTMLButtonElement>(null)
 	// biome-ignore lint/style/noNonNullAssertion: safe if the trigger is used
@@ -120,15 +134,22 @@ function Container({
 							: undefined
 					}
 					id={id}
-					data-testid={testId}
+					onKeyDown={onKeyDown}
+					onKeyUp={onKeyUp}
 					onWheel={(e) => {
 						e.stopPropagation() // this is necessary or scrolling will not work in the select dropdown menu in the modal
+						onWheel?.(e)
 					}}
+					onTouchStart={onTouchStart}
+					onTouchMove={onTouchMove}
+					onTouchEnd={onTouchEnd}
+					onTouchCancel={onTouchCancel}
 					role={role}
 					tabIndex={tabIndex}
 					aria-describedby={accessibleDialogDescription}
 					title={accessibleDialogDescription}
 					forceMount={forceMountContent}
+					data-testid={testId}
 				>
 					<VisuallyHidden>
 						<RDialog.DialogTitle data-component="modal-title">
@@ -146,7 +167,6 @@ function Container({
 			children,
 			className,
 			id,
-			onEscapeKeyDown,
 			shouldCloseOnEscapePress,
 			shouldCloseOnOverlayClick,
 			style,
@@ -157,6 +177,14 @@ function Container({
 			tabIndex,
 			accessibleDialogTitle,
 			forceMountContent,
+			onEscapeKeyDown,
+			onKeyDown,
+			onKeyUp,
+			onWheel,
+			onTouchStart,
+			onTouchMove,
+			onTouchEnd,
+			onTouchCancel,
 		],
 	)
 
