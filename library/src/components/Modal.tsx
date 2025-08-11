@@ -20,7 +20,7 @@ type ModalDialogProps = {
 	open?: boolean
 	defaultOpen?: boolean
 	onOpenChange?: (open: boolean) => void
-	onEscapeKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void
+	onEscapeKeyDown?: (event: KeyboardEvent) => void
 	onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void
 	onKeyUp?: (event: React.KeyboardEvent<HTMLDivElement>) => void
 	onWheel?: (event: React.WheelEvent<HTMLDivElement>) => void
@@ -122,7 +122,7 @@ function Container({
 						className,
 					)}
 					style={style}
-					onEscapeKeyDown={(e) => {
+					onEscapeKeyDown={(e: KeyboardEvent) => {
 						onEscapeKeyDown?.(e)
 						if (!shouldCloseOnEscapePress) {
 							e.preventDefault()
