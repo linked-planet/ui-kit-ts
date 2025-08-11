@@ -26,7 +26,10 @@ export default function usePortalContainer(
 			usePortal instanceof ShadowRoot ||
 			usePortal instanceof HTMLElement
 		) {
-			console.log("[UIKTS] - usePortal is a ShadowRoot", usePortal)
+			console.log(
+				"[UIKTS] - usePortal is a ShadowRoot/HTMLElement",
+				usePortal,
+			)
 			setPortalContainer(getPortal(containerID, usePortal))
 			return
 		}

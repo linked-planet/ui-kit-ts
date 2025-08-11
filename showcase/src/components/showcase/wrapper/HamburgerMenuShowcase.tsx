@@ -116,7 +116,6 @@ function HamburgerMenuShowcase(props: ShowcaseProps) {
 			<HamburgerMenu
 				buttonClassName="bg-blue-600 text-white hover:bg-blue-700 rounded-lg"
 				menuClassName="bg-gradient-to-br from-blue-900 to-purple-900"
-				contentClassName="bg-gradient-to-br from-blue-50 to-purple-50"
 			>
 				<div className="space-y-6">
 					<div className="text-2xl font-bold text-gray-800 mb-8 text-center">

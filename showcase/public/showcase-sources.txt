@@ -4946,7 +4946,6 @@ function HamburgerMenuShowcase(props: ShowcaseProps) {
 			<HamburgerMenu
 				buttonClassName="bg-blue-600 text-white hover:bg-blue-700 rounded-lg"
 				menuClassName="bg-gradient-to-br from-blue-900 to-purple-900"
-				contentClassName="bg-gradient-to-br from-blue-50 to-purple-50"
 			>
 				<div className="space-y-6">
 					<div className="text-2xl font-bold text-gray-800 mb-8 text-center">
@@ -7183,36 +7182,34 @@ function ControlledFormExample() {
 	>([availableOptions[1], availableOptions[2]])
 
 	return (
-		<>
-			<form onSubmit={handleSubmit((data) => console.log(data))}>
-				<Label htmlFor="controlled">Controlled Single</Label>
-				<Select<FormDataControlled, string, false>
-					id="controlled"
-					control={control}
-					name="singleValue"
-					options={availableOptions}
-					value={selectedControlled}
-					onChange={(value) => setSelectedControlled(value)}
-				/>
+		<form onSubmit={handleSubmit((data) => console.log(data))}>
+			<Label htmlFor="controlled">Controlled Single</Label>
+			<Select<FormDataControlled, string, false>
+				id="controlled"
+				control={control}
+				name="singleValue"
+				options={availableOptions}
+				value={selectedControlled}
+				onChange={(value) => setSelectedControlled(value)}
+			/>
 
-				<Label htmlFor="controlledmulti">Controlled Multi</Label>
-				<Select<FormDataControlled, string, true>
-					id="controlledmulti"
-					isMulti
-					control={control}
-					name="multiValues"
-					options={availableOptions}
-					value={selectedControlledMulti}
-					onChange={(value) => setSelectedControlledMulti(value)}
-				/>
+			<Label htmlFor="controlledmulti">Controlled Multi</Label>
+			<Select<FormDataControlled, string, true>
+				id="controlledmulti"
+				isMulti
+				control={control}
+				name="multiValues"
+				options={availableOptions}
+				value={selectedControlledMulti}
+				onChange={(value) => setSelectedControlledMulti(value)}
+			/>
 
-				<ButtonGroup className="mt-2 w-full justify-end">
-					<Button type="submit" appearance="primary">
-						Submit
-					</Button>
-				</ButtonGroup>
-			</form>
-		</>
+			<ButtonGroup className="mt-2 w-full justify-end">
+				<Button type="submit" appearance="primary">
+					Submit
+				</Button>
+			</ButtonGroup>
+		</form>
 	)
 }
 //#endregion select2form-controlled
@@ -7371,7 +7368,11 @@ function SelectShowcase(props: ShowcaseProps) {
 				options={[
 					{ label: "First option", value: { test: "first" } },
 					{ label: "Second option", value: { test: "second" } },
-					{ label: "Third option", value: { test: "third" } },
+					{
+						label: "Third option",
+						value: { test: "third" },
+						isDisabled: true,
+					},
 				]}
 				defaultValue={{
 					label: "Second option",
