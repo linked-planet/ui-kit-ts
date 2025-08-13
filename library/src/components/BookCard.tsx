@@ -4,7 +4,7 @@ import type { ComponentProps, CSSProperties } from "react"
 import { forwardRef } from "react"
 
 import { twMerge } from "tailwind-merge"
-import { Collapsible } from "./Collapsible"
+import { Collapsible, type CollapsibleTriggerProps } from "./Collapsible"
 
 export const CardBase = forwardRef(
 	(
@@ -17,10 +17,7 @@ export const CardBase = forwardRef(
 			id,
 			className,
 			style,
-			triggerClassName,
-			triggerStyle,
-			chevronClassName,
-			chevronStyle,
+			triggerProps,
 		}: {
 			header: React.ReactNode
 			closed?: boolean
@@ -30,10 +27,7 @@ export const CardBase = forwardRef(
 			id?: string
 			className?: string
 			style?: CSSProperties
-			triggerClassName?: string
-			triggerStyle?: React.CSSProperties
-			chevronClassName?: string
-			chevronStyle?: React.CSSProperties
+			triggerProps?: CollapsibleTriggerProps
 		},
 		ref: React.ForwardedRef<HTMLDivElement>,
 	) => {
@@ -56,11 +50,9 @@ export const CardBase = forwardRef(
 				style={style}
 			>
 				<Collapsible.Trigger
-					className={triggerClassName}
-					style={triggerStyle}
 					openButtonPosition={openButtonPos}
-					chevronClassName={chevronClassName}
-					chevronStyle={chevronStyle}
+					data-component="CardBaseTrigger"
+					{...triggerProps}
 				>
 					{header}
 				</Collapsible.Trigger>

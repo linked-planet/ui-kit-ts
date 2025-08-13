@@ -6,7 +6,7 @@ import { forwardRef, useCallback, useMemo } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { focusOutlineStyles } from "./styleHelper"
 
-type TriggerProps = CollapsibleRUI.Trigger.Props & {
+export type CollapsibleTriggerProps = CollapsibleRUI.Trigger.Props & {
 	openButtonPosition?: "left" | "right" | "hidden"
 	chevronClassName?: string
 	chevronStyle?: React.CSSProperties
@@ -31,7 +31,7 @@ function Trigger({
 	render,
 	nativeButton = true,
 	...props
-}: TriggerProps) {
+}: CollapsibleTriggerProps) {
 	const classNameResolved = useCallback(
 		(state: CollapsibleRUI.Root.State) => {
 			const basicClassName = twJoin(
