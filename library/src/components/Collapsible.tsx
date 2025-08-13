@@ -3,7 +3,8 @@ import { Collapsible as CollapsibleRUI } from "@base-ui-components/react/collaps
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
 import { forwardRef, useCallback, useMemo } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
+import { focusOutlineStyles } from "./styleHelper"
 
 type TriggerProps = CollapsibleRUI.Trigger.Props & {
 	openButtonPosition?: "left" | "right" | "hidden"
@@ -33,11 +34,14 @@ function Trigger({
 }: TriggerProps) {
 	const classNameResolved = useCallback(
 		(state: CollapsibleRUI.Root.State) => {
-			const basicClassName = `flex w-full flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border border-border border-solid group-data-[closed]/collapsible:rounded-xs group-data-[open]/collapsible:rounded-t-xs ${
+			const basicClassName = twJoin(
+				"flex w-full flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border",
+				"border-border border-solid group-data-[closed]/collapsible:rounded-xs group-data-[open]/collapsible:rounded-t-xs",
+				focusOutlineStyles,
 				openButtonPosition === "hidden"
 					? "cursor-default"
-					: "cursor-pointer disabled:cursor-default"
-			}`
+					: "cursor-pointer disabled:cursor-default",
+			)
 			if (typeof className === "function") {
 				return twMerge(basicClassName, className(state))
 			}

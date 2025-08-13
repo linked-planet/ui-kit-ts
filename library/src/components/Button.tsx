@@ -6,8 +6,9 @@ import {
 	useMemo,
 	useRef,
 } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { LoadingSpinner } from "./LoadingSpinner"
+import { focusOutlineStyles } from "./styleHelper"
 
 export type ButtonAppearance =
 	| "default"
@@ -23,7 +24,10 @@ export type ButtonAppearance =
 
 type ButtonVariantProps = VariantProps<typeof buttonVariants>
 const buttonVariants = cva(
-	"focus-visible:outline-selected-bold relative box-border flex transition-colors duration-200 shrink-0 cursor-pointer items-center justify-center gap-1 rounded-sm border-2 border-transparent px-2 py-1 outline-none outline-2 outline-offset-4 focus-visible:outline-solid",
+	twJoin(
+		"relative box-border flex transition-colors duration-200 shrink-0 cursor-pointer items-center justify-center gap-1 rounded-sm border-2 border-transparent px-2 py-1 outline-none",
+		focusOutlineStyles,
+	),
 	{
 		variants: {
 			appearance: {

@@ -1,5 +1,6 @@
 import type React from "react"
 import { twMerge } from "tailwind-merge"
+import { focusOutlineStyles } from "../components/styleHelper"
 
 const Page = ({
 	children,
@@ -41,9 +42,9 @@ const PageHeader = ({
 }) => (
 	<header
 		className={twMerge(
-			`border-border bg-surface-raised z-1 flex flex-col border-b pb-4 pt-6 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-solid ${
+			`border-border bg-surface-raised z-1 flex flex-col border-b pb-4 pt-6 ${
 				shadow ? "shadow-strong" : ""
-			}`,
+			} ${focusOutlineStyles}`,
 			className,
 		)}
 		id={id}
@@ -182,7 +183,7 @@ const PageBodyContent = ({
 }) => (
 	<section
 		className={twMerge(
-			"min-h-0 flex-1 overflow-y-auto px-6 py-3 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-solid",
+			`min-h-0 flex-1 overflow-y-auto px-6 py-3 ${focusOutlineStyles}`,
 			className,
 		)}
 		id={id ?? "page-body-content"}
@@ -211,7 +212,7 @@ const PageBodyHeader = ({
 }) => (
 	<section
 		className={twMerge(
-			"bg-surface-raised shadow-overflow z-0 px-8 py-1 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-solid",
+			`bg-surface-raised shadow-overflow z-0 px-8 py-1 ${focusOutlineStyles}`,
 			className,
 		)}
 		id={id ?? "page-body-header"}
@@ -239,7 +240,7 @@ const PageBodyFooter = ({
 }) => (
 	<footer
 		className={twMerge(
-			"bg-surface-raised border-border shadow-strong z-0 flex justify-center border-t p-1.5 focus-visible:outline-selected-bold focus-visible:outline-2 focus-visible:outline-solid",
+			`bg-surface-raised border-border shadow-strong z-0 flex justify-center border-t p-1.5 ${focusOutlineStyles}`,
 			className,
 		)}
 		id={id ?? "page-body-footer"}
