@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Dropdown, type DropdownMenuProps } from "./DropdownMenu"
 import { IconSizeHelper } from "./IconSizeHelper"
+import { focusOutlineStyles } from "./styleHelper"
 
 const triggerClassName =
 	"h-8 hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded-xs bg-transparent p-1.5"
@@ -211,6 +212,7 @@ function PaginationPageHandler<P extends string | number>({
 								"flex cursor-pointer h-8 min-w-8 select-none items-center justify-center rounded-xs p-1.5 border-0 border-none border-transparent bg-transparent",
 								"data-[current=true]:bg-selected data-[current=true]:text-selected-text-inverse data-[current=true]:cursor-default",
 								"hover:bg-neutral-hovered active:bg-neutral-pressed",
+								focusOutlineStyles,
 								pageButtonClassName,
 							)}
 							onClick={() => {
@@ -285,7 +287,7 @@ function PaginationPageHandler<P extends string | number>({
 								!disablePreviousPage
 									? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
 									: "text-disabled-text"
-							}`,
+							} ${focusOutlineStyles}`,
 							pageButtonClassName,
 						)}
 						onClick={() => {
@@ -313,7 +315,7 @@ function PaginationPageHandler<P extends string | number>({
 								!disableNextPage
 									? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
 									: "text-disabled-text"
-							}`,
+							} ${focusOutlineStyles}`,
 							pageButtonClassName,
 						)}
 						onClick={() => {
