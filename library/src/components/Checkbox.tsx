@@ -38,6 +38,7 @@ type CheckboxProps = Omit<
 	) & {
 		label?: ReactNode
 		labelClassName?: string
+		labelId?: string
 		labelStyle?: React.CSSProperties
 		invalid?: boolean
 		errorMessage?: ReactNode
@@ -69,6 +70,7 @@ const CheckboxI = (
 		className,
 		style,
 		label,
+		labelId,
 		disabled,
 		required,
 		checked: checkedProp,
@@ -194,6 +196,7 @@ const CheckboxI = (
 
 				<label
 					htmlFor={id}
+					id={labelId}
 					aria-disabled={disabled}
 					aria-invalid={invalid}
 					className={twMerge(labelStyles, labelClassName)}
