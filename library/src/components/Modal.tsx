@@ -295,8 +295,6 @@ function Title({
 	style?: CSSProperties
 	id?: string
 	testId?: string
-	/** The accessible title for the dialog, is visually hidden but announced by screen readers */
-	accessibleDialogTitle: string
 }) {
 	return (
 		<RDialog.Title
