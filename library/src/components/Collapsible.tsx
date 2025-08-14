@@ -35,7 +35,7 @@ function Trigger({
 	const classNameResolved = useCallback(
 		(state: CollapsibleRUI.Root.State) => {
 			const basicClassName = twJoin(
-				"flex w-full flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border",
+				"flex w-auto flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border",
 				"border-border border-solid group-data-[closed]/collapsible:rounded-xs group-data-[open]/collapsible:rounded-t-xs",
 				focusOutlineStyles,
 				openButtonPosition === "hidden"
