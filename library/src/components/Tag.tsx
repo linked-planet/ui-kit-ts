@@ -71,17 +71,17 @@ export type SimpleTagProps = {
 	id?: string
 	testId?: string
 	truncate?: boolean
-	onClick?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onKeyDown?: (e: React.KeyboardEvent<HTMLOutputElement>) => void
-	onKeyUp?: (e: React.KeyboardEvent<HTMLOutputElement>) => void
-	onMouseDown?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onMouseUp?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onMouseEnter?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onMouseLeave?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onMouseOver?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onMouseOut?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onFocus?: (e: React.FocusEvent<HTMLOutputElement>) => void
-	onBlur?: (e: React.FocusEvent<HTMLOutputElement>) => void
+	onClick?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void
+	onKeyUp?: (e: React.KeyboardEvent<HTMLDivElement>) => void
+	onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onMouseOver?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onMouseOut?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onFocus?: (e: React.FocusEvent<HTMLDivElement>) => void
+	onBlur?: (e: React.FocusEvent<HTMLDivElement>) => void
 }
 
 const TagAppearanceColors: { [style in Appearance]: string } = {
@@ -91,7 +91,7 @@ const TagAppearanceColors: { [style in Appearance]: string } = {
 	information: "bg-information-bold text-text-inverse",
 	discovery: "bg-information-bold text-text-inverse",
 	danger: "bg-danger-bold text-text-inverse",
-	warning: "bg-warning-bold text-text",
+	warning: "bg-warning-bold text-text-inverse",
 } as const
 
 const TagColors: { [style in TagColor]: string } = {
@@ -162,7 +162,6 @@ function SimpleTag({
 	className,
 	id,
 	truncate,
-	testId,
 	onClick,
 	onKeyDown,
 	onKeyUp,
@@ -180,7 +179,7 @@ function SimpleTag({
 		: TagAppearanceColors[appearance]
 
 	return (
-		<output
+		<div
 			className={twMerge(
 				twJoin(
 					colors,
@@ -188,13 +187,13 @@ function SimpleTag({
 					"box-border inline-flex max-w-max cursor-default select-none items-center whitespace-nowrap px-1 align-middle text-sm",
 					bold ? "font-bold" : undefined,
 					truncate ? "overflow-hidden" : undefined,
+					"inline-block",
 				),
 				className,
 			)}
 			style={style}
 			title={title}
 			id={id}
-			data-testid={testId}
 			onClick={onClick}
 			onKeyDown={onKeyDown}
 			onKeyUp={onKeyUp}
@@ -212,7 +211,7 @@ function SimpleTag({
 			) : (
 				children
 			)}
-		</output>
+		</div>
 	)
 }
 
