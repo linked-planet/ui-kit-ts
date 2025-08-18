@@ -2,7 +2,7 @@ import { Collapsible as CollapsibleRUI } from "@base-ui-components/react/collaps
 
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
-import { forwardRef, useCallback, useMemo } from "react"
+import React, { forwardRef, useCallback, useId, useMemo } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { focusOutlineStyles } from "./styleHelper"
 
@@ -147,6 +147,7 @@ function Panel({ className, ...props }: PanelProps) {
 			keepMounted={props.keepMounted ?? true}
 			hiddenUntilFound={props.hiddenUntilFound ?? true}
 			className={classNameResolved}
+			role="region"
 			{...props}
 		/>
 	)
@@ -170,6 +171,28 @@ export const Root = forwardRef(
 		)
 
 		const forwardedRef = ref
+		const id = useId()
+		const triggerId = `collapsible-trigger-${id}`
+		const contentId = `collapsible-content-${id}`
+
+		// add ids to children
+		const childrenWithIds = React.Children.map(children, (child) => {
+			if (React.isValidElement(child)) {
+				if (child.type === Trigger) {
+					return React.cloneElement(child, {
+						id: triggerId,
+						"aria-controls": contentId,
+					})
+				}
+				if (child.type === Panel) {
+					return React.cloneElement(child, {
+						id: contentId,
+						"aria-labelledby": triggerId,
+					})
+				}
+			}
+			return child
+		})
 
 		return (
 			<CollapsibleRUI.Root
@@ -177,7 +200,7 @@ export const Root = forwardRef(
 				className={classNameResolved}
 				ref={forwardedRef}
 			>
-				{children}
+				{childrenWithIds}
 			</CollapsibleRUI.Root>
 		)
 	},
