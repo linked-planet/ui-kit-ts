@@ -136,11 +136,7 @@ export function QrReaderDialog({
 			shouldCloseOnOverlayClick={shouldCloseOnOverlayClick}
 		>
 			<Modal.Header>
-				{title && (
-					<Modal.Title accessibleDialogTitle={accessibleDialogTitle}>
-						{title}
-					</Modal.Title>
-				)}
+				{title && <Modal.Title>{title}</Modal.Title>}
 				<Modal.CloseTrigger asChild>
 					<Button
 						appearance="subtle"
