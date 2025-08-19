@@ -17,7 +17,7 @@ type PanelProps = CollapsibleRUI.Panel.Props & {
 	transitionDuration?: string
 }
 
-type CollapsibleProps = CollapsibleRUI.Root.Props
+export type CollapsibleProps = CollapsibleRUI.Root.Props
 
 function Trigger({
 	className,
@@ -35,7 +35,7 @@ function Trigger({
 	const classNameResolved = useCallback(
 		(state: CollapsibleRUI.Root.State) => {
 			const basicClassName = twJoin(
-				"flex w-auto flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border",
+				"flex w-full overflow-hidden flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border",
 				"border-border border-solid group-data-[closed]/collapsible:rounded-xs group-data-[open]/collapsible:rounded-t-xs",
 				focusOutlineStyles,
 				openButtonPosition === "hidden"
@@ -116,8 +116,12 @@ function Trigger({
 					}
 
 					return (
+						// biome-ignore lint/a11y/useSemanticElements: cannot put button in button
 						<div
 							className="flex items-center w-full justify-between"
+							data-component="collapsible-trigger"
+							role="button"
+							tabIndex={0}
 							{...g}
 						>
 							{triggerContent}
@@ -145,7 +149,6 @@ function Panel({ className, role, ...props }: PanelProps) {
 	return (
 		<CollapsibleRUI.Panel
 			keepMounted={props.keepMounted ?? true}
-			hiddenUntilFound={props.hiddenUntilFound ?? true}
 			className={classNameResolved}
 			role={role ?? "region"}
 			{...props}
