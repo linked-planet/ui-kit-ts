@@ -129,7 +129,7 @@ function Trigger({
 	)
 }
 
-function Panel({ className, ...props }: PanelProps) {
+function Panel({ className, role, ...props }: PanelProps) {
 	const classNameResolved = useCallback(
 		(state: CollapsibleRUI.Root.State) => {
 			const basicClassName =
@@ -147,7 +147,7 @@ function Panel({ className, ...props }: PanelProps) {
 			keepMounted={props.keepMounted ?? true}
 			hiddenUntilFound={props.hiddenUntilFound ?? true}
 			className={classNameResolved}
-			role="region"
+			role={role ?? "region"}
 			{...props}
 		/>
 	)
