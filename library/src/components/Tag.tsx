@@ -184,7 +184,7 @@ function SimpleTag({
 				twJoin(
 					colors,
 					looks === "default" ? "rounded-[3px]" : "rounded-full",
-					"box-border inline-flex max-w-max cursor-default select-none items-center whitespace-nowrap px-1 align-middle text-sm",
+					"box-border inline-flex max-w-max cursor-default select-none items-center whitespace-nowrap px-1 align-middle text-center text-sm",
 					bold ? "font-bold" : undefined,
 					truncate ? "overflow-hidden" : undefined,
 					"inline-block",
@@ -205,9 +205,16 @@ function SimpleTag({
 			onMouseOut={onMouseOut}
 			onFocus={onFocus}
 			onBlur={onBlur}
+			data-component="tag"
 		>
 			{truncate ? (
-				<div className={"truncate w-full"}>{children}</div>
+				<div
+					className={
+						"truncate w-full flex items-center justify-center-safe text-center"
+					}
+				>
+					{children}
+				</div>
 			) : (
 				children
 			)}
@@ -267,10 +274,11 @@ export function Tag({
 							onClick()
 						}
 					}}
-					className={`m-0 ml-0.5 p-0 flex size-4 flex-none items-center justify-center border-transparent text-inherit bg-transparent hover:cursor-pointer ${
+					className={`m-0 ml-0.5 p-0 flex size-4 flex-none items-center justify-center-safe border-transparent text-inherit bg-transparent hover:cursor-pointer text-center ${
 						!removable ? "hidden" : ""
 					}`}
 					aria-label={removeButtonLabel}
+					data-component="tag-remove-button"
 					title={removeButtonLabel}
 					onMouseOver={() => setHovered(true)}
 					onFocus={() => setHovered(true)}
