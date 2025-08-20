@@ -39,6 +39,10 @@ export type SidebarProps = {
 	flyoutVar?: `--${string}`
 	localStorageWidthKey?: string
 	localStorageCollapsedKey?: string
+	ariaLabel?: string
+	ariaLive?: "polite" | "assertive" | "off"
+	ariaAtomic?: boolean
+	ariaRelevant?: "additions" | "removals" | "text" | "all"
 }
 
 type PropAdditionals = {
@@ -178,7 +182,6 @@ function Sidebar({
 	onResizeEnd,
 	onCloseButtonClick,
 	sticky,
-	valueTextLabel,
 	resizeGrabAreaLabel,
 	className,
 	style,
@@ -193,6 +196,7 @@ function Sidebar({
 	flyoutVar,
 	localStorageWidthKey,
 	localStorageCollapsedKey,
+	...props
 }: SidebarProps & PropAdditionals) {
 	const asideRef = useRef<ElementRef<"aside">>(null)
 	const mouseUpRef = useRef<(() => void) | undefined>(undefined)
@@ -320,7 +324,6 @@ function Sidebar({
 		<aside
 			id={id}
 			ref={asideRef}
-			aria-label={valueTextLabel ?? "sidebar"}
 			className={twMerge(
 				`bg-surface-overlay relative z-2 m-0 box-border h-full transform ease-in-out ${
 					isResizing ? "duration-0" : "duration-300"
@@ -334,6 +337,7 @@ function Sidebar({
 				...style,
 			}}
 			data-component="sidebar"
+			{...props}
 		>
 			{/* resize button and grab handle area */}
 			{/** biome-ignore lint/a11y/useSemanticElements: is a div and has a button within */}

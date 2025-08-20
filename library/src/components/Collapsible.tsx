@@ -4,7 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
 import React, { forwardRef, useCallback, useId, useMemo } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
-import { focusOutlineStyles } from "./styleHelper"
+import { focusVisibleOutlineStyles } from "./styleHelper"
 
 export type CollapsibleTriggerProps = CollapsibleRUI.Trigger.Props & {
 	openButtonPosition?: "left" | "right" | "hidden"
@@ -37,7 +37,7 @@ function Trigger({
 			const basicClassName = twJoin(
 				"flex w-full overflow-hidden flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border",
 				"border-border border-solid group-data-[closed]/collapsible:rounded-xs group-data-[open]/collapsible:rounded-t-xs",
-				focusOutlineStyles,
+				focusVisibleOutlineStyles,
 				openButtonPosition === "hidden"
 					? "cursor-default"
 					: "cursor-pointer disabled:cursor-default",
