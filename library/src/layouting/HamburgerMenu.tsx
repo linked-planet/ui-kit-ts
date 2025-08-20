@@ -4,7 +4,7 @@ import { type ReactNode, useCallback, useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { twMerge } from "tailwind-merge"
 import { Button, type ButtonProps } from "../components"
-import { focusOutlineStyles } from "../components/styleHelper"
+import { focusVisibleOutlineStyles } from "../components/styleHelper"
 import { getHamburgerMenuPortal } from "../utils"
 
 export interface HamburgerMenuProps {
@@ -205,7 +205,7 @@ export function HamburgerMenu({
 				onClick={handleToggle}
 				appearance={buttonAppearance}
 				className={twMerge(
-					`flex items-center justify-center p-2 text-text rounded-md transition-colors duration-200  ${focusOutlineStyles}`,
+					`flex items-center justify-center p-2 text-text rounded-md transition-colors duration-200  ${focusVisibleOutlineStyles}`,
 					buttonClassName,
 				)}
 				aria-label={isOpen ? ariaLabelClose : ariaLabelOpen}

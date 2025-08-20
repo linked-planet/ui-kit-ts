@@ -34,7 +34,7 @@ import ReactSelectCreatable, {
 import { twJoin, twMerge } from "tailwind-merge"
 import usePortalContainer from "../../utils/usePortalContainer"
 import { IconSizeHelper } from "../IconSizeHelper"
-import { focusOutlineStyles, inputBaseStyles } from "../styleHelper"
+import { focusVisibleOutlineStyles, inputBaseStyles } from "../styleHelper"
 import { SlidingErrorMessage } from "./ErrorHelpWrapper"
 
 // usage aria stuff:
@@ -119,7 +119,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 				clearIndicator: (provided) =>
 					twMerge(
 						"size-3.5 cursor-pointer bg-gray-bold hover:bg-gray-bold-hovered active:bg-gray-bold-pressed rounded-full text-text-inverse p-0.5 flex items-center justify-center",
-						focusOutlineStyles,
+						focusVisibleOutlineStyles,
 						classNamesConfig?.clearIndicator?.(provided),
 					),
 				dropdownIndicator: (provided) =>
@@ -129,7 +129,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 								? "text-disabled-text"
 								: "text-text-subtlest  hover:text-text"
 						}`,
-						focusOutlineStyles,
+						focusVisibleOutlineStyles,
 						classNamesConfig?.dropdownIndicator?.(provided),
 					),
 				indicatorsContainer: (provided) =>
@@ -175,7 +175,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 				multiValueRemove: (provided) =>
 					twMerge(
 						"hover:bg-danger-hovered flex-none active:bg-danger-pressed focus-visible:outline-offset-0 px-1 cursor-pointer ml-1 flex items-center rounded-r-sm " as const,
-						focusOutlineStyles,
+						focusVisibleOutlineStyles,
 						classNamesConfig?.multiValueRemove?.(provided),
 					),
 				option: (provided) =>

@@ -8,7 +8,7 @@ import {
 } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { LoadingSpinner } from "./LoadingSpinner"
-import { focusOutlineStyles } from "./styleHelper"
+import { focusVisibleOutlineStyles } from "./styleHelper"
 
 export type ButtonAppearance =
 	| "default"
@@ -26,7 +26,7 @@ type ButtonVariantProps = VariantProps<typeof buttonVariants>
 const buttonVariants = cva(
 	twJoin(
 		"relative box-border flex transition-colors duration-200 shrink-0 cursor-pointer items-center justify-center gap-1 rounded-sm border-2 border-transparent px-2 py-1 outline-none",
-		focusOutlineStyles,
+		focusVisibleOutlineStyles,
 	),
 	{
 		variants: {
@@ -224,7 +224,6 @@ export type ButtonProps = {
 	href?: string
 	download?: string | true
 	target?: "_blank" | "_self" | "_parent" | "_top"
-	"aria-label"?: string
 	testId?: string
 } & ButtonVariantProps &
 	Pick<
@@ -252,6 +251,7 @@ export type ButtonProps = {
 		| "aria-label"
 		| "tabIndex"
 		| "aria-disabled"
+		| "aria-controls"
 	>
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

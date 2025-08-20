@@ -28,7 +28,7 @@ import {
 } from "react-hook-form"
 import { twJoin, twMerge } from "tailwind-merge"
 import { type DateType, dateFromString, toDateType } from "../utils/DateUtils"
-import { focusOutlineStyles } from "./styleHelper"
+import { focusVisibleOutlineStyles } from "./styleHelper"
 
 //import "react-day-picker/dist/style.css" -> is imported in index.ts of the library that it is before TW
 
@@ -97,7 +97,7 @@ const buttonStyles = twJoin(
 	"border-none font-normal bg-surface cursor-pointer p-1 z-10 inline-flex place-content-center-safe",
 	"hover:bg-surface-hovered hover:text-text disabled:hover:bg-transparent disabled:hover:text-text-disabled disabled:cursor-not-allowed disabled:text-text-disabled",
 	"focus-visible:ring-0",
-	focusOutlineStyles,
+	focusVisibleOutlineStyles,
 )
 const captionStyles =
 	"flex justify-center items-center w-full pb-2 relative top-2"
