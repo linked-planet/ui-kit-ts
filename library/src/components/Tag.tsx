@@ -279,7 +279,7 @@ export function Tag({
 					}`}
 					aria-label={removeButtonLabel}
 					data-component="tag-remove-button"
-					title={removeButtonLabel}
+					title={removeButtonLabel ?? "Remove tag"}
 					onMouseOver={() => setHovered(true)}
 					onFocus={() => setHovered(true)}
 					onMouseLeave={() => setHovered(false)}
