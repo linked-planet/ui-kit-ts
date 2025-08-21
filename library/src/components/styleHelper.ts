@@ -22,3 +22,6 @@ export const inputBaseStyles = twJoin(
 // the focusVisibleOutlineStyles are used in button/others components for the blue focus ring
 export const focusVisibleOutlineStyles =
 	"focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-input-border-focused focus-visible:outline-solid" as const
+
+export const focusOutlineStyles =
+	"focus:outline-2 focus:outline-offset-0 focus:outline-input-border-focused focus:outline-solid" as const

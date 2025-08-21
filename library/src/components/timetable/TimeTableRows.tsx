@@ -45,7 +45,6 @@ import {
 	toggleTimeSlotSelected,
 	useTimeSlotSelection,
 } from "./TimeTableSelectionStore"
-import { getNextTabbableElement } from "./tabUtils"
 import { getLeftAndWidth, getTimeSlotMinutes } from "./timeTableUtils"
 import type { ItemRowEntry } from "./useGoupRows"
 import { useKeyboardHandlers } from "./useKeyboardHandler"
@@ -947,7 +946,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					? 0
 					: -1
 			}
-			onFocus={(e) => {
+			onFocus={(_e) => {
 				if (
 					rowNumber === 0 &&
 					groupNumber === 0 &&
