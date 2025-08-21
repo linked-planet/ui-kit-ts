@@ -3,6 +3,7 @@ import { twJoin } from "tailwind-merge"
 export const overlayBaseStyle =
 	"bg-surface-overlay relative shadow-overlay border-border border-solid border z-50 rounded-xs overflow-auto max-h-full" /* only-x-auto to allow for horizontal scrolling but do not cut off the outline */
 
+// the shadowStyles are used in input components for the blue focus ring and the red invalid border
 const shadowStyles = twJoin(
 	"disabled:shadow-none outline-hidden disabled:ring-0",
 	"aria-invalid:border-danger-border aria-invalid:focus-within:ring-danger-border-focused",
@@ -17,3 +18,7 @@ export const inputBaseStyles = twJoin(
 	"disabled:bg-disabled disabled:cursor-not-allowed disabled:border-transparent",
 	shadowStyles,
 )
+
+// the focusVisibleOutlineStyles are used in button/others components for the blue focus ring
+export const focusVisibleOutlineStyles =
+	"focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-input-border-focused focus-visible:outline-solid" as const

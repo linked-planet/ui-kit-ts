@@ -51,6 +51,7 @@ type ModalDialogProps = {
 	 * This is useful for animations.
 	 */
 	forceMountContent?: true
+	ariaLabeledBy?: string
 }
 
 const blanketStyles =
@@ -88,6 +89,7 @@ function Container({
 	onTouchMove,
 	onTouchEnd,
 	onTouchCancel,
+	...contentProps
 }: ModalDialogProps) {
 	const triggerRef = useRef<HTMLButtonElement>(null)
 	// biome-ignore lint/style/noNonNullAssertion: safe if the trigger is used
@@ -150,6 +152,7 @@ function Container({
 					title={accessibleDialogDescription}
 					forceMount={forceMountContent}
 					data-testid={testId}
+					{...contentProps}
 				>
 					<VisuallyHidden>
 						<RDialog.DialogTitle data-component="modal-title">
@@ -295,8 +298,6 @@ function Title({
 	style?: CSSProperties
 	id?: string
 	testId?: string
-	/** The accessible title for the dialog, is visually hidden but announced by screen readers */
-	accessibleDialogTitle: string
 }) {
 	return (
 		<RDialog.Title

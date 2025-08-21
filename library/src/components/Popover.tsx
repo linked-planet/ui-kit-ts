@@ -16,7 +16,7 @@ export type PopoverTriggerProps = RPo.Trigger.Props &
 
 export type PopoverPositionerProps = Pick<
 	RPo.Positioner.Props,
-	"side" | "align" | "alignOffset" | "anchor"
+	"side" | "align" | "alignOffset" | "anchor" | "style" | "className"
 >
 
 export type PopoverProps = RPo.Root.Props & {

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { Dropdown, type DropdownMenuProps } from "./DropdownMenu"
 import { IconSizeHelper } from "./IconSizeHelper"
+import { focusVisibleOutlineStyles } from "./styleHelper"
 
 const triggerClassName =
 	"h-8 hover:bg-neutral-hovered active:bg-neutral-pressed flex select-none items-center justify-center rounded-xs bg-transparent p-1.5"
@@ -16,6 +17,7 @@ export type PageSizeSelectorProps = {
 	pageSizeMenuAlign?: DropdownMenuProps["align"]
 	pageSizeTitle?: React.ReactNode
 	pageSizeTriggerClassName?: string
+	ariaLabel?: string
 }
 
 function PageSizeSelector({
@@ -27,6 +29,7 @@ function PageSizeSelector({
 	pageSizeMenuAlign = "start",
 	pageSizeTitle = "Items:",
 	pageSizeTriggerClassName,
+	ariaLabel,
 }: PageSizeSelectorProps) {
 	const [_pageSize, setPageSizeUsed] = useState(pageSize ?? defaultPageSize)
 
@@ -45,6 +48,7 @@ function PageSizeSelector({
 						setPageSizeUsed(size)
 						onPageSizeChange?.(size)
 					}}
+					title={`${size}`}
 				>
 					{size}
 				</Dropdown.Item>
@@ -63,6 +67,7 @@ function PageSizeSelector({
 				)}
 				side={pageSizeMenuSide}
 				align={pageSizeMenuAlign}
+				aria-label={`${ariaLabel ?? "Select page size"} ${_pageSize}`}
 			>
 				{pageSizesItems}
 			</Dropdown.Menu>
@@ -211,6 +216,7 @@ function PaginationPageHandler<P extends string | number>({
 								"flex cursor-pointer h-8 min-w-8 select-none items-center justify-center rounded-xs p-1.5 border-0 border-none border-transparent bg-transparent",
 								"data-[current=true]:bg-selected data-[current=true]:text-selected-text-inverse data-[current=true]:cursor-default",
 								"hover:bg-neutral-hovered active:bg-neutral-pressed",
+								focusVisibleOutlineStyles,
 								pageButtonClassName,
 							)}
 							onClick={() => {
@@ -285,7 +291,7 @@ function PaginationPageHandler<P extends string | number>({
 								!disablePreviousPage
 									? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
 									: "text-disabled-text"
-							}`,
+							} ${focusVisibleOutlineStyles}`,
 							pageButtonClassName,
 						)}
 						onClick={() => {
@@ -313,7 +319,7 @@ function PaginationPageHandler<P extends string | number>({
 								!disableNextPage
 									? "hover:bg-neutral-hovered active:bg-neutral-pressed text-text"
 									: "text-disabled-text"
-							}`,
+							} ${focusVisibleOutlineStyles}`,
 							pageButtonClassName,
 						)}
 						onClick={() => {

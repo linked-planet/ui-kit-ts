@@ -2,10 +2,11 @@ import { Collapsible as CollapsibleRUI } from "@base-ui-components/react/collaps
 
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 
-import { forwardRef, useCallback, useMemo } from "react"
-import { twMerge } from "tailwind-merge"
+import React, { forwardRef, useCallback, useId, useMemo } from "react"
+import { twJoin, twMerge } from "tailwind-merge"
+import { focusVisibleOutlineStyles } from "./styleHelper"
 
-type TriggerProps = CollapsibleRUI.Trigger.Props & {
+export type CollapsibleTriggerProps = CollapsibleRUI.Trigger.Props & {
 	openButtonPosition?: "left" | "right" | "hidden"
 	chevronClassName?: string
 	chevronStyle?: React.CSSProperties
@@ -16,7 +17,7 @@ type PanelProps = CollapsibleRUI.Panel.Props & {
 	transitionDuration?: string
 }
 
-type CollapsibleProps = CollapsibleRUI.Root.Props
+export type CollapsibleProps = CollapsibleRUI.Root.Props
 
 function Trigger({
 	className,
@@ -30,14 +31,17 @@ function Trigger({
 	render,
 	nativeButton = true,
 	...props
-}: TriggerProps) {
+}: CollapsibleTriggerProps) {
 	const classNameResolved = useCallback(
 		(state: CollapsibleRUI.Root.State) => {
-			const basicClassName = `flex w-full flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border border-border border-solid group-data-[closed]/collapsible:rounded-xs group-data-[open]/collapsible:rounded-t-xs ${
+			const basicClassName = twJoin(
+				"flex w-full overflow-hidden flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border",
+				"border-border border-solid group-data-[closed]/collapsible:rounded-xs group-data-[open]/collapsible:rounded-t-xs",
+				focusVisibleOutlineStyles,
 				openButtonPosition === "hidden"
 					? "cursor-default"
-					: "cursor-pointer disabled:cursor-default"
-			}`
+					: "cursor-pointer disabled:cursor-default",
+			)
 			if (typeof className === "function") {
 				return twMerge(basicClassName, className(state))
 			}
@@ -112,8 +116,12 @@ function Trigger({
 					}
 
 					return (
+						// biome-ignore lint/a11y/useSemanticElements: cannot put button in button
 						<div
 							className="flex items-center w-full justify-between"
+							data-component="collapsible-trigger"
+							role="button"
+							tabIndex={0}
 							{...g}
 						>
 							{triggerContent}
@@ -125,7 +133,7 @@ function Trigger({
 	)
 }
 
-function Panel({ className, ...props }: PanelProps) {
+function Panel({ className, role, ...props }: PanelProps) {
 	const classNameResolved = useCallback(
 		(state: CollapsibleRUI.Root.State) => {
 			const basicClassName =
@@ -141,8 +149,8 @@ function Panel({ className, ...props }: PanelProps) {
 	return (
 		<CollapsibleRUI.Panel
 			keepMounted={props.keepMounted ?? true}
-			hiddenUntilFound={props.hiddenUntilFound ?? true}
 			className={classNameResolved}
+			role={role ?? "region"}
 			{...props}
 		/>
 	)
@@ -166,6 +174,28 @@ export const Root = forwardRef(
 		)
 
 		const forwardedRef = ref
+		const id = useId()
+		const triggerId = `collapsible-trigger-${id}`
+		const contentId = `collapsible-content-${id}`
+
+		// add ids to children
+		const childrenWithIds = React.Children.map(children, (child) => {
+			if (React.isValidElement(child)) {
+				if (child.type === Trigger) {
+					return React.cloneElement(child, {
+						id: triggerId,
+						"aria-controls": contentId,
+					})
+				}
+				if (child.type === Panel) {
+					return React.cloneElement(child, {
+						id: contentId,
+						"aria-labelledby": triggerId,
+					})
+				}
+			}
+			return child
+		})
 
 		return (
 			<CollapsibleRUI.Root
@@ -173,7 +203,7 @@ export const Root = forwardRef(
 				className={classNameResolved}
 				ref={forwardedRef}
 			>
-				{children}
+				{childrenWithIds}
 			</CollapsibleRUI.Root>
 		)
 	},

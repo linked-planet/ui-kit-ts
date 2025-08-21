@@ -4,63 +4,45 @@ import type { ComponentProps, CSSProperties } from "react"
 import { forwardRef } from "react"
 
 import { twMerge } from "tailwind-merge"
-import { Collapsible } from "./Collapsible"
+import {
+	Collapsible,
+	type CollapsibleProps,
+	type CollapsibleTriggerProps,
+} from "./Collapsible"
 
 export const CardBase = forwardRef(
 	(
 		{
 			header,
-			closed,
-			defaultOpen,
 			onOpenChange,
 			children,
-			id,
-			className,
-			style,
-			triggerClassName,
-			triggerStyle,
-			chevronClassName,
-			chevronStyle,
+			triggerProps,
+			open,
+			defaultOpen = true,
+			...props
 		}: {
 			header: React.ReactNode
-			closed?: boolean
-			defaultOpen?: boolean
-			onOpenChange?: (opened: boolean) => void
-			children?: React.ReactNode
-			id?: string
-			className?: string
-			style?: CSSProperties
-			triggerClassName?: string
-			triggerStyle?: React.CSSProperties
-			chevronClassName?: string
-			chevronStyle?: React.CSSProperties
-		},
+			triggerProps?: CollapsibleTriggerProps
+		} & CollapsibleProps,
 		ref: React.ForwardedRef<HTMLDivElement>,
 	) => {
-		const openVal =
-			closed != null ? !closed : defaultOpen != null ? undefined : true
-
 		const openButtonPos =
-			closed == null && defaultOpen == null ? "hidden" : "right"
+			open == null && defaultOpen == null ? "hidden" : "right"
 
 		const forwardedRef = ref
 
 		return (
 			<Collapsible.Root
-				open={openVal}
+				open={open}
 				defaultOpen={defaultOpen}
 				onOpenChange={onOpenChange}
-				className={className}
-				id={id}
 				ref={forwardedRef}
-				style={style}
+				{...props}
 			>
 				<Collapsible.Trigger
-					className={triggerClassName}
-					style={triggerStyle}
 					openButtonPosition={openButtonPos}
-					chevronClassName={chevronClassName}
-					chevronStyle={chevronStyle}
+					data-component="CardBaseTrigger"
+					{...triggerProps}
 				>
 					{header}
 				</Collapsible.Trigger>
@@ -107,7 +89,7 @@ const CardHeader = ({
 }) => (
 	<div
 		className={twMerge(
-			"bg-surface-overlay box-border flex flex-1 justify-between px-4 py-3",
+			"bg-surface-overlay box-border flex flex-1 justify-between px-4 py-3 overflow-hidden",
 			className,
 		)}
 		{...props}
@@ -370,16 +352,11 @@ type BookCardProps = {
 	subtitle?: React.ReactNode
 	upperTitle?: React.ReactNode
 	headerPrefix?: CardHeaderPrefixProps
-	closed?: boolean
-	defaultOpen?: boolean
 	bodyLayout: "row" | "grid" | "column"
 	bodyStyle?: CSSProperties
 	bodyClassName?: string
 	actions?: React.ReactNode
-	children?: React.ReactNode
-	onOpenChange?: (opened: boolean) => void
-	id?: string
-}
+} & CollapsibleProps
 
 export const BookCard = forwardRef(
 	(
@@ -388,15 +365,12 @@ export const BookCard = forwardRef(
 			subtitle,
 			upperTitle,
 			headerPrefix,
-			closed,
-			defaultOpen,
 			actions,
 			bodyStyle,
 			bodyClassName,
 			bodyLayout,
 			children,
-			onOpenChange,
-			id,
+			...props
 		}: BookCardProps,
 		ref: React.ForwardedRef<HTMLDivElement>,
 	) => {
@@ -417,10 +391,6 @@ export const BookCard = forwardRef(
 
 		return (
 			<CardBase
-				closed={closed}
-				onOpenChange={onOpenChange}
-				defaultOpen={defaultOpen}
-				id={id}
 				ref={forwardedRef}
 				header={
 					<CardHeader headerPrefix={headerPrefix}>
@@ -440,6 +410,7 @@ export const BookCard = forwardRef(
 						<CardHeaderActions>{actions}</CardHeaderActions>
 					</CardHeader>
 				}
+				{...props}
 			>
 				<div className="bg-surface box-border w-full rounded-b">
 					<div style={bodyStyle} className={bodyClassName}>

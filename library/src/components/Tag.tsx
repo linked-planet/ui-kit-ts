@@ -71,17 +71,17 @@ export type SimpleTagProps = {
 	id?: string
 	testId?: string
 	truncate?: boolean
-	onClick?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onKeyDown?: (e: React.KeyboardEvent<HTMLOutputElement>) => void
-	onKeyUp?: (e: React.KeyboardEvent<HTMLOutputElement>) => void
-	onMouseDown?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onMouseUp?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onMouseEnter?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onMouseLeave?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onMouseOver?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onMouseOut?: (e: React.MouseEvent<HTMLOutputElement>) => void
-	onFocus?: (e: React.FocusEvent<HTMLOutputElement>) => void
-	onBlur?: (e: React.FocusEvent<HTMLOutputElement>) => void
+	onClick?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void
+	onKeyUp?: (e: React.KeyboardEvent<HTMLDivElement>) => void
+	onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onMouseOver?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onMouseOut?: (e: React.MouseEvent<HTMLDivElement>) => void
+	onFocus?: (e: React.FocusEvent<HTMLDivElement>) => void
+	onBlur?: (e: React.FocusEvent<HTMLDivElement>) => void
 }
 
 const TagAppearanceColors: { [style in Appearance]: string } = {
@@ -91,7 +91,7 @@ const TagAppearanceColors: { [style in Appearance]: string } = {
 	information: "bg-information-bold text-text-inverse",
 	discovery: "bg-information-bold text-text-inverse",
 	danger: "bg-danger-bold text-text-inverse",
-	warning: "bg-warning-bold text-text",
+	warning: "bg-warning-bold text-text-inverse",
 } as const
 
 const TagColors: { [style in TagColor]: string } = {
@@ -162,7 +162,6 @@ function SimpleTag({
 	className,
 	id,
 	truncate,
-	testId,
 	onClick,
 	onKeyDown,
 	onKeyUp,
@@ -180,21 +179,21 @@ function SimpleTag({
 		: TagAppearanceColors[appearance]
 
 	return (
-		<output
+		<div
 			className={twMerge(
 				twJoin(
 					colors,
 					looks === "default" ? "rounded-[3px]" : "rounded-full",
-					"box-border inline-flex max-w-max cursor-default select-none items-center whitespace-nowrap px-1 align-middle text-sm",
+					"box-border inline-flex max-w-max cursor-default select-none items-center whitespace-nowrap px-1 align-middle text-center text-sm",
 					bold ? "font-bold" : undefined,
 					truncate ? "overflow-hidden" : undefined,
+					"inline-block",
 				),
 				className,
 			)}
 			style={style}
 			title={title}
 			id={id}
-			data-testid={testId}
 			onClick={onClick}
 			onKeyDown={onKeyDown}
 			onKeyUp={onKeyUp}
@@ -206,13 +205,20 @@ function SimpleTag({
 			onMouseOut={onMouseOut}
 			onFocus={onFocus}
 			onBlur={onBlur}
+			data-component="tag"
 		>
 			{truncate ? (
-				<div className={"truncate w-full"}>{children}</div>
+				<div
+					className={
+						"truncate w-full flex items-center justify-center-safe text-center"
+					}
+				>
+					{children}
+				</div>
 			) : (
 				children
 			)}
-		</output>
+		</div>
 	)
 }
 
@@ -268,11 +274,12 @@ export function Tag({
 							onClick()
 						}
 					}}
-					className={`m-0 ml-0.5 p-0 flex size-4 flex-none items-center justify-center border-transparent text-inherit bg-transparent hover:cursor-pointer ${
+					className={`m-0 ml-0.5 p-0 flex size-4 flex-none items-center justify-center-safe border-transparent text-inherit bg-transparent hover:cursor-pointer text-center ${
 						!removable ? "hidden" : ""
 					}`}
 					aria-label={removeButtonLabel}
-					title={removeButtonLabel}
+					data-component="tag-remove-button"
+					title={removeButtonLabel ?? "Remove tag"}
 					onMouseOver={() => setHovered(true)}
 					onFocus={() => setHovered(true)}
 					onMouseLeave={() => setHovered(false)}

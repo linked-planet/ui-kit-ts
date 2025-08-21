@@ -4,6 +4,7 @@ import { type ReactNode, useCallback, useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { twMerge } from "tailwind-merge"
 import { Button, type ButtonProps } from "../components"
+import { focusVisibleOutlineStyles } from "../components/styleHelper"
 import { getHamburgerMenuPortal } from "../utils"
 
 export interface HamburgerMenuProps {
@@ -37,6 +38,12 @@ export interface HamburgerMenuProps {
 	ariaLabelClose?: string
 	/** The aria-label for the open button */
 	ariaLabelOpen?: string
+
+	/** the title prop of the hamburger button */
+	title?: string
+
+	/** the disabled prop of the hamburger button */
+	disabled?: boolean
 
 	portal?: {
 		/** Additional CSS classes for the menu portal */
@@ -92,6 +99,8 @@ export function HamburgerMenu({
 	ariaLabelClose = "Close menu",
 	ariaLabelOpen = "Open menu",
 	portal,
+	title,
+	disabled,
 }: HamburgerMenuProps) {
 	const [isOpen, setIsOpen] = useState(defaultOpen)
 	const menuPortal = getHamburgerMenuPortal(portal)
@@ -196,15 +205,19 @@ export function HamburgerMenu({
 				onClick={handleToggle}
 				appearance={buttonAppearance}
 				className={twMerge(
-					"flex items-center justify-center p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+					`flex items-center justify-center p-2 text-text rounded-md transition-colors duration-200  ${focusVisibleOutlineStyles}`,
 					buttonClassName,
 				)}
 				aria-label={isOpen ? ariaLabelClose : ariaLabelOpen}
 				aria-expanded={isOpen}
 				data-component="hamburger-menu-button"
+				title={title}
+				disabled={disabled}
 			>
 				{typeof HamburgerIcon === "string" ? (
-					<span className="text-2xl">{HamburgerIcon}</span>
+					<span className="text-teal-subtlest hover:text-text-subtle">
+						{HamburgerIcon}
+					</span>
 				) : (
 					HamburgerIcon
 				)}

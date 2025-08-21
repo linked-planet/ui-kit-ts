@@ -1,5 +1,5 @@
 import * as RDd from "@radix-ui/react-dropdown-menu"
-import { cx } from "class-variance-authority"
+import { cva, cx, type VariantProps } from "class-variance-authority"
 import {
 	CheckIcon,
 	ChevronDownIcon,
@@ -14,20 +14,42 @@ import {
 	useMemo,
 	useRef,
 } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { usePortalContainer } from "../utils"
 import { Button, type ButtonProps } from "./Button"
 import { IconSizeHelper } from "./IconSizeHelper"
-import { overlayBaseStyle } from "./styleHelper"
+import { focusVisibleOutlineStyles, overlayBaseStyle } from "./styleHelper"
 
-const commonStyles =
+const itemVariants = cva(
+	twJoin(
+		"pl-1 pr-4 py-2.5 flex border-solid items-center outline-hidden border-l-2 border-y-0 border-r-0 focus-visible:border-l-2 focus-visible:border-selected-border border-transparent box-border w-full cursor-default",
+		twMerge(focusVisibleOutlineStyles, "focus-visible:-outline-offset-2"),
+	),
+	{
+		variants: {
+			selected: {
+				true: "bg-selected-subtle hover:bg-selected-subtle-hovered border-l-selected-bold active:bg-selected-subtle-pressed text-selected-subtle-text hover:border-l-selected-border cursor-pointer active:bg-selected-subtle-pressed",
+				false: "bg-surface-overlay hover:bg-surface-overlay-hovered focus-visible:bg-surface-overlay-hovered hover:border-l-selected-border active:bg-surface-overlay-pressed cursor-pointer active:bg-surface-overlay-pressed",
+			},
+			disabled: {
+				true: "text-disabled-text cursor-not-allowed disabled:bg-surface-overlay",
+			},
+		},
+		defaultVariants: {
+			selected: false,
+			disabled: false,
+		},
+	},
+)
+
+/*const commonStyles =
 	"pl-1 pr-4 py-2.5 flex border-solid items-center outline-hidden border-l-2 border-y-0 border-r-0 focus-visible:border-l-2 border-transparent box-border focus-visible:outline-0 w-full cursor-default focus-visible:outline-hidden focus-visible:border-selected-border" as const
 const disabledStyles =
 	"data-[disabled=true]:text-disabled-text data-[disabled=true]:cursor-not-allowed" as const
 const selectedStyles =
 	"data-[selected=true]:bg-selected-subtle data-[selected=true]:hover:bg-selected-subtle-hovered data-[selected=true]:border-l-selected-bold data-[selected=true]:active:bg-selected-subtle-pressed data-[selected=true]:text-selected-subtle-text" as const
 const normalStyles =
-	"hover:bg-surface-overlay-hovered focus-visible:bg-surface-overlay-hovered hover:border-l-selected-border active:bg-surface-overlay-pressed cursor-pointer" as const
+	"hover:bg-surface-overlay-hovered focus-visible:bg-surface-overlay-hovered hover:border-l-selected-border active:bg-surface-overlay-pressed cursor-pointer" as const*/
 
 const descriptionStyle = "text-text-subtlest text-[12px] leading-4 h-4" as const
 
@@ -74,13 +96,14 @@ function Item({
 	return (
 		<RDd.Item
 			disabled={disabled}
-			className={twMerge(
+			/*className={twMerge(
 				commonStyles,
 				!disabled && !selected ? normalStyles : undefined,
 				selected ? selectedStyles : undefined,
 				disabled ? disabledStyles : undefined,
 				className,
-			)}
+			)}*/
+			className={twMerge(itemVariants({ selected, disabled }), className)}
 			onClick={onClick}
 			data-selected={selected}
 			style={style}
@@ -145,12 +168,14 @@ function ItemCheckbox({
 			disabled={disabled}
 			checked={checked}
 			defaultChecked={defaultChecked}
+			tabIndex={0}
 			className={cx(
 				"group/dd-checkbox",
-				commonStyles,
+				/*commonStyles,
 				normalStyles,
 				selectedStyles,
-				disabled ? disabledStyles : undefined,
+				disabled ? disabledStyles : undefined,*/
+				itemVariants({ selected: !!checked, disabled }),
 				className,
 			)}
 			style={style}
@@ -316,10 +341,11 @@ function ItemRadio({
 			value={value}
 			className={cx(
 				"group/dd-radio",
-				commonStyles,
+				/*commonStyles,
 				normalStyles,
 				selectedStyles,
-				disabled ? disabledStyles : undefined,
+				disabled ? disabledStyles : undefined,*/
+				itemVariants({ selected: false, disabled }),
 				className,
 			)}
 			style={style}
@@ -374,7 +400,13 @@ function SubMenu({
 	const triggerNode: React.ReactNode = useMemo(() => {
 		if (typeof trigger === "string") {
 			return (
-				<div className={cx(commonStyles, normalStyles, "w-full")}>
+				<div
+					//className={cx(commonStyles, normalStyles, "w-full")}
+					className={cx(
+						itemVariants({ selected: false, disabled: false }),
+						className,
+					)}
+				>
 					{chevronSide === "left" && (
 						<IconSizeHelper>
 							<ChevronLeftIcon
@@ -396,7 +428,7 @@ function SubMenu({
 			)
 		}
 		return trigger
-	}, [chevronSide, trigger])
+	}, [chevronSide, trigger, className])
 
 	return (
 		<RDd.Sub {...props}>
@@ -564,7 +596,12 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 					side={side}
 					align={align}
 					onFocusOutside={() => {
-						//setOpened(false)
+						onOpenChange?.(false)
+					}}
+					onFocus={(e) => {
+						if (e.target === contentRef.current) {
+							;(e.target.firstChild as HTMLElement)?.focus()
+						}
 					}}
 					style={{
 						maxHeight:
@@ -578,6 +615,7 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 					onPointerLeave={onPointerLeave}
 					alignOffset={alignOffset}
 					sideOffset={sideOffset}
+					aria-modal
 				>
 					{children}
 				</RDd.Content>
@@ -592,6 +630,7 @@ const Menu = forwardRef<HTMLButtonElement, DropdownMenuProps>(
 				sideOffset,
 				contentClassName,
 				contentStyle,
+				onOpenChange,
 			],
 		)
 		const triggerRef = useRef<HTMLButtonElement>(null)

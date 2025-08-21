@@ -36,7 +36,7 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 				</div>
 			</Collapsible.Trigger>
 			<Collapsible.Content>
-				<div className="p-4">collapsible content</div>
+				<p className="p-4">collapsible content</p>
 			</Collapsible.Content>
 		</Collapsible.Root>
 	)
@@ -56,6 +56,24 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 		</Collapsible.Root>
 	)
 	//#endregion collapsible1
+
+	const exampleTriggerDiv = (
+		/* aria-live makes the screen reader read the content of the collapsible when it is opened */
+		<Collapsible.Root aria-live="polite">
+			<Collapsible.Trigger
+				openButtonPosition="right"
+				nativeButton={false}
+			>
+				<div className="p-2">
+					<h2>Collapsible Title</h2>
+				</div>
+			</Collapsible.Trigger>
+			<Collapsible.Content>
+				<p className="p-4">collapsible content</p>
+			</Collapsible.Content>
+		</Collapsible.Root>
+	)
+	//#endregion exampleTriggerDiv
 
 	return (
 		<ShowcaseWrapperItem
@@ -82,6 +100,11 @@ export default function CollapsibleShowcase(props: ShowcaseProps) {
 					title: "Controlled",
 					example: <CollapsibleControlled />,
 					sourceCodeExampleId: "collapsible-controlled",
+				},
+				{
+					title: "Trigger Div",
+					example: exampleTriggerDiv,
+					sourceCodeExampleId: "collapsible-trigger-div",
 				},
 			]}
 		/>

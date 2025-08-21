@@ -5,6 +5,7 @@ import { twJoin, twMerge } from "tailwind-merge"
 import useResizeObserver from "use-resize-observer"
 import { useRateLimitHelper } from "../../utils/rateLimit"
 import { InlineMessage } from "../InlineMessage"
+import { focusVisibleOutlineStyles } from "../styleHelper"
 import { Group as GroupComponent, type TimeTableGroupProps } from "./Group"
 import { Item as ItemComponent } from "./Item"
 import type { TimeTableItemProps } from "./ItemWrapper"
@@ -576,8 +577,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 					<table
 						className={twJoin(
 							"table w-full table-fixed border-separate border-spacing-0 select-none overflow-auto",
-							"focus:outline-2 focus:outline-brand-bold focus:outline-solid",
-							"focus-visible:outline-2 focus-visible:outline-brand-bold focus-visible:outline-solid",
+							"focus:outline-2 focus:outline-input-border-focused focus:outline-solid",
+							focusVisibleOutlineStyles,
 							"ring-2 ring-brand-bold",
 							"focus:border-2 focus:border-brand-bold focus:border-solid",
 						)}

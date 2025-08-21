@@ -176,9 +176,7 @@ function ControlledExample() {
 					useModal={true}
 				>
 					<Modal.Header>
-						<Modal.Title accessibleDialogTitle="Sample Modal">
-							Sample Modal
-						</Modal.Title>
+						<Modal.Title>Sample Modal</Modal.Title>
 						<Button
 							appearance="link"
 							onClick={() => setIsModalActive(false)}
@@ -308,9 +306,7 @@ function ModalTest() {
 					trigger={"Show Modal"}
 				>
 					<Modal.Header>
-						<Modal.Title accessibleDialogTitle="Sample Modal">
-							Sample Modal
-						</Modal.Title>
+						<Modal.Title>Sample Modal</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
 						<p>This is the body of the modal.</p>

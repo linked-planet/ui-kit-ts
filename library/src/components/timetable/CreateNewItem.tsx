@@ -69,9 +69,7 @@ const CreateNewTimeTableItemDialog = function CreateNewTimeTableItemDialog({
 				}}
 			>
 				<Modal.Header>
-					<Modal.Title accessibleDialogTitle="Create New Booking">
-						{"Create New Booking"}
-					</Modal.Title>
+					<Modal.Title>{"Create New Booking"}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<div
