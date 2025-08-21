@@ -172,7 +172,7 @@ function BookCardExample() {
 				}}
 				bodyLayout={bodyLayout}
 				bodyStyle={bodyStyle}
-				closed={isClosed}
+				open={!isClosed}
 				actions={
 					<div className="flex items-center">
 						Actions:&nbsp;
