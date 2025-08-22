@@ -8729,6 +8729,28 @@ function TagShowcase(props: ShowcaseProps) {
 		</div>
 	)
 
+	//#region tagsgroupaslist
+	const tagsGroupAsList = (
+		<TagGroup asElement="ul" className="list-none">
+			<Tag asElement="li" appearance="blue">
+				Blue Tag
+			</Tag>
+			<Tag asElement="li" appearance="green">
+				Green Tag
+			</Tag>
+			<Tag asElement="li" appearance="red">
+				Red Tag
+			</Tag>
+			<Tag asElement="li" appearance="yellow">
+				Yellow Tag
+			</Tag>
+			<Tag asElement="li" appearance="purple">
+				Purple Tag
+			</Tag>
+		</TagGroup>
+	)
+	//#endregion tagsgroupaslist
+
 	return (
 		<ShowcaseWrapperItem
 			name="Tag & Tag-Group"
@@ -8745,6 +8767,11 @@ function TagShowcase(props: ShowcaseProps) {
 					title: "Colors",
 					example: colors,
 					sourceCodeExampleId: "tagscolors",
+				},
+				{
+					title: "Tags Group as List",
+					example: tagsGroupAsList,
+					sourceCodeExampleId: "tagsgroupaslist",
 				},
 			]}
 		/>
