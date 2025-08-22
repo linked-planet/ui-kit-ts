@@ -29,6 +29,7 @@ import HighlightedTextShowcase from "./components/showcase/wrapper/HighlightedTe
 import IconSizeHelperShowcase from "./components/showcase/wrapper/IconSizeHelperShowcase"
 import InlineMessageShowcase from "./components/showcase/wrapper/InlineMessageShowcase"
 import InputShowcase from "./components/showcase/wrapper/InputShowcase"
+import InvisibleJumpLinkMenuShowcase from "./components/showcase/wrapper/InvisibleJumpLinkMenuShowcase"
 import JoyrideShowcase from "./components/showcase/wrapper/JoyrideShowcase"
 import LayeringShowcase from "./components/showcase/wrapper/LayeringShowcase"
 import LoadingSpinnerShowcase from "./components/showcase/wrapper/LoadingSpinnerShowcase"
@@ -133,6 +134,11 @@ export default function useShowcases({
 				<IconSizeHelperShowcase overallSourceCode={overallSourceCode} />
 			),
 			Input: <InputShowcase overallSourceCode={overallSourceCode} />,
+			"Invisible Jump Link Menu": (
+				<InvisibleJumpLinkMenuShowcase
+					overallSourceCode={overallSourceCode}
+				/>
+			),
 			Joyride: <JoyrideShowcase overallSourceCode={overallSourceCode} />,
 			"Inline Message": (
 				<InlineMessageShowcase overallSourceCode={overallSourceCode} />
