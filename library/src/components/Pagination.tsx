@@ -1,6 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
-import { twMerge } from "tailwind-merge"
+import { twJoin, twMerge } from "tailwind-merge"
 import { Dropdown, type DropdownMenuProps } from "./DropdownMenu"
 import { IconSizeHelper } from "./IconSizeHelper"
 import { focusVisibleOutlineStyles } from "./styleHelper"
@@ -213,10 +213,15 @@ function PaginationPageHandler<P extends string | number>({
 					{page !== "..." ? (
 						<button
 							className={twMerge(
-								"flex cursor-pointer h-8 min-w-8 select-none items-center justify-center rounded-xs p-1.5 border-0 border-none border-transparent bg-transparent",
-								"data-[current=true]:bg-selected data-[current=true]:text-selected-text-inverse data-[current=true]:cursor-default",
-								"hover:bg-neutral-hovered active:bg-neutral-pressed",
-								focusVisibleOutlineStyles,
+								twJoin(
+									"flex cursor-pointer h-8 min-w-8 select-none items-center justify-center rounded-xs p-1.5 border-0 border-none border-transparent bg-transparent",
+									"data-[current=true]:bg-selected data-[current=true]:text-selected-text-inverse data-[current=true]:cursor-default",
+									"hover:bg-neutral-hovered active:bg-neutral-pressed",
+									twMerge(
+										focusVisibleOutlineStyles,
+										"focus-visible:outline-offset-0",
+									),
+								),
 								pageButtonClassName,
 							)}
 							onClick={() => {
@@ -377,6 +382,7 @@ export function Pagination<P extends string | number>({
 	pageSelectorClassName,
 	pageSelectorStyle,
 	pageSizeSelectorProps,
+	id,
 }: {
 	totalPages?: number
 	currentPage?: P
@@ -403,6 +409,7 @@ export function Pagination<P extends string | number>({
 	pageSelectorClassName?: string
 	pageSelectorStyle?: React.CSSProperties
 	pageSizeSelectorProps?: PageSizeSelectorProps
+	id?: string
 }) {
 	const _pages = useMemo(() => {
 		if (pages) return pages
@@ -422,6 +429,7 @@ export function Pagination<P extends string | number>({
 				className,
 			)}
 			style={style}
+			id={id}
 		>
 			<div className="flex flex-1 items-center justify-center">
 				<PaginationPageHandler<P>
