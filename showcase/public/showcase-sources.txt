@@ -5609,9 +5609,10 @@ function InvisibleJumpLinkMenuShowcase(props: ShowcaseProps) {
 
 	//#region invisible-jump-link-menu-basic-example
 	const basicExample = (
-		<div className="relative">
+		<div className="relative min-h-32 p-4 border rounded bg-surface">
 			<InvisibleJumpLinkMenu
 				visible={true}
+				className="relative top-0 left-0 translate-y-0"
 				jumpLinks={[
 					{
 						href: "#section1",
@@ -5639,7 +5640,7 @@ function InvisibleJumpLinkMenuShowcase(props: ShowcaseProps) {
 					},
 				]}
 			/>
-			<div className="mt-16 p-4 bg-surface rounded border">
+			<div className="mt-4 p-4 bg-surface-overlay rounded border">
 				<p className="text-sm text-text-subtle">
 					{selectedSection
 						? `Selected section: ${selectedSection}`
@@ -5652,9 +5653,10 @@ function InvisibleJumpLinkMenuShowcase(props: ShowcaseProps) {
 
 	//#region invisible-jump-link-menu-styled-example
 	const styledExample = (
-		<div className="relative">
+		<div className="relative min-h-32 p-4 border rounded bg-surface">
 			<InvisibleJumpLinkMenu
 				visible={true}
+				className="relative top-0 left-1/2 -translate-x-1/2 translate-y-0"
 				jumpLinks={[
 					{
 						href: "#home",
@@ -5672,11 +5674,10 @@ function InvisibleJumpLinkMenuShowcase(props: ShowcaseProps) {
 						onClick: () => setSelectedSection("Services"),
 					},
 				]}
-				className="left-1/2 -translate-x-1/2"
 				ulClassName="bg-blue-50 border-blue-200"
 				aClassName="text-blue-700 hover:bg-blue-100 hover:text-blue-800"
 			/>
-			<div className="mt-16 p-4 bg-surface rounded border">
+			<div className="mt-4 p-4 bg-surface-overlay rounded border">
 				<p className="text-sm text-text-subtle">
 					Custom styled jump link menu with centered positioning and
 					blue theme.
@@ -5688,9 +5689,10 @@ function InvisibleJumpLinkMenuShowcase(props: ShowcaseProps) {
 
 	//#region invisible-jump-link-menu-accessibility-example
 	const accessibilityExample = (
-		<div className="relative">
+		<div className="relative min-h-32 p-4 border rounded bg-surface">
 			<InvisibleJumpLinkMenu
 				visible={true}
+				className="relative top-0 left-0 translate-y-0"
 				id="accessibility-jump-menu"
 				jumpLinks={[
 					{
@@ -5715,7 +5717,7 @@ function InvisibleJumpLinkMenuShowcase(props: ShowcaseProps) {
 					},
 				]}
 			/>
-			<div className="mt-16 p-4 bg-surface rounded border">
+			<div className="mt-4 p-4 bg-surface-overlay rounded border">
 				<p className="text-sm text-text-subtle">
 					Accessibility-focused example with descriptive aria-labels
 					and semantic jump targets.
@@ -5733,6 +5735,8 @@ function InvisibleJumpLinkMenuShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
 			name="Invisible Jump Link Menu"
+			description="Invisible jump link menu that becomes visible when focused via keyboard navigation. 
+			Provides quick navigation to main page sections for accessibility. States can be styled using data-[focused=true] and data-[focused=false]."
 			{...props}
 			packages={[
 				{

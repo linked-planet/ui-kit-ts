@@ -1,5 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import { Dropdown, type DropdownMenuProps } from "./DropdownMenu"
 import { IconSizeHelper } from "./IconSizeHelper"
@@ -200,8 +200,80 @@ function PaginationPageHandler<P extends string | number>({
 		return { visiblePages: ret, currentIndex }
 	}, [_currentPage, maxPageButtons, pages, currentPageIndex])
 
+	// Add refs and keyboard navigation state
+	const pageButtonsRef = useRef<(HTMLButtonElement | null)[]>([])
+	const [focusedPageIndex, setFocusedPageIndex] = useState(0)
+
+	// Add keyboard navigation handler
+	const handleKeyDown = useCallback(
+		(e: React.KeyboardEvent, pageIndex: number) => {
+			if (!visiblePages.length) return
+
+			let newIndex = pageIndex
+
+			switch (e.key) {
+				case "ArrowLeft":
+					e.preventDefault()
+					newIndex =
+						pageIndex > 0 ? pageIndex - 1 : visiblePages.length - 1
+					// Skip ellipsis
+					while (newIndex >= 0 && visiblePages[newIndex] === "...") {
+						newIndex--
+					}
+					if (newIndex < 0) newIndex = visiblePages.length - 1
+					break
+				case "ArrowRight":
+					e.preventDefault()
+					newIndex =
+						pageIndex < visiblePages.length - 1 ? pageIndex + 1 : 0
+					// Skip ellipsis
+					while (
+						newIndex < visiblePages.length &&
+						visiblePages[newIndex] === "..."
+					) {
+						newIndex++
+					}
+					if (newIndex >= visiblePages.length) newIndex = 0
+					break
+				case "Home":
+					e.preventDefault()
+					newIndex = 0
+					while (
+						newIndex < visiblePages.length &&
+						visiblePages[newIndex] === "..."
+					) {
+						newIndex++
+					}
+					break
+				case "End":
+					e.preventDefault()
+					newIndex = visiblePages.length - 1
+					while (newIndex >= 0 && visiblePages[newIndex] === "...") {
+						newIndex--
+					}
+					break
+				default:
+					return
+			}
+
+			setFocusedPageIndex(newIndex)
+			pageButtonsRef.current[newIndex]?.focus()
+		},
+		[visiblePages],
+	)
+
+	// Update focused index when current page changes
+	useEffect(() => {
+		const currentIndex = visiblePages.indexOf(_currentPage)
+		if (currentIndex >= 0) {
+			setFocusedPageIndex(currentIndex)
+		}
+	}, [_currentPage, visiblePages])
+
 	const pageButtons = useMemo(() => {
-		return visiblePages.map((page) => {
+		return visiblePages.map((page, index) => {
+			const isEllipsis = page === "..."
+
 			return (
 				<li
 					key={
@@ -210,8 +282,11 @@ function PaginationPageHandler<P extends string | number>({
 					aria-hidden={page === "..."}
 					className="m-0"
 				>
-					{page !== "..." ? (
+					{!isEllipsis ? (
 						<button
+							ref={(el) => {
+								pageButtonsRef.current[index] = el
+							}}
 							className={twMerge(
 								twJoin(
 									"flex cursor-pointer h-8 min-w-8 select-none items-center justify-center rounded-xs p-1.5 border-0 border-none border-transparent bg-transparent",
@@ -231,17 +306,7 @@ function PaginationPageHandler<P extends string | number>({
 								onPageIndexChange?.(currentIndex)
 								onPageChange?.(page as P)
 							}}
-							onKeyUp={(e) => {
-								if (!pages) return
-								if (e.key === "Enter") {
-									const currentIndex = pages.indexOf(
-										page as P,
-									)
-									setCurrentPage(page as P)
-									onPageIndexChange?.(currentIndex)
-									onPageChange?.(page as P)
-								}
-							}}
+							onKeyDown={(e) => handleKeyDown(e, index)}
 							disabled={!pages}
 							aria-label={`${pageLabel} ${page}`}
 							type="button"
@@ -250,6 +315,7 @@ function PaginationPageHandler<P extends string | number>({
 							}
 							style={pageButtonStyle}
 							data-current={page === _currentPage}
+							tabIndex={index === focusedPageIndex ? 0 : -1}
 						>
 							{page}
 						</button>
@@ -273,6 +339,8 @@ function PaginationPageHandler<P extends string | number>({
 		pages,
 		onPageIndexChange,
 		onPageChange,
+		focusedPageIndex,
+		handleKeyDown,
 	])
 
 	const disablePreviousPage =
