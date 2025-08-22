@@ -30,7 +30,7 @@ export function HighlightedText({
 		return text.split(delimiterRegex).reduce((acc, it, i) => {
 			if (delimiterRegex.test(it)) {
 				acc.push(
-					<span
+					<strong
 						// biome-ignore lint/suspicious/noArrayIndexKey: the ith instance of the highlighted text
 						key={`highlight-${id}-${i}`}
 						className={twMerge(
@@ -39,7 +39,7 @@ export function HighlightedText({
 						)}
 					>
 						{it}
-					</span>,
+					</strong>,
 				)
 				return acc
 			}
