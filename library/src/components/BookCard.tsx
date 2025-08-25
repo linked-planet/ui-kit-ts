@@ -1,6 +1,10 @@
 import { css } from "@emotion/css"
 import type React from "react"
-import type { ComponentProps, CSSProperties } from "react"
+import type {
+	ComponentProps,
+	ComponentPropsWithRef,
+	CSSProperties,
+} from "react"
 import { forwardRef } from "react"
 
 import { twMerge } from "tailwind-merge"
@@ -79,15 +83,14 @@ type CardHeaderPrefixProps = {
 	style?: CSSProperties
 }
 
-const CardHeader = ({
-	className,
-	children,
-	headerPrefix,
-	...props
-}: ComponentProps<"div"> & {
-	headerPrefix?: CardHeaderPrefixProps
-}) => (
+const CardHeader = forwardRef<
+	HTMLDivElement,
+	ComponentPropsWithRef<"div"> & {
+		headerPrefix?: CardHeaderPrefixProps
+	}
+>(({ className, children, headerPrefix, ...props }, ref) => (
 	<div
+		ref={ref}
 		className={twMerge(
 			"bg-surface-overlay box-border flex flex-1 justify-between px-4 py-3 overflow-hidden",
 			className,
@@ -105,7 +108,7 @@ const CardHeader = ({
 		) : null}
 		{children}
 	</div>
-)
+))
 
 const CardHeaderMeta = ({
 	children,

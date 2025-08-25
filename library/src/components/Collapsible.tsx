@@ -19,119 +19,126 @@ type PanelProps = CollapsibleRUI.Panel.Props & {
 
 export type CollapsibleProps = CollapsibleRUI.Root.Props
 
-function Trigger({
-	className,
-	openButtonPosition = "left",
-	chevronClassName,
-	chevronStyle,
-	headerContainerStyle,
-	headerContainerClassName,
-	title,
-	children,
-	render,
-	nativeButton = true,
-	...props
-}: CollapsibleTriggerProps) {
-	const classNameResolved = useCallback(
-		(state: CollapsibleRUI.Root.State) => {
-			const basicClassName = twJoin(
-				"flex w-full overflow-hidden flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border",
-				"border-border border-solid group-data-[closed]/collapsible:rounded-xs group-data-[open]/collapsible:rounded-t-xs",
-				focusVisibleOutlineStyles,
-				openButtonPosition === "hidden"
-					? "cursor-default"
-					: "cursor-pointer disabled:cursor-default",
-			)
-			if (typeof className === "function") {
-				return twMerge(basicClassName, className(state))
-			}
-			return twMerge(basicClassName, className)
-		},
-		[className, openButtonPosition],
-	)
-
-	const triggerContent = useMemo(() => {
-		return (
-			<>
-				{openButtonPosition === "left" && (
-					<div
-						className={twMerge(
-							"flex h-full flex-none items-center justify-center size-6 pr-1",
-							chevronClassName,
-						)}
-						title={title}
-					>
-						<ChevronRightIcon
-							strokeWidth={3}
-							className="group-data-[closed]/collapsible:rotate-0 group-data-[open]/collapsible:rotate-90 transform transition-transform"
-						/>
-					</div>
-				)}
-				<div
-					className={twMerge(
-						"flex w-full flex-1 justify-start",
-						headerContainerClassName,
-					)}
-					style={headerContainerStyle}
-				>
-					{children}
-				</div>
-				{openButtonPosition === "right" && (
-					<div
-						className={twMerge(
-							"flex h-full flex-none items-center justify-center size-6",
-							chevronClassName,
-						)}
-						style={chevronStyle}
-						title={title}
-					>
-						<ChevronLeftIcon
-							strokeWidth={3}
-							className="group-data-[closed]/collapsible:rotate-0 group-data-[open]/collapsible:-rotate-90 transform transition-transform"
-						/>
-					</div>
-				)}
-			</>
+const Trigger = forwardRef<HTMLButtonElement, CollapsibleTriggerProps>(
+	(
+		{
+			className,
+			openButtonPosition = "left",
+			chevronClassName,
+			chevronStyle,
+			headerContainerStyle,
+			headerContainerClassName,
+			title,
+			children,
+			render,
+			nativeButton = true,
+			...props
+		}: CollapsibleTriggerProps,
+		ref: React.ForwardedRef<HTMLButtonElement>,
+	) => {
+		const classNameResolved = useCallback(
+			(state: CollapsibleRUI.Root.State) => {
+				const basicClassName = twJoin(
+					"flex w-full overflow-hidden flex-1 items-center bg-surface-raised hover:bg-surface-raised-hovered active:bg-surface-raised-pressed justify-start select-none border",
+					"border-border border-solid group-data-[closed]/collapsible:rounded-xs group-data-[open]/collapsible:rounded-t-xs",
+					focusVisibleOutlineStyles,
+					openButtonPosition === "hidden"
+						? "cursor-default"
+						: "cursor-pointer disabled:cursor-default",
+				)
+				if (typeof className === "function") {
+					return twMerge(basicClassName, className(state))
+				}
+				return twMerge(basicClassName, className)
+			},
+			[className, openButtonPosition],
 		)
-	}, [
-		openButtonPosition,
-		chevronClassName,
-		chevronStyle,
-		title,
-		children,
-		headerContainerClassName,
-		headerContainerStyle,
-	])
 
-	return (
-		<CollapsibleRUI.Trigger
-			className={classNameResolved}
-			nativeButton={nativeButton}
-			{...props}
-			render={
-				render ??
-				((g) => {
-					if (nativeButton) {
-						return <button {...g}>{triggerContent}</button>
-					}
-
-					return (
-						// biome-ignore lint/a11y/useSemanticElements: cannot put button in button
+		const triggerContent = useMemo(() => {
+			return (
+				<>
+					{openButtonPosition === "left" && (
 						<div
-							className="flex items-center w-full justify-between"
-							data-component="collapsible-trigger"
-							role="button"
-							tabIndex={0}
-							{...g}
+							className={twMerge(
+								"flex h-full flex-none items-center justify-center size-6 pr-1",
+								chevronClassName,
+							)}
+							title={title}
 						>
-							{triggerContent}
+							<ChevronRightIcon
+								strokeWidth={3}
+								className="group-data-[closed]/collapsible:rotate-0 group-data-[open]/collapsible:rotate-90 transform transition-transform"
+							/>
 						</div>
-					)
-				})
-			}
-		/>
-	)
-}
+					)}
+					<div
+						className={twMerge(
+							"flex w-full flex-1 justify-start",
+							headerContainerClassName,
+						)}
+						style={headerContainerStyle}
+					>
+						{children}
+					</div>
+					{openButtonPosition === "right" && (
+						<div
+							className={twMerge(
+								"flex h-full flex-none items-center justify-center size-6",
+								chevronClassName,
+							)}
+							style={chevronStyle}
+							title={title}
+						>
+							<ChevronLeftIcon
+								strokeWidth={3}
+								className="group-data-[closed]/collapsible:rotate-0 group-data-[open]/collapsible:-rotate-90 transform transition-transform"
+							/>
+						</div>
+					)}
+				</>
+			)
+		}, [
+			openButtonPosition,
+			chevronClassName,
+			chevronStyle,
+			title,
+			children,
+			headerContainerClassName,
+			headerContainerStyle,
+		])
+
+		return (
+			<CollapsibleRUI.Trigger
+				className={classNameResolved}
+				nativeButton={nativeButton}
+				ref={ref}
+				{...props}
+				render={
+					render ??
+					((g) => {
+						if (nativeButton) {
+							return <button {...g}>{triggerContent}</button>
+						}
+
+						return (
+							// biome-ignore lint/a11y/useSemanticElements: cannot put button in button
+							<div
+								className="flex items-center w-full justify-between"
+								data-component="collapsible-trigger"
+								role="button"
+								tabIndex={0}
+								{...g}
+							>
+								{triggerContent}
+							</div>
+						)
+					})
+				}
+			/>
+		)
+	},
+)
+Trigger.displayName = "CollapsibleTrigger"
 
 function Panel({ className, role, ...props }: PanelProps) {
 	const classNameResolved = useCallback(
