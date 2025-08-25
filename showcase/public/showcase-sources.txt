@@ -6401,7 +6401,7 @@ function ControlledExample() {
 					onOpenChange={(opened) => {
 						if (!opened) setIsModalActive(false)
 					}}
-					shouldCloseOnEscapePress={true}
+					shouldCloseOnEscapePress={false}
 					accessibleDialogDescription="This is a modal dialog example"
 					accessibleDialogTitle="Sample Modal"
 					useModal={true}
