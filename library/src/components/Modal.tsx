@@ -89,7 +89,7 @@ function Container({
 	onTouchMove,
 	onTouchEnd,
 	onTouchCancel,
-	...contentProps
+	ariaLabeledBy,
 }: ModalDialogProps) {
 	const triggerRef = useRef<HTMLButtonElement>(null)
 	// biome-ignore lint/style/noNonNullAssertion: safe if the trigger is used
@@ -152,7 +152,7 @@ function Container({
 					title={accessibleDialogDescription}
 					forceMount={forceMountContent}
 					data-testid={testId}
-					{...contentProps}
+					aria-labelledby={ariaLabeledBy}
 				>
 					<VisuallyHidden>
 						<RDialog.DialogTitle data-component="modal-title">
@@ -188,6 +188,7 @@ function Container({
 			onTouchMove,
 			onTouchEnd,
 			onTouchCancel,
+			ariaLabeledBy,
 		],
 	)
 

@@ -1,6 +1,12 @@
 import { XIcon } from "lucide-react"
 import type React from "react"
-import { type CSSProperties, useCallback, useMemo, useState } from "react"
+import {
+	type CSSProperties,
+	createElement,
+	useCallback,
+	useMemo,
+	useState,
+} from "react"
 import { twJoin, twMerge } from "tailwind-merge"
 import type { Appearance } from "../utils/appearanceTypes"
 
@@ -82,6 +88,7 @@ export type SimpleTagProps = {
 	onMouseOut?: (e: React.MouseEvent<HTMLDivElement>) => void
 	onFocus?: (e: React.FocusEvent<HTMLDivElement>) => void
 	onBlur?: (e: React.FocusEvent<HTMLDivElement>) => void
+	asElement?: "div" | "span" | "li" | "button" | "a" | "p"
 }
 
 const TagAppearanceColors: { [style in Appearance]: string } = {
@@ -173,14 +180,28 @@ function SimpleTag({
 	onMouseOut,
 	onFocus,
 	onBlur,
+	asElement = "div",
 }: SimpleTagProps) {
 	const colors = isColorOption(appearance)
 		? TagColors[appearance]
 		: TagAppearanceColors[appearance]
 
-	return (
+	const _children = truncate ? (
 		<div
-			className={twMerge(
+			className={
+				"truncate w-full flex items-center justify-center-safe text-center"
+			}
+		>
+			{children}
+		</div>
+	) : (
+		children
+	)
+
+	return createElement(
+		asElement,
+		{
+			className: twMerge(
 				twJoin(
 					colors,
 					looks === "default" ? "rounded-[3px]" : "rounded-full",
@@ -190,35 +211,24 @@ function SimpleTag({
 					"inline-block",
 				),
 				className,
-			)}
-			style={style}
-			title={title}
-			id={id}
-			onClick={onClick}
-			onKeyDown={onKeyDown}
-			onKeyUp={onKeyUp}
-			onMouseDown={onMouseDown}
-			onMouseUp={onMouseUp}
-			onMouseEnter={onMouseEnter}
-			onMouseLeave={onMouseLeave}
-			onMouseOver={onMouseOver}
-			onMouseOut={onMouseOut}
-			onFocus={onFocus}
-			onBlur={onBlur}
-			data-component="tag"
-		>
-			{truncate ? (
-				<div
-					className={
-						"truncate w-full flex items-center justify-center-safe text-center"
-					}
-				>
-					{children}
-				</div>
-			) : (
-				children
-			)}
-		</div>
+			),
+			style,
+			title,
+			id,
+			onClick,
+			onKeyDown,
+			onKeyUp,
+			onMouseDown,
+			onMouseUp,
+			onMouseEnter,
+			onMouseLeave,
+			onMouseOver,
+			onMouseOut,
+			onFocus,
+			onBlur,
+			"data-component": "tag",
+		},
+		_children,
 	)
 }
 
@@ -330,6 +340,7 @@ export function TagGroup({
 	id,
 	testId,
 	wrap = false,
+	asElement = "div",
 }: {
 	className?: string
 	style?: CSSProperties
@@ -338,22 +349,23 @@ export function TagGroup({
 	id?: string
 	testId?: string
 	wrap?: boolean
+	asElement?: "div" | "ol" | "ul"
 }) {
-	return (
-		<div
-			className={twMerge(
+	return createElement(
+		asElement,
+		{
+			className: twMerge(
 				`flex w-full ${
 					wrap ? "flex-wrap" : ""
 				} items-center gap-1.5 py-0.5 ${
 					alignment === "start" ? "justify-start" : "justify-end"
 				}`,
 				className,
-			)}
-			style={style}
-			id={id}
-			data-testid={testId}
-		>
-			{children}
-		</div>
+			),
+			style,
+			id,
+			"data-testid": testId,
+		},
+		children,
 	)
 }
