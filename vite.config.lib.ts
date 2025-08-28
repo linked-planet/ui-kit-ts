@@ -1,22 +1,22 @@
-import { defineConfig } from "vite"
 import { resolve } from "node:path"
 import react from "@vitejs/plugin-react-swc"
+import { defineConfig } from "vite"
+// types
+import dts from "vite-plugin-dts"
 //import nodePolyfills from "rollup-plugin-polyfill-node"
 import pkg from "./package.json"
 
-// types
-import dts from "vite-plugin-dts"
 //import autoprefixer from "autoprefixer"
 //
 
 // list of problematic classes in WP Viewport Theme
-const classesToPrefix = ["sticky"]
-const prefix = "lp-"
+const _classesToPrefix = ["sticky"]
+const _prefix = "lp-"
 //
 
 // check if we want to use tailwind config with important = true
 const twUseImportant = process.env.TAILWIND_IMPORTANT === "true"
-const twConfig = twUseImportant
+const _twConfig = twUseImportant
 	? "./tailwind.config.lib.important.js"
 	: "./tailwind.config.lib.js"
 
@@ -38,7 +38,7 @@ export default defineConfig({
 			entry: resolve(__dirname, "library/src/index.ts"),
 			name: "@linked-planet/ui-kit-ts",
 			formats: ["es"],
-			fileName: (format, entryName) => {
+			fileName: (_format, entryName) => {
 				return `${entryName}.js`
 			},
 			cssFileName: "styles.css",
@@ -59,6 +59,7 @@ export default defineConfig({
 				globals: {
 					react: "React",
 					"react-dom": "ReactDOM",
+					dayjs: "dayjs",
 				},
 				assetFileNames: (chunkInfo) => {
 					if (chunkInfo.name === "tailwind.css" && twUseImportant) {
