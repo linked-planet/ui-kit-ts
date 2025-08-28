@@ -1167,7 +1167,8 @@ function PlaceholderTableCell<
 				<div
 					className={twJoin(
 						"absolute inset-0 z-1",
-						isFocused && "border-3 border-brand-bold border-solid",
+						isFocused &&
+							"border-l-3 border-r-3 border-t-3 border-brand-bold border-solid",
 					)}
 				/>
 			)}
