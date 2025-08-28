@@ -967,6 +967,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 			)}
 			{isFocused && (
 				<div
+					data-test={`${groupItemRows?.length}_${rowNumber}`}
 					className={twJoin(
 						"absolute inset-0 z-1",
 						isFocused &&
@@ -974,7 +975,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						rowNumber === 0 &&
 							timeSlotSelectionDisabled &&
 							"border-t-3",
-						rowNumber === (groupItemRows?.length ?? 0) - 1 &&
+						rowNumber === (groupItemRows?.length || 1) - 1 &&
 							"border-b-3",
 					)}
 				/>
@@ -1042,7 +1043,7 @@ function PlaceholderTableCell<
 	}
 
 	const timeSlotSelectedIndex = selectedTimeSlots
-		? selectedTimeSlots?.findIndex((it) => it === timeSlotNumber)
+		? selectedTimeSlots?.indexOf(timeSlotNumber)
 		: -1
 
 	const isFirstOfSelection =
