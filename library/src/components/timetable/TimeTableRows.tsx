@@ -686,6 +686,13 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	timeStepMinutesHoursView: number
 	groupItemRows: ItemRowEntry<I>[][] | null
 }) {
+	if (bookingItemsBeginningInCell?.length) {
+		console.log(
+			"DEBUG bookingItemsBeginningInCell",
+			bookingItemsBeginningInCell,
+		)
+	}
+
 	const storeIdent = useTimeTableIdent()
 	const disableWeekendInteractions =
 		useTTCDisableWeekendInteractions(storeIdent)
@@ -1586,6 +1593,7 @@ function useMouseHandlers(
 				setMultiSelectionMode(storeIdent, false)
 				setLastHandledTimeSlot(storeIdent, null)
 				setFocusedCell(storeIdent, groupId, timeSlotNumber, null)
+				console.log("DEBUG onMouseUp", timeSlotNumber, groupId)
 			},
 			/*onMouseClick: (e: MouseEvent) => {
 				if (e.buttons !== 1) {
