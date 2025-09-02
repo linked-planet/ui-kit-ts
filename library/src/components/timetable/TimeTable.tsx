@@ -22,7 +22,6 @@ import {
 	deleteScrollContainerRef,
 	deleteTableHeaderRef,
 	initTimeTableFocusStore,
-	setFocusedCell,
 	setScrollContainerRef,
 	setTableHeaderRef,
 } from "./TimeTableFocusStore"
@@ -44,7 +43,6 @@ import {
 	initAndUpdateTimeTableSelectionStore,
 	type onTimeRangeSelectedType,
 } from "./TimeTableSelectionStore"
-import { getNextTabbableElement, getPreviousTabbableElement } from "./tabUtils"
 import { getStartAndEndSlot, getTimeSlotMinutes } from "./timeTableUtils"
 import { useGroupRows } from "./useGoupRows"
 
@@ -595,7 +593,8 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								return
 							}
 						}}
-						onFocus={(e) => {
+						// this leads to jumps and does not work correctly, I use the "tab" key to reset the scroll position
+						/*onFocus={(e) => {
 							if (
 								!e.currentTarget.contains(
 									e.relatedTarget as Node,
@@ -605,6 +604,15 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 									"TimeTable - resetting scroll position",
 								)
 
+								intersectionContainerRef.current?.scrollTo({
+									top: 0,
+									left: 0,
+									behavior: "smooth",
+								})
+							}
+						}}*/
+						onKeyUp={(e) => {
+							if (e.key === "Tab") {
 								intersectionContainerRef.current?.scrollTo({
 									top: 0,
 									left: 0,

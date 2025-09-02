@@ -1,6 +1,7 @@
 import type { Dayjs } from "dayjs/esm"
 import { proxy, snapshot, useSnapshot } from "valtio"
 import { getTTCBasicProperties } from "./TimeTableConfigStore"
+import { setFocusedCell } from "./TimeTableFocusStore"
 import { getTimeSlotMinutes } from "./timeTableUtils"
 
 export type onTimeRangeSelectedType =
@@ -153,14 +154,12 @@ function setTimeSlotSelectionByDateRange(
 	const slotsArray = basicConfig.slotsArray
 
 	// find the time range in the slots array
-	const newSlots: number[] = []
+	const newSlots: Set<number> = new Set()
+	let lastSlot = null
 	for (let i = 0; i < slotsArray.length; i++) {
-		const slot = slotsArray[i]
+		let slot = slotsArray[i]
 		if (!slot) {
 			throw new Error(`TimeTable - slot ${i} is undefined`)
-		}
-		if (!newSlots.length && slot.isSame(startDate)) {
-			newSlots.push(i)
 		}
 
 		const timeSlotMinutes = getTimeSlotMinutes(
@@ -170,24 +169,43 @@ function setTimeSlotSelectionByDateRange(
 			basicConfig.timeStepMinutesHoursView,
 		)
 
+		slot = slot
+			.add(basicConfig.timeFrameDay.startHour, "hours")
+			.add(basicConfig.timeFrameDay.startMinute, "minutes")
+
 		const slotEnd = slot.add(timeSlotMinutes, "minutes")
-		if (
-			newSlots.length &&
-			slotEnd.isBefore(endDate) &&
-			newSlots[newSlots.length - 1] !== i
-		) {
-			newSlots.push(i)
-		} else if (slotEnd.isSame(endDate)) {
-			if (newSlots[newSlots.length - 1] !== i) {
-				newSlots.push(i)
-			}
+
+		if (endDate.isBefore(slot)) {
+			// endDate is before slot, so we can break
 			break
 		}
+
+		if (startDate.isAfter(slotEnd)) {
+			// startDate is after slotEnd, so we can continue
+			continue
+		}
+
+		if (startDate.isBefore(slotEnd)) {
+			// startDate is before slotEnd, so we can add the slot
+			newSlots.add(i)
+			lastSlot = i
+		}
 	}
-	if (!newSlots.length) {
-		console.warn("TimeTable - unable to find time range in slots array")
+
+	if (!newSlots.size) {
+		console.warn(
+			"TimeTable - unable to find time range in slots array",
+			slotsArray,
+			startDate,
+			endDate,
+		)
 		return
 	}
+	// get the last value of the newSlots and set the focus to it
+	if (lastSlot !== null) {
+		setFocusedCell(ident, groupId, lastSlot, null)
+	}
+
 	if (store.selection.groupId !== groupId) {
 		store.selection.groupId = groupId
 		store.selection.selectedTimeSlots?.splice(
@@ -197,7 +215,7 @@ function setTimeSlotSelectionByDateRange(
 		)
 		return
 	}
-	if (store.selection.selectedTimeSlots?.length !== newSlots.length) {
+	if (store.selection.selectedTimeSlots?.length !== newSlots.size) {
 		store.selection.groupId = groupId
 		store.selection.selectedTimeSlots?.splice(
 			0,
@@ -207,8 +225,11 @@ function setTimeSlotSelectionByDateRange(
 		return
 	}
 	// compare the elements and replace if they are different
-	for (let i = 0; i < newSlots.length; i++) {
-		if (store.selection.selectedTimeSlots?.[i] !== newSlots[i]) {
+	for (let i = 0; i < newSlots.size; i++) {
+		if (
+			store.selection.selectedTimeSlots?.[i] !==
+			newSlots.values().next().value
+		) {
 			store.selection.groupId = groupId
 			store.selection.selectedTimeSlots?.splice(
 				0,

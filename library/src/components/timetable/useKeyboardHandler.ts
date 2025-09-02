@@ -1,11 +1,7 @@
 import type { Dayjs } from "dayjs"
 import { useCallback } from "react"
 import type { TimeSlotBooking } from "./TimeTable"
-import {
-	clearTimeTableFocusStore,
-	setFocusedCell,
-	useFocusedCell,
-} from "./TimeTableFocusStore"
+import { setFocusedCell, useFocusedCell } from "./TimeTableFocusStore"
 import { toggleTimeSlotSelected } from "./TimeTableSelectionStore"
 import type { ItemRowEntry } from "./useGoupRows"
 

@@ -12,7 +12,7 @@ import {
 } from "@linked-planet/ui-kit-ts"
 import { Avatar } from "@linked-planet/ui-kit-ts/components/Avatar"
 import type React from "react"
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom"
 export const ProfileIcon = () => {
 	return (
 		<img
