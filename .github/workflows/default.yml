@@ -13,14 +13,22 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
+        strategy:
+          matrix:
+            node-version: [24]
         steps:
             - uses: actions/checkout@v4
               with:
                   fetch-depth: 0 #checkout full history so we can get the latest tag
+
+            - uses: pnpm/action-setup@v4
+              with:
+                node-version: "${{ matrix.node-version }}"
+
             - uses: actions/setup-node@v4
               with:
-                node-version: "22"
-                registry-url: "https://registry.npmjs.org"
+                node-version: "${{ matrix.node-version }}"
+                cache: "pnpm"
 
               # if i run the deployment of the github pages from the github web ui, without a release, then there is no github.event.release...
             - name: get latest tag
@@ -30,13 +38,13 @@ jobs:
                   echo latest_tag=${LATEST_TAG} >> $GITHUB_OUTPUT
 
             - name: Install
-              run: npm install
+              run: pnpm install
 
             - name: Build Library
-              run: npm run build:lib
+              run: pnpm run build:lib
 
             - name: Build Showcase
-              run: VITE_GH_RELEASE_TAG=${{ steps.get_latest_tag.outputs.latest_tag }} npm run build:sc
+              run: VITE_GH_RELEASE_TAG=${{ steps.get_latest_tag.outputs.latest_tag }} pnpm run build:sc
 
             - name: Deploy Showcase to Github Pages
               # run deploy either on release or ...
@@ -53,10 +61,15 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
+            
+            - uses: pnpm/action-setup@v4
+              with:
+                node-version: "${{ matrix.node-version }}"
+            
             - uses: actions/setup-node@v4
               with:
-                node-version: "22"
-                registry-url: "https://registry.npmjs.org"
+                node-version: "${{ matrix.node-version }}"
+                cache: "pnpm"
 
             - name: Get release version
               id: release
@@ -71,15 +84,15 @@ jobs:
                   git config user.name "GitHub Actions"
 
             - name: Update release version
-              run: npm version --no-git-tag-version ${{ steps.release.outputs.short_version }}
+              run: pnpm version --no-git-tag-version ${{ steps.release.outputs.short_version }}
 
             - name: Install Dependencies
-              run: npm install
+              run: pnpm install
 
             - name: Build Release
-              run: npm run build:lib
+              run: pnpm run build:lib
 
             - name: Publish to npmjs
-              run: npm publish --access public
+              run: pnpm publish --access public
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
