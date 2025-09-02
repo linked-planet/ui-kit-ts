@@ -24,8 +24,7 @@ jobs:
 
             - uses: pnpm/action-setup@v4
               with:
-                node-version: "${{ matrix.node-version }}"
-                pnpm-version: "${{ matrix.pnpm-version }}"
+                version: "${{ matrix.pnpm-version }}"
 
             - uses: actions/setup-node@v4
               with:
@@ -66,8 +65,7 @@ jobs:
             
             - uses: pnpm/action-setup@v4
               with:
-                node-version: "${{ matrix.node-version }}"
-                pnpm-version: "${{ matrix.pnpm-version }}"
+                version: "${{ matrix.pnpm-version }}"
             
             - uses: actions/setup-node@v4
               with:
