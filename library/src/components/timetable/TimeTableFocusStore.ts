@@ -252,7 +252,6 @@ function scrollElementIntoView(
 			scrollTop = elementAbsoluteBottom - containerRect.height
 		}
 
-		//console.log("Scrolling to:", { scrollLeft, scrollTop })
 		container.scrollTo({
 			left: scrollLeft,
 			top: scrollTop,
