@@ -1,5 +1,9 @@
 name: ui-kit-ts - default
 
+env:
+    NODE_VERSION: "24"
+    PNPM_VERSION: "10"
+
 on:
     push:
         branches:
@@ -13,10 +17,6 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
-        strategy:
-          matrix:
-            node-version: [24]
-            pnpm-version: [10]
         steps:
             - uses: actions/checkout@v4
               with:
@@ -24,11 +24,11 @@ jobs:
 
             - uses: pnpm/action-setup@v4
               with:
-                version: "${{ matrix.pnpm-version }}"
+                version: "${{ vars.PNPM_VERSION || env.PNPM_VERSION }}"
 
             - uses: actions/setup-node@v4
               with:
-                node-version: "${{ matrix.node-version }}"
+                node-version: "${{ vars.NODE_VERSION || env.NODE_VERSION }}"
                 cache: "pnpm"
 
               # if i run the deployment of the github pages from the github web ui, without a release, then there is no github.event.release...
@@ -65,18 +65,22 @@ jobs:
             
             - uses: pnpm/action-setup@v4
               with:
-                version: "${{ matrix.pnpm-version }}"
+                version: "${{ vars.PNPM_VERSION || env.PNPM_VERSION }}"
             
             - uses: actions/setup-node@v4
               with:
-                node-version: "${{ matrix.node-version }}"
+                node-version: "${{ vars.NODE_VERSION || env.NODE_VERSION }}"
                 cache: "pnpm"
 
             - name: Get release version
               id: release
               run: |
                   FULL_VERSION=${{ github.event.release.tag_name }}
-                  SHORT_VERSION=${FULL_VERSION:1}
+                  SHORT_VERSION="${FULL_VERSION#v}"
+                  if ! echo "$SHORT_VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([-.][A-Za-z0-9._]+)?([+][A-Za-z0-9._]+)?$'; then
+                    echo "Invalid tag name '$FULL_VERSION' -> computed version '$SHORT_VERSION'. Expected 'v<semver>' or '<semver>'." >&2
+                    exit 1
+                  fi
                   echo short_version=${SHORT_VERSION} >> $GITHUB_OUTPUT
 
             - name: Configure Git user
