@@ -89,6 +89,9 @@ export default function ItemWrapper<
 		onMouseMove: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 			e.stopPropagation()
 		},
+		onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+			e.stopPropagation()
+		},
 	}
 	//#endregion
 
@@ -102,9 +105,9 @@ export default function ItemWrapper<
 			style={{
 				left,
 				width,
-				pointerEvents: multiSelectionMode ? "none" : "auto",
 				height,
 				maxHeight: height,
+				pointerEvents: "none",
 			}}
 			{...mouseHandler}
 		>
@@ -113,17 +116,23 @@ export default function ItemWrapper<
 				ref={ref}
 				data-item="wrapper-item"
 				className={"animate-fade-in relative z-1 size-full"}
-				onClick={() => {
+				style={{
+					pointerEvents: multiSelectionMode ? "none" : "auto",
+				}}
+				onClick={(e) => {
+					e.stopPropagation()
 					if (onTimeSlotItemClick) onTimeSlotItemClick(group, item)
 				}}
 				onKeyUp={(e) => {
 					if (e.key === "Enter") {
+						e.stopPropagation()
 						if (onTimeSlotItemClick) {
 							e.preventDefault()
 							e.stopPropagation()
 							onTimeSlotItemClick(group, item)
 						}
 					} else {
+						e.stopPropagation()
 						keyboardHandler(e)
 					}
 				}}
