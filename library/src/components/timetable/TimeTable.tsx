@@ -22,7 +22,6 @@ import {
 	deleteScrollContainerRef,
 	deleteTableHeaderRef,
 	initTimeTableFocusStore,
-	setFocusedCell,
 	setScrollContainerRef,
 	setTableHeaderRef,
 } from "./TimeTableFocusStore"
@@ -44,7 +43,6 @@ import {
 	initAndUpdateTimeTableSelectionStore,
 	type onTimeRangeSelectedType,
 } from "./TimeTableSelectionStore"
-import { getNextTabbableElement, getPreviousTabbableElement } from "./tabUtils"
 import { getStartAndEndSlot, getTimeSlotMinutes } from "./timeTableUtils"
 import { useGroupRows } from "./useGoupRows"
 
