@@ -96,6 +96,11 @@ jobs:
 
             - name: Build Release
               run: pnpm run build:lib
+            
+            - name: Show uncommitted changes (should be empty)
+              run: |
+                git status --porcelain=v1
+                git diff --name-only
 
             - name: Publish to npmjs
               run: pnpm publish --access public
