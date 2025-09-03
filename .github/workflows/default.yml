@@ -39,7 +39,7 @@ jobs:
                   echo latest_tag=${LATEST_TAG} >> $GITHUB_OUTPUT
 
             - name: Install
-              run: pnpm install
+              run: pnpm install --frozen-lockfile
 
             - name: Build Library
               run: pnpm run build:lib
@@ -92,7 +92,7 @@ jobs:
               run: pnpm version --no-git-tag-version ${{ steps.release.outputs.short_version }}
 
             - name: Install Dependencies
-              run: pnpm install
+              run: pnpm install --frozen-lockfile
 
             - name: Build Release
               run: pnpm run build:lib
