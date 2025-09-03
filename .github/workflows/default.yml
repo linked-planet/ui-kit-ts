@@ -30,6 +30,7 @@ jobs:
               with:
                 node-version: "${{ vars.NODE_VERSION || env.NODE_VERSION }}"
                 cache: "pnpm"
+                registry-url: "https://registry.npmjs.org"
                 scope: "@linked-planet"
 
               # if i run the deployment of the github pages from the github web ui, without a release, then there is no github.event.release...
@@ -72,6 +73,7 @@ jobs:
               with:
                 node-version: "${{ vars.NODE_VERSION || env.NODE_VERSION }}"
                 cache: "pnpm"
+                registry-url: "https://registry.npmjs.org"
                 scope: "@linked-planet"
 
             - name: Get release version
