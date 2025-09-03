@@ -96,13 +96,8 @@ jobs:
 
             - name: Build Release
               run: pnpm run build:lib
-            
-            - name: Show uncommitted changes (should be empty)
-              run: |
-                git status --porcelain=v1
-                git diff --name-only
 
             - name: Publish to npmjs
-              run: pnpm publish --access public
+              run: pnpm publish --access public --no-git-checks # this is necessary because we dont want to commit the version bump
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
