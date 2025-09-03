@@ -82,13 +82,6 @@
 			"last 1 safari version"
 		]
 	},
-	"bundleDependencies": [
-		"react-select",
-		"dayjs",
-		"@hello-pangea/dnd",
-		"tailwindcss",
-		"@tailwindcss/vite"
-	],
 	"dependencies": {
 		"@base-ui-components/react": "1.0.0-beta.2",
 		"@emotion/cache": "^11.14.0",
