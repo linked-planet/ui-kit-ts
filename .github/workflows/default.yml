@@ -100,6 +100,6 @@ jobs:
               run: pnpm run build:lib
 
             - name: Publish to npmjs
-              run: pnpm publish --access public --no-git-checks # this is necessary because we dont want to commit the version bump
+              run: npm publish --access public --no-git-checks # this is necessary because we dont want to commit the version bump
               env:
                   NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
