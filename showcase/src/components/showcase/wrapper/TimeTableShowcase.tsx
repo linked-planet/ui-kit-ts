@@ -1360,6 +1360,7 @@ function ExampleViewSwitcher() {
 					disableWeekendInteractions={false}
 					showTimeSlotHeader={currentView === "day"}
 					viewType={currentView === "day" ? "hours" : "days"}
+					debugLogs={true}
 				/>
 			</div>
 		</div>
