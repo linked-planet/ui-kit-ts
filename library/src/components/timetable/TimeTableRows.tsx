@@ -52,6 +52,33 @@ import { useKeyboardHandlers } from "./useKeyboardHandler"
 export const allGroupsRenderedEvent = "timetable-allgroupsrendered" as const
 
 /**
+ * Validates that groupItemRows data is consistent with the current slotsArray
+ * This prevents rendering with mismatched data during viewType transitions
+ */
+function validateGroupItemRowsConsistency<I extends TimeSlotBooking>(
+	groupItemRows: ItemRowEntry<I>[][],
+	slotsArray: readonly Dayjs[],
+): boolean {
+	if (!groupItemRows || !groupItemRows.length) {
+		return true // Empty data is always consistent
+	}
+
+	// Check if any items have slot indices that exceed current slotsArray length
+	for (const row of groupItemRows) {
+		for (const item of row) {
+			if (
+				item.startSlot >= slotsArray.length ||
+				item.endSlot >= slotsArray.length
+			) {
+				return false // Item references slots that don't exist in current slotsArray
+			}
+		}
+	}
+
+	return true
+}
+
+/**
  * About focus management:
  * the table has role="grid" and the cells have role="gridcell"
  * the table has aria-rowcount={groupRows.size}
@@ -148,18 +175,35 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 	const nextGroupId = groupEntriesArray[g + 1]?.id ?? null
 	const previousGroupId = groupEntriesArray[g - 1]?.id ?? null
 	const groupItemRows = groupRows.get(groupEntry)
-
 	if (!groupItemRows) {
-		// Skip rendering this group - rows not yet calculated
-		// Remove from changed groups to avoid repeated attempts
+		// Skip rendering - rows not yet calculated for current viewType
 		changedGroupRowsRef.current.delete(g)
 		if (timeTableDebugLogs) {
 			console.info(
 				`TimeTable - skipping group ${g} (${groupEntry.id}) - rows not yet calculated`,
 			)
 		}
-		return // Don't render this group yet, wait for calculation to complete
+		return
 	}
+
+	// CRITICAL: Validate that groupItemRows is compatible with current slotsArray
+	// This prevents rendering with mismatched data during viewType transitions
+	const isDataConsistent = validateGroupItemRowsConsistency(
+		groupItemRows,
+		slotsArray,
+	)
+
+	if (!isDataConsistent) {
+		changedGroupRowsRef.current.delete(g)
+		if (timeTableDebugLogs) {
+			console.warn(
+				`TimeTable - skipping group ${g} (${groupEntry.id}) - data inconsistent with current viewType. ` +
+					`SlotsArray length: ${slotsArray.length}, ViewType: ${viewType}`,
+			)
+		}
+		return
+	}
+
 	let mref = refCollection[g]
 	if (!mref) {
 		mref =
@@ -379,13 +423,27 @@ export default function TimeTableRows<
 		viewTypeCurrent.current !== viewType ||
 		timeFrameDayCurrent.current !== timeFrameDay
 	) {
-		// reset the rendered cells
+		// Immediate and complete reset on viewType change
 		renderedGroups.current.clear()
+		changedGroupRows.current.clear()
+		refCollection.current = []
+		setGroupRowsRendered([]) // clear rendered group rows immediately
+		renderGroupRangeRef.current = [-1, -1] // reset the render group range
+
+		// Update cached values
 		slotsArrayCurrent.current = slotsArray
 		viewTypeCurrent.current = viewType
 		timeFrameDayCurrent.current = timeFrameDay
-		currentGroupRowsRef.current.clear()
-		//setCurrentGroupRows(groupRows)
+		currentGroupRowsRef.current = groupRows
+
+		// force intersection recalculation afer DOM update
+		rateLimiterIntersection(handleIntersections)
+
+		if (timeTableDebugLogs) {
+			console.info(
+				"TimeTable - viewType changed, immediate and complete reset",
+			)
+		}
 	}
 
 	//** ------- CHANGE DETECTION ------ */
@@ -393,12 +451,13 @@ export default function TimeTableRows<
 	if (groupRows !== currentGroupRowsRef.current) {
 		//changedGroupRows.current.clear() -> this misses changes on fast updates where the currentGroupRowsRef is not yet updated
 		if (!groupRows || !groupRows.size) {
+			// Complete reset on empty group rows
 			renderedGroups.current.clear()
 			refCollection.current = []
 			setGroupRowsRendered([])
 			changedGroupRows.current.clear()
 			currentGroupRowsRef.current = groupRows
-		} else if (groupRowsRendered.length > groupRows.size) {
+		} /*else if (groupRowsRendered.length > groupRows.size) {
 			// shorten and remove rendered elements array, if too long
 			setGroupRowsRendered(groupRowsRendered.slice(0, groupRows.size))
 			for (const changedG of changedGroupRows.current) {
@@ -418,6 +477,59 @@ export default function TimeTableRows<
 			}
 			if (refCollection.current.length < groupRows.size) {
 				refCollection.current.length = groupRows.size
+			}
+		} */ else {
+			// Mark all groups as needing re-validation and potential re-rendering
+			// This is important after viewType changes where data might be inconsistent
+			for (let i = 0; i < groupRows.size; i++) {
+				changedGroupRows.current.add(i)
+			}
+
+			if (groupRowsRendered.length > groupRows.size) {
+				// shorten and remove rendered elements array, if too long
+				setGroupRowsRendered(groupRowsRendered.slice(0, groupRows.size))
+				if (groupRowsRendered.length > groupRows.size) {
+					// shorten and remove rendered elements array, if too long
+					setGroupRowsRendered(
+						groupRowsRendered.slice(0, groupRows.size),
+					)
+
+					// Clean up changedGroupRows - remove indices that are now out of bounds
+					for (const changedG of changedGroupRows.current) {
+						if (changedG > groupRows.size - 1) {
+							changedGroupRows.current.delete(changedG)
+						}
+					}
+
+					// Clean up renderedGroups - remove indices that are now out of bounds
+					for (const renderedG of renderedGroups.current) {
+						if (renderedG > groupRows.size - 1) {
+							renderedGroups.current.delete(renderedG)
+						}
+					}
+
+					// Resize refCollection to match new groupRows size
+					refCollection.current.length = groupRows.size
+
+					// Adjust render range if it's now out of bounds
+					if (renderGroupRangeRef.current[0] > groupRows.size - 1) {
+						renderGroupRangeRef.current = [0, groupRows.size - 1]
+						setRenderGroupRange([0, groupRows.size - 1])
+					}
+
+					// Ensure refCollection has the right length (redundant but safe)
+					if (refCollection.current.length < groupRows.size) {
+						refCollection.current.length = groupRows.size
+					}
+				}
+			}
+
+			currentGroupRowsRef.current = groupRows
+
+			if (timeTableDebugLogs) {
+				console.info(
+					`TimeTable - groupRows changed, marked ${changedGroupRows.current.size} groups for re-validation`,
+				)
 			}
 		}
 
@@ -527,6 +639,26 @@ export default function TimeTableRows<
 								}
 								continue
 							}
+
+							// CRITICAL: Validate that groupItemRows is compatible with current slotsArray
+							// This prevents rendering with mismatched data during viewType transitions
+							const isDataConsistent =
+								validateGroupItemRowsConsistency(
+									groupEntry,
+									slotsArray,
+								)
+
+							if (!isDataConsistent) {
+								changedGroupRows.current.delete(i)
+								if (timeTableDebugLogs) {
+									console.warn(
+										`TimeTable - skipping group ${i} (${groupEntryKey}) - data inconsistent with current viewType. ` +
+											`SlotsArray length: ${slotsArray.length}, ViewType: ${viewType}`,
+									)
+								}
+								continue
+							}
+
 							renderGroupRows(
 								renderGroupRangeRef.current,
 								currentGroupRowsRef.current,
