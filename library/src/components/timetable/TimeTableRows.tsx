@@ -1294,10 +1294,6 @@ function PlaceholderTableCell<
 		focusedCell.timeSlotNumber === timeSlotNumber &&
 		focusedCell.itemKey === null
 
-	/*if (timeSlotSelectedIndex > 0) {
-		return null // the cell is not rendered since the placeholder item spans over multiple selected cells
-	}*/
-
 	const cursorStyle =
 		isDisabledByDisabledMatcher ||
 		(isWeekendDay && disableWeekendInteractions)
