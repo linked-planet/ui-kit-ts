@@ -295,7 +295,6 @@ export default function TimeTableRows<
 	const changedGroupRows = useRef<Set<number>>(new Set<number>())
 
 	// groupRowsRendered is the array of rendered group rows JSX Elements, which is returned from the component
-	//const groupRowsRendered = useRef<JSX.Element[]>([])
 	const [groupRowsRendered, setGroupRowsRendered] = useState<JSX.Element[]>(
 		[],
 	)
@@ -303,13 +302,6 @@ export default function TimeTableRows<
 	const slotsArrayCurrent = useRef(slotsArray)
 	const viewTypeCurrent = useRef(viewType)
 	const timeFrameDayCurrent = useRef(timeFrameDay)
-
-	// groupRowsRenderedIdx is the index of the group row which is currently rendered using batch rendering
-	//const [groupRowsRenderedIdx, setGroupRowsRenderedIdx] = useState(-1)
-	// this is a reference to the current groupRowsRenderedIdx to avoid changing the handleIntersections callback on groupRowsRenderedIdx change
-	// and to know how far we are with the initial rendering... this is needed to know when to start the intersection observer
-	// and it should be only set to 0 when the group rows change
-	//const groupRowsRenderedIdxRef = useRef(groupRowsRenderedIdx)
 
 	const rateLimiterIntersection = useIdleRateLimitHelper(renderIdleTimeout)
 	const rateLimiterRendering = useIdleRateLimitHelper(renderIdleTimeout)
@@ -456,7 +448,7 @@ export default function TimeTableRows<
 		timeFrameDayCurrent.current = timeFrameDay
 		currentGroupRowsRef.current = groupRows
 
-		// CRITICAL: Ensure initial groups are marked for rendering
+		// Ensure initial groups are marked for rendering
 		if (groupRows && groupRows.size > 0) {
 			for (let i = 0; i < groupRows.size; i++) {
 				changedGroupRows.current.add(i)
@@ -464,10 +456,7 @@ export default function TimeTableRows<
 		}
 
 		// Force intersection recalculation after DOM update - with delay on initial mount to allow DOM settlement
-
-		// On initial mount, schedule intersection check after placeholders are rendered
 		rateLimiterIntersection(() => {
-			// Force an immediate intersection check after initial placeholders are rendered
 			window.requestAnimationFrame(() => {
 				handleIntersections()
 			})
@@ -485,28 +474,7 @@ export default function TimeTableRows<
 			setGroupRowsRendered([])
 			changedGroupRows.current.clear()
 			currentGroupRowsRef.current = groupRows
-		} /*else if (groupRowsRendered.length > groupRows.size) {
-			// shorten and remove rendered elements array, if too long
-			setGroupRowsRendered(groupRowsRendered.slice(0, groupRows.size))
-			for (const changedG of changedGroupRows.current) {
-				if (changedG > groupRows.size - 1) {
-					changedGroupRows.current.delete(changedG)
-				}
-			}
-			for (const renderedG of renderedGroups.current) {
-				if (renderedG > groupRows.size - 1) {
-					renderedGroups.current.delete(renderedG)
-				}
-			}
-			refCollection.current.length = groupRows.size
-			if (renderGroupRangeRef.current[0] > groupRows.size - 1) {
-				renderGroupRangeRef.current = [0, groupRows.size - 1]
-				setRenderGroupRange([0, groupRows.size - 1])
-			}
-			if (refCollection.current.length < groupRows.size) {
-				refCollection.current.length = groupRows.size
-			}
-		} */ else {
+		} else {
 			// Mark all groups as needing re-validation and potential re-rendering
 			// This is important after viewType changes where data might be inconsistent
 			for (let i = 0; i < groupRows.size; i++) {
