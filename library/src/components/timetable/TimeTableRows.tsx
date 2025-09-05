@@ -103,6 +103,7 @@ const rowsMargin = 1
 function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 	renderCells: [number, number],
 	groupRows: Map<G, ItemRowEntry<I>[][] | null>,
+	groupRowsKeys: G[],
 	g: number,
 	refCollection: React.MutableRefObject<HTMLElement>[],
 	groupRowsRendered: JSX.Element[],
@@ -129,7 +130,7 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 			`TimeTable - group number is too high, initial rendering out of order. Should be ${groupRowsRendered.length} but is ${g}`,
 		)
 	}
-	const groupEntriesArray = groupRows.keys().toArray()
+	const groupEntriesArray = groupRowsKeys
 	const groupEntry = groupEntriesArray[g]
 	if (!groupEntry) {
 		console.warn(
@@ -147,15 +148,17 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 	const nextGroupId = groupEntriesArray[g + 1]?.id ?? null
 	const previousGroupId = groupEntriesArray[g - 1]?.id ?? null
 	const groupItemRows = groupRows.get(groupEntry)
+
 	if (!groupItemRows) {
-		// rows not yet calculated
-		console.error(
-			"TimeTable - rendering: rows not yet calculated",
-			g,
-			groupEntry,
-			groupEntriesArray,
-		)
-		throw new Error("TimeTable - rows not yet calculated")
+		// Skip rendering this group - rows not yet calculated
+		// Remove from changed groups to avoid repeated attempts
+		changedGroupRowsRef.current.delete(g)
+		if (timeTableDebugLogs) {
+			console.info(
+				`TimeTable - skipping group ${g} (${groupEntry.id}) - rows not yet calculated`,
+			)
+		}
+		return // Don't render this group yet, wait for calculation to complete
 	}
 	let mref = refCollection[g]
 	if (!mref) {
@@ -369,6 +372,7 @@ export default function TimeTableRows<
 	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
 
 	const currentGroupRowsRef = useRef(groupRows)
+	const groupRowKeys = useMemo(() => groupRows.keys().toArray(), [groupRows])
 
 	if (
 		slotsArrayCurrent.current !== slotsArray ||
@@ -419,11 +423,10 @@ export default function TimeTableRows<
 
 		// determine when new ones start
 		let changedFound = -1
-		const keys = groupRows.keys().toArray()
 		let updateCounter = 0
 
-		for (let i = 0; i < keys.length; i++) {
-			const group = keys[i]
+		for (let i = 0; i < groupRowKeys.length; i++) {
+			const group = groupRowKeys[i]
 			if (!group) {
 				throw new Error(`TimeTable - group ${i} not found`)
 			}
@@ -445,7 +448,7 @@ export default function TimeTableRows<
 		}
 
 		for (const changedG of changedGroupRows.current) {
-			if (changedG > keys.length - 1) {
+			if (changedG > groupRowKeys.length - 1) {
 				// delete obsolete change
 				changedGroupRows.current.delete(changedG)
 			}
@@ -514,9 +517,20 @@ export default function TimeTableRows<
 						}
 						// make sure visible rows are rendered
 						if (changedGroupRows.current.has(i)) {
+							const groupEntryKey = groupRowKeys[i]
+							const groupEntry = groupRows.get(groupEntryKey)
+							if (!groupEntry) {
+								if (timeTableDebugLogs) {
+									console.log(
+										`TimeTable - group entry to render not found: ${groupEntryKey}, continuing...`,
+									)
+								}
+								continue
+							}
 							renderGroupRows(
 								renderGroupRangeRef.current,
 								currentGroupRowsRef.current,
+								groupRowKeys,
 								i,
 								refCollection.current,
 								groupRowsRendered,
@@ -553,6 +567,7 @@ export default function TimeTableRows<
 					renderGroupRows(
 						renderGroupRangeRef.current,
 						currentGroupRowsRef.current,
+						groupRowKeys,
 						g,
 						refCollection.current,
 						groupRowsRendered,
@@ -585,6 +600,7 @@ export default function TimeTableRows<
 				renderGroupRows(
 					renderGroupRangeRef.current,
 					currentGroupRowsRef.current,
+					groupRowKeys,
 					groupRowsRendered.length,
 					refCollection.current,
 					groupRowsRendered,
@@ -624,6 +640,8 @@ export default function TimeTableRows<
 		rateLimiterIntersection,
 		timeStepMinutesHoursView,
 		onRenderedGroupsChanged,
+		groupRowKeys,
+		groupRows,
 	])
 
 	if (
