@@ -52,6 +52,33 @@ import { useKeyboardHandlers } from "./useKeyboardHandler"
 export const allGroupsRenderedEvent = "timetable-allgroupsrendered" as const
 
 /**
+ * Validates that groupItemRows data is consistent with the current slotsArray
+ * This prevents rendering with mismatched data during viewType transitions
+ */
+function validateGroupItemRowsConsistency<I extends TimeSlotBooking>(
+	groupItemRows: ItemRowEntry<I>[][],
+	slotsArray: readonly Dayjs[],
+): boolean {
+	if (!groupItemRows || !groupItemRows.length) {
+		return true // Empty data is always consistent
+	}
+
+	// Check if any items have slot indices that exceed current slotsArray length
+	for (const row of groupItemRows) {
+		for (const item of row) {
+			if (
+				item.startSlot >= slotsArray.length ||
+				item.endSlot >= slotsArray.length
+			) {
+				return false // Item references slots that don't exist in current slotsArray
+			}
+		}
+	}
+
+	return true
+}
+
+/**
  * About focus management:
  * the table has role="grid" and the cells have role="gridcell"
  * the table has aria-rowcount={groupRows.size}
@@ -103,6 +130,7 @@ const rowsMargin = 1
 function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 	renderCells: [number, number],
 	groupRows: Map<G, ItemRowEntry<I>[][] | null>,
+	groupRowsKeys: G[],
 	g: number,
 	refCollection: React.MutableRefObject<HTMLElement>[],
 	groupRowsRendered: JSX.Element[],
@@ -129,7 +157,7 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 			`TimeTable - group number is too high, initial rendering out of order. Should be ${groupRowsRendered.length} but is ${g}`,
 		)
 	}
-	const groupEntriesArray = groupRows.keys().toArray()
+	const groupEntriesArray = groupRowsKeys
 	const groupEntry = groupEntriesArray[g]
 	if (!groupEntry) {
 		console.warn(
@@ -148,15 +176,33 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 	const previousGroupId = groupEntriesArray[g - 1]?.id ?? null
 	const groupItemRows = groupRows.get(groupEntry)
 	if (!groupItemRows) {
-		// rows not yet calculated
-		console.error(
-			"TimeTable - rendering: rows not yet calculated",
-			g,
-			groupEntry,
-			groupEntriesArray,
-		)
-		throw new Error("TimeTable - rows not yet calculated")
+		// Skip rendering - rows not yet calculated for current viewType, but keep it in changedGroupRows for retry when data becomes available
+		if (timeTableDebugLogs) {
+			console.info(
+				`TimeTable - skipping group ${g} (${groupEntry.id}) - rows not yet calculated, will retry when data available`,
+			)
+		}
+		return
 	}
+
+	// CRITICAL: Validate that groupItemRows is compatible with current slotsArray
+	// This prevents rendering with mismatched data during viewType transitions
+	const isDataConsistent = validateGroupItemRowsConsistency(
+		groupItemRows,
+		slotsArray,
+	)
+
+	if (!isDataConsistent) {
+		changedGroupRowsRef.current.delete(g)
+		if (timeTableDebugLogs) {
+			console.warn(
+				`TimeTable - skipping group ${g} (${groupEntry.id}) - data inconsistent with current viewType. ` +
+					`SlotsArray length: ${slotsArray.length}, ViewType: ${viewType}`,
+			)
+		}
+		return
+	}
+
 	let mref = refCollection[g]
 	if (!mref) {
 		mref =
@@ -231,6 +277,16 @@ export default function TimeTableRows<
 	])
 	const renderGroupRangeRef = useRef(renderGroupRange)
 
+	// CRITICAL: Keep ref synchronized with state to prevent race conditions
+	useEffect(() => {
+		renderGroupRangeRef.current = renderGroupRange
+		if (timeTableDebugLogs) {
+			console.log(
+				`TimeTable - renderGroupRange state updated: [${renderGroupRange[0]}, ${renderGroupRange[1]}]`,
+			)
+		}
+	}, [renderGroupRange])
+
 	// as long as prev render cells are set, we should render first the renderCells, and then render the difference of renderCells and prevRenderCells to only render the placeholders
 	// for the cells not in the viewport anymore
 	const renderedGroups = useRef<Set<number>>(new Set<number>())
@@ -239,7 +295,6 @@ export default function TimeTableRows<
 	const changedGroupRows = useRef<Set<number>>(new Set<number>())
 
 	// groupRowsRendered is the array of rendered group rows JSX Elements, which is returned from the component
-	//const groupRowsRendered = useRef<JSX.Element[]>([])
 	const [groupRowsRendered, setGroupRowsRendered] = useState<JSX.Element[]>(
 		[],
 	)
@@ -247,13 +302,6 @@ export default function TimeTableRows<
 	const slotsArrayCurrent = useRef(slotsArray)
 	const viewTypeCurrent = useRef(viewType)
 	const timeFrameDayCurrent = useRef(timeFrameDay)
-
-	// groupRowsRenderedIdx is the index of the group row which is currently rendered using batch rendering
-	//const [groupRowsRenderedIdx, setGroupRowsRenderedIdx] = useState(-1)
-	// this is a reference to the current groupRowsRenderedIdx to avoid changing the handleIntersections callback on groupRowsRenderedIdx change
-	// and to know how far we are with the initial rendering... this is needed to know when to start the intersection observer
-	// and it should be only set to 0 when the group rows change
-	//const groupRowsRenderedIdxRef = useRef(groupRowsRenderedIdx)
 
 	const rateLimiterIntersection = useIdleRateLimitHelper(renderIdleTimeout)
 	const rateLimiterRendering = useIdleRateLimitHelper(renderIdleTimeout)
@@ -265,10 +313,20 @@ export default function TimeTableRows<
 	// those are rendered, others are only rendered as placeholder (1 div per group, instead of multiple rows and cells)
 	const handleIntersections = useCallback(() => {
 		if (!refCollection.current.length) {
+			if (timeTableDebugLogs) {
+				console.log(
+					"TimeTable - handleIntersections: no refCollection yet",
+				)
+			}
 			return
 		}
 		if (!refCollection.current[0] || !refCollection.current[0].current) {
 			// placeholders not yet rendered
+			if (timeTableDebugLogs) {
+				console.log(
+					"TimeTable - handleIntersections: placeholders not yet rendered",
+				)
+			}
 			return
 		}
 		if (!intersectionContainerRef.current || !headerRef.current) {
@@ -332,6 +390,13 @@ export default function TimeTableRows<
 		if (newRenderCells[0] > newRenderCells[1]) {
 			newRenderCells[1] = newRenderCells[0]
 		}
+
+		if (timeTableDebugLogs) {
+			console.log(
+				`TimeTable - handleIntersections: calculated newRenderCells [${newRenderCells[0]}, ${newRenderCells[1]}], current range [${renderGroupRangeRef.current[0]}, ${renderGroupRangeRef.current[1]}]`,
+			)
+		}
+
 		setRenderGroupRange((prev) => {
 			if (
 				prev[0] !== newRenderCells[0] ||
@@ -369,19 +434,33 @@ export default function TimeTableRows<
 	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
 
 	const currentGroupRowsRef = useRef(groupRows)
+	const groupRowKeys = useMemo(() => groupRows.keys().toArray(), [groupRows])
 
-	if (
+	const hasViewTypeChanged =
 		slotsArrayCurrent.current !== slotsArray ||
 		viewTypeCurrent.current !== viewType ||
 		timeFrameDayCurrent.current !== timeFrameDay
-	) {
-		// reset the rendered cells
-		renderedGroups.current.clear()
+
+	if (hasViewTypeChanged) {
+		// Update cached values (both for initial mount and changes)
 		slotsArrayCurrent.current = slotsArray
 		viewTypeCurrent.current = viewType
 		timeFrameDayCurrent.current = timeFrameDay
-		currentGroupRowsRef.current.clear()
-		//setCurrentGroupRows(groupRows)
+		currentGroupRowsRef.current = groupRows
+
+		// Ensure initial groups are marked for rendering
+		if (groupRows && groupRows.size > 0) {
+			for (let i = 0; i < groupRows.size; i++) {
+				changedGroupRows.current.add(i)
+			}
+		}
+
+		// Force intersection recalculation after DOM update - with delay on initial mount to allow DOM settlement
+		rateLimiterIntersection(() => {
+			window.requestAnimationFrame(() => {
+				handleIntersections()
+			})
+		})
 	}
 
 	//** ------- CHANGE DETECTION ------ */
@@ -389,47 +468,79 @@ export default function TimeTableRows<
 	if (groupRows !== currentGroupRowsRef.current) {
 		//changedGroupRows.current.clear() -> this misses changes on fast updates where the currentGroupRowsRef is not yet updated
 		if (!groupRows || !groupRows.size) {
+			// Complete reset on empty group rows
 			renderedGroups.current.clear()
 			refCollection.current = []
 			setGroupRowsRendered([])
 			changedGroupRows.current.clear()
 			currentGroupRowsRef.current = groupRows
-		} else if (groupRowsRendered.length > groupRows.size) {
-			// shorten and remove rendered elements array, if too long
-			setGroupRowsRendered(groupRowsRendered.slice(0, groupRows.size))
-			for (const changedG of changedGroupRows.current) {
-				if (changedG > groupRows.size - 1) {
-					changedGroupRows.current.delete(changedG)
+		} else {
+			// Mark all groups as needing re-validation and potential re-rendering
+			// This is important after viewType changes where data might be inconsistent
+			for (let i = 0; i < groupRows.size; i++) {
+				changedGroupRows.current.add(i)
+			}
+
+			if (groupRowsRendered.length > groupRows.size) {
+				// shorten and remove rendered elements array, if too long
+				setGroupRowsRendered(groupRowsRendered.slice(0, groupRows.size))
+
+				// Clean up changedGroupRows - remove indices that are now out of bounds
+				for (const changedG of changedGroupRows.current) {
+					if (changedG > groupRows.size - 1) {
+						changedGroupRows.current.delete(changedG)
+					}
 				}
-			}
-			for (const renderedG of renderedGroups.current) {
-				if (renderedG > groupRows.size - 1) {
-					renderedGroups.current.delete(renderedG)
+
+				// Clean up renderedGroups - remove indices that are now out of bounds
+				for (const renderedG of renderedGroups.current) {
+					if (renderedG > groupRows.size - 1) {
+						renderedGroups.current.delete(renderedG)
+					}
 				}
-			}
-			refCollection.current.length = groupRows.size
-			if (renderGroupRangeRef.current[0] > groupRows.size - 1) {
-				renderGroupRangeRef.current = [0, groupRows.size - 1]
-				setRenderGroupRange([0, groupRows.size - 1])
-			}
-			if (refCollection.current.length < groupRows.size) {
+
+				// Resize refCollection to match new groupRows size
 				refCollection.current.length = groupRows.size
+
+				// Adjust render range if it's now out of bounds
+				if (renderGroupRangeRef.current[0] > groupRows.size - 1) {
+					renderGroupRangeRef.current = [0, groupRows.size - 1]
+				}
+
+				// Ensure refCollection has the right length
+				if (refCollection.current.length < groupRows.size) {
+					refCollection.current.length = groupRows.size
+				}
+			}
+
+			currentGroupRowsRef.current = groupRows
+
+			if (timeTableDebugLogs) {
+				console.info(
+					`TimeTable - groupRows changed, marked ${changedGroupRows.current.size} groups for re-validation`,
+				)
 			}
 		}
 
 		// determine when new ones start
 		let changedFound = -1
-		const keys = groupRows.keys().toArray()
 		let updateCounter = 0
 
-		for (let i = 0; i < keys.length; i++) {
-			const group = keys[i]
+		for (let i = 0; i < groupRowKeys.length; i++) {
+			const group = groupRowKeys[i]
 			if (!group) {
 				throw new Error(`TimeTable - group ${i} not found`)
 			}
 			const rows = groupRows.get(group)
 			const currentRows = currentGroupRowsRef.current.get(group)
+
+			// Enhanced condition to handle null-to-data transitions
+			const wasNull = currentRows === null
+			const nowHasData = rows !== null
+			const nullToDataTransition = wasNull && nowHasData
+
 			if (
+				nullToDataTransition || // Handle null-to-data transitions
 				(rows !== currentRows &&
 					renderGroupRangeRef.current[0] > -1 &&
 					i >= renderGroupRangeRef.current[0] &&
@@ -445,7 +556,7 @@ export default function TimeTableRows<
 		}
 
 		for (const changedG of changedGroupRows.current) {
-			if (changedG > keys.length - 1) {
+			if (changedG > groupRowKeys.length - 1) {
 				// delete obsolete change
 				changedGroupRows.current.delete(changedG)
 			}
@@ -458,7 +569,6 @@ export default function TimeTableRows<
 				groupRows.size,
 			)
 		}
-		currentGroupRowsRef.current = groupRows
 	}
 
 	//** ------- SCROLL HANDLING ------ */
@@ -514,9 +624,40 @@ export default function TimeTableRows<
 						}
 						// make sure visible rows are rendered
 						if (changedGroupRows.current.has(i)) {
+							const groupEntryKey = groupRowKeys[i]
+							const groupItemRows = groupRows.get(groupEntryKey)
+							if (!groupItemRows) {
+								if (timeTableDebugLogs) {
+									console.log(
+										`TimeTable - group entry to render not found: ${groupEntryKey}, continuing...`,
+									)
+								}
+								continue
+							}
+
+							// CRITICAL: Validate that groupItemRows is compatible with current slotsArray
+							// This prevents rendering with mismatched data during viewType transitions
+							const isDataConsistent =
+								validateGroupItemRowsConsistency(
+									groupItemRows,
+									slotsArray,
+								)
+
+							if (!isDataConsistent) {
+								changedGroupRows.current.delete(i)
+								if (timeTableDebugLogs) {
+									console.warn(
+										`TimeTable - skipping group ${i} (${groupEntryKey}) - data inconsistent with current viewType. ` +
+											`SlotsArray length: ${slotsArray.length}, ViewType: ${viewType}`,
+									)
+								}
+								continue
+							}
+
 							renderGroupRows(
 								renderGroupRangeRef.current,
 								currentGroupRowsRef.current,
+								groupRowKeys,
 								i,
 								refCollection.current,
 								groupRowsRendered,
@@ -553,6 +694,7 @@ export default function TimeTableRows<
 					renderGroupRows(
 						renderGroupRangeRef.current,
 						currentGroupRowsRef.current,
+						groupRowKeys,
 						g,
 						refCollection.current,
 						groupRowsRendered,
@@ -585,6 +727,7 @@ export default function TimeTableRows<
 				renderGroupRows(
 					renderGroupRangeRef.current,
 					currentGroupRowsRef.current,
+					groupRowKeys,
 					groupRowsRendered.length,
 					refCollection.current,
 					groupRowsRendered,
@@ -624,13 +767,25 @@ export default function TimeTableRows<
 		rateLimiterIntersection,
 		timeStepMinutesHoursView,
 		onRenderedGroupsChanged,
+		groupRowKeys,
+		groupRows,
 	])
+
+	// Ensure rendering is triggered - handle edge cases where renderGroupRangeRef might be [-1, -1]
+	const expectedRenderedGroups =
+		renderGroupRangeRef.current[0] >= 0
+			? Math.max(
+					0,
+					renderGroupRangeRef.current[1] -
+						renderGroupRangeRef.current[0] +
+						1,
+				)
+			: 0
 
 	if (
 		changedGroupRows.current.size ||
 		groupRowsRendered.length < groupRows.size ||
-		renderedGroups.current.size <
-			renderGroupRangeRef.current[1] - renderGroupRangeRef.current[0] + 1
+		renderedGroups.current.size < expectedRenderedGroups
 	) {
 		rateLimiterRendering(renderBatch)
 	} else {
@@ -646,6 +801,33 @@ export default function TimeTableRows<
 			}, 0)*/
 		}
 	}
+
+	// Defensive retry mechanism: Check if groups with pending data now have data available
+	useEffect(() => {
+		if (changedGroupRows.current.size === 0) {
+			return
+		}
+
+		// Check if any groups in changedGroupRows now have data available
+		let hasNewData = false
+		for (const groupIndex of changedGroupRows.current) {
+			const group = groupRowKeys[groupIndex]
+			if (group) {
+				const rows = groupRows.get(group)
+				const currentRows = currentGroupRowsRef.current.get(group)
+				// If we previously had null data and now have actual data, trigger re-render
+				if (currentRows === null && rows !== null) {
+					hasNewData = true
+					break
+				}
+			}
+		}
+
+		if (hasNewData) {
+			// Trigger a new rendering attempt for groups that now have data
+			rateLimiterRendering(renderBatch)
+		}
+	}, [groupRows, groupRowKeys, renderBatch, rateLimiterRendering])
 
 	return groupRowsRendered
 }
@@ -1111,10 +1293,6 @@ function PlaceholderTableCell<
 		focusedCell.groupId === group.id &&
 		focusedCell.timeSlotNumber === timeSlotNumber &&
 		focusedCell.itemKey === null
-
-	/*if (timeSlotSelectedIndex > 0) {
-		return null // the cell is not rendered since the placeholder item spans over multiple selected cells
-	}*/
 
 	const cursorStyle =
 		isDisabledByDisabledMatcher ||

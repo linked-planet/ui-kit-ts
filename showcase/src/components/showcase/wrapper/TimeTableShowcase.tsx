@@ -892,7 +892,7 @@ function Example() {
 						min={10}
 						max={1200}
 						onChange={(e) => {
-							const val = Number.parseInt(e.target.value)
+							const val = Number.parseInt(e.target.value, 10)
 							setTimeStepsInputValue(val)
 							debounceHelper(() => setTimeSteps(val))
 						}}
@@ -914,7 +914,7 @@ function Example() {
 						onChange={(e) =>
 							debounceHelper(() =>
 								setGroupHeaderColumnWidth(
-									Number.parseInt(e.target.value),
+									Number.parseInt(e.target.value, 10),
 								),
 							)
 						}
@@ -932,7 +932,9 @@ function Example() {
 						max={1000}
 						onChange={(e) =>
 							debounceHelper(() => {
-								setColumnWidth(Number.parseInt(e.target.value))
+								setColumnWidth(
+									Number.parseInt(e.target.value, 10),
+								)
 							})
 						}
 						className="mr-1 w-16 text-center"
@@ -949,7 +951,9 @@ function Example() {
 						max={100}
 						onChange={(e) =>
 							debounceHelper(() =>
-								setRowHeight(Number.parseInt(e.target.value)),
+								setRowHeight(
+									Number.parseInt(e.target.value, 10),
+								),
 							)
 						}
 						className="mr-1 w-16 text-center"
@@ -1159,9 +1163,9 @@ function Example() {
 	//endregion timetable
 }
 
-document.addEventListener("focusin", (event) => {
+/*document.addEventListener("focusin", () => {
 	console.log("Newly focused element:", document.activeElement)
-})
+})*/
 
 function ExampleCalendar() {
 	//#region timetabledays
@@ -1270,6 +1274,100 @@ function ExampleMonthCalendar() {
 	//#endregion timetablemonths
 }
 
+function ExampleViewSwitcher() {
+	//#region timetableviewswitcher
+	const [currentView, setCurrentView] = useState<"day" | "week">("day")
+
+	const dayTimeFrame = useMemo(
+		() => ({
+			startDate: dayjs().startOf("day").add(8, "hours"),
+			endDate: dayjs().startOf("day").add(23, "hours"),
+		}),
+		[],
+	)
+
+	const weekTimeFrame = useMemo(
+		() => ({
+			startDate: dayjs().startOf("week"),
+			endDate: dayjs().endOf("week"),
+		}),
+		[],
+	)
+
+	const [entries, setEntries] = useState(exampleEntries)
+
+	const requestMoreEntriesCB = useCallback(() => {
+		setEntries((prev) => {
+			const missing = 5
+			const timeFrame =
+				currentView === "day" ? dayTimeFrame : weekTimeFrame
+			const missingGroups = createMoreTestGroups(
+				timeFrame.startDate,
+				timeFrame.endDate,
+				missing,
+				prev.length,
+			)
+			return [...prev, ...missingGroups]
+		})
+	}, [currentView, dayTimeFrame, weekTimeFrame])
+
+	useEffect(() => {
+		requestMoreEntriesCB()
+	}, [requestMoreEntriesCB])
+
+	const translation = useTranslation() as TranslatedTimeTableMessages
+
+	const timeFrame = currentView === "day" ? dayTimeFrame : weekTimeFrame
+
+	return (
+		<div>
+			<div className="flex gap-4 mb-4">
+				<Button
+					onClick={() => setCurrentView("day")}
+					className={
+						currentView === "day"
+							? "bg-primary text-primary-foreground"
+							: ""
+					}
+				>
+					Day View
+				</Button>
+				<Button
+					onClick={() => setCurrentView("week")}
+					className={
+						currentView === "week"
+							? "bg-primary text-primary-foreground"
+							: ""
+					}
+				>
+					Week View
+				</Button>
+			</div>
+			<div
+				style={{
+					height: "600px",
+				}}
+			>
+				<TimeTable
+					groupHeaderColumnWidth={150}
+					columnWidth={70}
+					rowHeight={30}
+					startDate={timeFrame.startDate}
+					endDate={timeFrame.endDate}
+					timeStepsMinutes={currentView === "day" ? 60 : undefined}
+					entries={entries}
+					timeTableMessages={translation}
+					disableWeekendInteractions={false}
+					showTimeSlotHeader={currentView === "day"}
+					viewType={currentView === "day" ? "hours" : "days"}
+					debugLogs={true}
+				/>
+			</div>
+		</div>
+	)
+	//#endregion timetableviewswitcher
+}
+
 export default function TimeTableShowcase(props: ShowcaseProps) {
 	return (
 		<ShowcaseWrapperItem
@@ -1296,6 +1394,11 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 					title: "Months",
 					example: <ExampleMonthCalendar />,
 					sourceCodeExampleId: "timetablemonths",
+				},
+				{
+					title: "View Switcher",
+					example: <ExampleViewSwitcher />,
+					sourceCodeExampleId: "timetableviewswitcher",
 				},
 			]}
 		/>
