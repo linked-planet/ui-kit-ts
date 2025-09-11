@@ -23,10 +23,10 @@ export class TourStep {
 		onPrevious,
 	}: {
 		step: TourStepProps
-		onPrepare?: () => void
-		onInit?: () => void
-		onExit?: () => void
-		onPrevious?: () => void
+		onPrepare?: () => void | Promise<void>
+		onInit?: () => void | Promise<void>
+		onExit?: () => void | Promise<void>
+		onPrevious?: () => void | Promise<void>
 	}) {
 		const content = (
 			<div className={this.contentClassname}>{step.content}</div>
@@ -48,13 +48,13 @@ export class TourStep {
 		return this._step
 	}
 
-	onInit?(): void
+	onInit?(): void | Promise<void>
 
-	onPrepare?(): void
+	onPrepare?(): void | Promise<void>
 
-	onExit?(): void
+	onExit?(): void | Promise<void>
 
-	onPrevious?(): void
+	onPrevious?(): void | Promise<void>
 }
 
 export interface TourProps {
@@ -141,93 +141,114 @@ export function Tour({
 
 	const _steps = useMemo(() => steps.map((it) => it.step), [steps])
 
+	// this is used to prevent multiple callbacks from being called at the same time
+	const isTransitioning = useRef(false)
+
 	const callback = useCallback(
 		(joyrideState: CallBackProps) => {
-			const { action, index, type, step } = joyrideState
-			switch (type) {
-				case "tour:start":
-					beforeAll()
-					isInit.current = true
-					setStepIndex(0)
-					break
-				case "tour:end":
-					reset()
-					break
-				case "step:before":
-					steps[index]?.onPrepare?.()
-					break
-				case "step:after":
-					steps[index]?.onExit?.()
-					switch (action) {
-						case "next":
-							steps[index + 1]?.onInit?.()
-							next(1)
-							break
-						case "prev":
-							steps[index]?.onPrevious?.()
-							steps[index - 1]?.onInit?.()
-							next(-1)
-							break
-						case "skip":
-							steps[index + 2]?.onInit?.()
-							next(2)
-							break
-						case "close":
-							reset()
-							break
-						case "reset":
-							reset()
-							break
-						case "stop":
-							reset()
-							break
-						default:
-							break
-					}
-					break
-				case "error:target_not_found":
-					if (skipOnError) {
-						console.info("Skipped", joyrideState)
-						if (showInfoAndError) {
-							Toast.showInformationToastFlag({
-								title: "Tour-Info",
-								description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen, das Element ${steps[index].step.target} wurde nicht gefunden.`,
-							})
-						}
-						next(action === "next" ? 1 : -1)
-					} else {
-						if (showInfoAndError) {
-							Toast.showErrorToastFlag({
-								title: "Tour-Fehler",
-								description: `Fehler bei Step [${steps[index].step?.title ?? "Unbekannt"}]. Das Element ${step.target} wurde nicht gefunden.`,
-							})
-						}
+			(async () => {
+				if (isTransitioning.current) return
+				isTransitioning.current = true
+				const { action, index, type, step } = joyrideState
+				try {
+				switch (type) {
+					case "tour:start":
+						beforeAll()
+						isInit.current = true
+						setStepIndex(0)
+						await steps[0]?.onInit?.()
+						break
+					case "tour:end":
 						reset()
-					}
-					break
-				case "error":
-					if (skipOnError) {
-						if (showInfoAndError) {
-							Toast.showInformationToastFlag({
-								title: "Tour-Info",
-								description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen.`,
-							})
+						break
+					case "step:before":
+						await (steps[index]?.onPrepare?.())
+						break
+					case "step:after":
+						await steps[index]?.onExit?.()
+						switch (action) {
+							case "next":
+								await steps[index + 1]?.onInit?.()
+								next(1)
+								break
+							case "prev":
+								await steps[index]?.onPrevious?.()
+								await steps[index - 1]?.onInit?.()
+								next(-1)
+								break
+							case "skip":
+								await steps[index + 2]?.onInit?.()
+								next(2)
+								break
+							case "close":
+								reset()
+								break
+							case "reset":
+								reset()
+								break
+							case "stop":
+								reset()
+								break
+							default:
+								break
 						}
-						next(action === "next" ? 1 : -1)
-					} else {
-						if (showInfoAndError) {
-							Toast.showErrorToastFlag({
-								title: "Tour-Fehler",
-								description: `Fehler bei Step [${steps[index].step?.title ?? "Unbekannt"}].`,
-							})
+						break
+					case "error:target_not_found":
+						if (skipOnError) {
+							console.info("Skipped", joyrideState)
+							if (showInfoAndError) {
+								Toast.showInformationToastFlag({
+									title: "Tour-Info",
+									description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen, das Element ${steps[index].step.target} wurde nicht gefunden.`,
+								})
+							}
+							next(action === "next" ? 1 : -1)
+						} else {
+							if (showInfoAndError) {
+								Toast.showErrorToastFlag({
+									title: "Tour-Fehler",
+									description: `Fehler bei Step [${steps[index].step?.title ?? "Unbekannt"}]. Das Element ${step.target} wurde nicht gefunden.`,
+								})
+							}
+							reset()
 						}
-						reset()
-					}
-					break
+						break
+					case "error":
+						if (skipOnError) {
+							if (showInfoAndError) {
+								Toast.showInformationToastFlag({
+									title: "Tour-Info",
+									description: `Ein Step [${steps[index].step?.title ?? "Unbekannt"}] wurde übersprungen.`,
+								})
+							}
+							next(action === "next" ? 1 : -1)
+						} else {
+							if (showInfoAndError) {
+								Toast.showErrorToastFlag({
+									title: "Tour-Fehler",
+									description: `Fehler bei Step [${steps[index].step?.title ?? "Unbekannt"}].`,
+								})
+							}
+							reset()
+						}
+						break
 
-				default:
-					break
-			}
+					default:
+							break
+					}
+				} catch (e) {
+					console.error("Joyride Tour - callback error", e)
+					if (showInfoAndError) {
+						Toast.showErrorToastFlag({
+							title: "Tour-Fehler",
+							description: "Unerwarteter Fehler im Tour-Callback.",
+						})
+					}
+					reset()
+				} finally {
+					isTransitioning.current = false
+				}
+			})()
 		},
 		[beforeAll, reset, next, showInfoAndError, skipOnError, steps],
 	)
