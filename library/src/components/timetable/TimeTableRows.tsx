@@ -170,7 +170,7 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 			changedGroupRowsRef,
 			renderCells,
 		)
-		throw new Error("TimeTable - group entry not found")
+		throw new Error(`TimeTable - group ${g} entry not found`)
 	}
 	const nextGroupId = groupEntriesArray[g + 1]?.id ?? null
 	const previousGroupId = groupEntriesArray[g - 1]?.id ?? null
