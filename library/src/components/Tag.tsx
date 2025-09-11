@@ -365,6 +365,7 @@ export function TagGroup({
 			style,
 			id,
 			"data-testid": testId,
+			"data-component": "tag-group",
 		},
 		children,
 	)
