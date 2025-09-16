@@ -102,6 +102,11 @@ export interface LPTimeTableProps<
 
 	onTimeSlotItemClick?: (group: G, item: I) => void
 
+	/**
+	 * This function gets called when a time slot is clicked.
+	 */
+	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
+
 	/* this function gets called when a selection was made, i.g. to create a booking. the return value states if the selection should be cleared or not */
 	onTimeRangeSelected?: onTimeRangeSelectedType
 
@@ -265,6 +270,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 	placeHolderComponent = PlaceHolderItemPlaceHolder,
 	onRenderedGroupsChanged,
 	onTimeSlotItemClick,
+	onTimeSlotClick,
 	onGroupClick,
 	onTimeRangeSelected,
 	defaultSelectedTimeRange,
@@ -661,6 +667,7 @@ const LPTimeTableImpl = <G extends TimeTableGroup, I extends TimeSlotBooking>({
 								onRenderedGroupsChanged={
 									onRenderedGroupsChanged
 								}
+								onTimeSlotClick={onTimeSlotClick}
 							/>
 						</tbody>
 					</table>

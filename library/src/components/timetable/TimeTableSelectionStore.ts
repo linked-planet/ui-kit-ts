@@ -169,9 +169,11 @@ function setTimeSlotSelectionByDateRange(
 			basicConfig.timeStepMinutesHoursView,
 		)
 
-		slot = slot
-			.add(basicConfig.timeFrameDay.startHour, "hours")
-			.add(basicConfig.timeFrameDay.startMinute, "minutes")
+		if (basicConfig.viewType !== "hours") {
+			slot = slot
+				.add(basicConfig.timeFrameDay.startHour, "hours")
+				.add(basicConfig.timeFrameDay.startMinute, "minutes")
+		}
 
 		const slotEnd = slot.add(timeSlotMinutes, "minutes")
 
