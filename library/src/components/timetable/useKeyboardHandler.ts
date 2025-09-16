@@ -1,4 +1,4 @@
-import type { Dayjs } from "dayjs"
+import type { Dayjs } from "dayjs/esm"
 import { useCallback } from "react"
 import type { TimeSlotBooking } from "./TimeTable"
 import { setFocusedCell, useFocusedCell } from "./TimeTableFocusStore"
@@ -12,7 +12,7 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 	previousGroupId: string | null,
 	slotsArray: readonly Dayjs[] | undefined,
 	storeIdent: string,
-	groupItemRows: ItemRowEntry<I>[][] | null,
+	groupItemRows: ItemRowEntry<I>[][] | null
 ) {
 	// find the item in the groupItemRows to focus
 	const currentItemKey = useFocusedCell(storeIdent).itemKey
@@ -148,12 +148,6 @@ export function useKeyboardHandlers<I extends TimeSlotBooking>(
 					e.stopPropagation()
 					if (slotsArray && timeSlotNumber < slotsArray.length - 1) {
 						const nextItemKey = nextItemFunc()
-						console.log(
-							"NEXT ITEM KEY",
-							nextItemKey,
-							e.target,
-							timeSlotNumber,
-						)
 						setFocusedCell(
 							storeIdent,
 							groupId,

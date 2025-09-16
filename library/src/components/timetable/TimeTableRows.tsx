@@ -121,6 +121,11 @@ interface TimeTableRowsProps<
 	 * Callback for when rendered groups change, return the group indices that were rendered (parameter is a set of group indices)
 	 */
 	onRenderedGroupsChanged: ((groups: Set<number>) => void) | undefined
+
+	/**
+	 * Callback for when a time slot is clicked.
+	 */
+	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
 }
 
 const intersectionStackDelay = 1
@@ -147,6 +152,7 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 	viewType: TimeTableViewType,
 	timeStepMinutesHoursView: number,
 	onRenderedGroupsChanged: ((groups: Set<number>) => void) | undefined,
+	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void,
 ) {
 	if (g < 0) {
 		throw new Error("TimeTable - group number is negative")
@@ -234,6 +240,7 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 			renderedGroupsRef={renderedGroupsRef}
 			changedGroupRowsRef={changedGroupRowsRef}
 			timeStepMinutesHoursView={timeStepMinutesHoursView}
+			onTimeSlotClick={onTimeSlotClick}
 			//
 		/>
 	)
@@ -260,6 +267,7 @@ export default function TimeTableRows<
 	viewType,
 	timeStepMinutesHoursView,
 	onRenderedGroupsChanged,
+	onTimeSlotClick,
 }: TimeTableRowsProps<G, I>): JSX.Element[] {
 	const storeIdent = useTimeTableIdent()
 	const { rowHeight, columnWidth, placeHolderHeight } =
@@ -674,6 +682,7 @@ export default function TimeTableRows<
 								viewType,
 								timeStepMinutesHoursView,
 								onRenderedGroupsChanged,
+								onTimeSlotClick,
 							)
 							counter++
 							if (counter > timeTableGroupRenderBatchSize) {
@@ -711,6 +720,7 @@ export default function TimeTableRows<
 						viewType,
 						timeStepMinutesHoursView,
 						onRenderedGroupsChanged,
+						onTimeSlotClick,
 					)
 					counter++
 					if (counter > timeTableGroupRenderBatchSize) {
@@ -744,6 +754,7 @@ export default function TimeTableRows<
 					viewType,
 					timeStepMinutesHoursView,
 					onRenderedGroupsChanged,
+					onTimeSlotClick,
 				)
 				++counter
 			}
@@ -769,6 +780,7 @@ export default function TimeTableRows<
 		onRenderedGroupsChanged,
 		groupRowKeys,
 		groupRows,
+		onTimeSlotClick,
 	])
 
 	// Ensure rendering is triggered - handle edge cases where renderGroupRangeRef might be [-1, -1]
@@ -851,6 +863,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	viewType,
 	timeStepMinutesHoursView,
 	groupItemRows,
+	onTimeSlotClick,
 }: {
 	timeSlotNumber: number
 	group: G
@@ -867,6 +880,7 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	viewType: TimeTableViewType
 	timeStepMinutesHoursView: number
 	groupItemRows: ItemRowEntry<I>[][] | null
+	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
 }) {
 	const storeIdent = useTimeTableIdent()
 	const disableWeekendInteractions =
@@ -911,6 +925,8 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		isWeekendDay,
 		disableWeekendInteractions,
 	)
+
+	const timeSlotEnd = timeSlot.add(timeSlotMinutes, "minutes")
 
 	const handleKeyUp = useKeyboardHandlers(
 		timeSlotNumber,
@@ -1087,6 +1103,11 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		<td
 			key={timeSlotNumber}
 			{...mouseHandlersUsed}
+			onClick={onTimeSlotClick ? () => {
+						onTimeSlotClick({ groupId: group.id, startDate: timeSlot, endDate: timeSlotEnd })
+				}
+				: undefined
+			}
 			onKeyUp={handleKeyUp}
 			onBlur={(e) => {
 				// Only handle blur for the first cell
@@ -1200,6 +1221,7 @@ function PlaceholderTableCell<
 	slotsArray,
 	selectedTimeSlots, // this will be only with value when the current time slot is selected
 	placeHolderHeight,
+	onTimeSlotClick,
 }: {
 	group: G
 	groupNumber: number
@@ -1212,6 +1234,7 @@ function PlaceholderTableCell<
 	slotsArray: readonly Dayjs[]
 	selectedTimeSlots: readonly number[] | undefined
 	placeHolderHeight: number
+	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
 }) {
 	const storeIdent = useTimeTableIdent()
 	const focusedCell = useFocusedCell(storeIdent)
@@ -1279,6 +1302,8 @@ function PlaceholderTableCell<
 		disableWeekendInteractions,
 	)
 
+	const timeSlotEnd = timeSlot.add(timeSlotMinutes, "minutes")
+
 	const handleKeyUp = useKeyboardHandlers(
 		timeSlotNumber,
 		group.id,
@@ -1286,7 +1311,7 @@ function PlaceholderTableCell<
 		previousGroupId,
 		slotsArray,
 		storeIdent,
-		groupItemRows,
+		groupItemRows
 	)
 
 	const isFocused =
@@ -1340,6 +1365,14 @@ function PlaceholderTableCell<
 			}}
 			tabIndex={-1}
 			onKeyUp={handleKeyUp}
+			onKeyDown={onTimeSlotClick ? (e) => {
+				if (e.key === "Enter") {
+					onTimeSlotClick?.({ groupId: group.id, startDate: timeSlot, endDate: timeSlotEnd })
+				}
+			} : undefined}
+			onClick={() => {
+				onTimeSlotClick?.({ groupId: group.id, startDate: timeSlot, endDate: timeSlotEnd })
+			}}
 		>
 			{isFocused && (
 				<div
@@ -1382,6 +1415,7 @@ type GroupRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	renderedGroupsRef: React.MutableRefObject<Set<number>>
 	changedGroupRowsRef: React.MutableRefObject<Set<number>>
 	timeStepMinutesHoursView: number
+	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
 }
 
 function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
@@ -1406,6 +1440,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	renderedGroupsRef,
 	changedGroupRowsRef,
 	//
+	onTimeSlotClick,
 }: GroupRowsProps<G, I>) {
 	// ugly SIDE EFFECTs for now to make sure the rendered groups are set
 	changedGroupRowsRef.current.delete(groupNumber)
@@ -1541,6 +1576,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 					placeHolderHeight={placeHolderHeight}
 					timeSlotMinutes={timeSlotMinutes}
 					groupItemRows={groupItemRows}
+					onTimeSlotClick={onTimeSlotClick}
 				/>,
 			)
 		}
@@ -1600,6 +1636,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 						timeFrameDay={timeFrameDay}
 						viewType={viewType}
 						timeStepMinutesHoursView={timeStepMinutesHoursView}
+						onTimeSlotClick={onTimeSlotClick}
 					/>,
 				)
 			}
@@ -1621,6 +1658,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		timeStepMinutesHoursView,
 		nextGroupId,
 		previousGroupId,
+		onTimeSlotClick,
 	])
 
 	if (!renderCells) {

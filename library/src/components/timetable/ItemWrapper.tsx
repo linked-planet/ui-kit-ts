@@ -1,4 +1,4 @@
-import type { Dayjs } from "dayjs"
+import type { Dayjs } from "dayjs/esm"
 import { useEffect, useRef } from "react"
 import utilStyles from "../../utils.module.css"
 import type { TimeSlotBooking, TimeTableGroup } from "./TimeTable"
@@ -119,10 +119,10 @@ export default function ItemWrapper<
 				style={{
 					pointerEvents: multiSelectionMode ? "none" : "auto",
 				}}
-				onClick={(e) => {
+				onClick={onTimeSlotItemClick ? (e) => {
 					e.stopPropagation()
 					if (onTimeSlotItemClick) onTimeSlotItemClick(group, item)
-				}}
+				} : undefined}
 				onKeyUp={(e) => {
 					if (e.key === "Enter") {
 						e.stopPropagation()

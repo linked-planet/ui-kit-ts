@@ -1142,6 +1142,9 @@ function Example() {
 					onRenderedGroupsChanged={(groups) => {
 						console.log("rendered groups changed", groups)
 					}}
+					onTimeSlotClick={({groupId, startDate, endDate}) => {
+						console.log("onTimeSlotClick", groupId, startDate, endDate)
+					}}
 				/>
 			</div>
 			<Button title="Load more entries." onClick={requestMoreEntriesCB}>
@@ -1225,6 +1228,9 @@ function ExampleCalendar() {
 					} | null,
 				) => {
 					console.log("onTimeRangeSelected", range)
+				}}
+				onTimeSlotClick={({groupId, startDate, endDate}) => {
+					console.log("onTimeSlotClick", groupId, startDate, endDate)
 				}}
 			/>
 			<Button
