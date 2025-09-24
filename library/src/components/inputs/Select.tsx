@@ -26,6 +26,7 @@ import {
 	default as RSelect,
 	type SelectComponentsConfig,
 	type SelectInstance,
+	type StylesConfig,
 } from "react-select"
 import ReactSelectAsync from "react-select/async"
 import ReactSelectCreatable, {
@@ -144,31 +145,33 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 					),
 				placeholder: (provided) =>
 					twMerge(
-						`${
+						`font-normal ${
 							provided.isDisabled
 								? "text-disabled-text"
 								: "text-text-subtlest"
-						} overflow-hidden text-ellipsis whitespace-nowrap`,
+						} overflow-hidden text-ellipsis whitespace-nowrap text-base`,
 						classNamesConfig?.placeholder?.(provided),
 					),
 				singleValue: (provided) =>
-					twJoin(
-						provided.isDisabled
-							? "text-disabled-text"
-							: "text-text",
-						"text-ellipsis whitespace-nowrap",
+					twMerge(
+						twJoin(
+							provided.isDisabled
+								? "text-disabled-text"
+								: "text-text",
+							"text-ellipsis whitespace-nowrap font-normal text-base",
+						),
 						classNamesConfig?.singleValue?.(provided),
 					),
 				multiValue: (provided) => {
-					return twJoin(
-						twMerge(
+					return twMerge(
+						twJoin(
 							"bg-neutral w-auto rounded-xs pl-1 mr-2 my-1 text-text",
 							provided.isDisabled
 								? "bg-disabled text-disabled-text"
 								: undefined,
 							provided.data.isFixed ? "pr-1" : undefined,
+							"text-ellipsis whitespace-nowrap font-normal",
 						),
-						"text-ellipsis whitespace-nowrap",
 						classNamesConfig?.multiValue?.(provided),
 					)
 				},
@@ -208,7 +211,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 }
 
 // className overwrite doesn't work because it seems like that the css of react-select gets included after TW
-const customStyles = {
+const customStyles: StylesConfig = {
 	control: (provided: CSSObjectWithLabel) => ({
 		...provided,
 		cursor: "pointer",
@@ -223,6 +226,64 @@ const customStyles = {
 		...provided,
 		cursor: undefined,
 	}),
+}
+
+type StylesConfigKey = keyof StylesConfig
+
+function useCustomStyles<ValueType, IsMulti extends boolean = boolean>(
+	styles:
+		| StylesConfig<
+				OptionType<ValueType>,
+				IsMulti,
+				OptionGroupType<ValueType>
+		  >
+		| undefined,
+) {
+	return useMemo(() => {
+		if (!styles) {
+			return customStyles as StylesConfig<
+				OptionType<ValueType>,
+				IsMulti,
+				OptionGroupType<ValueType>
+			>
+		}
+		const ret: StylesConfig<
+			OptionType<ValueType>,
+			IsMulti,
+			OptionGroupType<ValueType>
+		> = {}
+		const objectKeys = new Set<StylesConfigKey>(
+			Object.keys(styles) as StylesConfigKey[],
+		)
+		for (const key of Object.keys(customStyles)) {
+			objectKeys.add(key as StylesConfigKey)
+		}
+		for (const key of objectKeys) {
+			if (styles[key] && customStyles[key]) {
+				ret[key] = (provided: CSSObjectWithLabel, props: any) => {
+					return {
+						...customStyles[key]?.(provided, props),
+						...styles[key]?.(provided, props),
+					}
+				}
+			} else if (styles[key]) {
+				ret[key] = styles[key] as (
+					provided: CSSObjectWithLabel,
+					props: any,
+				) => CSSObjectWithLabel
+			} else if (customStyles[key]) {
+				ret[key] = customStyles[key] as (
+					provided: CSSObjectWithLabel,
+					props: any,
+				) => CSSObjectWithLabel
+			}
+		}
+		return ret as StylesConfig<
+			OptionType<ValueType>,
+			IsMulti,
+			OptionGroupType<ValueType>
+		>
+	}, [styles])
 }
 
 //#endregion styles
@@ -545,6 +606,8 @@ const SelectInner = <ValueType, IsMulti extends boolean = boolean>({
 			"Select - isAsync and isCreateable cannot be true at the same time",
 		)
 	}
+
+	const customStyles = useCustomStyles<ValueType, IsMulti>(styles)
 
 	if (isCreateable) {
 		return (

@@ -26,7 +26,7 @@ export function createPortalRootNode(props?: {
 }) {
 	const {
 		id = portalContainerID,
-		zIndex = 511, // the atlaskit portal has 510, the hamburger menu has 512
+		zIndex = 3001, // the atlaskit portal dialogue menu has 3000 that it is shown above other atlaskit components
 		portalParentNode = document.body,
 		setAsPortalRootNode = true,
 	} = props ?? {}
