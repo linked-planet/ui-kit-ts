@@ -7,6 +7,7 @@ import {
 	type InputHTMLAttributes,
 	type ReactNode,
 	useEffect,
+	useId,
 	useImperativeHandle,
 	useRef,
 	useState,
@@ -139,6 +140,8 @@ const CheckboxI = (
 		}
 	}, [])
 
+	const bid = useId()
+
 	return (
 		<>
 			<div
@@ -151,7 +154,7 @@ const CheckboxI = (
 				<div className={"relative flex items-center justify-center"}>
 					<input
 						type="checkbox"
-						id={id}
+						id={id ?? bid}
 						data-testid={testId}
 						ref={inputRef}
 						disabled={disabled}
@@ -195,24 +198,12 @@ const CheckboxI = (
 				</div>
 
 				<label
-					htmlFor={id}
+					htmlFor={id ?? bid}
 					id={labelId}
 					aria-disabled={disabled}
 					aria-invalid={invalid}
 					className={twMerge(labelStyles, labelClassName)}
 					style={labelStyle}
-					onClick={(e) => {
-						if (disabled) {
-							e.preventDefault()
-							e.stopPropagation()
-						}
-						inputRef.current?.click()
-					}}
-					onKeyUp={(e) => {
-						if (e.key === "Enter" && !disabled) {
-							inputRef.current?.click()
-						}
-					}}
 				>
 					{label}
 				</label>
