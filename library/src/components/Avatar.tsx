@@ -1,10 +1,9 @@
 import * as RAvatar from "@radix-ui/react-avatar"
+import { CheckIcon, LockKeyholeIcon, UserRoundIcon, XIcon } from "lucide-react"
 import type React from "react"
-import { twMerge } from "tailwind-merge"
-
-import { IconSizeHelper } from "./IconSizeHelper"
-import { XIcon, CheckIcon, LockKeyholeIcon, UserRoundIcon } from "lucide-react"
 import { useMemo } from "react"
+import { twMerge } from "tailwind-merge"
+import { IconSizeHelper } from "./IconSizeHelper"
 
 type PresenceStatus = "busy" | "focus" | "online" | "offline"
 type Status = "approved" | "declined" | "locked"
@@ -59,11 +58,22 @@ const statusStyles: { [status in Status]: string } = {
 	locked: "bg-icon",
 } as const
 
-const statusSVGs: { [status in Status]: JSX.Element } = {
-	approved: <CheckIcon aria-label="approved" size="12" strokeWidth={4} />,
-	declined: <XIcon aria-label="declined" size="12" strokeWidth={4} />,
-	locked: <LockKeyholeIcon aria-label="locked" size="12" strokeWidth={4} />,
-} as const
+const getStatusSVG = (status: Status): JSX.Element => {
+	switch (status) {
+		case "approved":
+			return <CheckIcon aria-label="approved" size="12" strokeWidth={4} />
+		case "declined":
+			return <XIcon aria-label="declined" size="12" strokeWidth={4} />
+		case "locked":
+			return (
+				<LockKeyholeIcon
+					aria-label="locked"
+					size="12"
+					strokeWidth={4}
+				/>
+			)
+	}
+}
 
 function PresenceIcon({
 	presence,
@@ -147,7 +157,7 @@ function StatusIcon({
 				padding: 1,
 			}}
 		>
-			{statusSVGs[status]}
+			{getStatusSVG(status)}
 		</IconSizeHelper>
 	)
 }
