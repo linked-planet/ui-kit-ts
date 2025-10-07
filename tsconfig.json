@@ -5,7 +5,8 @@
 			"@linked-planet/ui-kit-ts": ["library/src"],
 			"@linked-planet/ui-kit-ts/*": ["library/src/*"],
 			"@linked-planet/ui-kit-ts/dist/style.css": ["dist/styles.css"]
-		}
+		},
+		"jsx": "react-jsx"
 	},
 	"extends": "./tsconfig.common.json",
 	"include": ["library/src", "showcase/src", "applayoutexample"]
