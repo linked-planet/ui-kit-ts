@@ -105,10 +105,11 @@ export default function ItemWrapper<
 			style={{
 				left,
 				width,
-				height,
+				height: "auto",
 				maxHeight: height,
 				pointerEvents: "none",
 			}}
+			data-component="timetable-item-wrapper-outer"
 			{...mouseHandler}
 		>
 			{/** biome-ignore lint/a11y/useSemanticElements: should be div to be able to have buttons inside */}
@@ -119,10 +120,15 @@ export default function ItemWrapper<
 				style={{
 					pointerEvents: multiSelectionMode ? "none" : "auto",
 				}}
-				onClick={onTimeSlotItemClick ? (e) => {
-					e.stopPropagation()
-					if (onTimeSlotItemClick) onTimeSlotItemClick(group, item)
-				} : undefined}
+				onClick={
+					onTimeSlotItemClick
+						? (e) => {
+								e.stopPropagation()
+								if (onTimeSlotItemClick)
+									onTimeSlotItemClick(group, item)
+							}
+						: undefined
+				}
 				onKeyUp={(e) => {
 					if (e.key === "Enter") {
 						e.stopPropagation()
@@ -139,6 +145,7 @@ export default function ItemWrapper<
 				role="button"
 				tabIndex={-1}
 				id={id}
+				data-component="timetable-item-wrapper-inner"
 			>
 				<TimeSlotItemComponent
 					group={group}

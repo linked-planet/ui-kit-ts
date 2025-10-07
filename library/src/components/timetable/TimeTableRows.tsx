@@ -125,7 +125,11 @@ interface TimeTableRowsProps<
 	/**
 	 * Callback for when a time slot is clicked.
 	 */
-	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
+	onTimeSlotClick?: (s: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	}) => void
 }
 
 const intersectionStackDelay = 1
@@ -152,7 +156,11 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 	viewType: TimeTableViewType,
 	timeStepMinutesHoursView: number,
 	onRenderedGroupsChanged: ((groups: Set<number>) => void) | undefined,
-	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void,
+	onTimeSlotClick?: (s: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	}) => void,
 ) {
 	if (g < 0) {
 		throw new Error("TimeTable - group number is negative")
@@ -302,6 +310,10 @@ export default function TimeTableRows<
 	// these groups need rerendering
 	const changedGroupRows = useRef<Set<number>>(new Set<number>())
 
+	// row height and width
+	const currentRowHeight = useRef(rowHeight)
+	const currentColumnWidth = useRef(columnWidth)
+
 	// groupRowsRendered is the array of rendered group rows JSX Elements, which is returned from the component
 	const [groupRowsRendered, setGroupRowsRendered] = useState<JSX.Element[]>(
 		[],
@@ -447,7 +459,9 @@ export default function TimeTableRows<
 	const hasViewTypeChanged =
 		slotsArrayCurrent.current !== slotsArray ||
 		viewTypeCurrent.current !== viewType ||
-		timeFrameDayCurrent.current !== timeFrameDay
+		timeFrameDayCurrent.current !== timeFrameDay ||
+		currentRowHeight.current !== rowHeight ||
+		currentColumnWidth.current !== columnWidth
 
 	if (hasViewTypeChanged) {
 		// Update cached values (both for initial mount and changes)
@@ -455,6 +469,13 @@ export default function TimeTableRows<
 		viewTypeCurrent.current = viewType
 		timeFrameDayCurrent.current = timeFrameDay
 		currentGroupRowsRef.current = groupRows
+		currentRowHeight.current = rowHeight
+		currentColumnWidth.current = columnWidth
+
+		// Clear rendered groups and refs to force full re-render
+		//renderedGroups.current.clear()
+		//refCollection.current = []
+		//setGroupRowsRendered([])
 
 		// Ensure initial groups are marked for rendering
 		if (groupRows && groupRows.size > 0) {
@@ -880,7 +901,11 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	viewType: TimeTableViewType
 	timeStepMinutesHoursView: number
 	groupItemRows: ItemRowEntry<I>[][] | null
-	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
+	onTimeSlotClick?: (s: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	}) => void
 }) {
 	const storeIdent = useTimeTableIdent()
 	const disableWeekendInteractions =
@@ -1103,10 +1128,16 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		<td
 			key={timeSlotNumber}
 			{...mouseHandlersUsed}
-			onClick={onTimeSlotClick ? () => {
-						onTimeSlotClick({ groupId: group.id, startDate: timeSlot, endDate: timeSlotEnd })
-				}
-				: undefined
+			onClick={
+				onTimeSlotClick
+					? () => {
+							onTimeSlotClick({
+								groupId: group.id,
+								startDate: timeSlot,
+								endDate: timeSlotEnd,
+							})
+						}
+					: undefined
 			}
 			onKeyUp={handleKeyUp}
 			onBlur={(e) => {
@@ -1234,7 +1265,11 @@ function PlaceholderTableCell<
 	slotsArray: readonly Dayjs[]
 	selectedTimeSlots: readonly number[] | undefined
 	placeHolderHeight: number
-	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
+	onTimeSlotClick?: (s: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	}) => void
 }) {
 	const storeIdent = useTimeTableIdent()
 	const focusedCell = useFocusedCell(storeIdent)
@@ -1311,7 +1346,7 @@ function PlaceholderTableCell<
 		previousGroupId,
 		slotsArray,
 		storeIdent,
-		groupItemRows
+		groupItemRows,
 	)
 
 	const isFocused =
@@ -1365,13 +1400,25 @@ function PlaceholderTableCell<
 			}}
 			tabIndex={-1}
 			onKeyUp={handleKeyUp}
-			onKeyDown={onTimeSlotClick ? (e) => {
-				if (e.key === "Enter") {
-					onTimeSlotClick?.({ groupId: group.id, startDate: timeSlot, endDate: timeSlotEnd })
-				}
-			} : undefined}
+			onKeyDown={
+				onTimeSlotClick
+					? (e) => {
+							if (e.key === "Enter") {
+								onTimeSlotClick?.({
+									groupId: group.id,
+									startDate: timeSlot,
+									endDate: timeSlotEnd,
+								})
+							}
+						}
+					: undefined
+			}
 			onClick={() => {
-				onTimeSlotClick?.({ groupId: group.id, startDate: timeSlot, endDate: timeSlotEnd })
+				onTimeSlotClick?.({
+					groupId: group.id,
+					startDate: timeSlot,
+					endDate: timeSlotEnd,
+				})
 			}}
 		>
 			{isFocused && (
@@ -1415,7 +1462,11 @@ type GroupRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	renderedGroupsRef: React.MutableRefObject<Set<number>>
 	changedGroupRowsRef: React.MutableRefObject<Set<number>>
 	timeStepMinutesHoursView: number
-	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
+	onTimeSlotClick?: (s: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	}) => void
 }
 
 function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
@@ -1595,6 +1646,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		nextGroupId,
 		previousGroupId,
 		groupItemRows,
+		onTimeSlotClick,
 	])
 
 	const normalRows = useMemo(() => {
