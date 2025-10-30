@@ -15,7 +15,6 @@
 		"isolatedModules": true,
 		"noUncheckedIndexedAccess": false,
 		"baseUrl": ".",
-		"jsx": "preserve",
 		"plugins": [{ "name": "typescript-plugin-css-modules" }],
 		"types": ["vite/client"]
 	},

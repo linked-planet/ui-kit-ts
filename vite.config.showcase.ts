@@ -1,6 +1,6 @@
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react-swc"
 import { resolve } from "node:path"
+import react from "@vitejs/plugin-react-swc"
+import { defineConfig } from "vite"
 //import checker from "vite-plugin-checker"
 
 // postcss:
@@ -34,8 +34,8 @@ export default defineConfig({
 		},
 	},
 	define: {
-		"process.env": {}, // this is necessary because form.js in @atlaskit uses process.env.NODE_ENV
-		//"process.env.NODE_ENV": {}, // this is necessary because form.js in @atlaskit uses process.env.NODE_ENV
+		//"process.env": {}, // this is necessary because form.js in @atlaskit uses process.env.NODE_ENV
+		//"process.env.NODE_ENV": JSON.stringify("development"), // ensure development mode for JSX transform
 		// Some libraries use the global object, even though it doesn't exist in the browser.
 		// Alternatively, we could add `<script>window.global = window;</script>` to index.html.
 		// https://github.com/vitejs/vite/discussions/5912

@@ -62,7 +62,10 @@ export default defineConfig({
 					dayjs: "dayjs",
 				},
 				assetFileNames: (chunkInfo) => {
-					if (chunkInfo.name === "tailwind.css" && twUseImportant) {
+					if (
+						chunkInfo.names[0] === "tailwind.css" &&
+						twUseImportant
+					) {
 						return "[name]-important[extname]"
 					}
 					return "[name][extname]"

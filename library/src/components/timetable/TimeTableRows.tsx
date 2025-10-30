@@ -125,7 +125,11 @@ interface TimeTableRowsProps<
 	/**
 	 * Callback for when a time slot is clicked.
 	 */
-	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
+	onTimeSlotClick?: (s: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	}) => void
 }
 
 const intersectionStackDelay = 1
@@ -152,7 +156,11 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 	viewType: TimeTableViewType,
 	timeStepMinutesHoursView: number,
 	onRenderedGroupsChanged: ((groups: Set<number>) => void) | undefined,
-	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void,
+	onTimeSlotClick?: (s: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	}) => void,
 ) {
 	if (g < 0) {
 		throw new Error("TimeTable - group number is negative")
@@ -164,6 +172,20 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 		)
 	}
 	const groupEntriesArray = groupRowsKeys
+	// Defensive: if the index is beyond available keys, skip rendering instead of throwing
+	if (g >= groupEntriesArray.length) {
+		if (timeTableDebugLogs) {
+			console.warn(
+				"TimeTable - group index out of key bounds",
+				g,
+				groupEntriesArray.length,
+				groupRows,
+				changedGroupRowsRef,
+				renderCells,
+			)
+		}
+		return
+	}
 	const groupEntry = groupEntriesArray[g]
 	if (!groupEntry) {
 		console.warn(
@@ -176,7 +198,8 @@ function renderGroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>(
 			changedGroupRowsRef,
 			renderCells,
 		)
-		throw new Error(`TimeTable - group ${g} entry not found`)
+		// Do not throw here as this can happen due to async scheduling; skip this render turn
+		return
 	}
 	const nextGroupId = groupEntriesArray[g + 1]?.id ?? null
 	const previousGroupId = groupEntriesArray[g - 1]?.id ?? null
@@ -301,6 +324,10 @@ export default function TimeTableRows<
 
 	// these groups need rerendering
 	const changedGroupRows = useRef<Set<number>>(new Set<number>())
+
+	// row height and width
+	const currentRowHeight = useRef(rowHeight)
+	const currentColumnWidth = useRef(columnWidth)
 
 	// groupRowsRendered is the array of rendered group rows JSX Elements, which is returned from the component
 	const [groupRowsRendered, setGroupRowsRendered] = useState<JSX.Element[]>(
@@ -442,12 +469,18 @@ export default function TimeTableRows<
 	}, [intersectionContainerRef.current, headerRef.current, rowHeight])
 
 	const currentGroupRowsRef = useRef(groupRows)
-	const groupRowKeys = useMemo(() => groupRows.keys().toArray(), [groupRows])
+	const previousGroupRowsForRetry = useRef(groupRows)
+	const groupRowKeys = useMemo(
+		() => Array.from(groupRows.keys()),
+		[groupRows],
+	)
 
 	const hasViewTypeChanged =
 		slotsArrayCurrent.current !== slotsArray ||
 		viewTypeCurrent.current !== viewType ||
-		timeFrameDayCurrent.current !== timeFrameDay
+		timeFrameDayCurrent.current !== timeFrameDay ||
+		currentRowHeight.current !== rowHeight ||
+		currentColumnWidth.current !== columnWidth
 
 	if (hasViewTypeChanged) {
 		// Update cached values (both for initial mount and changes)
@@ -455,6 +488,13 @@ export default function TimeTableRows<
 		viewTypeCurrent.current = viewType
 		timeFrameDayCurrent.current = timeFrameDay
 		currentGroupRowsRef.current = groupRows
+		currentRowHeight.current = rowHeight
+		currentColumnWidth.current = columnWidth
+
+		// Clear rendered groups and refs to force full re-render
+		//renderedGroups.current.clear()
+		//refCollection.current = []
+		//setGroupRowsRendered([])
 
 		// Ensure initial groups are marked for rendering
 		if (groupRows && groupRows.size > 0) {
@@ -521,8 +561,6 @@ export default function TimeTableRows<
 				}
 			}
 
-			currentGroupRowsRef.current = groupRows
-
 			if (timeTableDebugLogs) {
 				console.info(
 					`TimeTable - groupRows changed, marked ${changedGroupRows.current.size} groups for re-validation`,
@@ -537,7 +575,12 @@ export default function TimeTableRows<
 		for (let i = 0; i < groupRowKeys.length; i++) {
 			const group = groupRowKeys[i]
 			if (!group) {
-				throw new Error(`TimeTable - group ${i} not found`)
+				console.warn(
+					`TimeTable - group ${i} not found in groupRowKeys`,
+					i,
+					groupRowKeys.length,
+				)
+				continue // Skip this group
 			}
 			const rows = groupRows.get(group)
 			const currentRows = currentGroupRowsRef.current.get(group)
@@ -562,6 +605,10 @@ export default function TimeTableRows<
 				changedGroupRows.current.add(i)
 			}
 		}
+
+		// Store previous state for retry mechanism before updating
+		previousGroupRowsForRetry.current = currentGroupRowsRef.current
+		currentGroupRowsRef.current = groupRows
 
 		for (const changedG of changedGroupRows.current) {
 			if (changedG > groupRowKeys.length - 1) {
@@ -618,6 +665,10 @@ export default function TimeTableRows<
 	const renderBatch = useCallback(() => {
 		setGroupRowsRendered((groupRowsRenderedPrev) => {
 			const groupRowsRendered = [...groupRowsRenderedPrev]
+			// Take a consistent snapshot of the current group rows and keys for this batch
+			const snapshotMap = currentGroupRowsRef.current
+			const snapshotKeys = Array.from(snapshotMap.keys()) as G[]
+			const snapshotSize = snapshotKeys.length
 			if (changedGroupRows.current.size) {
 				let counter = 0
 				if (renderGroupRangeRef.current[0] > -1) {
@@ -626,14 +677,14 @@ export default function TimeTableRows<
 						i <= renderGroupRangeRef.current[1];
 						i++
 					) {
-						if (i > currentGroupRowsRef.current.size - 1) {
+						if (i > snapshotSize - 1) {
 							changedGroupRows.current.delete(i)
 							continue
 						}
 						// make sure visible rows are rendered
 						if (changedGroupRows.current.has(i)) {
-							const groupEntryKey = groupRowKeys[i]
-							const groupItemRows = groupRows.get(groupEntryKey)
+							const groupEntryKey = snapshotKeys[i]
+							const groupItemRows = snapshotMap.get(groupEntryKey)
 							if (!groupItemRows) {
 								if (timeTableDebugLogs) {
 									console.log(
@@ -664,8 +715,8 @@ export default function TimeTableRows<
 
 							renderGroupRows(
 								renderGroupRangeRef.current,
-								currentGroupRowsRef.current,
-								groupRowKeys,
+								snapshotMap,
+								snapshotKeys,
 								i,
 								refCollection.current,
 								groupRowsRendered,
@@ -693,7 +744,7 @@ export default function TimeTableRows<
 				}
 				for (const g of changedGroupRows.current) {
 					if (
-						g > currentGroupRowsRef.current.size - 1 ||
+						g > snapshotSize - 1 ||
 						g > groupRowsRendered.length - 1
 					) {
 						changedGroupRows.current.delete(g)
@@ -702,8 +753,8 @@ export default function TimeTableRows<
 					// unrender not visible rows, but render only if the placeholders are already rendered)
 					renderGroupRows(
 						renderGroupRangeRef.current,
-						currentGroupRowsRef.current,
-						groupRowKeys,
+						snapshotMap,
+						snapshotKeys,
 						g,
 						refCollection.current,
 						groupRowsRendered,
@@ -731,13 +782,13 @@ export default function TimeTableRows<
 
 			let counter = 0
 			while (
-				groupRowsRendered.length < currentGroupRowsRef.current.size &&
+				groupRowsRendered.length < snapshotSize &&
 				counter < timeTableGroupRenderBatchSize
 			) {
 				renderGroupRows(
 					renderGroupRangeRef.current,
-					currentGroupRowsRef.current,
-					groupRowKeys,
+					snapshotMap,
+					snapshotKeys,
 					groupRowsRendered.length,
 					refCollection.current,
 					groupRowsRendered,
@@ -758,8 +809,8 @@ export default function TimeTableRows<
 				)
 				++counter
 			}
-			if (groupRowsRendered.length > currentGroupRowsRef.current.size) {
-				groupRowsRendered.length = currentGroupRowsRef.current.size
+			if (groupRowsRendered.length > snapshotSize) {
+				groupRowsRendered.length = snapshotSize
 			}
 			rateLimiterIntersection(handleIntersections)
 			return groupRowsRendered
@@ -778,8 +829,6 @@ export default function TimeTableRows<
 		rateLimiterIntersection,
 		timeStepMinutesHoursView,
 		onRenderedGroupsChanged,
-		groupRowKeys,
-		groupRows,
 		onTimeSlotClick,
 	])
 
@@ -826,7 +875,7 @@ export default function TimeTableRows<
 			const group = groupRowKeys[groupIndex]
 			if (group) {
 				const rows = groupRows.get(group)
-				const currentRows = currentGroupRowsRef.current.get(group)
+				const currentRows = previousGroupRowsForRetry.current.get(group)
 				// If we previously had null data and now have actual data, trigger re-render
 				if (currentRows === null && rows !== null) {
 					hasNewData = true
@@ -880,7 +929,11 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 	viewType: TimeTableViewType
 	timeStepMinutesHoursView: number
 	groupItemRows: ItemRowEntry<I>[][] | null
-	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
+	onTimeSlotClick?: (s: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	}) => void
 }) {
 	const storeIdent = useTimeTableIdent()
 	const disableWeekendInteractions =
@@ -1103,10 +1156,16 @@ function TableCell<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		<td
 			key={timeSlotNumber}
 			{...mouseHandlersUsed}
-			onClick={onTimeSlotClick ? () => {
-						onTimeSlotClick({ groupId: group.id, startDate: timeSlot, endDate: timeSlotEnd })
-				}
-				: undefined
+			onClick={
+				onTimeSlotClick
+					? () => {
+							onTimeSlotClick({
+								groupId: group.id,
+								startDate: timeSlot,
+								endDate: timeSlotEnd,
+							})
+						}
+					: undefined
 			}
 			onKeyUp={handleKeyUp}
 			onBlur={(e) => {
@@ -1234,7 +1293,11 @@ function PlaceholderTableCell<
 	slotsArray: readonly Dayjs[]
 	selectedTimeSlots: readonly number[] | undefined
 	placeHolderHeight: number
-	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
+	onTimeSlotClick?: (s: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	}) => void
 }) {
 	const storeIdent = useTimeTableIdent()
 	const focusedCell = useFocusedCell(storeIdent)
@@ -1311,7 +1374,7 @@ function PlaceholderTableCell<
 		previousGroupId,
 		slotsArray,
 		storeIdent,
-		groupItemRows
+		groupItemRows,
 	)
 
 	const isFocused =
@@ -1365,13 +1428,25 @@ function PlaceholderTableCell<
 			}}
 			tabIndex={-1}
 			onKeyUp={handleKeyUp}
-			onKeyDown={onTimeSlotClick ? (e) => {
-				if (e.key === "Enter") {
-					onTimeSlotClick?.({ groupId: group.id, startDate: timeSlot, endDate: timeSlotEnd })
-				}
-			} : undefined}
+			onKeyDown={
+				onTimeSlotClick
+					? (e) => {
+							if (e.key === "Enter") {
+								onTimeSlotClick?.({
+									groupId: group.id,
+									startDate: timeSlot,
+									endDate: timeSlotEnd,
+								})
+							}
+						}
+					: undefined
+			}
 			onClick={() => {
-				onTimeSlotClick?.({ groupId: group.id, startDate: timeSlot, endDate: timeSlotEnd })
+				onTimeSlotClick?.({
+					groupId: group.id,
+					startDate: timeSlot,
+					endDate: timeSlotEnd,
+				})
 			}}
 		>
 			{isFocused && (
@@ -1415,7 +1490,11 @@ type GroupRowsProps<G extends TimeTableGroup, I extends TimeSlotBooking> = {
 	renderedGroupsRef: React.MutableRefObject<Set<number>>
 	changedGroupRowsRef: React.MutableRefObject<Set<number>>
 	timeStepMinutesHoursView: number
-	onTimeSlotClick?: (s: { groupId: string; startDate: Dayjs; endDate: Dayjs }) => void
+	onTimeSlotClick?: (s: {
+		groupId: string
+		startDate: Dayjs
+		endDate: Dayjs
+	}) => void
 }
 
 function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
@@ -1595,6 +1674,7 @@ function GroupRows<G extends TimeTableGroup, I extends TimeSlotBooking>({
 		nextGroupId,
 		previousGroupId,
 		groupItemRows,
+		onTimeSlotClick,
 	])
 
 	const normalRows = useMemo(() => {

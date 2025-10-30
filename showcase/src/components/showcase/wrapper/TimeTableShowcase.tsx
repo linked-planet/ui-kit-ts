@@ -1,5 +1,8 @@
 import { Button, TimeTable, timeTableUtils } from "@linked-planet/ui-kit-ts"
-import type { TimeTableTypes } from "@linked-planet/ui-kit-ts/components/timetable"
+import type {
+	TimeTableItemProps,
+	TimeTableTypes,
+} from "@linked-planet/ui-kit-ts/components/timetable"
 import CreateNewTimeTableItemDialog from "@linked-planet/ui-kit-ts/components/timetable/CreateNewItem"
 import type { TranslatedTimeTableMessages } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableMessageContext"
 import { allGroupsRenderedEvent } from "@linked-planet/ui-kit-ts/components/timetable/TimeTableRows"
@@ -1111,9 +1114,9 @@ function Example() {
 					selectedTimeSlotItem={selectedTimeSlotItem}
 					selectedTimeRange={selectedTimeRange}
 					disableMessages
-					/*groupComponent={ Group }
-					timeSlotItemComponent={ Item }
-					placeHolderComponent={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
+					//groupComponent={ Group }
+					//timeSlotItemComponent={CustomSlotItemComponent}
+					/*placeHolderComponent={ ( props: PlaceholderItemProps<ExampleGroup> ) => (
 						<div
 							style={ { height: props.height, backgroundColor: "rgba(0,0,0,0.1)", textAlign: "center" } }
 							onClick={ () => props.clearTimeRangeSelectionCB() }
@@ -1142,8 +1145,13 @@ function Example() {
 					onRenderedGroupsChanged={(groups) => {
 						console.log("rendered groups changed", groups)
 					}}
-					onTimeSlotClick={({groupId, startDate, endDate}) => {
-						console.log("onTimeSlotClick", groupId, startDate, endDate)
+					onTimeSlotClick={({ groupId, startDate, endDate }) => {
+						console.log(
+							"onTimeSlotClick",
+							groupId,
+							startDate,
+							endDate,
+						)
 					}}
 				/>
 			</div>
@@ -1164,6 +1172,99 @@ function Example() {
 	)
 
 	//endregion timetable
+}
+
+function CustomSlotItemComponent(
+	props: TimeTableItemProps<ExampleGroup, ExampleItem>,
+) {
+	return (
+		<div style={{ padding: "2px", backgroundColor: "lightblue" }}>
+			test item
+		</div>
+	)
+}
+
+function ExampleRowHeightPlayground() {
+	//#region timetablerowheight
+
+	const translation = useTranslation() as TranslatedTimeTableMessages
+	const [rowHeight, setRowHeight] = useState(40)
+
+	const timeFrame = useMemo(
+		() => ({
+			startDate: startDateInitial,
+			endDate: endDateInitial,
+		}),
+		[],
+	)
+
+	return (
+		<div className="flex flex-col gap-4">
+			<div className="flex flex-wrap items-center gap-4">
+				<label
+					htmlFor="rowheightplayground"
+					className="whitespace-nowrap"
+				>
+					Row Height: {rowHeight}px
+				</label>
+				<input
+					type="range"
+					id="rowheightplayground"
+					min={16}
+					max={120}
+					step={2}
+					value={rowHeight}
+					onChange={(event) => {
+						const value = Number.parseInt(event.target.value, 10)
+						if (Number.isNaN(value)) {
+							return
+						}
+						setRowHeight(value)
+					}}
+					className="flex-1 min-w-[160px]"
+					aria-valuetext={`${rowHeight}px`}
+				/>
+				<input
+					type="number"
+					min={16}
+					max={120}
+					step={2}
+					value={rowHeight}
+					onChange={(event) => {
+						const value = Number.parseInt(event.target.value, 10)
+						if (Number.isNaN(value)) {
+							return
+						}
+						const clampedValue = Math.min(120, Math.max(16, value))
+						setRowHeight(clampedValue)
+					}}
+					className="w-20 text-center"
+					aria-label="Row height in pixels"
+				/>
+			</div>
+			<div
+				style={{
+					height: "500px",
+				}}
+			>
+				<TimeTable
+					groupHeaderColumnWidth={150}
+					columnWidth={70}
+					rowHeight={rowHeight}
+					startDate={timeFrame.startDate}
+					endDate={timeFrame.endDate}
+					timeStepsMinutes={60}
+					entries={exampleEntries}
+					timeTableMessages={translation}
+					viewType="hours"
+					showTimeSlotHeader
+					timeSlotItemComponent={CustomSlotItemComponent}
+				/>
+			</div>
+		</div>
+	)
+
+	//#endregion timetablerowheight
 }
 
 /*document.addEventListener("focusin", () => {
@@ -1229,7 +1330,7 @@ function ExampleCalendar() {
 				) => {
 					console.log("onTimeRangeSelected", range)
 				}}
-				onTimeSlotClick={({groupId, startDate, endDate}) => {
+				onTimeSlotClick={({ groupId, startDate, endDate }) => {
 					console.log("onTimeSlotClick", groupId, startDate, endDate)
 				}}
 			/>
@@ -1390,6 +1491,11 @@ export default function TimeTableShowcase(props: ShowcaseProps) {
 					title: "Example",
 					example: <Example />,
 					sourceCodeExampleId: "timetable",
+				},
+				{
+					title: "Row Height Playground",
+					example: <ExampleRowHeightPlayground />,
+					sourceCodeExampleId: "timetablerowheight",
 				},
 				{
 					title: "Days",

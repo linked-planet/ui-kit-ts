@@ -1,20 +1,20 @@
 import type { Dayjs } from "dayjs/esm"
+import { useCallback, useRef, useState } from "react"
+import { useIdleRateLimitHelper } from "../../utils"
 import {
-	timeTableDebugLogs,
 	type TimeSlotBooking,
 	type TimeTableEntry,
 	type TimeTableGroup,
 	type TimeTableViewType,
+	timeTableDebugLogs,
 } from "./TimeTable"
 import {
 	getTTCBasicProperties,
 	type TimeFrameDay,
 } from "./TimeTableConfigStore"
 import { useTimeTableIdent } from "./TimeTableIdentContext"
-import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
-import { useCallback, useRef, useState } from "react"
-import { useIdleRateLimitHelper } from "../../utils"
 import { renderIdleTimeout } from "./TimeTableRows"
+import { getStartAndEndSlot, isOverlapping } from "./timeTableUtils"
 
 /**
  * Contains the items of one group row (one row within one group)
