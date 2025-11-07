@@ -137,7 +137,7 @@ export function InlineMessage({
 						<button
 							type="button"
 							className={twMerge(
-								"appearance-none ml-2 p-2 group/imsg flex items-center justify-center cursor-pointer",
+								"appearance-none bg-transparent border-none ml-2 p-2 group/imsg flex items-center justify-center cursor-pointer",
 								_RemoveButtonAppearanceColors[
 									message.appearance ?? "default"
 								],
