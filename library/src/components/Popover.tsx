@@ -21,7 +21,6 @@ export type PopoverPositionerProps = Pick<
 	| "alignOffset"
 	| "anchor"
 	| "sticky"
-	| "trackAnchor"
 	| "style"
 	| "className"
 	| "sideOffset"
@@ -211,7 +210,6 @@ function Root({
 	children,
 	onOpenChange,
 	onOpenChangeComplete,
-	openOnHover,
 	...props
 }: PopoverProps) {
 	return (
@@ -221,7 +219,6 @@ function Root({
 			modal={modal}
 			onOpenChange={onOpenChange}
 			onOpenChangeComplete={onOpenChangeComplete}
-			openOnHover={openOnHover}
 			{...props}
 		>
 			{children}
