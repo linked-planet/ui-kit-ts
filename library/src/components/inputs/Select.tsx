@@ -149,7 +149,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 							provided.isDisabled
 								? "text-disabled-text"
 								: "text-text-subtlest"
-						} overflow-hidden text-ellipsis whitespace-nowrap text-base`,
+						} overflow-hidden text-ellipsis whitespace-nowrap text-sm`,
 						classNamesConfig?.placeholder?.(provided),
 					),
 				singleValue: (provided) =>
@@ -158,7 +158,7 @@ function useClassNamesConfig<ValueType, IsMulti extends boolean = boolean>(
 							provided.isDisabled
 								? "text-disabled-text"
 								: "text-text",
-							"text-ellipsis whitespace-nowrap font-normal text-base",
+							"text-ellipsis whitespace-nowrap font-normal text-sm",
 						),
 						classNamesConfig?.singleValue?.(provided),
 					),
@@ -878,13 +878,30 @@ function SelectInForm<
 		localRef.current?.controlRef,
 	)
 
+	const { ref: fieldRef, ...fieldRest } = field
+
+	const handleRef = (
+		instance: SelectInstance<
+			OptionType<ValueType>,
+			IsMulti,
+			OptionGroupType<ValueType>
+		> | null,
+	) => {
+		localRef.current = instance
+		if (typeof fieldRef === "function") {
+			fieldRef(instance)
+		} else if (fieldRef) {
+			(fieldRef as React.MutableRefObject<any>).current = instance
+		}
+	}
+
 	return (
 		<>
 			<SelectInner
 				{...innerProps}
-				{...field}
+				{...fieldRest}
 				{...fieldState}
-				innerRef={localRef}
+				innerRef={handleRef}
 				onChange={onChange}
 				value={valueUsed}
 				name={name}
