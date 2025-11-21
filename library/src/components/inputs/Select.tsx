@@ -215,7 +215,7 @@ const customStyles: StylesConfig = {
 	control: (provided: CSSObjectWithLabel) => ({
 		...provided,
 		cursor: "pointer",
-		minHeight: "2.25rem", // this is min-h-9 as set in the inputBaseStyle
+		minHeight: "2.25rem", // this is min-h-9 as set in the inputBaseStyle (this is also set in the time picker and datepicker components)
 		flexWrap: "nowrap" as const,
 	}),
 	menuPortal: (provided: CSSObjectWithLabel) => ({

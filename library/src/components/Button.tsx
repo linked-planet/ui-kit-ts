@@ -33,7 +33,7 @@ const buttonVariants = cva(
 			appearance: {
 				// those entries are undefined, they just establish the variant for the compoundVariants
 				default:
-					"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text",
+					"bg-neutral hover:bg-neutral-hovered active:bg-neutral-pressed text-text hover:text-text active:text-text",
 				primary: undefined,
 
 				subtle: undefined,
@@ -87,76 +87,76 @@ const buttonVariants = cva(
 				appearance: "primary",
 				disabled: false,
 				className:
-					"bg-brand-bold hover:bg-brand-bold-hovered active:bg-brand-bold-pressed text-text-inverse",
+					"bg-brand-bold hover:bg-brand-bold-hovered active:bg-brand-bold-pressed text-text-inverse hover:text-text-inverse active:text-text-inverse",
 			},
 			{
 				inverted: false,
 				appearance: "subtle",
 				disabled: false,
 				className:
-					"bg-neutral-subtle hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed text-text",
+					"bg-neutral-subtle hover:bg-neutral-subtle-hovered active:bg-neutral-subtle-pressed text-text hover:text-text active:text-text",
 			},
 			{
 				inverted: false,
 				appearance: "link",
 				disabled: false,
 				className:
-					"bg-transparent disabled:bg-transparent text-link hover:underline",
+					"bg-transparent disabled:bg-transparent text-link hover:underline hover:text-link-hovered active:text-link-pressed",
 			},
 			{
 				inverted: false,
 				appearance: "subtle-link",
 				disabled: false,
 				className:
-					"bg-transparent text-text-subtlest hover:text-text-subtle hover:underline",
+					"bg-transparent text-text-subtlest hover:text-text-subtle hover:underline active:text-text",
 			},
 			{
 				inverted: false,
 				appearance: "warning",
 				disabled: false,
 				className:
-					"bg-warning-bold hover:bg-warning-bold-hovered active:bg-warning-bold-pressed text-text-inverse",
+					"bg-warning-bold hover:bg-warning-bold-hovered active:bg-warning-bold-pressed text-text-inverse hover:text-text-inverse active:text-text-inverse",
 			},
 			{
 				inverted: false,
 				appearance: "danger",
 				disabled: false,
 				className:
-					"bg-danger-bold hover:bg-danger-bold-hovered active:bg-danger-bold-pressed text-text-inverse",
+					"bg-danger-bold hover:bg-danger-bold-hovered active:bg-danger-bold-pressed text-text-inverse hover:text-text-inverse active:text-text-inverse",
 			},
 			{
 				inverted: false,
 				appearance: "success",
 				disabled: false,
 				className:
-					"bg-success-bold hover:bg-success-bold-hovered active:bg-success-bold-pressed text-text-inverse",
+					"bg-success-bold hover:bg-success-bold-hovered active:bg-success-bold-pressed text-text-inverse hover:text-text-inverse active:text-text-inverse",
 			},
 			{
 				inverted: false,
 				appearance: "information",
 				disabled: false,
 				className:
-					"bg-information-bold hover:bg-information-bold-hovered active:bg-information-bold-pressed text-text-inverse",
+					"bg-information-bold hover:bg-information-bold-hovered active:bg-information-bold-pressed text-text-inverse hover:text-text-inverse active:text-text-inverse",
 			},
 			{
 				inverted: false,
 				appearance: "discovery",
 				disabled: false,
 				className:
-					"bg-discovery-bold hover:bg-discovery-bold-hovered active:bg-discovery-bold-pressed text-text-inverse",
+					"bg-discovery-bold hover:bg-discovery-bold-hovered active:bg-discovery-bold-pressed text-text-inverse hover:text-text-inverse active:text-text-inverse",
 			},
 			{
 				inverted: true,
 				appearance: "default",
 				className:
-					"bg-transparent border-neutral-bold border-solid hover:bg-neutral-hovered active:bg-neutral-pressed",
+					"bg-transparent border-neutral-bold border-solid text-text hover:text-text active:text-text hover:bg-neutral-hovered active:bg-neutral-pressed",
 			},
 			{
 				inverted: true,
 				appearance: "primary",
 				className: cx(
 					"bg-brand hover:bg-brand-hovered active:bg-brand-pressed",
-					"border-brand-bold text-brand-text border-solid",
+					"border-brand-bold text-brand-text hover:text-brand-text active:text-brand-text border-solid",
 				),
 			},
 			{
@@ -164,7 +164,7 @@ const buttonVariants = cva(
 				appearance: "warning",
 				className: cx(
 					"bg-warning hover:bg-warning-hovered active:bg-warning-pressed",
-					"border-warning-bold text-warning-text border-solid",
+					"border-warning-bold text-warning-text hover:text-warning-text active:text-warning-text border-solid",
 				),
 			},
 			{
@@ -172,7 +172,7 @@ const buttonVariants = cva(
 				appearance: "danger",
 				className: cx(
 					"bg-danger hover:bg-danger-hovered active:bg-danger-pressed",
-					"border-danger-bold text-danger-text border-solid",
+					"border-danger-bold text-danger-text hover:text-danger-text active:text-danger-text border-solid",
 				),
 			},
 			{
@@ -180,7 +180,7 @@ const buttonVariants = cva(
 				appearance: "success",
 				className: cx(
 					"bg-success hover:bg-success-hovered active:bg-success-pressed",
-					"border-success-bold text-success-text border-solid",
+					"border-success-bold text-success-text hover:text-success-text active:text-success-text border-solid",
 				),
 			},
 			{
@@ -188,7 +188,7 @@ const buttonVariants = cva(
 				appearance: "information",
 				className: cx(
 					"bg-information hover:bg-information-hovered active:bg-information-pressed",
-					"border-information-bold text-information-text border-solid",
+					"border-information-bold text-information-text hover:text-information-text active:text-information-text border-solid",
 				),
 			},
 			{
@@ -196,7 +196,7 @@ const buttonVariants = cva(
 				appearance: "discovery",
 				className: cx(
 					"bg-discovery hover:bg-discovery-hovered active:bg-discovery-pressed",
-					"border-discovery-bold text-discovery-text border-solid",
+					"border-discovery-bold text-discovery-text hover:text-discovery-text active:text-discovery-text border-solid",
 				),
 			},
 		],

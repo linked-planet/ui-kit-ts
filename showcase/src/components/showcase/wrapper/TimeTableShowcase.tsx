@@ -1314,6 +1314,7 @@ function ExampleCalendar() {
 				startDate={timeFrame.startDate}
 				endDate={timeFrame.endDate}
 				entries={entries}
+				locale="de"
 				timeTableMessages={translation}
 				disableWeekendInteractions={false}
 				showTimeSlotHeader={false}

@@ -340,6 +340,8 @@ function DateTimeNotInFormPicker({
 				styles={{
 					control: (p) => ({
 						...p,
+						minHeight: "2.25rem", // same as in the custom styles in the select!
+						cursor: disabled ? "not-allowed" : "pointer",
 						...timePickerStyle,
 					}),
 				}}
