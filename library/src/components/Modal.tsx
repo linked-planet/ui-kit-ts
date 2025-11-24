@@ -52,6 +52,8 @@ type ModalDialogProps = {
 	 */
 	forceMountContent?: true
 	ariaLabeledBy?: string
+	onOpenAutoFocus?: () => void
+	onCloseAutoFocus?: () => void
 }
 
 const blanketStyles =
@@ -90,6 +92,8 @@ function Container({
 	onTouchEnd,
 	onTouchCancel,
 	ariaLabeledBy,
+	onOpenAutoFocus,
+	onCloseAutoFocus,
 }: ModalDialogProps) {
 	const triggerRef = useRef<HTMLButtonElement>(null)
 	// biome-ignore lint/style/noNonNullAssertion: safe if the trigger is used
@@ -153,6 +157,8 @@ function Container({
 					forceMount={forceMountContent}
 					data-testid={testId}
 					aria-labelledby={ariaLabeledBy}
+					onOpenAutoFocus={onOpenAutoFocus}
+					onCloseAutoFocus={onCloseAutoFocus}
 				>
 					<VisuallyHidden>
 						<RDialog.DialogTitle data-component="modal-title">
