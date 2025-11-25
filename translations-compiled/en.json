@@ -1,0 +1,17 @@
+{
+  "timetable.bookingsAfterDayRange": "{itemCount} {itemCount, plural, one {booking} other {bookings}} found after the day range of the available time slots.",
+  "timetable.bookingsBeforeDayRange": "{itemCount} {itemCount, plural, one {booking} other {bookings}} found before the day range of the available time slots.",
+  "timetable.bookingsOutsideOfDayRange": "{itemCount} {itemCount, plural, one {booking} other {bookings}} found out of day range of the available time slots.",
+  "timetable.cellDisabled": "This slot is disabled.",
+  "timetable.deselectFromOuterBorder": "Please deselect from the outer borders of the time slot range.",
+  "timetable.endDateAfterStartDate": "The end date must be after start date.",
+  "timetable.itemsOutsideTimeFrame": "Found {outsideItemCount} {outsideItemCount, plural, one {booking} other {bookings}} outside of the valid time frame of each day.",
+  "timetable.noHeaderTimeSlotRow": "No header time slot row found.",
+  "timetable.sameStartAndEndAndOutsideOfDayRange": "Found {sameStartAndEndCount, plural, one {booking} other {# bookings}} with the same start and end date and time, and {outsideCount, number} outside of the valid time frame of each day.",
+  "timetable.sameStartAndEndTimeDate": "Found {itemCount} {itemCount, plural, one {booking} other {bookings}} with the same start and end date and time.",
+  "timetable.timeSlotColumnsNotFound": "Unable to find time slot columns for the time slot bars.",
+  "timetable.timeSlotSizeGreaterZero": "Time slot size must be greater than zero.",
+  "timetable.unableToFindEarliestTS": "Unable to find the earliest time slot.",
+  "timetable.unfittingTimeSlotMessage": "Start time does not accommodate one time slot before the next day, reducing time slot size to {timeSteps} size.",
+  "timetable.weekendsDeactivated": "Weekends are deactivated."
+}
