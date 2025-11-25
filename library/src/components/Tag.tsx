@@ -293,6 +293,7 @@ export function Tag({
 					onMouseOver={() => setHovered(true)}
 					onFocus={() => setHovered(true)}
 					onMouseLeave={() => setHovered(false)}
+					onBlur={() => setHovered(false)}
 				>
 					<XIcon size="10" strokeWidth={3} />
 				</button>
